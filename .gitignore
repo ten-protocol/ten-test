@@ -1,0 +1,17 @@
+# python related
+__pycache__/
+*.py[cod]
+*$py.class
+
+# pysys related
+**/Output/*
+.runner
+
+# property files we dont want commited to SCCS
+*.properties
+!.default.properties
+
+# ignore any artifacts used
+artifacts/wallet_extension*
+artifacts/*.log
+
