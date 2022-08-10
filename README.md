@@ -1,5 +1,5 @@
-Ethereum Test Framework (multiple networks)
--------------------------------------------
+Obscuro Test Framework (multiple networks)
+------------------------------------------
 Project repo for building and running solidity smart contracts on Ethereum against a variety of networks e.g. 
 [ganache](https://trufflesuite.com/ganache/), [ropsten via infura](https://infura.io/), 
 [geth](https://geth.ethereum.org/docs/getting-started), and  [obscuro](https://obscu.ro/). The repo uses the 
