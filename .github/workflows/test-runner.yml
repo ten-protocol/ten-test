@@ -4,21 +4,20 @@ jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - run: echo "Triggered by ${{ github.event_name }} event running on branch ${{ github.ref }} "
 
-      - name: Check out test repository code
+      - name: Check out obscuro-test
         uses: actions/checkout@v3
         with:
           path: ./obscuro-test
 
-      - name: Check out go-obscuro repository code
+      - name: Check out go-obscuro code
         uses: actions/checkout@v3
         with:
           repository: obscuronet/go-obscuro
           path: ./go-obscuro
 
-      - name: Build and list the artifacts
+      - name: Build artifacts
         run: |
           cd ${{ github.workspace }}/go-obscuro/tools/walletextension/main
           go build -o ${{ github.workspace }}/obscuro-test/artifacts/wallet_extension
@@ -41,6 +40,4 @@ jobs:
       - name: Run tests
         run: |
           - cd ${{ github.workspace }}/obscuro-test/tests/general
-          - pysys.py run 
-
-      - run: echo "This job's status is ${{ job.status }}."
+          - /usr/local/bin/pysys.py run 
