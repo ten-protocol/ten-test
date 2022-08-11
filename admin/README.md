@@ -23,7 +23,7 @@ Funding users
 their allocation to 50 tokens. To print out the current fund allocations use;
 
 ```bash
-pysys.py run -XDISPLAY_ONLY fund_user
+pysys.py run -XDISPLAY fund_user
 ```
 
 To transfer 50 tokens to any user whose current allocation is zero use;
