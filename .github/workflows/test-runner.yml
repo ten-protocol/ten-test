@@ -20,9 +20,8 @@ jobs:
 
       - name: Build and list the artifacts
         run: |
-          ./obscuro-test/get_artifacts.sh
-          ln -s ./obscuro-test/artifacts/wallet_extension_linux_amd64 ./wallet_extension
-          ls -l ./obscuro-test/artifacts
-  
+          cd ${{ github.workspace }}/go-obscuro/tools/wallet_extension/main
+          go build -o ${{ github.workspace }}/obscuro-test/artifacts/wallet_extension
+          ls -l ${{ github.workspace }}/obscuro-test/artifacts
 
       - run: echo "This job's status is ${{ job.status }}."
