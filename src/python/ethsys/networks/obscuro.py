@@ -90,5 +90,5 @@ class Obscuro(Default):
         response = requests.post('http://%s:%d/generateviewingkey/' % (host, port), data=json.dumps(data), headers=headers)
         signed_msg = web3.eth.account.sign_message(encode_defunct(text='vk' + response.text), private_key=private_key)
 
-        data = {"signature": signed_msg.signature.hex()}
+        data = {"signature": signed_msg.signature.hex(), "address": account.address}
         response = requests.post('http://%s:%d/submitviewingkey/' % (host, port), data=json.dumps(data), headers=headers)
