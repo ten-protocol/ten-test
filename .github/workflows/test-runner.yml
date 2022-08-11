@@ -39,5 +39,5 @@ jobs:
 
       - name: Run tests
         run: |
-          - cd ${{ github.workspace }}/obscuro-test/tests/general
-          - /usr/local/bin/pysys.py run 
+          cd ${{ github.workspace }}/obscuro-test/tests/general
+          /usr/local/bin/pysys.py run 
