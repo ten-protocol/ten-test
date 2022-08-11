@@ -2,7 +2,7 @@ name: Test runner
 on: [push]
 jobs:
   Run-Tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - run: echo "Triggered by ${{ github.event_name }} event running on branch ${{ github.ref }} "
 
