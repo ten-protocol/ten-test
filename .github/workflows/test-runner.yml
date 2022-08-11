@@ -42,7 +42,7 @@ jobs:
           cd ${{ github.workspace }}/obscuro-test/tests/generic
           /usr/local/bin/pysys.py run gen_cor_001
 
-      - name: Upload artifacts
+      - name: Upload wallet extension logs
         uses: actions/upload-artifact@v3
         if: failure()
         with:
@@ -51,4 +51,11 @@ jobs:
             ${{ github.workspace }}/obscuro-test/.runner/*
           retention-days: 2
 
-
+      - name: Upload testcase output
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: runner-artifact
+          path: |
+            ${{ github.workspace }}/obscuro-test/**/Output
+          retention-days: 2
