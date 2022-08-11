@@ -20,7 +20,7 @@ jobs:
 
       - name: Build and list the artifacts
         run: |
-          cd ${{ github.workspace }}/go-obscuro/tools/wallet_extension/main
+          cd ${{ github.workspace }}/go-obscuro/tools/walletextension/main
           go build -o ${{ github.workspace }}/obscuro-test/artifacts/wallet_extension
           ls -l ${{ github.workspace }}/obscuro-test/artifacts
 
