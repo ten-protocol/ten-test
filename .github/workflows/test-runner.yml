@@ -38,4 +38,9 @@ jobs:
           sudo python3 -m pip install pysys==1.6.1
           sudo python3 -m pip install py-solc-x
 
+      - name: Run tests
+        run: |
+          - cd ${{ github.workspace }}/obscuro-test/tests/general
+          - pysys.py run 
+
       - run: echo "This job's status is ${{ job.status }}."
