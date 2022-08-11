@@ -18,6 +18,8 @@ class EthereumRunnerPlugin():
         try:
             if mode == 'obscuro':
                 self.run_wallets(runner, 'testnet.obscu.ro')
+            elif mode == 'obscuro.dev':
+                self.run_wallets(runner, 'dev-testnet.obscu.ro')
             elif mode == 'obscuro.local':
                 self.run_wallets(runner, '127.0.0.1')
             elif mode == 'ganache':
