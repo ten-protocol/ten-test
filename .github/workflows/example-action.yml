@@ -11,15 +11,21 @@ jobs:
 
       - name: Check out test repository code
         uses: actions/checkout@v3
+        with:
+          path: ./obscuro-test
 
       - name: Check out go-obscuro repository code
         uses: actions/checkout@v3
         with:
           repository: obscuronet/go-obscuro
-          path: ${{ github.workspace }}/../go-obscuro
+          path: ./go-obscuro
 
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
+
+      - name: Build the artifacts
+        run: |
+          ./obscuro-test/get_artifacts.sh
 
       - run: echo "This job's status is ${{ job.status }}."
