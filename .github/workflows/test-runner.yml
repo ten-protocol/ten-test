@@ -6,7 +6,6 @@ jobs:
     steps:
       - run: echo "The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - run: echo "The github workspace is ${{ github.workspace }}"
 
       - name: Check out test repository code
         uses: actions/checkout@v3
@@ -22,7 +21,6 @@ jobs:
       - name: Build and list the artifacts
         run: |
           ./obscuro-test/get_artifacts.sh
-          cd ./obscuro-test/artifacts
           ln -s ./obscuro-test/artifacts/wallet_extension_linux_amd64 ./obscuro-test/artifacts/wallet_extension
           ls -l ./obscuro-test/artifacts
 
