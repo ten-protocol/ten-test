@@ -1,65 +1,59 @@
-import getpass, configparser
+import getpass, configparser, secrets
 from pysys.constants import *
 
 
 class Properties:
 
     def __init__(self):
-        file = os.path.join(PROJECT.root, '.'+getpass.getuser()+'.properties')
-        self.config = configparser.ConfigParser()
-        if os.path.exists(file):
-            self.config.read(filenames=file)
-        else:
-            file = os.path.join(PROJECT.root, '.default.properties')
-            self.config.read(filenames=file)
+        self.default_config = configparser.ConfigParser()
+        self.default_config.read(filenames=os.path.join(PROJECT.root, '.default.properties'))
 
-    # default accounts used generally
+        self.user_config = configparser.ConfigParser()
+        file = os.path.join(PROJECT.root, '.'+getpass.getuser()+'.properties')
+        if os.path.exists(file):
+            self.user_config.read(filenames=file)
+
+    def get(self, section, option):
+        if self.user_config.has_option(section, option):
+            return self.user_config.get(section, option)
+        else:
+            return self.default_config.get(section, option)
+
+    # generally used
     def account1pk(self):
-        infura = self.config['all']
-        return infura.get('Account1PK', '')
+        return self.get('all', 'Account1PK')
 
     def account2pk(self):
-        infura = self.config['all']
-        return infura.get('Account2PK', '')
+        return self.get('all', 'Account2PK')
 
     def account3pk(self):
-        infura = self.config['all']
-        return infura.get('Account3PK', '')
+        return self.get('all', 'Account3PK')
 
     def gameuserpk(self):
-        infura = self.config['all']
-        return infura.get('GameUserPK', '')
+        return self.get('all', 'GameUserPK')
 
     # obscuro specific properties
     def funded_deployment_account_pk(self, key):
-        obscuro = self.config[key]
-        return obscuro.get('FundedDeploymentAccountPK', '')
+        return self.get(key, 'FundedDeploymentAccountPK')
 
     def management_bridge_address(self, key):
-        obscuro = self.config[key]
-        return obscuro.get('ManagementBridgeAddress', '')
+        return self.get(key, 'ManagementBridgeAddress')
 
     def guessing_game_address(self, key):
-        obscuro = self.config[key]
-        return obscuro.get('GuessingGameAddress', '')
+        return self.get(key, 'GuessingGameAddress')
 
     def l1_jam_token_address(self, key):
-        obscuro = self.config[key]
-        return obscuro.get('TokenJAMContractAddressL1', '')
+        return self.get(key, 'TokenJAMContractAddressL1')
 
     def l2_jam_token_address(self, key):
-        obscuro = self.config[key]
-        return obscuro.get('TokenJAMContractAddressL2', '')
+        return self.get(key, 'TokenJAMContractAddressL2')
 
     def l1_eth_token_address(self, key):
-        obscuro = self.config[key]
-        return obscuro.get('TokenETHContractAddressL1', '')
+        return self.get(key, 'TokenETHContractAddressL1')
 
     def l2_eth_token_address(self, key):
-        obscuro = self.config[key]
-        return obscuro.get('TokenETHContractAddressL2', '')
+        return self.get(key, 'TokenETHContractAddressL2')
 
     # infura related
     def infuraProjectID(self):
-        infura = self.config['ropsten']
-        return infura.get('ProjectID', '')
+        return self.get('ropsten', 'ProjectID')
