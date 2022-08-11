@@ -44,8 +44,10 @@ jobs:
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
+        if: failure()
         with:
           name: my-artifact
           path: |
             ${{ github.workspace }}/obscuro-test/.runner
             ${{ github.workspace }}/obscuro-test/**/Output
+          retention-days: 2
