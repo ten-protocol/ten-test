@@ -31,9 +31,10 @@ class PySysTest(EthereumTest):
         self.assertTrue(block.number == block_number)
 
         # get block by hash
-        block = network.get_block_by_hash(web3, block.parentHash)
-        self.log.info('Block has number %s' % block.number)
-        self.assertTrue(block.number == block_number - 1)
+        if block_number > 0:
+            block = network.get_block_by_hash(web3, block.parentHash)
+            self.log.info('Block has number %s' % block.number)
+            self.assertTrue(block.number == block_number - 1)
 
         # get gas price
         gas_price = network.gas_price(web3)

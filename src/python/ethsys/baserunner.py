@@ -34,6 +34,7 @@ class EthereumRunnerPlugin():
         arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account1pk()))
         arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account2pk()))
         arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account3pk()))
+        arguments.extend(('--gasLimit', '7200000'))
         hprocess = runner.startProcess(command=PROJECT.ganacheBin, displayName='ganache',
                                        workingDir=self.output , environs=os.environ, quiet=True,
                                        arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
