@@ -41,3 +41,11 @@ jobs:
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests/generic
           /usr/local/bin/pysys.py run 
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: my-artifact
+          path: |
+            ${{ github.workspace }}/obscuro-test/.runner
+            ${{ github.workspace }}/obscuro-test/**/Output
