@@ -1,11 +1,10 @@
-name: Example Action
+name: Test runner
 on: [push]
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
       - run: echo "The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - run: echo "The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       - run: echo "The github workspace is ${{ github.workspace }}"
 
@@ -20,12 +19,11 @@ jobs:
           repository: obscuronet/go-obscuro
           path: ./go-obscuro
 
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-
-      - name: Build the artifacts
+      - name: Build and list the artifacts
         run: |
           ./obscuro-test/get_artifacts.sh
+          cd ./obscuro-test/artifacts
+          ln -s ./obscuro-test/artifacts/wallet_extension_linux_amd64 ./obscuro-test/artifacts/wallet_extension
+          ls -l ./obscuro-test/artifacts
 
       - run: echo "This job's status is ${{ job.status }}."
