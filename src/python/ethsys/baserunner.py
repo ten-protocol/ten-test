@@ -18,6 +18,8 @@ class EthereumRunnerPlugin():
         try:
             if mode == 'obscuro':
                 self.run_wallets(runner, 'testnet.obscu.ro')
+            elif mode == 'obscuro.dev':
+                self.run_wallets(runner, 'dev-testnet.obscu.ro')
             elif mode == 'obscuro.local':
                 self.run_wallets(runner, '127.0.0.1')
             elif mode == 'ganache':
@@ -43,9 +45,7 @@ class EthereumRunnerPlugin():
         runner.addCleanupFunction(lambda: self.stop_process(hprocess))
 
     def run_wallets(self, runner, host):
-        self.run_wallet(runner, host, Obscuro.ACCOUNT1_PORT)
-        self.run_wallet(runner, host, Obscuro.ACCOUNT2_PORT)
-        self.run_wallet(runner, host, Obscuro.ACCOUNT3_PORT)
+        self.run_wallet(runner, host, Obscuro.PORT)
 
     def run_wallet(self, runner, host, port):
         runner.log.info('Starting wallet extension on %s %d' % (host, port))

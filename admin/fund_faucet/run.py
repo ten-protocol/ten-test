@@ -32,7 +32,7 @@ class PySysTest(EthereumTest):
         # connect to the L2 network
         l2 = Obscuro
         deployment_pk = Properties().funded_deployment_account_pk(l2.PROPS_KEY)
-        web3_l2, deploy_account = l2.connect(deployment_pk, l2.HOST, l2.ACCOUNT1_PORT)
+        web3_l2, deploy_account = l2.connect(deployment_pk, l2.HOST, l2.PORT)
         with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
             jam_cntr_l2 = web3_l2.eth.contract(address=Properties().l2_jam_token_address(l2.PROPS_KEY), abi=json.load(f))
 

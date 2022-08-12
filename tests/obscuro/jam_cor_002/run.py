@@ -13,12 +13,9 @@ class PySysTest(EthereumTest):
         game_add = Properties().guessing_game_address(l2.PROPS_KEY)
         jam_add = Properties().l2_jam_token_address(l2.PROPS_KEY)
 
-        self.log.info('Game address is %s' % game_add)
-
-
         # get the connections for the deployment (faucet) and game user
-        _, depl_account = l2.connect(Properties().funded_deployment_account_pk(l2.PROPS_KEY), l2.HOST, l2.ACCOUNT1_PORT)
-        web3_user, game_user = l2.connect(Properties().gameuserpk(), l2.HOST, l2.ACCOUNT1_PORT)
+        _, depl_account = l2.connect(Properties().funded_deployment_account_pk(l2.PROPS_KEY), l2.HOST, l2.PORT)
+        web3_user, game_user = l2.connect(Properties().gameuserpk(), l2.HOST, l2.PORT)
         self.log.info('Game user account is %s' % game_user.address)
 
         self.log.info((web3_user.eth.get_code(game_add)))

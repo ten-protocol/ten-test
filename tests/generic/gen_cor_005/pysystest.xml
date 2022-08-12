@@ -6,7 +6,9 @@
         <purpose><![CDATA[]]>
             Uses three accounts; account1 deploys the OBX ERC20 contract and therefore owns all initial tokens.
             Account1 transfers some tokens to account2. Account1 then approves account2 for a certain amount of
-            tokens, and account2 then transfers from that approval amount to account3.
+            tokens, and account2 then transfers from that approval amount to account3. Account3 then sends all it's
+            tokens back to account1. In this way all three accounts are performing a transaction, and calling to get
+            their balances.
         </purpose>
     </description>
 
@@ -15,6 +17,7 @@
             <group></group>
         </groups>
         <modes inherit="true">
+            <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
             <mode>ropsten</mode>
             <mode>ganache</mode>

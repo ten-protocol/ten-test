@@ -1,0 +1,61 @@
+name: Test runner
+on: [push]
+jobs:
+  Run-Tests:
+    runs-on: ubuntu-20.04
+    steps:
+      - run: echo "Triggered by ${{ github.event_name }} event running on branch ${{ github.ref }} "
+
+      - name: Check out obscuro-test
+        uses: actions/checkout@v3
+        with:
+          path: ./obscuro-test
+
+      - name: Check out go-obscuro code
+        uses: actions/checkout@v3
+        with:
+          repository: obscuronet/go-obscuro
+          path: ./go-obscuro
+
+      - name: Build artifacts
+        run: |
+          cd ${{ github.workspace }}/go-obscuro/tools/walletextension/main
+          go build -o ${{ github.workspace }}/obscuro-test/artifacts/wallet_extension
+          ls -l ${{ github.workspace }}/obscuro-test/artifacts
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
+          sudo apt-get install -y software-properties-common
+          sudo add-apt-repository ppa:ethereum/ethereum
+          sudo apt update
+          sudo apt install -y solc
+          
+          sudo apt install -y python3-pip
+          sudo python3 -m pip install web3
+          sudo python3 -m pip install pysys==1.6.1
+          sudo python3 -m pip install py-solc-x
+
+      - name: Run tests
+        run: |
+          cd ${{ github.workspace }}/obscuro-test/tests/generic
+          /usr/local/bin/pysys.py run gen_cor_001:
+
+      - name: Upload wallet extension logs
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: runner-artifact
+          path: |
+            ${{ github.workspace }}/obscuro-test/.runner/*
+          retention-days: 2
+
+      - name: Upload testcase output
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: test-artifact
+          path: |
+            ${{ github.workspace }}/obscuro-test/**/Output
+          retention-days: 2
