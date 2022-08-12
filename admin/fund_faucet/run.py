@@ -24,10 +24,8 @@ class PySysTest(EthereumTest):
             jam_cntr_l1 = web3_l1.eth.contract(address=Properties().l1_jam_token_address(l1.PROPS_KEY), abi=json.load(f))
 
         deploy_balance_l1 = jam_cntr_l1.functions.balanceOf(deploy_account_l1.address).call()
-        bridge_balance_l1 = jam_cntr_l1.functions.balanceOf(bridge_address).call()
         self.log.info('L1 balances')
         self.log.info('  Deploy balance = %d ' % deploy_balance_l1)
-        self.log.info('  Bridge balance = %d ' % bridge_balance_l1)
 
         # connect to the L2 network
         l2 = Obscuro
@@ -37,10 +35,8 @@ class PySysTest(EthereumTest):
             jam_cntr_l2 = web3_l2.eth.contract(address=Properties().l2_jam_token_address(l2.PROPS_KEY), abi=json.load(f))
 
         deploy_balance_l2 = jam_cntr_l2.functions.balanceOf(deploy_account.address).call()
-        bridge_balance_l2 = jam_cntr_l2.functions.balanceOf(bridge_address).call()
         self.log.info('L2 balances')
         self.log.info('  Deploy balance = %d ' % deploy_balance_l2)
-        self.log.info('  Bridge balance = %d ' % bridge_balance_l2)
 
         if deploy_balance_l2 < self.THRESHOLD:
             amount = (self.AMOUNT - deploy_balance_l2)
@@ -50,19 +46,14 @@ class PySysTest(EthereumTest):
             l1.transact(self, web3_l1, jam_cntr_l1.functions.transfer(bridge_address, amount), deploy_account, 7200000)
 
             deploy_balance_l1_after = jam_cntr_l1.functions.balanceOf(deploy_account.address).call()
-            bridge_balance_l1_after = jam_cntr_l1.functions.balanceOf(bridge_address).call()
             self.log.info('L1 Balances after transfer')
             self.log.info('  Deploy Account balance = %d ' % deploy_balance_l1_after)
-            self.log.info('  Bridge Address balance = %d ' % bridge_balance_l1_after)
 
             time.sleep(30)
             deploy_balance_l2_after = jam_cntr_l2.functions.balanceOf(deploy_account.address).call()
-            bridge_balance_l2_after = jam_cntr_l2.functions.balanceOf(bridge_address).call()
             self.log.info('L2 Balances after transfer')
             self.log.info('  Deploy Account balance = %d ' % deploy_balance_l2_after)
-            self.log.info('  Bridge Address balance = %d ' % bridge_balance_l2_after)
 
-            self.assertTrue((bridge_balance_l1_after - bridge_balance_l1) == amount)
             self.assertTrue((deploy_balance_l2_after - deploy_balance_l2) == amount)
 
 

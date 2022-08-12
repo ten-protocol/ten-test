@@ -29,25 +29,17 @@ class PySysTest(EthereumTest):
             self.log.info('Running for address %s' % user_address)
 
             # balance before transaction
-            user_balance = jam_cntr.functions.balanceOf(user_address).call()
             deploy_balance = jam_cntr.functions.balanceOf(deploy_account.address).call()
             self.log.info('  L2 balances')
-            self.log.info('    User balance = %d ' % user_balance)
             self.log.info('    Deploy account balance = %d ' % deploy_balance)
 
             if self.DISPLAY: continue
 
             # transfer funds from the deployment address to the user account
-            if user_balance == 0:
-                self.log.info('User requests funds ... transferring %d' % self.AMOUNT)
-                l2.transact(self, web3_l2, jam_cntr.functions.transfer(user_address, self.AMOUNT), deploy_account, 7200000)
+            self.log.info('User requests funds ... transferring %d' % self.AMOUNT)
+            l2.transact(self, web3_l2, jam_cntr.functions.transfer(user_address, self.AMOUNT), deploy_account, 7200000)
 
-                # balance after transaction
-                user_balance = jam_cntr.functions.balanceOf(user_address).call()
-                deploy_balance = jam_cntr.functions.balanceOf(deploy_account.address).call()
-                self.log.info('  L2 balances')
-                self.log.info('    User balance = %d ' % user_balance)
-                self.log.info('    Deploy account balance = %d ' % deploy_balance)
-            else:
-                self.log.info('%s has funds so not transferring any more ' % user_address)
-            self.log.info('  ')
+            # balance after transaction
+            deploy_balance = jam_cntr.functions.balanceOf(deploy_account.address).call()
+            self.log.info('  L2 balances')
+            self.log.info('    Deploy account balance = %d ' % deploy_balance)
