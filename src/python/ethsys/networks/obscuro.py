@@ -30,9 +30,7 @@ class ObscuroL1Local(Geth):
 class Obscuro(Default):
     """The Obscuro wallet extension giving access to the underlying network."""
     HOST = '127.0.0.1'
-    ACCOUNT1_PORT = 3000
-    ACCOUNT2_PORT = 4000
-    ACCOUNT3_PORT = 5000
+    PORT = 3000
     PROPS_KEY = 'obscuro'
 
     @classmethod
@@ -48,15 +46,15 @@ class Obscuro(Default):
 
     @classmethod
     def connect_account1(cls):
-        return cls.connect(Properties().account1pk(), cls.HOST, cls.ACCOUNT1_PORT)
+        return cls.connect(Properties().account1pk(), cls.HOST, cls.PORT)
 
     @classmethod
     def connect_account2(cls):
-        return cls.connect(Properties().account2pk(), cls.HOST, cls.ACCOUNT2_PORT)
+        return cls.connect(Properties().account2pk(), cls.HOST, cls.PORT)
 
     @classmethod
     def connect_account3(cls):
-        return cls.connect(Properties().account3pk(), cls.HOST, cls.ACCOUNT3_PORT)
+        return cls.connect(Properties().account3pk(), cls.HOST, cls.PORT)
 
     @classmethod
     def wait_for_transaction(cls, test, web3, tx_hash):

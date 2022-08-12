@@ -55,3 +55,13 @@ class PySysTest(EthereumTest):
         self.assertTrue(contract.functions.balanceOf(account1.address).call() == 999700)
         self.assertTrue(contract.functions.balanceOf(account2.address).call() == 200)
         self.assertTrue(contract.functions.balanceOf(account3.address).call() == 100)
+
+        # account23 sends back to account1
+        network.transact(self, web3_2, contract.functions.transfer(account1.address, 100), account3, erc20.GAS)
+        self.log.info('Balances before transfer')
+        self.log.info('  Account1 balance = %d ' % contract.functions.balanceOf(account1.address).call())
+        self.log.info('  Account2 balance = %d ' % contract.functions.balanceOf(account2.address).call())
+        self.log.info('  Account3 balance = %d ' % contract.functions.balanceOf(account3.address).call())
+        self.assertTrue(contract.functions.balanceOf(account1.address).call() == 999800)
+        self.assertTrue(contract.functions.balanceOf(account2.address).call() == 200)
+        self.assertTrue(contract.functions.balanceOf(account3.address).call() == 0)
