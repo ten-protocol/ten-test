@@ -66,7 +66,6 @@ class Default:
         tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
 
         if tx_receipt.status == 1:
-            test.log.info('Transaction complete gasUsed=%d' % tx_receipt.gasUsed)
             test.log.info('Transaction receipt block hash %s' % tx_receipt.blockHash.hex())
         else:
             test.log.error('Transaction receipt failed')
