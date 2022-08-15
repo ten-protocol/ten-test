@@ -38,7 +38,6 @@ class Default:
 
     @classmethod
     def build_transaction(cls, test, web3, target, account, gas):
-        test.log.info('Nonce being used is %d' % web3.eth.get_transaction_count(account.address)  )
         build_tx = target.buildTransaction(
             {
                 'nonce': web3.eth.get_transaction_count(account.address),
