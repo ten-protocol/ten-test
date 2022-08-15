@@ -31,22 +31,22 @@ class PySysTest(EthereumTest):
         # transfer some tokens into the guessing account
         self.log.info('Transfer some tokens ')
         network.transact(self, web3_deploy, token_contract.functions.transfer(user_account.address, 200), deploy_account, erc20.GAS)
-        self.log.info('Game user balance = %d ' % token_contract.functions.balanceOf(user_account.address).call())
 
-        # setup for the user
+        # the user starts making guesses (first needs to approve the game to take tokens)
         token_contract_user = web3_user.eth.contract(address=token_contract_address, abi=erc20.abi)
         game_contract_user = web3_user.eth.contract(address=game_contract_address, abi=guesser.abi)
 
-        # the user starts making guesses (first needs to approve the game to take tokens)
         for i in range(0,5):
             self.log.info('Guessing number as %d' % i)
             network.transact(self, web3_user, token_contract_user.functions.approve(game_contract_address, 1), user_account, guesser.GAS)
             network.transact(self, web3_user, game_contract_user.functions.attempt(i), user_account, guesser.GAS)
 
+            self.log.info('Checking balances ...')
             prize = game_contract_user.functions.getBalance().call()
             if prize == 0:
                 self.log.info('Game balance is zero so user guess the right number')
-                self.log.info('User balance is %d' % token_contract_user.functions.balanceOf(user_account.address).call())
+                self.log.info('User balance is %d' % token_contract_user.functions.balanceOf(user_account.address).
+                              call({'from': user_account.address}))
                 break
             else:
-                self.log.info('Game balance is %d ' % game_contract.functions.getBalance().call())
+                self.log.info('Game balance is %d ' % game_contract_user.functions.getBalance().call())
