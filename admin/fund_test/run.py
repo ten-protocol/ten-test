@@ -26,12 +26,15 @@ class PySysTest(EthereumTest):
         # run for users
         for user in self.USERS:
             user_address = pk_to_account(user).address
+            _, _ = l2.connect(user, l2.HOST, l2.PORT)
             self.log.info('Running for address %s' % user_address)
 
             # balance before transaction
             deploy_balance = jam_cntr.functions.balanceOf(deploy_account.address).call()
+            user_balance = jam_cntr.functions.balanceOf(user_address).call({'from':user_address})
             self.log.info('  L2 balances')
             self.log.info('    Deploy account balance = %d ' % deploy_balance)
+            self.log.info('    User account balance = %d ' % user_balance)
 
             # transfer funds from the deployment address to the user account
             self.log.info('User requests funds ... transferring %d' % self.AMOUNT)
@@ -39,5 +42,7 @@ class PySysTest(EthereumTest):
 
             # balance after transaction
             deploy_balance = jam_cntr.functions.balanceOf(deploy_account.address).call()
+            user_balance = jam_cntr.functions.balanceOf(user_address).call({'from':user_address})
             self.log.info('  L2 balances')
             self.log.info('    Deploy account balance = %d ' % deploy_balance)
+            self.log.info('    User account balance = %d ' % user_balance)
