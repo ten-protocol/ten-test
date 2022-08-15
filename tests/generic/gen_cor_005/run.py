@@ -25,7 +25,7 @@ class PySysTest(EthereumTest):
         contract = web3_1.eth.contract(address=tx_receipt.contractAddress, abi=erc20.abi)
 
         # check initial allocations
-        self.log.info('Balances before transfer')
+        self.log.info('Balances at initial allocation')
         self.log.info('  Account1 balance = %d ' % contract.functions.balanceOf(account1.address).call())
         self.log.info('  Account2 balance = %d ' % contract.functions.balanceOf(account2.address).call())
         self.log.info('  Account3 balance = %d ' % contract.functions.balanceOf(account3.address).call())
@@ -35,7 +35,7 @@ class PySysTest(EthereumTest):
 
         # transfer from account1 into account2
         network.transact(self, web3_1, contract.functions.transfer(account2.address, 200), account1, erc20.GAS)
-        self.log.info('Balances after transfer')
+        self.log.info('Balances after transfer from account 1 to account 2')
         self.log.info('  Account1 balance = %d ' % contract.functions.balanceOf(account1.address).call())
         self.log.info('  Account2 balance = %d ' % contract.functions.balanceOf(account2.address).call())
         self.log.info('  Account3 balance = %d ' % contract.functions.balanceOf(account3.address).call())
@@ -48,7 +48,7 @@ class PySysTest(EthereumTest):
 
         # account2 withdraws from account1 into account3
         network.transact(self, web3_2, contract.functions.transferFrom(account1.address, account3.address, 100), account2, erc20.GAS)
-        self.log.info('Balances before transfer')
+        self.log.info('Balances after approval and transfer;')
         self.log.info('  Account1 balance = %d ' % contract.functions.balanceOf(account1.address).call())
         self.log.info('  Account2 balance = %d ' % contract.functions.balanceOf(account2.address).call())
         self.log.info('  Account3 balance = %d ' % contract.functions.balanceOf(account3.address).call())
@@ -56,9 +56,9 @@ class PySysTest(EthereumTest):
         self.assertTrue(contract.functions.balanceOf(account2.address).call() == 200)
         self.assertTrue(contract.functions.balanceOf(account3.address).call() == 100)
 
-        # account23 sends back to account1
-        network.transact(self, web3_2, contract.functions.transfer(account1.address, 100), account3, erc20.GAS)
-        self.log.info('Balances before transfer')
+        # account3 sends back to account1
+        network.transact(self, web3_3, contract.functions.transfer(account1.address, 100), account3, erc20.GAS)
+        self.log.info('Balances after transfer from account 3 to account 1')
         self.log.info('  Account1 balance = %d ' % contract.functions.balanceOf(account1.address).call())
         self.log.info('  Account2 balance = %d ' % contract.functions.balanceOf(account2.address).call())
         self.log.info('  Account3 balance = %d ' % contract.functions.balanceOf(account3.address).call())
