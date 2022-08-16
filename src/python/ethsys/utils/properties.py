@@ -33,6 +33,9 @@ class Properties:
         return self.get('all', 'GameUserPK')
 
     # obscuro specific properties
+    def faucet_pk(self, key):
+        return self.get(key, 'FaucetPK')
+
     def funded_deployment_account_pk(self, key):
         return self.get(key, 'FundedDeploymentAccountPK')
 
