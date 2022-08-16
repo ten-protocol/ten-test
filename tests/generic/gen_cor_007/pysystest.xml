@@ -4,11 +4,9 @@
     <description>
         <title>Error: assert, require and assert</title>
         <purpose><![CDATA[]]>
-            Deploy a contract and check for error reporting on assert, require and assert.
+            Deploy a contract and check for error reporting on revert, require and assert.
         </purpose>
     </description>
-
-    <skipped reason="Not implemented"/>
 
     <classification>
         <groups inherit="true">

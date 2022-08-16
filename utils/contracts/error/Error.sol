@@ -2,30 +2,21 @@
 pragma solidity ^0.8.0;
 
 contract Error {
-    address public owner;
-    string public key;
+    string public key = "foo";
 
-    constructor(string _key) {
-        owner = msg.sender;
+    function set(string memory _key) public {
         key = _key;
     }
 
-    function requirefn(string value) public view {
-        require(value == key, "Value needs to equal key");
+    function force_require() public view {
+        require(false, "Value needs to equal key");
     }
 
-    function revertfn(string value) public view {
-        if (value != key) {
-            revert("Supplied value does not equal the key");
-        }
+    function force_revert(string memory value) public view {
+        revert("Supplied value does not equal the key");
     }
 
-    function assertfn(string value) public view {
-        assert(value == key);
-    }
-
-    function destroy() public {
-        require(msg.sender == owner, "You are not the owner");
-        selfdestruct(payable(address(this)));
+    function force_assert(string memory value) public view{
+        assert(false);
     }
 }

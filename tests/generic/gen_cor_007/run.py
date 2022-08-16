@@ -1,3 +1,4 @@
+from pysys.constants import PASSED
 from ethsys.basetest import EthereumTest
 from ethsys.contracts.error.error import Error
 from ethsys.networks.factory import NetworkFactory
@@ -12,5 +13,7 @@ class PySysTest(EthereumTest):
 
         error = Error(self, web3, 'foo')
         error.deploy(network, account)
+
+        self.addOutcome(PASSED)
 
 
