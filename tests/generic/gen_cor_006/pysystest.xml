@@ -2,12 +2,10 @@
 <pysystest type="auto">
 
     <description>
-        <title>Guesser: state changing, deploy contract and guess the value</title>
-        <purpose><![CDATA[
-        Deploys a guessing game which requires tokens in order to play. A game user must first approve the owner of the
-        game to be able to withdraw tokens from its account via an ERC20 token. Once approved the user can make a guess
-        to the hidden number.
-]]>
+        <title>Storage: deploy contract and set value (includes events)</title>
+        <purpose><![CDATA[]]>
+Deploy the storage contract, call to get the current value, store a new value as a transaction, extract the
+value from the transaction log, and call again.
         </purpose>
     </description>
 

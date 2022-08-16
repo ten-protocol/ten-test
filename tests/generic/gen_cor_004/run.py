@@ -1,26 +1,41 @@
 from ethsys.basetest import EthereumTest
-from ethsys.contracts.storage.storage import Storage
+from ethsys.utils.properties import Properties
+from ethsys.utils.keys import pk_to_account
+from ethsys.contracts.erc20.obx import OBXCoin
+from ethsys.contracts.guesser.guesser_token import GuesserToken
 from ethsys.networks.factory import NetworkFactory
 
 
 class PySysTest(EthereumTest):
 
     def execute(self):
-        # deployment of contract
+        # deployment of contracts
         network = NetworkFactory.get_network(self)
-        web3, account = network.connect_account1()
+        web3_deploy, deploy_account = network.connect_account1()
 
-        storage = Storage(self, web3, 100)
-        storage.deploy(network, account)
+        erc20 = OBXCoin(self, web3_deploy)
+        erc20.deploy(network, deploy_account)
+        erc20.transfer(network, pk_to_account(Properties().account2pk()).address, 200)
 
-        # retrieve via a call
-        self.log.info('Call shows value %d' % storage.contract.functions.retrieve().call())
+        guesser = GuesserToken(self, web3_deploy, 5, erc20.contract_address)
+        guesser.deploy(network, deploy_account)
 
-        # set the value via a transaction, compare to call and transaction log
-        tx_receipt = network.transact(self, web3, storage.contract.functions.store(200), account, storage.GAS)
-        self.log.info('Call shows value %d' % storage.contract.functions.retrieve().call())
+        # the user starts making guesses
+        web3, account = network.connect_account2()
+        token = web3.eth.contract(address=erc20.contract_address, abi=erc20.abi)
+        game = web3.eth.contract(address=guesser.contract_address, abi=guesser.abi)
 
-        tx_log = storage.contract.events.Stored().processReceipt(tx_receipt)[0]
-        args_value = tx_log['args']['value']
-        self.log.info('Transaction log shows value %d' % args_value)
-        self.assertTrue(args_value == 200)
+        for i in range(0,5):
+            self.log.info('Guessing number as %d' % i)
+            network.transact(self, web3, token.functions.approve(guesser.contract_address, 1), account, guesser.GAS)
+            network.transact(self, web3, game.functions.attempt(i), account, guesser.GAS)
+
+            self.log.info('Checking balances ...')
+            prize = game.functions.getBalance().call()
+            if prize == 0:
+                self.log.info('Game balance is zero so user guess the right number')
+                self.log.info('User balance is %d' % token.functions.balanceOf(account.address).
+                              call({'from': account.address}))
+                break
+            else:
+                self.log.info('Game balance is %d ' % game.functions.getBalance().call())
