@@ -1,3 +1,4 @@
+from pysys.constants import PASSED
 from ethsys.basetest import EthereumTest
 from ethsys.utils.properties import Properties
 from ethsys.utils.keys import pk_to_account
@@ -36,6 +37,7 @@ class PySysTest(EthereumTest):
                 self.log.info('Game balance is zero so user guess the right number')
                 self.log.info('User balance is %d' % token.functions.balanceOf(account.address).
                               call({'from': account.address}))
+                self.addOutcome(PASSED)
                 break
             else:
                 self.log.info('Game balance is %d ' % game.functions.getBalance().call())

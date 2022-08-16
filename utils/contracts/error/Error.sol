@@ -5,22 +5,22 @@ contract Error {
     address public owner;
     string public key;
 
-    constructor(string key) {
+    constructor(string _key) {
         owner = msg.sender;
-        key = key;
+        key = _key;
     }
 
-    function require(string value) public view {
+    function requirefn(string value) public view {
         require(value == key, "Value needs to equal key");
     }
 
-    function revert(string value) public view {
+    function revertfn(string value) public view {
         if (value != key) {
             revert("Supplied value does not equal the key");
         }
     }
 
-    function assert(string value) public view {
+    function assertfn(string value) public view {
         assert(value == key);
     }
 
