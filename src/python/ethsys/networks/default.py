@@ -1,6 +1,7 @@
 from web3 import Web3
 from pysys.constants import *
 from ethsys.utils.properties import Properties
+from ethsys.utils.keys import pk_to_account
 
 
 class Default:
@@ -38,7 +39,6 @@ class Default:
 
     @classmethod
     def build_transaction(cls, test, web3, target, account, gas):
-        test.log.info('Nonce being used is %d' % web3.eth.get_transaction_count(account.address)  )
         build_tx = target.buildTransaction(
             {
                 'nonce': web3.eth.get_transaction_count(account.address),
@@ -66,7 +66,6 @@ class Default:
         tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
 
         if tx_receipt.status == 1:
-            test.log.info('Transaction complete gasUsed=%d' % tx_receipt.gasUsed)
             test.log.info('Transaction receipt block hash %s' % tx_receipt.blockHash.hex())
         else:
             test.log.error('Transaction receipt failed')

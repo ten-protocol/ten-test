@@ -2,10 +2,10 @@
 <pysystest type="auto">
 
     <description>
-        <title>ERC20 OBX transfer from deployment owner to bridge account, then across the bridge (L1 to L2)</title>
-        <purpose><![CDATA[]]>
-            Checks that the deployment owner (pre-funded) can transfer tokens to the bridge account on the L1 OBX
-            token, and that this is then reflected across into the L2 OBX token. 
+        <title>Play the number guessing game as a specific game user</title>
+        <purpose><![CDATA[
+        Check that it is possible to play the deployed number guessing game as a dedicated user.
+]]>
         </purpose>
     </description>
 
@@ -14,6 +14,7 @@
             <group></group>
         </groups>
         <modes inherit="true">
+            <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
         </modes>
     </classification>

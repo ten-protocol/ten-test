@@ -5,7 +5,7 @@ from ethsys.utils.solidity import Solidity
 
 
 class Guesser:
-    GAS = 720000
+    GAS = 4*720000
 
     def __init__(self, test, web3, lower=0, upper=100):
         """Create an instance of the guesser contract, compile and construct a web3 instance
@@ -20,6 +20,8 @@ class Guesser:
         self.bytecode = None
         self.abi = None
         self.contract = None
+        self.contract_address = None
+        self.account = None
         self.test = test
         self.web3 = web3
         self.lower = lower
@@ -37,7 +39,14 @@ class Guesser:
 
         self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor()
 
-    def guess(self, contract, max_guesses=100):
+    def deploy(self, network, account):
+        """Deploy the contract using a given account."""
+        self.account = account
+        tx_receipt = network.transact(self.test, self.web3, self.contract, account, self.GAS)
+        self.contract_address = tx_receipt.contractAddress
+        self.contract = self.web3.eth.contract(address=self.contract_address, abi=self.abi)
+
+    def guess(self, max_guesses=100):
         """Perform a guessing game to get the secret number.
 
         :param contract:
@@ -55,7 +64,7 @@ class Guesser:
                 return None
 
             guess = random.randrange(lower, upper)
-            ret = contract.functions.guess(guess).call()
+            ret = self.contract.functions.guess(guess).call()
             if ret == 1:
                 self.test.log.info("Guess is %d, need to go higher" % guess)
                 lower = guess+1

@@ -3,14 +3,14 @@ from pysys.constants import *
 from ethsys.utils.solidity import Solidity
 
 
-class Storage:
+class Error:
     GAS = 720000
 
-    def __init__(self, test, web3, initial):
+    def __init__(self, test, web3, key):
         """Create an instance of the storage contract, compile and construct a web3 instance."""
         self.test = test
         self.web3 = web3
-        self.initial = initial
+        self.key = key
         self.bytecode = None
         self.abi = None
         self.contract = None
@@ -21,14 +21,14 @@ class Storage:
 
     def construct(self):
         """Compile and construct an instance. """
-        file = os.path.join(PROJECT.root, 'utils', 'contracts', 'storage', 'Storage.sol')
+        file = os.path.join(PROJECT.root, 'utils', 'contracts', 'error', 'Error.sol')
         with open(file, 'r') as fp:
             compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'], solc_binary=Solidity.get_compiler())
             contract_id, contract_interface = compiled_sol.popitem()
             self.bytecode = contract_interface['bin']
             self.abi = contract_interface['abi']
 
-        self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor(self.initial)
+        self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor(self.key)
 
     def deploy(self, network, account):
         """Deploy the contract using a given account."""

@@ -1,4 +1,4 @@
-import os
+import os, time, shutil
 from pysys.constants import PROJECT, BACKGROUND
 from pysys.exceptions import AbortExecution
 from ethsys.networks.ganache import Ganache
@@ -13,7 +13,8 @@ class EthereumRunnerPlugin():
         runner.log.info('Runner is executing in mode %s' % mode)
 
         self.output = os.path.join(PROJECT.root, '.runner')
-        if not os.path.exists(self.output ): os.makedirs(self.output)
+        if os.path.exists(self.output ): shutil.rmtree(self.output)
+        os.makedirs(self.output)
 
         try:
             if mode == 'obscuro':
@@ -45,7 +46,10 @@ class EthereumRunnerPlugin():
         runner.addCleanupFunction(lambda: self.stop_process(hprocess))
 
     def run_wallets(self, runner, host):
-        self.run_wallet(runner, host, Obscuro.PORT)
+        self.run_wallet(runner, host, Obscuro.ACCOUNT1_PORT)
+        self.run_wallet(runner, host, Obscuro.ACCOUNT2_PORT)
+        self.run_wallet(runner, host, Obscuro.ACCOUNT3_PORT)
+        time.sleep(1)
 
     def run_wallet(self, runner, host, port):
         runner.log.info('Starting wallet extension on %s %d' % (host, port))

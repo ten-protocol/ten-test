@@ -1,19 +1,19 @@
 from solcx import compile_source
 from pysys.constants import *
 from ethsys.utils.solidity import Solidity
+from ethsys.contracts.guesser.guesser import Guesser
 
 
-class Storage:
-    GAS = 720000
+class GuesserToken(Guesser):
 
-    def __init__(self, test, web3, initial):
-        """Create an instance of the storage contract, compile and construct a web3 instance."""
+    def __init__(self, test, web3, size, token_address):
+        """Create an instance of the ERC20 contract, compile and construct a web3 instance. """
         self.test = test
         self.web3 = web3
-        self.initial = initial
+        self.size = size
+        self.token_address = token_address
         self.bytecode = None
         self.abi = None
-        self.contract = None
         self.contract = None
         self.contract_address = None
         self.account = None
@@ -21,14 +21,13 @@ class Storage:
 
     def construct(self):
         """Compile and construct an instance. """
-        file = os.path.join(PROJECT.root, 'utils', 'contracts', 'storage', 'Storage.sol')
+        file = os.path.join(PROJECT.root, 'utils', 'contracts', 'guesser', 'Guesser_token.sol')
         with open(file, 'r') as fp:
             compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'], solc_binary=Solidity.get_compiler())
-            contract_id, contract_interface = compiled_sol.popitem()
+            contract_interface = compiled_sol['<stdin>:Guess']
             self.bytecode = contract_interface['bin']
             self.abi = contract_interface['abi']
-
-        self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor(self.initial)
+        self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor(self.size, self.token_address)
 
     def deploy(self, network, account):
         """Deploy the contract using a given account."""

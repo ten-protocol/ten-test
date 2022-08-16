@@ -2,11 +2,9 @@
 <pysystest type="auto">
 
     <description>
-        <title>Allocate OBX game funds to registered users</title>
-        <purpose><![CDATA[
-        The pre-funded deployment account which has tokens allocated to it in the L2 will iterate through all user
-        accounts and fund them.
-]]>
+        <title>Error: assert, require and assert</title>
+        <purpose><![CDATA[]]>
+            Deploy a contract and check for error reporting on assert, require and assert.
         </purpose>
     </description>
 
@@ -17,6 +15,8 @@
         <modes inherit="true">
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
+            <mode>ropsten</mode>
+            <mode>ganache</mode>
         </modes>
     </classification>
 

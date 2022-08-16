@@ -2,9 +2,10 @@
 <pysystest type="auto">
 
     <description>
-        <title>Play the number guessing game as a specific game user</title>
+        <title>Allocate OBX game funds to test users</title>
         <purpose><![CDATA[
-        Check that it is possible to play the deployed number guessing game as a dedicated user.
+        The pre-funded deployment account which has tokens allocated to it in the L2 will iterate through all test user
+        accounts and fund them.
 ]]>
         </purpose>
     </description>
@@ -14,6 +15,7 @@
             <group></group>
         </groups>
         <modes inherit="true">
+            <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
         </modes>
     </classification>
