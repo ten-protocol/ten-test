@@ -15,6 +15,7 @@ class PySysTest(EthereumTest):
     ]
 
     AMOUNT = 5000
+    DISPLAY = False
 
     def execute(self):
         # connect to the L2 network
@@ -36,13 +37,16 @@ class PySysTest(EthereumTest):
             self.log.info('    Deploy account balance = %d ' % deploy_balance)
             self.log.info('    User account balance = %d ' % user_balance)
 
-            # transfer funds from the deployment address to the user account
-            self.log.info('User requests funds ... transferring %d' % self.AMOUNT)
-            l2.transact(self, web3_l2, jam_cntr.functions.transfer(user_address, self.AMOUNT), deploy_account, 7200000)
+            if not self.DISPLAY and user_balance < self.AMOUNT:
+                amount = self.AMOUNT - user_balance
 
-            # balance after transaction
-            deploy_balance = jam_cntr.functions.balanceOf(deploy_account.address).call()
-            user_balance = jam_cntr.functions.balanceOf(user_address).call({'from':user_address})
-            self.log.info('  L2 balances')
-            self.log.info('    Deploy account balance = %d ' % deploy_balance)
-            self.log.info('    User account balance = %d ' % user_balance)
+                # transfer funds from the deployment address to the user account
+                self.log.info('User requests funds ... transferring %d' % amount)
+                l2.transact(self, web3_l2, jam_cntr.functions.transfer(user_address, amount), deploy_account, 7200000)
+
+                # balance after transaction
+                deploy_balance = jam_cntr.functions.balanceOf(deploy_account.address).call()
+                user_balance = jam_cntr.functions.balanceOf(user_address).call({'from':user_address})
+                self.log.info('  L2 balances')
+                self.log.info('    Deploy account balance = %d ' % deploy_balance)
+                self.log.info('    User account balance = %d ' % user_balance)
