@@ -5,7 +5,7 @@ This directory contains utilities to perform admin operations on the Obscuro Tes
 - allocate funds into the layer 2 into the OBX ERC20 contract for use by the number guessing game
 - transfer funds into a user who wishes to play the number guessing game
 - transfer funds into test users for running end to end tests
-- 
+
 For setup notes, see the top level [readme](../README.md)
 
 Funding the faucet
