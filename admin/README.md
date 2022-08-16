@@ -4,7 +4,8 @@ This directory contains utilities to perform admin operations on the Obscuro Tes
 
 - allocate funds into the layer 2 into the OBX ERC20 contract for use by the number guessing game
 - transfer funds into a user who wishes to play the number guessing game
-
+- transfer funds into test users for running end to end tests
+- 
 For setup notes, see the top level [readme](../README.md)
 
 Funding the faucet
@@ -19,28 +20,25 @@ pysys.py run fund_faucet
 
 Funding users
 -------------
-`fund_user` provides the ability to add in new user accounts, and for any accounts with a zero balance to increase 
-their allocation to 50 tokens. To print out the current fund allocations use;
-
-```bash
-pysys.py run -XDISPLAY fund_user
-```
-
-To transfer 50 tokens to any user whose current allocation is zero use;
+`fund_user` provides the ability to add in new user accounts, and for them to be allocated a token amount (current 
+set to 50 tokens). To transfer 50 tokens to an account address use;
 
 ```bash
 pysys.py run fund_user
 ```
 
-At the moment users managed are defined in the `fund_user/run.py` script, as a dictionary of logical user name to 
-account address. To add a new user edit this file to add in the details to the USERS dictionary; 
+At the moment accounts managed are defined in the `fund_user/run.py` script, as a list of account addresses. Due to 
+privacy built into the ERC20 contract, it is not possible for an admin to see token balances for an account they do not 
+hold a private key to. As such any account address in the list will be allocated 50 tokens on running. To add a new 
+account address edit this file to add in the address to the USERS list and comment out any that should not have an 
+allocation performed; 
 
 ```python
-    USERS = {
-        'USER1':'0x686Ad719004590e98F182feA3516d443780C64a1',
-        'USER2':'0x85E1Cc949Bca27912e3e951ad1F68afD1cc4aB15',
-        'USER3':'0x7719A2b2BeC6a98508975C168A565FffCF9Dc266'
-    }
+    USERS = [
+        #'0x686Ad719004590e98F182feA3516d443780C64a1',
+        #'0x85E1Cc949Bca27912e3e951ad1F68afD1cc4aB15',
+        '0x61f991693aee28dbF4B7CBBB0ACf53ea92F219a3'
+    ]
     AMOUNT = 50
 ```
 
