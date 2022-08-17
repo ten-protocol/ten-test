@@ -11,7 +11,7 @@ class PySysTest(EthereumTest):
 
     def execute(self):
         # deployment of contracts
-        network = NetworkFactory.get_network(self)
+        network = NetworkFactory.get_network(self.env)
         web3_deploy, deploy_account = network.connect_account1()
 
         erc20 = OBXCoin(self, web3_deploy)

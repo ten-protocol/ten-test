@@ -12,9 +12,9 @@ class PySysTest(EthereumTest):
 
     def execute(self):
         # connect to the L1 network
-        l1 = NetworkFactory.get_l1_network(self)
-        bridge_address = Properties().management_bridge_address(l1.PROPS_KEY)
-        deployment_pk = Properties().funded_deployment_account_pk(l1.PROPS_KEY)
+        l1 = NetworkFactory.get_l1_network(self.env)
+        bridge_address = Properties().management_bridge_address(self.env)
+        deployment_pk = Properties().funded_deployment_account_pk(self.env)
         web3_l1, deploy_account_l1 = l1.connect(deployment_pk, l1.HOST, l1.PORT)
         self.log.info('L1 connection details')
         self.log.info('  Bridge address = %s' % bridge_address)
@@ -22,7 +22,7 @@ class PySysTest(EthereumTest):
         self.log.info('  Deployment ETH  = %d' % l1.get_balance(web3_l1, deploy_account_l1.address))
 
         with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
-            jam_cntr_l1 = web3_l1.eth.contract(address=Properties().l1_jam_token_address(l1.PROPS_KEY), abi=json.load(f))
+            jam_cntr_l1 = web3_l1.eth.contract(address=Properties().l1_jam_token_address(self.env), abi=json.load(f))
 
         deploy_balance_l1 = jam_cntr_l1.functions.balanceOf(deploy_account_l1.address).call()
         self.log.info('L1 balances')
@@ -30,10 +30,10 @@ class PySysTest(EthereumTest):
 
         # connect to the L2 network
         l2 = Obscuro
-        deployment_pk = Properties().funded_deployment_account_pk(l2.PROPS_KEY)
+        deployment_pk = Properties().funded_deployment_account_pk(self.env)
         web3_l2, deploy_account = l2.connect(deployment_pk, l2.HOST, l2.PORT)
         with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
-            jam_cntr_l2 = web3_l2.eth.contract(address=Properties().l2_jam_token_address(l2.PROPS_KEY), abi=json.load(f))
+            jam_cntr_l2 = web3_l2.eth.contract(address=Properties().l2_jam_token_address(self.env), abi=json.load(f))
 
         deploy_balance_l2 = jam_cntr_l2.functions.balanceOf(deploy_account.address).call()
         self.log.info('L2 balances')

@@ -8,7 +8,7 @@ class PySysTest(EthereumTest):
 
     def execute(self):
         # deployment of contract
-        network = NetworkFactory.get_network(self)
+        network = NetworkFactory.get_network(self.env)
         web3, account = network.connect_account1()
 
         error = Error(self, web3, 'foo')

@@ -20,10 +20,10 @@ class PySysTest(EthereumTest):
 
     def execute(self):
         # connect to the L2 network
-        l2 = Obscuro
-        web3_l2, deploy_account = l2.connect(Properties().funded_deployment_account_pk(l2.PROPS_KEY), l2.HOST, l2.PORT)
+        network = Obscuro
+        web3, deploy_account = network.connect(Properties().funded_deployment_account_pk(self.env), network.HOST, network.PORT)
         with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
-            jam_cntr = web3_l2.eth.contract(address=Properties().l2_jam_token_address(l2.PROPS_KEY), abi=json.load(f))
+            jam_cntr = web3.eth.contract(address=Properties().l2_jam_token_address(self.env), abi=json.load(f))
 
         # run for users
         for user_address in self.USERS:
@@ -36,7 +36,7 @@ class PySysTest(EthereumTest):
 
             # transfer funds from the deployment address to the user account
             self.log.info('User requests funds ... transferring %d' % self.AMOUNT)
-            l2.transact(self, web3_l2, jam_cntr.functions.transfer(user_address, self.AMOUNT), deploy_account, 7200000)
+            network.transact(self, web3, jam_cntr.functions.transfer(user_address, self.AMOUNT), deploy_account, 7200000)
 
             # balance after transaction
             deploy_balance = jam_cntr.functions.balanceOf(deploy_account.address).call()

@@ -10,8 +10,8 @@ class PySysTest(EthereumTest):
     def execute(self):
         # get the game address and the jam token address from the properties
         network = Obscuro
-        game_address = Properties().guessing_game_address(network.PROPS_KEY)
-        jam_address = Properties().l2_jam_token_address(network.PROPS_KEY)
+        game_address = Properties().guessing_game_address(self.env)
+        jam_address = Properties().l2_jam_token_address(self.env)
 
         # get the connections for the game user
         web3, account = network.connect(Properties().gameuserpk(), network.HOST, network.PORT)

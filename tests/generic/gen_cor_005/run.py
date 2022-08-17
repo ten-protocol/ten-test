@@ -7,7 +7,7 @@ class PySysTest(EthereumTest):
 
     def execute(self):
         # deployment of contract
-        network = NetworkFactory.get_network(self)
+        network = NetworkFactory.get_network(self.env)
         web3_3, account3 = network.connect_account3()
         web3_2, account2 = network.connect_account2()
         web3_1, account1 = network.connect_account1()
