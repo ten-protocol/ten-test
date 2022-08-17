@@ -17,6 +17,16 @@ class ObscuroL1(Geth):
         return cls.connect(Properties().funded_deployment_account_pk(cls.PROPS_KEY), cls.HOST, cls.PORT)
 
 
+class ObscuroL1Dev(Geth):
+    HOST = 'dev-testnet-gethnetwork.uksouth.azurecontainer.io'
+    PORT = 8025
+    PROPS_KEY = 'obscuro.dev'
+
+    @classmethod
+    def connect_account1(cls):
+        return cls.connect(Properties().funded_deployment_account_pk(cls.PROPS_KEY), cls.HOST, cls.PORT)
+
+
 class ObscuroL1Local(Geth):
     HOST = '127.0.0.1'
     PORT = 8025

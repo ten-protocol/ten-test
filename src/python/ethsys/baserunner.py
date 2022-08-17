@@ -10,7 +10,7 @@ class EthereumRunnerPlugin():
 
     def setup(self, runner):
         mode = 'obscuro' if runner.mode is None else runner.mode
-        runner.log.info('Runner is executing in mode %s' % mode)
+        runner.log.info('Runner is executing against environment %s' % mode)
 
         self.output = os.path.join(PROJECT.root, '.runner')
         if os.path.exists(self.output ): shutil.rmtree(self.output)

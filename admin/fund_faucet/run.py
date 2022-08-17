@@ -2,7 +2,8 @@ import json, os, time
 from pysys.constants import PROJECT
 from ethsys.basetest import EthereumTest
 from ethsys.utils.properties import Properties
-from ethsys.networks.obscuro import Obscuro, ObscuroL1
+from ethsys.networks.factory import NetworkFactory
+from ethsys.networks.obscuro import Obscuro
 
 
 class PySysTest(EthereumTest):
@@ -11,7 +12,7 @@ class PySysTest(EthereumTest):
 
     def execute(self):
         # connect to the L1 network
-        l1 = ObscuroL1
+        l1 = NetworkFactory.get_l1_network(self)
         bridge_address = Properties().management_bridge_address(l1.PROPS_KEY)
         deployment_pk = Properties().funded_deployment_account_pk(l1.PROPS_KEY)
         web3_l1, deploy_account_l1 = l1.connect(deployment_pk, l1.HOST, l1.PORT)
