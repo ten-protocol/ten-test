@@ -9,14 +9,14 @@ contract Error {
     }
 
     function force_require() public view {
-        require(false, "Value needs to equal key");
+        require(false, "Forced require");
     }
 
-    function force_revert(string memory value) public view {
-        revert("Supplied value does not equal the key");
+    function force_revert() public view {
+        revert("Forced revert");
     }
 
-    function force_assert(string memory value) public view{
+    function force_assert() public view{
         assert(false);
     }
 }
