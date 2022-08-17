@@ -1,11 +1,19 @@
-import pysys
-from pysys.constants import *
-from pysys.basetest import BaseTest
+from pysys.constants import PASSED
+from ethsys.basetest import EthereumTest
+from ethsys.contracts.error.error import Error
+from ethsys.networks.factory import NetworkFactory
 
-class PySysTest(BaseTest):
-	def execute(self):
-		pass
 
-	def validate(self):
-		pass
-	
+class PySysTest(EthereumTest):
+
+    def execute(self):
+        # deployment of contract
+        network = NetworkFactory.get_network(self)
+        web3, account = network.connect_account1()
+
+        error = Error(self, web3, 'foo')
+        error.deploy(network, account)
+
+        self.addOutcome(PASSED)
+
+
