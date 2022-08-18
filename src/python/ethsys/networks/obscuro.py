@@ -58,7 +58,7 @@ class Obscuro(Default):
         start = time.time()
         tx_receipt = None
         while tx_receipt is None:
-            if (time.time() - start) > 120:
+            if (time.time() - start) > 180:
                 test.log.error('Timed out waiting for transaction receipt ... aborting')
                 test.addOutcome(TIMEDOUT, abortOnError=TRUE)
 
