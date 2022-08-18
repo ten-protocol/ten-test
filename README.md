@@ -1,12 +1,12 @@
 Obscuro Test Framework (multiple networks)
 ------------------------------------------
-Project repo for building and running solidity smart contracts on Ethereum against a variety of networks e.g. 
-[ganache](https://trufflesuite.com/ganache/), [ropsten via infura](https://infura.io/), 
-[geth](https://geth.ethereum.org/docs/getting-started), and  [obscuro](https://obscu.ro/). The repo uses the 
+Project repo for running end to end system tests against a variety of networks, with [obscuro](https://obscu.ro/) being 
+the primary network under test. Other networks supported include [ganache](https://trufflesuite.com/ganache/), 
+[ropsten via infura](https://infura.io/), and [geth](https://geth.ethereum.org/docs/getting-started). The repo uses the 
 [pysys](https://pysys-test.github.io/pysys-test/) test framework to manage all tests and their execution. All tests are 
 fully system level using [web3.py](https://web3py.readthedocs.io/en/stable/) to interact with the networks which are 
-managed outside the scope of the tests. Note the project is currently under continuous active development and further 
-information on running the tests will be added to this readme over time. 
+managed outside the scope of the tests (with the exception of ganache which can be started locally). Note the project is 
+currently under active development and further information on running the tests will be added to this readme over time. 
 
 
 Repository Structure
@@ -35,8 +35,9 @@ project. As this file could contain sensitive data it should never be committed 
 [.gitignore](./.gitignore) should prevent this). Properties will first be looked for in a `.username.properties` should
 it exist, and if not will fall back to the default properties. 
 
-Setup
------
+
+Quickstart Setup and Run
+------------------------
 The easiest way to set up a host to run the tests is to create a docker container with all dependencies pre-installed. 
 The repository should be cloned into the same parent directory as [go-obscuro](https://github.com/obscuronet/go-obscuro)
 as running the tests will use the wallet_extension built from the working copy of the go-obscuro repository. To build 
@@ -52,13 +53,10 @@ Once built, to connect to the container run;
 ./utils/docker/run_image.sh
 ```
 
-
-Running the tests
------------------
-To run the tests against Obscuro testnet, change directory to the `tests` directory and run;
+To run the tests once in the container, change directory to the `tests/generic` directory and run;
 
 ```bash
-cd /home/obscuro-test/tests/generic && pysys.py run 
+pysys.py run 
 ```
 
 
