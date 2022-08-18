@@ -53,10 +53,17 @@ Once built, to connect to the container run;
 ./utils/docker/run_image.sh
 ```
 
-To run the tests once in the container, change directory to the `tests/generic` directory and run;
+When in the container, to run the test change directory to the `tests/generic` directory and run;
 
 ```bash
+# run the tests against Obscuro testnet
 pysys.py run 
+
+# run the tests against Obscuro dev-testnet
+pysys.py run -m obscuro.dev 
+
+# run the tests against a local ganache network 
+pysys.py run -m ganache
 ```
 
 
