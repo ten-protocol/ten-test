@@ -73,12 +73,6 @@ pysys.py run -m obscuro.dev
 
 # run the tests against a local ganache network 
 pysys.py run -m ganache
-
-# print out test titles
-pysys.py print 
-
-# print out full test details
-pysys.py print -f
 ```
 
 To run the same tests against Ropsten, a `.username.properties` file should be created in the root of the working 
