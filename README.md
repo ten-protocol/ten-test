@@ -39,9 +39,10 @@ fall back to the default properties.
 Quickstart Setup and Run
 ------------------------
 The easiest way to set up a host to run the tests is to create a docker container with all dependencies pre-installed. 
-The repository should be cloned into the same parent directory as [go-obscuro](https://github.com/obscuronet/go-obscuro)
-as running the tests will use the wallet_extension built from the working copy of the go-obscuro repository. To build 
-the wallet_extension and the docker container, in the root of the repository run;
+The `obscuro-test` repository should be cloned into the same parent directory as 
+[go-obscuro](https://github.com/obscuronet/go-obscuro) as running the tests will use the wallet_extension built from the 
+working copy of the go-obscuro repository. To build the wallet_extension and the docker container, in the root of the 
+repository run;
 
 ```bash
 ./utils/docker/build_image.sh
@@ -53,9 +54,16 @@ Once built, to connect to the container run;
 ./utils/docker/run_image.sh
 ```
 
-When in the container, to run the test change directory to the `tests/generic` directory and run;
+When in the container, to print out information on the tests, or to run them, change directory to `tests/generic` 
+and run;
 
 ```bash
+# print out test titles
+pysys.py print 
+
+# print out full test details
+pysys.py print -f
+
 # run the tests against Obscuro testnet
 pysys.py run 
 
@@ -72,8 +80,28 @@ pysys.py print
 pysys.py print -f
 ```
 
+To run the same tests against Ropsten, a `.username.properties` file should be created in the root of the working 
+directory of the project (where `username` is the output of `echo $USER`), and the following properties should be added 
+as based on details relevant to the user; 
 
+```
+[all]
+Account1PK=<private key of account 1 available e.g. via metamask>
+Account2PK=<private key of account 2>
+Account3PK=<private key of account 3>
+GameUserPK=<private key of account 4>
 
+[ropsten]
+ProjectID=<project ID>
+```
+
+These need to be real accounts to run on Ropsten, whereas for Ganache and Obscuro, currently default ones can be used 
+as detailed in [.default.properties](./.default.properties). To run the tests against Ropsten use;
+
+```bash
+# run the tests against ropsten
+pysys.py run -m ropsten
+```
 
 
 
