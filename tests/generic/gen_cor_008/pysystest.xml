@@ -13,9 +13,8 @@ Deploy a contract and when deployed that you can call getCode to return the byte
             <group></group>
         </groups>
         <modes inherit="true">
-<!--            <mode>obscuro</mode>-->
-<!--            <mode>obscuro.dev</mode>-->
-<!--            <mode>obscuro.local</mode>-->
+            <mode>obscuro.dev</mode>
+            <mode>obscuro.local</mode>
             <mode>ropsten</mode>
             <mode>ganache</mode>
         </modes>
