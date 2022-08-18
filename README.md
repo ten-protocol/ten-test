@@ -76,7 +76,7 @@ pysys.py run -m ganache
 ```
 
 To run the same tests against Ropsten, a `.username.properties` file should be created in the root of the working 
-directory of the project (where `username` is the output of `echo $USER`), and the following properties should be added 
+directory of the project (where `username` is the output of running `whoami`), and the following properties should be added 
 as based on details relevant to the user; 
 
 ```
