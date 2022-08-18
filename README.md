@@ -21,19 +21,19 @@ The top level structure of the project is as below;
 ├── artifacts            # Artifacts used during test execution (e.g. Obscuro wallet extension)
 ├── src                  # The project source root for test execution 
 │    └── python          # Python source code as extension to pysys for ethereum interaction
-├── tests                # The project test root for all tests
-│    ├── external        # Tests against contract supplied externally 
+├── tests                # The project test root for all tests 
 │    ├── generic         # Network agnostic tests 
 │    └── obscuro         # Obscuro specific tests 
 └── utils                # The project utils root for utilities used by the tests
-    └── contracts        # A library of smart contracts 
+     ├── contracts       # A library of smart contracts 
+     └── docker          # Used to build and run a linux docker container to run the tests 
 ```
 
-The [.user.properties](./.user.properties) template file should be copied and renamed to the username of the account 
-executing the tests e.g. `.fredjones.properties`. As this file will contain private keys of accounts used for testing 
-it should never be committed back into the main repo (the [.gitignore](./.gitignore) should prevent this). See the
-[.user.properties](./.user.properties) for more information on the properties that need to be setup. 
-
+The [.default.properties](./.default.properties) file contains properties for running the tests that are common to any 
+user running the tests. User specific properties should be added into a `.username.properties` file at the root of the 
+project. As this file could contain sensitive data it should never be committed back into the main repo (the 
+[.gitignore](./.gitignore) should prevent this). Properties will first be looked for in a `.username.properties` should
+it exist, and if not will fall back to the default properties. 
 
 Setup
 -----
@@ -58,7 +58,7 @@ Running the tests
 To run the tests against Obscuro testnet, change directory to the `tests` directory and run;
 
 ```bash
-pysys.py run 
+cd /home/obscuro-test/tests/generic && pysys.py run 
 ```
 
 
