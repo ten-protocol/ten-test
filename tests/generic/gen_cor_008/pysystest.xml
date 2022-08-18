@@ -4,7 +4,7 @@
     <description>
         <title>Error: check on get_code from the owner of a contract</title>
         <purpose><![CDATA[]]>
-            Deploy a contract and when deployed that you can call getCode to return the byte code.
+Deploy a contract and when deployed that you can call getCode to return the byte code.
         </purpose>
     </description>
 

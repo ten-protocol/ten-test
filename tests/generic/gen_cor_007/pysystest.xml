@@ -4,7 +4,7 @@
     <description>
         <title>Error: assert, require and assert</title>
         <purpose><![CDATA[]]>
-            Deploy a contract and check for error reporting on revert, require and assert.
+Deploy a contract and check for error reporting on revert, require and assert.
         </purpose>
     </description>
 
