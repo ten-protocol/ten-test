@@ -7,6 +7,9 @@ RUN add-apt-repository ppa:ethereum/ethereum
 RUN apt update
 RUN apt install -y solc
 
+RUN apt install -y nodejs npm
+RUN npm install -g ganache-cli
+
 RUN apt install -y vim
 RUN apt install -y python3-pip
 RUN python3 -m pip install web3

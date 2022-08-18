@@ -1,6 +1,7 @@
 import os, time, shutil
 from pysys.constants import PROJECT, BACKGROUND
 from pysys.exceptions import AbortExecution
+from ethsys.utils.process import Processes
 from ethsys.networks.ganache import Ganache
 from ethsys.networks.obscuro import Obscuro
 from ethsys.utils.properties import Properties
@@ -9,21 +10,21 @@ from ethsys.utils.properties import Properties
 class EthereumRunnerPlugin():
 
     def setup(self, runner):
-        mode = 'obscuro' if runner.mode is None else runner.mode
-        runner.log.info('Runner is executing against environment %s' % mode)
+        environment = 'obscuro' if runner.mode is None else runner.mode
+        runner.log.info('Runner is executing against environment %s' % environment)
 
         self.output = os.path.join(PROJECT.root, '.runner')
-        if os.path.exists(self.output ): shutil.rmtree(self.output)
+        if os.path.exists(self.output): shutil.rmtree(self.output)
         os.makedirs(self.output)
 
         try:
-            if mode == 'obscuro':
+            if environment == 'obscuro':
                 self.run_wallets(runner, 'testnet.obscu.ro')
-            elif mode == 'obscuro.dev':
+            elif environment == 'obscuro.dev':
                 self.run_wallets(runner, 'dev-testnet.obscu.ro')
-            elif mode == 'obscuro.local':
+            elif environment == 'obscuro.local':
                 self.run_wallets(runner, '127.0.0.1')
-            elif mode == 'ganache':
+            elif environment == 'ganache':
                 self.run_ganache(runner)
         except AbortExecution:
             runner.log.info('Error executing runner plugin')
@@ -38,7 +39,7 @@ class EthereumRunnerPlugin():
         arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account2pk()))
         arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account3pk()))
         arguments.extend(('--gasLimit', '7200000'))
-        hprocess = runner.startProcess(command=PROJECT.ganacheBin, displayName='ganache',
+        hprocess = runner.startProcess(command=Processes.get_ganache_bin(), displayName='ganache',
                                        workingDir=self.output , environs=os.environ, quiet=True,
                                        arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
 
