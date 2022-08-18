@@ -1,10 +1,10 @@
 Admin controls on Obscuro TestNet
 =================================
-This directory contains utilities to perform admin operations on the Obscuro Testnet. This is to 
+This directory contains utilities to perform admin operations on the Obscuro Testnet. This is to;
 
 - allocate funds into the layer 2 into the OBX ERC20 contract for use by the number guessing game
 - transfer funds into a user who wishes to play the number guessing game
-- transfer funds into test users for running end to end tests
+- transfer funds into test users for running end-to-end tests
 
 For setup notes, see the top level [readme](../README.md)
 
@@ -12,7 +12,7 @@ Funding the faucet
 ------------------
 `fund_faucet` provides the ability to ensure the tokens in the pre-funded deployment account (the owner of the OBX ERC20
 token contract) in layer 2 do not fall below a certain threshold (currently set at 1000). When the token amount falls 
-below this amount it is increased back up to 1000000. To run a check and perform an allocation if required used;
+below this amount it is increased back up to 1000000. To run a check and perform an allocation if required use;
 
 ```bash
 pysys.py run fund_faucet
