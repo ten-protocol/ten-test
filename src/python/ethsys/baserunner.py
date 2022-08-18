@@ -1,4 +1,4 @@
-import os, time, shutil
+import os, time, shutil, sys
 from pysys.constants import PROJECT, BACKGROUND
 from pysys.exceptions import AbortExecution
 from ethsys.utils.process import Processes
@@ -26,12 +26,16 @@ class EthereumRunnerPlugin():
                 self.run_wallets(runner, '127.0.0.1')
             elif environment == 'ganache':
                 self.run_ganache(runner)
-        except AbortExecution:
-            runner.log.info('Error executing runner plugin')
+        except AbortExecution as e:
+            runner.log.info('Error executing runner plugin startup actions', e)
+            runner.log.info('See contents of the .runner directory in the project root for any process output')
+            runner.log.info('Exiting ...')
+            runner.cleanup()
+            sys.exit()
 
     def run_ganache(self, runner):
-        stdout = os.path.join(self.output , 'ganache.out')
-        stderr = os.path.join(self.output , 'ganache.err')
+        stdout = os.path.join(self.output, 'ganache.out')
+        stderr = os.path.join(self.output, 'ganache.err')
 
         arguments = []
         arguments.extend(('--port', str(Ganache.PORT)))
@@ -44,7 +48,7 @@ class EthereumRunnerPlugin():
                                        arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
 
         runner.waitForSignal(stdout, expr='Listening on 127.0.0.1:%d' % Ganache.PORT, timeout=30)
-        runner.addCleanupFunction(lambda: self.stop_process(hprocess))
+        runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
 
     def run_wallets(self, runner, host):
         self.run_wallet(runner, host, Obscuro.ACCOUNT1_PORT)
@@ -62,12 +66,12 @@ class EthereumRunnerPlugin():
         arguments.extend(('--nodePortHTTP', '13000'))
         arguments.extend(('--nodePortWS', '13001'))
         arguments.extend(('--port', str(port)))
-        arguments.extend(('-logPath', 'wallet_%d_logs.txt' % port))
+        arguments.extend(('--logPath', os.path.join(self.output, 'wallet_%d_logs.txt' % port)))
         hprocess = runner.startProcess(command=os.path.join(PROJECT.root, 'artifacts', 'wallet_extension'),
                                        displayName='wallet_extension', workingDir=self.output , environs=os.environ,
                                        quiet=True, arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
         runner.waitForSignal(stdout, expr='Wallet extension started', timeout=30)
-        runner.addCleanupFunction(lambda: self.stop_process(hprocess))
+        runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
 
-    def stop_process(self, hprocess):
+    def __stop_process(self, hprocess):
         hprocess.stop()

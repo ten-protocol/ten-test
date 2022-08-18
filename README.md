@@ -30,10 +30,10 @@ The top level structure of the project is as below;
 ```
 
 The [.default.properties](./.default.properties) file contains properties for running the tests that are common to any 
-user running the tests. User specific properties should be added into a `.username.properties` file at the root of the 
-project. As this file could contain sensitive data it should never be committed back into the main repo (the 
-[.gitignore](./.gitignore) should prevent this). Properties will first be looked for in a `.username.properties` should
-it exist, and if not will fall back to the default properties. 
+user. User specific properties should be added into a `.username.properties` file at the root of the project. As this 
+file could contain sensitive data it should never be committed back into the main repo (the [.gitignore](./.gitignore) 
+should prevent this). Properties will first be looked for in a `.username.properties` should it exist, and if not will 
+fall back to the default properties. 
 
 
 Quickstart Setup and Run
@@ -64,6 +64,12 @@ pysys.py run -m obscuro.dev
 
 # run the tests against a local ganache network 
 pysys.py run -m ganache
+
+# print out test titles
+pysys.py print 
+
+# print out full test details
+pysys.py print -f
 ```
 
 

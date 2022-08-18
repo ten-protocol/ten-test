@@ -4,6 +4,7 @@
     <description>
         <title>RPC API: valid RPC calls against the network</title>
         <purpose><![CDATA[
+Runs calls against publicly available RPC APIs.
 ]]>
         </purpose>
     </description>
