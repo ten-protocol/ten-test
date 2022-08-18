@@ -1,6 +1,6 @@
 from pysys.constants import *
 from solcx import compile_source
-from ethsys.utils.solidity import Solidity
+from ethsys.utils.process import Processes
 
 
 class OBXCoin:
@@ -21,7 +21,8 @@ class OBXCoin:
         """Compile and construct an instance."""
         file = os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'OBXCoin.sol')
         with open(file, 'r') as fp:
-            compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'], solc_binary=Solidity.get_compiler(),
+            compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'],
+                                          solc_binary=Processes.get_solidity_compiler(),
                                           base_path=os.path.dirname(file))
             contract_interface = compiled_sol['<stdin>:OBXCoin']
             self.bytecode = contract_interface['bin']
