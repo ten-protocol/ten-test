@@ -43,7 +43,7 @@ class EthereumRunnerPlugin():
                                        workingDir=self.output , environs=os.environ, quiet=True,
                                        arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
 
-        runner.waitForSignal(stdout, expr='Listening on 127.0.0.1:%d' % Ganache.PORT, timeout=10)
+        runner.waitForSignal(stdout, expr='Listening on 127.0.0.1:%d' % Ganache.PORT, timeout=30)
         runner.addCleanupFunction(lambda: self.stop_process(hprocess))
 
     def run_wallets(self, runner, host):
@@ -66,7 +66,7 @@ class EthereumRunnerPlugin():
         hprocess = runner.startProcess(command=os.path.join(PROJECT.root, 'artifacts', 'wallet_extension'),
                                        displayName='wallet_extension', workingDir=self.output , environs=os.environ,
                                        quiet=True, arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
-        runner.waitForSignal(stdout, expr='Wallet extension started', timeout=10)
+        runner.waitForSignal(stdout, expr='Wallet extension started', timeout=30)
         runner.addCleanupFunction(lambda: self.stop_process(hprocess))
 
     def stop_process(self, hprocess):
