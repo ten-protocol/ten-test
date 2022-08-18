@@ -16,17 +16,18 @@ The top level structure of the project is as below;
 ```
 ├── README.md            # Readme 
 ├── .default.properties  # Default properties file detailing connection and keys required for running 
-├── pysysproject.xml     # The pysys project file
+├── pysysproject.xml     # The pysys project file detailing configuration options
+├── get_artifacts.sh     # Build script to build artifacts from go-obscuro required for running Obscuro tests
 ├── admin                # Used for administering Obscuro testnet 
-├── artifacts            # Artifacts used during test execution (e.g. Obscuro wallet extension)
-├── src                  # The project source root for test execution 
-│    └── python          # Python source code as extension to pysys for ethereum interaction
-├── tests                # The project test root for all tests 
+├── artifacts            # Directory to store artifacts for running Obscuro tests
+├── src                  # The source root for all test code
+│    └── python          # The python source root for pysys extensions
+├── tests                # The test root for all tests 
 │    ├── generic         # Network agnostic tests 
 │    └── obscuro         # Obscuro specific tests 
 └── utils                # The project utils root for utilities used by the tests
      ├── contracts       # A library of smart contracts 
-     └── docker          # Used to build and run a linux docker container to run the tests 
+     └── docker          # Docker configuration and build files 
 ```
 
 The [.default.properties](./.default.properties) file contains properties for running the tests that are common to any 
@@ -39,10 +40,10 @@ fall back to the default properties.
 Quickstart Setup and Run
 ------------------------
 The easiest way to set up a host to run the tests is to create a docker container with all dependencies pre-installed. 
-The `obscuro-test` repository should be cloned into the same parent directory as 
+The obscuro-test repository should be cloned into the same parent directory as 
 [go-obscuro](https://github.com/obscuronet/go-obscuro) as running the tests will use the wallet_extension built from the 
-working copy of the go-obscuro repository. To build the wallet_extension and the docker container, in the root of the 
-repository run;
+working copy of go-obscuro. To build the wallet_extension and the docker container, in the root of working directory of
+obscuro-test run;
 
 ```bash
 ./utils/docker/build_image.sh
