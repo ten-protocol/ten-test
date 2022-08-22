@@ -7,55 +7,58 @@ from ethsys.networks.obscuro import Obscuro
 
 
 class PySysTest(EthereumTest):
-    AMOUNT = 1000000
-    THRESHOLD = 1000
+    AMOUNT = 10000000000000
+    THRESHOLD = 1000000000000
 
     def execute(self):
-        # connect to the L1 network
+        # connect to the L1 network and get contracts
         l1 = NetworkFactory.get_l1_network(self.env)
         bridge_address = Properties().management_bridge_address(self.env)
         deployment_pk = Properties().funded_deployment_account_pk(self.env)
         web3_l1, deploy_account_l1 = l1.connect(deployment_pk, l1.HOST, l1.PORT)
-        self.log.info('L1 connection details')
-        self.log.info('  Bridge address = %s' % bridge_address)
-        self.log.info('  Deployment PK  = %s' % deployment_pk)
-        self.log.info('  Deployment ETH  = %d' % l1.get_balance(web3_l1, deploy_account_l1.address))
 
         with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
-            jam_cntr_l1 = web3_l1.eth.contract(address=Properties().l1_hoc_token_address(self.env), abi=json.load(f))
+            hoc_token_l1 = web3_l1.eth.contract(address=Properties().l1_hoc_token_address(self.env), abi=json.load(f))
 
-        deploy_balance_l1 = jam_cntr_l1.functions.balanceOf(deploy_account_l1.address).call()
-        self.log.info('L1 balances')
-        self.log.info('  Deploy balance = %d ' % deploy_balance_l1)
+        with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
+            poc_token_l1 = web3_l1.eth.contract(address=Properties().l1_poc_token_address(self.env), abi=json.load(f))
 
-        # connect to the L2 network
+        # connect to the L2 network and get contracts
         l2 = Obscuro
         deployment_pk = Properties().funded_deployment_account_pk(self.env)
-        web3_l2, deploy_account = l2.connect(deployment_pk, l2.HOST, l2.PORT)
+        web3_l2, _ = l2.connect(deployment_pk, l2.HOST, l2.PORT)
+
         with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
-            jam_cntr_l2 = web3_l2.eth.contract(address=Properties().l2_hoc_token_address(self.env), abi=json.load(f))
+            hoc_token_l2 = web3_l2.eth.contract(address=Properties().l2_hoc_token_address(self.env), abi=json.load(f))
 
-        deploy_balance_l2 = jam_cntr_l2.functions.balanceOf(deploy_account.address).call()
-        self.log.info('L2 balances')
-        self.log.info('  Deploy balance = %d ' % deploy_balance_l2)
+        with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
+            poc_token_l2 = web3_l2.eth.contract(address=Properties().l2_poc_token_address(self.env), abi=json.load(f))
 
-        if deploy_balance_l2 < self.THRESHOLD:
-            amount = (self.AMOUNT - deploy_balance_l2)
-            self.log.info('Deployment account balance is < %d > - transferring %d ' % (self.THRESHOLD, amount))
+        self.run_for_token('HOC', l1, hoc_token_l1, hoc_token_l2, bridge_address, deploy_account_l1, web3_l1)
+        self.run_for_token('POC', l1, poc_token_l1, poc_token_l2, bridge_address, deploy_account_l1, web3_l1)
+
+    def run_for_token(self, token_name, layer1, token_l1, token_l2,
+                      bridge_address, deploy_account,
+                      web3_l1):
+        self.log.info('Running for token %s' % token_name)
+
+        deploy_balance_l2_before = token_l2.functions.balanceOf(deploy_account.address).call()
+        self.log.info('L2 balance before;')
+        self.log.info('  Deploy balance = %d ' % deploy_balance_l2_before)
+
+        if deploy_balance_l2_before < self.THRESHOLD:
+            amount = (self.AMOUNT - deploy_balance_l2_before)
+            self.log.info('Deployment account balance is %d ... transferring %d ' % (self.THRESHOLD, amount))
 
             # transfer funds from the deployment address to the bridge address on l1
-            l1.transact(self, web3_l1, jam_cntr_l1.functions.transfer(bridge_address, amount), deploy_account, 7200000)
-
-            deploy_balance_l1_after = jam_cntr_l1.functions.balanceOf(deploy_account.address).call()
-            self.log.info('L1 Balances after transfer')
-            self.log.info('  Deploy Account balance = %d ' % deploy_balance_l1_after)
+            layer1.transact(self, web3_l1, token_l1.functions.transfer(bridge_address, amount), deploy_account, 7200000)
 
             time.sleep(30)
-            deploy_balance_l2_after = jam_cntr_l2.functions.balanceOf(deploy_account.address).call()
-            self.log.info('L2 Balances after transfer')
+            deploy_balance_l2_after = token_l2.functions.balanceOf(deploy_account.address).call()
+            self.log.info('L2 Balances after;')
             self.log.info('  Deploy Account balance = %d ' % deploy_balance_l2_after)
 
-            self.assertTrue((deploy_balance_l2_after - deploy_balance_l2) == amount)
+            self.assertTrue((deploy_balance_l2_after - deploy_balance_l2_before) == amount)
 
 
 
