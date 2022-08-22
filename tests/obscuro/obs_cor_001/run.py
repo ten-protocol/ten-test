@@ -11,7 +11,7 @@ class PySysTest(EthereumTest):
         # get the game address and the jam token address from the properties
         network = Obscuro
         game_address = Properties().guessing_game_address(self.env)
-        jam_address = Properties().l2_jam_token_address(self.env)
+        hoc_address = Properties().l2_hoc_token_address(self.env)
 
         # get the connections for the game user
         web3, account = network.connect(Properties().gameuserpk(), network.HOST, network.PORT)
@@ -20,7 +20,7 @@ class PySysTest(EthereumTest):
 
         # the user needs to get the token and game contracts to interact with them
         with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
-            token = web3.eth.contract(address=jam_address, abi=json.load(f))
+            token = web3.eth.contract(address=hoc_address, abi=json.load(f))
 
         with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'guesser', 'guessing_game.abi')) as f:
             game = web3.eth.contract(address=game_address, abi=json.load(f))

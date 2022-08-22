@@ -22,7 +22,7 @@ class PySysTest(EthereumTest):
         network = Obscuro
         web3, deploy_account = network.connect(Properties().funded_deployment_account_pk(self.env), network.HOST, network.PORT)
         with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
-            jam_cntr = web3.eth.contract(address=Properties().l2_jam_token_address(self.env), abi=json.load(f))
+            hoc_token = web3.eth.contract(address=Properties().l2_hoc_token_address(self.env), abi=json.load(f))
 
         # run for users
         for user in self.USERS:
@@ -31,8 +31,8 @@ class PySysTest(EthereumTest):
             self.log.info('Running for address %s' % user_address)
 
             # balance before transaction
-            deploy_balance = jam_cntr.functions.balanceOf(deploy_account.address).call()
-            user_balance = jam_cntr.functions.balanceOf(user_address).call({'from':user_address})
+            deploy_balance = hoc_token.functions.balanceOf(deploy_account.address).call()
+            user_balance = hoc_token.functions.balanceOf(user_address).call({'from':user_address})
             self.log.info('  L2 balances')
             self.log.info('    Deploy account balance = %d ' % deploy_balance)
             self.log.info('    User account balance = %d ' % user_balance)
@@ -42,11 +42,11 @@ class PySysTest(EthereumTest):
 
                 # transfer funds from the deployment address to the user account
                 self.log.info('User requests funds ... transferring %d' % amount)
-                network.transact(self, web3, jam_cntr.functions.transfer(user_address, amount), deploy_account, 7200000)
+                network.transact(self, web3, hoc_token.functions.transfer(user_address, amount), deploy_account, 7200000)
 
                 # balance after transaction
-                deploy_balance = jam_cntr.functions.balanceOf(deploy_account.address).call()
-                user_balance = jam_cntr.functions.balanceOf(user_address).call({'from':user_address})
+                deploy_balance = hoc_token.functions.balanceOf(deploy_account.address).call()
+                user_balance = hoc_token.functions.balanceOf(user_address).call({'from':user_address})
                 self.log.info('  L2 balances')
                 self.log.info('    Deploy account balance = %d ' % deploy_balance)
                 self.log.info('    User account balance = %d ' % user_balance)

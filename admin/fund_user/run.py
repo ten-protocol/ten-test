@@ -17,30 +17,31 @@ class PySysTest(EthereumTest):
         # '0x61f991693aee28dbF4B7CBBB0ACf53ea92F219a3',
         # '0x70997970C51812dc3A010C7d01b50e0d17dc79C8'
         # '0xFfB5982818055C507f606058d9073b2037937b9D'
+        '0x7AFcBAC69f6339e29FCe40759FFBFb25F0CCe314'
     ]
-    AMOUNT = 50
+    AMOUNT = 50000
 
     def execute(self):
         # connect to the L2 network
         network = Obscuro
         web3, deploy_account = network.connect(Properties().funded_deployment_account_pk(self.env), network.HOST, network.PORT)
         with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
-            jam_cntr = web3.eth.contract(address=Properties().l2_jam_token_address(self.env), abi=json.load(f))
+            hoc_token = web3.eth.contract(address=Properties().l2_hoc_token_address(self.env), abi=json.load(f))
 
         # run for users
         for user_address in self.USERS:
             self.log.info('Running for address %s' % user_address)
 
             # balance before transaction
-            deploy_balance = jam_cntr.functions.balanceOf(deploy_account.address).call()
+            deploy_balance = hoc_token.functions.balanceOf(deploy_account.address).call()
             self.log.info('  L2 balances')
             self.log.info('    Deploy account balance = %d ' % deploy_balance)
 
             # transfer funds from the deployment address to the user account
             self.log.info('User requests funds ... transferring %d' % self.AMOUNT)
-            network.transact(self, web3, jam_cntr.functions.transfer(user_address, self.AMOUNT), deploy_account, 7200000)
+            network.transact(self, web3, hoc_token.functions.transfer(user_address, self.AMOUNT), deploy_account, 7200000)
 
             # balance after transaction
-            deploy_balance = jam_cntr.functions.balanceOf(deploy_account.address).call()
+            deploy_balance = hoc_token.functions.balanceOf(deploy_account.address).call()
             self.log.info('  L2 balances')
             self.log.info('    Deploy account balance = %d ' % deploy_balance)
