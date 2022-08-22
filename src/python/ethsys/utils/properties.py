@@ -52,10 +52,10 @@ class Properties:
         return self.get(key, 'TokenHOCContractAddressL2')
 
     def l1_poc_token_address(self, key):
-        return self.get(key, 'TokenPOKContractAddressL1')
+        return self.get(key, 'TokenPOCContractAddressL1')
 
     def l2_poc_token_address(self, key):
-        return self.get(key, 'TokenPOKContractAddressL2')
+        return self.get(key, 'TokenPOCContractAddressL2')
 
     # infura related
     def infuraProjectID(self):
