@@ -4,9 +4,8 @@ from ethsys.networks.obscuro import Obscuro
 
 
 class PySysTest(EthereumTest):
-    ONE_OBX_TOKEN = 1e18
-    OBX_TARGET = 1000 * ONE_OBX_TOKEN
-    OBX_THRESHOLD = 1 * ONE_OBX_TOKEN
+    OBX_TARGET = 1000 * 1e18
+    OBX_THRESHOLD = 1 * 1e18
 
     def execute(self):
         # connect to the L2 network

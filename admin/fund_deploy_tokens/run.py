@@ -7,9 +7,8 @@ from ethsys.networks.obscuro import Obscuro
 
 
 class PySysTest(EthereumTest):
-    ONE_GIGA = 1e18
-    AMOUNT = 1000*ONE_GIGA
-    THRESHOLD = 10*ONE_GIGA
+    TOKEN_TARGET = 1000 * 1e6
+    TOKEN_THRESHOLD = 10 * 1e6
 
     def execute(self):
         # connect to the L1 network and get contracts
@@ -47,9 +46,9 @@ class PySysTest(EthereumTest):
         self.log.info('L2 token balance before;')
         self.log.info('  Balance = %d ' % balance_before)
 
-        if balance_before < self.THRESHOLD:
-            amount = (self.AMOUNT - balance_before)
-            self.log.info('Deployment account balance is %d ... transferring %d ' % (self.THRESHOLD, amount))
+        if balance_before < self.TOKEN_THRESHOLD:
+            amount = (self.TOKEN_TARGET - balance_before)
+            self.log.info('Deployment account balance is %d ... transferring %d ' % (self.TOKEN_THRESHOLD, amount))
 
             # transfer funds from the deployment address to the bridge address on l1
             layer1.transact(self, web3_l1, token_l1.functions.transfer(bridge_address, amount), deploy_account, 7200000)

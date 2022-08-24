@@ -13,12 +13,11 @@ class PySysTest(EthereumTest):
         Properties().gameuserpk()
     ]
 
-    ONE_OBX_TOKEN = 1e18
-    OBX_TARGET = 1000 * ONE_OBX_TOKEN
-    OBX_THRESHOLD = 1 * ONE_OBX_TOKEN
+    OBX_TARGET = 1000 * 1e18
+    OBX_THRESHOLD = 1 * 1e18
 
     TOKEN_TARGET = 5000
-    TOKEN_THRESHOLD = 10
+    TOKEN_THRESHOLD = 100
     DISPLAY = False
 
     def execute(self):

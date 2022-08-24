@@ -20,8 +20,7 @@ class PySysTest(EthereumTest):
         '0x7AFcBAC69f6339e29FCe40759FFBFb25F0CCe314'
     ]
 
-    ONE_OBX_TOKEN = 1e18
-    OBX_TARGET = 50 * ONE_OBX_TOKEN
+    OBX_TARGET = 50 * 1e18
     TOKEN_TARGET = 50
 
     def execute(self):
