@@ -45,17 +45,17 @@ class Properties:
     def guessing_game_address(self, key):
         return self.get(key, 'GuessingGameAddress')
 
-    def l1_jam_token_address(self, key):
-        return self.get(key, 'TokenJAMContractAddressL1')
+    def l1_hoc_token_address(self, key):
+        return self.get(key, 'TokenHOCContractAddressL1')
 
-    def l2_jam_token_address(self, key):
-        return self.get(key, 'TokenJAMContractAddressL2')
+    def l2_hoc_token_address(self, key):
+        return self.get(key, 'TokenHOCContractAddressL2')
 
-    def l1_eth_token_address(self, key):
-        return self.get(key, 'TokenETHContractAddressL1')
+    def l1_poc_token_address(self, key):
+        return self.get(key, 'TokenPOCContractAddressL1')
 
-    def l2_eth_token_address(self, key):
-        return self.get(key, 'TokenETHContractAddressL2')
+    def l2_poc_token_address(self, key):
+        return self.get(key, 'TokenPOCContractAddressL2')
 
     # infura related
     def infuraProjectID(self):

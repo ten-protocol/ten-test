@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Allocate native OBX to the deployment account</title>
+        <purpose><![CDATA[
+Allocates OBX to the deployment account (all done within L2)
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group></group>
+        </groups>
+        <modes inherit="true">
+            <mode>obscuro.dev</mode>
+            <mode>obscuro.local</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

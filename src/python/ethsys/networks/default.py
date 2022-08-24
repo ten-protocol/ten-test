@@ -42,7 +42,7 @@ class Default:
         build_tx = target.buildTransaction(
             {
                 'nonce': web3.eth.get_transaction_count(account.address),
-                'gasPrice': web3.eth.gas_price,
+                'gasPrice': 21000,
                 'gas': gas,
                 'chainId': web3.eth.chain_id
             }
