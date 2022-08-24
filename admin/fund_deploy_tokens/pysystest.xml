@@ -2,10 +2,9 @@
 <pysystest type="auto">
 
     <description>
-        <title>Allocate OBX game funds to registered users</title>
+        <title>Allocate ERC20 tokens to the deployment account</title>
         <purpose><![CDATA[
-        The pre-funded deployment account which has tokens allocated to it in the L2 will iterate through all user
-        accounts and fund them.
+Transfers HOC and POC tokens from L1 to the bridge, so that they are accessible in the L2.
 ]]>
         </purpose>
     </description>

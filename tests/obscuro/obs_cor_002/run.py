@@ -4,11 +4,12 @@ from ethsys.networks.obscuro import Obscuro
 
 
 class PySysTest(EthereumTest):
-    ONE_TOKEN =   1000000000000000000
+    ONE_TOKEN = 1000000000000000000
     TEN_MINUS_1 = 100000000000000000
     TEN_MINUS_2 = 10000000000000000
     TEN_MINUS_3 = 1000000000000000
     TEN_MINUS_4 = 100000000000000
+    GAS_PRICE = 1
 
     def execute(self):
         # connect to the L2 network
@@ -29,7 +30,7 @@ class PySysTest(EthereumTest):
             'to': user_account.address,
             'value': self.TEN_MINUS_1,
             'gas': 4*720000,
-            'gasPrice':  web3_faucet.eth.gas_price
+            'gasPrice':  21000
         }
         tx_sign = faucet_account.sign_transaction(tx)
         tx_hash = network.send_transaction(self, web3_faucet, None, tx_sign)
@@ -41,5 +42,5 @@ class PySysTest(EthereumTest):
         self.log.info('    OBX Faucet balance = %d ' % faucet_obx_balance_after)
         self.log.info('    OBX User balance   = %d ' % user_obx_balance_after)
 
-        self.assertTrue(faucet_obx_balance_before - faucet_obx_balance_after == self.TEN_MINUS_1)
+        self.assertTrue(faucet_obx_balance_before - faucet_obx_balance_after >= self.TEN_MINUS_1)
         self.assertTrue(user_obx_balance_after - user_obx_balance_before == self.TEN_MINUS_1)
