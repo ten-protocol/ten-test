@@ -14,7 +14,7 @@ Funds native OBX into the Layer 2
 `fund_deploy_native` provides the ability to ensure the native OBX required for transaction gas costs in the pre-funded 
 deployment account in layer 2 do not fall below a certain threshold. When the amount falls below the threshold it is 
 increased back up to the target amount. Funding is via transferring from the faucet account to the deployment account. 
-To run a check and performed an allocation use;
+To run a check and perform an allocation use;
 
 ```bash
 # to run on Obscuro testnet 
