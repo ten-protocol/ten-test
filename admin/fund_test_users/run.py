@@ -13,7 +13,7 @@ class PySysTest(EthereumTest):
         Properties().gameuserpk()
     ]
 
-    ONE_GIGA = 100000000000000000
+    ONE_GIGA = 1000000000000000000
     OBX_TARGET = 1000 * ONE_GIGA
     OBX_THRESHOLD = 1 * ONE_GIGA
 
