@@ -17,8 +17,8 @@ class PySysTest(EthereumTest):
     OBX_TARGET = 1000 * ONE_GIGA
     OBX_THRESHOLD = 1 * ONE_GIGA
 
-    TOKEN_TARGET = 5000
-    TOKEN_THRESHOLD = 100
+    TOKEN_TARGET = 500
+    TOKEN_THRESHOLD = 10
     DISPLAY = False
 
     def execute(self):
