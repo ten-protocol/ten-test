@@ -26,6 +26,7 @@ az vm run-command invoke \
     && python3 -m pip install web3 \
     && python3 -m pip install pysys==1.6.1 \
     && python3 -m pip install py-solc-x \
+    && snap install go --classic
   "
 
 
