@@ -49,7 +49,7 @@ class PySysTest(EthereumTest):
 
         if balance_before < self.TOKEN_THRESHOLD:
             amount = (self.TOKEN_TARGET - balance_before)
-            self.log.info('Deployment account balance is %d ... transferring %d ' % (self.TOKEN_THRESHOLD, amount))
+            self.log.info('Funds required, transferring %d ' % amount)
 
             # transfer funds from the deployment address to the bridge address on l1
             layer1.transact(self, web3_l1, token_l1.functions.transfer(bridge_address, amount), deploy_account, 7200000)
