@@ -13,8 +13,9 @@ class PySysTest(EthereumTest):
         Properties().gameuserpk()
     ]
 
-    OBX_TARGET = 1000 * 1e18
-    OBX_THRESHOLD = 1 * 1e18
+    ONE_GIGA = 100000000000000000
+    OBX_TARGET = 1000 * ONE_GIGA
+    OBX_THRESHOLD = 1 * ONE_GIGA
 
     TOKEN_TARGET = 5000
     TOKEN_THRESHOLD = 100
@@ -40,13 +41,13 @@ class PySysTest(EthereumTest):
             web3_user, user_account = network.connect(user, network.HOST, network.PORT)
             self.log.info('')
             self.log.info('Running for user address %s' % user_account.address)
-            self.run_for_native(network, web3_user, user_account, web3_faucet, faucet_account, self.ONE_OBX_TOKEN)
+            self.run_for_native(network, web3_user, user_account, web3_faucet, faucet_account)
             self.run_for_token(network, 'HOC', hoc_token, web3_user, user_account, web3_deploy, deploy_account,
                                web3_faucet, faucet_account)
             self.run_for_token(network, 'POC', poc_token, web3_user, user_account, web3_deploy, deploy_account,
                                web3_faucet, faucet_account)
 
-    def run_for_native(self, network, web3_user, user_account, web3_faucet, faucet_account, amount):
+    def run_for_native(self, network, web3_user, user_account, web3_faucet, faucet_account):
         """Allocates native OBX from the faucet to a users account.
 
         This is a native transfer of funds via a transaction that targets a given users account address.

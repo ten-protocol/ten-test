@@ -4,8 +4,9 @@ from ethsys.networks.obscuro import Obscuro
 
 
 class PySysTest(EthereumTest):
-    OBX_TARGET = 1000 * 1e18
-    OBX_THRESHOLD = 1 * 1e18
+    ONE_GIGA = 1000000000000000000
+    OBX_TARGET = 1000 * ONE_GIGA
+    OBX_THRESHOLD = 1 * ONE_GIGA
 
     def execute(self):
         # connect to the L2 network
@@ -28,7 +29,7 @@ class PySysTest(EthereumTest):
             # transaction from the faucet to the deployment account
             tx = {
                 'nonce': web3_faucet.eth.get_transaction_count(faucet_account.address),
-                'to': web3_deploy.address,
+                'to': deploy_account.address,
                 'value': amount,
                 'gas': 4 * 720000,
                 'gasPrice': 21000
