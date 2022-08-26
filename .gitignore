@@ -6,6 +6,7 @@ __pycache__/
 # idea related
 .idea/
 *.iml
+.DS_Store
 
 # pysys related
 **/Output/*
