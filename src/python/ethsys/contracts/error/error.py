@@ -4,6 +4,7 @@ from ethsys.utils.process import Processes
 
 
 class Error:
+    """Abstraction over the error smart contract to force revert, require and assert."""
     GAS = 720000
 
     def __init__(self, test, web3, key):

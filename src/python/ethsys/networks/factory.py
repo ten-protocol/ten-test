@@ -9,11 +9,7 @@ class NetworkFactory:
 
     @classmethod
     def get_network(cls, environment):
-        """Get the network node.
-
-        Currently supported networks are ganache, ropsten and obscuro.local (obscuro being
-        the default network used in all tests)
-        """
+        """Get the network node."""
         if environment == 'obscuro.dev':
             return Obscuro
         elif environment == 'obscuro.local':
@@ -26,11 +22,7 @@ class NetworkFactory:
 
     @classmethod
     def get_l1_network(cls, environment):
-        """Get the layer 1 network used by a layer 2.
-
-        Currently this is only for Obscuro networks and returns either a node in the L1 running
-        in a local deployment, or in the testnet deployment.
-        """
+        """Get the layer 1 network used by a layer 2."""
         if environment == 'obscuro.dev':
             return ObscuroL1Dev
         elif environment == 'obscuro.local':

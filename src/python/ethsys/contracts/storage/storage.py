@@ -4,6 +4,7 @@ from ethsys.utils.process import Processes
 
 
 class Storage:
+    """Abstraction over the test Storage smart contract."""
     GAS = 720000
 
     def __init__(self, test, web3, initial):
