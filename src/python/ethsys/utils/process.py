@@ -2,6 +2,7 @@ from pysys.constants import PLATFORM, PROJECT
 
 
 class Processes:
+    """Utility wrapper to select process binaries based on the underlying OS of execution."""
 
     @classmethod
     def get_solidity_compiler(cls):

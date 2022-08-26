@@ -10,6 +10,7 @@ from ethsys.utils.properties import Properties
 class EthereumRunnerPlugin():
 
     def setup(self, runner):
+        """Set up a runner plugin to start any processes required to execute the tests."""
         environment = 'obscuro' if runner.mode is None else runner.mode
         runner.log.info('Runner is executing against environment %s' % environment)
 
@@ -34,6 +35,7 @@ class EthereumRunnerPlugin():
             sys.exit()
 
     def run_ganache(self, runner):
+        """RUn ganache for use by the tests. """
         stdout = os.path.join(self.output, 'ganache.out')
         stderr = os.path.join(self.output, 'ganache.err')
 
@@ -51,12 +53,14 @@ class EthereumRunnerPlugin():
         runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
 
     def run_wallets(self, runner, host):
+        """Run wallet extensions for use by the tests. """
         self.run_wallet(runner, host, Obscuro.ACCOUNT1_PORT)
         self.run_wallet(runner, host, Obscuro.ACCOUNT2_PORT)
         self.run_wallet(runner, host, Obscuro.ACCOUNT3_PORT)
         time.sleep(1)
 
     def run_wallet(self, runner, host, port):
+        """Run a single wallet extension for use by the tests. """
         runner.log.info('Starting wallet extension on %s %d' % (host, port))
         stdout = os.path.join(self.output, 'wallet_%d.out' % port)
         stderr = os.path.join(self.output, 'wallet_%d.err' % port)
@@ -74,4 +78,5 @@ class EthereumRunnerPlugin():
         runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
 
     def __stop_process(self, hprocess):
+        """Stop a process started by this runner plugin."""
         hprocess.stop()

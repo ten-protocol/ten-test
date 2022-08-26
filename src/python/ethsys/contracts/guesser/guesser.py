@@ -5,18 +5,11 @@ from ethsys.utils.process import Processes
 
 
 class Guesser:
+    """Abstraction over the guessing game smart contract using a constructor."""
     GAS = 4*720000
 
     def __init__(self, test, web3, lower=0, upper=100):
-        """Create an instance of the guesser contract, compile and construct a web3 instance
-
-        Contract wrappers will contain a reference to the web3 instance for their connection, and
-        will compile and create an initial instance of the contract ready for deployment.
-        :param test: The owning testcase
-        :param web3: Reference to the web3 instance
-        :param lower: The lower bounds of the number to guess
-        :param upper: The upper bounds of the number to guess
-        """
+        """Create an instance of the guesser contract, compile and construct a web3 instance."""
         self.bytecode = None
         self.abi = None
         self.contract = None
@@ -48,12 +41,7 @@ class Guesser:
         self.contract = self.web3.eth.contract(address=self.contract_address, abi=self.abi)
 
     def guess(self, max_guesses=100):
-        """Perform a guessing game to get the secret number.
-
-        :param contract:
-        :param max_guesses:
-        :return:
-        """
+        """Perform a guessing game to get the secret number."""
         lower = self.lower
         upper = self.upper
         nguess = 0

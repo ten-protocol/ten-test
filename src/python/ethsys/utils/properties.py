@@ -3,6 +3,7 @@ from pysys.constants import *
 
 
 class Properties:
+    """Used as a holding class for properties."""
 
     def __init__(self):
         self.default_config = configparser.ConfigParser()

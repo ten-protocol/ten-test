@@ -6,14 +6,16 @@ from ethsys.contracts.guesser.guesser import Guesser
 
 
 class GuesserConstructor(Guesser):
+    """Abstraction over the guessing game smart contract using a constructor."""
 
     def __init__(self, test, web3, lower=0, upper=100):
+        """Call the parent constructor but set the secret first."""
         self.secret = random.randint(lower, upper)
         test.log.info('Secret number to guess will be %d' % self.secret)
         super().__init__(test, web3, lower=0, upper=100)
 
     def construct(self):
-        """Compile and construct an instance. """
+        """Compile and construct an instance."""
         file = os.path.join(PROJECT.root, 'utils', 'contracts', 'guesser', 'Guesser_constructor.sol')
         with open(file, 'r') as fp:
             compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'],

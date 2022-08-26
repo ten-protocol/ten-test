@@ -4,6 +4,7 @@ from ethsys.utils.process import Processes
 
 
 class OBXCoin:
+    """Abstraction over the ERC20 smart contract used locally."""
     GAS = 7200000
 
     def __init__(self, test, web3):

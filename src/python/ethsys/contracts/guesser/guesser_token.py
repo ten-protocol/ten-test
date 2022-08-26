@@ -5,6 +5,7 @@ from ethsys.contracts.guesser.guesser import Guesser
 
 
 class GuesserToken(Guesser):
+    """Abstraction over the pay to play guessing game smart contract."""
 
     def __init__(self, test, web3, size, token_address):
         """Create an instance of the ERC20 contract, compile and construct a web3 instance. """
