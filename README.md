@@ -55,8 +55,33 @@ Once built, to connect to the container run;
 ./utils/docker/run_image.sh
 ```
 
-When in the container, to print out information on the tests, or to run them, change directory to `tests/generic` 
-and run;
+Pre-setup required for Obscuro
+------------------------------
+Whilst the repo is set up to run against a variety of different networks, to run against Obscuro some specific setup 
+tasks are required. This is because currently we need to allocate native OBX for gas usage to all test user accounts, and 
+also for Obscuro specific tests which require tokens to be available in well known ERC20 contracts. To allocate these
+you must first change directory into the `obscuro-test\admin` directory and run the below;
+
+```bash
+# to allocate on Obscuro testnet
+pysys.py run fund_deploy_native
+pysys.py run fund_deploy_tokens
+pysys.py run fund_test_users
+
+# to allocate on Obscuro dev-testnet
+pysys.py run -m obscuro.dev fund_deploy_native
+pysys.py run -m obscuro.dev fund_deploy_tokens
+pysys.py run -m obscuro.dev fund_test_users
+```
+
+See [admin\README.md](admin\README.md]) for more details. 
+
+Print and run tests
+--------------------
+Each test is a separate directory within `obscuro-test/tests` where the directory name denotes the testcase id. Each 
+test will contain a `run.py` file (the execution and validation steps) and a `pysystest.xml` file (metadata about the 
+test such as its title, purpose, supported modes it can be run in etc). To print out information on the tests, or to run 
+them, change directory to `obscuro-test/tests`and run;
 
 ```bash
 # print out test titles
@@ -98,10 +123,33 @@ as detailed in [.default.properties](./.default.properties). To run the tests ag
 pysys.py run -m ropsten
 ```
 
+Running a specific test or range of tests
+-----------------------------------------
+The [pysys](https://pysys-test.github.io/pysys-test/) launch cli provides a rich interface to allow you to run a 
+specific test, ranges of tests, or groups of tests, as well as running them in different modes, with different 
+verbosity logging, and in cycles. See the cli documentation for more detail using `pysys.py run -h`. When running tests 
+pysys will search the directory tree for all tests available from the current working directory downwards, and then 
+filter based on the user request e.g. 
 
 
+```bash
+# run a specific test
+pysys.py run gen_cor_001
 
+# run a range of tests (using python list slicing syntax)
+pysys.py run gen_cor_001:gen_cor_004
+pysys.py run gen_cor_003:
 
+# run a test multiple times
+pysys.py run -c 5 gen_cor_003
+
+# run a test with full verbosity logging
+pysys.py run -v DEBUG gen_cor_003
+```
+
+Whilst pysys does support running tests in a multi-threaded environment, this is currently not supported here due to the 
+nonce needing to be synchronised in a single thread when running using the test accounts. This may be changed in the 
+future where we partition user accounts across running test groups. 
 
 
 
