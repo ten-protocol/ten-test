@@ -1,4 +1,4 @@
-name: Test runner
+name: Allocate funds to user
 on:
   workflow_dispatch:
     inputs:
@@ -7,7 +7,7 @@ on:
         required: true
 
 jobs:
-  Run-Tests:
+  Run-Allocation:
     runs-on: ubuntu-20.04
     steps:
       - run: echo "Triggered by ${{ github.event_name }} event running on branch ${{ github.ref }} "
@@ -43,7 +43,7 @@ jobs:
           sudo python3 -m pip install pysys==1.6.1
           sudo python3 -m pip install py-solc-x
 
-      - name: Run fund
+      - name: Run allocation
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
           /usr/local/bin/pysys.py run -XUSER='${{ github.event.inputs.account_address}}' fund_users
