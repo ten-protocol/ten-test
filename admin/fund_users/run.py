@@ -6,7 +6,7 @@ from ethsys.networks.obscuro import Obscuro
 
 
 class PySysTest(EthereumTest):
-    USERS = [
+    REGISTERED_USERS = [
         '0x686Ad719004590e98F182feA3516d443780C64a1',
         '0x85E1Cc949Bca27912e3e951ad1F68afD1cc4aB15',
         '0x7719A2b2BeC6a98508975C168A565FffCF9Dc266',
@@ -26,6 +26,7 @@ class PySysTest(EthereumTest):
     ONE_GIGA = 1000000000000000000
     OBX_TARGET = 50 * ONE_GIGA
     TOKEN_TARGET = 50
+    USER = None
 
     def execute(self):
         # connect to the L2 network
@@ -39,7 +40,10 @@ class PySysTest(EthereumTest):
         with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
             poc_token = web3_deploy.eth.contract(address=Properties().l2_poc_token_address(self.env), abi=json.load(f))
 
-        for user_address in self.USERS:
+        if self.USER is None: users = self.REGISTERED_USERS
+        else: users = [self.USER]
+
+        for user_address in users:
             self.log.info('')
             self.log.info('Running for address %s' % user_address)
             self.run_for_native(network, user_address, web3_faucet, faucet_account, self.OBX_TARGET)
