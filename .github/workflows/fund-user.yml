@@ -1,0 +1,50 @@
+name: Test runner
+on:
+  workflow_dispatch:
+    inputs:
+      account_address:
+        description: 'Account address of user'
+        required: true
+
+jobs:
+  Run-Tests:
+    runs-on: ubuntu-20.04
+    steps:
+      - run: echo "Triggered by ${{ github.event_name }} event running on branch ${{ github.ref }} "
+
+      - name: Check out obscuro-test
+        uses: actions/checkout@v3
+        with:
+          path: ./obscuro-test
+
+      - name: Check out go-obscuro code
+        uses: actions/checkout@v3
+        with:
+          repository: obscuronet/go-obscuro
+          path: ./go-obscuro
+
+      - name: Build artifacts
+        run: |
+          cd ${{ github.workspace }}/go-obscuro/tools/walletextension/main
+          go build -o ${{ github.workspace }}/obscuro-test/artifacts/wallet_extension
+          ls -l ${{ github.workspace }}/obscuro-test/artifacts
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
+          sudo apt-get install -y software-properties-common
+          sudo add-apt-repository ppa:ethereum/ethereum
+          sudo apt update
+          sudo apt install -y solc
+          
+          sudo apt install -y python3-pip
+          sudo python3 -m pip install web3
+          sudo python3 -m pip install pysys==1.6.1
+          sudo python3 -m pip install py-solc-x
+
+      - name: Run fund
+        run: |
+          cd ${{ github.workspace }}/obscuro-test/admin
+          /usr/local/bin/pysys.py run -XUSER='${{ github.event.inputs.account_address}}' fund_users
+
