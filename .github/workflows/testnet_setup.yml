@@ -1,6 +1,14 @@
 name: Run testnet setup
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: 'Account address of user'
+        required: true
+        options:
+          - testnet
+          - dev-testnet
 
 jobs:
   Run-Allocation:
@@ -39,7 +47,8 @@ jobs:
           sudo python3 -m pip install pysys==1.6.1
           sudo python3 -m pip install py-solc-x
 
-      - name: Run allocation
+      - name: Run allocation on testnet
+        if: ${{ github.event.inputs.environment == 'testnet' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
           /usr/local/bin/pysys.py run fund_deploy_native
@@ -47,4 +56,11 @@ jobs:
           /usr/local/bin/pysys.py run fund_test_users
           /usr/local/bin/pysys.py run fund_users
           
-
+      - name: Run allocation on dev-testnet
+        if: ${{ github.event.inputs.environment == 'dev-testnet' }}
+        run: |
+          cd ${{ github.workspace }}/obscuro-test/admin
+          /usr/local/bin/pysys.py run -m obscuro.dev fund_deploy_native
+          /usr/local/bin/pysys.py run -m obscuro.dev fund_deploy_tokens
+          /usr/local/bin/pysys.py run -m obscuro.dev fund_test_users
+          /usr/local/bin/pysys.py run -m obscuro.dev fund_users
