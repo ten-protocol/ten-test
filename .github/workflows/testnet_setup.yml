@@ -1,4 +1,4 @@
-name: Testnet setup actions
+name: Run testnet setup
 on:
   workflow_dispatch:
 

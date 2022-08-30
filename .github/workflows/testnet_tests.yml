@@ -1,4 +1,4 @@
-name: Testnet end to end tests
+name: Run testnet testcases
 on:
   push:
     branches:
