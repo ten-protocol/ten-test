@@ -2,9 +2,17 @@ name: Allocate funds to user
 on:
   workflow_dispatch:
     inputs:
+      environment:
+        type: choice
+        description: 'Account address of user'
+        required: true
+        options:
+          - testnet
+          - dev-testnet
       account_address:
         description: 'Account address of user'
         required: true
+
 
 jobs:
   Run-Allocation:
@@ -43,8 +51,14 @@ jobs:
           sudo python3 -m pip install pysys==1.6.1
           sudo python3 -m pip install py-solc-x
 
-      - name: Run allocation
+      - name: Run allocation on Oscuro testnet
+        if: ${{ github.event.inputs.message }} == 'testnet'
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
           /usr/local/bin/pysys.py run -XUSER='${{ github.event.inputs.account_address}}' fund_users
 
+      - name: Run allocation on Oscuro dev-testnet
+        if: ${{ github.event.inputs.message }} == 'dev-testnet'
+        run: |
+          cd ${{ github.workspace }}/obscuro-test/admin
+          /usr/local/bin/pysys.py run -XUSER='${{ github.event.inputs.account_address}}' -m obscuro.dev fund_users
