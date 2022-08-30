@@ -1,4 +1,4 @@
-name: Allocate Deployment Account OBX and Tokens
+name: Testnet setup actions
 on:
   workflow_dispatch:
 
@@ -44,4 +44,7 @@ jobs:
           cd ${{ github.workspace }}/obscuro-test/admin
           /usr/local/bin/pysys.py run fund_deploy_native
           /usr/local/bin/pysys.py run fund_deploy_tokens
+          /usr/local/bin/pysys.py run fund_test_users
+          /usr/local/bin/pysys.py run fund_users
+          
 
