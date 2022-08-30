@@ -1,4 +1,4 @@
-name: Run testnet testcases
+name: Run tests
 on:
   schedule:
     - cron:  '0 0 * * *'

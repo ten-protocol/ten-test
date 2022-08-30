@@ -1,4 +1,4 @@
-name: Run testnet setup
+name: Allocate funds on startup
 on:
   workflow_dispatch:
     inputs:
