@@ -6,7 +6,7 @@ on:
     inputs:
       environment:
         type: choice
-        description: 'Account address of user'
+        description: 'Environment'
         required: true
         options:
           - testnet
