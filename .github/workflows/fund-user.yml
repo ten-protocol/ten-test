@@ -6,6 +6,7 @@ on:
         type: choice
         description: 'Environment'
         required: true
+        default: 'testnet'
         options:
           - testnet
           - dev-testnet
