@@ -27,12 +27,7 @@ az vm run-command invoke \
     && python3 -m pip install pysys==1.6.1 \
     && python3 -m pip install py-solc-x \
     && snap install go --classic \
-    && mkdir actions-runner && cd actions-runner \
-    && curl -o actions-runner-linux-x64-2.296.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.296.0/actions-runner-linux-x64-2.296.0.tar.gz \
-    && tar xzf ./actions-runner-linux-x64-2.296.0.tar.gz \
-    && ./config.sh --url https://github.com/obscuronet/obscuro-test --token ABNC5PFD5EWEVWTVWORTFM3DBZGBW \
-    && ./run.sh
-
-
-
-
+    && apt-get remove docker docker-engine docker.io \
+    && apt-get update \
+    && apt install docker.io
+    "
