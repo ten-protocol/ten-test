@@ -1,4 +1,4 @@
-Admin controls on Obscuro TestNet
+Admin controls on Obscuro Testnet
 =================================
 This directory contains utilities to perform admin operations on Obscuro testnet. This is to;
 
