@@ -1,0 +1,27 @@
+name: Run tests local
+on:
+  workflow_dispatch:
+
+jobs:
+  Run-Tests:
+    runs-on: self-hosted
+    steps:
+      - run: echo "Triggered by ${{ github.event_name }} event running on branch ${{ github.ref }} "
+
+      - name: Check out obscuro-test
+        uses: actions/checkout@v3
+        with:
+          path: ./obscuro-test
+
+      - name: Check out go-obscuro code
+        uses: actions/checkout@v3
+        with:
+          repository: obscuronet/go-obscuro
+          path: ./go-obscuro
+
+      - name: Build artifacts
+        run: |
+          cd ${{ github.workspace }}/go-obscuro/tools/walletextension/main
+          go build -o ${{ github.workspace }}/obscuro-test/artifacts/wallet_extension
+          ls -l ${{ github.workspace }}/obscuro-test/artifacts
+
