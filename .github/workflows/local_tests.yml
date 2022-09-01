@@ -45,3 +45,15 @@ jobs:
           ./start-obscuro-node.sh --sgx_enabled=false --host_id=0x0000000000000000000000000000000000000001 --l1host=gethnetwork --mgmtcontractaddr=0xeDa66Cc53bd2f26896f6Ba6b736B1Ca325DE04eF --hocerc20addr=0xC0370e0b5C1A41D447BDdA655079A1B977C71aA9 --pocerc20addr=0x51D43a3Ca257584E770B6188232b199E76B022A2 --is_genesis=true
           sleep 30
           ./testnet-deploy-l2-contracts.sh --l2host=testnet-host-1
+
+      - name: Run allocations
+        run: |
+          cd ${{ github.workspace }}/obscuro-test/admin
+          /usr/local/bin/pysys.py run -m obscuro.local fund_deploy_native
+          /usr/local/bin/pysys.py run -m obscuro.local fund_deploy_tokens
+          /usr/local/bin/pysys.py run -m obscuro.local fund_test_users
+
+      - name: Run tests
+        run: |
+          cd ${{ github.workspace }}/obscuro-test/tests
+          /usr/local/bin/pysys.py run -m obscuro.local gen_cor_001:

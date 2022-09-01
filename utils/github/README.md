@@ -9,20 +9,20 @@ Run the utility scripts to create the VM and connect;
 
 ```bash
 # create the VM
- ./utils/github/create-runner.sh
+ ./utils/github/create-runner.sh <SSH KEY>
  
 # connect to the VM
 ./utils/github/connect-runner.sh <SSH KEY>
 ```
 
-where `SSH KEY` is a registered key for connectivity to VMs within azure. 
+where `SSH KEY` is the key used for secure connection to the VM.  
 
 # Set permissions on Docker
 To set permissions for docker on the VM use the below;
 
 ```bash
 sudo groupadd docker
-sudo usermod -aG docker $USER
+sudo usermod -aG docker azureuser
 newgrp docker
 ```
 

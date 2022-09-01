@@ -1,12 +1,18 @@
 #!/bin/bash
 
+if [ $# -ne 1 ]; then
+  echo "You must specify an SSH key to use in the connection"
+  exit
+fi
+KEY=$1
+
 # create the resource group
 az group create --name SystemTestHostedRunner --location uksouth
 
 # create the vm in the resources group
 az vm create --resource-group SystemTestHostedRunner --name LocalTestnetRunner \
   --image Canonical:0001-com-ubuntu-server-focal:20_04-lts-gen2:20.04.202206220  \
-  --admin-username azureuser --generate-ssh-keys
+  --admin-username azureuser --ssh-key-values $KEY
 
 # run installation steps
 az vm run-command invoke \
