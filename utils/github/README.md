@@ -17,12 +17,10 @@ Run the utility scripts to create the VM and connect;
 
 where `SSH KEY` is a registered key for connectivity to VMs within azure. 
 
-# Install Docker
-To install docker on the VM use the below;
+# Set permissions on Docker
+To set permissions for docker on the VM use the below;
 
 ```bash
-sudo apt-get update
-sudo apt install docker.io
 sudo groupadd docker
 sudo usermod -aG docker $USER
 newgrp docker
