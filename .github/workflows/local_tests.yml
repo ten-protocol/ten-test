@@ -43,4 +43,7 @@ jobs:
           ./testnet-deploy-l2-contracts.sh --l2host=testnet-host-1
           docker container prune
 
-
+      - name: Docker clean up
+        run: |
+          for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
+          docker system prune -a
