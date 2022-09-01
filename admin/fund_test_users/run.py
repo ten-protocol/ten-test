@@ -15,10 +15,10 @@ class PySysTest(EthereumTest):
 
     ONE_GIGA = 1000000000000000000
     OBX_TARGET = 1000 * ONE_GIGA
-    OBX_THRESHOLD = 1 * ONE_GIGA
+    OBX_THRESHOLD = 10 * ONE_GIGA
 
-    TOKEN_TARGET = 500
-    TOKEN_THRESHOLD = 10
+    TOKEN_TARGET = 50 * ONE_GIGA
+    TOKEN_THRESHOLD = 5 * ONE_GIGA
     DISPLAY = False
 
     def execute(self):
