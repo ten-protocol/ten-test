@@ -27,7 +27,6 @@ az vm run-command invoke \
     && python3 -m pip install pysys==1.6.1 \
     && python3 -m pip install py-solc-x \
     && snap install go --classic \
-    && apt-get remove docker docker-engine docker.io \
-    && apt-get update \
-    && apt install docker.io
+    && curl -fsSL https://get.docker.com -o get-docker.sh \
+    && sh ./get-docker.sh
     "
