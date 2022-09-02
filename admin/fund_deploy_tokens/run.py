@@ -7,9 +7,10 @@ from ethsys.networks.obscuro import Obscuro
 
 
 class PySysTest(EthereumTest):
+    ONE_MEGA = 1000000
     ONE_GIGA = 1000000000000000000
-    TOKEN_TARGET = 10000 * ONE_GIGA
-    TOKEN_THRESHOLD = 500 * ONE_GIGA
+    TOKEN_TARGET = 10000 * ONE_MEGA
+    TOKEN_THRESHOLD = 500 * ONE_MEGA
 
     def execute(self):
         # connect to the L1 network and get contracts
