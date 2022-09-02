@@ -59,7 +59,4 @@ class PySysTest(EthereumTest):
             self.log.info('L2 token balances after;')
             self.log.info('  Balance = %d ' % balance_after)
 
-            self.assertTrue((balance_after - balance_before) == amount)
-
-
 
