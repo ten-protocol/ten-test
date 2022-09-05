@@ -40,3 +40,5 @@ class PySysTest(EthereumTest):
         gas_price = network.gas_price(web3)
         self.log.info('Gas price is %s' % gas_price)
         self.assertTrue(gas_price >= 0)
+
+        self.assertTrue(1==2)

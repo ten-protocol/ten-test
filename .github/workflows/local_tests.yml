@@ -67,4 +67,4 @@ jobs:
           webhook: ${{ secrets.CONT_INT_WEBHOOK }}
           title: "Run local testnet tests"
           description: "Runs all system tests through a local testnet"
-
+          avatar_url: ${{ secrets.AVATAR_URL }}
