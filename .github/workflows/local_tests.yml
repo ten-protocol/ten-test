@@ -30,7 +30,7 @@ jobs:
       - name: Docker clean up
         run: |
           for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
-          docker system prune -a
+          docker system prune -af
 
       - name: Build and run local testnet
         run: |
@@ -64,6 +64,7 @@ jobs:
         if: failure()
         uses: sarisia/actions-status-discord@v1
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          webhook: ${{ secrets.CONT_INT_WEBHOOK }}
           title: "Run local testnet tests"
           description: "Runs all system tests through a local testnet"
+
