@@ -59,14 +59,6 @@ jobs:
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
           /usr/local/bin/pysys.py run -m obscuro.local gen_cor_001:
-          
-      - name: Discord notification
-        if: failure()
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.CONT_INT_WEBHOOK }}
-        uses: Ilshidur/action-discord@master
-        with:
-          args: 'Error running the local testnet tests'
 
       - name: Discord notification
         if: failure()
