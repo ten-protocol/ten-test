@@ -1,3 +1,6 @@
+[![Run local tests](https://github.com/obscuronet/obscuro-test/actions/workflows/local_tests.yml/badge.svg)](https://github.com/obscuronet/obscuro-test/actions/workflows/local_tests.yml)
+[![Run testnet tests](https://github.com/obscuronet/obscuro-test/actions/workflows/testnet_tests.yml/badge.svg)](https://github.com/obscuronet/obscuro-test/actions/workflows/testnet_tests.yml)
+
 Obscuro Test Framework (multiple networks)
 ------------------------------------------
 Project repo for running end to end system tests against a variety of networks, with [obscuro](https://obscu.ro/) being 
@@ -7,13 +10,6 @@ the primary network under test. Other networks supported include [ganache](https
 fully system level using [web3.py](https://web3py.readthedocs.io/en/stable/) to interact with the networks which are 
 managed outside the scope of the tests (with the exception of ganache which can be started locally). Note the project is 
 currently under active development and further information on running the tests will be added to this readme over time. 
-
-
-Testnet Badges
---------------
-Nightly tests are run against a sandboxed locally built Testnet, and Testnet ... current badges as below;
-
-[![Run local tests](https://github.com/obscuronet/obscuro-test/actions/workflows/local_tests.yml/badge.svg)](https://github.com/obscuronet/obscuro-test/actions/workflows/local_tests.yml)   [![Run testnet tests](https://github.com/obscuronet/obscuro-test/actions/workflows/testnet_tests.yml/badge.svg)](https://github.com/obscuronet/obscuro-test/actions/workflows/testnet_tests.yml)
 
 
 Repository Structure
