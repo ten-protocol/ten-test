@@ -1,4 +1,4 @@
-name: Run tests
+name: Run remote tests
 on:
   schedule:
     - cron:  '0 * * * *'
@@ -52,13 +52,19 @@ jobs:
           sudo python3 -m pip install pysys==1.6.1
           sudo python3 -m pip install py-solc-x
 
-      - name: Run tests on testnet
+      - name: Run tests on testnet on a schedule event
+        if: ${{ github.event_name == 'schedule' }}
+        run: |
+          cd ${{ github.workspace }}/obscuro-test/tests
+          /usr/local/bin/pysys.py run gen_cor_001:
+
+      - name: Run tests on testnet on a manual trigger
         if: ${{ github.event.inputs.environment == 'testnet' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
           /usr/local/bin/pysys.py run gen_cor_001:
 
-      - name: Run tests on dev-testnet
+      - name: Run tests on dev-testnet on a manual trigger
         if: ${{ github.event.inputs.environment == 'dev-testnet' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
