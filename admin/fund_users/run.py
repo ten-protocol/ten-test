@@ -30,7 +30,7 @@ class PySysTest(EthereumTest):
 
     ONE_GIGA = 1000000000000000000
     OBX_TARGET = 50 * ONE_GIGA
-    TOKEN_TARGET = 50
+    TOKEN_TARGET = 50 * ONE_GIGA
     USER = None
 
     def execute(self):
