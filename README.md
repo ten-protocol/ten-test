@@ -9,6 +9,14 @@ managed outside the scope of the tests (with the exception of ganache which can 
 currently under active development and further information on running the tests will be added to this readme over time. 
 
 
+Testnet Badges
+--------------
+Nightly tests are run against a sandboxed locally built Testnet, and Testnet ... current badges as below;
+
+[![Run local tests](https://github.com/obscuronet/obscuro-test/actions/workflows/local_tests.yml/badge.svg)](https://github.com/obscuronet/obscuro-test/actions/workflows/local_tests.yml)
+[![Run tests](https://github.com/obscuronet/obscuro-test/actions/workflows/testnet_tests.yml/badge.svg)](https://github.com/obscuronet/obscuro-test/actions/workflows/testnet_tests.yml)
+
+
 Repository Structure
 --------------------
 The top level structure of the project is as below;
