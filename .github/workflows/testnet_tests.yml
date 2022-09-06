@@ -17,7 +17,9 @@ jobs:
   Run-Tests:
     runs-on: ubuntu-20.04
     steps:
-      - run: echo "Triggered by ${{ github.event_name }} event running on branch ${{ github.ref }} "
+      - run: echo "Triggered by ${{ github.event_name }}"
+      - run: echo "Branch       ${{ github.ref }}"
+      - run: echo "Environment  ${{ github.event.inputs.environment }}"
 
       - name: Check out obscuro-test
         uses: actions/checkout@v3
