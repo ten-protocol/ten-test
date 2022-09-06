@@ -1,13 +1,11 @@
 <h1 align="center">
   <img alt="obscuro logo" src="https://github.com/obscuronet/go-obscuro/blob/main/docs/assets/images/Obscuro-white-strip.png" width="224px"/><br/>
-  Create Go App CLI
+  Obscuro Test Framework 
 </h1>
 
 [![Run local tests](https://github.com/obscuronet/obscuro-test/actions/workflows/local_tests.yml/badge.svg)](https://github.com/obscuronet/obscuro-test/actions/workflows/local_tests.yml)
 [![Run testnet tests](https://github.com/obscuronet/obscuro-test/actions/workflows/testnet_tests.yml/badge.svg)](https://github.com/obscuronet/obscuro-test/actions/workflows/testnet_tests.yml)
 
-Obscuro Test Framework (multiple networks)
-------------------------------------------
 Project repo for running end to end system tests against a variety of networks, with [obscuro](https://obscu.ro/) being 
 the primary network under test. Other networks supported include [ganache](https://trufflesuite.com/ganache/), 
 [ropsten via infura](https://infura.io/), and [geth](https://geth.ethereum.org/docs/getting-started). The repo uses the 
