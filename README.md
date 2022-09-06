@@ -1,3 +1,8 @@
+<h1 align="center">
+  <img alt="obscuro logo" src="https://github.com/obscuronet/go-obscuro/blob/main/docs/assets/images/Obscuro-white-strip.png" width="224px"/><br/>
+  Create Go App CLI
+</h1>
+
 [![Run local tests](https://github.com/obscuronet/obscuro-test/actions/workflows/local_tests.yml/badge.svg)](https://github.com/obscuronet/obscuro-test/actions/workflows/local_tests.yml)
 [![Run testnet tests](https://github.com/obscuronet/obscuro-test/actions/workflows/testnet_tests.yml/badge.svg)](https://github.com/obscuronet/obscuro-test/actions/workflows/testnet_tests.yml)
 
