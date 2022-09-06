@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img alt="obscuro logo" src="https://github.com/obscuronet/go-obscuro/blob/main/docs/assets/images/Obscuro-white-strip.png" width="224px"/><br/>
+  <img alt="obscuro logo" src="https://github.com/obscuronet/go-obscuro/blob/main/docs/assets/images/Obscuro-white-strip.png" width="300px"/><br/>
   Obscuro Test Framework 
 </h1>
 
