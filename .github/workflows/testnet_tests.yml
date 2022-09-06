@@ -1,4 +1,4 @@
-name: Run remote tests
+name: Run tests
 on:
   schedule:
     - cron:  '0 * * * *'
