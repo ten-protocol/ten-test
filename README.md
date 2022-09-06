@@ -22,6 +22,7 @@ The top level structure of the project is as below;
 
 ```
 ├── README.md            # Readme 
+├── .github              # Github configuration including workflows
 ├── .default.properties  # Default properties file detailing connection and keys required for running 
 ├── pysysproject.xml     # The pysys project file detailing configuration options
 ├── get_artifacts.sh     # Build script to build artifacts from go-obscuro required for running Obscuro tests
