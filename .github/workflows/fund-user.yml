@@ -4,9 +4,9 @@ on:
     inputs:
       environment:
         type: choice
-        description: 'Environment'
+        description: Environment
         required: true
-        default: 'testnet'
+        default: testnet
         options:
           - testnet
           - dev-testnet

@@ -1,14 +1,14 @@
 name: Run tests
 on:
   schedule:
-    - cron:  '0 0 * * *'
+    - cron:  '0 * * * *'
   workflow_dispatch:
     inputs:
       environment:
         type: choice
-        description: 'Environment'
+        description: Environment
         required: true
-        default: 'testnet'
+        default: testnet
         options:
           - testnet
           - dev-testnet
