@@ -4,6 +4,7 @@
 </h1>
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+![Python](https://img.shields.io/badge/python-3.9-blue.svg)
 [![Run local tests](https://github.com/obscuronet/obscuro-test/actions/workflows/local_tests.yml/badge.svg)](https://github.com/obscuronet/obscuro-test/actions/workflows/local_tests.yml)
 [![Run testnet tests](https://github.com/obscuronet/obscuro-test/actions/workflows/testnet_tests.yml/badge.svg)](https://github.com/obscuronet/obscuro-test/actions/workflows/testnet_tests.yml)
 
