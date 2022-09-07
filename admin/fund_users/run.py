@@ -1,4 +1,4 @@
-import json, os
+import json, os, requests
 from pysys.constants import PROJECT
 from ethsys.basetest import EthereumTest
 from ethsys.utils.properties import Properties
@@ -28,68 +28,34 @@ class PySysTest(EthereumTest):
         '0xae52EC7A8e98804a2731692b0f5717E086798363',
         '0x84aeEf50078148BA3835F7a091df557145cA09bF'
     ]
-
-    ONE_GIGA = 1000000000000000000
-    OBX_TARGET = 50 * ONE_GIGA
-    TOKEN_TARGET = 50
     USER = None
 
     def execute(self):
-        # connect to the L2 network
         network = Obscuro
         web3_deploy, deploy_account = network.connect(Properties().funded_deployment_account_pk(self.env), network.HOST, network.PORT)
-        web3_faucet, faucet_account = network.connect(Properties().faucet_pk(self.env), network.HOST, network.ACCOUNT2_PORT)
 
         with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
-            hoc_token = web3_deploy.eth.contract(address=Properties().l2_hoc_token_address(self.env), abi=json.load(f))
+            hoc = web3_deploy.eth.contract(address=Properties().l2_hoc_token_address(self.env), abi=json.load(f))
 
         with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
-            poc_token = web3_deploy.eth.contract(address=Properties().l2_poc_token_address(self.env), abi=json.load(f))
+            poc = web3_deploy.eth.contract(address=Properties().l2_poc_token_address(self.env), abi=json.load(f))
 
-        if self.USER is None: users = self.REGISTERED_USERS
-        else: users = [self.USER]
-
+        users = [self.USER] if self.USER is not None else self.REGISTERED_USERS
         for user_address in users:
             self.log.info('')
             self.log.info('Running for address %s' % user_address)
-            self.run_for_native(network, user_address, web3_faucet, faucet_account, self.OBX_TARGET)
-            self.run_for_token(network, user_address, 'HOC', hoc_token, web3_deploy, deploy_account)
-            self.run_for_token(network, user_address, 'POC', poc_token, web3_deploy, deploy_account)
+            self._obx(user_address)
+            self._token(network, 'HOC', hoc, user_address, web3_deploy, deploy_account)
+            self._token(network, 'POC', poc, user_address, web3_deploy, deploy_account)
 
-    def run_for_native(self, network, user_address, web3_faucet, faucet_account, amount):
-        """Allocates native OBX from the faucet to a users account."""
-        self.log.info('Running for native OBX token')
-        self.log.info('  Native OBX balance before;')
-        self.log.info('    Faucet balance = %d ' % web3_faucet.eth.get_balance(faucet_account.address))
+    def _obx(self, user_address):
+        """Increase native OBX on the layer 2."""
+        self.log.info('Increasing native OBX via the faucet server')
+        headers = {'Content-Type': 'application/json'}
+        data = {"address": user_address}
+        requests.post(Properties().faucet_url(self.env), data=json.dumps(data), headers=headers)
 
-        tx = {
-            'nonce': web3_faucet.eth.get_transaction_count(faucet_account.address),
-            'to': user_address,
-            'value': amount,
-            'gas': 4 * 720000,
-            'gasPrice': 21000
-        }
-        tx_sign = faucet_account.sign_transaction(tx)
-        tx_hash = network.send_transaction(self, web3_faucet, None, tx_sign)
-        network.wait_for_transaction(self, web3_faucet, tx_hash)
-
-        self.log.info('  Native OBX balance after;')
-        self.log.info('    Faucet balance = %d ' % web3_faucet.eth.get_balance(faucet_account.address))
-
-    def run_for_token(self, network, user_address, token_name, token,
-                      web3_deploy, deploy_account):
-        """Allocates ERC20 tokens from the token contract to a users account within that contract."""
-        self.log.info('Running for token %s' % token_name)
-
-        # balance before transaction
-        deploy_balance = token.functions.balanceOf(deploy_account.address).call()
-        self.log.info('  Token balance before;')
-        self.log.info('    Deploy balance = %d ' % deploy_balance)
-
-        # transfer funds from the deployment address to the user account
+    def _token(self, network, token_name, token, user_address, web3_deploy, deploy_account):
+        """Increase token on the layer 2."""
+        self.log.info('Increasing ERC20 token for %s by %d ' % (token_name, self.TOKEN_TARGET))
         network.transact(self, web3_deploy, token.functions.transfer(user_address, self.TOKEN_TARGET), deploy_account, 7200000)
-
-        # balance after transaction
-        deploy_balance = token.functions.balanceOf(deploy_account.address).call()
-        self.log.info('  Token balance after;')
-        self.log.info('    Deploy balance = %d ' % deploy_balance)
