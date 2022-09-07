@@ -1,4 +1,4 @@
-import json, os
+import json, os, requests
 from pysys.constants import PROJECT
 from ethsys.basetest import EthereumTest
 from ethsys.utils.properties import Properties
@@ -41,11 +41,35 @@ class PySysTest(EthereumTest):
             web3_user, user_account = network.connect(user, network.HOST, network.PORT)
             self.log.info('')
             self.log.info('Running for user address %s' % user_account.address)
-            self.run_for_native(network, web3_user, user_account, web3_faucet, faucet_account)
+            self.run_for_native_faucet_server(network, web3_user, user_account, web3_faucet, faucet_account)
             self.run_for_token(network, 'HOC', hoc_token, web3_user, user_account, web3_deploy, deploy_account,
                                web3_faucet, faucet_account)
             self.run_for_token(network, 'POC', poc_token, web3_user, user_account, web3_deploy, deploy_account,
                                web3_faucet, faucet_account)
+
+    def run_for_native_faucet_server(self, network, web3_user, user_account, web3_faucet, faucet_account):
+        """Allocates native OBX to a users account from the faucet server.
+
+        This is a native transfer of funds via a transaction that targets a given users account address.
+        """
+        self.log.info('Running for native OBX token')
+        faucet_obx = web3_faucet.eth.get_balance(faucet_account.address)
+        user_obx = web3_user.eth.get_balance(user_account.address)
+        self.log.info('  L2 balances before;')
+        self.log.info('    OBX Faucet balance = %d ' % faucet_obx)
+        self.log.info('    OBX User balance   = %d ' % user_obx)
+
+        if not self.DISPLAY and user_obx < self.OBX_THRESHOLD:
+            headers = {'Content-Type': 'application/json'}
+            data = {"address": user_account.address}
+            requests.post(Properties.faucet_url(self.env), data=json.dumps(data), headers=headers)
+
+            faucet_obx = web3_faucet.eth.get_balance(faucet_account.address)
+            user_obx = web3_user.eth.get_balance(user_account.address)
+            self.log.info('  L2 balances after;')
+            self.log.info('    OBX Faucet balance = %d ' % faucet_obx)
+            self.log.info('    OBX User balance   = %d ' % user_obx)
+
 
     def run_for_native(self, network, web3_user, user_account, web3_faucet, faucet_account):
         """Allocates native OBX from the faucet to a users account.

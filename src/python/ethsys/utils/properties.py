@@ -37,6 +37,9 @@ class Properties:
     def faucet_pk(self, key):
         return self.get(key, 'FaucetPK')
 
+    def faucet_url(self, key):
+        return self.get(key, 'FaucetURL')
+
     def funded_deployment_account_pk(self, key):
         return self.get(key, 'FundedDeploymentAccountPK')
 
