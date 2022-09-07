@@ -20,8 +20,8 @@ class EthereumTest(BaseTest):
 
         Note this assumes the PK for the user is available i.e. we are able to check balances.
         """
-        if target is None: target = self.OBX_TARGET
-        if threshold is None: threshold = self.OBX_THRESHOLD
+        target = self.OBX_TARGET if target is None else target
+        threshold = self.OBX_THRESHOLD if threshold is None else threshold
         if self.env in ['obscuro', 'obscuro.dev']:
             self.obx_from_faucet_server(web3_user, user_account, web3_faucet, faucet_account, threshold)
         else:
@@ -90,8 +90,8 @@ class EthereumTest(BaseTest):
         This is a reallocation of tokens within a token contract to a particular user.
         """
         self.log.info('Running for token %s' % token_name)
-        if target is None: target = self.TOKEN_TARGET
-        if threshold is None: threshold = self.TOKEN_THRESHOLD
+        target = self.TOKEN_TARGET if target is None else target
+        threshold = self.TOKEN_THRESHOLD if threshold is None else threshold
 
         deploy_balance = token.functions.balanceOf(deploy_account.address).call()
         user_balance = token.functions.balanceOf(user_account.address).call({'from': user_account.address})
