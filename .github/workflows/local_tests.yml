@@ -69,3 +69,21 @@ jobs:
           title: "Run local testnet tests"
           description: "Runs all system tests through a local testnet"
           avatar_url: ${{ secrets.AVATAR_URL }}
+
+      - name: Upload wallet extension logs
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: runner-artifact
+          path: |
+            ${{ github.workspace }}/obscuro-test/.runner/*
+          retention-days: 2
+
+      - name: Upload testcase output
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: test-artifact
+          path: |
+            ${{ github.workspace }}/obscuro-test/**/Output
+          retention-days: 2
