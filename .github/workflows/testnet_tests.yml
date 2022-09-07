@@ -63,7 +63,7 @@ jobs:
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
           /usr/local/bin/pysys.py run gen_cor_001:
-          /usr/local/bin/pysys.py run -v CRIT -n 10 obs_cor_001
+          /usr/local/bin/pysys.py run -v CRIT -c 10 obs_cor_001
 
       - name: Run tests on dev-testnet on a manual trigger
         if: ${{ github.event.inputs.environment == 'dev-testnet' }}
