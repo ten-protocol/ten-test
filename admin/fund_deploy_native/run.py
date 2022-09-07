@@ -6,13 +6,11 @@ from ethsys.networks.obscuro import Obscuro
 class PySysTest(EthereumTest):
 
     def execute(self):
-        # connect to the L2 network
         network = Obscuro
         web3_deploy, deploy_account = network.connect(Properties().funded_deployment_account_pk(self.env),
                                                       network.HOST, network.PORT)
         web3_faucet, faucet_account = network.connect(Properties().faucet_pk(self.env),
                                                       network.HOST, network.ACCOUNT2_PORT)
 
-        self.fund_obx(self, network, web3_deploy, deploy_account, web3_faucet, faucet_account)
-
+        self.fund_obx(network, web3_deploy, deploy_account, web3_faucet, faucet_account)
 
