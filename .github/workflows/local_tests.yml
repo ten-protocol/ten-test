@@ -4,6 +4,7 @@ on:
     - cron: '10 2 * * *'
   workflow_dispatch:
   repository_dispatch:
+    types: [pull_request]
 
 jobs:
   Run-Tests:
