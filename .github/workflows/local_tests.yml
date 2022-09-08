@@ -4,13 +4,17 @@ on:
     - cron: '10 2 * * *'
   workflow_dispatch:
   repository_dispatch:
-    types: [pull_request]
+    types: [merged_pull_request]
 
 jobs:
   Run-Tests:
     runs-on: self-hosted
     steps:
       - run: echo "Triggered by ${{ github.event_name }} event running on branch ${{ github.ref }} "
+
+      - name: Log the PR number
+        if: ${{ github.event_name == 'repository_dispatch' }}
+        run: echo "Triggered by PR number ${{ github.event.client_payload.number }}"
 
       - name: Check out obscuro-test
         uses: actions/checkout@v3
