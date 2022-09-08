@@ -1,7 +1,7 @@
 name: Log PR merged repository dispatch
 on:
   repository_dispatch:
-    types: [pull_request]
+    types: [merged_pull_request]
 
 jobs:
   Log-Output:
