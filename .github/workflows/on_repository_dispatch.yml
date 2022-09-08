@@ -4,7 +4,7 @@ on:
     types: [pull_request]
 
 jobs:
-  Log output:
+  Log-Output:
     runs-on: ubuntu-latest
     steps:
       - run: echo "Triggered by PR number ${{ github.event.client_payload.number }}"
