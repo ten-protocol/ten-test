@@ -17,7 +17,6 @@ fully system level using [web3.py](https://web3py.readthedocs.io/en/stable/) to 
 managed outside the scope of the tests (with the exception of ganache which can be started locally). Note the project is 
 currently under active development and further information on running the tests will be added to this readme over time. 
 
-
 Repository Structure
 --------------------
 The top level structure of the project is as below;
