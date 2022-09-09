@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC API: check getBlockByHash</title>
+        <title>RPC API: check get_block_by_hash</title>
         <purpose><![CDATA[
 ]]>
         </purpose>

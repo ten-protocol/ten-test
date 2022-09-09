@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC API: check getGasPrice</title>
+        <title>RPC API: check gas_price</title>
         <purpose><![CDATA[
 Makes a call to get the current gas price.
 ]]>

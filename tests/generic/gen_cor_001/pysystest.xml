@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC API: check chainId</title>
+        <title>RPC API: check chain_id</title>
         <purpose><![CDATA[
 ]]>
         </purpose>
