@@ -2,18 +2,17 @@
 <pysystest type="auto">
 
     <description>
-        <title>Guesser: pay to play, deploy contract and guess the value</title>
+        <title>RPC API: check get_block_by_number</title>
         <purpose><![CDATA[
-Deploys a guessing game which requires tokens in order to play. A game user must first approve the owner of the
-game to be able to withdraw tokens from its account via an ERC20 token. Once approved the user can make a guess
-to the hidden number.
+Deploy a block, get the block back using the number as a reference, and then check within that block the number is
+correct.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group></group>
+            <group>rpc</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

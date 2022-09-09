@@ -1,18 +1,24 @@
 from ethsys.basetest import EthereumTest
-from ethsys.contracts.guesser.guesser import Guesser
+from ethsys.contracts.storage.storage import Storage
 from ethsys.networks.factory import NetworkFactory
 
 
 class PySysTest(EthereumTest):
-
     def execute(self):
-        # deployment of contract
+        # connect to the network
         network = NetworkFactory.get_network(self.env)
         web3, account = network.connect_account1()
+        self.log.info('Using account with address %s' % account.address)
 
-        guesser = Guesser(self, web3, 0, 100)
-        guesser.deploy(network, account)
+        # get the block number
+        block_number_initial = network.get_block_number(web3)
+        self.log.info('Block number is %d' % block_number_initial)
+        self.assertTrue(block_number_initial >= 0)
 
-        # guess the number
-        self.log.info('Starting guessing game')
-        self.assertTrue(guesser.guess() == 12)
+        storage = Storage(self, web3, 100)
+        storage.deploy(network, account)
+
+        # get the new block number
+        block_number_deploy = network.get_block_number(web3)
+        self.log.info('Block number is %d' % block_number_deploy)
+        self.assertTrue(block_number_deploy > block_number_initial)

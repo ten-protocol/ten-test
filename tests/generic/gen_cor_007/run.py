@@ -1,4 +1,3 @@
-import re
 from ethsys.basetest import EthereumTest
 from ethsys.contracts.error.error import Error
 from ethsys.networks.factory import NetworkFactory
@@ -14,29 +13,9 @@ class PySysTest(EthereumTest):
         error = Error(self, web3, 'foo')
         error.deploy(network, account)
 
-        # force a require
+        self.log.info('Getting the contract bytecode ...')
         try:
-            error.contract.functions.force_require().call()
+            byte_code = web3.eth.get_code(error.contract_address).hex()[2:]
+            self.assertTrue(byte_code in error.bytecode)
         except Exception as e:
-            self.log.info('Exception type: %s' % type(e).__name__)
-            self.log.info('Exception args: %s' % e.args[0])
-            regex = re.compile('execution reverted:.*Forced require', re.M)
-            self.assertTrue(regex.search(e.args[0]) is not None)
-
-        # force a revert
-        try:
-            error.contract.functions.force_revert().call()
-        except Exception as e:
-            self.log.info('Exception type: %s' % type(e).__name__)
-            self.log.info('Exception args: %s' % e.args[0])
-            regex = re.compile('execution reverted:.*Forced revert', re.M)
-            self.assertTrue(regex.search(e.args[0]) is not None)
-
-        # force assert
-        try:
-            error.contract.functions.force_assert().call()
-        except Exception as e:
-            self.log.info('Exception type: %s' % type(e).__name__)
-            self.log.info('Exception args: %s' % e.args[0])
-            regex = re.compile('execution reverted', re.M)
-            self.assertTrue(regex.search(e.args[0]) is not None)
+            self.log.error('Error getting bytecode', e)

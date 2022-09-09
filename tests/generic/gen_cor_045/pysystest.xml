@@ -2,15 +2,17 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC API: check get_block_by_hash</title>
-        <purpose><![CDATA[
-]]>
+        <title>Error: assert, require and assert</title>
+        <purpose><![CDATA[]]>
+Deploy a contract and check for error reporting on revert, require and assert.
         </purpose>
     </description>
 
+    <skipped reason="https://github.com/obscuronet/obscuro-internal/issues/759" />
+
     <classification>
         <groups inherit="true">
-            <group>rpc</group>
+            <group></group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

@@ -2,15 +2,19 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC API: check get_block_by_hash</title>
-        <purpose><![CDATA[
-]]>
+        <title>ERC20: transfer, approve and transfer from using three accounts</title>
+        <purpose><![CDATA[]]>
+Uses three accounts; account1 deploys the OBX ERC20 contract and therefore owns all initial tokens.
+Account1 transfers some tokens to account2. Account1 then approves account2 for a certain amount of
+tokens, and account2 then transfers from that approval amount to account3. Account3 then sends all it's
+tokens back to account1. In this way all three accounts are performing a transaction, and calling to get
+their balances.
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>rpc</group>
+            <group></group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

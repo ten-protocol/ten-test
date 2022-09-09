@@ -2,17 +2,16 @@
 <pysystest type="auto">
 
     <description>
-        <title>Guesser: state changing, deploy contract and guess the value</title>
+        <title>RPC API: check get_balance</title>
         <purpose><![CDATA[
-A simple smart contract which hard codes a value which it is necessary to guess. Test is setup to run
-against Obscuro, Ropsten or Ganache. There is a constructor and destructor in the contract.
+Checks that a call to get balance returns the users balance.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group></group>
+            <group>rpc</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>
