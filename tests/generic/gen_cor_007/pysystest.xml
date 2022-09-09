@@ -2,17 +2,18 @@
 <pysystest type="auto">
 
     <description>
-        <title>Error: assert, require and assert</title>
+        <title>RPC API: check on get_code from the owner of a contract</title>
         <purpose><![CDATA[]]>
-Deploy a contract and check for error reporting on revert, require and assert.
+Deploy a contract and when deployed check that you can call getCode to return the byte code. Note that the resulting
+bytecode does NOT match with the bytecode that is stored on the blockchain. The reason for that is that the compiled
+contract contains an initialization part that is run only once when the contract is submitted to the chain. So the byte
+code stored on the blockchain is the code without the initialization part.
         </purpose>
     </description>
 
-    <skipped reason="https://github.com/obscuronet/obscuro-internal/issues/759" />
-
     <classification>
         <groups inherit="true">
-            <group></group>
+            <group>rpc</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

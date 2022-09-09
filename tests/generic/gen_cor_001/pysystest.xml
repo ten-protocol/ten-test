@@ -2,16 +2,15 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC API: valid RPC calls against the network</title>
+        <title>RPC API: check chainId</title>
         <purpose><![CDATA[
-Runs calls against publicly available RPC APIs.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group></group>
+            <group>rpc</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

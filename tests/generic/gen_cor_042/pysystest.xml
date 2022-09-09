@@ -2,16 +2,18 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC API: check blockNumber</title>
+        <title>Guesser: pay to play, deploy contract and guess the value</title>
         <purpose><![CDATA[
-Checks that calls to get block number increases as blocks are added.
+Deploys a guessing game which requires tokens in order to play. A game user must first approve the owner of the
+game to be able to withdraw tokens from its account via an ERC20 token. Once approved the user can make a guess
+to the hidden number.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>rpc</group>
+            <group></group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

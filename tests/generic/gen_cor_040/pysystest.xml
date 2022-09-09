@@ -2,16 +2,17 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC API: check blockNumber</title>
+        <title>Guesser: no state changing, deploy contract and guess the value</title>
         <purpose><![CDATA[
-Checks that calls to get block number increases as blocks are added.
+A simple smart contract which hard codes a value which it is necessary to guess. Test is setup to run
+against Obscuro, Ropsten or Ganache. There is no constructor or destructor in the contract.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>rpc</group>
+            <group></group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>
