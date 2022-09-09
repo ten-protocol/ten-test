@@ -1,8 +1,6 @@
-import re
 from ethsys.basetest import EthereumTest
 from ethsys.contracts.error.error import Error
 from ethsys.networks.factory import NetworkFactory
-
 
 
 class PySysTest(EthereumTest):

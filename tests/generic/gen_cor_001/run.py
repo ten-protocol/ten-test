@@ -13,8 +13,3 @@ class PySysTest(EthereumTest):
         chain_id = network.chain_id()
         self.log.info('Chain id is %d' % chain_id)
         self.assertTrue(chain_id == network.chain_id())
-
-        # get gas price
-        gas_price = network.gas_price(web3)
-        self.log.info('Gas price is %s' % gas_price)
-        self.assertTrue(gas_price >= 0)
