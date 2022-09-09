@@ -2,12 +2,10 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC API: check get_code</title>
+        <title>RPC API: check estimateGas</title>
         <purpose><![CDATA[]]>
-Deploy a contract and when deployed check that you can call getCode to return the byte code. Note that the resulting
-bytecode does NOT match with the bytecode that is stored on the blockchain. The reason for that is that the compiled
-contract contains an initialization part that is run only once when the contract is submitted to the chain. So the byte
-code stored on the blockchain is the code without the initialization part.
+Checks that you can estimate gas for a contract deployment, and calls made to a contract (to store and retrieve a
+value). We assume it will cost more to deploy than store, and more to store than retrieve.
         </purpose>
     </description>
 
@@ -16,8 +14,8 @@ code stored on the blockchain is the code without the initialization part.
             <group>rpc</group>
         </groups>
         <modes inherit="true">
-            <mode>obscuro.dev</mode>
-            <mode>obscuro.local</mode>
+<!--            <mode>obscuro.dev</mode>-->
+<!--            <mode>obscuro.local</mode>-->
             <mode>ropsten</mode>
             <mode>ganache</mode>
         </modes>
