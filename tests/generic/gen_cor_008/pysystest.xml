@@ -9,13 +9,15 @@ value). We assume it will cost more to deploy than store, and more to store than
         </purpose>
     </description>
 
+    <skipped reason="https://github.com/obscuronet/obscuro-internal/issues/929" />
+
     <classification>
         <groups inherit="true">
             <group>rpc</group>
         </groups>
         <modes inherit="true">
-<!--            <mode>obscuro.dev</mode>-->
-<!--            <mode>obscuro.local</mode>-->
+            <mode>obscuro.dev</mode>
+            <mode>obscuro.local</mode>
             <mode>ropsten</mode>
             <mode>ganache</mode>
         </modes>
