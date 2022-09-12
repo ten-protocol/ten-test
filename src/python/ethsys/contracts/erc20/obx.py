@@ -36,6 +36,7 @@ class OBXCoin:
         tx_receipt = network.transact(self.test, self.web3, self.contract, account, self.GAS)
         self.contract_address = tx_receipt.contractAddress
         self.contract = self.web3.eth.contract(address=self.contract_address, abi=self.abi)
+        return tx_receipt
 
     def transfer(self, network, address, amount):
         network.transact(self.test, self.web3, self.contract.functions.transfer(address, amount), self.account, self.GAS)

@@ -39,6 +39,7 @@ class Guesser:
         tx_receipt = network.transact(self.test, self.web3, self.contract, account, self.GAS)
         self.contract_address = tx_receipt.contractAddress
         self.contract = self.web3.eth.contract(address=self.contract_address, abi=self.abi)
+        return tx_receipt
 
     def guess(self, max_guesses=100):
         """Perform a guessing game to get the secret number."""

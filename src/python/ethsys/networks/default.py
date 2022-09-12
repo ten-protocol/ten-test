@@ -1,7 +1,6 @@
 from web3 import Web3
 from pysys.constants import *
 from ethsys.utils.properties import Properties
-from ethsys.utils.keys import pk_to_account
 
 
 class Default:
@@ -33,7 +32,7 @@ class Default:
     @classmethod
     def transact(cls, test, web3, target, account, gas):
         tx_sign = cls.build_transaction(test, web3, target, account, gas)
-        tx_hash = cls.send_transaction(test, web3, target, tx_sign)
+        tx_hash = cls.send_transaction(test, web3, tx_sign)
         tx_recp = cls.wait_for_transaction(test, web3, tx_hash)
         return tx_recp
 
@@ -51,7 +50,7 @@ class Default:
         return signed_tx
 
     @classmethod
-    def send_transaction(cls, test, web3, target, signed_tx):
+    def send_transaction(cls, test, web3, signed_tx):
         tx_hash = None
         try:
             tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
@@ -72,26 +71,3 @@ class Default:
             test.log.error('Full receipt: %s' % tx_receipt)
             test.addOutcome(FAILED, abortOnError=TRUE)
         return tx_receipt
-
-    @classmethod
-    def get_block_number(cls, web3):
-        return web3.eth.get_block_number()
-
-    @classmethod
-    def get_balance(cls, web3, account):
-        return web3.eth.get_balance(account)
-
-    @classmethod
-    def get_block_by_number(cls, web3, block_number):
-        return web3.eth.get_block(block_number)
-
-    @classmethod
-    def get_block_by_hash(cls, web3, block_hash):
-        return web3.eth.get_block(block_hash)
-
-    @classmethod
-    def gas_price(cls, web3):
-        return web3.eth.gas_price
-
-
-

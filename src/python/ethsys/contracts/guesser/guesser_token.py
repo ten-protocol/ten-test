@@ -37,3 +37,4 @@ class GuesserToken(Guesser):
         tx_receipt = network.transact(self.test, self.web3, self.contract, account, self.GAS)
         self.contract_address = tx_receipt.contractAddress
         self.contract = self.web3.eth.contract(address=self.contract_address, abi=self.abi)
+        return tx_receipt
