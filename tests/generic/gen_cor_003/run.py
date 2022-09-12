@@ -10,7 +10,7 @@ class PySysTest(EthereumTest):
         self.log.info('Using account with address %s' % account.address)
 
         # get the balance
-        balance = network.get_balance(web3, account.address)
+        balance = web3.eth.get_balance(account.address)
         self.log.info('Balance for new accounts is %d' % balance)
         self.assertTrue(balance >= 0)
 

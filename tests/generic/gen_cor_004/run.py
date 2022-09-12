@@ -11,13 +11,13 @@ class PySysTest(EthereumTest):
         self.log.info('Using account with address %s' % account.address)
 
         storage = Storage(self, web3, 100)
-        storage.deploy(network, account)
+        tx_receipt = storage.deploy(network, account)
 
         # get the new block number
-        block_number_deploy = network.get_block_number(web3)
+        block_number_deploy = tx_receipt.blockNumber
         self.log.info('Block number is %d' % block_number_deploy)
 
         # get block by number
-        block = network.get_block_by_number(web3, block_number_deploy)
+        block = web3.eth.get_block(block_number_deploy)
         self.log.info('Block has number %s' % block.number)
         self.assertTrue(block.number == block_number_deploy)

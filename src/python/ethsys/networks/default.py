@@ -1,7 +1,6 @@
 from web3 import Web3
 from pysys.constants import *
 from ethsys.utils.properties import Properties
-from ethsys.utils.keys import pk_to_account
 
 
 class Default:
@@ -72,26 +71,3 @@ class Default:
             test.log.error('Full receipt: %s' % tx_receipt)
             test.addOutcome(FAILED, abortOnError=TRUE)
         return tx_receipt
-
-    @classmethod
-    def get_block_number(cls, web3):
-        return web3.eth.get_block_number()
-
-    @classmethod
-    def get_balance(cls, web3, account):
-        return web3.eth.get_balance(account)
-
-    @classmethod
-    def get_block_by_number(cls, web3, block_number):
-        return web3.eth.get_block(block_number)
-
-    @classmethod
-    def get_block_by_hash(cls, web3, block_hash):
-        return web3.eth.get_block(block_hash)
-
-    @classmethod
-    def gas_price(cls, web3):
-        return web3.eth.gas_price
-
-
-
