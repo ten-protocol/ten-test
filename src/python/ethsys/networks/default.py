@@ -32,7 +32,7 @@ class Default:
     @classmethod
     def transact(cls, test, web3, target, account, gas):
         tx_sign = cls.build_transaction(test, web3, target, account, gas)
-        tx_hash = cls.send_transaction(test, web3, target, tx_sign)
+        tx_hash = cls.send_transaction(test, web3, tx_sign)
         tx_recp = cls.wait_for_transaction(test, web3, tx_hash)
         return tx_recp
 
@@ -50,7 +50,7 @@ class Default:
         return signed_tx
 
     @classmethod
-    def send_transaction(cls, test, web3, target, signed_tx):
+    def send_transaction(cls, test, web3, signed_tx):
         tx_hash = None
         try:
             tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)

@@ -71,7 +71,7 @@ class EthereumTest(BaseTest):
                 'gasPrice': 21000
             }
             tx_sign = faucet_account.sign_transaction(tx)
-            tx_hash = network.send_transaction(self, web3_faucet, None, tx_sign)
+            tx_hash = network.send_transaction(self, web3_faucet, tx_sign)
             network.wait_for_transaction(self, web3_faucet, tx_hash)
 
             faucet_obx = web3_faucet.eth.get_balance(faucet_account.address)
