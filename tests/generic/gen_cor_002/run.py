@@ -11,9 +11,7 @@ class PySysTest(EthereumTest):
         self.log.info('Using account with address %s' % account.address)
 
         # get the block number
-
         block_number_initial = web3.eth.get_block_number()
-        block_number_initial = network.get_block_number(web3)
         self.log.info('Block number is %d' % block_number_initial)
         self.assertTrue(block_number_initial >= 0)
 
