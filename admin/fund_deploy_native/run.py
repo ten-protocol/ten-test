@@ -10,7 +10,7 @@ class PySysTest(EthereumTest):
         web3_deploy, deploy_account = network.connect(Properties().funded_deployment_account_pk(self.env),
                                                       network.HOST, network.PORT)
         web3_faucet, faucet_account = network.connect(Properties().faucet_pk(self.env),
-                                                      network.HOST, network.ACCOUNT2_PORT)
+                                                      network.HOST, network.PORT)
 
         self.fund_obx(network, web3_deploy, deploy_account, web3_faucet, faucet_account)
 

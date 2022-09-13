@@ -7,6 +7,7 @@ class Geth(Default):
     """A Geth node giving access to the underlying network."""
     HOST = '127.0.0.1'
     PORT = 8545
+    WS_PORT = 8546
 
     @classmethod
     def chain_id(cls): return 1337

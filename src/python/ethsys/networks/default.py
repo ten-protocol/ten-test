@@ -8,7 +8,8 @@ class Default:
     """A default node giving access to an underlying network."""
     HOST = None
     PORT = None
-    HTTP_CONNECTIONS = OrderedDict()
+    WS_PORT = None
+    CONNECTIONS = OrderedDict()
 
     @classmethod
     def chain_id(cls): return None
@@ -17,13 +18,13 @@ class Default:
     def connect(cls, private_key, host, port):
         key = (private_key, host, port)
 
-        if key in cls.HTTP_CONNECTIONS:
-            web3, account = cls.HTTP_CONNECTIONS[key]
+        if key in cls.CONNECTIONS:
+            web3, _ = cls.CONNECTIONS[key]
             if not web3.isConnected():
-                cls.HTTP_CONNECTIONS[key] = cls.http_connection(private_key, host, port)
+                cls.CONNECTIONS[key] = cls.http_connection(private_key, host, port)
         else:
-            cls.HTTP_CONNECTIONS[key] = cls.http_connection(private_key, host, port)
-        return cls.HTTP_CONNECTIONS[key]
+            cls.CONNECTIONS[key] = cls.http_connection(private_key, host, port)
+        return cls.CONNECTIONS[key]
 
     @classmethod
     def http_connection(cls, private_key, host, port):

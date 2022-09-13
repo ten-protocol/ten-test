@@ -18,7 +18,7 @@ class PySysTest(EthereumTest):
         web3_deploy, deploy_account = network.connect(Properties().funded_deployment_account_pk(self.env), network.HOST,
                                                       network.PORT)
         web3_faucet, faucet_account = network.connect(Properties().faucet_pk(self.env), network.HOST,
-                                                      network.ACCOUNT2_PORT)
+                                                      network.PORT)
 
         with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
             hoc = web3_deploy.eth.contract(address=Properties().l2_hoc_token_address(self.env), abi=json.load(f))

@@ -8,7 +8,6 @@ from ethsys.utils.properties import Properties
 
 
 class EthereumRunnerPlugin():
-    SINGLE_WALLET = True
 
     def setup(self, runner):
         """Set up a runner plugin to start any processes required to execute the tests."""
@@ -61,10 +60,7 @@ class EthereumRunnerPlugin():
             runner.log.info('Removing wallet extension persistence file')
             os.remove(persistence_file)
 
-        self.run_wallet(runner, host, Obscuro.ACCOUNT1_PORT)
-        if not self.SINGLE_WALLET:
-            self.run_wallet(runner, host, Obscuro.ACCOUNT2_PORT)
-            self.run_wallet(runner, host, Obscuro.ACCOUNT3_PORT)
+        self.run_wallet(runner, host, Obscuro.PORT)
         time.sleep(1)
 
     def run_wallet(self, runner, host, port):
