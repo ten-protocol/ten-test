@@ -1,4 +1,5 @@
 from web3 import Web3
+from collections import OrderedDict
 from pysys.constants import *
 from ethsys.utils.properties import Properties
 
@@ -7,13 +8,32 @@ class Default:
     """A default node giving access to an underlying network."""
     HOST = None
     PORT = None
+    HTTP_CONNECTIONS = OrderedDict()
 
     @classmethod
     def chain_id(cls): return None
 
     @classmethod
     def connect(cls, private_key, host, port):
+        key = (private_key, host, port)
+
+        if key in cls.HTTP_CONNECTIONS:
+            web3, account = cls.HTTP_CONNECTIONS[key]
+            if not web3.isConnected():
+                cls.HTTP_CONNECTIONS[key] = cls.http_connection(private_key, host, port)
+        else:
+            cls.HTTP_CONNECTIONS[key] = cls.http_connection(private_key, host, port)
+        return cls.HTTP_CONNECTIONS[key]
+
+    @classmethod
+    def http_connection(cls, private_key, host, port):
         web3 = Web3(Web3.HTTPProvider('http://%s:%d' % (host, port)))
+        account = web3.eth.account.privateKeyToAccount(private_key)
+        return web3, account
+
+    @classmethod
+    def ws_connection(cls, private_key, host, port):
+        web3 = Web3(Web3.WebsocketProvider('wss://%s:%d' % (host, port)))
         account = web3.eth.account.privateKeyToAccount(private_key)
         return web3, account
 

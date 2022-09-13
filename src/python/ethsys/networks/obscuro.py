@@ -1,5 +1,6 @@
 import requests, time, json
 from web3 import Web3
+from collections import OrderedDict
 from pysys.constants import *
 from ethsys.networks.default import Default
 from ethsys.utils.properties import Properties
@@ -7,6 +8,7 @@ from ethsys.networks.geth import Geth
 from eth_account.messages import encode_defunct
 
 SINGLE_WALLET = True
+
 
 class ObscuroL1(Geth):
     HOST = 'testnet-gethnetwork.uksouth.azurecontainer.io'
@@ -30,23 +32,17 @@ class Obscuro(Default):
     ACCOUNT1_PORT = PORT
     ACCOUNT2_PORT = PORT if SINGLE_WALLET else 4000
     ACCOUNT3_PORT = PORT if SINGLE_WALLET else 5000
-    KEYS = set()
+    HTTP_CONNECTIONS = OrderedDict()
 
     @classmethod
     def chain_id(cls):
         return 777
 
     @classmethod
-    def connect(cls, private_key, host, port):
+    def http_connection(cls, private_key, host, port):
         web3 = Web3(Web3.HTTPProvider('http://%s:%d' % (host, port)))
         account = web3.eth.account.privateKeyToAccount(private_key)
-
-        # register for a viewing key if we have not already done so
-        key = (private_key, host, port)
-        if key not in cls.KEYS:
-            cls.__generate_viewing_key(web3, host, port, account, private_key)
-            cls.KEYS.add(key)
-            
+        cls.__generate_viewing_key(web3, host, port, account, private_key)
         return web3, account
 
     @classmethod
