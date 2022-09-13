@@ -14,7 +14,7 @@ class PySysTest(EthereumTest):
         hoc_address = Properties().l2_hoc_token_address(self.env)
 
         # get the connections for the game user
-        web3, account = network.connect(Properties().gameuserpk(), network.HOST, network.PORT)
+        web3, account = network.connect_game_user()
         self.log.info('Game contract address is %s' % game_address)
         self.log.info('Game user account is %s' % account.address)
 

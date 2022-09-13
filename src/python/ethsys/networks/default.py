@@ -51,6 +51,10 @@ class Default:
         return cls.connect(Properties().account3pk(), cls.HOST, cls.PORT)
 
     @classmethod
+    def connect_game_user(cls):
+        return cls.connect(Properties().gameuserpk(), cls.HOST, cls.PORT)
+
+    @classmethod
     def transact(cls, test, web3, target, account, gas):
         tx_sign = cls.build_transaction(test, web3, target, account, gas)
         tx_hash = cls.send_transaction(test, web3, tx_sign)
