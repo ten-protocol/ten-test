@@ -6,6 +6,7 @@ from ethsys.utils.properties import Properties
 from ethsys.networks.geth import Geth
 from eth_account.messages import encode_defunct
 
+SINGLE_WALLET = True
 
 class ObscuroL1(Geth):
     HOST = 'testnet-gethnetwork.uksouth.azurecontainer.io'
@@ -27,8 +28,9 @@ class Obscuro(Default):
     HOST = '127.0.0.1'
     PORT = 3000
     ACCOUNT1_PORT = PORT
-    ACCOUNT2_PORT = 4000
-    ACCOUNT3_PORT = 5000
+    ACCOUNT2_PORT = PORT if SINGLE_WALLET else 4000
+    ACCOUNT3_PORT = PORT if SINGLE_WALLET else 5000
+    KEYS = set()
 
     @classmethod
     def chain_id(cls):
@@ -38,7 +40,13 @@ class Obscuro(Default):
     def connect(cls, private_key, host, port):
         web3 = Web3(Web3.HTTPProvider('http://%s:%d' % (host, port)))
         account = web3.eth.account.privateKeyToAccount(private_key)
-        cls.__generate_viewing_key(web3, host, port, account, private_key)
+
+        # register for a viewing key if we have not already done so
+        key = (private_key, host, port)
+        if key not in cls.KEYS:
+            cls.__generate_viewing_key(web3, host, port, account, private_key)
+            cls.KEYS.add(key)
+            
         return web3, account
 
     @classmethod
