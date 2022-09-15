@@ -23,7 +23,7 @@ class PySysTest(EthereumTest):
 
         # connect to the L2 network and get contracts
         l2 = Obscuro
-        web3_l2, _ = l2.connect(deployment_pk, l2.HOST, l2.PORT)
+        web3_l2, _ = l2.connect(deployment_pk)
 
         with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
             hoc_l2 = web3_l2.eth.contract(address=Properties().l2_hoc_token_address(self.env), abi=json.load(f))

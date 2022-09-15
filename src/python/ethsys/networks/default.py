@@ -6,8 +6,9 @@ from ethsys.utils.properties import Properties
 
 class Default:
     """A default node giving access to an underlying network."""
-    HOST = '127.0.0.1'
+    HOST = 'http://127.0.0.1'
     PORT = 8545
+    WS_HOST = 'ws://127.0.0.1'
     WS_PORT = 8546
     CONNECTIONS = OrderedDict()
 
@@ -15,44 +16,42 @@ class Default:
     def chain_id(cls): return None
 
     @classmethod
-    def connect(cls, private_key, host, port):
-        key = (private_key, host, port)
+    def connect(cls, private_key, web_socket):
+        key = (private_key, web_socket)
 
         if key in cls.CONNECTIONS:
             web3, _ = cls.CONNECTIONS[key]
             if not web3.isConnected():
-                cls.CONNECTIONS[key] = cls.http_connection(private_key, host, port)
+                cls.CONNECTIONS[key] = cls.connection(private_key, web_socket)
         else:
-            cls.CONNECTIONS[key] = cls.http_connection(private_key, host, port)
+            cls.CONNECTIONS[key] = cls.connection(private_key, web_socket)
         return cls.CONNECTIONS[key]
 
     @classmethod
-    def http_connection(cls, private_key, host, port):
-        web3 = Web3(Web3.HTTPProvider('http://%s:%d' % (host, port)))
+    def connection(cls, private_key, web_socket):
+        provider = Web3.HTTPProvider if not web_socket else Web3.WebsocketProvider
+        port = cls.PORT if not web_socket else cls.WS_PORT
+        host = cls.HOST if not web_socket else cls.WS_HOST
+
+        web3 = Web3(provider('%s:%d' % (host, port)))
         account = web3.eth.account.privateKeyToAccount(private_key)
         return web3, account
 
     @classmethod
-    def ws_connection(cls, private_key, host, port):
-        web3 = Web3(Web3.WebsocketProvider('wss://%s:%d' % (host, port)))
-        account = web3.eth.account.privateKeyToAccount(private_key)
-        return web3, account
+    def connect_account1(cls, web_socket=False):
+        return cls.connect(Properties().account1pk(), web_socket)
 
     @classmethod
-    def connect_account1(cls):
-        return cls.connect(Properties().account1pk(), cls.HOST, cls.PORT)
+    def connect_account2(cls, web_socket=False):
+        return cls.connect(Properties().account2pk(), web_socket)
 
     @classmethod
-    def connect_account2(cls):
-        return cls.connect(Properties().account2pk(), cls.HOST, cls.PORT)
+    def connect_account3(cls, web_socket=False):
+        return cls.connect(Properties().account3pk(), web_socket)
 
     @classmethod
-    def connect_account3(cls):
-        return cls.connect(Properties().account3pk(), cls.HOST, cls.PORT)
-
-    @classmethod
-    def connect_game_user(cls):
-        return cls.connect(Properties().gameuserpk(), cls.HOST, cls.PORT)
+    def connect_game_user(cls, web_socket=False):
+        return cls.connect(Properties().gameuserpk(), web_socket)
 
     @classmethod
     def transact(cls, test, web3, target, account, gas):
