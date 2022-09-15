@@ -8,19 +8,19 @@ from eth_account.messages import encode_defunct
 
 
 class ObscuroL1(Geth):
-    HOST = 'testnet-gethnetwork.uksouth.azurecontainer.io'
+    HOST = 'http://testnet-gethnetwork.uksouth.azurecontainer.io'
     PORT = 8025
     WS_PORT = 9000
 
 
 class ObscuroL1Dev(Geth):
-    HOST = 'dev-testnet-gethnetwork.uksouth.azurecontainer.io'
+    HOST = 'http://dev-testnet-gethnetwork.uksouth.azurecontainer.io'
     PORT = 8025
     WS_PORT = 9001
 
 
 class ObscuroL1Local(Geth):
-    HOST = '127.0.0.1'
+    HOST = 'http://127.0.0.1'
     PORT = 8025
     WS_PORT = 9002
 
@@ -45,7 +45,7 @@ class Obscuro(Default):
 
         web3 = Web3(provider('%s:%d' % (host, port)))
         account = web3.eth.account.privateKeyToAccount(private_key)
-        cls.__generate_viewing_key(web3, host, port, account, private_key)
+        cls.__generate_viewing_key(web3, cls.HOST, cls.PORT, account, private_key)
         return web3, account
 
     @classmethod
