@@ -19,4 +19,13 @@ contract Error {
     function force_assert() public view{
         assert(false);
     }
+
+    function set_key(string memory newKey) public {
+        require(bytes(newKey).length != 0, "New key cannot be empty");
+        key = newKey;
+    }
+
+    function get_key() public view returns (string memory) {
+        return key;
+    }
 }
