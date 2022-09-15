@@ -1,19 +1,40 @@
 from web3 import Web3
+from collections import OrderedDict
 from pysys.constants import *
 from ethsys.utils.properties import Properties
 
 
 class Default:
     """A default node giving access to an underlying network."""
-    HOST = None
-    PORT = None
+    HOST = '127.0.0.1'
+    PORT = 8545
+    WS_PORT = 8546
+    CONNECTIONS = OrderedDict()
 
     @classmethod
     def chain_id(cls): return None
 
     @classmethod
     def connect(cls, private_key, host, port):
+        key = (private_key, host, port)
+
+        if key in cls.CONNECTIONS:
+            web3, _ = cls.CONNECTIONS[key]
+            if not web3.isConnected():
+                cls.CONNECTIONS[key] = cls.http_connection(private_key, host, port)
+        else:
+            cls.CONNECTIONS[key] = cls.http_connection(private_key, host, port)
+        return cls.CONNECTIONS[key]
+
+    @classmethod
+    def http_connection(cls, private_key, host, port):
         web3 = Web3(Web3.HTTPProvider('http://%s:%d' % (host, port)))
+        account = web3.eth.account.privateKeyToAccount(private_key)
+        return web3, account
+
+    @classmethod
+    def ws_connection(cls, private_key, host, port):
+        web3 = Web3(Web3.WebsocketProvider('wss://%s:%d' % (host, port)))
         account = web3.eth.account.privateKeyToAccount(private_key)
         return web3, account
 
@@ -28,6 +49,10 @@ class Default:
     @classmethod
     def connect_account3(cls):
         return cls.connect(Properties().account3pk(), cls.HOST, cls.PORT)
+
+    @classmethod
+    def connect_game_user(cls):
+        return cls.connect(Properties().gameuserpk(), cls.HOST, cls.PORT)
 
     @classmethod
     def transact(cls, test, web3, target, account, gas):
