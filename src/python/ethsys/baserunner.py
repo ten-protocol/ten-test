@@ -60,12 +60,12 @@ class EthereumRunnerPlugin():
             runner.log.info('Removing wallet extension persistence file')
             os.remove(persistence_file)
 
-        self.run_wallet(runner, host, Obscuro.PORT)
+        self.run_wallet(runner, host, Obscuro.PORT, Obscuro.WS_PORT)
         time.sleep(1)
 
-    def run_wallet(self, runner, host, port):
+    def run_wallet(self, runner, host, port, ws_port):
         """Run a single wallet extension for use by the tests. """
-        runner.log.info('Starting wallet extension on %s %d' % (host, port))
+        runner.log.info('Starting wallet extension on %s port=%d, ws_port=%d' % (host, port, ws_port))
         stdout = os.path.join(self.output, 'wallet_%d.out' % port)
         stderr = os.path.join(self.output, 'wallet_%d.err' % port)
 
@@ -74,7 +74,7 @@ class EthereumRunnerPlugin():
         arguments.extend(('--nodePortHTTP', '13000'))
         arguments.extend(('--nodePortWS', '13001'))
         arguments.extend(('--port', str(port)))
-        arguments.extend(('--portWS', str(port+1)))
+        arguments.extend(('--portWS', str(ws_port)))
         arguments.extend(('--logPath', os.path.join(self.output, 'wallet_%d_logs.txt' % port)))
         hprocess = runner.startProcess(command=os.path.join(PROJECT.root, 'artifacts', 'wallet_extension'),
                                        displayName='wallet_extension', workingDir=self.output , environs=os.environ,
