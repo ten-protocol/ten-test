@@ -13,7 +13,7 @@ class PySysTest(EthereumTest):
         l1 = NetworkFactory.get_l1_network(self.env)
         bridge_address = Properties().management_bridge_address(self.env)
         deployment_pk = Properties().funded_deployment_account_pk(self.env)
-        web3_l1, deploy_account_l1 = l1.connect(deployment_pk, l1.HOST, l1.PORT)
+        web3_l1, deploy_account_l1 = l1.connect(deployment_pk)
 
         with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
             hoc_l1 = web3_l1.eth.contract(address=Properties().l1_hoc_token_address(self.env), abi=json.load(f))

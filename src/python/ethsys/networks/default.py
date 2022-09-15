@@ -7,8 +7,8 @@ from ethsys.utils.properties import Properties
 class Default:
     """A default node giving access to an underlying network."""
     HOST = 'http://127.0.0.1'
-    PORT = 8545
     WS_HOST = 'ws://127.0.0.1'
+    PORT = 8545
     WS_PORT = 8546
     CONNECTIONS = OrderedDict()
 
@@ -16,7 +16,7 @@ class Default:
     def chain_id(cls): return None
 
     @classmethod
-    def connect(cls, private_key, web_socket):
+    def connect(cls, private_key, web_socket=False):
         key = (private_key, web_socket)
 
         if key in cls.CONNECTIONS:

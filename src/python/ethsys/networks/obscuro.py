@@ -27,7 +27,8 @@ class ObscuroL1Local(Geth):
 
 class Obscuro(Default):
     """The Obscuro wallet extension giving access to the underlying network."""
-    HOST = '127.0.0.1'
+    HOST = 'http://127.0.0.1'
+    WS_HOST = 'ws://127.0.0.1'
     PORT = 3000
     WS_PORT = 3001
     HTTP_CONNECTIONS = OrderedDict()
@@ -37,8 +38,12 @@ class Obscuro(Default):
         return 777
 
     @classmethod
-    def http_connection(cls, private_key, host, port):
-        web3 = Web3(Web3.HTTPProvider('http://%s:%d' % (host, port)))
+    def connection(cls, private_key, web_socket):
+        provider = Web3.HTTPProvider if not web_socket else Web3.WebsocketProvider
+        port = cls.PORT if not web_socket else cls.WS_PORT
+        host = cls.HOST if not web_socket else cls.WS_HOST
+
+        web3 = Web3(provider('%s:%d' % (host, port)))
         account = web3.eth.account.privateKeyToAccount(private_key)
         cls.__generate_viewing_key(web3, host, port, account, private_key)
         return web3, account
@@ -72,8 +77,8 @@ class Obscuro(Default):
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
 
         data = {"address": account.address}
-        response = requests.post('http://%s:%d/generateviewingkey/' % (host, port), data=json.dumps(data), headers=headers)
+        response = requests.post('%s:%d/generateviewingkey/' % (host, port), data=json.dumps(data), headers=headers)
         signed_msg = web3.eth.account.sign_message(encode_defunct(text='vk' + response.text), private_key=private_key)
 
         data = {"signature": signed_msg.signature.hex(), "address": account.address}
-        response = requests.post('http://%s:%d/submitviewingkey/' % (host, port), data=json.dumps(data), headers=headers)
+        requests.post('%s:%d/submitviewingkey/' % (host, port), data=json.dumps(data), headers=headers)
