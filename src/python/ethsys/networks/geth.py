@@ -10,8 +10,12 @@ class Geth(Default):
     def chain_id(cls): return 1337
 
     @classmethod
-    def http_connection(cls, private_key, host, port):
-        web3 = Web3(Web3.HTTPProvider('http://%s:%d' % (host, port)))
+    def connection(cls, private_key, web_socket):
+        provider = Web3.HTTPProvider if not web_socket else Web3.WebsocketProvider
+        port = cls.PORT if not web_socket else cls.WS_PORT
+        host = cls.HOST if not web_socket else cls.WS_HOST
+
+        web3 = Web3(provider('%s:%d' % (host, port)))
         web3.middleware_onion.inject(geth_poa_middleware, layer=0)
         account = web3.eth.account.privateKeyToAccount(private_key)
         return web3, account

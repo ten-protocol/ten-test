@@ -17,7 +17,7 @@ class Default:
 
     @classmethod
     def connect(cls, private_key, web_socket=False):
-        key = (private_key, web_socket)
+        key = (cls.__name__, private_key, web_socket)
 
         if key in cls.CONNECTIONS:
             web3, _ = cls.CONNECTIONS[key]
