@@ -80,7 +80,7 @@ class Default:
             tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
         except Exception as e:
             test.log.error('Error sending raw transaction %s' % e)
-            test.addOutcome(BLOCKED, abortOnError=TRUE)
+            test.addOutcome(BLOCKED, abortOnError=True)
         test.log.info('Transaction sent with hash %s' % tx_hash.hex())
         return tx_hash
 
@@ -93,5 +93,5 @@ class Default:
         else:
             test.log.error('Transaction receipt failed')
             test.log.error('Full receipt: %s' % tx_receipt)
-            test.addOutcome(FAILED, abortOnError=TRUE)
+            test.addOutcome(FAILED, abortOnError=True)
         return tx_receipt

@@ -4,9 +4,11 @@
     <description>
         <title>Error: require on transaction</title>
         <purpose><![CDATA[]]>
-            Deploy a contract and check for error reporting on failure of a transaction.
+Deploy a contract and check for error reporting on failure of a transaction.
         </purpose>
     </description>
+
+    <skipped reason="https://github.com/obscuronet/obscuro-internal/issues/971" />
 
     <classification>
         <groups inherit="true">

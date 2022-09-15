@@ -55,7 +55,7 @@ class Obscuro(Default):
         while tx_receipt is None:
             if (time.time() - start) > 180:
                 test.log.error('Timed out waiting for transaction receipt ... aborting')
-                test.addOutcome(TIMEDOUT, abortOnError=TRUE)
+                test.addOutcome(TIMEDOUT, abortOnError=True)
 
             try:
                 tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
@@ -68,7 +68,7 @@ class Obscuro(Default):
         else:
             test.log.error('Transaction receipt failed')
             test.log.error('Full receipt: %s' % tx_receipt)
-            test.addOutcome(FAILED, abortOnError=TRUE)
+            test.addOutcome(FAILED, abortOnError=True)
         return tx_receipt
 
     @classmethod
