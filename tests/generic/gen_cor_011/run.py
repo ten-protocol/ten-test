@@ -6,7 +6,7 @@ class PySysTest(EthereumTest):
     def execute(self):
         # connect to the network
         network = NetworkFactory.get_network(self.env)
-        web3, account = network.connect_account1(self)
+        web3, account = network.connect_account1(self, web_socket=True)
         self.log.info('Using account with address %s' % account.address)
 
         # get the chain id
