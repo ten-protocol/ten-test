@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC API: check get_transaction_count (web sockets)</title>
+        <title>WS API: check get_transaction_count</title>
         <purpose><![CDATA[]]>
         </purpose>
     </description>
@@ -10,6 +10,7 @@
     <classification>
         <groups inherit="true">
             <group>rpc</group>
+            <group>ws</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

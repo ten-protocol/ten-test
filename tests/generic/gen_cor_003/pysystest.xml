@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC API: check get_balance</title>
+        <title>HTTP API: check get_balance</title>
         <purpose><![CDATA[
 Checks that a call to get balance returns the users balance.
 ]]>

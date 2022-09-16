@@ -2,18 +2,17 @@
 <pysystest type="auto">
 
     <description>
-        <title>HTTP API: check get_code</title>
-        <purpose><![CDATA[]]>
-Deploy a contract and when deployed check that you can call getCode to return the byte code. Note that the resulting
-bytecode does NOT match with the bytecode that is stored on the blockchain. The reason for that is that the compiled
-contract contains an initialization part that is run only once when the contract is submitted to the chain. So the byte
-code stored on the blockchain is the code without the initialization part.
+        <title>WS API: check get_block_number</title>
+        <purpose><![CDATA[
+Checks that calls to get block number increases as blocks are added (over websocket).
+]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
             <group>rpc</group>
+            <group>ws</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

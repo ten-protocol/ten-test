@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC API: check get_block_number</title>
+        <title>HTTP API: check get_block_number</title>
         <purpose><![CDATA[
 Checks that calls to get block number increases as blocks are added.
 ]]>
