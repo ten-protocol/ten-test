@@ -38,6 +38,8 @@ class EthereumTest(BaseTest):
         self.log.info('    OBX User balance   = %d ' % user_obx)
 
         if user_obx < threshold:
+            self.log.info('Running request on %s' % Properties().faucet_url(self.env))
+            self.log.info('Running for user address %s' % user_account.address)
             headers = {'Content-Type': 'application/json'}
             data = {"address": user_account.address}
             response = requests.post(Properties().faucet_url(self.env), data=json.dumps(data), headers=headers)
