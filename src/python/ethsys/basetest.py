@@ -15,7 +15,7 @@ class EthereumTest(BaseTest):
         super().__init__(descriptor, outsubdir, runner)
         self.env = 'obscuro' if self.mode is None else self.mode
 
-    def fund_obx(self, network, web3_user, user_account, web3_faucet, faucet_account, target=None, threshold=None):
+    def fund_obx(self, network, web3_user, user_account, target=None, threshold=None):
         """Fund OBX in the L2 to a users account, either through the faucet server or direct from the account.
 
         Note this assumes the PK for the user is available i.e. we are able to check balances.
@@ -23,18 +23,17 @@ class EthereumTest(BaseTest):
         target = self.OBX_TARGET if target is None else target
         threshold = self.OBX_THRESHOLD if threshold is None else threshold
         if self.env in ['obscuro', 'obscuro.dev']:
-            self.obx_from_faucet_server(web3_user, user_account, web3_faucet, faucet_account, threshold)
+            self.obx_from_faucet_server(web3_user, user_account, threshold)
         else:
+            web3_faucet, faucet_account = network.connect(self, Properties().faucet_pk(self.env))
             self.obx_from_faucet_pk(network, web3_user, user_account, web3_faucet, faucet_account, target, threshold)
 
-    def obx_from_faucet_server(self, web3_user, user_account, web3_faucet, faucet_account, threshold):
+    def obx_from_faucet_server(self, web3_user, user_account, threshold):
         """Allocates native OBX to a users account from the faucet server.
         """
         self.log.info('Running for native OBX token using faucet server')
-        faucet_obx = web3_faucet.eth.get_balance(faucet_account.address)
         user_obx = web3_user.eth.get_balance(user_account.address)
         self.log.info('  L2 balances before;')
-        self.log.info('    OBX Faucet balance = %d ' % faucet_obx)
         self.log.info('    OBX User balance   = %d ' % user_obx)
 
         if user_obx < threshold:
@@ -44,10 +43,8 @@ class EthereumTest(BaseTest):
             data = {"address": user_account.address}
             response = requests.post(Properties().faucet_url(self.env), data=json.dumps(data), headers=headers)
 
-            faucet_obx = web3_faucet.eth.get_balance(faucet_account.address)
             user_obx = web3_user.eth.get_balance(user_account.address)
             self.log.info('  L2 balances after;')
-            self.log.info('    OBX Faucet balance = %d ' % faucet_obx)
             self.log.info('    OBX User balance   = %d ' % user_obx)
 
     def obx_from_faucet_pk(self, network, web3_user, user_account, web3_faucet, faucet_account, target=None, threshold=None):
@@ -85,7 +82,6 @@ class EthereumTest(BaseTest):
     def fund_token(self, network, token_name, token,
                       web3_user, user_account,
                       web3_deploy, deploy_account,
-                      web3_faucet, faucet_account,
                       target=None, threshold=None):
         """Allocates ERC20 tokens from a token contract to a users account within that contract.
 
@@ -97,11 +93,9 @@ class EthereumTest(BaseTest):
 
         deploy_balance = token.functions.balanceOf(deploy_account.address).call()
         user_balance = token.functions.balanceOf(user_account.address).call({'from': user_account.address})
-        faucet_obx_balance = web3_faucet.eth.get_balance(faucet_account.address)
         deploy_obx_balance = web3_deploy.eth.get_balance(deploy_account.address)
         user_obx_balance = web3_user.eth.get_balance(user_account.address)
         self.log.info('  L2 balances before;')
-        self.log.info('    OBX Faucet balance = %d ' % faucet_obx_balance)
         self.log.info('    OBX Deploy account balance = %d ' % deploy_obx_balance)
         self.log.info('    OBX User balance = %d ' % user_obx_balance)
         self.log.info('    %s Deploy account balance = %d ' % (token_name, deploy_balance))
@@ -116,11 +110,9 @@ class EthereumTest(BaseTest):
 
             deploy_balance = token.functions.balanceOf(deploy_account.address).call()
             user_balance = token.functions.balanceOf(user_account.address).call({'from': user_account.address})
-            faucet_obx_balance = web3_faucet.eth.get_balance(faucet_account.address)
             deploy_obx_balance = web3_deploy.eth.get_balance(deploy_account.address)
             user_obx_balance = web3_user.eth.get_balance(user_account.address)
             self.log.info('  L2 balances after;')
-            self.log.info('    OBX Faucet balance = %d ' % faucet_obx_balance)
             self.log.info('    OBX Deploy account balance = %d ' % deploy_obx_balance)
             self.log.info('    OBX User balance = %d ' % user_obx_balance)
             self.log.info('    %s Deploy account balance = %d ' % (token_name, deploy_balance))

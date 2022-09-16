@@ -16,7 +16,6 @@ class PySysTest(EthereumTest):
     def execute(self):
         network = Obscuro
         web3_deploy, deploy_account = network.connect(self, Properties().funded_deployment_account_pk(self.env))
-        web3_faucet, faucet_account = network.connect(self, Properties().faucet_pk(self.env))
 
         with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
             hoc = web3_deploy.eth.contract(address=Properties().l2_hoc_token_address(self.env), abi=json.load(f))
@@ -28,8 +27,8 @@ class PySysTest(EthereumTest):
             web3_user, user_account = network.connect(self, user)
             self.log.info('')
             self.log.info('Running for user address %s' % user_account.address)
-            self.fund_obx(network, web3_user, user_account, web3_faucet, faucet_account)
-            self.fund_token(network, 'HOC', hoc, web3_user, user_account, web3_deploy, deploy_account, web3_faucet, faucet_account)
-            self.fund_token(network, 'POC', poc, web3_user, user_account, web3_deploy, deploy_account, web3_faucet, faucet_account)
+            self.fund_obx(network, web3_user, user_account)
+            self.fund_token(network, 'HOC', hoc, web3_user, user_account, web3_deploy, deploy_account)
+            self.fund_token(network, 'POC', poc, web3_user, user_account, web3_deploy, deploy_account)
 
 
