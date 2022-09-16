@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>WS API: check get_code</title>
+        <purpose><![CDATA[]]>
+Deploy a contract and when deployed check that you can call getCode to return the byte code. Note that the resulting
+bytecode does NOT match with the bytecode that is stored on the blockchain. The reason for that is that the compiled
+contract contains an initialization part that is run only once when the contract is submitted to the chain. So the byte
+code stored on the blockchain is the code without the initialization part.
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>rpc</group>
+            <group>ws</group>
+        </groups>
+        <modes inherit="true">
+            <mode>obscuro.dev</mode>
+            <mode>obscuro.local</mode>
+            <mode>ropsten</mode>
+            <mode>ganache</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
