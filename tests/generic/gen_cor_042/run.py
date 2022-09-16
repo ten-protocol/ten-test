@@ -12,7 +12,7 @@ class PySysTest(EthereumTest):
     def execute(self):
         # deployment of contracts
         network = NetworkFactory.get_network(self.env)
-        web3_deploy, deploy_account = network.connect_account1()
+        web3_deploy, deploy_account = network.connect_account1(self)
 
         erc20 = OBXCoin(self, web3_deploy)
         erc20.deploy(network, deploy_account)
@@ -22,7 +22,7 @@ class PySysTest(EthereumTest):
         guesser.deploy(network, deploy_account)
 
         # the user starts making guesses
-        web3, account = network.connect_account2()
+        web3, account = network.connect_account2(self)
         token = web3.eth.contract(address=erc20.contract_address, abi=erc20.abi)
         game = web3.eth.contract(address=guesser.contract_address, abi=guesser.abi)
 

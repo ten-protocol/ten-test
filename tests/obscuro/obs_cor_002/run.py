@@ -1,14 +1,14 @@
 from ethsys.basetest import EthereumTest
 from ethsys.contracts.storage.storage import Storage
-from ethsys.networks.factory import NetworkFactory
+from ethsys.networks.obscuro import Obscuro
 
 
 class PySysTest(EthereumTest):
 
     def execute(self):
-        # deployment of contract
-        network = NetworkFactory.get_network(self.env)
-        web3, account = network.connect_account1(self)
+        # get the game address and the jam token address from the properties
+        network = Obscuro
+        web3, account = network.connect_account1(self, web_socket=True)
 
         storage = Storage(self, web3, 100)
         storage.deploy(network, account)

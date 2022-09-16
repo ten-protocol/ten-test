@@ -38,11 +38,12 @@ class Obscuro(Default):
         return 777
 
     @classmethod
-    def connection(cls, private_key, web_socket):
+    def connection(cls, test, private_key, web_socket):
         provider = Web3.HTTPProvider if not web_socket else Web3.WebsocketProvider
         port = cls.PORT if not web_socket else cls.WS_PORT
         host = cls.HOST if not web_socket else cls.WS_HOST
 
+        test.log.info('Connecting to network on %s:%d' % (host, port))
         web3 = Web3(provider('%s:%d' % (host, port)))
         account = web3.eth.account.privateKeyToAccount(private_key)
         cls.__generate_viewing_key(web3, cls.HOST, cls.PORT, account, private_key)

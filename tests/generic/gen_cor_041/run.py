@@ -8,7 +8,7 @@ class PySysTest(EthereumTest):
     def execute(self):
         # deployment of contract
         network = NetworkFactory.get_network(self.env)
-        web3, account = network.connect_account1()
+        web3, account = network.connect_account1(self)
 
         guesser = GuesserConstructor(self, web3, 0, 100)
         guesser.deploy(network, account)

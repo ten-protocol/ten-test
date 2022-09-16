@@ -16,42 +16,45 @@ class Default:
     def chain_id(cls): return None
 
     @classmethod
-    def connect(cls, private_key, web_socket=False):
+    def connect(cls, test, private_key, web_socket=False):
         key = (cls.__name__, private_key, web_socket)
 
         if key in cls.CONNECTIONS:
             web3, _ = cls.CONNECTIONS[key]
             if not web3.isConnected():
-                cls.CONNECTIONS[key] = cls.connection(private_key, web_socket)
+                test.log.info('Re-adding connection for %s' % private_key)
+                cls.CONNECTIONS[key] = cls.connection(test, private_key, web_socket)
         else:
-            cls.CONNECTIONS[key] = cls.connection(private_key, web_socket)
+            test.log.info('Adding new connection for %s' % private_key)
+            cls.CONNECTIONS[key] = cls.connection(test, private_key, web_socket)
         return cls.CONNECTIONS[key]
 
     @classmethod
-    def connection(cls, private_key, web_socket):
+    def connection(cls, test, private_key, web_socket):
         provider = Web3.HTTPProvider if not web_socket else Web3.WebsocketProvider
         port = cls.PORT if not web_socket else cls.WS_PORT
         host = cls.HOST if not web_socket else cls.WS_HOST
 
+        test.log.info('Connecting to network on %s:%d' % (host, port))
         web3 = Web3(provider('%s:%d' % (host, port)))
         account = web3.eth.account.privateKeyToAccount(private_key)
         return web3, account
 
     @classmethod
-    def connect_account1(cls, web_socket=False):
-        return cls.connect(Properties().account1pk(), web_socket)
+    def connect_account1(cls, test, web_socket=False):
+        return cls.connect(test, Properties().account1pk(), web_socket)
+
+    @classmethod    
+    def connect_account2(cls, test, web_socket=False):
+        return cls.connect(test, Properties().account2pk(), web_socket)
 
     @classmethod
-    def connect_account2(cls, web_socket=False):
-        return cls.connect(Properties().account2pk(), web_socket)
+    def connect_account3(cls, test, web_socket=False):
+        return cls.connect(test, Properties().account3pk(), web_socket)
 
     @classmethod
-    def connect_account3(cls, web_socket=False):
-        return cls.connect(Properties().account3pk(), web_socket)
-
-    @classmethod
-    def connect_game_user(cls, web_socket=False):
-        return cls.connect(Properties().gameuserpk(), web_socket)
+    def connect_game_user(cls, test, web_socket=False):
+        return cls.connect(test, Properties().gameuserpk(), web_socket)
 
     @classmethod
     def transact(cls, test, web3, target, account, gas):
