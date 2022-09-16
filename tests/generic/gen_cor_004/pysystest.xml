@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>HTTP API: check get_block_by_number</title>
+        <title>RPC API: check get_block_by_number</title>
         <purpose><![CDATA[
 Deploy a block, get the block back using the number as a reference, and then check within that block the number is
 correct.
@@ -15,6 +15,7 @@ correct.
     <classification>
         <groups inherit="true">
             <group>rpc</group>
+            <group>ws</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

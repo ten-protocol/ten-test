@@ -4,10 +4,12 @@ from ethsys.networks.factory import NetworkFactory
 
 
 class PySysTest(EthereumTest):
+    WEBSOCKET = False   # run with `pysys.py run -XWEBSOCKET` to enable
+
     def execute(self):
         # connect to the network
         network = NetworkFactory.get_network(self.env)
-        web3, account = network.connect_account1(self)
+        web3, account = network.connect_account1(self, web_socket=self.WEBSOCKET)
         self.log.info('Using account with address %s' % account.address)
 
         # create the storage contract but don't deploy yet

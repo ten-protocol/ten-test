@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>HTTP API: check get_block_number</title>
+        <title>RPC API: check get_block_number</title>
         <purpose><![CDATA[
 Checks that calls to get block number increases as blocks are added.
 ]]>
@@ -12,6 +12,7 @@ Checks that calls to get block number increases as blocks are added.
     <classification>
         <groups inherit="true">
             <group>rpc</group>
+            <group>ws</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

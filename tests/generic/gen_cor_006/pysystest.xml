@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>HTTP API: check gas_price</title>
+        <title>RPC API: check gas_price</title>
         <purpose><![CDATA[
 Makes a call to get the current gas price.
 ]]>
@@ -12,6 +12,7 @@ Makes a call to get the current gas price.
     <classification>
         <groups inherit="true">
             <group>rpc</group>
+            <group>ws</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

@@ -4,11 +4,12 @@ from ethsys.networks.factory import NetworkFactory
 
 
 class PySysTest(EthereumTest):
+    WEBSOCKET = False   # run with `pysys.py run -XWEBSOCKET` to enable
 
     def execute(self):
         # deployment of contract
         network = NetworkFactory.get_network(self.env)
-        web3, account = network.connect_account1(self)
+        web3, account = network.connect_account1(self, web_socket=self.WEBSOCKET)
 
         # get the transaction count
         count_1 = web3.eth.get_transaction_count(account.address)

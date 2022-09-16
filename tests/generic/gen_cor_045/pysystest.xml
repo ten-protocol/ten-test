@@ -12,7 +12,7 @@ Deploy a contract and check for error reporting on revert, require and assert.
 
     <classification>
         <groups inherit="true">
-            <group></group>
+            <group>ws</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>
