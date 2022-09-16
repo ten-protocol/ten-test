@@ -11,12 +11,12 @@ class Geth(Default):
 
     @classmethod
     def connection(cls, test, private_key, web_socket):
-        provider = Web3.HTTPProvider if not web_socket else Web3.WebsocketProvider
         port = cls.PORT if not web_socket else cls.WS_PORT
         host = cls.HOST if not web_socket else cls.WS_HOST
 
         test.log.info('Connecting to network on %s:%d' % (host, port))
-        web3 = Web3(provider('%s:%d' % (host, port)))
+        if not web_socket: web3 = Web3(Web3.HTTPProvider('%s:%d' % (host, port)))
+        else: web3 = Web3(Web3.WebsocketProvider('%s:%d' % (host, port), websocket_timeout=120))
         web3.middleware_onion.inject(geth_poa_middleware, layer=0)
         account = web3.eth.account.privateKeyToAccount(private_key)
         return web3, account
