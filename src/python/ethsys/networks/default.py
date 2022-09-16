@@ -65,7 +65,6 @@ class Default:
 
     @classmethod
     def build_transaction(cls, test, web3, target, account, gas):
-        test.log.info('Building the transaction')
         build_tx = target.buildTransaction(
             {
                 'nonce': web3.eth.get_transaction_count(account.address),
@@ -74,7 +73,6 @@ class Default:
                 'chainId': web3.eth.chain_id
             }
         )
-        test.log.info('Signing the transaction')
         signed_tx = account.sign_transaction(build_tx)
         return signed_tx
 
