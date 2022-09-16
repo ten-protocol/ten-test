@@ -10,6 +10,7 @@
     <classification>
         <groups inherit="true">
             <group>rpc</group>
+            <group>ws</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

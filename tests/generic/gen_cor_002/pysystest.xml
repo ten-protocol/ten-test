@@ -12,6 +12,7 @@ Checks that calls to get block number increases as blocks are added.
     <classification>
         <groups inherit="true">
             <group>rpc</group>
+            <group>ws</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

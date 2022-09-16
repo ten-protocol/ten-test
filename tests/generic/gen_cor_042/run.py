@@ -8,11 +8,12 @@ from ethsys.networks.factory import NetworkFactory
 
 
 class PySysTest(EthereumTest):
+    WEBSOCKET = False   # run with `pysys.py run -XWEBSOCKET` to enable
 
     def execute(self):
         # deployment of contracts
         network = NetworkFactory.get_network(self.env)
-        web3_deploy, deploy_account = network.connect_account1()
+        web3_deploy, deploy_account = network.connect_account1(self, web_socket=self.WEBSOCKET)
 
         erc20 = OBXCoin(self, web3_deploy)
         erc20.deploy(network, deploy_account)
@@ -22,11 +23,11 @@ class PySysTest(EthereumTest):
         guesser.deploy(network, deploy_account)
 
         # the user starts making guesses
-        web3, account = network.connect_account2()
+        web3, account = network.connect_account2(self)
         token = web3.eth.contract(address=erc20.contract_address, abi=erc20.abi)
         game = web3.eth.contract(address=guesser.contract_address, abi=guesser.abi)
 
-        for i in range(0,5):
+        for i in range(0,2):
             self.log.info('Guessing number as %d' % i)
             network.transact(self, web3, token.functions.approve(guesser.contract_address, 1), account, guesser.GAS)
             network.transact(self, web3, game.functions.attempt(i), account, guesser.GAS)

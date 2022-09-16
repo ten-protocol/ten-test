@@ -4,6 +4,7 @@
     <description>
         <title>RPC API: check chain_id</title>
         <purpose><![CDATA[
+Checks call to eth.chain_id.
 ]]>
         </purpose>
     </description>
@@ -11,6 +12,7 @@
     <classification>
         <groups inherit="true">
             <group>rpc</group>
+            <group>ws</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

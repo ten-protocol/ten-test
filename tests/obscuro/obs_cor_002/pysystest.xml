@@ -2,23 +2,19 @@
 <pysystest type="auto">
 
     <description>
-        <title>Error: require on transaction</title>
-        <purpose><![CDATA[]]>
-Deploy a contract and check for error reporting on failure of a transaction.
+        <title>Deploy and interact with a smart contract over web-sockets</title>
+        <purpose><![CDATA[
+]]>
         </purpose>
     </description>
 
-    <skipped reason="https://github.com/obscuronet/obscuro-internal/issues/971" />
-
     <classification>
         <groups inherit="true">
-            <group>ws</group>
+            <group></group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
-            <mode>ropsten</mode>
-            <mode>ganache</mode>
         </modes>
     </classification>
 

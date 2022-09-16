@@ -14,6 +14,7 @@ value). We assume it will cost more to deploy than store, and more to store than
     <classification>
         <groups inherit="true">
             <group>rpc</group>
+            <group>ws</group>
         </groups>
         <modes inherit="true">
 <!--            <mode>obscuro.dev</mode>-->

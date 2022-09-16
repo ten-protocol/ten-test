@@ -12,7 +12,7 @@ against Obscuro, Ropsten or Ganache. There is a constructor and destructor in th
 
     <classification>
         <groups inherit="true">
-            <group></group>
+            <group>ws</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

@@ -4,13 +4,14 @@ from ethsys.networks.factory import NetworkFactory
 
 
 class PySysTest(EthereumTest):
+    WEBSOCKET = False   # run with `pysys.py run -XWEBSOCKET` to enable
 
     def execute(self):
         # deployment of contract
         network = NetworkFactory.get_network(self.env)
-        web3_3, account3 = network.connect_account3()
-        web3_2, account2 = network.connect_account2()
-        web3_1, account1 = network.connect_account1()
+        web3_3, account3 = network.connect_account3(self, web_socket=self.WEBSOCKET)
+        web3_2, account2 = network.connect_account2(self, web_socket=self.WEBSOCKET)
+        web3_1, account1 = network.connect_account1(self, web_socket=self.WEBSOCKET)
 
         erc20 = OBXCoin(self, web3_1)
         erc20.deploy(network, account1)
