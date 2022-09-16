@@ -16,10 +16,7 @@ class EthereumTest(BaseTest):
         self.env = 'obscuro' if self.mode is None else self.mode
 
     def fund_obx(self, network, web3_user, user_account, target=None, threshold=None):
-        """Fund OBX in the L2 to a users account, either through the faucet server or direct from the account.
-
-        Note this assumes the PK for the user is available i.e. we are able to check balances.
-        """
+        """Fund OBX in the L2 to a users account, either through the faucet server or direct from the account."""
         target = self.OBX_TARGET if target is None else target
         threshold = self.OBX_THRESHOLD if threshold is None else threshold
         if self.env in ['obscuro', 'obscuro.dev']:
@@ -29,8 +26,7 @@ class EthereumTest(BaseTest):
             self.obx_from_faucet_pk(network, web3_user, user_account, web3_faucet, faucet_account, target, threshold)
 
     def obx_from_faucet_server(self, web3_user, user_account, threshold):
-        """Allocates native OBX to a users account from the faucet server.
-        """
+        """Allocates native OBX to a users account from the faucet server."""
         self.log.info('Running for native OBX token using faucet server')
         user_obx = web3_user.eth.get_balance(user_account.address)
         self.log.info('  L2 balances before;')
@@ -48,8 +44,7 @@ class EthereumTest(BaseTest):
             self.log.info('    OBX User balance   = %d ' % user_obx)
 
     def obx_from_faucet_pk(self, network, web3_user, user_account, web3_faucet, faucet_account, target=None, threshold=None):
-        """Allocates native OBX to a users account from the faucet private key.
-        """
+        """Allocates native OBX to a users account from the faucet private key."""
         self.log.info('Running for native OBX token using faucet pk')
         faucet_obx = web3_faucet.eth.get_balance(faucet_account.address)
         deploy_obx = web3_user.eth.get_balance(user_account.address)
@@ -83,10 +78,7 @@ class EthereumTest(BaseTest):
                       web3_user, user_account,
                       web3_deploy, deploy_account,
                       target=None, threshold=None):
-        """Allocates ERC20 tokens from a token contract to a users account within that contract.
-
-        This is a reallocation of tokens within a token contract to a particular user.
-        """
+        """Allocates ERC20 tokens from a token contract to a users account within that contract."""
         self.log.info('Running for token %s' % token_name)
         target = self.TOKEN_TARGET if target is None else target
         threshold = self.TOKEN_THRESHOLD if threshold is None else threshold
