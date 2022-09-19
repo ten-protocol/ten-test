@@ -65,7 +65,6 @@ jobs:
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
           /usr/local/bin/pysys.py run -m obscuro.local gen_cor_001:
-          /usr/local/bin/pysys.py run -m obscuro.local -XWEBSOCKET -i ws 
 
       - name: Discord notification
         if: failure()
