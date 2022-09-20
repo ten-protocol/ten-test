@@ -15,20 +15,20 @@ class PySysTest(EthereumTest):
         deployment_pk = Properties().l2_funded_account_pk(self.env)
         web3_l1, deploy_account_l1 = l1.connect(self, deployment_pk)
 
-        with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
+        with open(os.path.join(PROJECT.root, 'src', 'solidity', 'erc20', 'erc20.json')) as f:
             hoc_l1 = web3_l1.eth.contract(address=Properties().l1_hoc_token_address(self.env), abi=json.load(f))
 
-        with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
+        with open(os.path.join(PROJECT.root, 'src', 'solidity', 'erc20', 'erc20.json')) as f:
             poc_l1 = web3_l1.eth.contract(address=Properties().l1_poc_token_address(self.env), abi=json.load(f))
 
         # connect to the L2 network and get contracts
         l2 = Obscuro
         web3_l2, _ = l2.connect(self, deployment_pk)
 
-        with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
+        with open(os.path.join(PROJECT.root, 'src', 'solidity', 'erc20', 'erc20.json')) as f:
             hoc_l2 = web3_l2.eth.contract(address=Properties().l2_hoc_token_address(self.env), abi=json.load(f))
 
-        with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
+        with open(os.path.join(PROJECT.root, 'src', 'solidity', 'erc20', 'erc20.json')) as f:
             poc_l2 = web3_l2.eth.contract(address=Properties().l2_poc_token_address(self.env), abi=json.load(f))
 
         # allocate the HOC and POC tokens
