@@ -15,11 +15,15 @@ jobs:
   Run-Tests:
     runs-on: self-hosted
     steps:
-      - run: echo "Triggered by ${{ github.event_name }} event running on branch ${{ github.ref }} "
+      - run: echo "Triggered by ${{ github.event_name }} running on obscuro-test branch ${{ github.ref }} "
 
-      - name: Log the PR number
+      - name: Log the PR number for repository dispatch
         if: ${{ github.event_name == 'repository_dispatch' }}
         run: echo "Triggered by PR number ${{ github.event.client_payload.number }}"
+
+      - name: Log the go-obscuro branch for workflow dispatch
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: echo "Running on go-obscuro branch ${{ github.event.inputs.target_branch }}"
 
       - name: Check out obscuro-test
         uses: actions/checkout@v3
