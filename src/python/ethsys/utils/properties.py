@@ -34,14 +34,14 @@ class Properties:
         return self.get('all', 'GameUserPK')
 
     # obscuro specific properties
-    def faucet_pk(self, key):
-        return self.get(key, 'FaucetPK')
-
     def faucet_url(self, key):
         return self.get(key, 'FaucetURL')
 
-    def funded_deployment_account_pk(self, key):
-        return self.get(key, 'FundedDeploymentAccountPK')
+    def l1_funded_account_pk(self, key):
+        return self.get(key, 'PreFundedAccountL1')
+
+    def l2_funded_account_pk(self, key):
+        return self.get(key, 'PreFundedAccountL2')
 
     def management_bridge_address(self, key):
         return self.get(key, 'ManagementBridgeAddress')

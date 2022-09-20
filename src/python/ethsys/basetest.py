@@ -22,7 +22,7 @@ class EthereumTest(BaseTest):
         if self.env in ['obscuro', 'obscuro.dev']:
             self.obx_from_faucet_server(web3_user, user_account, threshold)
         else:
-            web3_faucet, faucet_account = network.connect(self, Properties().faucet_pk(self.env))
+            web3_faucet, faucet_account = network.connect(self, Properties().l1_funded_account_pk(self.env))
             self.obx_from_faucet_pk(network, web3_user, user_account, web3_faucet, faucet_account, target, threshold)
 
     def obx_from_faucet_server(self, web3_user, user_account, threshold):

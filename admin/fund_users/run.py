@@ -33,7 +33,7 @@ class PySysTest(EthereumTest):
 
     def execute(self):
         network = Obscuro
-        web3_deploy, deploy_account = network.connect(self, Properties().funded_deployment_account_pk(self.env))
+        web3_deploy, deploy_account = network.connect(self, Properties().l2_funded_account_pk(self.env))
 
         with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
             hoc = web3_deploy.eth.contract(address=Properties().l2_hoc_token_address(self.env), abi=json.load(f))

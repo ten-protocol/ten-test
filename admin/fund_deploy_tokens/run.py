@@ -12,7 +12,7 @@ class PySysTest(EthereumTest):
         # connect to the L1 network and get contracts
         l1 = NetworkFactory.get_l1_network(self.env)
         bridge_address = Properties().management_bridge_address(self.env)
-        deployment_pk = Properties().funded_deployment_account_pk(self.env)
+        deployment_pk = Properties().l2_funded_account_pk(self.env)
         web3_l1, deploy_account_l1 = l1.connect(self, deployment_pk)
 
         with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
