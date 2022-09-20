@@ -9,6 +9,7 @@ RUN apt install -y solc
 
 RUN apt install -y nodejs npm
 RUN npm install -g ganache-cli
+RUN npm install -g web3
 
 RUN apt install -y vim
 RUN apt install -y python3-pip
