@@ -2,9 +2,14 @@ name: Run local tests
 on:
   schedule:
     - cron: '10 2 * * *'
-  workflow_dispatch:
   repository_dispatch:
     types: [merged_pull_request]
+  workflow_dispatch:
+    inputs:
+      target_branch:
+        description: 'Branch of go-obscuro to run against'
+        required: true
+        default: 'main'
 
 jobs:
   Run-Tests:
@@ -21,11 +26,26 @@ jobs:
         with:
           path: ./obscuro-test
 
-      - name: Check out go-obscuro code
+      - name: Check out go-obscuro code on schedule trigger
+        if: ${{ github.event_name == 'schedule' }}
         uses: actions/checkout@v3
         with:
           repository: obscuronet/go-obscuro
           path: ./go-obscuro
+
+      - name: Check out go-obscuro code on repository dispatch
+        if: ${{ github.event_name == 'repository_dispatch' }}
+        uses: actions/checkout@v3
+        with:
+          repository: obscuronet/go-obscuro
+          path: ./go-obscuro
+
+      - name: Check out go-obscuro code on workflow dispatch
+        uses: actions/checkout@v3
+        with:
+          repository: obscuronet/go-obscuro
+          path: ./go-obscuro
+          ref: ${{ github.event.inputs.target_branch }}
 
       - name: Build wallet_extension
         run: |
