@@ -41,6 +41,7 @@ jobs:
           path: ./go-obscuro
 
       - name: Check out go-obscuro code on workflow dispatch
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         uses: actions/checkout@v3
         with:
           repository: obscuronet/go-obscuro
