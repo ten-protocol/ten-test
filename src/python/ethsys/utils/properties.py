@@ -37,29 +37,32 @@ class Properties:
     def faucet_url(self, key):
         return self.get(key, 'FaucetURL')
 
-    def l1_funded_account_pk(self, key):
-        return self.get(key, 'PreFundedAccountL1')
-
-    def l2_funded_account_pk(self, key):
-        return self.get(key, 'PreFundedAccountL2')
-
     def management_bridge_address(self, key):
         return self.get(key, 'ManagementBridgeAddress')
 
     def guessing_game_address(self, key):
         return self.get(key, 'GuessingGameAddress')
 
-    def l1_hoc_token_address(self, key):
-        return self.get(key, 'TokenHOCContractAddressL1')
+    def distro_account_pk(self, key):
+        return self.get(key, 'DistroAccountPK')
 
-    def l2_hoc_token_address(self, key):
-        return self.get(key, 'TokenHOCContractAddressL2')
+    def l1_funded_account_pk(self, key):
+        return self.get(key, 'L1PreFundedAccountPK')
+
+    def l1_hoc_token_address(self, key):
+        return self.get(key, 'L1TokenHOCContractAddress')
 
     def l1_poc_token_address(self, key):
-        return self.get(key, 'TokenPOCContractAddressL1')
+        return self.get(key, 'L1TokenPOCContractAddress')
+
+    def l2_funded_account_pk(self, key):
+        return self.get(key, 'L2PreFundedAccountPK')
+
+    def l2_hoc_token_address(self, key):
+        return self.get(key, 'L2TokenHOCContractAddress')
 
     def l2_poc_token_address(self, key):
-        return self.get(key, 'TokenPOCContractAddressL2')
+        return self.get(key, 'L2TokenPOCContractAddress')
 
     # infura related
     def infuraProjectID(self):
