@@ -15,39 +15,39 @@ class EthereumTest(BaseTest):
         super().__init__(descriptor, outsubdir, runner)
         self.env = 'obscuro' if self.mode is None else self.mode
 
-    def fund_obx(self, network, web3_user, user_account, target=None, threshold=None):
+    def fund_obx(self, network, web3_user, account_user, target=None, threshold=None):
         """Fund OBX in the L2 to a users account, either through the faucet server or direct from the account."""
         target = self.OBX_TARGET if target is None else target
         threshold = self.OBX_THRESHOLD if threshold is None else threshold
         if self.env in ['obscuro', 'obscuro.dev']:
-            self.obx_from_faucet_server(web3_user, user_account, threshold)
+            self.obx_from_faucet_server(web3_user, account_user, threshold)
         else:
-            web3_faucet, faucet_account = network.connect(self, Properties().l1_funded_account_pk(self.env))
-            self.obx_from_faucet_pk(network, web3_user, user_account, web3_faucet, faucet_account, target, threshold)
+            web3_funded, account_funded = network.connect(self, Properties().l2_funded_account_pk(self.env))
+            self.obx_from_funded_pk(network, web3_user, account_user, web3_funded, account_funded, target, threshold)
 
-    def obx_from_faucet_server(self, web3_user, user_account, threshold):
+    def obx_from_faucet_server(self, web3_user, account_user, threshold):
         """Allocates native OBX to a users account from the faucet server."""
         self.log.info('Running for native OBX token using faucet server')
-        user_obx = web3_user.eth.get_balance(user_account.address)
+        user_obx = web3_user.eth.get_balance(account_user.address)
         self.log.info('  L2 balances before;')
         self.log.info('    OBX User balance   = %d ' % user_obx)
 
         if user_obx < threshold:
             self.log.info('Running request on %s' % Properties().faucet_url(self.env))
-            self.log.info('Running for user address %s' % user_account.address)
+            self.log.info('Running for user address %s' % account_user.address)
             headers = {'Content-Type': 'application/json'}
-            data = {"address": user_account.address}
+            data = {"address": account_user.address}
             response = requests.post(Properties().faucet_url(self.env), data=json.dumps(data), headers=headers)
 
-            user_obx = web3_user.eth.get_balance(user_account.address)
+            user_obx = web3_user.eth.get_balance(account_user.address)
             self.log.info('  L2 balances after;')
             self.log.info('    OBX User balance   = %d ' % user_obx)
 
-    def obx_from_faucet_pk(self, network, web3_user, user_account, web3_faucet, faucet_account, target=None, threshold=None):
+    def obx_from_funded_pk(self, network, web3_user, account_user, web3_funded, account_funded, target=None, threshold=None):
         """Allocates native OBX to a users account from the faucet private key."""
         self.log.info('Running for native OBX token using faucet pk')
-        faucet_obx = web3_faucet.eth.get_balance(faucet_account.address)
-        deploy_obx = web3_user.eth.get_balance(user_account.address)
+        faucet_obx = web3_funded.eth.get_balance(account_funded.address)
+        deploy_obx = web3_user.eth.get_balance(account_user.address)
         self.log.info('  L2 balances before;')
         self.log.info('    OBX Faucet balance = %d ' % faucet_obx)
         self.log.info('    OBX User balance   = %d ' % deploy_obx)
@@ -58,18 +58,18 @@ class EthereumTest(BaseTest):
 
             # transaction from the faucet to the deployment account
             tx = {
-                'nonce': web3_faucet.eth.get_transaction_count(faucet_account.address),
-                'to': user_account.address,
+                'nonce': web3_funded.eth.get_transaction_count(account_funded.address),
+                'to': account_user.address,
                 'value': amount,
                 'gas': 4 * 720000,
                 'gasPrice': 21000
             }
-            tx_sign = faucet_account.sign_transaction(tx)
-            tx_hash = network.send_transaction(self, web3_faucet, tx_sign)
-            network.wait_for_transaction(self, web3_faucet, tx_hash)
+            tx_sign = account_funded.sign_transaction(tx)
+            tx_hash = network.send_transaction(self, web3_funded, tx_sign)
+            network.wait_for_transaction(self, web3_funded, tx_hash)
 
-            faucet_obx = web3_faucet.eth.get_balance(faucet_account.address)
-            deploy_obx = web3_user.eth.get_balance(user_account.address)
+            faucet_obx = web3_funded.eth.get_balance(account_funded.address)
+            deploy_obx = web3_user.eth.get_balance(account_user.address)
             self.log.info('  Native OBX balances after;')
             self.log.info('    Faucet balance = %d ' % faucet_obx)
             self.log.info('    Deployment balance = %d ' % deploy_obx)

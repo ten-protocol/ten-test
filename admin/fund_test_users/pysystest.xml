@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Allocate OBX, HOC and POC tokens to test users</title>
+        <title>Fund test user accounts in L2 with OBX, HOC and POC</title>
         <purpose><![CDATA[
 ]]>
         </purpose>

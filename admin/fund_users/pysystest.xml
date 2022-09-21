@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Allocate OBX, HOC and POC tokens to external users</title>
+        <title>Fund community accounts in L2 with OBX, HOC and POC</title>
         <purpose><![CDATA[
 ]]>
         </purpose>

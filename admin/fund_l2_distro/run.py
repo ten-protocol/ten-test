@@ -1,42 +1,41 @@
+import json, os
+from pysys.constants import PROJECT
 from ethsys.basetest import EthereumTest
 from ethsys.utils.properties import Properties
 from ethsys.networks.factory import NetworkFactory
 
 
 class PySysTest(EthereumTest):
-    TARGET = 10 * EthereumTest.ONE_GIGA
+    TOKEN_TARGET = 1000 * EthereumTest.ONE_GIGA
 
     def execute(self):
-        l1 = NetworkFactory.get_l1_network(self.env)
-        web3_funded, account_funded = l1.connect(self, Properties().l1_funded_account_pk(self.env))
-        web3_distro, account_distro = l1.connect(self, Properties().distro_account_pk(self.env))
-        self.l1_fund_eth(l1, web3_funded, account_funded, web3_distro, account_distro)
+        # connect to the L1 network and get contracts
+        network = NetworkFactory.get_l1_network(self.env)
+        hoc_address = Properties().l1_hoc_token_address(self.env)
+        poc_address = Properties().l1_poc_token_address(self.env)
+        bridge_address = Properties().management_bridge_address(self.env)
+        web3_distro, account_distro = network.connect(self, Properties().distro_account_pk(self.env))
 
-    def l1_fund_eth(self, network, web3_funded, account_funded, web3_distro, account_distro):
-        funded_eth = web3_funded.eth.get_balance(account_funded.address)
-        distro_eth = web3_distro.eth.get_balance(account_distro.address)
-        self.log.info('  ETH balance before;')
-        self.log.info('    Funded balance = %d ' % funded_eth)
-        self.log.info('    Distro balance = %d ' % distro_eth)
+        # fund obx to the distro account
+        self.fund_obx(network, web3_distro, account_distro)
 
-        if distro_eth < self.TARGET:
-            amount = (self.TARGET - distro_eth)
-            self.log.info('Below target so transferring %d' % amount)
+        # fund tokens to the bridge account
+        self.bridge_tokens(network, 'HOC', hoc_address, web3_distro, account_distro, bridge_address)
+        self.bridge_tokens(network, 'POC', poc_address, web3_distro, account_distro, bridge_address)
 
-            tx = {
-                    'chainId': network.chain_id(),
-                    'nonce': web3_funded.eth.get_transaction_count(account_funded.address),
-                    'to': account_distro.address,
-                    'value': amount,
-                    'gas': 4*21000,
-                    'gasPrice': web3_funded.eth.gas_price
-            }
-            tx_sign = account_funded.sign_transaction(tx)
-            tx_hash = network.send_transaction(self, web3_funded, tx_sign)
-            network.wait_for_transaction(self, web3_funded, tx_hash)
+    def bridge_tokens(self, network, token_name, token_address, web3_distro, account_distro, bridge_address):
+        self.log.info('Running for token %s' % token_name)
 
-            funded_eth = web3_funded.eth.get_balance(account_funded.address)
-            distro_eth = web3_distro.eth.get_balance(account_distro.address)
-            self.log.info('  Eth balance after;')
-            self.log.info('    Funded balance = %d ' % funded_eth)
-            self.log.info('    Distro balance = %d ' % distro_eth)
+        with open(os.path.join(PROJECT.root, 'src', 'solidity', 'erc20', 'erc20.json')) as f:
+            token = web3_distro.eth.contract(address=token_address, abi=json.load(f))
+
+        distro_balance = token.functions.balanceOf(account_distro.address).call()
+        self.log.info('  Token balance before;')
+        self.log.info('    Distro balance = %d ' % distro_balance)
+
+        network.transact(self, web3_distro, token.functions.transfer(bridge_address, distro_balance), account_distro, 7200000)
+
+        distro_balance = token.functions.balanceOf(account_distro.address).call()
+        self.log.info('  Token balance after;')
+        self.log.info('    Distro balance = %d ' % distro_balance)
+

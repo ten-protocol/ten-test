@@ -57,13 +57,13 @@ class PySysTest(EthereumTest):
         self.log.info('Running for token %s' % token_name)
 
         with open(os.path.join(PROJECT.root, 'src', 'solidity', 'erc20', 'erc20.json')) as f:
-            hoc_funded = web3_funded.eth.contract(address=token_address, abi=json.load(f))
+            token_funded = web3_funded.eth.contract(address=token_address, abi=json.load(f))
 
         with open(os.path.join(PROJECT.root, 'src', 'solidity', 'erc20', 'erc20.json')) as f:
-            hoc_distro = web3_distro.eth.contract(address=token_address, abi=json.load(f))
+            token_distro = web3_distro.eth.contract(address=token_address, abi=json.load(f))
 
-        funded_balance = hoc_funded.functions.balanceOf(account_funded.address).call()
-        distro_balance = hoc_distro.functions.balanceOf(account_distro.address).call()
+        funded_balance = token_funded.functions.balanceOf(account_funded.address).call()
+        distro_balance = token_distro.functions.balanceOf(account_distro.address).call()
         self.log.info('  Token balances before;')
         self.log.info('    Funded balance = %d ' % funded_balance)
         self.log.info('    Distro balance = %d ' % distro_balance)
@@ -72,10 +72,10 @@ class PySysTest(EthereumTest):
         if distro_balance < self.TOKEN_TARGET:
             amount = (self.TOKEN_TARGET - distro_balance)
             self.log.info('Below target so transferring %d' % amount)
-            network.transact(self, web3_funded, hoc_funded.functions.transfer(account_distro.address, amount), account_funded, 7200000)
+            network.transact(self, web3_funded, token_funded.functions.transfer(account_distro.address, amount), account_funded, 7200000)
 
-            funded_balance = hoc_funded.functions.balanceOf(account_funded.address).call()
-            distro_balance = hoc_distro.functions.balanceOf(account_distro.address).call()
+            funded_balance = token_funded.functions.balanceOf(account_funded.address).call()
+            distro_balance = token_distro.functions.balanceOf(account_distro.address).call()
             self.log.info('  Token balances after;')
             self.log.info('    Funded balance = %d ' % funded_balance)
             self.log.info('    Distro balance = %d ' % distro_balance)
