@@ -1,4 +1,5 @@
-import json, requests
+import json, requests, os
+from pysys.constants import PROJECT
 from pysys.basetest import BaseTest
 from ethsys.utils.properties import Properties
 
@@ -67,3 +68,24 @@ class EthereumTest(BaseTest):
             self.log.info('    OBX Funded balance = %d ' % funded_obx)
             self.log.info('    OBX User balance   = %d ' % user_obx)
 
+    def transfer_token(self, network, token_name, token_address, web3_from, account_from, address, amount):
+        self.log.info('Running for token %s' % token_name)
+
+        with open(os.path.join(PROJECT.root, 'src', 'solidity', 'erc20', 'erc20.json')) as f:
+            token = web3_from.eth.contract(address=token_address, abi=json.load(f))
+
+        balance = token.functions.balanceOf(account_from.address).call()
+        self.log.info('Token balance before = %d ' % balance)
+
+        # transfer tokens from the funded account to the distro account
+        network.transact(self, web3_from, token.functions.transfer(address, amount), account_from, 7200000)
+
+        balance = token.functions.balanceOf(account_from.address).call()
+        self.log.info('Token balance after = %d ' % balance)
+
+    def print_token_balance(self, token_name, token_address, web3, account):
+        with open(os.path.join(PROJECT.root, 'src', 'solidity', 'erc20', 'erc20.json')) as f:
+            token = web3.eth.contract(address=token_address, abi=json.load(f))
+
+        balance = token.functions.balanceOf(account.address).call()
+        self.log.info('Token balance for %s = %d ' % (token_name, balance))

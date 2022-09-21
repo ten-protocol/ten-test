@@ -30,25 +30,21 @@ class PySysTest(EthereumTest):
         '0x49A56e979811228FE14af78A0De407f36A0F829C'
     ]
     USER = None
-    TOKEN_TARGET = 50 * EthereumTest.ONE_GIGA
+    TOKENS = 50 * EthereumTest.ONE_GIGA
 
     def execute(self):
         network = Obscuro
-        web3_deploy, deploy_account = network.connect(self, Properties().l2_funded_account_pk(self.env))
-
-        with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
-            hoc = web3_deploy.eth.contract(address=Properties().l2_hoc_token_address(self.env), abi=json.load(f))
-
-        with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
-            poc = web3_deploy.eth.contract(address=Properties().l2_poc_token_address(self.env), abi=json.load(f))
+        web3_distro, account_distro = network.connect(self, Properties().distro_account_pk(self.env))
+        hoc_address = Properties().l2_hoc_token_address(self.env)
+        poc_address = Properties().l2_poc_token_address(self.env)
 
         users = [self.USER] if self.USER is not None else self.REGISTERED_USERS
         for user_address in users:
             self.log.info('')
             self.log.info('Running for address %s' % user_address)
             self._obx(user_address)
-            self._token(network, 'HOC', hoc, user_address, web3_deploy, deploy_account)
-            self._token(network, 'POC', poc, user_address, web3_deploy, deploy_account)
+            self.transfer_token(network, 'HOC', hoc_address, web3_distro, account_distro, user_address, self.TOKENS)
+            self.transfer_token(network, 'POC', poc_address, web3_distro, account_distro, user_address, self.TOKENS)
 
     def _obx(self, user_address):
         """Increase native OBX on the layer 2."""
@@ -56,8 +52,3 @@ class PySysTest(EthereumTest):
         headers = {'Content-Type': 'application/json'}
         data = {"address": user_address}
         requests.post(Properties().faucet_url(self.env), data=json.dumps(data), headers=headers)
-
-    def _token(self, network, token_name, token, user_address, web3_deploy, deploy_account):
-        """Increase token on the layer 2."""
-        self.log.info('Increasing ERC20 token for %s by %d ' % (token_name, self.TOKEN_TARGET))
-        network.transact(self, web3_deploy, token.functions.transfer(user_address, self.TOKEN_TARGET), deploy_account, 7200000)
