@@ -47,7 +47,7 @@ class Properties:
         return self.get(key, 'DistroAccountPK')
 
     def l1_funded_account_pk(self, key):
-        return self.get(key, 'L1PreFundedAccountPK')
+        return self.get(key, 'L1FundedAccountPK')
 
     def l1_hoc_token_address(self, key):
         return self.get(key, 'L1TokenHOCContractAddress')
@@ -56,7 +56,7 @@ class Properties:
         return self.get(key, 'L1TokenPOCContractAddress')
 
     def l2_funded_account_pk(self, key):
-        return self.get(key, 'L2PreFundedAccountPK')
+        return self.get(key, 'L2FundedAccountPK')
 
     def l2_hoc_token_address(self, key):
         return self.get(key, 'L2TokenHOCContractAddress')

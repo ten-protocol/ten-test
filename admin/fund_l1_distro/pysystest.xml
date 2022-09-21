@@ -2,9 +2,8 @@
 <pysystest type="auto">
 
     <description>
-        <title>Allocate native OBX to the deployment account</title>
+        <title>Fund the distro account in L1 with HOC and POC</title>
         <purpose><![CDATA[
-Allocates OBX to the deployment account (all done within L2)
 ]]>
         </purpose>
     </description>
