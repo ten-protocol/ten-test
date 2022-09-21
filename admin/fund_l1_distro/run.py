@@ -21,8 +21,8 @@ class PySysTest(EthereumTest):
         self.fund_eth(network, web3_funded, account_funded, web3_distro, account_distro)
 
         # fund tokens to the distro account
-        self.fund_tokens(network, 'HOC', hoc_address, web3_funded, account_funded, web3_distro, account_distro)
-        self.fund_tokens(network, 'POC', poc_address, web3_funded, account_funded, web3_distro, account_distro)
+        self.fund_token(network, 'HOC', hoc_address, web3_funded, account_funded, web3_distro, account_distro)
+        self.fund_token(network, 'POC', poc_address, web3_funded, account_funded, web3_distro, account_distro)
 
     def fund_eth(self, network, web3_funded, account_funded, web3_distro, account_distro):
         funded_eth = web3_funded.eth.get_balance(account_funded.address)
@@ -53,7 +53,7 @@ class PySysTest(EthereumTest):
             self.log.info('    Funded balance = %d ' % funded_eth)
             self.log.info('    Distro balance = %d ' % distro_eth)
 
-    def fund_tokens(self, network, token_name, token_address, web3_funded, account_funded, web3_distro, account_distro):
+    def fund_token(self, network, token_name, token_address, web3_funded, account_funded, web3_distro, account_distro):
         self.log.info('Running for token %s' % token_name)
 
         with open(os.path.join(PROJECT.root, 'src', 'solidity', 'erc20', 'erc20.json')) as f:

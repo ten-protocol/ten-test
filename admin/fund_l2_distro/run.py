@@ -6,7 +6,7 @@ from ethsys.networks.factory import NetworkFactory
 
 
 class PySysTest(EthereumTest):
-    TOKEN_TARGET = 1000 * EthereumTest.ONE_GIGA
+    TOKEN_TARGET = 800 * EthereumTest.ONE_GIGA
 
     def execute(self):
         # connect to the L1 network and get contracts
@@ -20,10 +20,10 @@ class PySysTest(EthereumTest):
         self.fund_obx(network, web3_distro, account_distro)
 
         # fund tokens to the bridge account
-        self.bridge_tokens(network, 'HOC', hoc_address, web3_distro, account_distro, bridge_address)
-        self.bridge_tokens(network, 'POC', poc_address, web3_distro, account_distro, bridge_address)
+        self.bridge_token(network, 'HOC', hoc_address, web3_distro, account_distro, bridge_address)
+        self.bridge_token(network, 'POC', poc_address, web3_distro, account_distro, bridge_address)
 
-    def bridge_tokens(self, network, token_name, token_address, web3_distro, account_distro, bridge_address):
+    def bridge_token(self, network, token_name, token_address, web3_distro, account_distro, bridge_address):
         self.log.info('Running for token %s' % token_name)
 
         with open(os.path.join(PROJECT.root, 'src', 'solidity', 'erc20', 'erc20.json')) as f:
@@ -33,6 +33,7 @@ class PySysTest(EthereumTest):
         self.log.info('  Token balance before;')
         self.log.info('    Distro balance = %d ' % distro_balance)
 
+        # transfer all the amount across the bridge
         network.transact(self, web3_distro, token.functions.transfer(bridge_address, distro_balance), account_distro, 7200000)
 
         distro_balance = token.functions.balanceOf(account_distro.address).call()
