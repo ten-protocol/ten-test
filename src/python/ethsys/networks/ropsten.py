@@ -15,7 +15,7 @@ class Ropsten(Default):
     def connection(cls, test, private_key, web_socket):
         host = '%s/%s' % (cls.HOST if not web_socket else cls.WS_HOST, Properties().infuraProjectID())
 
-        test.log.info('Connecting to network on %s' % host)
+        test.log.info('Connecting to %s on %s' % (cls.__name__, host))
         if not web_socket: web3 = Web3(Web3.HTTPProvider(host))
         else: web3 = Web3(Web3.WebsocketProvider(host, websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)

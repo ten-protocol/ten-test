@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Fund test user accounts in L2 with OBX, HOC and POC</title>
+        <title>Sets up all test user accounts in layer 2 with OBX, HOC and POC</title>
         <purpose><![CDATA[
 ]]>
         </purpose>

@@ -2,7 +2,10 @@
 <pysystest type="auto">
 
     <description>
-        <title>Fund the distro account in L1 with ETH, HOC and POC</title>
+        <title>Sets up the layer 1 distribution account including bridge transfer</title>
+        <purpose><![CDATA[
+Performs all funding in the layer 1. This includes funding a distribution account with ETH, transfer ERC20 tokens
+from the layer 1 funded account to the distribution account for HOC and POC, and then transfer to the bridge address.
         <purpose><![CDATA[
 ]]>
         </purpose>

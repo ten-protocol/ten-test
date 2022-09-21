@@ -30,6 +30,7 @@ class PySysTest(EthereumTest):
         '0x49A56e979811228FE14af78A0De407f36A0F829C'
     ]
     USER = None
+    TOKEN_TARGET = 50 * EthereumTest.ONE_GIGA
 
     def execute(self):
         network = Obscuro

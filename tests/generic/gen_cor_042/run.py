@@ -8,7 +8,7 @@ from ethsys.networks.factory import NetworkFactory
 
 
 class PySysTest(EthereumTest):
-    WEBSOCKET = False   # run with `pysys.py run -XWEBSOCKET` to enable
+    WEBSOCKET = False
 
     def execute(self):
         # deployment of contracts

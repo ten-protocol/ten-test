@@ -14,15 +14,20 @@ class PySysTest(EthereumTest):
         network = NetworkFactory.get_l1_network(self.env)
         hoc_address = Properties().l1_hoc_token_address(self.env)
         poc_address = Properties().l1_poc_token_address(self.env)
+        bridge_address = Properties().management_bridge_address(self.env)
         web3_funded, account_funded = network.connect(self, Properties().l1_funded_account_pk(self.env))
         web3_distro, account_distro = network.connect(self, Properties().distro_account_pk(self.env))
 
         # fund eth to the distro account
         self.fund_eth(network, web3_funded, account_funded, web3_distro, account_distro)
 
-        # fund tokens to the distro account
-        self.fund_token(network, 'HOC', hoc_address, web3_funded, account_funded, web3_distro, account_distro)
-        self.fund_token(network, 'POC', poc_address, web3_funded, account_funded, web3_distro, account_distro)
+        # fund tokens on the ERC20s to the distro account from the funded account
+        self.transfer_token(network, 'HOC', hoc_address, web3_funded, account_funded, account_distro.address)
+        self.transfer_token(network, 'POC', poc_address, web3_funded, account_funded, account_distro.address)
+
+        # fund tokens on the ERC20s to the bridge account from the distro account
+        self.transfer_token(network, 'HOC', hoc_address, web3_distro, account_distro, bridge_address)
+        self.transfer_token(network, 'POC', poc_address, web3_distro, account_distro, bridge_address)
 
     def fund_eth(self, network, web3_funded, account_funded, web3_distro, account_distro):
         funded_eth = web3_funded.eth.get_balance(account_funded.address)
@@ -53,31 +58,17 @@ class PySysTest(EthereumTest):
             self.log.info('    Funded balance = %d ' % funded_eth)
             self.log.info('    Distro balance = %d ' % distro_eth)
 
-    def fund_token(self, network, token_name, token_address, web3_funded, account_funded, web3_distro, account_distro):
+    def transfer_token(self, network, token_name, token_address, web3_from, account_from, address):
         self.log.info('Running for token %s' % token_name)
 
         with open(os.path.join(PROJECT.root, 'src', 'solidity', 'erc20', 'erc20.json')) as f:
-            token_funded = web3_funded.eth.contract(address=token_address, abi=json.load(f))
+            token = web3_from.eth.contract(address=token_address, abi=json.load(f))
 
-        with open(os.path.join(PROJECT.root, 'src', 'solidity', 'erc20', 'erc20.json')) as f:
-            token_distro = web3_distro.eth.contract(address=token_address, abi=json.load(f))
-
-        funded_balance = token_funded.functions.balanceOf(account_funded.address).call()
-        distro_balance = token_distro.functions.balanceOf(account_distro.address).call()
-        self.log.info('  Token balances before;')
-        self.log.info('    Funded balance = %d ' % funded_balance)
-        self.log.info('    Distro balance = %d ' % distro_balance)
+        balance = token.functions.balanceOf(account_from.address).call()
+        self.log.info('Token balance before = %d ' % balance)
 
         # transfer tokens from the funded account to the distro account
-        if distro_balance < self.TOKEN_TARGET:
-            amount = (self.TOKEN_TARGET - distro_balance)
-            self.log.info('Below target so transferring %d' % amount)
-            network.transact(self, web3_funded, token_funded.functions.transfer(account_distro.address, amount), account_funded, 7200000)
+        network.transact(self, web3_from, token.functions.transfer(address, self.TOKEN_TARGET), account_from, 7200000)
 
-            funded_balance = token_funded.functions.balanceOf(account_funded.address).call()
-            distro_balance = token_distro.functions.balanceOf(account_distro.address).call()
-            self.log.info('  Token balances after;')
-            self.log.info('    Funded balance = %d ' % funded_balance)
-            self.log.info('    Distro balance = %d ' % distro_balance)
-
-
+        balance = token.functions.balanceOf(account_from.address).call()
+        self.log.info('Token balance after = %d ' % balance)

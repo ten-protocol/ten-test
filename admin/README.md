@@ -2,54 +2,53 @@ Admin controls on Obscuro Testnet
 =================================
 This directory contains utilities to perform admin operations on Obscuro testnet. This is to;
 
-- fund a distribution account in layer 1 with native ETH, HOC and POC tokens (`fund_l1_distro`)
-- fund a distribution account in layer 2 with native OBX, HOC and POC tokens (`fund_l2_distro`)
-- fund test users in layer 2 with HOC, POC and native OBX tokens (`fund_test_users`)
-- fund users in layer 2 with HOC, POC and native OBX tokens (`fund_users`)
+- set up the layer 1 distribution account including bridge transfer (`fund_layer_one`)
+- set up the layer 2 distribution account (`fund_layer_two`)
+- set up all test user accounts in layer 2 with OBX, HOC and POC (`fund_test_users`)
+- set up all community user accounts in layer 2 with OBX, HOC and POC (`fund_users`)
 
 For setup notes, see the top level [readme](../README.md)
 
-Fund native ETH, HOC and POC tokens into the Layer 1
-----------------------------------------------------
-`fund_l1_distro` performs a native ETH transfer from a pre-funded account on layer 1 to a distribution account. To 
+Fund native ETH, HOC and POC tokens in the Layer 1
+--------------------------------------------------
+`fund_layer_one` performs a native ETH transfer from a pre-funded account on layer 1 to a distribution account. To 
 perform this the private key of the pre-funded account must be known to the test framework and is configured in the 
 `default.properties` file. The pre-funded account is also the holder of HOC and POC tokens on layer 1, as it is used 
 to deploy these contracts. It is therefore additionally used to transfer tokens from the ERC20 contracts to the 
-distribution account. This allows later transfer of the tokens to the bridge address so they are available in layer 2. 
-To perform the transfers use;
+distribution account. This then allows later transfer of the tokens to the bridge address so that they are available 
+in layer 2. To run use;
 
 ```bash
 # to run on Obscuro testnet 
-pysys.py run fund_l1_distro
+pysys.py run fund_layer_one
 
 # to run on Obscuro dev-testnet 
-pysys.py run  -m obscuro.dev fund_l1_distro
+pysys.py run  -m obscuro.dev fund_layer_one
 
 # to run on Obscuro local testnet 
-pysys.py run  -m obscuro.local fund_l1_distro
+pysys.py run  -m obscuro.local fund_layer_one
 ```
 
-Fund native OBX, HOC and POC tokens into the Layer 2
+Fund native OBX in Layer 2
 ----------------------------------------------------
-`fund_l2_distro` performs a request to the faucet server for native OBX on behald of the distribution account. It 
-additionally uses the distribution account in layer 1 to transfer HOC and POC to the bridge address so that the tokens 
-are then available in layer 2 to be distributed to test and external users on request. To perform the transfers use;
+`fund_layer_two` performs a request to the faucet server for native OBX on behalf of the distribution account.  It 
+additionally prints out the token balances for HOC and POC in layer 2 for reference. To run use;
 
 ```bash
 # to run on Obscuro testnet 
-pysys.py run fund_l2_distro
+pysys.py run fund_layer_two
 
 # to run on Obscuro dev-testnet 
-pysys.py run -m obscuro.dev fund_l2_distro
+pysys.py run -m obscuro.dev fund_layer_two
 
 # to run on Obscuro local testnet 
-pysys.py run  -m obscuro.local fund_l2_distro
+pysys.py run  -m obscuro.local fund_layer_two
 ```
 
 Funding test users
 ------------------
-`fund_test_users` provides the ability to ensure the native OBX, HOC and POC tokens for all test users in layer 2 do not
-fall below a certain threshold. To run a check and perform an allocation use;
+`fund_test_users` performs a transfer of native OBX, and HOC and POC tokens to each of the test accounts used within the 
+`obscuro-test` testcases. To run use;
 
 ```bash
 # to run on Obscuro testnet to allocate funds
@@ -64,8 +63,8 @@ pysys.py run  -m obscuro.local fund_test_users
 
 Funding users
 -------------
-`fund_users` provides the ability to add in new user accounts, and for them to be allocated native OBX, HOC and POC 
-tokens. To transfer tokens to an account address use;
+`fund_users` performs a transfer of native OBX, and HOC and POC tokens to each of the community registered accounts. 
+To run use;
 
 ```bash
 # to run on Obscuro testnet 
