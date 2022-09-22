@@ -34,13 +34,13 @@ class EthereumTest(BaseTest):
             token = web3_from.eth.contract(address=token_address, abi=json.load(f))
 
         balance = token.functions.balanceOf(account_from.address).call()
-        self.log.info('Token balance before = %d ' % balance)
+        self.log.info('Sender token balance before = %d ' % balance)
 
         # transfer tokens from the funded account to the distro account
         network.transact(self, web3_from, token.functions.transfer(address, amount), account_from, 7200000)
 
         balance = token.functions.balanceOf(account_from.address).call()
-        self.log.info('Token balance after = %d ' % balance)
+        self.log.info('Sender token balance after = %d ' % balance)
 
     def print_token_balance(self, token_name, token_address, web3, account):
         """Print an ERC20 token balance of a recipient account. """
@@ -54,8 +54,8 @@ class EthereumTest(BaseTest):
         """Allocates native OBX to a users account from the faucet server."""
         self.log.info('Running for native OBX token using faucet server')
         user_obx = web3_user.eth.get_balance(account_user.address)
-        self.log.info('  L2 balances before;')
-        self.log.info('    OBX User balance   = %d ' % user_obx)
+        self.log.info('L2 balances before;')
+        self.log.info('  OBX User balance   = %d ' % user_obx)
 
         self.log.info('Running request on %s' % Properties().faucet_url(self.env))
         self.log.info('Running for user address %s' % account_user.address)
@@ -64,8 +64,8 @@ class EthereumTest(BaseTest):
         requests.post(Properties().faucet_url(self.env), data=json.dumps(data), headers=headers)
 
         user_obx = web3_user.eth.get_balance(account_user.address)
-        self.log.info('  L2 balances after;')
-        self.log.info('    OBX User balance   = %d ' % user_obx)
+        self.log.info('L2 balances after;')
+        self.log.info('  OBX User balance   = %d ' % user_obx)
 
     def __obx_from_funded_pk(self, network, web3_user, account_user, amount):
         """Allocates native OBX to a users account from the pre-funded account."""
@@ -74,9 +74,9 @@ class EthereumTest(BaseTest):
         web3_funded, account_funded = network.connect(self, Properties().l2_funded_account_pk(self.env))
         funded_obx = web3_funded.eth.get_balance(account_funded.address)
         user_obx = web3_user.eth.get_balance(account_user.address)
-        self.log.info('  L2 balances before;')
-        self.log.info('    OBX Funded balance = %d ' % funded_obx)
-        self.log.info('    OBX User balance   = %d ' % user_obx)
+        self.log.info('L2 balances before;')
+        self.log.info('  OBX Funded balance = %d ' % funded_obx)
+        self.log.info('  OBX User balance   = %d ' % user_obx)
 
         if user_obx < amount:
             amount = amount - user_obx
@@ -95,6 +95,6 @@ class EthereumTest(BaseTest):
 
             funded_obx = web3_funded.eth.get_balance(account_funded.address)
             user_obx = web3_user.eth.get_balance(account_user.address)
-            self.log.info('  L2 balances after;')
-            self.log.info('    OBX Funded balance = %d ' % funded_obx)
-            self.log.info('    OBX User balance   = %d ' % user_obx)
+            self.log.info('L2 balances after;')
+            self.log.info('  OBX Funded balance = %d ' % funded_obx)
+            self.log.info('  OBX User balance   = %d ' % user_obx)

@@ -17,22 +17,28 @@ class PySysTest(EthereumTest):
         web3_distro, account_distro = network.connect(self, Properties().distro_account_pk(self.env))
 
         # fund eth to the distro account
+        self.log.info('')
+        self.log.info('Funding native ETH to the distro account')
         self.fund_eth(network, web3_funded, account_funded, web3_distro, account_distro)
 
         # fund tokens on the ERC20s to the distro account from the funded account
-        self.transfer_token(network, 'HOC', hoc_address, web3_funded, account_funded, account_distro.address, self.ETH)
-        self.transfer_token(network, 'POC', poc_address, web3_funded, account_funded, account_distro.address, self.ETH)
+        self.log.info('')
+        self.log.info('Funding HOC and POC to the distro account')
+        self.transfer_token(network, 'HOC', hoc_address, web3_funded, account_funded, account_distro.address, self.TOKENS)
+        self.transfer_token(network, 'POC', poc_address, web3_funded, account_funded, account_distro.address, self.TOKENS)
 
         # fund tokens on the ERC20s to the bridge account from the distro account
+        self.log.info('')
+        self.log.info('Bridging HOC and POC to the distro account')
         self.transfer_token(network, 'HOC', hoc_address, web3_distro, account_distro, bridge_address, self.TOKENS)
         self.transfer_token(network, 'POC', poc_address, web3_distro, account_distro, bridge_address, self.TOKENS)
 
     def fund_eth(self, network, web3_funded, account_funded, web3_distro, account_distro):
         funded_eth = web3_funded.eth.get_balance(account_funded.address)
         distro_eth = web3_distro.eth.get_balance(account_distro.address)
-        self.log.info('  ETH balance before;')
-        self.log.info('    Funded balance = %d ' % funded_eth)
-        self.log.info('    Distro balance = %d ' % distro_eth)
+        self.log.info('ETH balance before;')
+        self.log.info('  Funded balance = %d ' % funded_eth)
+        self.log.info('  Distro balance = %d ' % distro_eth)
 
         if distro_eth < self.ETH:
             amount = (self.ETH - distro_eth)
@@ -52,6 +58,6 @@ class PySysTest(EthereumTest):
 
             funded_eth = web3_funded.eth.get_balance(account_funded.address)
             distro_eth = web3_distro.eth.get_balance(account_distro.address)
-            self.log.info('  Eth balance after;')
-            self.log.info('    Funded balance = %d ' % funded_eth)
-            self.log.info('    Distro balance = %d ' % distro_eth)
+            self.log.info('Eth balance after;')
+            self.log.info('  Funded balance = %d ' % funded_eth)
+            self.log.info('  Distro balance = %d ' % distro_eth)
