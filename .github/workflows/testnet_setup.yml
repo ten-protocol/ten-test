@@ -52,8 +52,8 @@ jobs:
         if: ${{ github.event.inputs.environment == 'testnet' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
-          /usr/local/bin/pysys.py run fund_deploy_native
-          /usr/local/bin/pysys.py run fund_deploy_tokens
+          /usr/local/bin/pysys.py run fund_layer_one
+          /usr/local/bin/pysys.py run fund_layer_two
           /usr/local/bin/pysys.py run fund_test_users
           /usr/local/bin/pysys.py run fund_users
           
@@ -61,7 +61,7 @@ jobs:
         if: ${{ github.event.inputs.environment == 'dev-testnet' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
-          /usr/local/bin/pysys.py run -m obscuro.dev fund_deploy_native
-          /usr/local/bin/pysys.py run -m obscuro.dev fund_deploy_tokens
+          /usr/local/bin/pysys.py run -m obscuro.dev fund_layer_one
+          /usr/local/bin/pysys.py run -m obscuro.dev fund_layer_two
           /usr/local/bin/pysys.py run -m obscuro.dev fund_test_users
           /usr/local/bin/pysys.py run -m obscuro.dev fund_users

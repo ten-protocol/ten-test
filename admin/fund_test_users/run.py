@@ -23,7 +23,9 @@ class PySysTest(EthereumTest):
             web3_user, account_user = network.connect(self, user)
             self.log.info('')
             self.log.info('Running for user address %s' % account_user.address)
+            self.log.info('Funding native OBX to the test user account')
             self.fund_obx(network, web3_user, account_user, self.OBX)
+            self.log.info('Funding HOC and POC to the test user account')
             self.transfer_token(network, 'HOC', hoc_address, web3_distro, account_distro, account_user.address, self.TOKENS)
             self.transfer_token(network, 'POC', poc_address, web3_distro, account_distro, account_user.address, self.TOKENS)
 
