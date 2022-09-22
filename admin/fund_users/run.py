@@ -1,5 +1,3 @@
-import json, os, requests
-from pysys.constants import PROJECT
 from ethsys.basetest import EthereumTest
 from ethsys.utils.properties import Properties
 from ethsys.networks.obscuro import Obscuro
@@ -42,13 +40,6 @@ class PySysTest(EthereumTest):
         for user_address in users:
             self.log.info('')
             self.log.info('Running for address %s' % user_address)
-            self._obx(user_address)
+            self.fund_obx_for_address_only(user_address)
             self.transfer_token(network, 'HOC', hoc_address, web3_distro, account_distro, user_address, self.TOKENS)
             self.transfer_token(network, 'POC', poc_address, web3_distro, account_distro, user_address, self.TOKENS)
-
-    def _obx(self, user_address):
-        """Increase native OBX on the layer 2."""
-        self.log.info('Increasing native OBX via the faucet server')
-        headers = {'Content-Type': 'application/json'}
-        data = {"address": user_address}
-        requests.post(Properties().faucet_url(self.env), data=json.dumps(data), headers=headers)

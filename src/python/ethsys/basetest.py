@@ -15,11 +15,42 @@ class EthereumTest(BaseTest):
     def fund_obx(self, network, web3_user, account_user, amount):
         """Fund OBX in the L2 to a users account, either through the faucet server or direct from the account."""
         if self.env in ['obscuro', 'obscuro.dev']:
-            self.obx_from_faucet_server(web3_user, account_user)
+            self.__obx_from_faucet_server(web3_user, account_user)
         else:
-            self.obx_from_funded_pk(network, web3_user, account_user, amount)
+            self.__obx_from_funded_pk(network, web3_user, account_user, amount)
 
-    def obx_from_faucet_server(self, web3_user, account_user):
+    def fund_obx_for_address_only(self, address):
+        """Fund OBX for an account using the faucet server when only the address is known. """
+        self.log.info('Increasing native OBX via the faucet server')
+        headers = {'Content-Type': 'application/json'}
+        data = {"address": address}
+        requests.post(Properties().faucet_url(self.env), data=json.dumps(data), headers=headers)
+
+    def transfer_token(self, network, token_name, token_address, web3_from, account_from, address, amount):
+        """Transfer an ERC20 token amount from a recipient account to an address. """
+        self.log.info('Running for token %s' % token_name)
+
+        with open(os.path.join(PROJECT.root, 'src', 'solidity', 'erc20', 'erc20.json')) as f:
+            token = web3_from.eth.contract(address=token_address, abi=json.load(f))
+
+        balance = token.functions.balanceOf(account_from.address).call()
+        self.log.info('Token balance before = %d ' % balance)
+
+        # transfer tokens from the funded account to the distro account
+        network.transact(self, web3_from, token.functions.transfer(address, amount), account_from, 7200000)
+
+        balance = token.functions.balanceOf(account_from.address).call()
+        self.log.info('Token balance after = %d ' % balance)
+
+    def print_token_balance(self, token_name, token_address, web3, account):
+        """Print an ERC20 token balance of a recipient account. """
+        with open(os.path.join(PROJECT.root, 'src', 'solidity', 'erc20', 'erc20.json')) as f:
+            token = web3.eth.contract(address=token_address, abi=json.load(f))
+
+        balance = token.functions.balanceOf(account.address).call()
+        self.log.info('Token balance for %s = %d ' % (token_name, balance))
+
+    def __obx_from_faucet_server(self, web3_user, account_user):
         """Allocates native OBX to a users account from the faucet server."""
         self.log.info('Running for native OBX token using faucet server')
         user_obx = web3_user.eth.get_balance(account_user.address)
@@ -36,7 +67,7 @@ class EthereumTest(BaseTest):
         self.log.info('  L2 balances after;')
         self.log.info('    OBX User balance   = %d ' % user_obx)
 
-    def obx_from_funded_pk(self, network, web3_user, account_user, amount):
+    def __obx_from_funded_pk(self, network, web3_user, account_user, amount):
         """Allocates native OBX to a users account from the pre-funded account."""
         self.log.info('Running for native OBX token using faucet pk')
 
@@ -67,25 +98,3 @@ class EthereumTest(BaseTest):
             self.log.info('  L2 balances after;')
             self.log.info('    OBX Funded balance = %d ' % funded_obx)
             self.log.info('    OBX User balance   = %d ' % user_obx)
-
-    def transfer_token(self, network, token_name, token_address, web3_from, account_from, address, amount):
-        self.log.info('Running for token %s' % token_name)
-
-        with open(os.path.join(PROJECT.root, 'src', 'solidity', 'erc20', 'erc20.json')) as f:
-            token = web3_from.eth.contract(address=token_address, abi=json.load(f))
-
-        balance = token.functions.balanceOf(account_from.address).call()
-        self.log.info('Token balance before = %d ' % balance)
-
-        # transfer tokens from the funded account to the distro account
-        network.transact(self, web3_from, token.functions.transfer(address, amount), account_from, 7200000)
-
-        balance = token.functions.balanceOf(account_from.address).call()
-        self.log.info('Token balance after = %d ' % balance)
-
-    def print_token_balance(self, token_name, token_address, web3, account):
-        with open(os.path.join(PROJECT.root, 'src', 'solidity', 'erc20', 'erc20.json')) as f:
-            token = web3.eth.contract(address=token_address, abi=json.load(f))
-
-        balance = token.functions.balanceOf(account.address).call()
-        self.log.info('Token balance for %s = %d ' % (token_name, balance))
