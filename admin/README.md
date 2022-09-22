@@ -2,10 +2,10 @@ Admin controls on Obscuro Testnet
 =================================
 This directory contains utilities to perform admin operations on Obscuro testnet. This is to;
 
-- set up the layer 1 distribution account including bridge transfer (`fund_layer_one`)
-- set up the layer 2 distribution account (`fund_layer_two`)
-- set up all test user accounts in layer 2 with OBX, HOC and POC (`fund_test_users`)
-- set up all community user accounts in layer 2 with OBX, HOC and POC (`fund_users`)
+- fund layer 1 distribution account and bridge tokens (`fund_layer_one`)
+- fund layer 2 distribution account (`fund_layer_two`)
+- fund test users in layer 2 with native OBX and HOC and POC (`fund_test_users`)
+- fund community users in layer 2 with native OBX and HOC and POC (`fund_users`)
 
 For setup notes, see the top level [readme](../README.md)
 
@@ -15,8 +15,8 @@ Fund native ETH, HOC and POC tokens in the Layer 1
 perform this the private key of the pre-funded account must be known to the test framework and is configured in the 
 `default.properties` file. The pre-funded account is also the holder of HOC and POC tokens on layer 1, as it is used 
 to deploy these contracts. It is therefore additionally used to transfer tokens from the ERC20 contracts to the 
-distribution account. This then allows later transfer of the tokens to the bridge address so that they are available 
-in layer 2. To run use;
+distribution account. This then allows transfer of the tokens to the bridge address so that they are available in 
+layer 2. To run use;
 
 ```bash
 # to run on Obscuro testnet 
@@ -32,7 +32,9 @@ pysys.py run  -m obscuro.local fund_layer_one
 Fund native OBX in Layer 2
 ----------------------------------------------------
 `fund_layer_two` performs a request to the faucet server for native OBX on behalf of the distribution account.  It 
-additionally prints out the token balances for HOC and POC in layer 2 for reference. To run use;
+additionally prints out the token balances for HOC and POC in layer 2 for reference. Note that when running on a local 
+testnet no faucet server is available, and a native transfer from the pre-funded account on layer 2 to the distribution 
+account is used instead. To run use;
 
 ```bash
 # to run on Obscuro testnet 

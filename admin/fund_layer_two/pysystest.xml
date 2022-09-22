@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Sets up the layer 2 distribution account</title>
+        <title>Fund layer 2 distribution account</title>
         <purpose><![CDATA[
 Performs all funding in the layer 2. At the moment this is just requesting native OBX from the faucet server, or if
 running on a local testnet performing a native transfer from the layer 2 funded account.

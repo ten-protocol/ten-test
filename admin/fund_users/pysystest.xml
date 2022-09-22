@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Sets up all community user accounts in layer 2 with OBX, HOC and POC</title>
+        <title>Fund community users in layer 2 with native OBX and HOC and POC</title>
         <purpose><![CDATA[
 ]]>
         </purpose>
