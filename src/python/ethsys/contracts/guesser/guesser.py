@@ -44,7 +44,7 @@ class Guesser:
     def guess(self, max_guesses=100):
         """Perform a guessing game to get the secret number."""
         lower = self.lower
-        upper = self.upper
+        upper = self.upper + 1
         nguess = 0
         while True:
             nguess += 1
