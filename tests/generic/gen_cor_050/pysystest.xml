@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Error: assert, require and assert on pure function call</title>
+        <purpose><![CDATA[]]>
+Deploy a contract and check for error reporting on revert, require and assert.
+        </purpose>
+    </description>
+
+    <skipped reason="https://github.com/obscuronet/obscuro-internal/issues/759" />
+
+    <classification>
+        <groups inherit="true">
+            <group>ws</group>
+        </groups>
+        <modes inherit="true">
+            <mode>obscuro.dev</mode>
+            <mode>obscuro.local</mode>
+            <mode>ropsten</mode>
+            <mode>ganache</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

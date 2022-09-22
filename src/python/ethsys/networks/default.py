@@ -30,13 +30,18 @@ class Default:
         return cls.CONNECTIONS[key]
 
     @classmethod
-    def connection(cls, test, private_key, web_socket):
+    def connection_url(cls, web_socket):
         port = cls.PORT if not web_socket else cls.WS_PORT
         host = cls.HOST if not web_socket else cls.WS_HOST
+        return '%s:%d' % (host, port)
 
-        test.log.info('Connecting to %s on %s:%d' % (cls.__name__, host, port))
-        if not web_socket: web3 = Web3(Web3.HTTPProvider('%s:%d' % (host, port)))
-        else: web3 = Web3(Web3.WebsocketProvider('%s:%d' % (host, port), websocket_timeout=120))
+    @classmethod
+    def connection(cls, test, private_key, web_socket):
+        url = cls.connection_url(web_socket)
+
+        test.log.info('Connecting to %s on %s' % (cls.__name__, url))
+        if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
+        else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)
         return web3, account
 

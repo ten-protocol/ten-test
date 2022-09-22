@@ -1,5 +1,5 @@
-import json, requests, os
-from pysys.constants import PROJECT
+import json, requests, os, copy, sys
+from pysys.constants import PROJECT, FOREGROUND, BACKGROUND
 from pysys.basetest import BaseTest
 from ethsys.utils.properties import Properties
 
@@ -98,3 +98,17 @@ class EthereumTest(BaseTest):
             self.log.info('L2 balances after;')
             self.log.info('  OBX Funded balance = %d ' % funded_obx)
             self.log.info('  OBX User balance   = %d ' % user_obx)
+
+    def run_python(self, script, args=None, state=BACKGROUND, timeout=120,
+                   stdout='client-script.out', stderr='client-script.err'):
+        stdout = os.path.join(self.output, stdout)
+        stderr = os.path.join(self.output, stderr)
+
+        arguments = [script]
+        if args is not None: arguments.extend(args)
+
+        environ = copy.deepcopy(os.environ)
+        hprocess = self.startProcess(command=sys.executable, displayName='python', workingDir=self.output,
+                                     arguments=arguments, environs=environ, stdout=stdout, stderr=stderr,
+                                     state=state, timeout=timeout)
+        return hprocess

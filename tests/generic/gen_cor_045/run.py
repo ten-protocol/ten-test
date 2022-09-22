@@ -1,6 +1,6 @@
-import re
+import os
 from ethsys.basetest import EthereumTest
-from ethsys.contracts.error.error import Error
+from ethsys.contracts.storage.storage import Storage
 from ethsys.networks.factory import NetworkFactory
 
 
@@ -12,32 +12,16 @@ class PySysTest(EthereumTest):
         network = NetworkFactory.get_network(self.env)
         web3, account = network.connect_account1(self, web_socket=self.WEBSOCKET)
 
-        error = Error(self, web3, 'foo')
-        error.deploy(network, account)
+        storage = Storage(self, web3, 100)
+        storage.deploy(network, account)
 
-        # force a require
-        try:
-            error.contract.functions.force_require().call()
-        except Exception as e:
-            self.log.info('Exception type: %s' % type(e).__name__)
-            self.log.info('Exception args: %s' % e.args[0])
-            regex = re.compile('execution reverted:.*Forced require', re.M)
-            self.assertTrue(regex.search(e.args[0]) is not None)
+        # run a background python script to pick up events
+        script = os.path.join(self.input, 'event_listener.py')
+        args = [network.connection_url(web_socket=False), storage.contract_address, storage.abi]
+        self.run_python(script, args)
 
-        # force a revert
-        try:
-            error.contract.functions.force_revert().call()
-        except Exception as e:
-            self.log.info('Exception type: %s' % type(e).__name__)
-            self.log.info('Exception args: %s' % e.args[0])
-            regex = re.compile('execution reverted:.*Forced revert', re.M)
-            self.assertTrue(regex.search(e.args[0]) is not None)
+        # perform some transactions
+        for i in range(0,5):
+            network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS)
 
-        # force assert
-        try:
-            error.contract.functions.force_assert().call()
-        except Exception as e:
-            self.log.info('Exception type: %s' % type(e).__name__)
-            self.log.info('Exception args: %s' % e.args[0])
-            regex = re.compile('execution reverted', re.M)
-            self.assertTrue(regex.search(e.args[0]) is not None)
+
