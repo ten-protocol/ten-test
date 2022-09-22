@@ -30,13 +30,15 @@ The top level structure of the project is as below;
 ├── admin                # Used for administering Obscuro testnet 
 ├── artifacts            # Directory to store artifacts for running Obscuro tests
 ├── src                  # The source root for all test code
-│    └── python          # The python source root for pysys extensions
+│    ├── javascript      # A library of javascript client tooling
+│    ├── python          # The python source root for pysys extensions
+│    └── solidity        # A library of smart contracts 
 ├── tests                # The test root for all tests 
 │    ├── generic         # Network agnostic tests 
 │    └── obscuro         # Obscuro specific tests 
 └── utils                # The project utils root for utilities used by the tests
-     ├── contracts       # A library of smart contracts 
-     └── docker          # Docker configuration and build files 
+     ├── docker          # Docker configuration and build files
+     └── github          # Azure VM github self hosted running build files
 ```
 
 The [.default.properties](./.default.properties) file contains properties for running the tests that are common to any 

@@ -1,5 +1,3 @@
-import json, os
-from pysys.constants import PROJECT
 from ethsys.basetest import EthereumTest
 from ethsys.utils.properties import Properties
 from ethsys.networks.obscuro import Obscuro
@@ -12,23 +10,21 @@ class PySysTest(EthereumTest):
         Properties().account3pk(),
         Properties().gameuserpk()
     ]
+    OBX = 10 * EthereumTest.ONE_GIGA
+    TOKENS = 50 * EthereumTest.ONE_GIGA
 
     def execute(self):
         network = Obscuro
-        web3_deploy, deploy_account = network.connect(self, Properties().funded_deployment_account_pk(self.env))
-
-        with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
-            hoc = web3_deploy.eth.contract(address=Properties().l2_hoc_token_address(self.env), abi=json.load(f))
-
-        with open(os.path.join(PROJECT.root, 'utils', 'contracts', 'erc20', 'erc20.json')) as f:
-            poc = web3_deploy.eth.contract(address=Properties().l2_poc_token_address(self.env), abi=json.load(f))
+        web3_distro, account_distro = network.connect(self, Properties().distro_account_pk(self.env))
+        hoc_address = Properties().l2_hoc_token_address(self.env)
+        poc_address = Properties().l2_poc_token_address(self.env)
 
         for user in self.USERS:
-            web3_user, user_account = network.connect(self, user)
+            web3_user, account_user = network.connect(self, user)
             self.log.info('')
-            self.log.info('Running for user address %s' % user_account.address)
-            self.fund_obx(network, web3_user, user_account)
-            self.fund_token(network, 'HOC', hoc, web3_user, user_account, web3_deploy, deploy_account)
-            self.fund_token(network, 'POC', poc, web3_user, user_account, web3_deploy, deploy_account)
+            self.log.info('Running for user address %s' % account_user.address)
+            self.fund_obx(network, web3_user, account_user, self.OBX)
+            self.transfer_token(network, 'HOC', hoc_address, web3_distro, account_distro, account_user.address, self.TOKENS)
+            self.transfer_token(network, 'POC', poc_address, web3_distro, account_distro, account_user.address, self.TOKENS)
 
 

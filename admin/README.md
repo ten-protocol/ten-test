@@ -2,63 +2,71 @@ Admin controls on Obscuro Testnet
 =================================
 This directory contains utilities to perform admin operations on Obscuro testnet. This is to;
 
-- fund native tokens into the layer 2 for OBX for the deployment account (`fund_deploy_native`)
-- fund ERC20 tokens into the layer 2 for HOC / POC for the deployment account (`fund_deploy_tokens`)
-- fund a test user with HOC, POC and native OBX tokens (`fund_test_users`)
-- fund a user with HOC, POC and native OBX tokens (`fund_users`)
+- fund layer 1 distribution account and bridge tokens (`fund_layer_one`)
+- fund layer 2 distribution account (`fund_layer_two`)
+- fund test users in layer 2 with native OBX and HOC and POC (`fund_test_users`)
+- fund community users in layer 2 with native OBX and HOC and POC (`fund_users`)
 
 For setup notes, see the top level [readme](../README.md)
 
-Funds native OBX into the Layer 2
----------------------------------
-`fund_deploy_native` provides the ability to ensure the native OBX required for transaction gas costs in the pre-funded 
-deployment account in layer 2 do not fall below a certain threshold. When the amount falls below the threshold it is 
-increased back up to the target amount. Funding is via transferring from the faucet account to the deployment account. 
-To run a check and perform an allocation use;
+Fund native ETH, HOC and POC tokens in the Layer 1
+--------------------------------------------------
+`fund_layer_one` performs a native ETH transfer from a pre-funded account on layer 1 to a distribution account. To 
+perform this the private key of the pre-funded account must be known to the test framework and is configured in the 
+`default.properties` file. The pre-funded account is also the holder of HOC and POC tokens on layer 1, as it is used 
+to deploy these contracts. It is therefore additionally used to transfer tokens from the ERC20 contracts to the 
+distribution account. This then allows transfer of the tokens to the bridge address so that they are available in 
+layer 2. To run use;
 
 ```bash
 # to run on Obscuro testnet 
-pysys.py run fund_deploy_native
+pysys.py run fund_layer_one
 
 # to run on Obscuro dev-testnet 
-pysys.py run -m obscuro.dev fund_deploy_native
+pysys.py run  -m obscuro.dev fund_layer_one
+
+# to run on Obscuro local testnet 
+pysys.py run  -m obscuro.local fund_layer_one
 ```
 
-Funds tokens into the Layer 2
------------------------------
-`fund_deploy_tokens` provides the ability to ensure the tokens in the pre-funded deployment account in layer 2 do not 
-fall below a certain threshold. When the token amount falls below the threshold it is increased back up to the target 
-amount. Funding is via transferring from layer 1 to the bridge address which then automatically syncs across into the 
-layer 2. To run a check and perform an allocation use;
+Fund native OBX in Layer 2
+----------------------------------------------------
+`fund_layer_two` performs a request to the faucet server for native OBX on behalf of the distribution account.  It 
+additionally prints out the token balances for HOC and POC in layer 2 for reference. Note that when running on a local 
+testnet no faucet server is available, and a native transfer from the pre-funded account on layer 2 to the distribution 
+account is used instead. To run use;
 
 ```bash
 # to run on Obscuro testnet 
-pysys.py run fund_deploy_tokens
+pysys.py run fund_layer_two
 
 # to run on Obscuro dev-testnet 
-pysys.py run -m obscuro.dev fund_deploy_tokens
+pysys.py run -m obscuro.dev fund_layer_two
+
+# to run on Obscuro local testnet 
+pysys.py run  -m obscuro.local fund_layer_two
 ```
 
 Funding test users
 ------------------
-`fund_test_users` provides the ability to ensure the native OBX, HOC and POC tokens for all test users in layer 2 do not
-fall below a certain threshold. To run a check and perform an allocation use;
+`fund_test_users` performs a transfer of native OBX, and HOC and POC tokens to each of the test accounts used within the 
+`obscuro-test` testcases. To run use;
 
 ```bash
-# to run on Obscuro testnet to display balances only
-pysys.py run -XDISPLAY fund_test_users
-
 # to run on Obscuro testnet to allocate funds
 pysys.py run fund_test_users
 
 # to run on Obscuro dev-testnet to allocate funds
 pysys.py run -m obscuro.dev fund_test_users
+
+# to run on Obscuro local testnet 
+pysys.py run  -m obscuro.local fund_test_users
 ```
 
 Funding users
 -------------
-`fund_users` provides the ability to add in new user accounts, and for them to be allocated native OBX, HOC and POC 
-tokens. To transfer tokens to an account address use;
+`fund_users` performs a transfer of native OBX, and HOC and POC tokens to each of the community registered accounts. 
+To run use;
 
 ```bash
 # to run on Obscuro testnet 
@@ -66,6 +74,9 @@ pysys.py run fund_users
 
 # to run on Obscuro dev-testnet 
 pysys.py run -m obscuro.dev fund_users
+
+# to run on Obscuro local testnet 
+pysys.py run  -m obscuro.local fund_users
 ```
 
 At the moment accounts managed are defined in the `fund_users/run.py` script, as a list of account addresses. Due to 

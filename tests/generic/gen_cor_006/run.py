@@ -3,7 +3,7 @@ from ethsys.networks.factory import NetworkFactory
 
 
 class PySysTest(EthereumTest):
-    WEBSOCKET = False   # run with `pysys.py run -XWEBSOCKET` to enable
+    WEBSOCKET = False
 
     def execute(self):
         # connect to the network

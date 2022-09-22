@@ -22,7 +22,7 @@ class Storage:
 
     def construct(self):
         """Compile and construct an instance. """
-        file = os.path.join(PROJECT.root, 'utils', 'contracts', 'storage', 'Storage.sol')
+        file = os.path.join(PROJECT.root, 'src', 'solidity', 'storage', 'Storage.sol')
         with open(file, 'r') as fp:
             compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'],
                                           solc_binary=Processes.get_solidity_compiler())

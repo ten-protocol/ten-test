@@ -2,9 +2,10 @@
 <pysystest type="auto">
 
     <description>
-        <title>Allocate native OBX to the deployment account</title>
+        <title>Fund layer 2 distribution account</title>
         <purpose><![CDATA[
-Allocates OBX to the deployment account (all done within L2)
+Performs all funding in the layer 2. At the moment this is just requesting native OBX from the faucet server, or if
+running on a local testnet performing a native transfer from the layer 2 funded account.
 ]]>
         </purpose>
     </description>

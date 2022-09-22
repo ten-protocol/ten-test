@@ -42,7 +42,7 @@ class Obscuro(Default):
         port = cls.PORT if not web_socket else cls.WS_PORT
         host = cls.HOST if not web_socket else cls.WS_HOST
 
-        test.log.info('Connecting to network on %s:%d' % (host, port))
+        test.log.info('Connecting to %s on %s:%d' % (cls.__name__, host, port))
         if not web_socket: web3 = Web3(Web3.HTTPProvider('%s:%d' % (host, port)))
         else: web3 = Web3(Web3.WebsocketProvider('%s:%d' % (host, port), websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)

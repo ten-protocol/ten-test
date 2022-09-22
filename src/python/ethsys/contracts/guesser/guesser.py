@@ -23,7 +23,7 @@ class Guesser:
 
     def construct(self):
         """Compile and construct an instance. """
-        file = os.path.join(PROJECT.root, 'utils', 'contracts', 'guesser', 'Guesser.sol')
+        file = os.path.join(PROJECT.root, 'src', 'solidity', 'guesser', 'Guesser.sol')
         with open(file, 'r') as fp:
             compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'],
                                           solc_binary=Processes.get_solidity_compiler())

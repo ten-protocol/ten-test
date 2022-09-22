@@ -2,9 +2,11 @@
 <pysystest type="auto">
 
     <description>
-        <title>Allocate ERC20 tokens to the deployment account</title>
+        <title>Fund layer 1 distribution account and bridge tokens</title>
         <purpose><![CDATA[
-Transfers HOC and POC tokens from L1 to the bridge, so that they are accessible in the L2.
+Performs all funding in the layer 1. This includes funding a distribution account with ETH, transfer ERC20 tokens
+from the layer 1 funded account to the distribution account for HOC and POC, and then transfer to the bridge address.
+        <purpose><![CDATA[
 ]]>
         </purpose>
     </description>
