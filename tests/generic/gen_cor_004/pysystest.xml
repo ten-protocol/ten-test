@@ -10,6 +10,8 @@ correct.
         </purpose>
     </description>
 
+    <skipped reason="https://github.com/obscuronet/obscuro-internal/issues/959"/>
+
     <classification>
         <groups inherit="true">
             <group>rpc</group>
