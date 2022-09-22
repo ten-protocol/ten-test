@@ -4,8 +4,8 @@ from ethsys.networks.factory import NetworkFactory
 
 
 class PySysTest(EthereumTest):
-    ETH_TARGET = 10 * EthereumTest.ONE_GIGA
-    TOKEN_TARGET = 1000 * EthereumTest.ONE_GIGA
+    ETH = 10 * EthereumTest.ONE_GIGA
+    TOKENS = 1000 * EthereumTest.ONE_GIGA
 
     def execute(self):
         # connect to the L1 network and get contracts
@@ -20,12 +20,12 @@ class PySysTest(EthereumTest):
         self.fund_eth(network, web3_funded, account_funded, web3_distro, account_distro)
 
         # fund tokens on the ERC20s to the distro account from the funded account
-        self.transfer_token(network, 'HOC', hoc_address, web3_funded, account_funded, account_distro.address)
-        self.transfer_token(network, 'POC', poc_address, web3_funded, account_funded, account_distro.address)
+        self.transfer_token(network, 'HOC', hoc_address, web3_funded, account_funded, account_distro.address, self.ETH)
+        self.transfer_token(network, 'POC', poc_address, web3_funded, account_funded, account_distro.address, self.ETH)
 
         # fund tokens on the ERC20s to the bridge account from the distro account
-        self.transfer_token(network, 'HOC', hoc_address, web3_distro, account_distro, bridge_address, self.TOKEN_TARGET)
-        self.transfer_token(network, 'POC', poc_address, web3_distro, account_distro, bridge_address, self.TOKEN_TARGET)
+        self.transfer_token(network, 'HOC', hoc_address, web3_distro, account_distro, bridge_address, self.TOKENS)
+        self.transfer_token(network, 'POC', poc_address, web3_distro, account_distro, bridge_address, self.TOKENS)
 
     def fund_eth(self, network, web3_funded, account_funded, web3_distro, account_distro):
         funded_eth = web3_funded.eth.get_balance(account_funded.address)
@@ -34,8 +34,8 @@ class PySysTest(EthereumTest):
         self.log.info('    Funded balance = %d ' % funded_eth)
         self.log.info('    Distro balance = %d ' % distro_eth)
 
-        if distro_eth < self.ETH_TARGET:
-            amount = (self.ETH_TARGET - distro_eth)
+        if distro_eth < self.ETH:
+            amount = (self.ETH - distro_eth)
             self.log.info('Below target so transferring %d' % amount)
 
             tx = {
