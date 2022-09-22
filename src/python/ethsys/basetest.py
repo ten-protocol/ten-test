@@ -99,11 +99,8 @@ class EthereumTest(BaseTest):
             self.log.info('  OBX Funded balance = %d ' % funded_obx)
             self.log.info('  OBX User balance   = %d ' % user_obx)
 
-    def run_python(self, script, args=None, state=BACKGROUND, timeout=120,
-                   stdout='client-script.out', stderr='client-script.err'):
-        stdout = os.path.join(self.output, stdout)
-        stderr = os.path.join(self.output, stderr)
-
+    def run_python(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
+        self.log.info('Running python script %s' % os.path.basename(script))
         arguments = [script]
         if args is not None: arguments.extend(args)
 
