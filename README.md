@@ -75,13 +75,13 @@ you must first change directory into the `obscuro-test\admin` directory and run 
 
 ```bash
 # to allocate on Obscuro testnet
-pysys.py run fund_deploy_native
-pysys.py run fund_deploy_tokens
+pysys.py run fund_layer_one
+pysys.py run fund_layer_two
 pysys.py run fund_test_users
 
 # to allocate on Obscuro dev-testnet
-pysys.py run -m obscuro.dev fund_deploy_native
-pysys.py run -m obscuro.dev fund_deploy_tokens
+pysys.py run -m obscuro.dev fund_layer_one
+pysys.py run -m obscuro.dev fund_layer_two
 pysys.py run -m obscuro.dev fund_test_users
 ```
 
