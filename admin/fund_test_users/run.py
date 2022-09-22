@@ -10,7 +10,7 @@ class PySysTest(EthereumTest):
         Properties().account3pk(),
         Properties().gameuserpk()
     ]
-    OBX = 10 * EthereumTest.ONE_GIGA
+    OBX = 100 * EthereumTest.ONE_GIGA
     TOKENS = 50 * EthereumTest.ONE_GIGA
 
     def execute(self):

@@ -4,7 +4,7 @@ from ethsys.networks.obscuro import Obscuro
 
 
 class PySysTest(EthereumTest):
-    OBX = 10000 * EthereumTest.ONE_GIGA
+    OBX = 50000 * EthereumTest.ONE_GIGA
 
     def execute(self):
         # connect to the L2 network
