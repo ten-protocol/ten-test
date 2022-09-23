@@ -115,7 +115,7 @@ class EthereumTest(BaseTest):
         return hprocess
 
     def run_javascript(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
-        self.log.info('Running javascript script %s' % os.path.basename(script))
+        self.log.info('Running javascript %s' % os.path.basename(script))
         arguments = [script]
         if args is not None: arguments.extend(args)
 
