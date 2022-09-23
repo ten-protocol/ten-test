@@ -6,12 +6,11 @@ from ethsys.utils.properties import Properties
 
 
 class PySysTest(EthereumTest):
-    WEBSOCKET = True
 
     def execute(self):
         # connect to network
         network = NetworkFactory.get_network(self.env)
-        web3, account = network.connect_account1(self, web_socket=self.WEBSOCKET)
+        web3, account = network.connect_account1(self, web_socket=False)
 
         # deploy the contract and dump out the abi
         storage = Storage(self, web3, 100)
@@ -25,7 +24,7 @@ class PySysTest(EthereumTest):
         stderr = os.path.join(self.output, 'listener.err')
         script = os.path.join(self.input, 'event_listener.js')
         args = []
-        args.extend(['-u', '%s' % network.connection_url(web_socket=self.WEBSOCKET)])
+        args.extend(['-u', '%s' % network.connection_url(web_socket=True)])
         args.extend(['-a', '%s' % storage.contract_address])
         args.extend(['-b', '%s' % abi_path])
         args.extend(['-p', '%s' % Properties().account2pk()])
