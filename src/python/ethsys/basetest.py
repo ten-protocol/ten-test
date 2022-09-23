@@ -116,7 +116,7 @@ class EthereumTest(BaseTest):
 
     def run_javascript(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
         self.log.info('Running javascript %s' % os.path.basename(script))
-        arguments = [script]
+        arguments = ['--trace-event-categories', 'v8,node', script]
         if args is not None: arguments.extend(args)
 
         environ = copy.deepcopy(os.environ)

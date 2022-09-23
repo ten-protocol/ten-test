@@ -22,7 +22,7 @@ class PySysTest(EthereumTest):
         abi_path = os.path.join(self.output, 'erc20.abi')
         with open(abi_path, 'w') as f: json.dump(erc20.abi, f)
 
-        # run a background python script to pick up events
+        # run a background script to poll for balance
         stdout = os.path.join(self.output, 'poller.out')
         stderr = os.path.join(self.output, 'poller.err')
         script = os.path.join(self.input, 'balance_poller.js')
