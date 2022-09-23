@@ -1,8 +1,10 @@
-from web3 import Web3
+import os, json
 from ethsys.basetest import EthereumTest
 from ethsys.contracts.erc20.obx import OBXCoin
 from ethsys.networks.factory import NetworkFactory
 from ethsys.utils.properties import Properties
+from ethsys.utils.keys import pk_to_account
+
 
 class PySysTest(EthereumTest):
     WEBSOCKET = False
@@ -10,47 +12,30 @@ class PySysTest(EthereumTest):
     def execute(self):
         # deployment of contract
         network = NetworkFactory.get_network(self.env)
-        account2_pk = Properties().account2pk()
-        Web3.
-        web3_1, account1 = network.connect_account1(self, web_socket=self.WEBSOCKET)
+        account2 = pk_to_account(Properties().account2pk())
+        web3, account_distro = network.connect(self, Properties().distro_account_pk(self.env))
 
-        erc20 = OBXCoin(self, web3_1)
-        erc20.deploy(network, account1)
+        erc20 = OBXCoin(self, web3)
+        erc20.deploy(network, account_distro)
 
-        # check initial allocations
-        self.log.info('Balances at initial allocation')
-        self.log.info('  Account1 balance = %d ' % erc20.contract.functions.balanceOf(account1.address).call())
+        # dump out the abi
+        abi_path = os.path.join(self.output, 'erc20.abi')
+        with open(abi_path, 'w') as f: json.dump(erc20.abi, f)
+
+        # run a background python script to pick up events
+        stdout = os.path.join(self.output, 'listener.out')
+        stderr = os.path.join(self.output, 'listener.err')
+        script = os.path.join(self.input, 'event_listener.py')
+        args = [network.connection_url(web_socket=False), erc20.contract_address, abi_path]
+        if self.is_obscuro(): args.extend(['--pk', Properties().account2pk()])
+        self.run_python(script, stdout, stderr, args)
+        self.waitForGrep(file=stdout, expr='Starting to run the event loop', timeout=10)
 
         # transfer from account1 into account2
-        network.transact(self, web3_1, erc20.contract.functions.transfer(account2.address, 200), account1, erc20.GAS)
-        self.log.info('Balances after transfer from account 1 to account 2')
-        self.log.info('  Account1 balance = %d ' % contract_1.functions.balanceOf(account1.address).call())
-        self.log.info('  Account2 balance = %d ' % contract_2.functions.balanceOf(account2.address).call())
-        self.log.info('  Account3 balance = %d ' % contract_3.functions.balanceOf(account3.address).call())
-        self.assertTrue(contract_1.functions.balanceOf(account1.address).call() == 999800)
-        self.assertTrue(contract_2.functions.balanceOf(account2.address).call() == 200)
-        self.assertTrue(contract_3.functions.balanceOf(account3.address).call() == 0)
+        for i in range(0, 5):
+            self.log.info('Distro balance = %d ' % erc20.contract.functions.balanceOf(account_distro.address).call())
+            network.transact(self, web3, erc20.contract.functions.transfer(account2.address, 1), account_distro, erc20.GAS)
 
-        # account1 approves account2 to withdraw 1000
-        network.transact(self, web3_1, contract_1.functions.approve(account2.address, 1000), account1, erc20.GAS)
+        self.waitForGrep(file=stdout, expr='Balance = 5', timeout=20)
 
-        # account2 withdraws from account1 into account3
-        network.transact(self, web3_2, contract_2.functions.transferFrom(account1.address, account3.address, 100),
-                         account2, erc20.GAS)
-        self.log.info('Balances after approval and transfer;')
-        self.log.info('  Account1 balance = %d ' % contract_1.functions.balanceOf(account1.address).call())
-        self.log.info('  Account2 balance = %d ' % contract_2.functions.balanceOf(account2.address).call())
-        self.log.info('  Account3 balance = %d ' % contract_3.functions.balanceOf(account3.address).call())
-        self.assertTrue(contract_1.functions.balanceOf(account1.address).call() == 999700)
-        self.assertTrue(contract_2.functions.balanceOf(account2.address).call() == 200)
-        self.assertTrue(contract_3.functions.balanceOf(account3.address).call() == 100)
 
-        # account3 sends back to account1
-        network.transact(self, web3_3, contract_3.functions.transfer(account1.address, 100), account3, erc20.GAS)
-        self.log.info('Balances after transfer from account 3 to account 1')
-        self.log.info('  Account1 balance = %d ' % contract_1.functions.balanceOf(account1.address).call())
-        self.log.info('  Account2 balance = %d ' % contract_2.functions.balanceOf(account2.address).call())
-        self.log.info('  Account3 balance = %d ' % contract_3.functions.balanceOf(account3.address).call())
-        self.assertTrue(contract_1.functions.balanceOf(account1.address).call() == 999800)
-        self.assertTrue(contract_2.functions.balanceOf(account2.address).call() == 200)
-        self.assertTrue(contract_3.functions.balanceOf(account3.address).call() == 0)

@@ -4,42 +4,35 @@ import argparse, json, sys
 from eth_account.messages import encode_defunct
 
 
-def generate_viewing_key(web3, url, private_key):
+def generate_viewing_key(web3, url, address, private_key):
     sys.stdout.write('Generating viewing key for %s\n' % private_key)
     sys.stdout.flush()
 
-    account = web3.eth.account.privateKeyToAccount(private_key)
-
     headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
-    data = {"address": account.address}
+    data = {"address": address}
     response = requests.post('%s/generateviewingkey/' % url, data=json.dumps(data), headers=headers)
 
     signed_msg = web3.eth.account.sign_message(encode_defunct(text='vk' + response.text), private_key=private_key)
-    data = {"signature": signed_msg.signature.hex(), "address": account.address}
+    data = {"signature": signed_msg.signature.hex(), "address": address}
     requests.post('%s/submitviewingkey/' % url, data=json.dumps(data), headers=headers)
 
 
-def handle_event(event):
-    sys.stdout.write('%s\n' % Web3.toJSON(event))
-    sys.stdout.flush()
-
-
-async def log_loop(event_filter, poll_interval):
+async def log_loop(contract, address, poll_interval):
     while True:
-        for Stored in event_filter.get_new_entries():
-            handle_event(Stored)
+        balance = contract.functions.balanceOf(address).call()
+        sys.stdout.write('Balance = %s\n' % balance)
+        sys.stdout.flush()
         await asyncio.sleep(poll_interval)
 
 
-def main(contract):
+def main(contract, address):
     sys.stdout.write('Starting to run the event loop\n')
     sys.stdout.flush()
-    event_filter = contract.events.Stored.createFilter(fromBlock='latest')
     loop = asyncio.get_event_loop()
     try:
         loop.run_until_complete(
             asyncio.gather(
-                log_loop(event_filter, 2)))
+                log_loop(contract, address, 2)))
     finally:
         loop.close()
 
@@ -58,8 +51,8 @@ if __name__ == "__main__":
     sys.stdout.flush()
 
     web3 = Web3(Web3.HTTPProvider(args.url))
-    if args.pk: generate_viewing_key(web3, args.url, args.pk)
+    account = web3.eth.account.privateKeyToAccount(args.pk)
+    if args.pk: generate_viewing_key(web3, args.url, account.address, args.pk)
     with open(args.abi) as f:
         contract = web3.eth.contract(address=args.address, abi=json.load(f))
-
-    main(contract)
+    main(contract, account.address)
