@@ -19,3 +19,11 @@ class Processes:
         elif PLATFORM == 'linux':
             return PROJECT.ganacheBin_linux
         return 'ganache-cli'
+
+    @classmethod
+    def get_node_bin(cls):
+        if PLATFORM == 'darwin':
+            return PROJECT.nodeBin_darwin
+        elif PLATFORM == 'linux':
+            return PROJECT.nodeBin_linux
+        return 'node'

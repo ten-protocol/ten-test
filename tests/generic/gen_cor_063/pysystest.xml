@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>ERC20: repeated transfer with concurrent javascript client polling balance</title>
+        <purpose><![CDATA[]]>
+Account1 sends five lots of 1 token to account2. Account2 has a polling check on the balance out of process
+as a javascript script and checks that it can detect the updates to the balance. The intention here is to show that two
+concurrent accounts can be used against the network to send and detect receipt of funds.
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>ws</group>
+        </groups>
+        <modes inherit="true">
+            <mode>obscuro.dev</mode>
+            <mode>obscuro.local</mode>
+            <mode>ropsten</mode>
+            <mode>ganache</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
