@@ -23,9 +23,9 @@ class PySysTest(EthereumTest):
         with open(abi_path, 'w') as f: json.dump(erc20.abi, f)
 
         # run a background python script to pick up events
-        stdout = os.path.join(self.output, 'listener.out')
-        stderr = os.path.join(self.output, 'listener.err')
-        script = os.path.join(self.input, 'event_listener.py')
+        stdout = os.path.join(self.output, 'poller.out')
+        stderr = os.path.join(self.output, 'poller.err')
+        script = os.path.join(self.input, 'balance_poller.py')
         args = [network.connection_url(web_socket=False), erc20.contract_address, abi_path, Properties().account2pk()]
         self.run_python(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting to run the event loop', timeout=10)

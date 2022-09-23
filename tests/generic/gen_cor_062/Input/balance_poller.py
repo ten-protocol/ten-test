@@ -41,7 +41,7 @@ def main(contract, address):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(prog='event_listener')
+    parser = argparse.ArgumentParser(prog='balance_poller')
     parser.add_argument("url", help="Connection URL")
     parser.add_argument("address", help="Address of the contract")
     parser.add_argument("abi", help="Abi of the contract")
