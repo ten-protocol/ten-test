@@ -1,12 +1,14 @@
 from web3 import Web3
+import logging
 import requests, asyncio
 import argparse, json, sys
 from eth_account.messages import encode_defunct
 
+logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
+
 
 def generate_viewing_key(web3, url, private_key):
-    sys.stdout.write('Generating viewing key for %s\n' % private_key)
-    sys.stdout.flush()
+    logging.info('Generating viewing key for %s' % private_key)
 
     account = web3.eth.account.privateKeyToAccount(private_key)
 
@@ -19,21 +21,15 @@ def generate_viewing_key(web3, url, private_key):
     requests.post('%s/submitviewingkey/' % url, data=json.dumps(data), headers=headers)
 
 
-def handle_event(event):
-    sys.stdout.write('%s\n' % Web3.toJSON(event))
-    sys.stdout.flush()
-
-
 async def log_loop(event_filter, poll_interval):
     while True:
-        for Stored in event_filter.get_new_entries():
-            handle_event(Stored)
+        for event in event_filter.get_new_entries():
+            logging.info(Web3.toJSON(event))
         await asyncio.sleep(poll_interval)
 
 
 def main(contract):
-    sys.stdout.write('Starting to run the event loop\n')
-    sys.stdout.flush()
+    logging.info('Starting to run the event loop')
     event_filter = contract.events.Stored.createFilter(fromBlock='latest')
     loop = asyncio.get_event_loop()
     try:
@@ -52,10 +48,9 @@ if __name__ == "__main__":
     parser.add_argument("--pk", help="Private key to register for a viewing key (obscuro only)")
     args = parser.parse_args()
 
-    sys.stdout.write('URL: %s\n' % args.url)
-    sys.stdout.write('ADR: %s\n' % args.address)
-    sys.stdout.write('ABI: %s\n' % args.abi)
-    sys.stdout.flush()
+    logging.info('URL: %s' % args.url)
+    logging.info('ADR: %s' % args.address)
+    logging.info('ABI: %s' % args.abi)
 
     web3 = Web3(Web3.HTTPProvider(args.url))
     if args.pk: generate_viewing_key(web3, args.url, args.pk)

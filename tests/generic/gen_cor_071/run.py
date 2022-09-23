@@ -1,37 +1,28 @@
-import os, json
 from ethsys.basetest import EthereumTest
 from ethsys.contracts.storage.storage import Storage
 from ethsys.networks.factory import NetworkFactory
-from ethsys.utils.properties import Properties
+
 
 class PySysTest(EthereumTest):
     WEBSOCKET = False
 
     def execute(self):
-        # deployment of contract
+        # connect to network
         network = NetworkFactory.get_network(self.env)
-        web3, account = network.connect_account1(self, web_socket=self.WEBSOCKET)
+        web3_1, account1 = network.connect_account1(self, web_socket=self.WEBSOCKET)
 
-        storage = Storage(self, web3, 100)
-        storage.deploy(network, account)
+        # deploy the contract
+        storage = Storage(self, web3_1, 100)
+        storage.deploy(network, account1)
 
-        # dump out the abi
-        abi_path = os.path.join(self.output, 'storage.abi')
-        with open(abi_path, 'w') as f: json.dump(storage.abi, f)
-
-        # run a background python script to pick up events
-        stdout = os.path.join(self.output, 'listener.out')
-        stderr = os.path.join(self.output, 'listener.err')
-        script = os.path.join(self.input, 'event_listener.py')
-        args = [network.connection_url(web_socket=False), storage.contract_address, abi_path]
-        if self.is_obscuro(): args.extend(['--pk', Properties().account2pk()])
-        self.run_python(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting to run the event loop', timeout=10)
+        # create the filter
+        event_filter = storage.contract.events.Stored.createFilter(fromBlock='latest')
 
         # perform some transactions
-        for i in range(0,5):
-            network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS)
+        for i in range(0, 5):
+            network.transact(self, web3_1, storage.contract.functions.store(i), account1, storage.GAS)
 
-        self.waitForGrep(file=stdout, expr='args.*value', condition='== 5', timeout=20)
-
-
+        # get the new entries from the filter
+        entries = event_filter.get_new_entries()
+        for event in entries: self.log.info(web3_1.toJSON(event))
+        self.assertTrue(len(entries)==5)

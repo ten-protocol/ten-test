@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Events: deploy storage contract, set values, filter for events since deployment</title>
+        <title>Events: deploy storage contract, set values, with concurrent python client polling events</title>
         <purpose><![CDATA[]]>
         </purpose>
     </description>
