@@ -12,6 +12,10 @@ class EthereumTest(BaseTest):
         super().__init__(descriptor, outsubdir, runner)
         self.env = 'obscuro' if self.mode is None else self.mode
 
+    def is_obscuro(self):
+        """Return true if we are running against an Obscuro network. """
+        return self.env in ['obscuro', 'obscuro.dev', 'obscuro.local']
+
     def fund_obx(self, network, web3_user, account_user, amount):
         """Fund OBX in the L2 to a users account, either through the faucet server or direct from the account."""
         if self.env in ['obscuro', 'obscuro.dev']:

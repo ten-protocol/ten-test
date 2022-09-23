@@ -1,5 +1,22 @@
 from web3 import Web3
-import asyncio, argparse, json, sys
+import requests, asyncio
+import argparse, json, sys
+from eth_account.messages import encode_defunct
+
+
+def generate_viewing_key(web3, url, private_key):
+    sys.stdout.write('Generating viewing key for %s\n' % private_key)
+    sys.stdout.flush()
+
+    account = web3.eth.account.privateKeyToAccount(private_key)
+
+    headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
+    data = {"address": account.address}
+    response = requests.post('%s/generateviewingkey/' % url, data=json.dumps(data), headers=headers)
+
+    signed_msg = web3.eth.account.sign_message(encode_defunct(text='vk' + response.text), private_key=private_key)
+    data = {"signature": signed_msg.signature.hex(), "address": account.address}
+    requests.post('%s/submitviewingkey/' % url, data=json.dumps(data), headers=headers)
 
 
 def handle_event(event):
@@ -32,11 +49,16 @@ if __name__ == "__main__":
     parser.add_argument("url", help="Directory containing the API")
     parser.add_argument("address", help="Address of the spatial engine")
     parser.add_argument("abi", help="Port of the spatial engine")
+    parser.add_argument("--pk", help="Private key to register for a viewing key (obscuro only)")
     args = parser.parse_args()
 
-    sys.stdout.write('Requested URL is %s\n' % args.url)
+    sys.stdout.write('URL: %s\n' % args.url)
+    sys.stdout.write('ADR: %s\n' % args.address)
+    sys.stdout.write('ABI: %s\n' % args.abi)
     sys.stdout.flush()
+
     web3 = Web3(Web3.HTTPProvider(args.url))
+    if args.pk: generate_viewing_key(web3, args.url, args.pk)
     with open(args.abi) as f:
         contract = web3.eth.contract(address=args.address, abi=json.load(f))
 
