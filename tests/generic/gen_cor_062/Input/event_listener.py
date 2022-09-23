@@ -1,12 +1,14 @@
 from web3 import Web3
+import logging
 import requests, asyncio
 import argparse, json, sys
 from eth_account.messages import encode_defunct
 
+logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
+
 
 def generate_viewing_key(web3, url, address, private_key):
-    sys.stdout.write('Generating viewing key for %s\n' % private_key)
-    sys.stdout.flush()
+    logging.info('Generating viewing key for %s' % private_key)
 
     headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
     data = {"address": address}
@@ -18,21 +20,22 @@ def generate_viewing_key(web3, url, address, private_key):
 
 
 async def log_loop(contract, address, poll_interval):
+    last_balance = 0
     while True:
         balance = contract.functions.balanceOf(address).call()
-        sys.stdout.write('Balance = %s\n' % balance)
-        sys.stdout.flush()
+        if balance > last_balance:
+            last_balance = balance
+            logging.info('New balance = %s' % balance)
         await asyncio.sleep(poll_interval)
 
 
 def main(contract, address):
-    sys.stdout.write('Starting to run the event loop\n')
-    sys.stdout.flush()
+    logging.info('Starting to run the event loop')
     loop = asyncio.get_event_loop()
     try:
         loop.run_until_complete(
             asyncio.gather(
-                log_loop(contract, address, 2)))
+                log_loop(contract, address, 1)))
     finally:
         loop.close()
 
@@ -42,13 +45,13 @@ if __name__ == "__main__":
     parser.add_argument("url", help="Connection URL")
     parser.add_argument("address", help="Address of the contract")
     parser.add_argument("abi", help="Abi of the contract")
-    parser.add_argument("--pk", help="Private key to register for a viewing key (obscuro only)")
+    parser.add_argument("pk", help="Private key of account to poll")
     args = parser.parse_args()
 
-    sys.stdout.write('URL: %s\n' % args.url)
-    sys.stdout.write('ADR: %s\n' % args.address)
-    sys.stdout.write('ABI: %s\n' % args.abi)
-    sys.stdout.flush()
+    logging.info('URL: %s' % args.url)
+    logging.info('ADR: %s' % args.address)
+    logging.info('ABI: %s' % args.abi)
+    logging.info('PK: %s' % args.pk)
 
     web3 = Web3(Web3.HTTPProvider(args.url))
     account = web3.eth.account.privateKeyToAccount(args.pk)
