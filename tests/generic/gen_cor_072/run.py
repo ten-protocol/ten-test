@@ -1,4 +1,4 @@
-import os, json
+import os, json, time
 from ethsys.basetest import EthereumTest
 from ethsys.contracts.storage.storage import Storage
 from ethsys.networks.factory import NetworkFactory
@@ -30,6 +30,7 @@ class PySysTest(EthereumTest):
         # perform some transactions
         for i in range(0,5):
             network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS)
+            time.sleep(1.0)
 
         # check and assert
         self.waitForGrep(file=stdout, expr='args.*value', condition='== 5', timeout=20)

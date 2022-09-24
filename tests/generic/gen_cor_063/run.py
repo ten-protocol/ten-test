@@ -32,7 +32,7 @@ class PySysTest(EthereumTest):
         args.extend(['-b', '%s' % abi_path])
         args.extend(['-p', '%s' % Properties().account2pk()])
         self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting to run the event loop', timeout=10)
+        self.waitForGrep(file=stdout, expr='Starting to run the polling loop', timeout=10)
 
         # transfer from account1 into account2
         for i in range(0, 5):

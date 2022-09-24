@@ -1,6 +1,5 @@
 from web3 import Web3
-import logging
-import requests, asyncio
+import requests, logging, time
 import argparse, json, sys
 from eth_account.messages import encode_defunct
 
@@ -17,27 +16,6 @@ def generate_viewing_key(web3, url, address, private_key):
     signed_msg = web3.eth.account.sign_message(encode_defunct(text='vk' + response.text), private_key=private_key)
     data = {"signature": signed_msg.signature.hex(), "address": address}
     requests.post('%s/submitviewingkey/' % url, data=json.dumps(data), headers=headers)
-
-
-async def log_loop(contract, address, poll_interval):
-    last_balance = 0
-    while True:
-        balance = contract.functions.balanceOf(address).call()
-        if balance > last_balance:
-            last_balance = balance
-            logging.info('New balance = %s' % balance)
-        await asyncio.sleep(poll_interval)
-
-
-def main(contract, address):
-    logging.info('Starting to run the event loop')
-    loop = asyncio.get_event_loop()
-    try:
-        loop.run_until_complete(
-            asyncio.gather(
-                log_loop(contract, address, 1)))
-    finally:
-        loop.close()
 
 
 if __name__ == "__main__":
@@ -58,4 +36,12 @@ if __name__ == "__main__":
     if args.pk: generate_viewing_key(web3, args.url, account.address, args.pk)
     with open(args.abi) as f:
         contract = web3.eth.contract(address=args.address, abi=json.load(f))
-    main(contract, account.address)
+
+    logging.info('Starting to run the polling loop')
+    last_balance = 0
+    while True:
+        balance = contract.functions.balanceOf(account.address).call()
+        if balance > last_balance:
+            last_balance = balance
+            logging.info('New balance = %s' % balance)
+        time.sleep(2)

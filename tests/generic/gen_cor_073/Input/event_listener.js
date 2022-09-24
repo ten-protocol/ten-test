@@ -4,20 +4,6 @@ const fs = require('fs');
 
 require('console-stamp')(console, 'HH:MM:ss');
 
-function task(contract, address) {
-  setTimeout(function() {
-    contract.methods.balanceOf(address).call(
-      function(error, result) {
-        if (error) {
-          console.log('Error returned is ', error)
-        } else {
-          console.log('New balance =', result)
-          task(contract, address);
-        }
-     })
-  }, 2000);
-}
-
 commander
   .version('1.0.0', '-v, --version')
   .usage('[OPTIONS]...')
@@ -38,10 +24,17 @@ const abi = JSON.parse(json);
 
 const web3 = new Web3(`${options.url}`);
 const contract = new web3.eth.Contract(abi, `${options.address}`)
-account = web3.eth.accounts.privateKeyToAccount(`${options.pk}`)
 
-console.log('Starting to run the polling loop')
-task(contract, account.address);
+console.log('Starting to run the event loop')
+contract.events.Stored({ fromBlock:'latest'},
+  function(error, result) {
+    if (error) {
+      console.log('Error returned is ', error)
+    } else {
+      console.log(result)
+    }
+  }
+)
 
 
 

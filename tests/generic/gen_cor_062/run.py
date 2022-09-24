@@ -28,7 +28,7 @@ class PySysTest(EthereumTest):
         script = os.path.join(self.input, 'balance_poller.py')
         args = [network.connection_url(web_socket=False), erc20.contract_address, abi_path, Properties().account2pk()]
         self.run_python(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting to run the event loop', timeout=10)
+        self.waitForGrep(file=stdout, expr='Starting to run the polling loop', timeout=10)
 
         # transfer from account1 into account2
         for i in range(0, 5):
