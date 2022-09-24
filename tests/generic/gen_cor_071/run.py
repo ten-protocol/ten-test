@@ -25,13 +25,15 @@ class PySysTest(EthereumTest):
             time.sleep(1.0)
 
         # get the new entries from the filter
-        num_entries = 0
+        self.log.info('Getting new entries on the Stored event filter')
+        values = []
         num_try = 0
         while True:
             num_try += 1
             entries = event_filter.get_new_entries()
-            num_entries += len(entries)
-            for event in entries: self.log.info(web3_1.toJSON(event))
-            if num_entries == 5 or num_try > 3: break
+            for event in entries:
+                values.append(event['args']['value'])
+                self.log.info('Stored value = %s' % event['args']['value'])
+            if len(values) == 5 or num_try > 3: break
             time.sleep(0.5)
-        self.assertTrue(num_entries == 5)
+        self.assertTrue(values == [0,1,2,3,4])
