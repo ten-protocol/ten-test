@@ -23,10 +23,10 @@ def generate_viewing_key(web3, url, private_key):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='event_listener')
-    parser.add_argument("url", help="Connection URL")
-    parser.add_argument("address", help="Address of the contract")
-    parser.add_argument("abi", help="Abi of the contract")
-    parser.add_argument("--pk", help="Private key to register for a viewing key (obscuro only)")
+    parser.add_argument('-u', '--url', help='Connection URL')
+    parser.add_argument('-a', '--address', help='Address of the contract')
+    parser.add_argument('-b', '--abi', help='Abi of the contract')
+    parser.add_argument('-p', '--pk', help='Private key of account to poll')
     args = parser.parse_args()
 
     logging.info('URL: %s' % args.url)
