@@ -36,6 +36,7 @@ class PySysTest(EthereumTest):
             network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS)
             time.sleep(1.0)
 
-        # check and assert
-        self.waitForGrep(file=stdout, expr='args.*value', condition='== 5', timeout=20)
-        self.assertLineCount(file=stdout, expr='args.*value', condition='== 5')
+        # wait and validate
+        self.waitForGrep(file=stdout, expr='Stored value', condition='== 5', timeout=20)
+        self.assertOrderedGrep(file=stdout, exprList=['Stored value = %d' % x for x in range(0, 5)])
+

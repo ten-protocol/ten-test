@@ -10,7 +10,7 @@ function task(contract, from) {
     .then(function(events) {
         if (events.length) {
             for (var i = 0, len = events.length; i < len; i+=1) {
-                console.log(events[i]);
+                console.log('Stored value =', events[i].returnValues['value']);
                 from = events[i].blockNumber
             }
         }

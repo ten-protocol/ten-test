@@ -26,12 +26,12 @@ const web3 = new Web3(`${options.url}`);
 const contract = new web3.eth.Contract(abi, `${options.address}`)
 
 console.log('Starting to run the event loop')
-contract.events.Stored({ fromBlock:'latest'},
+contract.events.Stored({fromBlock:'latest'},
   function(error, result) {
     if (error) {
       console.log('Error returned is ', error)
     } else {
-      console.log(result)
+      console.log('Stored value =', result.returnValues['value']);
     }
   }
 )
