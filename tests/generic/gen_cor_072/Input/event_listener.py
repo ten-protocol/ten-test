@@ -42,5 +42,5 @@ if __name__ == "__main__":
     event_filter = contract.events.Stored.createFilter(fromBlock='latest')
     while True:
         for event in event_filter.get_new_entries():
-            logging.info(Web3.toJSON(event))
+            logging.info('Stored value = %s' % event['args']['value'])
         time.sleep(2)
