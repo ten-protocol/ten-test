@@ -4,6 +4,21 @@ const fs = require('fs');
 
 require('console-stamp')(console, 'HH:MM:ss');
 
+function task(contract, from) {
+  setTimeout(function() {
+    contract.getPastEvents('Stored', { fromBlock: from, toBlock: 'latest'})
+    .then(function(events) {
+        if (events.length) {
+            for (var i = 0, len = events.length; i < len; i+=1) {
+                console.log(events[i]);
+                from = events[i].blockNumber
+            }
+        }
+        task(contract, from+1)
+    });
+  }, 2000);
+}
+
 commander
   .version('1.0.0', '-v, --version')
   .usage('[OPTIONS]...')
@@ -26,15 +41,7 @@ const web3 = new Web3(`${options.url}`);
 const contract = new web3.eth.Contract(abi, `${options.address}`)
 
 console.log('Starting to run the event loop')
-contract.events.Stored({ fromBlock:'latest'},
-  function(error, result) {
-    if (error) {
-      console.log('Error returned is ', error)
-    } else {
-      console.log(result)
-    }
-  }
-)
+task(contract, 0);
 
 
 
