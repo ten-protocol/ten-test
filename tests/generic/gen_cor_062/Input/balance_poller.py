@@ -31,6 +31,7 @@ if __name__ == "__main__":
     logging.info('ADR: %s' % args.address)
     logging.info('ABI: %s' % args.abi)
     logging.info('PK: %s' % args.pk)
+    logging.info('OB: %s' % args.obscuro)
 
     web3 = Web3(Web3.HTTPProvider(args.url))
     account = web3.eth.account.privateKeyToAccount(args.pk)
@@ -38,6 +39,7 @@ if __name__ == "__main__":
     with open(args.abi) as f:
         contract = web3.eth.contract(address=args.address, abi=json.load(f))
 
+    logging.info('Account balance is %d' % web3.eth.get_balance(account.address))
     logging.info('Starting to run the polling loop')
     last_balance = 0
     while True:
@@ -46,3 +48,5 @@ if __name__ == "__main__":
             last_balance = balance
             logging.info('New balance = %s' % balance)
         time.sleep(2)
+
+

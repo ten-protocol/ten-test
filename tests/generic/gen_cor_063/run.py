@@ -31,6 +31,7 @@ class PySysTest(EthereumTest):
         args.extend(['-a', '%s' % erc20.contract_address])
         args.extend(['-b', '%s' % abi_path])
         args.extend(['-p', '%s' % Properties().account2pk()])
+        if self.is_obscuro(): args.append('--obscuro')
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting to run the polling loop', timeout=10)
 
