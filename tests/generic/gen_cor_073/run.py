@@ -35,7 +35,8 @@ class PySysTest(EthereumTest):
 
         # perform some transactions
         for i in range(0, 5):
-            network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS)
+            tx_receipt = network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS)
+            self.log.info('Transaction written with block number %d' % tx_receipt.blockNumber)
             time.sleep(1.0)
 
         # wait and validate

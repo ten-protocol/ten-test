@@ -5,17 +5,20 @@ const fs = require('fs');
 require('console-stamp')(console, 'HH:MM:ss');
 
 function task(contract, from) {
-  console.log('Starting task ...')
+  console.log('Getting past events from block number', from)
   setTimeout(function() {
     contract.getPastEvents('Stored', { fromBlock: from, toBlock: 'latest'})
     .then(function(events) {
         if (events.length) {
             for (var i = 0, len = events.length; i < len; i+=1) {
                 console.log('Stored value =', events[i].returnValues['value']);
-                from = events[i].blockNumber
+                from = events[i].blockNumber+1
             }
         }
-        task(contract, from+1)
+        else {
+          console.log('No events returned')
+        }
+        task(contract, from)
     });
   }, 2000);
 }
@@ -47,6 +50,7 @@ function sign_viewing_key(web3, contract, url, account, private_key, response) {
   })
   .then(response => response.text())
   .then((response) => {
+    console.log('Starting task ...')
     task(contract, 0)
    })
 }
@@ -81,6 +85,7 @@ if (options.obscuro == true) {
   generate_viewing_key(web3, contract, options.url_http, account, options.pk)
 }
 else {
+  console.log('Starting task ...')
   task(contract, 0)
 }
 
