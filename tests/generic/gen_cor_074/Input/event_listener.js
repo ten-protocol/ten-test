@@ -4,6 +4,19 @@ const fs = require('fs');
 
 require('console-stamp')(console, 'HH:MM:ss');
 
+function task(contract, address) {
+  console.log('Starting task ...')
+  contract.events.Stored({fromBlock:'latest'},
+    function(error, result) {
+      if (error) {
+        console.log('Error returned is ', error)
+      } else {
+        console.log('Stored value =', result.returnValues['value']);
+      }
+    }
+  )
+}
+
 function generate_viewing_key(web3, contract, url, account, private_key) {
   console.log('Generating viewing key for', private_key)
   console.log(url+'/generateviewingkey/')
@@ -31,21 +44,8 @@ function sign_viewing_key(web3, contract, url, account, private_key, response) {
   })
   .then(response => response.text())
   .then((response) => {
-    subscribe_events(contract, account.address)
+    task(contract, account.address)
    })
-}
-
-function subscribe_events(contract, address) {
-  console.log('Starting to run the event loop')
-  contract.events.Stored({fromBlock:'latest'},
-    function(error, result) {
-      if (error) {
-        console.log('Error returned is ', error)
-      } else {
-        console.log('Stored value =', result.returnValues['value']);
-      }
-    }
-  )
 }
 
 commander
@@ -78,7 +78,7 @@ if (options.obscuro == true) {
   generate_viewing_key(web3, contract, options.url_http, account, options.pk)
 }
 else {
-  subscribe_events(contract, account.address)
+  task(contract, account.address)
 }
 
 

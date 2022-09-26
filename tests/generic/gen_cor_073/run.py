@@ -24,12 +24,14 @@ class PySysTest(EthereumTest):
         stderr = os.path.join(self.output, 'listener.err')
         script = os.path.join(self.input, 'event_listener.js')
         args = []
-        args.extend(['-u', '%s' % network.connection_url(web_socket=True)])
+        args.extend(['-u', '%s' % network.connection_url(web_socket=False)])
+        args.extend(['-w', '%s' % network.connection_url(web_socket=True)])
         args.extend(['-a', '%s' % storage.contract_address])
         args.extend(['-b', '%s' % abi_path])
         args.extend(['-p', '%s' % Properties().account2pk()])
+        if self.is_obscuro(): args.append('--obscuro')
         self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting to run the event loop', timeout=10)
+        self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
 
         # perform some transactions
         for i in range(0, 5):

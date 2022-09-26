@@ -31,7 +31,7 @@ class PySysTest(EthereumTest):
         args.extend(['-p', '%s' % Properties().account2pk()])
         if self.is_obscuro(): args.append('--obscuro')
         self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting to run the event loop', timeout=10)
+        self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
 
         # perform some transactions
         for i in range(0, 5):
