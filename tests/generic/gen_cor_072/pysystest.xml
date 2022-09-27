@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Events: concurrent python client polling for events</title>
+        <title>Events: concurrent python client polling using filter.get_new_entries</title>
         <purpose><![CDATA[]]>
         </purpose>
     </description>
