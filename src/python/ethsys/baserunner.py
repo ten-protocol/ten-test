@@ -75,7 +75,7 @@ class EthereumRunnerPlugin():
         arguments.extend(('--nodePortHTTP', '13000'))
         arguments.extend(('--nodePortWS', '13001'))
         arguments.extend(('--port', str(port)))
-        #arguments.extend(('--portWS', str(ws_port)))
+        arguments.extend(('--portWS', str(ws_port)))
         arguments.extend(('--logPath', os.path.join(self.output, 'wallet_%d_logs.txt' % port)))
         hprocess = runner.startProcess(command=os.path.join(PROJECT.root, 'artifacts', 'wallet_extension'),
                                        displayName='wallet_extension', workingDir=self.output , environs=os.environ,
