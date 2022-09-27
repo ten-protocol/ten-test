@@ -9,7 +9,6 @@ by rather polls for past event logs across a range of blocks, which you modify a
 moving rolling window. It uses the getPastEvents method on the contract instance, specifying the name of the event of
 interest. The storage contract is used which emits a single event with an integer value (no addresses) and so should
 be visible to any interested parties within Obscuro.
-        <purpose><![CDATA[]]>
         </purpose>
     </description>
 
