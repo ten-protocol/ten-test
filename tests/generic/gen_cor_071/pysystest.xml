@@ -4,6 +4,8 @@
     <description>
         <title>Events: filter and get new entries since deployment</title>
         <purpose><![CDATA[]]>
+This is all implemented in the process of the test, where after performing transactions on a contract a filter is placed
+on the contract and all new entries are queried for.
         </purpose>
     </description>
 
