@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Events: concurrent javascript client using contract.events.Event</title>
+        <purpose><![CDATA[]]>
+This is the second of three ways to get event logs for a contract event that is emitted. It is a subscription
+approach where the events.Event constructor on the contract instance is used, passing the filter options and supplying
+a callback function to process the result and any potential errors. The storage contract is used which emits a single
+event with an integer value (no addresses) and so should be visible to any interested parties within Obscuro. As a
+subscription it uses websockets for the connection protocol (note we do not implement the same in python due to the
+poor support for websockets in the web3.py library).
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>ws</group>
+            <group>events</group>
+        </groups>
+        <modes inherit="true">
+            <mode>obscuro.dev</mode>
+            <mode>obscuro.local</mode>
+            <mode>ropsten</mode>
+            <mode>ganache</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
