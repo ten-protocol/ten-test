@@ -4,15 +4,15 @@ const fs = require('fs');
 
 require('console-stamp')(console, 'HH:MM:ss');
 
-function task(contract, address) {
+function task(web3) {
   console.log('Starting task ...')
-  var event = contract.Stored({fromBlock:'latest'});
-  event.watch(
+  topic = web3.utils.sha3('Stored(uint256)');
+  web3.eth.subscribe('logs', {topics: [topic]},
     function(error, result) {
       if (error) {
         console.log('Error returned is ', error)
       } else {
-        console.log('Stored value =', result.returnValues['value']);
+        console.log('Stored value =', Web3.utils.hexToNumber(result.data));
       }
     }
   )
@@ -45,7 +45,7 @@ function sign_viewing_key(web3, contract, url, account, private_key, response) {
   })
   .then(response => response.text())
   .then((response) => {
-    task(contract, account.address)
+    task(web3)
    })
 }
 
@@ -79,7 +79,7 @@ if (options.obscuro == true) {
   generate_viewing_key(web3, contract, options.url_http, account, options.pk)
 }
 else {
-  task(contract, account.address)
+  task(web3)
 }
 
 
