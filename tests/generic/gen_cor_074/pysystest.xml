@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Events: concurrent javascript client using contract.event subscription</title>
+        <title>Events: concurrent javascript client using contract.events.Event</title>
         <purpose><![CDATA[]]>
         </purpose>
     </description>

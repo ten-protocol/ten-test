@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Events: concurrent javascript client polling using contract.getPastEvents on event</title>
+        <title>Events: concurrent javascript client using eth.subscribe on logs</title>
         <purpose><![CDATA[]]>
         </purpose>
     </description>
