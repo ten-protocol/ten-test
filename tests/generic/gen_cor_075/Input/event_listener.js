@@ -12,6 +12,7 @@ function task(web3) {
       if (error) {
         console.log('Error returned is ', error)
       } else {
+        console.log('Full result is ', result.data);
         console.log('Stored value =', Web3.utils.hexToNumber(result.data));
       }
     }
