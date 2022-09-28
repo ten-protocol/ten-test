@@ -4,9 +4,12 @@ const fs = require('fs');
 
 require('console-stamp')(console, 'HH:MM:ss');
 
-function task(contract, from) {
+function task(contract, filter_address, from) {
   setTimeout(function() {
-    contract.getPastEvents('ItemSet', { fromBlock: from, toBlock: 'latest'})
+    contract.getPastEvents('ItemSet', {
+      fromBlock: from,
+      toBlock: 'latest',
+      address: filter_address})
     .then(function(events) {
         if (events.length) {
             for (var i = 0, len = events.length; i < len; i+=1) {
@@ -17,7 +20,7 @@ function task(contract, from) {
                 from = events[i].blockNumber+1
             }
         }
-        task(contract, from)
+        task(contract, filter_address, from)
     });
   }, 2000);
 }
@@ -61,7 +64,8 @@ commander
   .option('-w, --url_ws <url>', 'Web socket connection URL')
   .option('-a, --address <value>', 'Address of the contract')
   .option('-b, --abi <value>', 'Abi of the contract')
-  .option('-p, --pk <value>', 'Private key of account to poll')
+  .option('-f, --filter_address <value>', 'The address to filter on')
+  .option('-p, --pk <value>', 'Private key for this client')
   .option('-o, --obscuro', 'True if running against obscuro', false)
   .parse(process.argv);
 
@@ -70,8 +74,9 @@ console.log('HTTP URL:', `${options.url_http}`);
 console.log('WS URL:', `${options.url_ws}`);
 console.log('ADR:', `${options.address}`);
 console.log('ABI:', `${options.abi}`);
-console.log('PK:', `${options.pk}`);
+console.log('ADF:', `${options.filter_address}`);
 console.log('OB:', `${options.obscuro}`);
+console.log('PK:', `${options.pk}`);
 
 const json = fs.readFileSync(`${options.abi}`);
 const abi = JSON.parse(json);
@@ -85,7 +90,7 @@ if (options.obscuro == true) {
 }
 else {
   console.log('Starting task ...')
-  task(contract, 0)
+  task(contract, options.filter_address, 0)
 }
 
 

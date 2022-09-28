@@ -58,7 +58,7 @@ commander
   .option('-w, --url_ws <url>', 'Web socket connection URL')
   .option('-a, --address <value>', 'Address of the contract')
   .option('-b, --abi <value>', 'Abi of the contract')
-  .option('-p, --pk <value>', 'Private key of account to poll')
+  .option('-p, --pk <value>', 'Private key for this client')
   .option('-o, --obscuro', 'True if running against obscuro', false)
   .parse(process.argv);
 
