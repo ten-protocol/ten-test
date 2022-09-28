@@ -8,6 +8,13 @@ RUN apt update
 RUN apt install -y curl
 RUN apt install -y solc
 
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
+RUN apt-get install -y nodejs
+RUN npm install -y console-stamp
+RUN npm install -y ganache-cli
+RUN npm install -y web3
+RUN npm install -y commander
+
 RUN apt install -y vim
 RUN apt install -y python3-pip
 RUN python3 -m pip install web3
