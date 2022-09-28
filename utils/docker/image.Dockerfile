@@ -8,10 +8,10 @@ RUN apt update
 RUN apt install -y solc
 
 RUN apt install -y nodejs npm
-RUN npm install -g console-stamp
-RUN npm install -g ganache-cli
-RUN npm install -g web3
-RUN npm install -g commander
+RUN npm install -y console-stamp
+RUN npm install -y ganache-cli
+RUN npm install -y web3
+RUN npm install -y commander
 
 RUN apt install -y vim
 RUN apt install -y python3-pip

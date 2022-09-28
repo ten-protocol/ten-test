@@ -11,6 +11,7 @@ function task(contract, address) {
       if (error) {
         console.log('Error returned is ', error)
       } else {
+        console.log(typeof result);
         console.log('Stored value =', result.returnValues['value']);
       }
     }
