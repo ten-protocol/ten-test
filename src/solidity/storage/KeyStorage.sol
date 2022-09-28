@@ -2,17 +2,22 @@
 pragma solidity ^0.8.0;
 
 contract Store {
-    event ItemSet(bytes32 key, bytes32 value);
+    event ItemSet(string key, string value, address setter);
 
-    string public version;
-    mapping (bytes32 => bytes32) public items;
+    address public owner;
+    mapping (string => string) public items;
 
-    constructor(string _version) public {
-        version = _version;
+    constructor() {
+        owner = msg.sender;
     }
 
-    function setItem(bytes32 key, bytes32 value) external {
+    function setItem(string calldata key, string calldata value) external {
         items[key] = value;
-        emit ItemSet(key, value);
+        emit ItemSet(key, value, msg.sender);
+    }
+
+    function destroy() public {
+        require(msg.sender == owner, "You are not the owner");
+        selfdestruct(payable(address(this)));
     }
 }

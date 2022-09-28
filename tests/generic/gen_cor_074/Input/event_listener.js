@@ -6,11 +6,14 @@ require('console-stamp')(console, 'HH:MM:ss');
 
 function task(contract, from) {
   setTimeout(function() {
-    contract.getPastEvents('Stored', { fromBlock: from, toBlock: 'latest'})
+    contract.getPastEvents('ItemSet', { fromBlock: from, toBlock: 'latest'})
     .then(function(events) {
         if (events.length) {
             for (var i = 0, len = events.length; i < len; i+=1) {
-                console.log('Stored value =', events[i].returnValues['value']);
+                key = events[i].returnValues['key']
+                value = events[i].returnValues['value']
+                setter = events[i].returnValues['setter']
+                console.log('ItemSet:', key, value, setter);
                 from = events[i].blockNumber+1
             }
         }
