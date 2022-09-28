@@ -10,10 +10,10 @@ RUN apt install -y solc
 
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
 RUN apt-get install -y nodejs
-RUN npm install -y console-stamp
-RUN npm install -y ganache-cli
-RUN npm install -y web3
-RUN npm install -y commander
+RUN npm install console-stamp --global
+RUN npm install ganache --global
+RUN npm install web3 --global
+RUN npm install commander --global
 
 RUN apt install -y vim
 RUN apt install -y python3-pip
