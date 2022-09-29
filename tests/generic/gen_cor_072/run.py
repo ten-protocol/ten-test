@@ -23,10 +23,10 @@ class PySysTest(EthereumTest):
         stderr = os.path.join(self.output, 'listener.err')
         script = os.path.join(self.input, 'event_listener.py')
         args = []
-        args.extend(['-u', '%s' % network.connection_url(web_socket=False)])
-        args.extend(['-a', '%s' % storage.contract_address])
-        args.extend(['-b', '%s' % abi_path])
-        args.extend(['-p', '%s' % Properties().account2pk()])
+        args.extend(['--url', '%s' % network.connection_url(web_socket=False)])
+        args.extend(['--address', '%s' % storage.contract_address])
+        args.extend(['--abi', '%s' % abi_path])
+        args.extend(['--pk', '%s' % Properties().account2pk()])
         self.run_python(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting to run the event loop', timeout=10)
 
