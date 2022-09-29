@@ -12,6 +12,7 @@ class PySysTest(EthereumTest):
         network = NetworkFactory.get_network(self.env)
         web3_1, account1 = network.connect_account1(self, web_socket=False)
         web3_2, account2 = network.connect_account2(self, web_socket=False)
+        web3_3, account3 = network.connect_account3(self, web_socket=False)
 
         # deploy the contract and dump out the abi
         storage = KeyStorage(self, web3_1)
@@ -25,12 +26,13 @@ class PySysTest(EthereumTest):
         stderr = os.path.join(self.output, 'listener.err')
         script = os.path.join(self.input, 'event_listener.js')
         args = []
-        args.extend(['-u', '%s' % network.connection_url(web_socket=False)])
-        args.extend(['-w', '%s' % network.connection_url(web_socket=True)])
-        args.extend(['-a', '%s' % storage.contract_address])
-        args.extend(['-b', '%s' % abi_path])
-        args.extend(['-p', '%s' % Properties().account3pk()])
-        args.extend(['-f', '%s' % account2.address])
+        args.extend(['--url_http', '%s' % network.connection_url(web_socket=False)])
+        args.extend(['--url_ws', '%s' % network.connection_url(web_socket=True)])
+        args.extend(['--address', '%s' % storage.contract_address])
+        args.extend(['--abi', '%s' % abi_path])
+        args.extend(['--pk', '%s' % Properties().account3pk()])
+        args.extend(['--filter_address', '%s' % account2.address])
+        args.extend(['--filter_key', '%s' % 'r1'])
         if self.is_obscuro(): args.append('--obscuro')
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
@@ -38,14 +40,28 @@ class PySysTest(EthereumTest):
         # perform some transactions
         contract_1 = storage.contract
         contract_2 = web3_2.eth.contract(address=storage.contract_address, abi=storage.abi)
-        network.transact(self, web3_1, contract_1.functions.setItem('account1', 1), account1, storage.GAS)
+        contract_3 = web3_3.eth.contract(address=storage.contract_address, abi=storage.abi)
+        network.transact(self, web3_1, contract_1.functions.setItem('k1', 1), account1, storage.GAS)
         network.transact(self, web3_1, contract_1.functions.setItem('foo', 2), account1, storage.GAS)
         network.transact(self, web3_1, contract_1.functions.setItem('bar', 3), account1, storage.GAS)
-        network.transact(self, web3_2, contract_2.functions.setItem('account2', 2), account2, storage.GAS)
+        network.transact(self, web3_2, contract_2.functions.setItem('k2', 2), account2, storage.GAS)
+        network.transact(self, web3_3, contract_3.functions.setItem('r1', 10), account3, storage.GAS)
+        network.transact(self, web3_3, contract_3.functions.setItem('r2', 11), account3, storage.GAS)
 
-        # wait and validate
-        self.waitForGrep(file=stdout, expr='ItemSet1:', condition='== 1', timeout=10)
-        self.assertGrep(file=stdout, expr='ItemSet1: account1 1', contains=False)
-        self.assertGrep(file=stdout, expr='ItemSet1: account2 2')
+        # wait and validate - filter on sender is account2.address
+        self.waitForGrep(file=stdout, expr='Task1:', condition='== 1', timeout=10)
+        self.assertGrep(file=stdout, expr='Task1: k1 1', contains=False)
+        self.assertGrep(file=stdout, expr='Task1: k2 2')
 
+        # wait and validate - filter on value 2 or 3
+        self.waitForGrep(file=stdout, expr='Task2:', condition='== 3', timeout=10)
+        exprList=[]
+        exprList.append('Task2: foo 2')
+        exprList.append('Task2: bar 3')
+        exprList.append('Task2: k2 2')
+        self.assertOrderedGrep(file=stdout, exprList=exprList)
+
+        # wait and validate - filter on key is r1
+        self.waitForGrep(file=stdout, expr='Task3:', condition='== 1', timeout=10)
+        self.assertGrep(file=stdout, expr='Task3: 10')
 

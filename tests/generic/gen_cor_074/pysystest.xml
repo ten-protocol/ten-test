@@ -2,8 +2,11 @@
 <pysystest type="auto">
 
     <description>
-        <title>Events: concurrent javascript client contract.getPastEvents, filter</title>
+        <title>Events: concurrent javascript client contract.getPastEvents, filter and topics</title>
         <purpose><![CDATA[]]>
+Uses filter and topic to extract events of interest as a polling approach using getPastLogs. It filters on an address
+field, on a set of integer fields, and on a string field. As a string it seems you cannot filter within web3, but
+rather you sha3 the string value and specify it in the topic list as part of the bloom filters.
         </purpose>
     </description>
 

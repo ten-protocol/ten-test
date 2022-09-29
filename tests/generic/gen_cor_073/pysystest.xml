@@ -8,7 +8,7 @@ This is the first of three ways to get event logs for a contract event that is e
 by rather polls for past event logs across a range of blocks, which you modify after each call i.e. like a forward
 moving rolling window. It uses the getPastEvents method on the contract instance, specifying the name of the event of
 interest. The storage contract is used which emits a single event with an integer value (no addresses) and so should
-be visible to any interested parties within Obscuro. As a polling implemention, it uses HTTP as the connection
+be visible to any interested parties within Obscuro. As a polling implementation, it uses HTTP as the connection
 protocol.
         </purpose>
     </description>

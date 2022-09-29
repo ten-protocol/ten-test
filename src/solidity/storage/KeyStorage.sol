@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 contract Store {
     event ItemSet1(string key, uint256 value, address indexed setter);
     event ItemSet2(string key, uint256 indexed value, address indexed setter);
-    event ItemSet3(string indexed key, uint256 indexed value, address indexed setter);
+    event ItemSet3(string indexed key, uint256 value, address setter);
 
     address public owner;
     mapping (string => uint256) public items;
