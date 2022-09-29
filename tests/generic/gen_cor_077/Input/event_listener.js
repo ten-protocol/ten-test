@@ -4,7 +4,7 @@ const fs = require('fs');
 
 require('console-stamp')(console, 'HH:MM:ss');
 
-function task(contract, address) {
+function task() {
   console.log('Starting task ...')
   contract.events.Stored({fromBlock:'latest'},
     function(error, result) {
@@ -18,9 +18,9 @@ function task(contract, address) {
   )
 }
 
-function generate_viewing_key(web3, contract, url, account, private_key) {
-  console.log('Generating viewing key for', private_key)
-  console.log(url+'/generateviewingkey/')
+function generate_viewing_key() {
+  console.log('Generating viewing key for', options.pk)
+  console.log(options.url_http + '/generateviewingkey/')
 
   fetch(url+'/generateviewingkey/', {
     method: 'POST',
@@ -29,23 +29,24 @@ function generate_viewing_key(web3, contract, url, account, private_key) {
   })
   .then(response => response.text())
   .then((response) => {
-         sign_viewing_key(web3, contract, url, account, private_key, response)
+         sign_viewing_key()
    })
 }
 
-function sign_viewing_key(web3, contract, url, account, private_key, response) {
-  console.log('Signing viewing key for', private_key)
+function sign_viewing_key() {
+  console.log('Signing viewing key for', options.pk)
   console.log('Result was', response)
-  signed_msg = web3.eth.accounts.sign('vk' + response, '0x' + private_key)
+  signed_msg = web3.eth.accounts.sign('vk' + response, '0x' + options.pk)
 
-  fetch(url+'/submitviewingkey/', {
+  fetch(options.url_http + '/submitviewingkey/', {
     method: 'POST',
     headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
     body: JSON.stringify( {signature: signed_msg.signature, address: account.address})
   })
   .then(response => response.text())
   .then((response) => {
-    task(contract, account.address)
+    console.log('Starting task ...')
+    task()
    })
 }
 
@@ -68,18 +69,18 @@ console.log('ABI:', `${options.abi}`);
 console.log('PK:', `${options.pk}`);
 console.log('OB:', `${options.obscuro}`);
 
-const json = fs.readFileSync(`${options.abi}`);
-const abi = JSON.parse(json);
+var json = fs.readFileSync(`${options.abi}`);
+var abi = JSON.parse(json);
 
 const web3 = new Web3(`${options.url_ws}`);
 const contract = new web3.eth.Contract(abi, `${options.address}`)
 account = web3.eth.accounts.privateKeyToAccount(`${options.pk}`)
 
 if (options.obscuro == true) {
-  generate_viewing_key(web3, contract, options.url_http, account, options.pk)
+  generate_viewing_key()
 }
 else {
-  task(contract, account.address)
+  task()
 }
 
 
