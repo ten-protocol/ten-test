@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Events: concurrent javascript client contract.getPastEvents, filter fromBlock toBlock</title>
+        <title>Events: concurrent javascript client contract.getPastEvents, fromBlock toBlock</title>
         <purpose><![CDATA[]]>
 This is the first of three ways to get event logs for a contract event that is emitted. It is not a subscription approach
 by rather polls for past event logs across a range of blocks, which you modify after each call i.e. like a forward

@@ -38,14 +38,14 @@ class PySysTest(EthereumTest):
         # perform some transactions
         contract_1 = storage.contract
         contract_2 = web3_2.eth.contract(address=storage.contract_address, abi=storage.abi)
-        network.transact(self, web3_1, contract_1.functions.setItem('account1', 'foo'), account1, storage.GAS)
-        network.transact(self, web3_2, contract_2.functions.setItem('account2', 'bar'), account2, storage.GAS)
+        network.transact(self, web3_1, contract_1.functions.setItem('account1', 1), account1, storage.GAS)
+        network.transact(self, web3_1, contract_1.functions.setItem('foo', 2), account1, storage.GAS)
+        network.transact(self, web3_1, contract_1.functions.setItem('bar', 3), account1, storage.GAS)
+        network.transact(self, web3_2, contract_2.functions.setItem('account2', 2), account2, storage.GAS)
 
         # wait and validate
-        self.waitForGrep(file=stdout, expr='ItemSet:', condition='== 2', timeout=20)
-        exprList=[]
-        exprList.append('ItemSet: account1 foo %s' % account1.address)
-        exprList.append('ItemSet: account2 bar %s' % account2.address)
-        self.assertOrderedGrep(file=stdout, exprList=exprList)
+        self.waitForGrep(file=stdout, expr='ItemSet1:', condition='== 1', timeout=10)
+        self.assertGrep(file=stdout, expr='ItemSet1: account1 1', contains=False)
+        self.assertGrep(file=stdout, expr='ItemSet1: account2 2')
 
 

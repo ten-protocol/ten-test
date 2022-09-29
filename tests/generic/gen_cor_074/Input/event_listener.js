@@ -4,23 +4,44 @@ const fs = require('fs');
 
 require('console-stamp')(console, 'HH:MM:ss');
 
-function task(contract, filter_address, from) {
+function task1(contract, filter_address, from) {
   setTimeout(function() {
-    contract.getPastEvents('ItemSet', {
+    contract.getPastEvents('ItemSet1', {
       fromBlock: from,
       toBlock: 'latest',
-      address: filter_address})
+      filter: {setter: filter_address}
+    })
     .then(function(events) {
         if (events.length) {
             for (var i = 0, len = events.length; i < len; i+=1) {
                 key = events[i].returnValues['key']
                 value = events[i].returnValues['value']
-                setter = events[i].returnValues['setter']
-                console.log('ItemSet:', key, value, setter);
+                console.log('ItemSet1:', key, value);
                 from = events[i].blockNumber+1
             }
         }
-        task(contract, filter_address, from)
+        task1(contract, filter_address, from)
+    });
+  }, 2000);
+}
+
+function task2(contract, filter_address, from) {
+  setTimeout(function() {
+    contract.getPastEvents('ItemSet1', {
+      fromBlock: from,
+      toBlock: 'latest',
+      filter: {value: [2,3]}
+    })
+    .then(function(events) {
+        if (events.length) {
+            for (var i = 0, len = events.length; i < len; i+=1) {
+                key = events[i].returnValues['key']
+                value = events[i].returnValues['value']
+                console.log('ItemSet2:', key, value);
+                from = events[i].blockNumber+1
+            }
+        }
+        task2(contract, filter_address, from)
     });
   }, 2000);
 }
@@ -53,7 +74,8 @@ function sign_viewing_key(web3, contract, url, account, private_key, response) {
   .then(response => response.text())
   .then((response) => {
     console.log('Starting task ...')
-    task(contract, 0)
+    task1(contract, 0)
+    task2(contract, 0)
    })
 }
 
@@ -90,7 +112,8 @@ if (options.obscuro == true) {
 }
 else {
   console.log('Starting task ...')
-  task(contract, options.filter_address, 0)
+  task1(contract, options.filter_address, 0)
+  task2(contract, 0)
 }
 
 
