@@ -4,6 +4,7 @@ from pysys.constants import PROJECT, BACKGROUND
 from ethsys.utils.process import Processes
 from ethsys.utils.properties import Properties
 
+
 class EthereumTest(BaseTest):
     ONE_GIGA = 1000000000000000000
 
@@ -104,6 +105,7 @@ class EthereumTest(BaseTest):
             self.log.info('  OBX User balance   = %d ' % user_obx)
 
     def run_python(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
+        """Run a python process."""
         self.log.info('Running python script %s' % os.path.basename(script))
         arguments = [script]
         if args is not None: arguments.extend(args)
@@ -115,8 +117,9 @@ class EthereumTest(BaseTest):
         return hprocess
 
     def run_javascript(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
+        """Run a javascript process."""
         self.log.info('Running javascript %s' % os.path.basename(script))
-        arguments = ['--trace-event-categories', 'v8,node', script]
+        arguments = [script]
         if args is not None: arguments.extend(args)
 
         environ = copy.deepcopy(os.environ)
@@ -124,3 +127,19 @@ class EthereumTest(BaseTest):
                                      arguments=arguments, environs=environ, stdout=stdout, stderr=stderr,
                                      state=state, timeout=timeout)
         return hprocess
+
+    def run_ws_proxy(self, remote_url, filename):
+        """Run the websocket proxy to log messages."""
+        script = os.path.join(PROJECT.root, 'utils', 'proxy', 'ws_proxy.py')
+        stdout = os.path.join(self.output, 'proxy.out')
+        stderr = os.path.join(self.output, 'proxy.err')
+
+        host = '127.0.0.1'
+        port = self.getNextAvailableTCPPort()
+        arguments = []
+        arguments.extend(['--host', host])
+        arguments.extend(['--port', '%d' % port])
+        arguments.extend(['--remote_url', remote_url])
+        arguments.extend(['--filename', filename])
+        self.run_python(script, stdout, stderr, arguments)
+        return 'ws://%s:%d' % (host, port)
