@@ -2,21 +2,17 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC API: check get_block_by_hash</title>
-        <purpose><![CDATA[
-Checks you can get a block by it's hash number. A contract is deployed and the transaction receipt used to get it's
-block number. The parent block is returned using the hash from this, and it's block number checked to ensure it is
-one less than it's child block.
-]]>
+        <title>Events: concurrent javascript client contract.getPastEvents, filter and topics</title>
+        <purpose><![CDATA[]]>
+Uses filter and topic to extract events of interest as a polling approach using getPastLogs. It filters on an address
+field, on a set of integer fields, and on a string field. As a string it seems you cannot filter within web3, but
+rather you sha3 the string value and specify it in the topic list as part of the bloom filters.
         </purpose>
     </description>
 
-    <skipped reason="https://github.com/obscuronet/obscuro-internal/issues/959"/>
-
     <classification>
         <groups inherit="true">
-            <group>rpc</group>
-            <group>ws</group>
+            <group>events</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

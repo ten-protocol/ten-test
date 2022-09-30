@@ -2,21 +2,17 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC API: check get_block_by_hash</title>
-        <purpose><![CDATA[
-Checks you can get a block by it's hash number. A contract is deployed and the transaction receipt used to get it's
-block number. The parent block is returned using the hash from this, and it's block number checked to ensure it is
-one less than it's child block.
-]]>
+        <title>Events: concurrent javascript client using contract.events.allEvents</title>
+        <purpose><![CDATA[]]>
+Similar to contract.events.Event, this approach uses the allEvents function on the contract instance to receive all
+events from a particular contract. The KeyStorage contract is used which emits three different events for each storage
+operation. No filtering or topics are used, the test just ensures all events are received.
         </purpose>
     </description>
 
-    <skipped reason="https://github.com/obscuronet/obscuro-internal/issues/959"/>
-
     <classification>
         <groups inherit="true">
-            <group>rpc</group>
-            <group>ws</group>
+            <group>events</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

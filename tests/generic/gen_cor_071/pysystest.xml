@@ -2,21 +2,16 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC API: check get_block_by_hash</title>
-        <purpose><![CDATA[
-Checks you can get a block by it's hash number. A contract is deployed and the transaction receipt used to get it's
-block number. The parent block is returned using the hash from this, and it's block number checked to ensure it is
-one less than it's child block.
-]]>
+        <title>Events: filter and get new entries since deployment</title>
+        <purpose><![CDATA[]]>
+This is all implemented in the process of the test, where after performing transactions on a contract a filter is placed
+on the contract and all new entries are queried for.
         </purpose>
     </description>
 
-    <skipped reason="https://github.com/obscuronet/obscuro-internal/issues/959"/>
-
     <classification>
         <groups inherit="true">
-            <group>rpc</group>
-            <group>ws</group>
+            <group>events</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

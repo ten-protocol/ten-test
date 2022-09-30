@@ -50,24 +50,19 @@ jobs:
           sudo python3 -m pip install pysys==1.6.1
           sudo python3 -m pip install py-solc-x
 
-      - name: Run tests on testnet on a schedule event
-        if: ${{ github.event_name == 'schedule' }}
-        run: |
-          cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run gen_cor_001:
-
       - name: Run tests on testnet on a manual trigger
         if: ${{ github.event.inputs.environment == 'testnet' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run gen_cor_001:
-          /usr/local/bin/pysys.py run -v CRIT -c 10 obs_cor_001
+          /usr/local/bin/pysys.py run -e events gen_cor_001:
+          /usr/local/bin/pysys.py run obs_cor_001
 
       - name: Run tests on dev-testnet on a manual trigger
         if: ${{ github.event.inputs.environment == 'dev-testnet' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -m obscuro.dev gen_cor_001:
+          /usr/local/bin/pysys.py run -m obscuro.dev -e events gen_cor_001:
+          /usr/local/bin/pysys.py run -m obscuro.dev obs_cor_001
 
       - name: Upload wallet extension logs
         uses: actions/upload-artifact@v3

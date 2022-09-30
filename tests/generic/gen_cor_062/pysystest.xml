@@ -2,20 +2,16 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC API: check get_block_by_hash</title>
-        <purpose><![CDATA[
-Checks you can get a block by it's hash number. A contract is deployed and the transaction receipt used to get it's
-block number. The parent block is returned using the hash from this, and it's block number checked to ensure it is
-one less than it's child block.
-]]>
+        <title>ERC20: repeated transfer with concurrent python client polling balance</title>
+        <purpose><![CDATA[]]>
+Account1 sends five lots of 1 token to account2. Account2 has a polling check on the balance out of process
+as a python script and checks that it can detect the updates to the balance. The intention here is to show that two
+concurrent accounts can be used against the network to send and detect receipt of funds.
         </purpose>
     </description>
 
-    <skipped reason="https://github.com/obscuronet/obscuro-internal/issues/959"/>
-
     <classification>
         <groups inherit="true">
-            <group>rpc</group>
             <group>ws</group>
         </groups>
         <modes inherit="true">

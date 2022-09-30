@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Events: concurrent javascript client contract.getPastEvents, fromBlock toBlock</title>
+        <purpose><![CDATA[]]>
+This is the first of three ways to get event logs for a contract event that is emitted. It is not a subscription approach
+by rather polls for past event logs across a range of blocks, which you modify after each call i.e. like a forward
+moving rolling window. It uses the getPastEvents method on the contract instance, specifying the name of the event of
+interest. The storage contract is used which emits a single event with an integer value (no addresses) and so should
+be visible to any interested parties within Obscuro. As a polling implementation, it uses HTTP as the connection
+protocol.
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>events</group>
+        </groups>
+        <modes inherit="true">
+            <mode>obscuro.dev</mode>
+            <mode>obscuro.local</mode>
+            <mode>ropsten</mode>
+            <mode>ganache</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

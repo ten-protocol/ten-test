@@ -5,12 +5,15 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
 RUN apt-get install -y software-properties-common
 RUN add-apt-repository ppa:ethereum/ethereum
 RUN apt update
+RUN apt install -y curl
 RUN apt install -y solc
 
-RUN apt install -y nodejs npm
-RUN npm install -g ganache-cli
-RUN npm install -g web3
-RUN npm install commander
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
+RUN apt-get install -y nodejs
+RUN npm install console-stamp --global
+RUN npm install ganache --global
+RUN npm install web3 --global
+RUN npm install commander --global
 
 RUN apt install -y vim
 RUN apt install -y python3-pip

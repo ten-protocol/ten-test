@@ -26,7 +26,10 @@ az vm run-command invoke \
     && apt update \
     && apt install -y solc \
     && apt install -y nodejs npm \
+    && npm install -g console-stamp \
     && npm install -g ganache-cli \
+    && npm install -g web3 \
+    && npm install -g commander \
     && apt install -y vim \
     && apt install -y python3-pip \
     && python3 -m pip install web3 \

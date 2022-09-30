@@ -45,6 +45,7 @@ class EthereumRunnerPlugin():
         arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account2pk()))
         arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account3pk()))
         arguments.extend(('--gasLimit', '7200000'))
+        arguments.extend(('--blockTime', '1'))
         hprocess = runner.startProcess(command=Processes.get_ganache_bin(), displayName='ganache',
                                        workingDir=self.output , environs=os.environ, quiet=True,
                                        arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
@@ -74,7 +75,7 @@ class EthereumRunnerPlugin():
         arguments.extend(('--nodePortHTTP', '13000'))
         arguments.extend(('--nodePortWS', '13001'))
         arguments.extend(('--port', str(port)))
-        #arguments.extend(('--portWS', str(ws_port)))
+        arguments.extend(('--portWS', str(ws_port)))
         arguments.extend(('--logPath', os.path.join(self.output, 'wallet_%d_logs.txt' % port)))
         hprocess = runner.startProcess(command=os.path.join(PROJECT.root, 'artifacts', 'wallet_extension'),
                                        displayName='wallet_extension', workingDir=self.output , environs=os.environ,

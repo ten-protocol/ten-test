@@ -2,16 +2,17 @@
 <pysystest type="auto">
 
     <description>
-        <title>Storage: deploy contract and set value (includes events)</title>
+        <title>Events: concurrent python client polling using filter.get_new_entries</title>
         <purpose><![CDATA[]]>
-Deploy the storage contract, call to get the current value, store a new value as a transaction, extract the
-value from the transaction log, and call again.
+This is a polling implementation in python to get event logs from a contract as transactions are written to it in real
+time. It creates a filter on the events.Event method on the contract instance, then repeatedly calls for
+get_new_entries() on the filter to return new logs. As a polling implementation it uses HTTP for the connection protocol.
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>ws</group>
+            <group>events</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

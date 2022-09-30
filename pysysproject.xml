@@ -8,9 +8,11 @@
     <property osfamily="osfamily"/>
 
     <property name="solcBin_linux" value="/usr/bin/solc"/>
-    <property name="solcBin_darwin" value="/opt/homebrew/bin/solc"/>
     <property name="ganacheBin_linux" value="/usr/local/bin/ganache-cli"/>
+    <property name="nodeBin_linux" value="/usr/bin/node"/>
+    <property name="solcBin_darwin" value="/opt/homebrew/bin/solc"/>
     <property name="ganacheBin_darwin" value="/opt/homebrew/bin/ganache-cli"/>
+    <property name="nodeBin_darwin" value="/opt/homebrew/bin/node"/>
 
     <property name="defaultAbortOnError" value="true"/>
     <property name="defaultIgnoreExitStatus" value="false"/>

@@ -1,8 +1,8 @@
-import json, requests, os
-from pysys.constants import PROJECT
+import json, requests, os, copy, sys
 from pysys.basetest import BaseTest
+from pysys.constants import PROJECT, BACKGROUND
+from ethsys.utils.process import Processes
 from ethsys.utils.properties import Properties
-
 
 class EthereumTest(BaseTest):
     ONE_GIGA = 1000000000000000000
@@ -11,6 +11,10 @@ class EthereumTest(BaseTest):
         """Call the parent constructor but set the mode to obscuro if non is set. """
         super().__init__(descriptor, outsubdir, runner)
         self.env = 'obscuro' if self.mode is None else self.mode
+
+    def is_obscuro(self):
+        """Return true if we are running against an Obscuro network. """
+        return self.env in ['obscuro', 'obscuro.dev', 'obscuro.local']
 
     def fund_obx(self, network, web3_user, account_user, amount):
         """Fund OBX in the L2 to a users account, either through the faucet server or direct from the account."""
@@ -98,3 +102,25 @@ class EthereumTest(BaseTest):
             self.log.info('L2 balances after;')
             self.log.info('  OBX Funded balance = %d ' % funded_obx)
             self.log.info('  OBX User balance   = %d ' % user_obx)
+
+    def run_python(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
+        self.log.info('Running python script %s' % os.path.basename(script))
+        arguments = [script]
+        if args is not None: arguments.extend(args)
+
+        environ = copy.deepcopy(os.environ)
+        hprocess = self.startProcess(command=sys.executable, displayName='python', workingDir=self.output,
+                                     arguments=arguments, environs=environ, stdout=stdout, stderr=stderr,
+                                     state=state, timeout=timeout)
+        return hprocess
+
+    def run_javascript(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
+        self.log.info('Running javascript %s' % os.path.basename(script))
+        arguments = ['--trace-event-categories', 'v8,node', script]
+        if args is not None: arguments.extend(args)
+
+        environ = copy.deepcopy(os.environ)
+        hprocess = self.startProcess(command=Processes.get_node_bin(), displayName='node', workingDir=self.output,
+                                     arguments=arguments, environs=environ, stdout=stdout, stderr=stderr,
+                                     state=state, timeout=timeout)
+        return hprocess
