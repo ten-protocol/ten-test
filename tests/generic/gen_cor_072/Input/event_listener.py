@@ -27,6 +27,7 @@ if __name__ == "__main__":
     parser.add_argument('-a', '--address', help='Address of the contract')
     parser.add_argument('-b', '--abi', help='Abi of the contract')
     parser.add_argument('-p', '--pk', help='Private key of account to poll')
+    parser.add_argument('--obscuro', action='store_true', help='True if running against obscuro')
     args = parser.parse_args()
 
     logging.info('URL: %s' % args.url)
@@ -34,7 +35,7 @@ if __name__ == "__main__":
     logging.info('ABI: %s' % args.abi)
 
     web3 = Web3(Web3.HTTPProvider(args.url))
-    if args.pk: generate_viewing_key(web3, args.url, args.pk)
+    if args.obscuro: generate_viewing_key(web3, args.url, args.pk)
     with open(args.abi) as f:
         contract = web3.eth.contract(address=args.address, abi=json.load(f))
 

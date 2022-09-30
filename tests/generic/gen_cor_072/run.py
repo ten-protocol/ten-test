@@ -4,6 +4,7 @@ from ethsys.contracts.storage.storage import Storage
 from ethsys.networks.factory import NetworkFactory
 from ethsys.utils.properties import Properties
 
+
 class PySysTest(EthereumTest):
     WEBSOCKET = False
 
@@ -27,6 +28,7 @@ class PySysTest(EthereumTest):
         args.extend(['--address', '%s' % storage.contract_address])
         args.extend(['--abi', '%s' % abi_path])
         args.extend(['--pk', '%s' % Properties().account2pk()])
+        if self.is_obscuro(): args.append('--obscuro')
         self.run_python(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting to run the event loop', timeout=10)
 
