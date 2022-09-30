@@ -13,7 +13,6 @@ be visible to any interested parties within Obscuro. As a subscription it uses w
 
     <classification>
         <groups inherit="true">
-            <group>ws</group>
             <group>events</group>
         </groups>
         <modes inherit="true">

@@ -15,7 +15,6 @@ poor support for websockets in the web3.py library).
 
     <classification>
         <groups inherit="true">
-            <group>ws</group>
             <group>events</group>
         </groups>
         <modes inherit="true">

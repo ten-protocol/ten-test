@@ -12,7 +12,6 @@ operation. No filtering or topics are used, the test just ensures all events are
 
     <classification>
         <groups inherit="true">
-            <group>ws</group>
             <group>events</group>
         </groups>
         <modes inherit="true">

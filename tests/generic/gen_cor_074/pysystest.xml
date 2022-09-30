@@ -12,7 +12,6 @@ rather you sha3 the string value and specify it in the topic list as part of the
 
     <classification>
         <groups inherit="true">
-            <group>ws</group>
             <group>events</group>
         </groups>
         <modes inherit="true">
