@@ -30,7 +30,7 @@ class Default:
         return cls.CONNECTIONS[key]
 
     @classmethod
-    def connection_url(cls, web_socket):
+    def connection_url(cls, web_socket=False):
         port = cls.PORT if not web_socket else cls.WS_PORT
         host = cls.HOST if not web_socket else cls.WS_HOST
         return '%s:%d' % (host, port)

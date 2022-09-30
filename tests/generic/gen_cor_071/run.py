@@ -5,12 +5,11 @@ from ethsys.networks.factory import NetworkFactory
 
 
 class PySysTest(EthereumTest):
-    WEBSOCKET = False
 
     def execute(self):
         # connect to network
         network = NetworkFactory.get_network(self.env)
-        web3_1, account1 = network.connect_account1(self, web_socket=self.WEBSOCKET)
+        web3_1, account1 = network.connect_account1(self)
 
         # deploy the contract
         storage = Storage(self, web3_1, 100)

@@ -10,7 +10,7 @@ class PySysTest(EthereumTest):
     def execute(self):
         # connect to network
         network = NetworkFactory.get_network(self.env)
-        web3, account = network.connect_account1(self, web_socket=False)
+        web3, account = network.connect_account1(self)
 
         # deploy the contract and dump out the abi
         storage = Storage(self, web3, 100)

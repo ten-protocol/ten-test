@@ -12,7 +12,7 @@ class Ropsten(Default):
     def chain_id(cls): return 3
 
     @classmethod
-    def connection_url(cls, web_socket):
+    def connection_url(cls, web_socket=False):
         return '%s/%s' % (cls.HOST if not web_socket else cls.WS_HOST, Properties().infuraProjectID())
 
 
