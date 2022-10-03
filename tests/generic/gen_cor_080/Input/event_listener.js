@@ -59,8 +59,6 @@ commander
   .usage('[OPTIONS]...')
   .option('-u, --url_http <url>', 'Http connection URL')
   .option('-w, --url_ws <url>', 'Web socket connection URL')
-  .option('-a, --address <value>', 'Address of the contract')
-  .option('-b, --abi <value>', 'Abi of the contract')
   .option('-k, --from_block <value>', 'The block number to start from')
   .option('-p, --pk <value>', 'Private key for this client')
   .option('-o, --obscuro', 'True if running against obscuro', false)
@@ -69,17 +67,11 @@ commander
 const options = commander.opts();
 console.log('HTTP URL:', `${options.url_http}`);
 console.log('WS URL:', `${options.url_ws}`);
-console.log('ADR:', `${options.address}`);
-console.log('ABI:', `${options.abi}`);
 console.log('FB:', `${options.from_block}`);
 console.log('PK:', `${options.pk}`);
 console.log('OB:', `${options.obscuro}`);
 
-var json = fs.readFileSync(`${options.abi}`);
-var abi = JSON.parse(json);
-
 const web3 = new Web3(`${options.url_ws}`);
-const contract = new web3.eth.Contract(abi, `${options.address}`)
 account = web3.eth.accounts.privateKeyToAccount(`${options.pk}`)
 
 if (options.obscuro == true) {

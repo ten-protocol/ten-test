@@ -16,9 +16,6 @@ class PySysTest(EthereumTest):
         # deploy the contract, dump out the abi, make some transactions
         storage = Storage(self, web3, 100)
         storage.deploy(network, account)
-        abi_path = os.path.join(self.output, 'storage.abi')
-        with open(abi_path, 'w') as f:
-            json.dump(storage.abi, f)
 
         tx_recp1 = network.transact(self, web3, storage.contract.functions.store(0), account, storage.GAS)
         tx_recp2 = network.transact(self, web3, storage.contract.functions.store(1), account, storage.GAS)
@@ -38,8 +35,6 @@ class PySysTest(EthereumTest):
         args = []
         args.extend(['--url_http', '%s' % network.connection_url(web_socket=False)])
         args.extend(['--url_ws', '%s' % ws_url])
-        args.extend(['--address', '%s' % storage.contract_address])
-        args.extend(['--abi', '%s' % abi_path])
         args.extend(['--from_block', '%d' % from_block])
         args.extend(['--pk', '%s' % Properties().account3pk()])
         if self.is_obscuro(): args.append('--obscuro')

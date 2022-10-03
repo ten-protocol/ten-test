@@ -6,8 +6,7 @@
         <purpose><![CDATA[]]>
 This is the third of three ways to get event logs for a contract event that is emitted. It is a subscription
 approach where eth.subscribe is used on the web3 instance, and the topic to filter on is the keccak256 of the event
-signature. The storage contract is used which emits a single event with an integer value (no addresses) and so should
-be visible to any interested parties within Obscuro. As a subscription it uses websockets for the connection protocol.
+signature. 
         </purpose>
     </description>
 
