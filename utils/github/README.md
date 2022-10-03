@@ -31,13 +31,14 @@ in the portal output. Copy and paste to run on the VM. Was running you should se
 runners as being up but idle. 
 
 ```bash
-# download and install
+# download and install (make sure it is for linux!)
 mkdir actions-runner && cd actions-runner
 curl -o actions-runner-osx-x64-2.296.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.296.0/actions-runner-osx-x64-2.296.0.tar.gz
 tar xzf ./actions-runner-osx-x64-2.296.0.tar.gz
 ./config.sh --url https://github.com/obscuronet/obscuro-test --token <TOKEN>
 
 # start a tmux session to start the runner
+export NODE_PATH=/usr/lib/node_modules/
 tmux new -s github-runner
 ./run.sh
 
