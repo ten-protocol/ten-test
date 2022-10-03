@@ -25,11 +25,13 @@ az vm run-command invoke \
     && add-apt-repository ppa:ethereum/ethereum \
     && apt update \
     && apt install -y solc \
-    && apt install -y nodejs npm \
+    && curl -sL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
     && npm install -g console-stamp \
+    && npm install -g ganache  \
+    && npm install -g web3  \
+    && npm install -g commander  \
     && npm install -g ganache-cli \
-    && npm install -g web3 \
-    && npm install -g commander \
     && apt install -y vim \
     && apt install -y python3-pip \
     && python3 -m pip install web3 \

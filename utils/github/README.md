@@ -9,13 +9,11 @@ Run the utility scripts to create the VM and connect;
 
 ```bash
 # create the VM
- ./utils/github/create-runner.sh <SSH KEY>
+ ./utils/github/create-runner.sh <SSH PUB KEY>
  
 # connect to the VM
-./utils/github/connect-runner.sh <SSH KEY>
+./utils/github/connect-runner.sh <SSH PVT KEY>
 ```
-
-where `SSH KEY` is the key used for secure connection to the VM.  
 
 # Set permissions on Docker
 To set permissions for docker on the VM use the below;
