@@ -6,6 +6,7 @@ from ethsys.utils.properties import Properties
 
 
 class PySysTest(EthereumTest):
+    PROXY = False
 
     def execute(self):
         # connect to network
@@ -19,13 +20,19 @@ class PySysTest(EthereumTest):
         with open(abi_path, 'w') as f:
             json.dump(storage.abi, f)
 
+        # go through a proxy to log websocket comms is needed
+        ws_url = network.connection_url(web_socket=True)
+        if self.PROXY:
+            ws_url = self.run_ws_proxy(ws_url, 'proxy.logs')
+            self.log.info('Using websocket proxy on url %s' % ws_url)
+
         # run a background script to filter and collect events
         stdout = os.path.join(self.output, 'listener.out')
         stderr = os.path.join(self.output, 'listener.err')
         script = os.path.join(self.input, 'event_listener.js')
         args = []
         args.extend(['--url_http', '%s' % network.connection_url(web_socket=False)])
-        args.extend(['--url_ws', '%s' % network.connection_url(web_socket=True)])
+        args.extend(['--url_ws', '%s' % ws_url])
         args.extend(['--address', '%s' % storage.contract_address])
         args.extend(['--abi', '%s' % abi_path])
         args.extend(['--pk', '%s' % Properties().account3pk()])
