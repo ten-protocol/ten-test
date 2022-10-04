@@ -5,6 +5,7 @@ contract Store {
     event ItemSet1(string key, uint256 value, address indexed setter);
     event ItemSet2(string key, uint256 indexed value, address indexed setter);
     event ItemSet3(string indexed key, uint256 value, address setter);
+    event Stored(uint256 value);
 
     address public owner;
     mapping (string => uint256) public items;
@@ -18,6 +19,11 @@ contract Store {
         emit ItemSet1(key, value, msg.sender);
         emit ItemSet2(key, value, msg.sender);
         emit ItemSet3(key, value, msg.sender);
+    }
+
+    function storeItem(uint256 value) external {
+        items['_'] = value;
+        emit Stored(value);
     }
 
     function destroy() public {

@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Events: concurrent javascript client using contract.events.Event</title>
+        <title>Events: javascript client using contract.events.Event</title>
         <purpose><![CDATA[]]>
 This is the second of three ways to get event logs for a contract event that is emitted. It is a subscription
 approach where the events.Event constructor on the contract instance is used, passing the filter options and supplying

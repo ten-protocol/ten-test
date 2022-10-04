@@ -8,8 +8,6 @@ Deploy a contract and check for error reporting on revert, require and assert.
         </purpose>
     </description>
 
-    <skipped reason="https://github.com/obscuronet/obscuro-internal/issues/759" />
-
     <classification>
         <groups inherit="true">
             <group>ws</group>

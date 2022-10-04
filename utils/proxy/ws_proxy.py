@@ -36,6 +36,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     REMOTE_URL = args.remote_url
+    sys.stdout.write('Connection to remote url %s' % REMOTE_URL)
+    sys.stdout.flush()
     FP = open(args.filename, 'w')
 
     start_server = websockets.serve(hello, args.host, args.port)

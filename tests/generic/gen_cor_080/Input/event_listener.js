@@ -8,7 +8,8 @@ function task() {
   console.log('Starting task ...')
   topic = web3.utils.sha3('Stored(uint256)');
   web3.eth.subscribe('logs', {
-      topics: [topic]
+      topics: [topic],
+      fromBlock: options.from_block
     },
     function(error, result) {
       if (error) {
@@ -58,6 +59,7 @@ commander
   .usage('[OPTIONS]...')
   .option('-u, --url_http <url>', 'Http connection URL')
   .option('-w, --url_ws <url>', 'Web socket connection URL')
+  .option('-k, --from_block <value>', 'The block number to start from')
   .option('-p, --pk <value>', 'Private key for this client')
   .option('-o, --obscuro', 'True if running against obscuro', false)
   .parse(process.argv);
@@ -65,6 +67,7 @@ commander
 const options = commander.opts();
 console.log('HTTP URL:', `${options.url_http}`);
 console.log('WS URL:', `${options.url_ws}`);
+console.log('FB:', `${options.from_block}`);
 console.log('PK:', `${options.pk}`);
 console.log('OB:', `${options.obscuro}`);
 

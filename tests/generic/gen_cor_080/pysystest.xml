@@ -2,11 +2,8 @@
 <pysystest type="auto">
 
     <description>
-        <title>Events: javascript client using contract.events.allEvents</title>
+        <title>Events: javascript client using eth.subscribe on logs fromBlock</title>
         <purpose><![CDATA[]]>
-Similar to contract.events.Event, this approach uses the allEvents function on the contract instance to receive all
-events from a particular contract. The KeyStorage contract is used which emits three different events for each storage
-operation. No filtering or topics are used, the test just ensures all events are received.
         </purpose>
     </description>
 

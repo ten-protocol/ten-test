@@ -2,12 +2,11 @@
 <pysystest type="auto">
 
     <description>
-        <title>Events: concurrent javascript client using eth.subscribe on logs</title>
+        <title>Events: javascript client using eth.subscribe on logs (event Keccak256 only)</title>
         <purpose><![CDATA[]]>
 This is the third of three ways to get event logs for a contract event that is emitted. It is a subscription
 approach where eth.subscribe is used on the web3 instance, and the topic to filter on is the keccak256 of the event
-signature. The storage contract is used which emits a single event with an integer value (no addresses) and so should
-be visible to any interested parties within Obscuro. As a subscription it uses websockets for the connection protocol.
+signature. As no contract address is supplied it should pick up on any event with the Keccak256 on the event signature.
         </purpose>
     </description>
 
