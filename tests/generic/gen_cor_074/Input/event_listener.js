@@ -51,8 +51,7 @@ function task3(from) {
     contract.getPastEvents('ItemSet3', {
       fromBlock: from,
       toBlock: 'latest',
-       topics: [web3.utils.sha3('ItemSet3(string,uint256,address)'), web3.utils.sha3(options.filter_key)
-       ]
+      topics: [web3.utils.sha3('ItemSet3(string,uint256,address)'), web3.utils.sha3(options.filter_key)]
     })
     .then(function(events) {
         if (events.length) {
