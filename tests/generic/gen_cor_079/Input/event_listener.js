@@ -7,12 +7,14 @@ require('console-stamp')(console, 'HH:MM:ss');
 function task() {
   console.log('Starting task ...')
   topic = web3.utils.sha3('Stored(uint256)');
-  web3.eth.subscribe('logs', {topics: [topic]},
+  web3.eth.subscribe('logs', {
+      topics: [topic]
+    },
     function(error, result) {
       if (error) {
         console.log('Error returned is ', error)
       } else {
-        console.log('Full result is ', result.data);
+        console.log('Full result is ', result);
         console.log('Stored value =', Web3.utils.hexToNumber(result.data));
       }
     }
