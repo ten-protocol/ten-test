@@ -15,9 +15,6 @@ class PySysTest(EthereumTest):
         # deploy the storage contracts
         key_storage = KeyStorage(self, web3)
         key_storage.deploy(network, account)
-        abi_path = os.path.join(self.output, 'Key_storage.abi')
-        with open(abi_path, 'w') as f:
-            json.dump(key_storage.abi, f)
 
         # run a background script to filter and collect events
         stdout = os.path.join(self.output, 'listener.out')
@@ -27,7 +24,6 @@ class PySysTest(EthereumTest):
         args.extend(['--url_http', '%s' % network.connection_url(web_socket=False)])
         args.extend(['--url_ws', '%s' % network.connection_url(web_socket=True)])
         args.extend(['--address', '%s' % key_storage.contract_address])
-        args.extend(['--abi', '%s' % abi_path])
         args.extend(['--filter_key1', 'k1'])
         args.extend(['--filter_key2', 'k3'])
         args.extend(['--pk', '%s' % Properties().account3pk()])

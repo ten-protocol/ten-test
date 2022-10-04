@@ -62,7 +62,6 @@ commander
   .option('-u, --url_http <url>', 'Http connection URL')
   .option('-w, --url_ws <url>', 'Web socket connection URL')
   .option('-a, --address <value>', 'Address of the contract')
-  .option('-b, --abi <value>', 'Abi of the contract')
   .option('-f, --filter_key1 <value>', 'The first key value to filter on')
   .option('-g, --filter_key2 <value>', 'The second key value to filter on')
   .option('-p, --pk <value>', 'Private key for this client')
@@ -73,14 +72,10 @@ const options = commander.opts();
 console.log('HTTP URL:', `${options.url_http}`);
 console.log('WS URL:', `${options.url_ws}`);
 console.log('ADR:', `${options.address}`);
-console.log('ABI:', `${options.abi}`);
 console.log('FK1:', `${options.filter_key1}`);
 console.log('FK2:', `${options.filter_key2}`);
 console.log('PK:', `${options.pk}`);
 console.log('OB:', `${options.obscuro}`);
-
-var json = fs.readFileSync(`${options.abi}`);
-var abi = JSON.parse(json);
 
 const web3 = new Web3(`${options.url_ws}`);
 account = web3.eth.accounts.privateKeyToAccount(`${options.pk}`)
