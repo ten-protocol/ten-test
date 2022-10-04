@@ -39,8 +39,8 @@ class PySysTest(EthereumTest):
             time.sleep(1.0)
 
         # perform some transactions on the key storage contract
-        network.transact(self, web3, key_storage.contract.functions.storeItem(100), account, storage.GAS)
-        network.transact(self, web3, key_storage.contract.functions.setItem('k1', 101), account, storage.GAS)
+        network.transact(self, web3, key_storage.contract.functions.storeItem(100), account, key_storage.GAS)
+        network.transact(self, web3, key_storage.contract.functions.setItem('k1', 101), account, key_storage.GAS)
 
         # wait and validate
         exprList = []
