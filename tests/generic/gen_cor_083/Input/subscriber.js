@@ -1,36 +1,43 @@
-const Web3 = require('web3');
-const commander = require('commander');
+const Web3 = require('web3')
+const commander = require('commander')
 const http = require('http')
 
+function decodeLog(log) {
+  console.log('Full log is ', log)
+  console.log('Stored value =', Web3.utils.hexToNumber(log.data))
+}
+
 function subscribe() {
-  topic = web3.utils.sha3('Stored(uint256)');
-  subscription = web3.eth.subscribe('logs', {
-    topics: [topic],
-    address: options.contract_address
-  }, function(error, result) {
-       if (error)
-         console.log('Error returned is ', error)
+  dict = []
+  if (options.filter_from_block) dict["fromBlock"] = options.filter_from_block
+  if (options.filter_address) dict["address"] = options.filter_address
+  if (options.filter_topics) dict["topics"] = options.filter_topics
+  console.log('Options: ', dict)
+
+  subscription = web3.eth.subscribe('logs', dict,
+    function(error, result) {
+      if (error)
+        console.log('Error returned is ', error)
   })
   .on("connected", function(subscriptionId){
       console.log('Subscribed for event logs')
-      console.log('Subscription id is', subscription.id);
+      console.log('Subscription id is', subscription.id)
       console.log('Subscription arguments are', subscription.arguments)
   })
   .on("data", function(log){
-      console.log('Full log is ', log);
-      console.log('Stored value =', Web3.utils.hexToNumber(log.data));
+      decodeLog(log)
   })
 }
 
 function unsubscribe() {
   subscription.unsubscribe(function(error, success){
     if (success)
-        console.log('Unsubscribed for event logs');
-  });
+        console.log('Unsubscribed for event logs')
+  })
 }
 
-function createServer(){
-  var server = http.createServer(
+function startServer(){
+  const server = http.createServer(
     function(request, response) {
       if (request.method == 'POST') {
         var body = ''
@@ -49,70 +56,61 @@ function createServer(){
       }
     }
   )
-  return server
+  server.listen(options.script_server_port, '127.0.0.1')
+  console.log('Subscriber listening for instructions')
 }
 
-function generate_viewing_key() {
-  console.log('Generating viewing key for', options.account_private_key)
-  console.log(options.network_http + '/generateviewingkey/')
+function generate_viewing_key(web3, network_url, address, private_key, callback) {
+  console.log('Generating viewing key for', private_key)
+  console.log(network_url + '/generateviewingkey/')
 
-  fetch(options.network_http +'/generateviewingkey/', {
+  fetch(network_url +'/generateviewingkey/', {
     method: 'POST',
     headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
-    body: JSON.stringify({address: account.address})
+    body: JSON.stringify({address: address})
   })
   .then(response => response.text())
   .then((response) => {
-         sign_viewing_key()
+         sign_viewing_key(web3, network_url, address, private_key, callback, response)
    })
 }
 
-function sign_viewing_key() {
-  console.log('Signing viewing key for', options.account_private_key)
-  console.log('Result was', response)
-  signed_msg = web3.eth.accounts.sign('vk' + response, '0x' + options.account_private_key)
+function sign_viewing_key(web3, network_url, address, private_key, callback, response) {
+  console.log('Signing viewing key for', private_key)
+  signed_msg = web3.eth.accounts.sign('vk' + response, '0x' + private_key)
 
-  fetch(options.network_http + '/submitviewingkey/', {
+  fetch(network_url + '/submitviewingkey/', {
     method: 'POST',
     headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
-    body: JSON.stringify( {signature: signed_msg.signature, address: account.address})
+    body: JSON.stringify( {signature: signed_msg.signature, address: address})
   })
   .then(response => response.text())
   .then((response) => {
-    console.log('Starting task ...')
-    task()
+    callback()
    })
 }
 
 commander
   .version('1.0.0', '-v, --version')
   .usage('[OPTIONS]...')
-  .option('-p, --script_server_port <value>', 'This script listening port for HTTP posts')
-  .option('-u, --network_http <value>', 'Http connection URL to the network')
-  .option('-w, --network_ws <value>', 'Web socket connection URL to the network')
-  .option('-a, --contract_address <value>', 'Address of the contract to subscribe to')
-  .option('-p, --account_private_key <value>', 'Private key for the account')
-  .option('-o, --is_obscuro', 'True if running against obscuro', false)
-  .parse(process.argv);
+  .option('--script_server_port <value>', 'This script listening port for HTTP posts')
+  .option('--network_http <value>', 'Http connection URL to the network')
+  .option('--network_ws <value>', 'Web socket connection URL to the network')
+  .option('--filter_address <value>', 'The contract address to filter on', null)
+  .option('--filter_from_block <value>', 'The from block to filter on', null)
+  .option('--filter_topics <values...>', 'The first filter topic', null)
+  .option('--pk_to_register <value>', 'Private key used to register for a viewing key (obscuro only)', null)
+  .parse(process.argv)
 
-// options
-const options = commander.opts();
-
-// subscription is initially null
+// in global scope the options, web3 connection and server reference
 var subscription = null
+const options = commander.opts()
+const web3 = new Web3(`${options.network_ws}`)
 
-// create the server to listen for subscription instructions
-const server = createServer()
-
-const web3 = new Web3(`${options.network_ws}`);
-const account = web3.eth.accounts.privateKeyToAccount(`${options.account_private_key}`)
-
-if (options.is_obscuro == true) {
-  generate_viewing_key()
-  server.listen(options.script_server_port, '127.0.0.1')
-  console.log('Subscriber listening for instructions')
+// if pk supplied generate viewing key else just run
+if (options.register_vk) {
+  address = web3.eth.accounts.privateKeyToAccount(private_key).address
+  generate_viewing_key(web3, options.network_http, address, options.pk_to_register, startServer)
 }
-else {
-  server.listen(options.script_server_port, '127.0.0.1')
-  console.log('Subscriber listening for instructions')
-}
+else
+  startServer()

@@ -25,9 +25,9 @@ class PySysTest(EthereumTest):
         args.extend(['--script_server_port', '%d' % port])
         args.extend(['--network_http', '%s' % network.connection_url(web_socket=False)])
         args.extend(['--network_ws', '%s' % network.connection_url(web_socket=True)])
-        args.extend(['--contract_address', '%s' % storage.contract_address])
-        args.extend(['--account_private_key', '%s' % Properties().account3pk()])
-        if self.is_obscuro(): args.append('--is_obscuro')
+        args.extend(['--filter_address', '%s' % storage.contract_address])
+        args.extend(['--filter_topics', '%s' % web3.keccak(text='Stored(uint256)').hex()])
+        if self.is_obscuro(): args.extend(['--pk_to_register', '%s' % Properties().account3pk()])
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Subscriber listening for instructions', timeout=10)
 
