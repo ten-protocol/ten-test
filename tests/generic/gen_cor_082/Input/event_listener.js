@@ -28,7 +28,7 @@ function generate_viewing_key() {
   console.log('Generating viewing key for', options.pk)
   console.log(options.url_http + '/generateviewingkey/')
 
-  fetch(url+'/generateviewingkey/', {
+  fetch(options.url_http +'/generateviewingkey/', {
     method: 'POST',
     headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
     body: JSON.stringify({address: account.address})
