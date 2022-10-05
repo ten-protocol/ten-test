@@ -48,7 +48,6 @@ function sign_viewing_key(response) {
   })
   .then(response => response.text())
   .then((response) => {
-    console.log('Starting task ...')
     task()
    })
 }
