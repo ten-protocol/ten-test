@@ -17,6 +17,5 @@ class PySysTest(EthereumTest):
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Listening at http', timeout=10)
 
-        data = {"command": 'subscribe'}
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
-        response = requests.post('http://%s:%d' % (host, port), data=json.dumps(data), headers=headers)
+        requests.post('http://%s:%d' % (host, port), data='SUBSCRIBE', headers={'Content-Type': 'text/plain'})
+        requests.post('http://%s:%d' % (host, port), data='UNSUBSCRIBE', headers={'Content-Type': 'text/plain'})
