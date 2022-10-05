@@ -2,30 +2,30 @@ const Web3 = require('web3');
 const commander = require('commander');
 const http = require('http')
 
-function doSubscribe() {
-  console.log('Subscribing for event logs')
+function subscribe() {
   topic = web3.utils.sha3('Stored(uint256)');
-  subscription = web3.eth.subscribe('logs',
-    {
-      topics: [topic],
-      address: options.address
-    },
-    function(error, result) {
-      if (error) {
-        console.log('Error returned is ', error)
-      } else {
-        console.log('Full result is ', result);
-        console.log('Stored value =', Web3.utils.hexToNumber(result.data));
-      }
-    }
-  )
+  subscription = web3.eth.subscribe('logs', {
+    topics: [topic],
+    address: options.contract_address
+  }, function(error, result) {
+       if (error)
+         console.log('Error returned is ', error)
+  })
+  .on("connected", function(subscriptionId){
+      console.log('Subscribed for event logs')
+      console.log('Subscription id is', subscription.id);
+      console.log('Subscription arguments are', subscription.arguments)
+  })
+  .on("data", function(log){
+      console.log('Full log is ', log);
+      console.log('Stored value =', Web3.utils.hexToNumber(log.data));
+  })
 }
 
-function doUnsubscribe() {
-  console.log('Unsubscribing from event logs')
+function unsubscribe() {
   subscription.unsubscribe(function(error, success){
     if (success)
-        console.log('Successfully unsubscribed!');
+        console.log('Unsubscribed for event logs');
   });
 }
 
@@ -39,9 +39,9 @@ function createServer(){
         })
         request.on('end', function() {
           if (body == 'SUBSCRIBE'){
-            doSubscribe()
+            subscribe()
           } else if (body == 'UNSUBSCRIBE'){
-            doUnsubscribe()
+            unsubscribe()
           }
           response.writeHead(200, {'Content-Type': 'text/plain'})
           response.end('post received')
@@ -90,7 +90,7 @@ commander
   .option('-p, --script_server_port <value>', 'This script listening port for HTTP posts')
   .option('-u, --network_http <value>', 'Http connection URL to the network')
   .option('-w, --network_ws <value>', 'Web socket connection URL to the network')
-  .option('-a, --contract_address <value>', 'Address of the contract')
+  .option('-a, --contract_address <value>', 'Address of the contract to subscribe to')
   .option('-p, --account_private_key <value>', 'Private key for the account')
   .option('-o, --is_obscuro', 'True if running against obscuro', false)
   .parse(process.argv);
