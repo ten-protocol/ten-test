@@ -26,20 +26,19 @@ function generate_viewing_key() {
   console.log('Generating viewing key for', options.pk)
   console.log(options.url_http + '/generateviewingkey/')
 
-  fetch(url+'/generateviewingkey/', {
+  fetch(options.url_http +'/generateviewingkey/', {
     method: 'POST',
     headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
     body: JSON.stringify({address: account.address})
   })
   .then(response => response.text())
   .then((response) => {
-         sign_viewing_key()
+         sign_viewing_key(response)
    })
 }
 
-function sign_viewing_key() {
+function sign_viewing_key(response) {
   console.log('Signing viewing key for', options.pk)
-  console.log('Result was', response)
   signed_msg = web3.eth.accounts.sign('vk' + response, '0x' + options.pk)
 
   fetch(options.url_http + '/submitviewingkey/', {
