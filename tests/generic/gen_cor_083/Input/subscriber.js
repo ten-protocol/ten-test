@@ -1,10 +1,11 @@
+const Web3 = require('web3');
 const commander = require('commander');
 const http = require('http')
 
 function doSubscribe() {
   console.log('Subscribing for event logs')
   topic = web3.utils.sha3('Stored(uint256)');
-  const subscription = web3.eth.subscribe('logs',
+  subscription = web3.eth.subscribe('logs',
     {
       topics: [topic],
       address: options.address
@@ -67,11 +68,11 @@ function generate_viewing_key() {
 }
 
 function sign_viewing_key() {
-  console.log('Signing viewing key for', options.pk)
+  console.log('Signing viewing key for', options.account_private_key)
   console.log('Result was', response)
-  signed_msg = web3.eth.accounts.sign('vk' + response, '0x' + options.pk)
+  signed_msg = web3.eth.accounts.sign('vk' + response, '0x' + options.account_private_key)
 
-  fetch(options.url_http + '/submitviewingkey/', {
+  fetch(options.network_http + '/submitviewingkey/', {
     method: 'POST',
     headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
     body: JSON.stringify( {signature: signed_msg.signature, address: account.address})
@@ -94,23 +95,24 @@ commander
   .option('-o, --is_obscuro', 'True if running against obscuro', false)
   .parse(process.argv);
 
+// options
 const options = commander.opts();
 
 // subscription is initially null
-const subscription = null
+var subscription = null
 
 // create the server to listen for subscription instructions
 const server = createServer()
 
 const web3 = new Web3(`${options.network_ws}`);
-account = web3.eth.accounts.privateKeyToAccount(`${options.account_private_key}`)
+const account = web3.eth.accounts.privateKeyToAccount(`${options.account_private_key}`)
 
 if (options.is_obscuro == true) {
   generate_viewing_key()
-  server.listen(options.port, '127.0.0.1')
+  server.listen(options.script_server_port, '127.0.0.1')
   console.log('Subscriber listening for instructions')
 }
 else {
-  server.listen(options.port, '127.0.0.1')
+  server.listen(options.script_server_port, '127.0.0.1')
   console.log('Subscriber listening for instructions')
 }

@@ -30,7 +30,7 @@ class PySysTest(EthereumTest):
         if self.is_obscuro(): args.append('--is_obscuro')
 
         self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Listening at http', timeout=10)
+        self.waitForGrep(file=stdout, expr='Subscriber listening for instructions', timeout=10)
 
         requests.post('http://127.0.0.1:%d' % port, data='SUBSCRIBE', headers={'Content-Type': 'text/plain'})
         requests.post('http://127.0.0.1:%d' % port, data='UNSUBSCRIBE', headers={'Content-Type': 'text/plain'})
