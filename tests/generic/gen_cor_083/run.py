@@ -1,8 +1,7 @@
-import os, requests
 from obscuro.test.basetest import EthereumTest
 from obscuro.test.contracts.storage.storage import Storage
 from obscuro.test.networks.factory import NetworkFactory
-from obscuro.test.utils.properties import Properties
+from obscuro.test.helpers.log_subscriber import EventLogSubscriber
 
 
 class PySysTest(EthereumTest):
@@ -17,45 +16,27 @@ class PySysTest(EthereumTest):
         storage.deploy(network, account)
 
         # run a background script
-        port = self.getNextAvailableTCPPort()
-        stdout = os.path.join(self.output, 'subscriber.out')
-        stderr = os.path.join(self.output, 'subscriber.err')
-        script = os.path.join(self.input, 'subscriber.js')
-        args = []
-        args.extend(['--script_server_port', '%d' % port])
-        args.extend(['--network_http', '%s' % network.connection_url(web_socket=False)])
-        args.extend(['--network_ws', '%s' % network.connection_url(web_socket=True)])
-        args.extend(['--filter_address', '%s' % storage.contract_address])
-        args.extend(['--filter_topics', '%s' % web3.keccak(text='Stored(uint256)').hex()])
-        if self.is_obscuro(): args.extend(['--pk_to_register', '%s' % Properties().account3pk()])
-        self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Subscriber listening for instructions', timeout=10)
+        subscriber = EventLogSubscriber(self, network)
+        subscriber.run(
+            filter_address=storage.contract_address,
+            filter_topics=[web3.keccak(text='Stored(uint256)').hex()]
+        )
 
-        # perform some transactions on the key storage contract
+        # perform some transactions on the storage contract
         network.transact(self, web3, storage.contract.functions.store(100), account, storage.GAS)
         network.transact(self, web3, storage.contract.functions.store(101), account, storage.GAS)
 
         # subscribe
-        self.subscribe(port, stdout)
+        subscriber.subscribe()
         network.transact(self, web3, storage.contract.functions.store(102), account, storage.GAS)
         network.transact(self, web3, storage.contract.functions.store(103), account, storage.GAS)
 
         # unsubscribe
-        self.unsubscribe(port, stdout)
+        subscriber.unsubscribe()
         network.transact(self, web3, storage.contract.functions.store(104), account, storage.GAS)
         network.transact(self, web3, storage.contract.functions.store(105), account, storage.GAS)
 
         # wait and validate
-        exprList=[]
-        exprList.append('Stored value = 102')
-        exprList.append('Stored value = 103')
-        self.waitForGrep(file=stdout, expr='Stored value', condition='== 2', timeout=20)
-        self.assertOrderedGrep(file=stdout, exprList=exprList)
+        self.waitForGrep(file=subscriber.stdout, expr='Stored value', condition='== 2', timeout=20)
+        self.assertOrderedGrep(file=subscriber.stdout, exprList=['Stored value = 102', 'Stored value = 103'])
 
-    def subscribe(self, port, stdout):
-        requests.post('http://127.0.0.1:%d' % port, data='SUBSCRIBE', headers={'Content-Type': 'text/plain'})
-        self.waitForGrep(file=stdout, expr='Subscribed for event logs', timeout=10)
-
-    def unsubscribe(self, port, stdout):
-        requests.post('http://127.0.0.1:%d' % port, data='UNSUBSCRIBE', headers={'Content-Type': 'text/plain'})
-        self.waitForGrep(file=stdout, expr='Unsubscribed for event logs', timeout=10)

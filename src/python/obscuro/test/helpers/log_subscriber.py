@@ -4,27 +4,24 @@ from pysys.constants import PROJECT
 
 class EventLogSubscriber:
 
-    @classmethod
-    def create(cls, test):
-        return EventLogSubscriber(test)
-
-    def __init__(self, test, stdout='subscriber.out', stderr='subscriber.err'):
+    def __init__(self, test, network, stdout='subscriber.out', stderr='subscriber.err'):
         """Create an instance of the event log subscriber."""
         self.test = test
+        self.network = network
         self.port = test.getNextAvailableTCPPort()
         self.stdout = os.path.join(test.output, stdout)
         self.stderr = os.path.join(test.output, stderr)
-        self.script = os.path.join(PROJECT.root, 'utils', 'events', 'subscriber.js')
+        self.script = os.path.join(PROJECT.root, 'src', 'javascript', 'scripts', 'logs', 'subscriber.js')
 
-    def run(self, network, filter_address=None, filter_from_block=None, filter_topics=None, pk_to_register=None):
+    def run(self, filter_address=None, filter_from_block=None, filter_topics=None, pk_to_register=None):
         """Run a javascript client event log subscriber. """
         args = []
         args.extend(['--script_server_port', '%d' % self.port])
-        args.extend(['--network_http', '%s' % network.connection_url(web_socket=False)])
-        args.extend(['--network_ws', '%s' % network.connection_url(web_socket=True)])
-        if filter_address: args.extend(['--filter_address', '%s' % filter_address])
-        if filter_topics: args.extend(['--filter_topics', '%s' % filter_topics])
-        if filter_from_block: args.extend(['--filter_from_block', '%s' % filter_from_block])
+        args.extend(['--network_http', '%s' % self.network.connection_url(web_socket=False)])
+        args.extend(['--network_ws', '%s' % self.network.connection_url(web_socket=True)])
+        if filter_from_block: args.extend(['--filter_from_block', '%d' % filter_from_block])
+        if filter_address: args.extend(['--filter_address', filter_address])
+        if filter_topics:args.extend(['--filter_topics', " ".join(filter_topics)])
         if pk_to_register: args.extend(['--pk_to_register', '%s' % pk_to_register])
         self.test.run_javascript(self.script, self.stdout, self.stderr, args)
         self.test.waitForGrep(file=self.stdout, expr='Subscriber listening for instructions', timeout=10)
