@@ -22,11 +22,11 @@ class PySysTest(ObscuroTest):
         stderr = os.path.join(self.output, 'poller.err')
         script = os.path.join(self.input, 'balance_poller.py')
         args = []
-        args.extend(['-u', '%s' % network.connection_url(web_socket=False)])
-        args.extend(['-a', '%s' % erc20.contract_address])
-        args.extend(['-b', '%s' % erc20.abi_path])
-        args.extend(['-p', '%s' % Properties().account2pk()])
-        if self.is_obscuro(): args.append('--obscuro')
+        args.extend(['--network_http', '%s' % network.connection_url(web_socket=False)])
+        args.extend(['--contract_address', '%s' % erc20.contract_address])
+        args.extend(['--contract_abi', '%s' % erc20.abi_path])
+        args.extend(['--private_key', '%s' % Properties().account2pk()])
+        if self.is_obscuro(): args.append('--is_obscuro')
         self.run_python(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting to run the polling loop', timeout=10)
 
