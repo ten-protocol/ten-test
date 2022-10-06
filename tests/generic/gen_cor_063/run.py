@@ -17,20 +17,16 @@ class PySysTest(ObscuroTest):
         erc20 = OBXCoin(self, web3)
         erc20.deploy(network, account1)
 
-        # dump out the abi
-        abi_path = os.path.join(self.output, 'erc20.abi')
-        with open(abi_path, 'w') as f: json.dump(erc20.abi, f)
-
         # run a background script to poll for balance
         stdout = os.path.join(self.output, 'poller.out')
         stderr = os.path.join(self.output, 'poller.err')
         script = os.path.join(self.input, 'balance_poller.js')
         args = []
-        args.extend(['-u', '%s' % network.connection_url(web_socket=False)])
-        args.extend(['-a', '%s' % erc20.contract_address])
-        args.extend(['-b', '%s' % abi_path])
-        args.extend(['-p', '%s' % Properties().account2pk()])
-        if self.is_obscuro(): args.append('--obscuro')
+        args.extend(['--network_http', '%s' % network.connection_url(web_socket=False)])
+        args.extend(['--contract_address', '%s' % erc20.contract_address])
+        args.extend(['--contract_abi', '%s' % erc20.abi_path])
+        args.extend(['--private_key', '%s' % Properties().account2pk()])
+        if self.is_obscuro(): args.append('--is_obscuro')
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting to run the polling loop', timeout=10)
 
