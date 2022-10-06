@@ -2,8 +2,8 @@ import requests, time, json
 from web3 import Web3
 from collections import OrderedDict
 from pysys.constants import *
-from ethsys.networks.default import Default
-from ethsys.networks.geth import Geth
+from obscuro.test.networks.default import Default
+from obscuro.test.networks.geth import Geth
 from eth_account.messages import encode_defunct
 
 

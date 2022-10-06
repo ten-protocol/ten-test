@@ -1,9 +1,9 @@
-import os, json, time
-from ethsys.basetest import EthereumTest
-from ethsys.contracts.storage.storage import Storage
-from ethsys.contracts.storage.key_storage import KeyStorage
-from ethsys.networks.factory import NetworkFactory
-from ethsys.utils.properties import Properties
+import os, time
+from obscuro.test.basetest import EthereumTest
+from obscuro.test.contracts.storage.storage import Storage
+from obscuro.test.contracts.storage.key_storage import KeyStorage
+from obscuro.test.networks.factory import NetworkFactory
+from obscuro.test.utils.properties import Properties
 
 
 class PySysTest(EthereumTest):

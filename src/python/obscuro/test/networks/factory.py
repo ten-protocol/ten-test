@@ -1,7 +1,7 @@
-from ethsys.networks.ganache import Ganache
-from ethsys.networks.ropsten import Ropsten
-from ethsys.networks.obscuro import Obscuro
-from ethsys.networks.obscuro import ObscuroL1, ObscuroL1Local, ObscuroL1Dev
+from obscuro.test.networks.ganache import Ganache
+from obscuro.test.networks.ropsten import Ropsten
+from obscuro.test.networks.obscuro import Obscuro
+from obscuro.test.networks.obscuro import ObscuroL1, ObscuroL1Local, ObscuroL1Dev
 
 
 class NetworkFactory:

@@ -90,24 +90,21 @@ function sign_viewing_key(web3, network_url, address, private_key, callback, res
    })
 }
 
-function get_options() {
-  commander
-    .version('1.0.0', '-v, --version')
-    .usage('[OPTIONS]...')
-    .option('--script_server_port <value>', 'This script listening port for HTTP posts')
-    .option('--network_http <value>', 'Http connection URL to the network')
-    .option('--network_ws <value>', 'Web socket connection URL to the network')
-    .option('--filter_address <value>', 'The contract address to filter on', null)
-    .option('--filter_from_block <value>', 'The from block to filter on', null)
-    .option('--filter_topics <values...>', 'The first filter topic', null)
-    .option('--pk_to_register <value>', 'Private key used to register for a viewing key (obscuro only)', null)
-    .parse(process.argv)
-
-    return commander.opts()
-}
+commander
+  .version('1.0.0', '-v, --version')
+  .usage('[OPTIONS]...')
+  .option('--script_server_port <value>', 'This script listening port for HTTP posts')
+  .option('--network_http <value>', 'Http connection URL to the network')
+  .option('--network_ws <value>', 'Web socket connection URL to the network')
+  .option('--filter_address <value>', 'The contract address to filter on', null)
+  .option('--filter_from_block <value>', 'The from block to filter on', null)
+  .option('--filter_topics <values...>', 'The first filter topic', null)
+  .option('--pk_to_register <value>', 'Private key used to register for a viewing key (obscuro only)', null)
+  .parse(process.argv)
 
 // in global scope the options, web3 connection and server reference
-const options = get_options()
+var subscription = null
+const options = commander.opts()
 const web3 = new Web3(`${options.network_ws}`)
 
 // if pk supplied generate viewing key else just run

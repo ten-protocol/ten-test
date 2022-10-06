@@ -1,8 +1,8 @@
 import json, os
 from pysys.constants import PROJECT
-from ethsys.basetest import EthereumTest
-from ethsys.utils.properties import Properties
-from ethsys.networks.obscuro import Obscuro
+from obscuro.test.basetest import EthereumTest
+from obscuro.test.utils.properties import Properties
+from obscuro.test.networks.obscuro import Obscuro
 
 
 class PySysTest(EthereumTest):

@@ -1,6 +1,6 @@
-from ethsys.basetest import EthereumTest
-from ethsys.contracts.error.error import Error
-from ethsys.networks.factory import NetworkFactory
+from obscuro.test.basetest import EthereumTest
+from obscuro.test.contracts.error.error import Error
+from obscuro.test.networks.factory import NetworkFactory
 
 
 class PySysTest(EthereumTest):

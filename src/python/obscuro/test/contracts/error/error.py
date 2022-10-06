@@ -1,20 +1,20 @@
 from solcx import compile_source
 from pysys.constants import *
-from ethsys.utils.process import Processes
-from ethsys.contracts.guesser.guesser import Guesser
+from obscuro.test.utils.process import Processes
 
 
-class GuesserToken(Guesser):
-    """Abstraction over the pay to play guessing game smart contract."""
+class Error:
+    """Abstraction over the error smart contract to force revert, require and assert."""
+    GAS = 720000
 
-    def __init__(self, test, web3, size, token_address):
-        """Create an instance of the ERC20 contract, compile and construct a web3 instance. """
+    def __init__(self, test, web3, key):
+        """Create an instance of the storage contract, compile and construct a web3 instance."""
         self.test = test
         self.web3 = web3
-        self.size = size
-        self.token_address = token_address
+        self.key = key
         self.bytecode = None
         self.abi = None
+        self.contract = None
         self.contract = None
         self.contract_address = None
         self.account = None
@@ -22,14 +22,15 @@ class GuesserToken(Guesser):
 
     def construct(self):
         """Compile and construct an instance. """
-        file = os.path.join(PROJECT.root, 'src', 'solidity', 'guesser', 'Guesser_token.sol')
+        file = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'error', 'Error.sol')
         with open(file, 'r') as fp:
             compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'],
                                           solc_binary=Processes.get_solidity_compiler())
-            contract_interface = compiled_sol['<stdin>:Guess']
+            contract_id, contract_interface = compiled_sol.popitem()
             self.bytecode = contract_interface['bin']
             self.abi = contract_interface['abi']
-        self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor(self.size, self.token_address)
+
+        self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor(self.key)
 
     def deploy(self, network, account):
         """Deploy the contract using a given account."""

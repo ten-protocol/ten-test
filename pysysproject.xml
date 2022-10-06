@@ -27,9 +27,6 @@
             <property name="showOutputDir" value="false"/>
             <property name="showOutcomeReason" value="true"/>
         </writer>
-        <writer classname="ethsys.writer.gitlab.GitLabTestsWriter">
-            <property name="outputDir" value="test-results"/>
-        </writer>
     </writers>
 
     <default-file-encodings>
@@ -48,7 +45,7 @@
                    name="runlog" messagefmt="%(asctime)s %(levelname)-5s %(message)s" datefmt=""/>
     </formatters>
 
-    <runner-plugin classname="ethsys.baserunner.EthereumRunnerPlugin">
+    <runner-plugin classname="obscuro.test.baserunner.EthereumRunnerPlugin">
     </runner-plugin>
 
 </pysysproject>

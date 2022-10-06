@@ -1,6 +1,6 @@
-from ethsys.basetest import EthereumTest
-from ethsys.utils.properties import Properties
-from ethsys.networks.factory import NetworkFactory
+from obscuro.test.basetest import EthereumTest
+from obscuro.test.utils.properties import Properties
+from obscuro.test.networks.factory import NetworkFactory
 
 
 class PySysTest(EthereumTest):

@@ -1,17 +1,16 @@
 from solcx import compile_source
 from pysys.constants import *
-from ethsys.utils.process import Processes
+from obscuro.test.utils.process import Processes
 
 
-class Error:
-    """Abstraction over the error smart contract to force revert, require and assert."""
+class KeyStorage:
+    """Abstraction over the test Storage smart contract."""
     GAS = 720000
 
-    def __init__(self, test, web3, key):
+    def __init__(self, test, web3):
         """Create an instance of the storage contract, compile and construct a web3 instance."""
         self.test = test
         self.web3 = web3
-        self.key = key
         self.bytecode = None
         self.abi = None
         self.contract = None
@@ -22,7 +21,7 @@ class Error:
 
     def construct(self):
         """Compile and construct an instance. """
-        file = os.path.join(PROJECT.root, 'src', 'solidity', 'error', 'Error.sol')
+        file = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'storage', 'KeyStorage.sol')
         with open(file, 'r') as fp:
             compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'],
                                           solc_binary=Processes.get_solidity_compiler())
@@ -30,7 +29,7 @@ class Error:
             self.bytecode = contract_interface['bin']
             self.abi = contract_interface['abi']
 
-        self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor(self.key)
+        self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor()
 
     def deploy(self, network, account):
         """Deploy the contract using a given account."""

@@ -1,8 +1,8 @@
 import json, requests, os, copy, sys
 from pysys.basetest import BaseTest
 from pysys.constants import PROJECT, BACKGROUND
-from ethsys.utils.process import Processes
-from ethsys.utils.properties import Properties
+from obscuro.test.utils.process import Processes
+from obscuro.test.utils.properties import Properties
 
 
 class EthereumTest(BaseTest):
@@ -128,18 +128,4 @@ class EthereumTest(BaseTest):
                                      state=state, timeout=timeout)
         return hprocess
 
-    def run_ws_proxy(self, remote_url, filename):
-        """Run the websocket proxy to log messages."""
-        script = os.path.join(PROJECT.root, 'utils', 'proxy', 'ws_proxy.py')
-        stdout = os.path.join(self.output, 'proxy.out')
-        stderr = os.path.join(self.output, 'proxy.err')
 
-        host = '127.0.0.1'
-        port = self.getNextAvailableTCPPort()
-        arguments = []
-        arguments.extend(['--host', host])
-        arguments.extend(['--port', '%d' % port])
-        arguments.extend(['--remote_url', remote_url])
-        arguments.extend(['--filename', filename])
-        self.run_python(script, stdout, stderr, arguments)
-        return 'ws://%s:%d' % (host, port)

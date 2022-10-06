@@ -1,8 +1,8 @@
 import random
 from solcx import compile_source
 from pysys.constants import *
-from ethsys.utils.process import Processes
-from ethsys.contracts.guesser.guesser import Guesser
+from obscuro.test.utils.process import Processes
+from obscuro.test.contracts.guesser.guesser import Guesser
 
 
 class GuesserConstructor(Guesser):
@@ -16,7 +16,7 @@ class GuesserConstructor(Guesser):
 
     def construct(self):
         """Compile and construct an instance."""
-        file = os.path.join(PROJECT.root, 'src', 'solidity', 'guesser', 'Guesser_constructor.sol')
+        file = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'guesser', 'Guesser_constructor.sol')
         with open(file, 'r') as fp:
             compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'],
                                           solc_binary=Processes.get_solidity_compiler())

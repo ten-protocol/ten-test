@@ -1,6 +1,6 @@
-from ethsys.basetest import EthereumTest
-from ethsys.contracts.guesser.guesser_constructor import GuesserConstructor
-from ethsys.networks.factory import NetworkFactory
+from obscuro.test.basetest import EthereumTest
+from obscuro.test.contracts.guesser.guesser_constructor import GuesserConstructor
+from obscuro.test.networks.factory import NetworkFactory
 
 
 class PySysTest(EthereumTest):

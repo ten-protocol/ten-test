@@ -1,9 +1,9 @@
 import os, json
-from ethsys.basetest import EthereumTest
-from ethsys.contracts.erc20.obx import OBXCoin
-from ethsys.networks.factory import NetworkFactory
-from ethsys.utils.properties import Properties
-from ethsys.utils.keys import pk_to_account
+from obscuro.test.basetest import EthereumTest
+from obscuro.test.contracts.erc20.obx import OBXCoin
+from obscuro.test.networks.factory import NetworkFactory
+from obscuro.test.utils.properties import Properties
+from obscuro.test.utils.keys import pk_to_account
 
 
 class PySysTest(EthereumTest):

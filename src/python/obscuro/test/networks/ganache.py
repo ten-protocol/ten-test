@@ -1,4 +1,4 @@
-from ethsys.networks.default import Default
+from obscuro.test.networks.default import Default
 
 
 class Ganache(Default):

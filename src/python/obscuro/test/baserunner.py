@@ -1,10 +1,10 @@
 import os, time, shutil, sys
 from pysys.constants import PROJECT, BACKGROUND
 from pysys.exceptions import AbortExecution
-from ethsys.utils.process import Processes
-from ethsys.networks.ganache import Ganache
-from ethsys.networks.obscuro import Obscuro
-from ethsys.utils.properties import Properties
+from obscuro.test.utils.process import Processes
+from obscuro.test.networks.ganache import Ganache
+from obscuro.test.networks.obscuro import Obscuro
+from obscuro.test.utils.properties import Properties
 
 
 class EthereumRunnerPlugin():

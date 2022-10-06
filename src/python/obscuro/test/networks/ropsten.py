@@ -1,6 +1,6 @@
 from web3 import Web3
-from ethsys.utils.properties import Properties
-from ethsys.networks.default import Default
+from obscuro.test.utils.properties import Properties
+from obscuro.test.networks.default import Default
 
 
 class Ropsten(Default):

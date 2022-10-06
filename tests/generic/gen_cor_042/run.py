@@ -1,10 +1,10 @@
 from pysys.constants import PASSED
-from ethsys.basetest import EthereumTest
-from ethsys.utils.properties import Properties
-from ethsys.utils.keys import pk_to_account
-from ethsys.contracts.erc20.obx import OBXCoin
-from ethsys.contracts.guesser.guesser_token import GuesserToken
-from ethsys.networks.factory import NetworkFactory
+from obscuro.test.basetest import EthereumTest
+from obscuro.test.utils.properties import Properties
+from obscuro.test.utils.keys import pk_to_account
+from obscuro.test.contracts.erc20.obx import OBXCoin
+from obscuro.test.contracts.guesser.guesser_token import GuesserToken
+from obscuro.test.networks.factory import NetworkFactory
 
 
 class PySysTest(EthereumTest):

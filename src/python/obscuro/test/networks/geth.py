@@ -1,6 +1,6 @@
 from web3 import Web3
 from web3.middleware import geth_poa_middleware
-from ethsys.networks.default import Default
+from obscuro.test.networks.default import Default
 
 
 class Geth(Default):
