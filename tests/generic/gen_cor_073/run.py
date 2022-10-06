@@ -27,24 +27,21 @@ class PySysTest(EthereumTest):
             self.log.info('Using websocket proxy on url %s' % ws_url)
 
         # run a background script to filter and collect events
-        stdout = os.path.join(self.output, 'listener.out')
-        stderr = os.path.join(self.output, 'listener.err')
-        script = os.path.join(self.input, 'event_listener.js')
+        stdout = os.path.join(self.output, 'poller.out')
+        stderr = os.path.join(self.output, 'poller.err')
+        script = os.path.join(self.input, 'poller.js')
         args = []
-        args.extend(['--url_http', '%s' % network.connection_url(web_socket=False)])
-        args.extend(['--url_ws', '%s' % ws_url])
-        args.extend(['--address', '%s' % storage.contract_address])
-        args.extend(['--abi', '%s' % abi_path])
-        args.extend(['--pk', '%s' % Properties().account3pk()])
-        if self.is_obscuro(): args.append('--obscuro')
+        args.extend(['--network_http', '%s' % network.connection_url(web_socket=False)])
+        args.extend(['--network_ws', '%s' % network.connection_url(web_socket=True)])
+        args.extend(['--contract_address', '%s' % storage.contract_address])
+        args.extend(['--contract_abi', '%s' % abi_path])
+        if self.is_obscuro(): args.extend(['--pk_to_register', '%s' % Properties().account3pk()])
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
 
         # perform some transactions
         for i in range(0, 5):
             tx_receipt = network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS)
-            self.log.info('Transaction written with block number %d' % tx_receipt.blockNumber)
-            time.sleep(1.0)
 
         # wait and validate
         self.waitForGrep(file=stdout, expr='Stored value', condition='== 5', timeout=20)
