@@ -15,7 +15,7 @@ class PySysTest(EthereumTest):
         storage = Storage(self, web3, 0)
         storage.deploy(network, account)
 
-        # run a background script
+        # run a javascript subscriber in the background
         subscriber = EventLogSubscriber(self, network)
         subscriber.run(
             filter_address=storage.contract_address,
