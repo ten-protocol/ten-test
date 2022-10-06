@@ -25,7 +25,7 @@ class ObscuroAdmin(ObscuroTest):
         """Transfer an ERC20 token amount from a recipient account to an address. """
         self.log.info('Running for token %s' % token_name)
 
-        with open(os.path.join(PROJECT.root, 'src', 'solidity', 'erc20', 'erc20.json')) as f:
+        with open(os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'erc20', 'erc20.json')) as f:
             token = web3_from.eth.contract(address=token_address, abi=json.load(f))
 
         balance = token.functions.balanceOf(account_from.address).call()
@@ -39,7 +39,7 @@ class ObscuroAdmin(ObscuroTest):
 
     def print_token_balance(self, token_name, token_address, web3, account):
         """Print an ERC20 token balance of a recipient account. """
-        with open(os.path.join(PROJECT.root, 'src', 'solidity', 'erc20', 'erc20.json')) as f:
+        with open(os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'erc20', 'erc20.json')) as f:
             token = web3.eth.contract(address=token_address, abi=json.load(f))
 
         balance = token.functions.balanceOf(account.address).call()
