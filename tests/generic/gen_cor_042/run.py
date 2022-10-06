@@ -14,10 +14,11 @@ class PySysTest(EthereumTest):
         # deployment of contracts
         network = NetworkFactory.get_network(self.env)
         web3_deploy, deploy_account = network.connect_account1(self, web_socket=self.WEBSOCKET)
+        account2 = pk_to_account(Properties().account2pk())
 
         erc20 = OBXCoin(self, web3_deploy)
         erc20.deploy(network, deploy_account)
-        erc20.transfer(network, pk_to_account(Properties().account2pk()).address, 200)
+        network.transact(self, web3_deploy, erc20.contract.functions.transfer(account2.address, 200), deploy_account, erc20.GAS)
 
         guesser = GuesserToken(self, web3_deploy, 5, erc20.contract_address)
         guesser.deploy(network, deploy_account)
