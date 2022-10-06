@@ -32,8 +32,11 @@ class PySysTest(ObscuroTest):
         self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
 
         # perform some transactions on the storage contract
-        for i in range(0, 5):
-            network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.store(0), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.store(1), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.store(2), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.store(3), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.store(4), account, storage.GAS)
 
         # perform some transactions on the key storage contract
         network.transact(self, web3, key_storage.contract.functions.storeItem(100), account, storage.GAS)

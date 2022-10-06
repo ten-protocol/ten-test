@@ -19,7 +19,8 @@ class PySysTest(ObscuroTest):
         subscriber = EventLogSubscriber(self, network)
         subscriber.run(
             filter_address=storage.contract_address,
-            filter_topics=[web3.keccak(text='Stored(uint256)').hex()]
+            filter_topics=[web3.keccak(text='Stored(uint256)').hex()],
+            proxy=self.PROXY
         )
 
         # perform some transactions on the storage contract
