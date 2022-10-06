@@ -1,3 +1,4 @@
+import json
 from solcx import compile_source
 from pysys.constants import *
 from obscuro.test.utils.process import Processes
@@ -14,6 +15,7 @@ class Error:
         self.key = key
         self.bytecode = None
         self.abi = None
+        self.abi_path = None
         self.contract = None
         self.contract = None
         self.contract_address = None
@@ -29,6 +31,9 @@ class Error:
             contract_id, contract_interface = compiled_sol.popitem()
             self.bytecode = contract_interface['bin']
             self.abi = contract_interface['abi']
+
+        self.abi_path = os.path.join(self.test.output, 'error.abi')
+        with open(self.abi_path, 'w') as f: json.dump(self.abi, f)
 
         self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor(self.key)
 

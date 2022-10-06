@@ -1,4 +1,4 @@
-import os, json, time
+import os, time
 from obscuro.test.basetest import EthereumTest
 from obscuro.test.contracts.storage.storage import Storage
 from obscuro.test.networks.factory import NetworkFactory
@@ -15,8 +15,6 @@ class PySysTest(EthereumTest):
         # deploy the contract and dump out the abi
         storage = Storage(self, web3, 100)
         storage.deploy(network, account)
-        abi_path = os.path.join(self.output, 'storage.abi')
-        with open(abi_path, 'w') as f: json.dump(storage.abi, f)
 
         # run a background script to filter and collect events
         stdout = os.path.join(self.output, 'listener.out')
@@ -25,7 +23,7 @@ class PySysTest(EthereumTest):
         args = []
         args.extend(['--network_http', '%s' % network.connection_url(web_socket=False)])
         args.extend(['--contract_address', '%s' % storage.contract_address])
-        args.extend(['--contract_abi', '%s' % abi_path])
+        args.extend(['--contract_abi', '%s' % storage.abi_path])
         if self.is_obscuro(): args.extend(['--pk_to_register', '%s' % Properties().account3pk()])
         self.run_python(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting to run the event loop', timeout=10)

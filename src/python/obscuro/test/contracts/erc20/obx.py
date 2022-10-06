@@ -1,3 +1,4 @@
+import json
 from pysys.constants import *
 from solcx import compile_source
 from obscuro.test.utils.process import Processes
@@ -11,6 +12,7 @@ class OBXCoin:
         """Create an instance of the ERC20 contract, compile and construct a web3 instance. """
         self.bytecode = None
         self.abi = None
+        self.abi_path = None
         self.contract = None
         self.contract_address = None
         self.account = None
@@ -28,6 +30,10 @@ class OBXCoin:
             contract_interface = compiled_sol['<stdin>:OBXCoin']
             self.bytecode = contract_interface['bin']
             self.abi = contract_interface['abi']
+
+        self.abi_path = os.path.join(self.test.output, 'obx.abi')
+        with open(self.abi_path, 'w') as f: json.dump(self.abi, f)
+
         self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor()
 
     def deploy(self, network, account):

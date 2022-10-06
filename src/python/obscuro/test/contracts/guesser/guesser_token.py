@@ -1,3 +1,4 @@
+import json
 from solcx import compile_source
 from pysys.constants import *
 from obscuro.test.utils.process import Processes
@@ -15,6 +16,7 @@ class GuesserToken(Guesser):
         self.token_address = token_address
         self.bytecode = None
         self.abi = None
+        self.abi_path = None
         self.contract = None
         self.contract_address = None
         self.account = None
@@ -29,6 +31,10 @@ class GuesserToken(Guesser):
             contract_interface = compiled_sol['<stdin>:Guess']
             self.bytecode = contract_interface['bin']
             self.abi = contract_interface['abi']
+
+        self.abi_path = os.path.join(self.test.output, 'guesser_token.abi')
+        with open(self.abi_path, 'w') as f: json.dump(self.abi, f)
+
         self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor(self.size, self.token_address)
 
     def deploy(self, network, account):
