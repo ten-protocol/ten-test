@@ -34,5 +34,5 @@ class PySysTest(ObscuroTest):
         network.transact(self, web3, storage.contract.functions.store(5), account, storage.GAS)
 
         # wait and validate
-        self.waitForGrep(file=subscriber.stdout, expr='Stored value', condition='== 5', timeout=20)
+        self.waitForGrep(file=subscriber.stdout, expr='Stored value = [0-9]$', condition='== 5', timeout=20)
         self.assertOrderedGrep(file=subscriber.stdout, exprList=['Stored value = %d' % x for x in range(1, 6)])

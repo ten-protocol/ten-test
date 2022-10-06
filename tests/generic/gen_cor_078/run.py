@@ -36,6 +36,7 @@ class PySysTest(ObscuroTest):
 
         # wait and validate
         self.waitForGrep(file=stdout, expr='Received event type', condition='== 9', timeout=10)
+
         self.assertLineCount(file=stdout, expr='Received event type ItemSet1', condition='==3')
         self.assertLineCount(file=stdout, expr='Received event type ItemSet2', condition='==3')
         self.assertLineCount(file=stdout, expr='Received event type ItemSet3', condition='==3')

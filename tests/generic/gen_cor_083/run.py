@@ -11,7 +11,7 @@ class PySysTest(ObscuroTest):
         network = NetworkFactory.get_network(self.env)
         web3, account = network.connect_account1(self)
 
-        # deploy the storage contracts
+        # deploy the storage contract
         storage = Storage(self, web3, 0)
         storage.deploy(network, account)
 
@@ -27,17 +27,17 @@ class PySysTest(ObscuroTest):
         network.transact(self, web3, storage.contract.functions.store(100), account, storage.GAS)
         network.transact(self, web3, storage.contract.functions.store(101), account, storage.GAS)
 
-        # subscribe
+        # subscribe and transact
         subscriber.subscribe()
         network.transact(self, web3, storage.contract.functions.store(102), account, storage.GAS)
         network.transact(self, web3, storage.contract.functions.store(103), account, storage.GAS)
 
-        # unsubscribe
+        # unsubscribe and transact
         subscriber.unsubscribe()
         network.transact(self, web3, storage.contract.functions.store(104), account, storage.GAS)
         network.transact(self, web3, storage.contract.functions.store(105), account, storage.GAS)
 
         # wait and validate
-        self.waitForGrep(file=subscriber.stdout, expr='Stored value', condition='== 2', timeout=20)
+        self.waitForGrep(file=subscriber.stdout, expr='Stored value = [0-9]{3}$', condition='== 2', timeout=20)
         self.assertOrderedGrep(file=subscriber.stdout, exprList=['Stored value = 102', 'Stored value = 103'])
 

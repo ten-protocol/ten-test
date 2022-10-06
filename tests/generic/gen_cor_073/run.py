@@ -1,4 +1,4 @@
-import os
+import os, time
 from obscuro.test.obscuro_test import ObscuroTest
 from obscuro.test.contracts.storage.storage import Storage
 from obscuro.test.networks.factory import NetworkFactory
@@ -34,11 +34,12 @@ class PySysTest(ObscuroTest):
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
 
-        # perform some transactions
-        for i in range(0, 5):
+        # perform some transactions with a sleep in between
+        for i in range(0,5):
             network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS)
+            time.sleep(1.0)
 
         # wait and validate
-        self.waitForGrep(file=stdout, expr='Stored value', condition='== 5', timeout=20)
+        self.waitForGrep(file=stdout, expr='Stored value = [0-9]$', condition='== 5', timeout=20)
         self.assertOrderedGrep(file=stdout, exprList=['Stored value = %d' % x for x in range(0, 5)])
 

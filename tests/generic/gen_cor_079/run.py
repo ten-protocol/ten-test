@@ -43,13 +43,14 @@ class PySysTest(ObscuroTest):
         network.transact(self, web3, key_storage.contract.functions.setItem('k1', 101), account, storage.GAS)
 
         # wait and validate
-        exprList = []
-        exprList.append('Stored value = 0')
-        exprList.append('Stored value = 1')
-        exprList.append('Stored value = 2')
-        exprList.append('Stored value = 3')
-        exprList.append('Stored value = 4')
-        exprList.append('Stored value = 100')
-        self.waitForGrep(file=stdout, expr='Stored value', condition='== 6', timeout=20)
-        self.assertOrderedGrep(file=stdout, exprList=exprList)
+        self.waitForGrep(file=stdout, expr='Stored value = [0-9]{1,3}$', condition='== 6', timeout=20)
+
+        expr_list = []
+        expr_list.append('Stored value = 0')
+        expr_list.append('Stored value = 1')
+        expr_list.append('Stored value = 2')
+        expr_list.append('Stored value = 3')
+        expr_list.append('Stored value = 4')
+        expr_list.append('Stored value = 100')
+        self.assertOrderedGrep(file=stdout, exprList=expr_list)
 
