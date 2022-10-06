@@ -23,11 +23,10 @@ class PySysTest(EthereumTest):
         stderr = os.path.join(self.output, 'listener.err')
         script = os.path.join(self.input, 'event_listener.py')
         args = []
-        args.extend(['--url', '%s' % network.connection_url()])
-        args.extend(['--address', '%s' % storage.contract_address])
-        args.extend(['--abi', '%s' % abi_path])
-        args.extend(['--pk', '%s' % Properties().account2pk()])
-        if self.is_obscuro(): args.append('--obscuro')
+        args.extend(['--network_http', '%s' % network.connection_url(web_socket=False)])
+        args.extend(['--contract_address', '%s' % storage.contract_address])
+        args.extend(['--contract_abi', '%s' % abi_path])
+        if self.is_obscuro(): args.extend(['--pk_to_register', '%s' % Properties().account3pk()])
         self.run_python(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting to run the event loop', timeout=10)
 
