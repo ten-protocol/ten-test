@@ -45,7 +45,7 @@
                    name="runlog" messagefmt="%(asctime)s %(levelname)-5s %(message)s" datefmt=""/>
     </formatters>
 
-    <runner-plugin classname="obscuro.test.baserunner.EthereumRunnerPlugin">
+    <runner-plugin classname="obscuro.test.obscuro_runner.ObscuroRunnerPlugin">
     </runner-plugin>
 
 </pysysproject>

@@ -1,17 +1,17 @@
-from obscuro.test.basetest import EthereumTest
+from obscuro.test.obscuro_admin import ObscuroAdmin
 from obscuro.test.utils.properties import Properties
 from obscuro.test.networks.obscuro import Obscuro
 
 
-class PySysTest(EthereumTest):
+class PySysTest(ObscuroAdmin):
     USERS = [
         Properties().account1pk(),
         Properties().account2pk(),
         Properties().account3pk(),
         Properties().gameuserpk()
     ]
-    OBX = 100 * EthereumTest.ONE_GIGA
-    TOKENS = 50 * EthereumTest.ONE_GIGA
+    OBX = 100 * ObscuroAdmin.ONE_GIGA
+    TOKENS = 50 * ObscuroAdmin.ONE_GIGA
 
     def execute(self):
         network = Obscuro

@@ -1,11 +1,11 @@
-from obscuro.test.basetest import EthereumTest
+from obscuro.test.obscuro_admin import ObscuroAdmin
 from obscuro.test.utils.properties import Properties
 from obscuro.test.networks.factory import NetworkFactory
 
 
-class PySysTest(EthereumTest):
-    ETH = 10 * EthereumTest.ONE_GIGA
-    TOKENS = 5000000 * EthereumTest.ONE_GIGA
+class PySysTest(ObscuroAdmin):
+    ETH = 10 * ObscuroAdmin.ONE_GIGA
+    TOKENS = 5000000 * ObscuroAdmin.ONE_GIGA
 
     def execute(self):
         # connect to the L1 network and get contracts

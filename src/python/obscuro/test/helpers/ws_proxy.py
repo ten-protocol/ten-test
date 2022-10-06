@@ -2,20 +2,27 @@ import os
 from pysys.constants import PROJECT
 
 
-class WebServerProxy():
+class WebServerProxy:
 
-    def run(self, test, remote_url, filename):
-        """Run the websocket proxy to log messages."""
-        script = os.path.join(PROJECT.root, 'utils', 'proxy', 'ws_proxy.py')
-        stdout = os.path.join(test.output, 'proxy.out')
-        stderr = os.path.join(test.output, 'proxy.err')
+    @classmethod
+    def create(cls, test):
+        return WebServerProxy(test)
 
-        host = '127.0.0.1'
-        port = test.getNextAvailableTCPPort()
+    def __init__(self, test):
+        self.test = test
+        self.script = os.path.join(PROJECT.root, 'src', 'python', 'scripts', 'ws_proxy.py')
+        self.stdout = os.path.join(test.output, 'proxy.out')
+        self.stderr = os.path.join(test.output, 'proxy.err')
+        self.host = '127.0.0.1'
+        self.port = test.getNextAvailableTCPPort()
+
+    def run(self, remote_url, filename):
+        """Run the websocket proxy."""
         arguments = []
-        arguments.extend(['--host', host])
-        arguments.extend(['--port', '%d' % port])
+        arguments.extend(['--host', self.host])
+        arguments.extend(['--port', '%d' % self.port])
         arguments.extend(['--remote_url', remote_url])
         arguments.extend(['--filename', filename])
-        test.run_python(script, stdout, stderr, arguments)
-        return 'ws://%s:%d' % (host, port)
+        self.test.run_python(self.script, self.stdout, self.stderr, arguments)
+        return 'ws://%s:%d' % (self.host, self.port)
+

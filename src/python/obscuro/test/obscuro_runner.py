@@ -7,7 +7,7 @@ from obscuro.test.networks.obscuro import Obscuro
 from obscuro.test.utils.properties import Properties
 
 
-class EthereumRunnerPlugin():
+class ObscuroRunnerPlugin():
 
     def setup(self, runner):
         """Set up a runner plugin to start any processes required to execute the tests."""

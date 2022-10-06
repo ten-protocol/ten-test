@@ -1,9 +1,9 @@
-from obscuro.test.basetest import EthereumTest
+from obscuro.test.obscuro_admin import ObscuroAdmin
 from obscuro.test.utils.properties import Properties
 from obscuro.test.networks.obscuro import Obscuro
 
 
-class PySysTest(EthereumTest):
+class PySysTest(ObscuroAdmin):
     REGISTERED_USERS = [
         '0x686Ad719004590e98F182feA3516d443780C64a1',
         '0x85E1Cc949Bca27912e3e951ad1F68afD1cc4aB15',
@@ -30,7 +30,7 @@ class PySysTest(EthereumTest):
         '0x086071EcFcC6368113BC6b1acC4537953118f779'
     ]
     USER = None
-    TOKENS = 50 * EthereumTest.ONE_GIGA
+    TOKENS = 50 * ObscuroAdmin.ONE_GIGA
 
     def execute(self):
         network = Obscuro

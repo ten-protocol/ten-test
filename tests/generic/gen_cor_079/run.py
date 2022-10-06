@@ -1,12 +1,12 @@
-import os, time
-from obscuro.test.basetest import EthereumTest
+import os
+from obscuro.test.obscuro_test import ObscuroTest
 from obscuro.test.contracts.storage.storage import Storage
 from obscuro.test.contracts.storage.key_storage import KeyStorage
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.utils.properties import Properties
 
 
-class PySysTest(EthereumTest):
+class PySysTest(ObscuroTest):
 
     def execute(self):
         # connect to network

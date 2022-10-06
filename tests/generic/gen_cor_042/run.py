@@ -1,5 +1,5 @@
 from pysys.constants import PASSED
-from obscuro.test.basetest import EthereumTest
+from obscuro.test.obscuro_test import ObscuroTest
 from obscuro.test.utils.properties import Properties
 from obscuro.test.utils.keys import pk_to_account
 from obscuro.test.contracts.erc20.obx import OBXCoin
@@ -7,8 +7,7 @@ from obscuro.test.contracts.guesser.guesser_token import GuesserToken
 from obscuro.test.networks.factory import NetworkFactory
 
 
-class PySysTest(EthereumTest):
-    WEBSOCKET = False
+class PySysTest(ObscuroTest):
 
     def execute(self):
         # deployment of contracts

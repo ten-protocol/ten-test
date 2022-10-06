@@ -1,10 +1,10 @@
-from obscuro.test.basetest import EthereumTest
+from obscuro.test.obscuro_admin import ObscuroAdmin
 from obscuro.test.utils.properties import Properties
 from obscuro.test.networks.obscuro import Obscuro
 
 
-class PySysTest(EthereumTest):
-    OBX = 50000 * EthereumTest.ONE_GIGA
+class PySysTest(ObscuroAdmin):
+    OBX = 50000 * ObscuroAdmin.ONE_GIGA
 
     def execute(self):
         # connect to the L2 network

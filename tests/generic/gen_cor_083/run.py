@@ -1,10 +1,10 @@
-from obscuro.test.basetest import EthereumTest
+from obscuro.test.obscuro_test import ObscuroTest
 from obscuro.test.contracts.storage.storage import Storage
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.helpers.log_subscriber import EventLogSubscriber
 
 
-class PySysTest(EthereumTest):
+class PySysTest(ObscuroTest):
 
     def execute(self):
         # connect to network

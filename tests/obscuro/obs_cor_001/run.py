@@ -1,11 +1,11 @@
 import json, os
 from pysys.constants import PROJECT
-from obscuro.test.basetest import EthereumTest
+from obscuro.test.obscuro_test import ObscuroTest
 from obscuro.test.utils.properties import Properties
 from obscuro.test.networks.obscuro import Obscuro
 
 
-class PySysTest(EthereumTest):
+class PySysTest(ObscuroTest):
 
     def execute(self):
         # get the game address and the jam token address from the properties

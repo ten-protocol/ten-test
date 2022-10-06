@@ -1,10 +1,9 @@
-from obscuro.test.basetest import EthereumTest
+from obscuro.test.obscuro_test import ObscuroTest
 from obscuro.test.contracts.error.error import Error
 from obscuro.test.networks.factory import NetworkFactory
 
 
-class PySysTest(EthereumTest):
-    WEBSOCKET = False
+class PySysTest(ObscuroTest):
 
     def execute(self):
         # deployment of contract
