@@ -11,7 +11,7 @@ class EventLogSubscriber:
         self.port = test.getNextAvailableTCPPort()
         self.stdout = os.path.join(test.output, stdout)
         self.stderr = os.path.join(test.output, stderr)
-        self.script = os.path.join(PROJECT.root, 'src', 'javascript', 'scripts', 'logs', 'subscriber.js')
+        self.script = os.path.join(PROJECT.root, 'src', 'javascript', 'scripts', 'subscriber.js')
 
     def run(self, filter_address=None, filter_from_block=None, filter_topics=None, pk_to_register=None):
         """Run a javascript client event log subscriber. """

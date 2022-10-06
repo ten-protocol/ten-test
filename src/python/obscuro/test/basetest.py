@@ -123,6 +123,7 @@ class EthereumTest(BaseTest):
         if args is not None: arguments.extend(args)
 
         environ = copy.deepcopy(os.environ)
+        environ["NODE_PATH"] = os.path.join(PROJECT.root, 'src', 'javascript', 'modules')
         hprocess = self.startProcess(command=Processes.get_node_bin(), displayName='node', workingDir=self.output,
                                      arguments=arguments, environs=environ, stdout=stdout, stderr=stderr,
                                      state=state, timeout=timeout)

@@ -16,18 +16,17 @@ class PySysTest(EthereumTest):
         key_storage = KeyStorage(self, web3)
         key_storage.deploy(network, account)
 
-        # run a background script to filter and collect events
-        stdout = os.path.join(self.output, 'listener.out')
-        stderr = os.path.join(self.output, 'listener.err')
-        script = os.path.join(self.input, 'event_listener.js')
+        # run test specific event subscriber
+        stdout = os.path.join(self.output, 'subscriber.out')
+        stderr = os.path.join(self.output, 'subscriber.err')
+        script = os.path.join(self.input, 'subscriber.js')
         args = []
-        args.extend(['--url_http', '%s' % network.connection_url(web_socket=False)])
-        args.extend(['--url_ws', '%s' % network.connection_url(web_socket=True)])
-        args.extend(['--address', '%s' % key_storage.contract_address])
+        args.extend(['--network_http', '%s' % network.connection_url(web_socket=False)])
+        args.extend(['--network_ws', '%s' % network.connection_url(web_socket=True)])
+        args.extend(['--filter_address', '%s' % key_storage.contract_address])
         args.extend(['--filter_key1', 'k1'])
         args.extend(['--filter_key2', 'k3'])
-        args.extend(['--pk', '%s' % Properties().account3pk()])
-        if self.is_obscuro(): args.append('--obscuro')
+        if self.is_obscuro(): args.extend(['--pk_to_register', '%s' % Properties().account3pk()])
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
 
