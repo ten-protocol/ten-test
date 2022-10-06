@@ -1,5 +1,4 @@
 const Web3 = require('web3')
-const http = require('http')
 const commander = require('commander')
 const vk = require('viewing_key.js')
 
@@ -14,8 +13,8 @@ function task() {
       if (error) {
         console.log('Error returned is ', error)
       } else {
-        console.log('Full result is ', result);
-        console.log('Stored value =', Web3.utils.hexToNumber(result.data));
+        console.log('Full result is ', result)
+        console.log('Stored value =', Web3.utils.hexToNumber(result.data))
       }
     }
   )
@@ -29,8 +28,8 @@ commander
   .option('--pk_to_register <value>', 'Private key used to register for a viewing key (obscuro only)')
   .parse(process.argv)
 
-const options = commander.opts();
-const web3 = new Web3(`${options.network_ws}`);
+const options = commander.opts()
+const web3 = new Web3(`${options.network_ws}`)
 
 if (options.pk_to_register == true) {
   address = web3.eth.accounts.privateKeyToAccount(options.pk_to_register).address
