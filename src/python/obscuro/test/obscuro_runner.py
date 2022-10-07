@@ -7,6 +7,12 @@ from obscuro.test.utils.properties import Properties
 
 
 class ObscuroRunnerPlugin():
+    """Runner class for running a set of tests against a given environment.
+
+    The runner is responsible for starting any applications up prior to running the requested tests. When running
+    against Ganache, a local Ganache will be started; when running against Obscuro, the Obscuro wallet extension
+    will be started. All processes started by the runner are automatically stopped when the tests are complete.
+    """
 
     def setup(self, runner):
         """Set up a runner plugin to start any processes required to execute the tests."""
@@ -34,7 +40,7 @@ class ObscuroRunnerPlugin():
             sys.exit()
 
     def run_ganache(self, runner):
-        """RUn ganache for use by the tests. """
+        """Run ganache for use by the tests. """
         stdout = os.path.join(self.output, 'ganache.out')
         stderr = os.path.join(self.output, 'ganache.err')
 
@@ -53,7 +59,7 @@ class ObscuroRunnerPlugin():
         runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
 
     def run_wallets(self, runner, host):
-        """Run wallet extensions for use by the tests. """
+        """Run the wallet extension(s) for use by the tests. """
         home = os.path.expanduser('~')
         persistence_file = os.path.join(home, '.obscuro', 'wallet_extension_persistence')
         if os.path.exists(persistence_file):

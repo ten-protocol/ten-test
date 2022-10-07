@@ -1,10 +1,17 @@
-import json, requests, os, copy, sys
-from pysys.constants import PROJECT, BACKGROUND
+import json, requests, os
+from pysys.constants import PROJECT
 from obscuro.test.obscuro_test import ObscuroTest
 from obscuro.test.utils.properties import Properties
 
 
 class ObscuroAdmin(ObscuroTest):
+    """Test class used for pre-admin setup of an Obscuro network before running a set of tests.
+
+    The ObscuroAdmin test class funds a network ready for use by the testcases. This includes natively funding the
+    layer 1 with ETH, and bridging ERC20 tokens from the layer 1 to the layer 2. It also then includes distributing
+    native OBX and the ERC20 tokens in layer 2 to the test users. 
+
+    """
     ONE_GIGA = 1000000000000000000
 
     def fund_obx(self, network, web3_user, account_user, amount):

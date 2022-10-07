@@ -5,6 +5,15 @@ from obscuro.test.utils.properties import Properties
 
 
 class ObscuroTest(BaseTest):
+    """The base test used by all tests cases, against any request environment.
+
+    The ObscuroTest class provides common utilities used by all tests, which at the moment are the ability to
+    start processes outside of the framework to interact with the network, e.g. written in python or javascript. The
+    WEBSOCKET and PROXY values can be set at run time using the -X<ATTRIBUTE> option to the pysys run launcher, and
+    respectively force all connections to be over websockets, or for a proxy to set inbetween the client and network
+    where a test supports these.
+
+    """
     WEBSOCKET = False   # run with `pysys.py run -XWEBSOCKET` to enable
     PROXY = False       # run with `pysys.py run -XPROXY` to enable
 
