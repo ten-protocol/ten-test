@@ -17,6 +17,7 @@ running on a local testnet performing a native transfer from the layer 2 funded 
         <modes inherit="true">
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
+            <mode>obscuro.sim</mode>
         </modes>
     </classification>
 

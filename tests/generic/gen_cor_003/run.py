@@ -1,9 +1,8 @@
-from ethsys.basetest import EthereumTest
-from ethsys.networks.factory import NetworkFactory
+from obscuro.test.obscuro_test import ObscuroTest
+from obscuro.test.networks.factory import NetworkFactory
 
 
-class PySysTest(EthereumTest):
-    WEBSOCKET = False
+class PySysTest(ObscuroTest):
 
     def execute(self):
         # connect to the network

@@ -1,12 +1,11 @@
-import os, json, time
-from ethsys.basetest import EthereumTest
-from ethsys.contracts.storage.storage import Storage
-from ethsys.contracts.storage.key_storage import KeyStorage
-from ethsys.networks.factory import NetworkFactory
-from ethsys.utils.properties import Properties
+from obscuro.test.obscuro_test import ObscuroTest
+from obscuro.test.contracts.storage.storage import Storage
+from obscuro.test.contracts.storage.key_storage import KeyStorage
+from obscuro.test.networks.factory import NetworkFactory
+from obscuro.test.helpers.log_subscriber import EventLogSubscriber
 
 
-class PySysTest(EthereumTest):
+class PySysTest(ObscuroTest):
 
     def execute(self):
         # connect to network
@@ -20,35 +19,34 @@ class PySysTest(EthereumTest):
         key_storage = KeyStorage(self, web3)
         key_storage.deploy(network, account)
 
-        # run a background script to filter and collect events
-        stdout = os.path.join(self.output, 'listener.out')
-        stderr = os.path.join(self.output, 'listener.err')
-        script = os.path.join(self.input, 'event_listener.js')
-        args = []
-        args.extend(['--url_http', '%s' % network.connection_url(web_socket=False)])
-        args.extend(['--url_ws', '%s' % network.connection_url(web_socket=True)])
-        args.extend(['--pk', '%s' % Properties().account3pk()])
-        if self.is_obscuro(): args.append('--obscuro')
-        self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
+        # run the javascript event log subscriber in the background
+        subscriber = EventLogSubscriber(self, network)
+        subscriber.run(
+            filter_topics=[web3.keccak(text='Stored(uint256)').hex()],
+            proxy=self.PROXY
+        )
+        subscriber.subscribe()
 
         # perform some transactions on the storage contract
-        for i in range(0, 5):
-            network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS)
-            time.sleep(1.0)
+        network.transact(self, web3, storage.contract.functions.store(0), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.store(1), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.store(2), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.store(3), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.store(4), account, storage.GAS)
 
         # perform some transactions on the key storage contract
         network.transact(self, web3, key_storage.contract.functions.storeItem(100), account, storage.GAS)
         network.transact(self, web3, key_storage.contract.functions.setItem('k1', 101), account, storage.GAS)
 
         # wait and validate
-        exprList = []
-        exprList.append('Stored value = 0')
-        exprList.append('Stored value = 1')
-        exprList.append('Stored value = 2')
-        exprList.append('Stored value = 3')
-        exprList.append('Stored value = 4')
-        exprList.append('Stored value = 100')
-        self.waitForGrep(file=stdout, expr='Stored value', condition='== 6', timeout=20)
-        self.assertOrderedGrep(file=stdout, exprList=exprList)
+        self.waitForGrep(file=subscriber.stdout, expr='Stored value = [0-9]{1,3}$', condition='== 6', timeout=20)
+
+        expr_list = []
+        expr_list.append('Stored value = 0')
+        expr_list.append('Stored value = 1')
+        expr_list.append('Stored value = 2')
+        expr_list.append('Stored value = 3')
+        expr_list.append('Stored value = 4')
+        expr_list.append('Stored value = 100')
+        self.assertOrderedGrep(file=subscriber.stdout, exprList=expr_list)
 

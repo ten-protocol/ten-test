@@ -1,23 +1,23 @@
+from web3 import Web3
 from pysys.constants import PASSED
-from ethsys.basetest import EthereumTest
-from ethsys.utils.properties import Properties
-from ethsys.utils.keys import pk_to_account
-from ethsys.contracts.erc20.obx import OBXCoin
-from ethsys.contracts.guesser.guesser_token import GuesserToken
-from ethsys.networks.factory import NetworkFactory
+from obscuro.test.obscuro_test import ObscuroTest
+from obscuro.test.utils.properties import Properties
+from obscuro.test.contracts.erc20.obx import OBXCoin
+from obscuro.test.contracts.guesser.guesser_token import GuesserToken
+from obscuro.test.networks.factory import NetworkFactory
 
 
-class PySysTest(EthereumTest):
-    WEBSOCKET = False
+class PySysTest(ObscuroTest):
 
     def execute(self):
         # deployment of contracts
         network = NetworkFactory.get_network(self.env)
         web3_deploy, deploy_account = network.connect_account1(self, web_socket=self.WEBSOCKET)
+        account2 = Web3().eth.account.privateKeyToAccount(Properties().account2pk())
 
         erc20 = OBXCoin(self, web3_deploy)
         erc20.deploy(network, deploy_account)
-        erc20.transfer(network, pk_to_account(Properties().account2pk()).address, 200)
+        network.transact(self, web3_deploy, erc20.contract.functions.transfer(account2.address, 200), deploy_account, erc20.GAS)
 
         guesser = GuesserToken(self, web3_deploy, 5, erc20.contract_address)
         guesser.deploy(network, deploy_account)

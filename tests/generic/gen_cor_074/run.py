@@ -1,11 +1,11 @@
-import os, json
-from ethsys.basetest import EthereumTest
-from ethsys.contracts.storage.key_storage import KeyStorage
-from ethsys.networks.factory import NetworkFactory
-from ethsys.utils.properties import Properties
+import os
+from obscuro.test.obscuro_test import ObscuroTest
+from obscuro.test.contracts.storage.key_storage import KeyStorage
+from obscuro.test.networks.factory import NetworkFactory
+from obscuro.test.utils.properties import Properties
 
 
-class PySysTest(EthereumTest):
+class PySysTest(ObscuroTest):
 
     def execute(self):
         # connect to network
@@ -17,23 +17,19 @@ class PySysTest(EthereumTest):
         # deploy the contract and dump out the abi
         storage = KeyStorage(self, web3_1)
         storage.deploy(network, account1)
-        abi_path = os.path.join(self.output, 'storage.abi')
-        with open(abi_path, 'w') as f:
-            json.dump(storage.abi, f)
 
         # run a background script to filter and collect events
-        stdout = os.path.join(self.output, 'listener.out')
-        stderr = os.path.join(self.output, 'listener.err')
-        script = os.path.join(self.input, 'event_listener.js')
+        stdout = os.path.join(self.output, 'poller.out')
+        stderr = os.path.join(self.output, 'poller.err')
+        script = os.path.join(self.input, 'poller.js')
         args = []
-        args.extend(['--url_http', '%s' % network.connection_url(web_socket=False)])
-        args.extend(['--url_ws', '%s' % network.connection_url(web_socket=True)])
-        args.extend(['--address', '%s' % storage.contract_address])
-        args.extend(['--abi', '%s' % abi_path])
-        args.extend(['--pk', '%s' % Properties().account3pk()])
+        args.extend(['--network_http', '%s' % network.connection_url(web_socket=False)])
+        args.extend(['--network_ws', '%s' % network.connection_url(web_socket=True)])
+        args.extend(['--contract_address', '%s' % storage.contract_address])
+        args.extend(['--contract_abi', '%s' % storage.abi_path])
         args.extend(['--filter_address', '%s' % account2.address])
         args.extend(['--filter_key', '%s' % 'r1'])
-        if self.is_obscuro(): args.append('--obscuro')
+        if self.is_obscuro(): args.extend(['--pk_to_register', '%s' % Properties().account3pk()])
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
 
@@ -55,11 +51,7 @@ class PySysTest(EthereumTest):
 
         # wait and validate - filter on value 2 or 3
         self.waitForGrep(file=stdout, expr='Task2:', condition='== 3', timeout=10)
-        exprList=[]
-        exprList.append('Task2: foo 2')
-        exprList.append('Task2: bar 3')
-        exprList.append('Task2: k2 2')
-        self.assertOrderedGrep(file=stdout, exprList=exprList)
+        self.assertOrderedGrep(file=stdout, exprList=['Task2: foo 2', 'Task2: bar 3', 'Task2: k2 2'])
 
         # wait and validate - filter on key is r1
         self.waitForGrep(file=stdout, expr='Task3:', condition='== 1', timeout=10)

@@ -1,11 +1,11 @@
-from ethsys.basetest import EthereumTest
-from ethsys.utils.properties import Properties
-from ethsys.networks.factory import NetworkFactory
+from obscuro.test.obscuro_admin import ObscuroAdmin
+from obscuro.test.utils.properties import Properties
+from obscuro.test.networks.factory import NetworkFactory
 
 
-class PySysTest(EthereumTest):
-    ETH = 10 * EthereumTest.ONE_GIGA
-    TOKENS = 5000000 * EthereumTest.ONE_GIGA
+class PySysTest(ObscuroAdmin):
+    ETH = 10 * ObscuroAdmin.ONE_GIGA
+    TOKENS = 5000000 * ObscuroAdmin.ONE_GIGA
 
     def execute(self):
         # connect to the L1 network and get contracts
@@ -21,17 +21,18 @@ class PySysTest(EthereumTest):
         self.log.info('Funding native ETH to the distro account')
         self.fund_eth(network, web3_funded, account_funded, web3_distro, account_distro)
 
-        # fund tokens on the ERC20s to the distro account from the funded account
-        self.log.info('')
-        self.log.info('Funding HOC and POC to the distro account')
-        self.transfer_token(network, 'HOC', hoc_address, web3_funded, account_funded, account_distro.address, self.TOKENS)
-        self.transfer_token(network, 'POC', poc_address, web3_funded, account_funded, account_distro.address, self.TOKENS)
+        if not self.is_obscuro_sim():
+            # fund tokens on the ERC20s to the distro account from the funded account
+            self.log.info('')
+            self.log.info('Funding HOC and POC to the distro account')
+            self.transfer_token(network, 'HOC', hoc_address, web3_funded, account_funded, account_distro.address, self.TOKENS)
+            self.transfer_token(network, 'POC', poc_address, web3_funded, account_funded, account_distro.address, self.TOKENS)
 
-        # fund tokens on the ERC20s to the bridge account from the distro account
-        self.log.info('')
-        self.log.info('Bridging HOC and POC to the distro account')
-        self.transfer_token(network, 'HOC', hoc_address, web3_distro, account_distro, bridge_address, self.TOKENS)
-        self.transfer_token(network, 'POC', poc_address, web3_distro, account_distro, bridge_address, self.TOKENS)
+            # fund tokens on the ERC20s to the bridge account from the distro account
+            self.log.info('')
+            self.log.info('Bridging HOC and POC to the distro account')
+            self.transfer_token(network, 'HOC', hoc_address, web3_distro, account_distro, bridge_address, self.TOKENS)
+            self.transfer_token(network, 'POC', poc_address, web3_distro, account_distro, bridge_address, self.TOKENS)
 
     def fund_eth(self, network, web3_funded, account_funded, web3_distro, account_distro):
         funded_eth = web3_funded.eth.get_balance(account_funded.address)

@@ -1,17 +1,17 @@
-from ethsys.basetest import EthereumTest
-from ethsys.utils.properties import Properties
-from ethsys.networks.obscuro import Obscuro
+from obscuro.test.obscuro_admin import ObscuroAdmin
+from obscuro.test.utils.properties import Properties
+from obscuro.test.networks.obscuro import Obscuro
 
 
-class PySysTest(EthereumTest):
+class PySysTest(ObscuroAdmin):
     USERS = [
         Properties().account1pk(),
         Properties().account2pk(),
         Properties().account3pk(),
         Properties().gameuserpk()
     ]
-    OBX = 100 * EthereumTest.ONE_GIGA
-    TOKENS = 50 * EthereumTest.ONE_GIGA
+    OBX = 100 * ObscuroAdmin.ONE_GIGA
+    TOKENS = 50 * ObscuroAdmin.ONE_GIGA
 
     def execute(self):
         network = Obscuro
@@ -25,8 +25,10 @@ class PySysTest(EthereumTest):
             self.log.info('Running for user address %s' % account_user.address)
             self.log.info('Funding native OBX to the test user account')
             self.fund_obx(network, web3_user, account_user, self.OBX)
-            self.log.info('Funding HOC and POC to the test user account')
-            self.transfer_token(network, 'HOC', hoc_address, web3_distro, account_distro, account_user.address, self.TOKENS)
-            self.transfer_token(network, 'POC', poc_address, web3_distro, account_distro, account_user.address, self.TOKENS)
+
+            if not self.is_obscuro_sim():
+                self.log.info('Funding HOC and POC to the test user account')
+                self.transfer_token(network, 'HOC', hoc_address, web3_distro, account_distro, account_user.address, self.TOKENS)
+                self.transfer_token(network, 'POC', poc_address, web3_distro, account_distro, account_user.address, self.TOKENS)
 
 

@@ -17,6 +17,7 @@ signature. As no contract address is supplied it should pick up on any event wit
         <modes inherit="true">
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
+            <mode>obscuro.sim</mode>
             <mode>ropsten</mode>
             <mode>ganache</mode>
         </modes>

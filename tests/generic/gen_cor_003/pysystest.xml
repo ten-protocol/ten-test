@@ -17,6 +17,7 @@ Checks that a call to get balance returns the users balance.
         <modes inherit="true">
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
+            <mode>obscuro.sim</mode>
             <mode>ropsten</mode>
             <mode>ganache</mode>
         </modes>
