@@ -25,6 +25,12 @@ class ObscuroL1Local(Geth):
     WS_PORT = 9002
 
 
+class ObscuroL1Sim(Geth):
+    HOST = 'http://127.0.0.1'
+    PORT = 37025
+    WS_PORT = 37100
+
+
 class Obscuro(Default):
     """The Obscuro wallet extension giving access to the underlying network."""
     HOST = 'http://127.0.0.1'

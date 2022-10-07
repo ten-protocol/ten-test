@@ -22,7 +22,7 @@ class PySysTest(ObscuroAdmin):
         self.log.info('Funding native OBX to the distro account')
         self.fund_obx(network, web3_distro, account_distro, self.OBX)
 
-        if not self.SKIP_TOKENS:
+        if not self.is_obscuro_sim():
             # print the ERC20 balances as a check
             self.log.info('')
             self.log.info('Printing HOC and POC balances for the distro account')

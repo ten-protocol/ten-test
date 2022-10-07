@@ -25,7 +25,8 @@ class PySysTest(ObscuroAdmin):
             self.log.info('Running for user address %s' % account_user.address)
             self.log.info('Funding native OBX to the test user account')
             self.fund_obx(network, web3_user, account_user, self.OBX)
-            if not self.SKIP_TOKENS:
+
+            if not self.is_obscuro_sim():
                 self.log.info('Funding HOC and POC to the test user account')
                 self.transfer_token(network, 'HOC', hoc_address, web3_distro, account_distro, account_user.address, self.TOKENS)
                 self.transfer_token(network, 'POC', poc_address, web3_distro, account_distro, account_user.address, self.TOKENS)

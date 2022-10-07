@@ -19,6 +19,7 @@ their balances.
         <modes inherit="true">
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
+            <mode>obscuro.sim</mode>
             <mode>ropsten</mode>
             <mode>ganache</mode>
         </modes>

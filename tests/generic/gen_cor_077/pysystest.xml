@@ -20,6 +20,7 @@ poor support for websockets in the web3.py library).
         <modes inherit="true">
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
+            <mode>obscuro.sim</mode>
             <mode>ropsten</mode>
             <mode>ganache</mode>
         </modes>

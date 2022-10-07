@@ -21,7 +21,7 @@ class PySysTest(ObscuroAdmin):
         self.log.info('Funding native ETH to the distro account')
         self.fund_eth(network, web3_funded, account_funded, web3_distro, account_distro)
 
-        if not self.SKIP_TOKENS:
+        if not self.is_obscuro_sim():
             # fund tokens on the ERC20s to the distro account from the funded account
             self.log.info('')
             self.log.info('Funding HOC and POC to the distro account')

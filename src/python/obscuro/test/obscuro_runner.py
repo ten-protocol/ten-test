@@ -30,6 +30,8 @@ class ObscuroRunnerPlugin():
                 self.run_wallets(runner, 'dev-testnet.obscu.ro')
             elif environment == 'obscuro.local':
                 self.run_wallets(runner, '127.0.0.1')
+            elif environment == 'obscuro.sim':
+                self.run_wallets(runner, '127.0.0.1')
             elif environment == 'ganache':
                 self.run_ganache(runner)
         except AbortExecution as e:

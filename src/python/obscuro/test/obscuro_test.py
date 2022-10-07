@@ -24,7 +24,11 @@ class ObscuroTest(BaseTest):
 
     def is_obscuro(self):
         """Return true if we are running against an Obscuro network. """
-        return self.env in ['obscuro', 'obscuro.dev', 'obscuro.local']
+        return self.env in ['obscuro', 'obscuro.dev', 'obscuro.local', 'obscuro.sim']
+
+    def is_obscuro_sim(self):
+        """Return true if we are running against an Obscuro simulation network. """
+        return self.env in ['obscuro.sim']
 
     def run_python(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
         """Run a python process."""
