@@ -1,5 +1,6 @@
 import getpass, configparser
 from pysys.constants import *
+from pysys.exceptions import FileNotFoundException
 
 
 class Properties:
@@ -22,13 +23,22 @@ class Properties:
 
     # binaries
     def solc_binary(self):
-        return self.get('binaries.%s' % PLATFORM, 'solc')
+        path = self.get('binaries.%s' % PLATFORM, 'solc')
+        if not os.path.exists(path):
+            raise FileNotFoundException('Solc binary not found at default location %s' % path)
+        return path
 
     def node_binary(self):
-        return self.get('binaries.%s' % PLATFORM, 'node')
+        path = self.get('binaries.%s' % PLATFORM, 'node')
+        if not os.path.exists(path):
+            raise FileNotFoundException('Node binary not found at default location %s' % path)
+        return path
 
     def ganache_binary(self):
-        return self.get('binaries.%s' % PLATFORM, 'ganache')
+        path = self.get('binaries.%s' % PLATFORM, 'ganache')
+        if not os.path.exists(path):
+            raise FileNotFoundException('Ganache binary not found at default location %s' % path)
+        return path
 
     # common to all environments
     def account1pk(self):
