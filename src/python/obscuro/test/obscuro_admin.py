@@ -13,6 +13,7 @@ class ObscuroAdmin(ObscuroTest):
 
     """
     ONE_GIGA = 1000000000000000000
+    SKIP_TOKENS = False
 
     def fund_obx(self, network, web3_user, account_user, amount):
         """Fund OBX in the L2 to a users account, either through the faucet server or direct from the account."""
