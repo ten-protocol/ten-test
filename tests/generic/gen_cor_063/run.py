@@ -1,9 +1,9 @@
-import os, json
+import os
+from web3 import Web3
 from obscuro.test.obscuro_test import ObscuroTest
 from obscuro.test.contracts.erc20.obx import OBXCoin
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.utils.properties import Properties
-from obscuro.test.utils.keys import pk_to_account
 
 
 class PySysTest(ObscuroTest):
@@ -11,8 +11,8 @@ class PySysTest(ObscuroTest):
     def execute(self):
         # deployment of contract
         network = NetworkFactory.get_network(self.env)
-        account2 = pk_to_account(Properties().account2pk())
         web3, account1 = network.connect_account1(self, web_socket=self.WEBSOCKET)
+        account2 = Web3().eth.account.privateKeyToAccount(Properties().account2pk())
 
         erc20 = OBXCoin(self, web3)
         erc20.deploy(network, account1)

@@ -1,7 +1,7 @@
+from web3 import Web3
 from pysys.constants import PASSED
 from obscuro.test.obscuro_test import ObscuroTest
 from obscuro.test.utils.properties import Properties
-from obscuro.test.utils.keys import pk_to_account
 from obscuro.test.contracts.erc20.obx import OBXCoin
 from obscuro.test.contracts.guesser.guesser_token import GuesserToken
 from obscuro.test.networks.factory import NetworkFactory
@@ -13,7 +13,7 @@ class PySysTest(ObscuroTest):
         # deployment of contracts
         network = NetworkFactory.get_network(self.env)
         web3_deploy, deploy_account = network.connect_account1(self, web_socket=self.WEBSOCKET)
-        account2 = pk_to_account(Properties().account2pk())
+        account2 = Web3().eth.account.privateKeyToAccount(Properties().account2pk())
 
         erc20 = OBXCoin(self, web3_deploy)
         erc20.deploy(network, deploy_account)
