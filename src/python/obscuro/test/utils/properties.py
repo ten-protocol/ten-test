@@ -54,6 +54,15 @@ class Properties:
         return self.get('env.all', 'GameUserPK')
 
     # obscuro specific properties
+    def node_host(self, key):
+        return self.get('env.'+key, 'NodeHost')
+
+    def node_port_http(self, key):
+        return self.get('env.'+key, 'NodePortHTTP')
+
+    def node_port_ws(self, key):
+        return self.get('env.'+key, 'NodePortWS')
+
     def faucet_url(self, key):
         return self.get('env.'+key, 'FaucetURL')
 

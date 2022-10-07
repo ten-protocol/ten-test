@@ -16,23 +16,17 @@ class ObscuroRunnerPlugin():
 
     def setup(self, runner):
         """Set up a runner plugin to start any processes required to execute the tests."""
-        environment = 'obscuro' if runner.mode is None else runner.mode
-        runner.log.info('Runner is executing against environment %s' % environment)
+        self.env = 'obscuro' if runner.mode is None else runner.mode
+        runner.log.info('Runner is executing against environment %s' % self.env)
 
         self.output = os.path.join(PROJECT.root, '.runner')
         if os.path.exists(self.output): shutil.rmtree(self.output)
         os.makedirs(self.output)
 
         try:
-            if environment == 'obscuro':
-                self.run_wallets(runner, 'testnet.obscu.ro')
-            elif environment == 'obscuro.dev':
-                self.run_wallets(runner, 'dev-testnet.obscu.ro')
-            elif environment == 'obscuro.local':
-                self.run_wallets(runner, '127.0.0.1')
-            elif environment == 'obscuro.sim':
-                self.run_wallets(runner, '127.0.0.1')
-            elif environment == 'ganache':
+            if self.is_obscuro():
+                self.run_wallets(runner)
+            elif self.env == 'ganache':
                 self.run_ganache(runner)
         except AbortExecution as e:
             runner.log.info('Error executing runner plugin startup actions', e)
@@ -40,6 +34,10 @@ class ObscuroRunnerPlugin():
             runner.log.info('Exiting ...')
             runner.cleanup()
             sys.exit()
+
+    def is_obscuro(self):
+        """Return true if we are running against an Obscuro network. """
+        return self.env in ['obscuro', 'obscuro.dev', 'obscuro.local', 'obscuro.sim']
 
     def run_ganache(self, runner):
         """Run ganache for use by the tests. """
@@ -60,7 +58,7 @@ class ObscuroRunnerPlugin():
         runner.waitForSignal(stdout, expr='Listening on 127.0.0.1:%d' % Ganache.PORT, timeout=30)
         runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
 
-    def run_wallets(self, runner, host):
+    def run_wallets(self, runner):
         """Run the wallet extension(s) for use by the tests. """
         home = os.path.expanduser('~')
         persistence_file = os.path.join(home, '.obscuro', 'wallet_extension_persistence')
@@ -68,19 +66,20 @@ class ObscuroRunnerPlugin():
             runner.log.info('Removing wallet extension persistence file')
             os.remove(persistence_file)
 
-        self.run_wallet(runner, host, Obscuro.PORT, Obscuro.WS_PORT)
+        self.run_wallet(runner, Obscuro.PORT, Obscuro.WS_PORT)
         time.sleep(1)
 
-    def run_wallet(self, runner, host, port, ws_port):
+    def run_wallet(self, runner, port, ws_port):
         """Run a single wallet extension for use by the tests. """
-        runner.log.info('Starting wallet extension on %s port=%d, ws_port=%d' % (host, port, ws_port))
+        runner.log.info('Starting wallet extension on port=%d, ws_port=%d' % (port, ws_port))
         stdout = os.path.join(self.output, 'wallet_%d.out' % port)
         stderr = os.path.join(self.output, 'wallet_%d.err' % port)
+        props = Properties()
 
         arguments = []
-        arguments.extend(('--nodeHost', host))
-        arguments.extend(('--nodePortHTTP', '13000'))
-        arguments.extend(('--nodePortWS', '13001'))
+        arguments.extend(('--nodeHost', props.node_host(self.env)))
+        arguments.extend(('--nodePortHTTP', props.node_port_http(self.env)))
+        arguments.extend(('--nodePortWS', props.node_port_ws(self.env)))
         arguments.extend(('--port', str(port)))
         arguments.extend(('--portWS', str(ws_port)))
         arguments.extend(('--logPath', os.path.join(self.output, 'wallet_%d_logs.txt' % port)))
