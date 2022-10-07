@@ -1,7 +1,7 @@
 import random, json
 from solcx import compile_source
 from pysys.constants import *
-from obscuro.test.utils.process import Processes
+from obscuro.test.utils.properties import Properties
 
 
 class Guesser:
@@ -27,7 +27,7 @@ class Guesser:
         file = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'guesser', 'Guesser.sol')
         with open(file, 'r') as fp:
             compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'],
-                                          solc_binary=Processes.get_solidity_compiler())
+                                          solc_binary=Properties().solc_binary())
             contract_id, contract_interface = compiled_sol.popitem()
             self.bytecode = contract_interface['bin']
             self.abi = contract_interface['abi']

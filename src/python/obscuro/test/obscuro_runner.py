@@ -1,7 +1,6 @@
 import os, time, shutil, sys
 from pysys.constants import PROJECT, BACKGROUND
 from pysys.exceptions import AbortExecution
-from obscuro.test.utils.process import Processes
 from obscuro.test.networks.ganache import Ganache
 from obscuro.test.networks.obscuro import Obscuro
 from obscuro.test.utils.properties import Properties
@@ -46,7 +45,7 @@ class ObscuroRunnerPlugin():
         arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account3pk()))
         arguments.extend(('--gasLimit', '7200000'))
         arguments.extend(('--blockTime', '1'))
-        hprocess = runner.startProcess(command=Processes.get_ganache_bin(), displayName='ganache',
+        hprocess = runner.startProcess(command=Properties().ganache_binary(), displayName='ganache',
                                        workingDir=self.output , environs=os.environ, quiet=True,
                                        arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
 

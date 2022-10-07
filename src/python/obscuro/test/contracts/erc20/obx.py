@@ -1,7 +1,7 @@
 import json
 from pysys.constants import *
 from solcx import compile_source
-from obscuro.test.utils.process import Processes
+from obscuro.test.utils.properties import Properties
 
 
 class OBXCoin:
@@ -25,7 +25,7 @@ class OBXCoin:
         file = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'erc20', 'OBXCoin.sol')
         with open(file, 'r') as fp:
             compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'],
-                                          solc_binary=Processes.get_solidity_compiler(),
+                                          solc_binary=Properties().solc_binary(),
                                           base_path=os.path.dirname(file))
             contract_interface = compiled_sol['<stdin>:OBXCoin']
             self.bytecode = contract_interface['bin']
