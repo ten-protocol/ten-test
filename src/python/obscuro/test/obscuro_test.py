@@ -49,7 +49,11 @@ class ObscuroTest(BaseTest):
         if args is not None: arguments.extend(args)
 
         environ = copy.deepcopy(os.environ)
-        environ["NODE_PATH"] = os.path.join(PROJECT.root, 'src', 'javascript', 'modules')
+        node_path = os.path.join(PROJECT.root, 'src', 'javascript', 'modules')
+        if "NODE_PATH" in environ:
+            environ["NODE_PATH"] = environ["NODE_PATH"] + ":" + node_path
+        else:
+            environ["NODE_PATH"] = node_path
         hprocess = self.startProcess(command=Properties().node_binary(), displayName='node', workingDir=self.output,
                                      arguments=arguments, environs=environ, stdout=stdout, stderr=stderr,
                                      state=state, timeout=timeout)
