@@ -9,6 +9,7 @@ function task() {
   task1(0)
   task2(0)
   task3(0)
+  console.log('Started tasks')
 }
 
 function task1(from) {
@@ -29,8 +30,7 @@ function task1(from) {
         }
         task1(from)
     })
-  }, 2000)
-  console.log('Starting task1 ...')
+  }, 1000)
 }
 
 function task2(from) {
@@ -51,8 +51,7 @@ function task2(from) {
         }
         task2(from)
     })
-  }, 2000)
-  console.log('Starting task2 ...')
+  }, 1000)
 }
 
 function task3(from) {
@@ -72,8 +71,7 @@ function task3(from) {
         }
         task3(from)
     })
-  }, 2000)
-  console.log('Starting task3 ...')
+  }, 1000)
 }
 
 commander

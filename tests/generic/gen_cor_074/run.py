@@ -31,9 +31,7 @@ class PySysTest(ObscuroTest):
         args.extend(['--filter_key', '%s' % 'r1'])
         if self.is_obscuro(): args.extend(['--pk_to_register', '%s' % Properties().account3pk()])
         self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting task1 ...', timeout=10)
-        self.waitForGrep(file=stdout, expr='Starting task2 ...', timeout=10)
-        self.waitForGrep(file=stdout, expr='Starting task3 ...', timeout=10)
+        self.waitForGrep(file=stdout, expr='Started tasks', timeout=10)
 
         # perform some transactions
         contract_1 = storage.contract
