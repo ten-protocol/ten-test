@@ -10,6 +10,8 @@ get_new_entries() on the filter to return new logs. As a polling implementation 
         </purpose>
     </description>
 
+    <skipped reason="eth_newFilter not yet implemented"/>
+
     <classification>
         <groups inherit="true">
             <group>events</group>

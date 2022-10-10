@@ -19,10 +19,10 @@ class PySysTest(ObscuroTest):
         self.log.info('Game user account is %s' % account.address)
 
         # the user needs to get the token and game contracts to interact with them
-        with open(os.path.join(PROJECT.root, 'src', 'solidity', 'erc20', 'erc20.json')) as f:
+        with open(os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'erc20', 'erc20.json')) as f:
             token = web3.eth.contract(address=hoc_address, abi=json.load(f))
 
-        with open(os.path.join(PROJECT.root, 'src', 'solidity', 'guesser', 'guessing_game.abi')) as f:
+        with open(os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'guesser', 'guessing_game.abi')) as f:
             game = web3.eth.contract(address=game_address, abi=json.load(f))
 
         self.log.info('Game user HOC balance %d' % token.functions.balanceOf(account.address).call())

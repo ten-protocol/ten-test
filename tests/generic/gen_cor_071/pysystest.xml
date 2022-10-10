@@ -9,6 +9,8 @@ on the contract and all new entries are queried for.
         </purpose>
     </description>
 
+    <skipped reason="eth_newFilter not yet implemented"/>
+
     <classification>
         <groups inherit="true">
             <group>events</group>
