@@ -1,6 +1,6 @@
+const fs = require('fs')
 const Web3 = require('web3')
 const commander = require('commander')
-const fs = require('fs')
 const vk = require('viewing_key.js')
 
 require('console-stamp')(console, 'HH:MM:ss')
