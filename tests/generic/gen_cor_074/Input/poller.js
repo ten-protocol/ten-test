@@ -6,7 +6,6 @@ const vk = require('viewing_key.js')
 require('console-stamp')(console, 'HH:MM:ss')
 
 function task() {
-  console.log('Starting task ...')
   task1(0)
   task2(0)
   task3(0)
@@ -31,6 +30,7 @@ function task1(from) {
         task1(from)
     })
   }, 2000)
+  console.log('Starting task1 ...')
 }
 
 function task2(from) {
@@ -52,6 +52,7 @@ function task2(from) {
         task2(from)
     })
   }, 2000)
+  console.log('Starting task2 ...')
 }
 
 function task3(from) {
@@ -72,6 +73,7 @@ function task3(from) {
         task3(from)
     })
   }, 2000)
+  console.log('Starting task3 ...')
 }
 
 commander
