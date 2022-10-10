@@ -46,10 +46,10 @@ jobs:
           sudo apt install -y curl
           sudo apt install -y solc
           
-          sudo curl -sL https://deb.nodesource.com/setup_18.x | bash -
+          sudo curl -sL https://deb.nodesource.com/setup_18.x | sudo bash -
           sudo apt-get install -y nodejs
           sudo npm install console-stamp --global
-          sudo  npm install web3 --global 
+          sudo npm install web3 --global 
           sudo npm install commander --global
   
           sudo apt install -y python3-pip
