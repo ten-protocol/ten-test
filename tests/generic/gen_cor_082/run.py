@@ -3,6 +3,7 @@ from obscuro.test.obscuro_test import ObscuroTest
 from obscuro.test.contracts.storage.key_storage import KeyStorage
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.utils.properties import Properties
+from obscuro.test.helpers.ws_proxy import WebServerProxy
 
 
 class PySysTest(ObscuroTest):
@@ -16,13 +17,17 @@ class PySysTest(ObscuroTest):
         key_storage = KeyStorage(self, web3)
         key_storage.deploy(network, account)
 
+        # go through a proxy to log websocket communications if needed
+        ws_url = network.connection_url(web_socket=True)
+        if self.PROXY: ws_url = WebServerProxy.create(self).run(ws_url, 'proxy.logs')
+
         # run test specific event subscriber
         stdout = os.path.join(self.output, 'subscriber.out')
         stderr = os.path.join(self.output, 'subscriber.err')
         script = os.path.join(self.input, 'subscriber.js')
         args = []
         args.extend(['--network_http', '%s' % network.connection_url(web_socket=False)])
-        args.extend(['--network_ws', '%s' % network.connection_url(web_socket=True)])
+        args.extend(['--network_ws', ws_url])
         args.extend(['--filter_address', '%s' % key_storage.contract_address])
         args.extend(['--filter_key1', 'k1'])
         args.extend(['--filter_key2', 'k3'])

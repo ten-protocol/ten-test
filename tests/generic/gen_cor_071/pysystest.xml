@@ -9,16 +9,15 @@ on the contract and all new entries are queried for.
         </purpose>
     </description>
 
-    <skipped reason="eth_newFilter not yet implemented"/>
-
     <classification>
         <groups inherit="true">
             <group>events</group>
         </groups>
         <modes inherit="true">
-            <mode>obscuro.dev</mode>
-            <mode>obscuro.local</mode>
-            <mode>obscuro.sim</mode>
+<!-- Cannot run on obscuro as eth_newFilter and eth_getFilterChanges are not yet implemented-->
+<!--            <mode>obscuro.dev</mode>-->
+<!--            <mode>obscuro.local</mode>-->
+<!--            <mode>obscuro.sim</mode>-->
             <mode>ropsten</mode>
             <mode>ganache</mode>
         </modes>
