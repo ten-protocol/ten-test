@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Events: javascript client using eth.subscribe and unsubscribe</title>
+        <title>Events: web3js client using eth.subscribe and unsubscribe</title>
         <purpose><![CDATA[]]>
         </purpose>
     </description>

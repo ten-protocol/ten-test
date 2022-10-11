@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Events: web3js client using eth.subscribe on logs fromBlock</title>
+        <title>Events: ethers client contract.getPastEvents, fromBlock toBlock</title>
         <purpose><![CDATA[]]>
         </purpose>
     </description>
