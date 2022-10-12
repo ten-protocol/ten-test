@@ -9,6 +9,7 @@ function task() {
   console.log('Starting task ...')
   task1()
   task2()
+  task3()
 }
 
 function task1() {
@@ -24,6 +25,14 @@ function task2() {
     console.log('ItemSet1, stored value =', value.toNumber())
   });
 }
+
+function task3(){
+  setTimeout(async function() {
+    console.log('Listener count is', contract.listenerCount())
+    task3()
+  }, 2000)
+}
+
 
 commander
   .version('1.0.0', '-v, --version')
