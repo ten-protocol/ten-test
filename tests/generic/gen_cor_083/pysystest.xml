@@ -12,6 +12,7 @@
     <classification>
         <groups inherit="true">
             <group>events</group>
+            <group>web3js</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

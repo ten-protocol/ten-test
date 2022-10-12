@@ -2,14 +2,17 @@
 <pysystest type="auto">
 
     <description>
-        <title>Events: ethers client contract.getPastEvents, fromBlock toBlock</title>
+        <title>Events: ethers client contract.queryFilter, fromBlock toBlock</title>
         <purpose><![CDATA[]]>
+A port of the web3js polling approach to loop getting events in a from to range call via the ethers
+contract.queryFilter approach.
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
             <group>events</group>
+            <group>ethers</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>
