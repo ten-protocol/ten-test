@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Events: ethers client using provider.on, with filter</title>
+        <purpose><![CDATA[]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>events</group>
+            <group>ethers</group>
+        </groups>
+        <modes inherit="true">
+            <mode>obscuro.dev</mode>
+            <mode>obscuro.local</mode>
+            <mode>obscuro.sim</mode>
+            <mode>ropsten</mode>
+            <mode>ganache</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
