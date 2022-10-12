@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Events: python client polling using filter.get_new_entries</title>
+        <title>Events: web3py client polling using filter.get_new_entries</title>
         <purpose><![CDATA[]]>
 This is a polling implementation in python to get event logs from a contract as transactions are written to it in real
 time. It creates a filter on the events.Event method on the contract instance, then repeatedly calls for
