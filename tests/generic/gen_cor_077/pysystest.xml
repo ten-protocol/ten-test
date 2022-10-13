@@ -16,6 +16,7 @@ poor support for websockets in the web3.py library).
     <classification>
         <groups inherit="true">
             <group>events</group>
+            <group>web3js</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

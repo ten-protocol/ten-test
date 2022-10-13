@@ -13,6 +13,7 @@ rather you sha3 the string value and specify it in the topic list as part of the
     <classification>
         <groups inherit="true">
             <group>events</group>
+            <group>web3js</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

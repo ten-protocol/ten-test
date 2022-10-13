@@ -2,17 +2,18 @@
 <pysystest type="auto">
 
     <description>
-        <title>Events: web3js client using eth.subscribe and unsubscribe</title>
+        <title>Events: ethers client using contract.on, with filters</title>
         <purpose><![CDATA[]]>
+Another approach to subscribe for emitted events using the contract instance on method, where a filter is supplied
+and a callback function where the event parameters are returned. In this case two filters are used to filter on a
+key and value respectively from the KeyStorage contract.
         </purpose>
     </description>
-
-    <skipped reason="https://github.com/obscuronet/obscuro-internal/issues/1049"/>
 
     <classification>
         <groups inherit="true">
             <group>events</group>
-            <group>web3js</group>
+            <group>ethers</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

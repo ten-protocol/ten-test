@@ -13,6 +13,7 @@ operation. No filtering or topics are used, the test just ensures all events are
     <classification>
         <groups inherit="true">
             <group>events</group>
+            <group>web3js</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

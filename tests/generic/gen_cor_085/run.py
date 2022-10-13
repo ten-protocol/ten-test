@@ -22,9 +22,9 @@ class PySysTest(ObscuroTest):
         if self.PROXY: ws_url = WebServerProxy.create(self).run(ws_url, 'proxy.logs')
 
         # run a background script to filter and collect events
-        stdout = os.path.join(self.output, 'poller.out')
-        stderr = os.path.join(self.output, 'poller.err')
-        script = os.path.join(self.input, 'poller.js')
+        stdout = os.path.join(self.output, 'listener.out')
+        stderr = os.path.join(self.output, 'listener.err')
+        script = os.path.join(self.input, 'listener.js')
         args = []
         args.extend(['--network_http', '%s' % network.connection_url(web_socket=False)])
         args.extend(['--network_ws', ws_url])
@@ -36,8 +36,8 @@ class PySysTest(ObscuroTest):
 
         # perform some transactions with a sleep in between
         for i in range(0, 5):
-           network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS)
-           time.sleep(1.0)
+            network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS)
+            time.sleep(1.0)
 
         # wait and validate
         self.waitForGrep(file=stdout, expr='Stored value = [0-9]$', condition='== 5', timeout=20)

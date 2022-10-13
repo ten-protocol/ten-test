@@ -13,6 +13,7 @@ signature. As no contract address is supplied it should pick up on any event wit
     <classification>
         <groups inherit="true">
             <group>events</group>
+            <group>web3js</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

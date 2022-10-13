@@ -2,17 +2,18 @@
 <pysystest type="auto">
 
     <description>
-        <title>Events: web3js client using eth.subscribe and unsubscribe</title>
+        <title>Events: ethers client using provider.on, with filter</title>
         <purpose><![CDATA[]]>
+Another approach to subscribe for emitted events using the provider instance on method, where a filter is supplied
+and a callback function where the event parameters are returned. In this case we just filter on a particular event,
+and a string value of one of the parameters.
         </purpose>
     </description>
-
-    <skipped reason="https://github.com/obscuronet/obscuro-internal/issues/1049"/>
 
     <classification>
         <groups inherit="true">
             <group>events</group>
-            <group>web3js</group>
+            <group>ethers</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>
