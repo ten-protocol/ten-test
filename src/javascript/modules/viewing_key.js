@@ -4,8 +4,7 @@ const http = require('http')
 module.exports = { generate_viewing_key,  sign_viewing_key }
 
 function generate_viewing_key(web3, network_url, address, private_key, callback) {
-  console.log('Generating viewing key for', private_key)
-  console.log(network_url + '/generateviewingkey/')
+  console.log('Generating viewing key for', address)
 
   fetch(network_url +'/generateviewingkey/', {
     method: 'POST',
@@ -19,7 +18,7 @@ function generate_viewing_key(web3, network_url, address, private_key, callback)
 }
 
 function sign_viewing_key(web3, network_url, address, private_key, callback, response) {
-  console.log('Signing viewing key for', private_key)
+  console.log('Signing viewing key for', address)
   signed_msg = web3.eth.accounts.sign('vk' + response, '0x' + private_key)
 
   fetch(network_url + '/submitviewingkey/', {

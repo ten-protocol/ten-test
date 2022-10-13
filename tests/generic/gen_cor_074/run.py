@@ -13,7 +13,6 @@ class PySysTest(ObscuroTest):
         network = NetworkFactory.get_network(self.env)
         web3_1, account1 = network.connect_account1(self)
         web3_2, account2 = network.connect_account2(self)
-        web3_3, account3 = network.connect_account3(self)
 
         # deploy the contract and dump out the abi
         storage = KeyStorage(self, web3_1)
@@ -34,20 +33,21 @@ class PySysTest(ObscuroTest):
         args.extend(['--contract_abi', '%s' % storage.abi_path])
         args.extend(['--filter_address', '%s' % account2.address])
         args.extend(['--filter_key', '%s' % 'r1'])
-        if self.is_obscuro(): args.extend(['--pk_to_register', '%s' % Properties().account3pk()])
+        if self.is_obscuro():
+            self.log.info('Adding private key to register')
+            args.extend(['--pk_to_register', '%s' % Properties().account3pk()])
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Started tasks', timeout=10)
 
         # perform some transactions
         contract_1 = storage.contract
         contract_2 = web3_2.eth.contract(address=storage.contract_address, abi=storage.abi)
-        contract_3 = web3_3.eth.contract(address=storage.contract_address, abi=storage.abi)
         network.transact(self, web3_1, contract_1.functions.setItem('k1', 1), account1, storage.GAS)
         network.transact(self, web3_1, contract_1.functions.setItem('foo', 2), account1, storage.GAS)
         network.transact(self, web3_1, contract_1.functions.setItem('bar', 3), account1, storage.GAS)
         network.transact(self, web3_2, contract_2.functions.setItem('k2', 2), account2, storage.GAS)
-        network.transact(self, web3_3, contract_3.functions.setItem('r1', 10), account1, storage.GAS)
-        network.transact(self, web3_3, contract_3.functions.setItem('r2', 11), account1, storage.GAS)
+        network.transact(self, web3_2, contract_2.functions.setItem('r1', 10), account2, storage.GAS)
+        network.transact(self, web3_2, contract_2.functions.setItem('r2', 11), account2, storage.GAS)
 
         # wait and validate - ItemSet1 filter on sender is account2.address
         #  event ItemSet1(string key, uint256 value, address indexed setter);
