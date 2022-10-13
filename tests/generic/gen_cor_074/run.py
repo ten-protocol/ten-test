@@ -46,19 +46,22 @@ class PySysTest(ObscuroTest):
         network.transact(self, web3_1, contract_1.functions.setItem('foo', 2), account1, storage.GAS)
         network.transact(self, web3_1, contract_1.functions.setItem('bar', 3), account1, storage.GAS)
         network.transact(self, web3_2, contract_2.functions.setItem('k2', 2), account2, storage.GAS)
-        network.transact(self, web3_3, contract_3.functions.setItem('r1', 10), account3, storage.GAS)
-        network.transact(self, web3_3, contract_3.functions.setItem('r2', 11), account3, storage.GAS)
+        network.transact(self, web3_3, contract_3.functions.setItem('r1', 10), account1, storage.GAS)
+        network.transact(self, web3_3, contract_3.functions.setItem('r2', 11), account1, storage.GAS)
 
-        # wait and validate - filter on sender is account2.address
+        # wait and validate - ItemSet1 filter on sender is account2.address
+        #  event ItemSet1(string key, uint256 value, address indexed setter);
         self.waitForGrep(file=stdout, expr='Task1:', condition='== 1', timeout=10)
         self.assertGrep(file=stdout, expr='Task1: k1 1', contains=False)
         self.assertGrep(file=stdout, expr='Task1: k2 2')
 
-        # wait and validate - filter on value 2 or 3
+        # wait and validate - ItemSet2 filter on value 2 or 3
+        #  event ItemSet2(string key, uint256 indexed value, address indexed setter);
         self.waitForGrep(file=stdout, expr='Task2:', condition='== 3', timeout=10)
         self.assertOrderedGrep(file=stdout, exprList=['Task2: foo 2', 'Task2: bar 3', 'Task2: k2 2'])
 
         # wait and validate - filter on key is r1
+        #  event ItemSet3(string indexed key, uint256 value, address setter);
         self.waitForGrep(file=stdout, expr='Task3:', condition='== 1', timeout=10)
         self.assertGrep(file=stdout, expr='Task3: 10')
 
