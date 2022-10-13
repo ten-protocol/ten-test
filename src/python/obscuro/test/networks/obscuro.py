@@ -37,14 +37,13 @@ class Obscuro(Default):
     WS_HOST = 'ws://127.0.0.1'
     PORT = 3000
     WS_PORT = 3001
-    HTTP_CONNECTIONS = OrderedDict()
 
     @classmethod
     def chain_id(cls):
         return 777
 
     @classmethod
-    def connection(cls, test, private_key, web_socket):
+    def connect(cls, test, private_key, web_socket):
         url = cls.connection_url(web_socket)
 
         test.log.info('Connecting to %s on %s' % (cls.__name__, url))
