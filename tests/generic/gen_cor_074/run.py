@@ -46,8 +46,8 @@ class PySysTest(ObscuroTest):
         network.transact(self, web3_1, contract_1.functions.setItem('foo', 2), account1, storage.GAS)
         network.transact(self, web3_1, contract_1.functions.setItem('bar', 3), account1, storage.GAS)
         network.transact(self, web3_2, contract_2.functions.setItem('k2', 2), account2, storage.GAS)
-        network.transact(self, web3_2, contract_2.functions.setItem('r1', 10), account2, storage.GAS)
-        network.transact(self, web3_2, contract_2.functions.setItem('r2', 11), account2, storage.GAS)
+        network.transact(self, web3_1, contract_1.functions.setItem('r1', 10), account1, storage.GAS)
+        network.transact(self, web3_1, contract_1.functions.setItem('r2', 11), account1, storage.GAS)
 
         # wait and validate - ItemSet1 filter on sender is account2.address
         #  event ItemSet1(string key, uint256 value, address indexed setter);
