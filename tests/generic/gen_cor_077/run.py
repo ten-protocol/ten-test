@@ -35,8 +35,11 @@ class PySysTest(ObscuroTest):
         self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
 
         # perform some transactions
-        for i in range(0, 5):
-            network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.store(0), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.store(1), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.store(2), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.store(3), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.store(4), account, storage.GAS)
 
         # wait and validate
         self.waitForGrep(file=stdout, expr='Stored value = [0-9]$', condition='== 5', timeout=20)

@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 contract Storage {
+    // single event which shares some signature as the KeyStorage contract
     event Stored(uint256 value);
 
     address public owner;

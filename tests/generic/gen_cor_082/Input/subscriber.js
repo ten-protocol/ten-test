@@ -6,8 +6,8 @@ require('console-stamp')(console, 'HH:MM:ss')
 
 function task() {
   console.log('Starting task ...')
-  topic = web3.utils.sha3('ItemSet3(string,uint256,address)')
-  inputs = [{"indexed": true, "name": "key", "type": "string"}, {"indexed": false, "name": "value", "type": "uint256"}, {"indexed": false, "name": "setter", "type": "address"}]
+  topic = web3.utils.sha3('ItemSet1(string,uint256)')
+  inputs = [{"indexed": true, "name": "key", "type": "string"}, {"indexed": false, "name": "value", "type": "uint256"}]
   topics = [ topic, [web3.utils.sha3(options.filter_key1), web3.utils.sha3(options.filter_key2)] ]
   web3.eth.subscribe('logs', {
       topics: topics,

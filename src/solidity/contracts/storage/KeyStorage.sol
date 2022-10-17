@@ -2,9 +2,16 @@
 pragma solidity ^0.8.0;
 
 contract Store {
-    event ItemSet1(string key, uint256 value, address indexed setter);
-    event ItemSet2(string key, uint256 indexed value, address indexed setter);
-    event ItemSet3(string indexed key, uint256 value, address setter);
+    // two fields, string indexed only
+    event ItemSet1(string indexed key, uint256 value);
+
+    // two fields, uint indexed only
+    event ItemSet2(string key, uint256 indexed value);
+
+    // two fields, both string and uint indexed
+    event ItemSet3(string indexed key, uint256 indexed value);
+
+    // single event which shares some signature as the Storage contract
     event Stored(uint256 value);
 
     address public owner;
@@ -16,9 +23,9 @@ contract Store {
 
     function setItem(string calldata key, uint256 value) external {
         items[key] = value;
-        emit ItemSet1(key, value, msg.sender);
-        emit ItemSet2(key, value, msg.sender);
-        emit ItemSet3(key, value, msg.sender);
+        emit ItemSet1(key, value);
+        emit ItemSet2(key, value);
+        emit ItemSet3(key, value);
     }
 
     function storeItem(uint256 value) external {
