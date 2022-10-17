@@ -24,8 +24,7 @@ class PySysTest(ObscuroTest):
         subscriber = EventLogSubscriber(self, network)
         subscriber.run(
             pk_to_register=Properties().account3pk(),
-            filter_topics=[web3.keccak(text='Stored(uint256)').hex()],
-            proxy=self.PROXY
+            filter_topics=[web3.keccak(text='Stored(uint256)').hex()]
         )
         subscriber.subscribe()
 

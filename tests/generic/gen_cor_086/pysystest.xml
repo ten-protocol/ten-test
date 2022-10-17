@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Events: ethers client using contract.on, with filters</title>
+        <title>Events: ethers client using contract.on, with two concurrent filters</title>
         <purpose><![CDATA[]]>
 Another approach to subscribe for emitted events using the contract instance on method, where a filter is supplied
 and a callback function where the event parameters are returned. In this case two filters are used to filter on a
