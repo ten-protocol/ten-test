@@ -1,5 +1,4 @@
 from web3 import Web3
-from collections import OrderedDict
 from pysys.constants import *
 from obscuro.test.utils.properties import Properties
 

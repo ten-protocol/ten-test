@@ -18,6 +18,7 @@ class WebServerProxy:
 
     def run(self, remote_url, filename):
         """Run the websocket proxy."""
+        self.test.log.info("Running proxy on port %d" % self.port)
         arguments = []
         arguments.extend(['--host', self.host])
         arguments.extend(['--port', '%d' % self.port])
