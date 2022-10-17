@@ -43,7 +43,7 @@ class Obscuro(Default):
         return 777
 
     @classmethod
-    def connect(cls, test, private_key, web_socket):
+    def connect(cls, test, private_key, web_socket=False):
         url = cls.connection_url(web_socket)
 
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))

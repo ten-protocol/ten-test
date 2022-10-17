@@ -43,11 +43,11 @@ class PySysTest(ObscuroTest):
         network.transact(self, web3_1, contract_1.functions.setItem('k1', 1), account1, storage.GAS)
         network.transact(self, web3_1, contract_1.functions.setItem('foo', 2), account1, storage.GAS)
         network.transact(self, web3_1, contract_1.functions.setItem('bar', 3), account1, storage.GAS)
-        network.transact(self, web3_2, contract_2.functions.setItem('k2', 4), account2, storage.GAS)
-        network.transact(self, web3_2, contract_2.functions.setItem('r1', 5), account2, storage.GAS)
-        network.transact(self, web3_2, contract_2.functions.setItem('r2', 6), account2, storage.GAS)
+        network.transact(self, web3_2, contract_2.functions.setItem('k2', 4), account1, storage.GAS) #filter on key
+        network.transact(self, web3_2, contract_2.functions.setItem('r1', 5), account2, storage.GAS) #filter on account2
+        network.transact(self, web3_2, contract_2.functions.setItem('r2', 6), account2, storage.GAS) #filter on account2
 
         # wait and validate
         self.waitForGrep(file=stdout, expr='stored value = [0-9]$', condition='== 3', timeout=20)
-        expr_list = ['ItemSet3, stored value = 4', 'ItemSet1, stored value = 4', ' ItemSet1, stored value = 5']
+        expr_list = ['ItemSet3, stored value = 4', 'ItemSet1, stored value = 5', ' ItemSet1, stored value = 6']
         self.assertOrderedGrep(file=stdout, exprList=expr_list)

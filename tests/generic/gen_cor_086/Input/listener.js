@@ -9,7 +9,6 @@ function task() {
   console.log('Starting task ...')
   task1()
   task2()
-  task3()
 }
 
 function task1() {
@@ -25,14 +24,6 @@ function task2() {
     console.log('ItemSet1, stored value =', value.toNumber())
   });
 }
-
-function task3(){
-  setTimeout(async function() {
-    console.log('Listener count is', contract.listenerCount())
-    task3()
-  }, 2000)
-}
-
 
 commander
   .version('1.0.0', '-v, --version')
@@ -56,8 +47,9 @@ const interface = new ethers.utils.Interface(abi)
 
 if (options.pk_to_register) {
   wallet = new ethers.Wallet(options.pk_to_register)
-  address = wallet.getAddress()
-  vk.generate_viewing_key(web3, options.network_http, address, options.pk_to_register, task)
+  let sign = (message) => { return wallet.signMessage(message) }
+  let address = wallet.getAddress()
+  vk.generate_viewing_key(sign, options.network_http, address, task)
 }
 else {
   task()

@@ -80,8 +80,9 @@ const web3 = new Web3(`${options.network_ws}`)
 
 // if pk supplied generate viewing key else just run
 if (options.pk_to_register) {
-  address = web3.eth.accounts.privateKeyToAccount(options.pk_to_register).address
-  vk.generate_viewing_key(web3, options.network_http, address, options.pk_to_register, startServer)
+  let sign = (message) => { return web3.eth.accounts.sign(message, '0x' + options.pk_to_register) }
+  let address = web3.eth.accounts.privateKeyToAccount(options.pk_to_register).address
+  vk.generate_viewing_key(sign, options.network_http, address, startServer)
 }
 else
   startServer()
