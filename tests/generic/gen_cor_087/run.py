@@ -11,13 +11,11 @@ class PySysTest(ObscuroTest):
     def execute(self):
         # connect to network
         network = NetworkFactory.get_network(self.env)
-        web3_1, account1 = network.connect_account1(self)
-        web3_2, account2 = network.connect_account2(self)
-        web3_3, account3 = network.connect_account3(self)
+        web3, account = network.connect_account1(self)
 
         # deploy the contract and dump out the abi
-        storage = KeyStorage(self, web3_1)
-        storage.deploy(network, account1)
+        storage = KeyStorage(self, web3)
+        storage.deploy(network, account)
 
         # go through a proxy to log websocket communications if needed
         ws_url = network.connection_url(web_socket=True)
@@ -38,15 +36,12 @@ class PySysTest(ObscuroTest):
         self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
 
         # perform some transactions with a sleep in between
-        contract_1 = storage.contract
-        contract_2 = web3_2.eth.contract(address=storage.contract_address, abi=storage.abi)
-        contract_3 = web3_3.eth.contract(address=storage.contract_address, abi=storage.abi)
-        network.transact(self, web3_1, contract_1.functions.setItem('k1', 1), account1, storage.GAS)
-        network.transact(self, web3_1, contract_1.functions.setItem('foo', 2), account1, storage.GAS)
-        network.transact(self, web3_1, contract_1.functions.setItem('bar', 3), account1, storage.GAS)
-        network.transact(self, web3_2, contract_2.functions.setItem('k2', 4), account2, storage.GAS)
-        network.transact(self, web3_3, contract_3.functions.setItem('k2', 5), account1, storage.GAS)
-        network.transact(self, web3_3, contract_3.functions.setItem('k1', 6), account2, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.setItem('k1', 1), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.setItem('foo', 2), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.setItem('bar', 3), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.setItem('k2', 4), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.setItem('k2', 5), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.setItem('k1', 6), account, storage.GAS)
 
         # wait and validate
         self.waitForGrep(file=stdout, expr='Stored value = [0-9]$', condition='== 2', timeout=20)

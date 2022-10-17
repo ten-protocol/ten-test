@@ -14,7 +14,7 @@ function task1() {
   filter = {
     address: options.contract_address,
     topics: [
-      ethers.utils.id('ItemSet3(string,uint256,address)'),
+      ethers.utils.id('ItemSet3(string,uint256)'),
       ethers.utils.id(options.filter_key)
     ]
   }

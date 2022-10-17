@@ -12,16 +12,16 @@ function task() {
 }
 
 function task1() {
-  filter = contract.filters.ItemSet3(options.filter_key, null, null)
-  contract.on(filter, (key, value, setter, event) => {
-    console.log('ItemSet3, stored value =', value.toNumber())
+  filter = contract.filters.ItemSet1(options.filter_key, null)
+  contract.on(filter, (key, value, event) => {
+    console.log('ItemSet1, stored value =', value.toNumber())
   });
 }
 
 function task2() {
-  filter = contract.filters.ItemSet1(null, null, options.filter_address)
-  contract.on(filter, (key, value, setter, event) => {
-    console.log('ItemSet1, stored value =', value.toNumber())
+  filter = contract.filters.ItemSet2(null, options.filter_value)
+  contract.on(filter, (key, value, event) => {
+    console.log('ItemSet2, stored value =', value.toNumber())
   });
 }
 
@@ -30,10 +30,10 @@ commander
   .usage('[OPTIONS]...')
   .option('--network_http <value>', 'Http connection URL to the network')
   .option('--network_ws <value>', 'Web socket connection URL to the network')
-  .option('--contract_address <value>', 'Web socket connection URL to the network')
-  .option('--contract_abi <value>', 'Web socket connection URL to the network')
-  .option('--filter_address <value>', 'Web socket connection URL to the network')
-  .option('--filter_key <value>', 'Web socket connection URL to the network')
+  .option('--contract_address <value>', 'The contract address')
+  .option('--contract_abi <value>', 'The contract ABI')
+  .option('--filter_value <value>', 'Value to filter on')
+  .option('--filter_key <value>', 'Key to filter on')
   .option('--pk_to_register <value>', 'Private key used to register for a viewing key (obscuro only)')
   .parse(process.argv)
 
