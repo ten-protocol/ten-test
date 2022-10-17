@@ -17,7 +17,7 @@ class EventLogSubscriber:
     def run(self, filter_address=None, filter_from_block=None, filter_topics=None, pk_to_register=None):
         """Run a javascript client event log subscriber. """
         ws_url = self.network.connection_url(web_socket=True)
-        if self.test.proxy: ws_url = WebServerProxy.create(self.test).run(ws_url, 'proxy.logs')
+        if self.test.PROXY: ws_url = WebServerProxy.create(self.test).run(ws_url, 'proxy.logs')
 
         args = []
         args.extend(['--script_server_port', '%d' % self.port])

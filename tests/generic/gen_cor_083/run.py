@@ -21,8 +21,7 @@ class PySysTest(ObscuroTest):
         subscriber.run(
             pk_to_register=Properties().account3pk(),
             filter_address=storage.contract_address,
-            filter_topics=[web3.keccak(text='Stored(uint256)').hex()],
-            proxy=self.PROXY
+            filter_topics=[web3.keccak(text='Stored(uint256)').hex()]
         )
 
         # perform some transactions on the storage contract
