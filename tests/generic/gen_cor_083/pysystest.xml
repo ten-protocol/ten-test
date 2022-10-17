@@ -4,6 +4,7 @@
     <description>
         <title>Events: web3js client using eth.subscribe and unsubscribe</title>
         <purpose><![CDATA[]]>
+Filters on events from a particular contract, and subscribes and unsubscribes.
         </purpose>
     </description>
 

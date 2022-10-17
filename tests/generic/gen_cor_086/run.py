@@ -49,5 +49,14 @@ class PySysTest(ObscuroTest):
 
         # wait and validate
         self.waitForGrep(file=stdout, expr='stored value = [0-9]$', condition='== 3', timeout=20)
-        expr_list = ['ItemSet3, stored value = 4', 'ItemSet1, stored value = 5', ' ItemSet1, stored value = 6']
+
+        # contract.filters.ItemSet3(options.filter_key, null, null) with key as k2
+        # where event ItemSet3(string indexed key, uint256 value, address setter);
+        expr_list = ['ItemSet3, stored value = 4']
         self.assertOrderedGrep(file=stdout, exprList=expr_list)
+
+        # contract.filters.ItemSet1(null, null, options.filter_address) with setter as account2
+        # where  event ItemSet1(string key, uint256 value, address indexed setter)
+        expr_list = ['ItemSet1, stored value = 5', 'ItemSet1, stored value = 6']
+        self.assertOrderedGrep(file=stdout, exprList=expr_list)
+
