@@ -1,5 +1,4 @@
 from web3 import Web3
-from collections import OrderedDict
 from pysys.constants import *
 from obscuro.test.utils.properties import Properties
 
@@ -10,24 +9,9 @@ class Default:
     WS_HOST = 'ws://127.0.0.1'
     PORT = 8545
     WS_PORT = 8545
-    CONNECTIONS = OrderedDict()
 
     @classmethod
     def chain_id(cls): return None
-
-    @classmethod
-    def connect(cls, test, private_key, web_socket=False):
-        key = (cls.__name__, private_key, web_socket)
-
-        if key in cls.CONNECTIONS:
-            web3, _ = cls.CONNECTIONS[key]
-            if not web3.isConnected():
-                test.log.info('Re-adding connection for %s' % private_key)
-                cls.CONNECTIONS[key] = cls.connection(test, private_key, web_socket)
-        else:
-            test.log.info('Adding new connection for %s' % private_key)
-            cls.CONNECTIONS[key] = cls.connection(test, private_key, web_socket)
-        return cls.CONNECTIONS[key]
 
     @classmethod
     def connection_url(cls, web_socket=False):
@@ -36,13 +20,13 @@ class Default:
         return '%s:%d' % (host, port)
 
     @classmethod
-    def connection(cls, test, private_key, web_socket):
+    def connect(cls, test, private_key, web_socket=False):
         url = cls.connection_url(web_socket)
 
-        test.log.info('Connecting to %s on %s' % (cls.__name__, url))
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)
+        test.log.info('Account %s connected to %s on %s' % (account.address, cls.__name__, url))
         return web3, account
 
     @classmethod

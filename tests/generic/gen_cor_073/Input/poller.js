@@ -42,9 +42,10 @@ var json = fs.readFileSync(`${options.contract_abi}`)
 var abi = JSON.parse(json)
 const contract = new web3.eth.Contract(abi, `${options.contract_address}`)
 
-if (options.pk_to_register == true) {
-  address = web3.eth.accounts.privateKeyToAccount(options.pk_to_register).address
-  vk.generate_viewing_key(web3, options.network_http, address, options.pk_to_register, task)
+if (options.pk_to_register) {
+  let sign = (message) => { return web3.eth.accounts.sign(message, '0x' + options.pk_to_register) }
+  let address = web3.eth.accounts.privateKeyToAccount(options.pk_to_register).address
+  vk.generate_viewing_key(sign, options.network_http, address, task)
 }
 else {
   task()

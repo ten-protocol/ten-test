@@ -3,9 +3,8 @@ const http = require('http')
 
 module.exports = { generate_viewing_key,  sign_viewing_key }
 
-function generate_viewing_key(web3, network_url, address, private_key, callback) {
-  console.log('Generating viewing key for', private_key)
-  console.log(network_url + '/generateviewingkey/')
+function generate_viewing_key(sign, network_url, address, callback) {
+  console.log('Generating viewing key for', address)
 
   fetch(network_url +'/generateviewingkey/', {
     method: 'POST',
@@ -14,13 +13,13 @@ function generate_viewing_key(web3, network_url, address, private_key, callback)
   })
   .then(response => response.text())
   .then((response) => {
-         sign_viewing_key(web3, network_url, address, private_key, callback, response)
+         sign_viewing_key(sign, network_url, address, callback, response)
    })
 }
 
-function sign_viewing_key(web3, network_url, address, private_key, callback, response) {
-  console.log('Signing viewing key for', private_key)
-  signed_msg = web3.eth.accounts.sign('vk' + response, '0x' + private_key)
+function sign_viewing_key(sign, network_url, address, callback, response) {
+  console.log('Signing viewing key for', address)
+  signed_msg = sign('vk' + response)
 
   fetch(network_url + '/submitviewingkey/', {
     method: 'POST',

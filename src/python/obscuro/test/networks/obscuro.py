@@ -37,21 +37,20 @@ class Obscuro(Default):
     WS_HOST = 'ws://127.0.0.1'
     PORT = 3000
     WS_PORT = 3001
-    HTTP_CONNECTIONS = OrderedDict()
 
     @classmethod
     def chain_id(cls):
         return 777
 
     @classmethod
-    def connection(cls, test, private_key, web_socket):
+    def connect(cls, test, private_key, web_socket=False):
         url = cls.connection_url(web_socket)
 
-        test.log.info('Connecting to %s on %s' % (cls.__name__, url))
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)
         cls.__generate_viewing_key(web3, cls.HOST, cls.PORT, account, private_key)
+        test.log.info('Account %s connected to %s on %s' % (account.address, cls.__name__, url))
         return web3, account
 
     @classmethod

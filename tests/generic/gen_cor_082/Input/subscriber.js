@@ -6,8 +6,8 @@ require('console-stamp')(console, 'HH:MM:ss')
 
 function task() {
   console.log('Starting task ...')
-  topic = web3.utils.sha3('ItemSet3(string,uint256,address)')
-  inputs = [{"indexed": true, "name": "key", "type": "string"}, {"indexed": false, "name": "value", "type": "uint256"}, {"indexed": false, "name": "setter", "type": "address"}]
+  topic = web3.utils.sha3('ItemSet1(string,uint256)')
+  inputs = [{"indexed": true, "name": "key", "type": "string"}, {"indexed": false, "name": "value", "type": "uint256"}]
   topics = [ topic, [web3.utils.sha3(options.filter_key1), web3.utils.sha3(options.filter_key2)] ]
   web3.eth.subscribe('logs', {
       topics: topics,
@@ -38,9 +38,10 @@ commander
 const options = commander.opts()
 const web3 = new Web3(`${options.network_ws}`)
 
-if (options.pk_to_register == true) {
-  address = web3.eth.accounts.privateKeyToAccount(options.pk_to_register).address
-  vk.generate_viewing_key(web3, options.network_http, address, options.pk_to_register, task)
+if (options.pk_to_register) {
+  let sign = (message) => { return web3.eth.accounts.sign(message, '0x' + options.pk_to_register) }
+  let address = web3.eth.accounts.privateKeyToAccount(options.pk_to_register).address
+  vk.generate_viewing_key(sign, options.network_http, address, task)
 }
 else {
   task()

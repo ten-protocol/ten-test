@@ -2,6 +2,7 @@ from obscuro.test.obscuro_test import ObscuroTest
 from obscuro.test.contracts.storage.storage import Storage
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.helpers.log_subscriber import EventLogSubscriber
+from obscuro.test.utils.properties import Properties
 
 
 class PySysTest(ObscuroTest):
@@ -18,9 +19,9 @@ class PySysTest(ObscuroTest):
         # run a javascript subscriber in the background
         subscriber = EventLogSubscriber(self, network)
         subscriber.run(
+            pk_to_register=Properties().account3pk(),
             filter_address=storage.contract_address,
-            filter_topics=[web3.keccak(text='Stored(uint256)').hex()],
-            proxy=self.PROXY
+            filter_topics=[web3.keccak(text='Stored(uint256)').hex()]
         )
 
         # perform some transactions on the storage contract

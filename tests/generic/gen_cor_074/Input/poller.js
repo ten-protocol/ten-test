@@ -8,7 +8,6 @@ require('console-stamp')(console, 'HH:MM:ss')
 function task() {
   task1(0)
   task2(0)
-  task3(0)
   console.log('Started tasks')
 }
 
@@ -17,14 +16,13 @@ function task1(from) {
     contract.getPastEvents('ItemSet1', {
       fromBlock: from,
       toBlock: 'latest',
-      filter: {setter: options.filter_address}
+      topics: [web3.utils.sha3('ItemSet1(string,uint256)'), web3.utils.sha3(options.filter_key)]
     })
     .then(function(events) {
         if (events.length) {
             for (var i = 0, len = events.length; i < len; i+=1) {
-                key = events[i].returnValues['key']
                 value = events[i].returnValues['value']
-                console.log('Task1:', key, value)
+                console.log('Task1:', value)
                 from = events[i].blockNumber+1
             }
         }
@@ -54,26 +52,6 @@ function task2(from) {
   }, 1000)
 }
 
-function task3(from) {
-  setTimeout(function() {
-    contract.getPastEvents('ItemSet3', {
-      fromBlock: from,
-      toBlock: 'latest',
-      topics: [web3.utils.sha3('ItemSet3(string,uint256,address)'), web3.utils.sha3(options.filter_key)]
-    })
-    .then(function(events) {
-        if (events.length) {
-            for (var i = 0, len = events.length; i < len; i+=1) {
-                value = events[i].returnValues['value']
-                console.log('Task3:', value)
-                from = events[i].blockNumber+1
-            }
-        }
-        task3(from)
-    })
-  }, 1000)
-}
-
 commander
   .version('1.0.0', '-v, --version')
   .usage('[OPTIONS]...')
@@ -93,9 +71,10 @@ var json = fs.readFileSync(`${options.contract_abi}`)
 var abi = JSON.parse(json)
 const contract = new web3.eth.Contract(abi, `${options.contract_address}`)
 
-if (options.pk_to_register == true) {
-  address = web3.eth.accounts.privateKeyToAccount(options.pk_to_register).address
-  vk.generate_viewing_key(web3, options.network_http, address, options.pk_to_register, task)
+if (options.pk_to_register) {
+  let sign = (message) => { return web3.eth.accounts.sign(message, '0x' + options.pk_to_register) }
+  let address = web3.eth.accounts.privateKeyToAccount(options.pk_to_register).address
+  vk.generate_viewing_key(sign, options.network_http, address, task)
 }
 else {
   task()

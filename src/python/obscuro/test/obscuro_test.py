@@ -2,6 +2,8 @@ import os, copy, sys
 from pysys.basetest import BaseTest
 from pysys.constants import PROJECT, BACKGROUND
 from obscuro.test.utils.properties import Properties
+from obscuro.test.helpers.wallet_extension import WalletExtension
+from obscuro.test.networks.obscuro import Obscuro
 
 
 class ObscuroTest(BaseTest):
@@ -22,6 +24,9 @@ class ObscuroTest(BaseTest):
         super().__init__(descriptor, outsubdir, runner)
         self.env = 'obscuro' if self.mode is None else self.mode
 
+        # every test runs a default wallet extension
+        if self.is_obscuro(): self.run_wallet(Obscuro.PORT, Obscuro.WS_PORT)
+
     def is_obscuro(self):
         """Return true if we are running against an Obscuro network. """
         return self.env in ['obscuro', 'obscuro.dev', 'obscuro.local', 'obscuro.sim']
@@ -29,6 +34,11 @@ class ObscuroTest(BaseTest):
     def is_obscuro_sim(self):
         """Return true if we are running against an Obscuro simulation network. """
         return self.env in ['obscuro.sim']
+
+    def run_wallet(self, port, ws_port):
+        """Run a single wallet extension for use by the tests. """
+        extension = WalletExtension(self, port, ws_port)
+        return extension.run()
 
     def run_python(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
         """Run a python process."""

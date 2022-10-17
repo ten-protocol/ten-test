@@ -14,7 +14,7 @@ function task1() {
   filter = {
     address: options.contract_address,
     topics: [
-      ethers.utils.id('ItemSet3(string,uint256,address)'),
+      ethers.utils.id('ItemSet3(string,uint256)'),
       ethers.utils.id(options.filter_key)
     ]
   }
@@ -45,10 +45,11 @@ var abi = JSON.parse(json)
 const contract = new ethers.Contract(options.contract_address, abi, provider)
 const interface = new ethers.utils.Interface(abi)
 
-if (options.pk_to_register == true) {
-  wallet = ethers.Wallet(options.pk_to_register)
-  address = wallet.getAddress()
-  vk.generate_viewing_key(web3, options.network_http, address, options.pk_to_register, task)
+if (options.pk_to_register) {
+  wallet = new ethers.Wallet('0x' + options.pk_to_register)
+  let sign = (message) => { return wallet.signMessage(message) }
+  let address = wallet.getAddress()
+  vk.generate_viewing_key(sign, options.network_http, address, task)
 }
 else {
   task()

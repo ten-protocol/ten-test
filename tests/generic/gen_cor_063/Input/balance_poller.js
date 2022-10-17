@@ -53,7 +53,8 @@ const contract = new web3.eth.Contract(abi, `${options.contract_address}`)
 const address = web3.eth.accounts.privateKeyToAccount(options.private_key).address
 
 if (options.is_obscuro == true) {
-  vk.generate_viewing_key(web3, options.network_http, address, options.private_key, get_balance)
+  let sign = (message) => { return web3.eth.accounts.sign(message, '0x' + options.private_key) }
+  vk.generate_viewing_key(sign, options.network_http, address, get_balance)
 }
 else {
   get_balance()
