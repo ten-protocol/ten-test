@@ -35,7 +35,7 @@ const contract = new ethers.Contract(options.contract_address, abi, provider)
 const interface = new ethers.utils.Interface(abi)
 
 if (options.pk_to_register) {
-  wallet = ethers.Wallet(options.pk_to_register)
+  wallet = new ethers.Wallet(options.pk_to_register)
   address = wallet.getAddress()
   vk.generate_viewing_key(web3, options.network_http, address, options.pk_to_register, task)
 }
