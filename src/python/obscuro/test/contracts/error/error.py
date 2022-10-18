@@ -17,7 +17,6 @@ class Error:
         self.abi = None
         self.abi_path = None
         self.contract = None
-        self.contract = None
         self.contract_address = None
         self.account = None
         self.construct()
