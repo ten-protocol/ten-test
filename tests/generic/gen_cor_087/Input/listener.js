@@ -7,19 +7,15 @@ require('console-stamp')(console, 'HH:MM:ss')
 
 function task() {
   console.log('Starting task ...')
-  task1()
-}
-
-function task1() {
   filter = {
     address: options.contract_address,
     topics: [
-      ethers.utils.id('ItemSet3(string,uint256)'),
+      ethers.utils.id('ItemSet1(string,uint256)'),
       ethers.utils.id(options.filter_key)
     ]
   }
   provider.on(filter, (log, event) => {
-    decoded_log = interface.decodeEventLog('ItemSet3', log.data, log.topics)
+    decoded_log = interface.decodeEventLog('ItemSet1', log.data, log.topics)
     console.log('Stored value =', decoded_log.value.toNumber())
   });
 }
@@ -38,7 +34,6 @@ commander
 
 const options = commander.opts()
 const provider = new ethers.providers.WebSocketProvider(options.network_ws)
-console.log(options.filter_keys)
 
 var json = fs.readFileSync(options.contract_abi)
 var abi = JSON.parse(json)
