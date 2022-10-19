@@ -4,15 +4,14 @@ from pysys.constants import *
 from obscuro.test.utils.properties import Properties
 
 
-class Storage:
-    """Abstraction over the test Storage smart contract."""
+class Relevancy:
+    """Abstraction over the test Relevancy smart contract."""
     GAS = 720000
 
-    def __init__(self, test, web3, initial):
-        """Create an instance of the storage contract, compile and construct a web3 instance."""
+    def __init__(self, test, web3):
+        """Create an instance of the relevancy contract, compile and construct a web3 instance."""
         self.test = test
         self.web3 = web3
-        self.initial = initial
         self.bytecode = None
         self.abi = None
         self.abi_path = None
@@ -23,7 +22,7 @@ class Storage:
 
     def construct(self):
         """Compile and construct an instance. """
-        file = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'storage', 'Storage.sol')
+        file = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'relevancy', 'Relevancy.sol')
         with open(file, 'r') as fp:
             compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'],
                                           solc_binary=Properties().solc_binary())
@@ -31,10 +30,10 @@ class Storage:
             self.bytecode = contract_interface['bin']
             self.abi = contract_interface['abi']
 
-        self.abi_path = os.path.join(self.test.output, 'storage.abi')
+        self.abi_path = os.path.join(self.test.output, 'relevancy.abi')
         with open(self.abi_path, 'w') as f: json.dump(self.abi, f)
 
-        self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor(self.initial)
+        self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor()
 
     def deploy(self, network, account):
         """Deploy the contract using a given account."""
