@@ -7,10 +7,6 @@ require('console-stamp')(console, 'HH:MM:ss')
 
 function task() {
   console.log('Starting task ...')
-  task1()
-}
-
-function task1() {
   contract.on("Stored", (value, event) => {
     console.log('Stored value =', value.toNumber())
   });
