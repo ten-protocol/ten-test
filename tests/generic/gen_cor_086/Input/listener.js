@@ -7,9 +7,22 @@ require('console-stamp')(console, 'HH:MM:ss')
 
 function task() {
   console.log('Starting task ...')
+  task1()
+  task2()
+}
+
+function task1() {
+  console.log('Starting task ...')
   filter = contract.filters.ItemSet1(options.filter_key, null)
   contract.on(filter, (key, value, event) => {
     console.log('ItemSet1, stored value =', value.toNumber())
+  });
+}
+
+function task2() {
+  filter = contract.filters.ItemSet2(null, options.filter_value)
+  contract.on(filter, (key, value, event) => {
+    console.log('ItemSet2, stored value =', value.toNumber())
   });
 }
 
@@ -20,6 +33,7 @@ commander
   .option('--network_ws <value>', 'Web socket connection URL to the network')
   .option('--contract_address <value>', 'The contract address')
   .option('--contract_abi <value>', 'The contract ABI')
+  .option('--filter_value <value>', 'Value to filter on')
   .option('--filter_key <value>', 'Key to filter on')
   .option('--pk_to_register <value>', 'Private key used to register for a viewing key (obscuro only)')
   .parse(process.argv)

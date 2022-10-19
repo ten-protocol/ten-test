@@ -10,12 +10,12 @@ function task() {
   filter = {
     address: options.contract_address,
     topics: [
-      ethers.utils.id('ItemSet1(string,uint256)'),
+      ethers.utils.id('ItemSet3(string,uint256)'),
       ethers.utils.id(options.filter_key)
     ]
   }
   provider.on(filter, (log, event) => {
-    decoded_log = interface.decodeEventLog('ItemSet1', log.data, log.topics)
+    decoded_log = interface.decodeEventLog('ItemSet3', log.data, log.topics)
     console.log('Stored value =', decoded_log.value.toNumber())
   });
 }

@@ -5,7 +5,7 @@
         <title>Events: web3js client using eth.subscribe on logs for event and range of values</title>
         <purpose><![CDATA[]]>
 Uses the general subscriber script to subscribe to a particular event, for a combination of particular values in an
-indexed string parameter field.
+indexed parameter field.
         </purpose>
     </description>
 
