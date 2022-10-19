@@ -45,9 +45,9 @@ class PySysTest(ObscuroTest):
 
         # wait and validate - filter on key is r1
         # event ItemSet1(string indexed key, uint256 value)
-        self.waitForGrep(file=stdout, expr='Task:', condition='== 2', timeout=10)
-        self.assertOrderedGrep(file=stdout, exprList=['Task: 1', 'Task: 10',])
-
+        self.waitForGrep(file=stdout, expr='ItemSet1 =', condition='== 2', timeout=10)
+        self.assertOrderedGrep(file=stdout, exprList=['ItemSet1 = 1', 'ItemSet1 = 10'])
+        self.assertGrep(file=stdout, expr='Stored', contains=False)
 
 
 

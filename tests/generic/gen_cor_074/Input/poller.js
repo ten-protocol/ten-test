@@ -21,7 +21,7 @@ function task1(from) {
         if (events.length) {
             for (var i = 0, len = events.length; i < len; i+=1) {
                 value = events[i].returnValues['value']
-                console.log('Task:', value)
+                console.log(events[i].event, '=', value)
                 from = events[i].blockNumber+1
             }
         }
