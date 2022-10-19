@@ -2,24 +2,19 @@
 <pysystest type="auto">
 
     <description>
-        <title>Events: web3js client using eth.subscribe on logs for event and range of values</title>
-        <purpose><![CDATA[]]>
-Uses the general subscriber script to subscribe to a particular event, for a combination of particular values in an
-indexed string parameter field.
+        <title>Event relevancy</title>
+        <purpose><![CDATA[
+]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>events</group>
-            <group>web3js</group>
+            <group></group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
-            <mode>obscuro.sim</mode>
-            <mode>ropsten</mode>
-            <mode>ganache</mode>
         </modes>
     </classification>
 

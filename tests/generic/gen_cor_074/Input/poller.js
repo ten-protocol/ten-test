@@ -7,7 +7,6 @@ require('console-stamp')(console, 'HH:MM:ss')
 
 function task() {
   task1(0)
-  task2(0)
   console.log('Started tasks')
 }
 
@@ -22,32 +21,11 @@ function task1(from) {
         if (events.length) {
             for (var i = 0, len = events.length; i < len; i+=1) {
                 value = events[i].returnValues['value']
-                console.log('Task1:', value)
+                console.log(events[i].event, '=', value)
                 from = events[i].blockNumber+1
             }
         }
         task1(from)
-    })
-  }, 1000)
-}
-
-function task2(from) {
-  setTimeout(function() {
-    contract.getPastEvents('ItemSet2', {
-      fromBlock: from,
-      toBlock: 'latest',
-      filter: {value: [2,3]}
-    })
-    .then(function(events) {
-        if (events.length) {
-            for (var i = 0, len = events.length; i < len; i+=1) {
-                key = events[i].returnValues['key']
-                value = events[i].returnValues['value']
-                console.log('Task2:', key, value)
-                from = events[i].blockNumber+1
-            }
-        }
-        task2(from)
     })
   }, 1000)
 }

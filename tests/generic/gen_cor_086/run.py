@@ -30,7 +30,6 @@ class PySysTest(ObscuroTest):
         args.extend(['--network_ws', ws_url])
         args.extend(['--contract_address', '%s' % storage.contract_address])
         args.extend(['--contract_abi', '%s' % storage.abi_path])
-        args.extend(['--filter_value', '2'])
         args.extend(['--filter_key', 'k2'])
         if self.is_obscuro(): args.extend(['--pk_to_register', '%s' % Properties().account3pk()])
         self.run_javascript(script, stdout, stderr, args)
@@ -45,13 +44,9 @@ class PySysTest(ObscuroTest):
         network.transact(self, web3, storage.contract.functions.setItem('r2', 2), account, storage.GAS)
 
         # wait and validate
-        self.waitForGrep(file=stdout, expr='stored value = [0-9]$', condition='== 3', timeout=20)
+        self.waitForGrep(file=stdout, expr='stored value = [0-9]$', condition='== 1', timeout=20)
 
         # contract.filters.ItemSet1(options.filter_key, null) - key is k2
         expr_list = ['ItemSet1, stored value = 4']
-        self.assertOrderedGrep(file=stdout, exprList=expr_list)
-
-        # contract.filters.ItemSet2(null, options.filter_value) - value is 2
-        expr_list = ['ItemSet2, stored value = 2', 'ItemSet2, stored value = 2']
         self.assertOrderedGrep(file=stdout, exprList=expr_list)
 
