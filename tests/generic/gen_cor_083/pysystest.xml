@@ -8,6 +8,8 @@ Filters on events from a particular contract, and subscribes and unsubscribes.
         </purpose>
     </description>
 
+    <skipped reason="https://github.com/obscuronet/obscuro-internal/issues/1076"/>
+
     <classification>
         <groups inherit="true">
             <group>events</group>
