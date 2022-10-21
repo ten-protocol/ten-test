@@ -8,6 +8,8 @@ Uses the general subscriber script to subscribe to a particular event from a par
         </purpose>
     </description>
 
+    <skipped reason="https://github.com/obscuronet/obscuro-internal/issues/1083"/>
+
     <classification>
         <groups inherit="true">
             <group>events</group>
