@@ -18,15 +18,15 @@ class EventLogSubscriber:
             network_http=None, network_ws=None):
         """Run a javascript client event log subscriber. """
         if network_ws is None:
-            ws_url = self.network.connection_url(web_socket=True)
-            if self.test.PROXY: network_ws = WebServerProxy.create(self.test).run(ws_url, 'proxy.logs')
+            network_ws = self.network.connection_url(web_socket=True)
+            if self.test.PROXY: network_ws = WebServerProxy.create(self.test).run(network_ws, 'proxy.logs')
 
         if network_http is None:
             network_http = self.network.connection_url(web_socket=False)
 
         args = []
         args.extend(['--script_server_port', '%d' % self.port])
-        args.extend(['--network_http', network_http])
+        args.extend(['--network_http', '%s' % network_http])
         args.extend(['--network_ws', network_ws])
         if filter_from_block: args.extend(['--filter_from_block', '%d' % filter_from_block])
         if filter_address: args.extend(['--filter_address', filter_address])
