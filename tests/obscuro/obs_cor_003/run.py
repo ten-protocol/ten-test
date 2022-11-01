@@ -21,9 +21,9 @@ class PySysTest(ObscuroTest):
 
         # run the javascript event log subscriber in the background for the other accounts
         self.subscribe(network, Properties().gameuserpk(), 'gameuser', contract)
-        self.subscribe_separate_wallet(Properties().account1pk(), 'account1', contract)
-        self.subscribe_separate_wallet(Properties().account2pk(), 'account2', contract)
-        self.subscribe_separate_wallet(Properties().account3pk(), 'account3', contract)
+        self.subscribe(network, Properties().account1pk(), 'account1', contract)
+        self.subscribe(network, Properties().account2pk(), 'account2', contract)
+        self.subscribe(network, Properties().account3pk(), 'account3', contract)
         self.wait(2)
 
         # perform some transactions
@@ -49,22 +49,18 @@ class PySysTest(ObscuroTest):
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
 
-    def subscribe_separate_wallet(self, pk_to_register, name, contract):
+    def subscribe_separate_wallet(self, network, pk_to_register, name):
         # create a unique wallet extension for this client
         http_port = self.getNextAvailableTCPPort()
         ws_port = self.getNextAvailableTCPPort()
         extension = WalletExtension(self, http_port, ws_port, name=name)
         extension.run()
 
-        # run a background script to filter and collect events
-        stdout = os.path.join(self.output, 'subscriber_%s.out' % name)
-        stderr = os.path.join(self.output, 'subscriber_%s.err' % name)
-        script = os.path.join(self.input, 'subscriber.js')
-        args = []
-        args.extend(['--network_http', http_port])
-        args.extend(['--network_ws', ws_port])
-        args.extend(['--contract_address', contract.contract_address])
-        args.extend(['--contract_abi', contract.abi_path])
-        args.extend(['--pk_to_register', pk_to_register])
-        self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
+        # run the javascript event log subscriber in the background
+        subscriber = EventLogSubscriber(self, network, stdout='subscriber_%s.out' % name, stderr='subscriber_%s.err' % name)
+        subscriber.run(
+            network_ws='ws://127.0.0.1:%d' % ws_port,
+            network_http='http://127.0.0.1:%d' % http_port,
+            pk_to_register=pk_to_register
+        )
+        subscriber.subscribe()
