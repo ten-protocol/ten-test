@@ -29,7 +29,6 @@ commander
   .usage('[OPTIONS]...')
   .option('--network_http <value>', 'Http connection URL to the network')
   .option('--network_ws <value>', 'Web socket connection URL to the network')
-  .option('--filter_address <value>', 'The contract address to filter on')
   .option('--filter_key1 <value>', 'The first key value to filter on')
   .option('--filter_key2 <value>', 'The second key value to filter on')
   .option('--pk_to_register <value>', 'Private key used to register for a viewing key (obscuro only)', null)
