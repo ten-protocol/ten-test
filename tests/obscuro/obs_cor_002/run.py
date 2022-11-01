@@ -29,6 +29,7 @@ class PySysTest(ObscuroTest):
         # perform some transactions
         self.log.info('Performing transactions ... ')
         network.transact(self, web3, contract.contract.functions.callerIndexedAddress(), account, contract.GAS)
+        self.wait(2)
         self.waitForGrep(file='subscriber_gameuser.out', expr='Received event: CallerIndexedAddress', timeout=10)
         self.assertGrep(file='subscriber_gameuser.out', expr='Received event: CallerIndexedAddress')
         self.assertGrep(file='subscriber_account1.out', expr='Received event: CallerIndexedAddress', contains=False)
@@ -61,8 +62,8 @@ class PySysTest(ObscuroTest):
         stderr = os.path.join(self.output, 'subscriber_%s.err' % name)
         script = os.path.join(self.input, 'subscriber.js')
         args = []
-        args.extend(['--network_http', http_port])
-        args.extend(['--network_ws', ws_port])
+        args.extend(['--network_http', 'http://127.0.0.1:%d' % http_port])
+        args.extend(['--network_ws', 'ws://127.0.0.1:%d' % ws_port])
         args.extend(['--contract_address', contract.contract_address])
         args.extend(['--contract_abi', contract.abi_path])
         args.extend(['--pk_to_register', pk_to_register])
