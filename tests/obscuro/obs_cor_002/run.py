@@ -24,20 +24,28 @@ class PySysTest(ObscuroTest):
         contract = Relevancy(self, web3)
         contract.deploy(network, account)
 
-        # run the javascript event log subscriber in the background
-        subscriber = EventLogSubscriber(self, network)
+        # we have a subscriber through the main wallet extension using same account as the one to deploy
+        subscriber = EventLogSubscriber(self, network, stdout='subscriber_gameuser.out', stderr='subscriber_gameuser.err')
         subscriber.run(pk_to_register=Properties().gameuserpk())
         subscriber.subscribe()
 
-        self.subscribe(network, Properties().account1pk(), 'account1')
-        self.subscribe(network, Properties().account2pk(), 'account2')
-        self.subscribe(network, Properties().account3pk(), 'account3')
+        # run the javascript event log subscriber in the background for the other accounts
+        subscribe = self.subscribe_separate_wallet
+        subscribe(network, Properties().account1pk(), 'account1')
+        subscribe(network, Properties().account2pk(), 'account2')
+        subscribe(network, Properties().account3pk(), 'account3')
 
         # perform some transactions
+        self.log.info('Performing transactions ... ')
         network.transact(self, web3, contract.contract.functions.callerIndexedAddress(), account, contract.GAS)
         self.wait(2)
 
     def subscribe(self, network, pk_to_register, name):
+        subscriber = EventLogSubscriber(self, network, stdout='subscriber_%s.out' % name, stderr='subscriber_%s.err' % name)
+        subscriber.run(pk_to_register=pk_to_register)
+        subscriber.subscribe()
+
+    def subscribe_separate_wallet(self, network, pk_to_register, name):
         # create a unique wallet extension for this client
         http_port = self.getNextAvailableTCPPort()
         ws_port = self.getNextAvailableTCPPort()
