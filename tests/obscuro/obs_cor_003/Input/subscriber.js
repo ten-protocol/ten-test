@@ -16,6 +16,9 @@ function task() {
       }
     }
   )
+  .on('connected', function(subscriptionId){
+      console.log('Subscription confirmed with id:', subscriptionId);
+  })
 }
 
 commander

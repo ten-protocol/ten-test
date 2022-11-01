@@ -1,10 +1,8 @@
 import os
-from web3 import Web3
 from obscuro.test.obscuro_test import ObscuroTest
 from obscuro.test.networks.obscuro import Obscuro
 from obscuro.test.utils.properties import Properties
 from obscuro.test.contracts.relevancy.relevancy import Relevancy
-from obscuro.test.helpers.log_subscriber import EventLogSubscriber
 from obscuro.test.helpers.wallet_extension import WalletExtension
 
 
@@ -24,12 +22,10 @@ class PySysTest(ObscuroTest):
         self.subscribe_separate_wallet(Properties().account1pk(), 'account1', contract)
         self.subscribe_separate_wallet(Properties().account2pk(), 'account2', contract)
         self.subscribe_separate_wallet(Properties().account3pk(), 'account3', contract)
-        self.wait(2)
 
         # perform some transactions
         self.log.info('Performing transactions ... ')
         network.transact(self, web3, contract.contract.functions.callerIndexedAddress(), account, contract.GAS)
-        self.wait(2)
         self.waitForGrep(file='subscriber_gameuser.out', expr='Received event: CallerIndexedAddress', timeout=10)
         self.assertGrep(file='subscriber_gameuser.out', expr='Received event: CallerIndexedAddress')
         self.assertGrep(file='subscriber_account1.out', expr='Received event: CallerIndexedAddress', contains=False)
@@ -68,4 +64,4 @@ class PySysTest(ObscuroTest):
         args.extend(['--contract_abi', contract.abi_path])
         args.extend(['--pk_to_register', pk_to_register])
         self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
+        self.waitForGrep(file=stdout, expr='Subscription confirmed with id:', timeout=10)
