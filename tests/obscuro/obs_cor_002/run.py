@@ -26,6 +26,7 @@ class PySysTest(ObscuroTest):
         # perform some transactions
         self.log.info('Performing transactions ... ')
         network.transact(self, web3, contract.contract.functions.callerIndexedAddress(), account, contract.GAS)
+        self.wait(5)
         self.waitForGrep(file='subscriber_gameuser.out', expr='Received event: CallerIndexedAddress', timeout=10)
         self.assertGrep(file='subscriber_gameuser.out', expr='Received event: CallerIndexedAddress')
         self.assertGrep(file='subscriber_account1.out', expr='Received event: CallerIndexedAddress', contains=False)
