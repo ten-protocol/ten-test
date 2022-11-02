@@ -6,15 +6,17 @@ from obscuro.test.networks.obscuro import Obscuro
 
 class WalletExtension:
 
-    def __init__(self, test, port=None, ws_port=None):
+    def __init__(self, test, port=None, ws_port=None, name=None):
         """Create an instance of the event log subscriber."""
         self.test = test
         self.port = port if port is not None else test.getNextAvailableTCPPort()
         self.ws_port = ws_port if ws_port is not None else test.getNextAvailableTCPPort()
-        self.logPath = os.path.join(test.output, 'wallet_%d_logs.txt' % port)
-        self.persistencePath = os.path.join(test.output, 'wallet_%d_persistence' % port)
-        self.stdout = os.path.join(test.output, 'wallet_%d.out' % port)
-        self.stderr = os.path.join(test.output, 'wallet_%d.err' % port)
+
+        if name is None: name = str(port)
+        self.logPath = os.path.join(test.output, 'wallet_%s_logs.txt' % name)
+        self.persistencePath = os.path.join(test.output, 'wallet_%s_persistence' % name)
+        self.stdout = os.path.join(test.output, 'wallet_%s.out' % name)
+        self.stderr = os.path.join(test.output, 'wallet_%s.err' % name)
         self.binary = os.path.join(PROJECT.root, 'artifacts', 'wallet_extension')
 
         if os.path.exists(self.persistencePath):

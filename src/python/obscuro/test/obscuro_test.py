@@ -37,7 +37,7 @@ class ObscuroTest(BaseTest):
 
     def run_wallet(self, port, ws_port):
         """Run a single wallet extension for use by the tests. """
-        extension = WalletExtension(self, port, ws_port)
+        extension = WalletExtension(self, port, ws_port, name='primary')
         return extension.run()
 
     def run_python(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):

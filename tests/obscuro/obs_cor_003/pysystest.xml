@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Event relevancy - four subscriptions through single WE, event is relevant to account registered last</title>
+        <purpose><![CDATA[
+The game user account deploys the Relevancy contract, calls the method on the contract to emit the CallerIndexedAddress
+with addr = the user account address. The following accounts are used to register (in this order) + the subscription
+and event emission;
+
+  Account 1 - shared wallet extension
+  Account 2 - shared wallet extension
+  Account 3 - shared wallet extension
+  Game User - shared wallet extension
+
+  Subscribe for the CallerIndexedAddress event which contains a single indexed address field (all)
+  Event is emitted containing address of user account
+
+Under this sequence currently the event is not decrypted and sent back to the subscription id, as it by default binds
+to the first registered key.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group></group>
+        </groups>
+        <modes inherit="true">
+            <mode>obscuro.dev</mode>
+            <mode>obscuro.local</mode>
+            <mode>obscuro.sim</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
