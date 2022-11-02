@@ -41,6 +41,9 @@ class Properties:
         return path
 
     # common to all environments
+    def block_time_secs(self, key):
+        return self.get('env.'+key, 'BlockTimeSecs')
+
     def account1pk(self):
         return self.get('env.all', 'Account1PK')
 

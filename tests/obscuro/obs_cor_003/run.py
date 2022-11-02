@@ -9,6 +9,8 @@ from obscuro.test.contracts.relevancy.relevancy import Relevancy
 class PySysTest(ObscuroTest):
 
     def execute(self):
+        block_time=Properties().block_time_secs(self.env)
+
         # connect to network
         network = Obscuro
 
@@ -42,7 +44,7 @@ class PySysTest(ObscuroTest):
 
         # we would expect that given the game user vk is registered it can be decrypted
         try:
-            self.waitForGrep(file='subscriber.out', expr='Received event: CallerIndexedAddress', timeout=20)
+            self.waitForGrep(file='subscriber.out', expr='Received event: CallerIndexedAddress', timeout=block_time)
         except:
             self.log.error('TImed out waiting for CallerIndexedAddress event log in subscriber')
             self.addOutcome(FAILED)
