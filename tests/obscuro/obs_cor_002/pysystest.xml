@@ -2,8 +2,18 @@
 <pysystest type="auto">
 
     <description>
-        <title>Event relevancy - event relevant to single address, multiple addresses have VK through multiple WEs</title>
+        <title>Event relevancy - four subscriptions through unique WE for each, event is relevant to only one</title>
         <purpose><![CDATA[
+The game user account deploys the Relvancy contract, calls the method on the contract to emit the CallerIndexedAddress
+with addr = the useraccount address. The following accounts are used (in this order)
+
+  Game User  - own wallet extension
+  Account 1  - own wallet extension
+  Account 2  - own wallet extension
+  Account 3  - own wallet extension
+
+where each account subscribes to all events on the contract using contract.events.allEvents. The result is that only
+the subscription made on the game user account sees the event (as expected).
 ]]>
         </purpose>
     </description>
@@ -15,6 +25,7 @@
         <modes inherit="true">
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
+            <mode>obscuro.sim</mode>
         </modes>
     </classification>
 

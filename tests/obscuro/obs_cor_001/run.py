@@ -1,5 +1,5 @@
 import json, os
-from pysys.constants import PROJECT
+from pysys.constants import PROJECT, PASSED
 from obscuro.test.obscuro_test import ObscuroTest
 from obscuro.test.utils.properties import Properties
 from obscuro.test.networks.obscuro import Obscuro
@@ -41,3 +41,6 @@ class PySysTest(ObscuroTest):
             else:
                 self.log.info('Prize funds is %d ' % game.functions.getBalance().call())
                 self.log.info('User balance is %d' % token.functions.balanceOf(account.address).call())
+
+        # if we get this far we have been able to play the game
+        self.addOutcome(PASSED)

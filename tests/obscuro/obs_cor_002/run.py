@@ -26,9 +26,15 @@ class PySysTest(ObscuroTest):
         # perform some transactions
         self.log.info('Performing transactions ... ')
         network.transact(self, web3, contract.contract.functions.callerIndexedAddress(), account, contract.GAS)
+
+        # unpleasant sleep but want to ensure transaction is propagated
         self.wait(5)
+
+        # wait and assert that the game user does see this event
         self.waitForGrep(file='subscriber_gameuser.out', expr='Received event: CallerIndexedAddress', timeout=10)
         self.assertGrep(file='subscriber_gameuser.out', expr='Received event: CallerIndexedAddress')
+
+        # ensure that the other users don't see it
         self.assertGrep(file='subscriber_account1.out', expr='Received event: CallerIndexedAddress', contains=False)
         self.assertGrep(file='subscriber_account2.out', expr='Received event: CallerIndexedAddress', contains=False)
         self.assertGrep(file='subscriber_account3.out', expr='Received event: CallerIndexedAddress', contains=False)
@@ -45,7 +51,7 @@ class PySysTest(ObscuroTest):
         args.extend(['--contract_abi', contract.abi_path])
         args.extend(['--pk_to_register', pk_to_register])
         self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
+        self.waitForGrep(file=stdout, expr='Subscription confirmed with id:', timeout=10)
 
     def subscribe_separate_wallet(self, pk_to_register, name, contract):
         # create a unique wallet extension for this client

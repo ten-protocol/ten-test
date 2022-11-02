@@ -6,7 +6,6 @@ const vk = require('viewing_key.js')
 require('console-stamp')(console, 'HH:MM:ss')
 
 function task() {
-  console.log('Starting task ...')
   contract.events.allEvents({fromBlock:'latest'},
     function(error, result) {
       if (error) {
