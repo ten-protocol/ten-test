@@ -75,14 +75,13 @@ you must first change directory into the `obscuro-test\admin` directory and run 
 
 ```bash
 # to allocate on Obscuro testnet
-pysys.py run fund_layer_one
-pysys.py run fund_layer_two
-pysys.py run fund_test_users
+pysys.py run fund_layer_* fund_test_users
 
 # to allocate on Obscuro dev-testnet
-pysys.py run -m obscuro.dev fund_layer_one
-pysys.py run -m obscuro.dev fund_layer_two
-pysys.py run -m obscuro.dev fund_test_users
+pysys.py run -m obscuro.dev fund_layer_* fund_test_users
+
+# to allocate on Obscuro simulation
+pysys.py run -m obscuro.sim fund_layer_* fund_test_users
 ```
 
 See [admin\README.md](admin\README.md]) for more details. 
@@ -106,6 +105,9 @@ pysys.py run
 
 # run the tests against Obscuro dev-testnet
 pysys.py run -m obscuro.dev 
+
+# run the tests against Obscuro simulation
+pysys.py run -m obscuro.sim
 
 # run the tests against a local ganache network 
 pysys.py run -m ganache
