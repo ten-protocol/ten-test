@@ -2,7 +2,7 @@ from obscuro.test.obscuro_test import ObscuroTest
 from obscuro.test.contracts.storage.storage import Storage
 from obscuro.test.contracts.storage.key_storage import KeyStorage
 from obscuro.test.networks.factory import NetworkFactory
-from obscuro.test.helpers.log_subscriber import EventLogSubscriber
+from obscuro.test.helpers.log_subscriber import FilterLogSubscriber
 from obscuro.test.utils.properties import Properties
 
 
@@ -21,7 +21,7 @@ class PySysTest(ObscuroTest):
         key_storage.deploy(network, account)
 
         # run the javascript event log subscriber in the background
-        subscriber = EventLogSubscriber(self, network)
+        subscriber = FilterLogSubscriber(self, network)
         subscriber.run(
             pk_to_register=Properties().account3pk(),
             filter_topics=[web3.keccak(text='Stored(uint256)').hex()]

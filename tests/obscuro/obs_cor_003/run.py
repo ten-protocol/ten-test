@@ -42,6 +42,9 @@ class PySysTest(ObscuroTest):
         self.log.info('Performing transactions ... ')
         network.transact(self, web3, contract.contract.functions.callerIndexedAddress(), account, contract.GAS)
 
+        # unpleasant sleep the block time + 10%
+        self.wait(float(block_time)*1.1)
+
         # we would expect that given the game user vk is registered it can be decrypted
         try:
             self.waitForGrep(file='subscriber.out', expr='Received event: CallerIndexedAddress', timeout=block_time)
