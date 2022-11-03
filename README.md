@@ -11,7 +11,7 @@
 
 Project repo for running end to end system tests against a variety of networks, with [obscuro](https://obscu.ro/) being 
 the primary network under test. Other networks supported include [ganache](https://trufflesuite.com/ganache/), 
-[ropsten via infura](https://infura.io/), and [geth](https://geth.ethereum.org/docs/getting-started). The repo uses the 
+[goerli via infura](https://infura.io/), and [geth](https://geth.ethereum.org/docs/getting-started). The repo uses the 
 [pysys](https://pysys-test.github.io/pysys-test/) test framework to manage all tests and their execution. All tests are 
 fully system level using [web3.py](https://web3py.readthedocs.io/en/stable/) to interact with the networks which are 
 managed outside the scope of the tests (with the exception of ganache which can be started locally). Note the project is 
@@ -113,27 +113,27 @@ pysys.py run -m obscuro.sim
 pysys.py run -m ganache
 ```
 
-To run the same tests against Ropsten, a `.username.properties` file should be created in the root of the working 
+To run the same tests against Goerli, a `.username.properties` file should be created in the root of the working 
 directory of the project (where `username` is the output of running `whoami`), and the following properties should be added 
 as based on details relevant to the user; 
 
 ```
-[all]
+[env.all]
 Account1PK=<private key of account 1 available e.g. via metamask>
 Account2PK=<private key of account 2>
 Account3PK=<private key of account 3>
 GameUserPK=<private key of account 4>
 
-[ropsten]
+[env.goerli]
 ProjectID=<project ID>
 ```
 
-These need to be real accounts to run on Ropsten, whereas for Ganache and Obscuro, currently default ones can be used 
-as detailed in [.default.properties](./.default.properties). To run the tests against Ropsten use;
+These need to be real accounts to run on Goerli, whereas for Ganache and Obscuro, currently default ones can be used 
+as detailed in [.default.properties](./.default.properties). To run the tests against Goerli use;
 
 ```bash
-# run the tests against ropsten
-pysys.py run -m ropsten
+# run the tests against goerli
+pysys.py run -m goerli
 ```
 
 Running a specific test or range of tests

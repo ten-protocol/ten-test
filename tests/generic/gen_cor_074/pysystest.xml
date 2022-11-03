@@ -19,7 +19,7 @@ string value and specify it in the topic list as part of the bloom filters.
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
             <mode>obscuro.sim</mode>
-            <mode>ropsten</mode>
+            <mode>goerli</mode>
             <mode>ganache</mode>
         </modes>
     </classification>

@@ -41,6 +41,7 @@ class PySysTest(ObscuroTest):
         network.transact(self, web3, key_storage.contract.functions.setItem('k3', 304), account, key_storage.GAS)
         network.transact(self, web3, key_storage.contract.functions.setItem('k2', 205), account, key_storage.GAS)
         network.transact(self, web3, key_storage.contract.functions.setItem('k1', 106), account, key_storage.GAS)
+        self.wait(float(self.block_time) * 1.1)
 
         # wait and validate
         self.waitForGrep(file=stdout, expr='Stored value = [0-9]{3}$', condition='== 4', timeout=20)

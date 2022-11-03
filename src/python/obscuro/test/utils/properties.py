@@ -98,4 +98,4 @@ class Properties:
 
     # infura related
     def infuraProjectID(self):
-        return self.get('env.ropsten', 'ProjectID')
+        return self.get('env.goerli', 'ProjectID')

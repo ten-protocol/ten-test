@@ -11,12 +11,14 @@ function task() {
 }
 
 function task1(from) {
+  console.log('Getting past events from', from, 'to latest')
   setTimeout(function() {
     contract.getPastEvents('Stored', { fromBlock: from, toBlock: 'latest'})
     .then(function(events) {
         if (events.length) {
             for (var i = 0, len = events.length; i < len; i+=1) {
                 console.log('Stored value =', events[i].returnValues['value'])
+                console.log('Block number of event log is  ', events[i].blockNumber)
                 from = events[i].blockNumber+1
             }
         }

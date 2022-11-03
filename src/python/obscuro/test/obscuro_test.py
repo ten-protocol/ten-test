@@ -23,6 +23,7 @@ class ObscuroTest(BaseTest):
         """Call the parent constructor but set the mode to obscuro if non is set. """
         super().__init__(descriptor, outsubdir, runner)
         self.env = 'obscuro' if self.mode is None else self.mode
+        self.block_time = Properties().block_time_secs(self.env)
 
         # every test runs a default wallet extension
         if self.is_obscuro(): self.run_wallet(Obscuro.PORT, Obscuro.WS_PORT)

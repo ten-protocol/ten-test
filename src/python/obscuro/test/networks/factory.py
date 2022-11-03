@@ -1,5 +1,5 @@
 from obscuro.test.networks.ganache import Ganache
-from obscuro.test.networks.ropsten import Ropsten
+from obscuro.test.networks.goerli import Goerli
 from obscuro.test.networks.obscuro import Obscuro
 from obscuro.test.networks.obscuro import ObscuroL1, ObscuroL1Local, ObscuroL1Dev, ObscuroL1Sim
 
@@ -16,8 +16,8 @@ class NetworkFactory:
             return Obscuro
         elif environment == 'obscuro.sim':
             return Obscuro
-        elif environment == 'ropsten':
-            return Ropsten
+        elif environment == 'goerli':
+            return Goerli
         elif environment == 'ganache':
             return Ganache
         return Obscuro

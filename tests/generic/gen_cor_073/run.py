@@ -37,7 +37,7 @@ class PySysTest(ObscuroTest):
         # perform some transactions with a sleep in between
         for i in range(0,5):
             network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS)
-            time.sleep(1.0)
+        self.wait(float(self.block_time) * 1.1)
 
         # wait and validate
         self.waitForGrep(file=stdout, expr='Stored value = [0-9]$', condition='== 5', timeout=20)

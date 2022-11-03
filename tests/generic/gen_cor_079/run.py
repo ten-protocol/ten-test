@@ -34,6 +34,7 @@ class PySysTest(ObscuroTest):
         network.transact(self, web3, storage.contract.functions.store(2), account, storage.GAS)
         network.transact(self, web3, storage.contract.functions.store(3), account, storage.GAS)
         network.transact(self, web3, storage.contract.functions.store(4), account, storage.GAS)
+        self.wait(float(self.block_time) * 1.1)
 
         # perform some transactions on the key storage contract
         network.transact(self, web3, key_storage.contract.functions.storeItem(100), account, storage.GAS)
