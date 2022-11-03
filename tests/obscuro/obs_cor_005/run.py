@@ -29,7 +29,7 @@ class PySysTest(ObscuroTest):
         self.wait(float(self.block_time) * 1.1)
 
         # wait and assert that the game user does see this event
-        self.waitForGrep(file='subscriber_gameuser.out', expr='Received event: NonIndexedAddressAndNumber', timeout=block_time)
+        self.waitForGrep(file='subscriber_gameuser.out', expr='Received event: NonIndexedAddressAndNumber', timeout=20)
         self.assertGrep(file='subscriber_gameuser.out', expr='Received event: NonIndexedAddressAndNumber')
 
         # ensure that the other users don't see it

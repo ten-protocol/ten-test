@@ -33,11 +33,11 @@ class PySysTest(ObscuroTest):
         self.wait(float(self.block_time)*1.1)
 
         # wait and assert that the game user does see this event
-        self.waitForGrep(file='subscriber_gameuser.out', expr='Received event: TwoIndexedAddresses', timeout=block_time)
+        self.waitForGrep(file='subscriber_gameuser.out', expr='Received event: TwoIndexedAddresses', timeout=20)
         self.assertGrep(file='subscriber_gameuser.out', expr='Received event: TwoIndexedAddresses')
 
         # wait and assert that account1 does see this event
-        self.waitForGrep(file='subscriber_account1.out', expr='Received event: TwoIndexedAddresses', timeout=block_time)
+        self.waitForGrep(file='subscriber_account1.out', expr='Received event: TwoIndexedAddresses', timeout=20)
         self.assertGrep(file='subscriber_account1.out', expr='Received event: TwoIndexedAddresses')
 
         # assert that the other two users do not see the event
