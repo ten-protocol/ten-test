@@ -29,8 +29,6 @@ class PySysTest(ObscuroTest):
         # perform some transactions
         self.log.info('Performing transactions ... ')
         network.transact(self, web3, contract.contract.functions.callerIndexedAddress(), account, contract.GAS)
-
-        # unpleasant sleep the block time + 10%
         self.wait(float(block_time)*1.1)
 
         # wait and assert that the game user does see this event
