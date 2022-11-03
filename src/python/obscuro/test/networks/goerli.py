@@ -1,12 +1,11 @@
-from web3 import Web3
 from obscuro.test.utils.properties import Properties
 from obscuro.test.networks.default import Default
 
 
-class Ropsten(Default):
-    """A Ropsten node giving access to the underlying network."""
-    HOST = 'https://ropsten.infura.io/v3'
-    WS_HOST = 'wss://ropsten.infura.io/ws/v3'
+class Goerli(Default):
+    """A Goerli node giving access to the underlying network."""
+    HOST = 'https://goerli.infura.io/v3'
+    WS_HOST = 'wss://goerli.infura.io/ws/v3'
 
     @classmethod
     def chain_id(cls): return 3

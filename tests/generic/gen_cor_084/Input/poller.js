@@ -12,11 +12,13 @@ function task() {
 
 function task1(from) {
   setTimeout(async function() {
+    console.log('Getting past events from', from, 'to latest')
     const events = await contract.queryFilter('Stored', from, 'latest')
     if (events.length) {
       for (var i = 0, len = events.length; i < len; i+=1) {
         log = interface.decodeEventLog('Stored', events[i].data, events[i].topics)
         console.log('Stored value =', log.value.toNumber())
+        console.log('Block number of event log is  ', events[i].blockNumber)
         from = events[i].blockNumber+1
       }
     }
