@@ -4,11 +4,13 @@ from obscuro.test.obscuro_test import ObscuroTest
 from obscuro.test.networks.obscuro import Obscuro
 from obscuro.test.utils.properties import Properties
 from obscuro.test.contracts.relevancy.relevancy import Relevancy
-
+from obscuro.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 class PySysTest(ObscuroTest):
 
     def execute(self):
+        block_time=Properties().block_time_secs(self.env)
+
         # connect to network
         network = Obscuro
 
@@ -24,25 +26,17 @@ class PySysTest(ObscuroTest):
         contract.deploy(network, account)
 
         # run a background script to filter and collect events (this is not tied to any account)
-        stdout = os.path.join(self.output, 'subscriber.out')
-        stderr = os.path.join(self.output, 'subscriber.err')
-        script = os.path.join(self.input, 'subscriber.js')
-        args = []
-        args.extend(['--network_http', network.connection_url(web_socket=False)])
-        args.extend(['--network_ws', network.connection_url(web_socket=True)])
-        args.extend(['--contract_address', contract.contract_address])
-        args.extend(['--contract_abi', contract.abi_path])
-        args.extend(['--pk_to_register', Properties().gameuserpk()])
-        self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Subscription confirmed', timeout=10)
+        subscriber = AllEventsLogSubscriber(self, network, contract)
+        subscriber.run(Properties().gameuserpk(), network.connection_url(), network.connection_url(web_socket=True))
 
         # perform some transactions as the game user, resulting in an event with the game user address included
         self.log.info('Performing transactions ... ')
         network.transact(self, web3, contract.contract.functions.callerIndexedAddress(), account, contract.GAS)
+        self.wait(float(block_time)*1.1)
 
         # we would expect that given the game user vk is registered it can be decrypted
         try:
-            self.waitForGrep(file='subscriber.out', expr='Received event: CallerIndexedAddress', timeout=20)
+            self.waitForGrep(file='subscriber.out', expr='Received event: CallerIndexedAddress', timeout=block_time)
         except:
             self.log.error('TImed out waiting for CallerIndexedAddress event log in subscriber')
             self.addOutcome(FAILED)

@@ -4,9 +4,8 @@ pragma solidity ^0.8.0;
 contract Relevancy {
     event CallerIndexedAddress(address indexed addr);
     event TwoIndexedAddresses(address indexed addr1, address indexed addr2);
-    event OneIndexedAddress(address indexed addr1, address addr2);
+    event NonIndexedAddressAndNumber(address addr1, uint256 value);
     event IndexedAddressAndNumber(address indexed addr, uint256 value);
-    event AddressAndNumber(address addr, uint256 value);
     event Number(uint256 value);
 
     address public owner;
@@ -26,19 +25,14 @@ contract Relevancy {
         emit TwoIndexedAddresses(addr1, addr2);
     }
 
-    function oneIndexedAddress(address addr1, address addr2) external {
+    function nonIndexedAddressAndNumber(address addr1) external {
         num = num + 1;
-        emit OneIndexedAddress(addr1, addr2);
+        emit NonIndexedAddressAndNumber(addr1, num);
     }
 
     function indexedAddressAndNumber(address addr) external {
         num = num + 1;
         emit IndexedAddressAndNumber(addr, num);
-    }
-
-    function addressAndNumber(address addr) external {
-        num = num + 1;
-        emit AddressAndNumber(addr, num);
     }
 
     function number() external {

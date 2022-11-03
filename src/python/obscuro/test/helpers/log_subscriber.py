@@ -3,7 +3,30 @@ from pysys.constants import PROJECT
 from obscuro.test.helpers.ws_proxy import WebServerProxy
 
 
-class EventLogSubscriber:
+class AllEventsLogSubscriber:
+
+    def __init__(self, test, network, contract, stdout='subscriber.out', stderr='subscriber.err'):
+        """Create an instance of the event log subscriber."""
+        self.test = test
+        self.network = network
+        self.contract = contract
+        self.stdout = os.path.join(test.output, stdout)
+        self.stderr = os.path.join(test.output, stderr)
+        self.script = os.path.join(PROJECT.root, 'src', 'javascript', 'scripts', 'all_events_subscriber.js')
+
+    def run(self, pk_to_register=None, network_http=None, network_ws=None):
+        """Run a javascript client event log subscriber. """
+        args = []
+        args.extend(['--network_http', network_http])
+        args.extend(['--network_ws', network_ws])
+        args.extend(['--contract_address', self.contract.contract_address])
+        args.extend(['--contract_abi', self.contract.abi_path])
+        args.extend(['--pk_to_register', pk_to_register])
+        self.test.run_javascript(self.script, self.stdout, self.stderr, args)
+        self.test.waitForGrep(file=self.stdout, expr='Subscription confirmed with id:', timeout=10)
+
+
+class FilterLogSubscriber:
 
     def __init__(self, test, network, stdout='subscriber.out', stderr='subscriber.err'):
         """Create an instance of the event log subscriber."""
@@ -12,7 +35,7 @@ class EventLogSubscriber:
         self.port = test.getNextAvailableTCPPort()
         self.stdout = os.path.join(test.output, stdout)
         self.stderr = os.path.join(test.output, stderr)
-        self.script = os.path.join(PROJECT.root, 'src', 'javascript', 'scripts', 'subscriber.js')
+        self.script = os.path.join(PROJECT.root, 'src', 'javascript', 'scripts', 'filter_subscriber.js')
 
     def run(self, filter_address=None, filter_from_block=None, filter_topics=None, pk_to_register=None,
             network_http=None, network_ws=None):
