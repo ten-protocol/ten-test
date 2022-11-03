@@ -4,6 +4,15 @@
     <description>
         <title>Event relevancy - event with a non-indexed address received by all subscriptions through own WE</title>
         <purpose><![CDATA[
+In this test four accounts are used, each subscribing to all events from the Relevancy contract. The accounts are;
+
+  Game User - own wallet
+  Account1  - own wallet
+  Account2  - own wallet
+  Account3  - own wallet
+
+The event NonIndexedAddressAndNumber(address addr1, uint256 value) is used with the address from the game user in the
+event fields. The test ensures that all accounts see the event as it is a non indexed address field.
 ]]>
         </purpose>
     </description>

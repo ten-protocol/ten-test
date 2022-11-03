@@ -1,9 +1,9 @@
-import os
 from obscuro.test.obscuro_test import ObscuroTest
 from obscuro.test.networks.obscuro import Obscuro
 from obscuro.test.utils.properties import Properties
 from obscuro.test.contracts.relevancy.relevancy import Relevancy
 from obscuro.test.helpers.wallet_extension import WalletExtension
+from obscuro.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
 class PySysTest(ObscuroTest):
@@ -28,8 +28,6 @@ class PySysTest(ObscuroTest):
         # perform some transactions
         self.log.info('Performing transactions ... ')
         network.transact(self, web3, contract.contract.functions.nonIndexedAddressAndNumber(account.address), account, contract.GAS)
-
-        # unpleasant sleep the block time + 10%
         self.wait(float(block_time) * 1.1)
 
         # wait and assert that the game user does see this event
@@ -55,14 +53,7 @@ class PySysTest(ObscuroTest):
             extension.run()
 
         # run a background script to filter and collect events
-        stdout = os.path.join(self.output, 'subscriber_%s.out' % name)
-        stderr = os.path.join(self.output, 'subscriber_%s.err' % name)
-        script = os.path.join(self.input, 'subscriber.js')
-        args = []
-        args.extend(['--network_http', network_http])
-        args.extend(['--network_ws', network_ws])
-        args.extend(['--contract_address', contract.contract_address])
-        args.extend(['--contract_abi', contract.abi_path])
-        args.extend(['--pk_to_register', pk_to_register])
-        self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Subscription confirmed with id:', timeout=10)
+        subscriber = AllEventsLogSubscriber(self, network, contract,
+                                            stdout='subscriber_%s.out' % name,
+                                            stderr='subscriber_%s.err' % name)
+        subscriber.run(pk_to_register, network_http, network_ws)
