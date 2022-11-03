@@ -38,6 +38,7 @@ class PySysTest(ObscuroTest):
         network.transact(self, web3, storage.contract.functions.setItem('k1', 1), account, storage.GAS)
         network.transact(self, web3, storage.contract.functions.setItem('k2', 2), account, storage.GAS)
         network.transact(self, web3, storage.contract.functions.setItem('k3', 3), account, storage.GAS)
+        self.wait(float(self.block_time) * 1.1)
 
         # wait and validate
         self.waitForGrep(file=stdout, expr='Received event type', condition='== 9', timeout=10)

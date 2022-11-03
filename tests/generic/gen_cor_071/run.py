@@ -21,7 +21,7 @@ class PySysTest(ObscuroTest):
         # perform some transactions
         for i in range(0, 5):
             network.transact(self, web3_1, storage.contract.functions.store(i), account1, storage.GAS)
-            time.sleep(1.0)
+        self.wait(float(self.block_time) * 1.1)
 
         # get the new entries from the filter
         self.log.info('Getting new entries on the Stored event filter')

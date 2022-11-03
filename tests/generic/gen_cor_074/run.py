@@ -42,6 +42,7 @@ class PySysTest(ObscuroTest):
         network.transact(self, web3, storage.contract.functions.setItem('k2', 2), account, storage.GAS)
         network.transact(self, web3, storage.contract.functions.setItem('r1', 10), account, storage.GAS)
         network.transact(self, web3, storage.contract.functions.setItem('r2', 11), account, storage.GAS)
+        self.wait(float(self.block_time) * 1.1)
 
         # wait and validate - filter on key is r1
         # event ItemSet1(string indexed key, uint256 value)

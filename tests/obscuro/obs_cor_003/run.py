@@ -1,4 +1,3 @@
-import os
 from pysys.constants import FAILED
 from obscuro.test.obscuro_test import ObscuroTest
 from obscuro.test.networks.obscuro import Obscuro
@@ -6,11 +5,10 @@ from obscuro.test.utils.properties import Properties
 from obscuro.test.contracts.relevancy.relevancy import Relevancy
 from obscuro.test.helpers.log_subscriber import AllEventsLogSubscriber
 
+
 class PySysTest(ObscuroTest):
 
     def execute(self):
-        block_time=Properties().block_time_secs(self.env)
-
         # connect to network
         network = Obscuro
 
@@ -32,7 +30,7 @@ class PySysTest(ObscuroTest):
         # perform some transactions as the game user, resulting in an event with the game user address included
         self.log.info('Performing transactions ... ')
         network.transact(self, web3, contract.contract.functions.callerIndexedAddress(), account, contract.GAS)
-        self.wait(float(block_time)*1.1)
+        self.wait(float(self.block_time)*1.1)
 
         # we would expect that given the game user vk is registered it can be decrypted
         try:

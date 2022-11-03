@@ -40,6 +40,7 @@ class PySysTest(ObscuroTest):
         network.transact(self, web3, storage.contract.functions.store(2), account, storage.GAS)
         network.transact(self, web3, storage.contract.functions.store(3), account, storage.GAS)
         network.transact(self, web3, storage.contract.functions.store(4), account, storage.GAS)
+        self.wait(float(self.block_time) * 1.1)
 
         # wait and validate
         self.waitForGrep(file=stdout, expr='Stored value = [0-9]$', condition='== 5', timeout=20)
