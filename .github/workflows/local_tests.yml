@@ -90,8 +90,6 @@ jobs:
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests/generic
           /usr/local/bin/pysys.py run -m obscuro.local -e skip -e events gen_cor_001:
-          cd ${{ github.workspace }}/obscuro-test/tests/obscuro
-          /usr/local/bin/pysys.py run -m obscuro.local -e skip -e events obs_cor_002:
 
       - name: Discord notification
         if: failure()
