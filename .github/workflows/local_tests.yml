@@ -115,7 +115,7 @@ jobs:
           ./testnet-deploy-l2-contracts.sh --l2host=testnet-host-1
 
   run-allocations:
-    needs: build-testnet
+    needs: start-testnet
     runs-on: self-hosted
     steps:
       - name: Run allocations
