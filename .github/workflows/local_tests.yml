@@ -71,7 +71,7 @@ jobs:
           ls -l ${{ github.workspace }}/obscuro-test/artifacts   
 
   build-geth:
-    needs: checkout
+    needs: [checkout, docker-clean]
     runs-on: self-hosted
     steps:
       - name: Build geth docker container
@@ -80,7 +80,7 @@ jobs:
           docker build -t testnetobscuronet.azurecr.io/obscuronet/obscuro_gethnetwork:latest -f gethnetwork.Dockerfile ..
 
   build-obscuro:
-    needs: checkout
+    needs: [checkout, docker-clean]
     runs-on: self-hosted
     steps:
       - name: Build obscuro node and contract deployer docker container
@@ -90,7 +90,7 @@ jobs:
           docker build -t testnetobscuronet.azurecr.io/obscuronet/obscuro_contractdeployer:latest -f contractdeployer.Dockerfile ..
 
   build-enclave:
-    needs: checkout
+    needs: [checkout, docker-clean]
     runs-on: self-hosted
     steps:
       - name: Build obscuro enclave docker container
