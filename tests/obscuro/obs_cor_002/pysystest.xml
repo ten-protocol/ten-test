@@ -20,7 +20,8 @@ the subscription made on the game user account sees the event (as expected).
 
     <classification>
         <groups inherit="true">
-            <group></group>
+            <group>events</group>
+            <group>web3js</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

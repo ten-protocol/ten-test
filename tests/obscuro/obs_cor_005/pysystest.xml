@@ -19,7 +19,8 @@ event fields. The test ensures that all accounts see the event as it is a non in
 
     <classification>
         <groups inherit="true">
-            <group></group>
+            <group>events</group>
+            <group>web3js</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

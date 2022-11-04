@@ -20,7 +20,8 @@ whilst account 2 and account 3 do not.
 
     <classification>
         <groups inherit="true">
-            <group></group>
+            <group>events</group>
+            <group>web3js</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

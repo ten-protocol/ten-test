@@ -26,6 +26,8 @@ Skipped - see https://github.com/obscuronet/obscuro-internal/issues/1083
 
     <classification>
         <groups inherit="true">
+            <group>events</group>
+            <group>web3js</group>
             <group>skip</group>
         </groups>
         <modes inherit="true">
