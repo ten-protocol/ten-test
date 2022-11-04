@@ -7,16 +7,17 @@
 Checks you can get a block by it's hash number. A contract is deployed and the transaction receipt used to get it's
 block number. The parent block is returned using the hash from this, and it's block number checked to ensure it is
 one less than it's child block.
+
+Skipped - see https://github.com/obscuronet/obscuro-internal/issues/959
 ]]>
         </purpose>
     </description>
-
-    <skipped reason="https://github.com/obscuronet/obscuro-internal/issues/959"/>
 
     <classification>
         <groups inherit="true">
             <group>rpc</group>
             <group>ws</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

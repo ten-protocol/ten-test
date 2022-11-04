@@ -6,15 +6,16 @@
         <purpose><![CDATA[]]>
 A port of the web3js polling approach to loop getting events in a from to range call via the ethers
 contract.queryFilter approach.
+
+Skipped - see https://github.com/obscuronet/obscuro-internal/issues/1083
         </purpose>
     </description>
-
-    <skipped reason="https://github.com/obscuronet/obscuro-internal/issues/1083"/>
 
     <classification>
         <groups inherit="true">
             <group>events</group>
             <group>ethers</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

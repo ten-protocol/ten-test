@@ -5,15 +5,16 @@
         <title>Events: web3js client using eth.subscribe and unsubscribe</title>
         <purpose><![CDATA[]]>
 Filters on events from a particular contract, and subscribes and unsubscribes.
+
+Skipped - see https://github.com/obscuronet/obscuro-internal/issues/1076
         </purpose>
     </description>
-
-    <skipped reason="https://github.com/obscuronet/obscuro-internal/issues/1076"/>
 
     <classification>
         <groups inherit="true">
             <group>events</group>
             <group>web3js</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

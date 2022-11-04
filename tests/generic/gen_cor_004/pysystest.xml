@@ -6,16 +6,17 @@
         <purpose><![CDATA[
 Deploy a block, get the block back using the number as a reference, and then check within that block the number is
 correct.
+
+Skipped - see https://github.com/obscuronet/obscuro-internal/issues/959
 ]]>
         </purpose>
     </description>
-
-    <skipped reason="https://github.com/obscuronet/obscuro-internal/issues/959"/>
 
     <classification>
         <groups inherit="true">
             <group>rpc</group>
             <group>ws</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

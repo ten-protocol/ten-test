@@ -5,14 +5,15 @@
         <title>Error: require on transaction</title>
         <purpose><![CDATA[]]>
 Deploy a contract and check for error reporting on failure of a transaction.
+
+Skipped - see https://github.com/obscuronet/obscuro-internal/issues/971
         </purpose>
     </description>
-
-    <skipped reason="https://github.com/obscuronet/obscuro-internal/issues/971" />
 
     <classification>
         <groups inherit="true">
             <group>ws</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

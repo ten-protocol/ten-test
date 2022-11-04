@@ -18,13 +18,15 @@ and event emission;
 
 Under this sequence currently the event is not decrypted and sent back to the subscription id, as it by default binds
 to the first registered key.
+
+Skipped - see https://github.com/obscuronet/obscuro-internal/issues/1083
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group></group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>
