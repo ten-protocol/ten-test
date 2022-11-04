@@ -12,7 +12,7 @@ on:
         default: 'main'
 
 jobs:
-  Run-Tests:
+  checkout:
     runs-on: self-hosted
     steps:
       - run: echo "Triggered by ${{ github.event_name }} running on obscuro-test branch ${{ github.ref }} "
@@ -52,16 +52,23 @@ jobs:
           path: ./go-obscuro
           ref: ${{ github.event.inputs.target_branch }}
 
+  docker-clean:
+    runs-on: self-hosted
+    steps:
+      - name: Docker clean up
+        run: |
+          for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
+          docker system prune -af
+
+  build-testnet:
+    needs: checkout
+    runs-on: self-hosted
+    steps:
       - name: Build wallet_extension
         run: |
           cd ${{ github.workspace }}/go-obscuro/tools/walletextension/main
           go build -o ${{ github.workspace }}/obscuro-test/artifacts/wallet_extension
           ls -l ${{ github.workspace }}/obscuro-test/artifacts   
-
-      - name: Docker clean up
-        run: |
-          for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
-          docker system prune -af
 
       - name: Build and run local testnet
         run: |
@@ -79,6 +86,10 @@ jobs:
           sleep 30
           ./testnet-deploy-l2-contracts.sh --l2host=testnet-host-1
 
+  run-allocations:
+    needs: build-testnet
+    runs-on: self-hosted
+    steps:
       - name: Run allocations
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
@@ -86,6 +97,10 @@ jobs:
           /usr/local/bin/pysys.py run -m obscuro.local fund_layer_two
           /usr/local/bin/pysys.py run -m obscuro.local fund_test_users
 
+  run-tests:
+    needs: run-allocations
+    runs-on: self-hosted
+    steps:
       - name: Run tests
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests/generic
