@@ -97,7 +97,6 @@ jobs:
         run: |
           cd ${{ github.workspace }}/go-obscuro/testnet
           docker build -t testnetobscuronet.azurecr.io/obscuronet/obscuro_enclave:latest -f  ../dockerfiles/enclave.Dockerfile ..
-          docker build -t testnetobscuronet.azurecr.io/obscuronet/obscuro_enclave_debug:latest -f ../dockerfiles/enclave.debug.Dockerfile ..
           
   start-testnet:
     needs: [build-wallet, build-geth, build-obscuro, build-enclave]
