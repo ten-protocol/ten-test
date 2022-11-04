@@ -27,7 +27,7 @@ class PySysTest(ObscuroTest):
         token = web3.eth.contract(address=erc20.contract_address, abi=erc20.abi)
         game = web3.eth.contract(address=guesser.contract_address, abi=guesser.abi)
 
-        for i in range(0,2):
+        for i in range(0,6):
             self.log.info('Guessing number as %d' % i)
             network.transact(self, web3, token.functions.approve(guesser.contract_address, 1), account, guesser.GAS)
             network.transact(self, web3, game.functions.attempt(i), account, guesser.GAS)
@@ -35,10 +35,11 @@ class PySysTest(ObscuroTest):
             self.log.info('Checking balances ...')
             prize = game.functions.getBalance().call()
             if prize == 0:
-                self.log.info('Game balance is zero so user guess the right number')
+                self.log.info('Game balance is zero so user guessed the right number')
                 self.log.info('User balance is %d' % token.functions.balanceOf(account.address).
                               call({'from': account.address}))
                 self.addOutcome(PASSED)
                 break
             else:
                 self.log.info('Game balance is %d ' % game.functions.getBalance().call())
+
