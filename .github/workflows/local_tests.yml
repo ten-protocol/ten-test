@@ -55,12 +55,12 @@ jobs:
   docker-clean:
     runs-on: self-hosted
     steps:
-      - name: Docker clean up
+      - name: Docker clean containers and images
         run: |
           for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
           docker system prune -af
 
-  build-testnet:
+  build-wallet:
     needs: checkout
     runs-on: self-hosted
     steps:
@@ -70,14 +70,41 @@ jobs:
           go build -o ${{ github.workspace }}/obscuro-test/artifacts/wallet_extension
           ls -l ${{ github.workspace }}/obscuro-test/artifacts   
 
-      - name: Build and run local testnet
+  build-geth:
+    needs: checkout
+    runs-on: self-hosted
+    steps:
+      - name: Build geth docker container
         run: |
           cd ${{ github.workspace }}/go-obscuro/testnet
           docker build -t testnetobscuronet.azurecr.io/obscuronet/obscuro_gethnetwork:latest -f gethnetwork.Dockerfile ..
+
+  build-obscuro:
+    needs: checkout
+    runs-on: self-hosted
+    steps:
+      - name: Build obscuro node and contract deployer docker container
+        run: |
+          cd ${{ github.workspace }}/go-obscuro/testnet
           docker build -t testnetobscuronet.azurecr.io/obscuronet/obscuro_host:latest -f ../dockerfiles/host.Dockerfile ..
           docker build -t testnetobscuronet.azurecr.io/obscuronet/obscuro_contractdeployer:latest -f contractdeployer.Dockerfile ..
+
+  build-enclave:
+    needs: checkout
+    runs-on: self-hosted
+    steps:
+      - name: Build obscuro enclave docker container
+        run: |
+          cd ${{ github.workspace }}/go-obscuro/testnet
           docker build -t testnetobscuronet.azurecr.io/obscuronet/obscuro_enclave:latest -f  ../dockerfiles/enclave.Dockerfile ..
           docker build -t testnetobscuronet.azurecr.io/obscuronet/obscuro_enclave_debug:latest -f ../dockerfiles/enclave.debug.Dockerfile ..
+          
+  start-testnet:
+    needs: [build-wallet, build-geth, build-obscuro, build-enclave]
+      runs-on: self-hosted
+      steps:
+        - name: Start up testnet
+          cd ${{ github.workspace }}/go-obscuro/testnet
           ./testnet-local-gethnetwork.sh --pkaddresses=0x13E23Ca74DE0206C56ebaE8D51b5622EFF1E9944,0x0654D8B60033144D567f25bF41baC1FB0D60F23B
           sleep 30
           ./testnet-deploy-contracts.sh --l1host=gethnetwork --pkstring=f52e5418e349dccdda29b6ac8b0abe6576bb7713886aa85abea6181ba731f9bb
