@@ -91,7 +91,7 @@ jobs:
           cd ${{ github.workspace }}/obscuro-test/tests/generic
           /usr/local/bin/pysys.py run -m obscuro.local gen_cor_001:
           cd ${{ github.workspace }}/obscuro-test/tests/obscuro
-          /usr/local/bin/pysys.py run -m obscuro.local obs_cor_002:
+          /usr/local/bin/pysys.py run -m obscuro.local obs_cor_002 obs_cor_004:
 
       - name: Discord notification
         if: failure()
