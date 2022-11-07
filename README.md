@@ -84,7 +84,7 @@ pysys.py run -m obscuro.dev fund_layer_* fund_test_users
 pysys.py run -m obscuro.sim fund_layer_* fund_test_users
 ```
 
-See the [admin README.md](admin/README.md]) for more details. 
+See the [admin README.md](admin/README.md) for more details. 
 
 Print and run tests
 --------------------
