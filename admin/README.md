@@ -5,7 +5,7 @@ This directory contains utilities to perform admin operations on Obscuro testnet
 - fund layer 1 distribution account and bridge tokens (`fund_layer_one`)
 - fund layer 2 distribution account (`fund_layer_two`)
 - fund test users in layer 2 with native OBX and HOC and POC (`fund_test_users`)
-- fund community users in layer 2 with native OBX and HOC and POC (`fund_users`)
+- fund community users in layer 2 with HOC and POC (`fund_users`)
 
 For setup notes, see the top level [readme](../README.md)
 
@@ -65,7 +65,7 @@ pysys.py run  -m obscuro.local fund_test_users
 
 Funding users
 -------------
-`fund_users` performs a transfer of native OBX, and HOC and POC tokens to each of the community registered accounts. 
+`fund_users` performs a transfer of HOC and POC tokens to each of the community registered accounts. 
 To run use;
 
 ```bash
