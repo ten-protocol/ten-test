@@ -51,7 +51,8 @@ jobs:
           sudo npm install console-stamp --global
           sudo npm install web3 --global 
           sudo npm install commander --global
-  
+          sudo npm install ethers --global
+
           sudo apt install -y python3-pip
           sudo python3 -m pip install web3
           sudo python3 -m pip install pysys==1.6.1
