@@ -4,14 +4,14 @@
     <description>
         <title>Event relevancy - four subscriptions through single WE, event is relevant to account registered last</title>
         <purpose><![CDATA[
-The game user account deploys the Relevancy contract, calls the method on the contract to emit the CallerIndexedAddress
+Account4 deploys the Relevancy contract, calls the method on the contract to emit the CallerIndexedAddress
 with addr = the user account address. The following accounts are used to register (in this order) + the subscription
 and event emission;
 
   Account 1 - shared wallet extension
   Account 2 - shared wallet extension
   Account 3 - shared wallet extension
-  Game User - shared wallet extension
+  Account 4 - shared wallet extension
 
   Subscribe for the CallerIndexedAddress event which contains a single indexed address field (all)
   Event is emitted containing address of user account

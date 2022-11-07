@@ -53,8 +53,8 @@ class Properties:
     def account3pk(self):
         return self.get('env.all', 'Account3PK')
 
-    def gameuserpk(self):
-        return self.get('env.all', 'GameUserPK')
+    def account4pk(self):
+        return self.get('env.all', 'Account4PK')
 
     # obscuro specific properties
     def node_host(self, key):
@@ -71,9 +71,6 @@ class Properties:
 
     def management_bridge_address(self, key):
         return self.get('env.'+key, 'ManagementBridgeAddress')
-
-    def guessing_game_address(self, key):
-        return self.get('env.'+key, 'GuessingGameAddress')
 
     def distro_account_pk(self, key):
         return self.get('env.'+key, 'DistroAccountPK')

@@ -42,8 +42,8 @@ class Default:
         return cls.connect(test, Properties().account3pk(), web_socket)
 
     @classmethod
-    def connect_game_user(cls, test, web_socket=False):
-        return cls.connect(test, Properties().gameuserpk(), web_socket)
+    def connect_account4(cls, test, web_socket=False):
+        return cls.connect(test, Properties().account4pk(), web_socket)
 
     @classmethod
     def transact(cls, test, web3, target, account, gas):
