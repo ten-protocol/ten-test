@@ -1,4 +1,5 @@
 import os, copy, sys
+from pysys.constants import PLATFORM
 from pysys.basetest import BaseTest
 from pysys.constants import PROJECT, BACKGROUND
 from obscuro.test.utils.properties import Properties
@@ -60,9 +61,9 @@ class ObscuroTest(BaseTest):
         if args is not None: arguments.extend(args)
 
         environ = copy.deepcopy(os.environ)
-        node_path = os.path.join(PROJECT.root, 'src', 'javascript', 'modules')
+        node_path = '%s:%s' % (Properties().node_path(), os.path.join(PROJECT.root, 'src', 'javascript', 'modules'))
         if "NODE_PATH" in environ:
-            environ["NODE_PATH"] = environ["NODE_PATH"] + ":" + node_path
+            environ["NODE_PATH"] = node_path + ":" + environ["NODE_PATH"]
         else:
             environ["NODE_PATH"] = node_path
         hprocess = self.startProcess(command=Properties().node_binary(), displayName='node', workingDir=self.output,
