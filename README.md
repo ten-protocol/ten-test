@@ -48,8 +48,8 @@ it should never be committed back into the main repo (the [.gitignore](./.gitign
 will first be looked for in a `.username.properties` should it exist, and if not will fall back to the default properties. 
 
 
-Quickstart Setup and Run
-------------------------
+Quickstart Setup and Run (via docker)
+-------------------------------------
 The easiest way to set up a host to run the tests is to create a docker container with all dependencies pre-installed. 
 The obscuro-test repository should be cloned into the same parent directory as 
 [go-obscuro](https://github.com/obscuronet/go-obscuro) as running the tests will use the wallet_extension built from the 
@@ -65,6 +65,61 @@ Once built, to connect to the container run;
 ```bash
 ./utils/docker/run_image.sh
 ```
+
+
+Setup and Run locally on host machine
+-------------------------------------
+If you want full control to develop tests, and/or to run against the go-obscuro simulation or a locally deployed 
+testnet, the preferred way is to install all dependencies on the local machine. To install use the following;
+
+### Mac OSX (Monterey 12.4)
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew update
+brew upgrade
+brew install node
+brew tap ethereum/ethereum
+brew install solidity
+brew install python3
+
+npm install solc@0.8.15 --global
+npm install console-stamp --global
+npm install ganache --global
+npm install web3 --global
+npm install ethers --global
+npm install commander --global
+
+pip3 install web3
+pip3 install pysys==1.6.1
+pip3 install py-solc-x
+```
+
+### Linux (Ubuntu 20.04)
+```bash
+apt update
+DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
+apt-get install -y software-properties-common
+add-apt-repository ppa:ethereum/ethereum
+apt update
+apt install -y curl
+apt install -y solc
+
+curl -sL https://deb.nodesource.com/setup_18.x | bash -
+apt-get install -y nodejs
+npm install console-stamp --global
+npm install ganache --global
+npm install web3 --global
+npm install ethers --global
+npm install commander --global
+
+apt install -y python3-pip
+python3 -m pip install web3
+python3 -m pip install pysys==1.6.1
+python3 -m pip install py-solc-x
+```
+
+
+
 
 Pre-setup required for Obscuro
 ------------------------------
@@ -84,7 +139,8 @@ pysys.py run -m obscuro.dev fund_layer_* fund_test_users
 pysys.py run -m obscuro.sim fund_layer_* fund_test_users
 ```
 
-See the [admin README.md](admin/README.md) for more details. 
+See the [admin README.md](admin/README.md) for more details. Note that this only needs to be performed once on startup 
+of the network. 
 
 Print and run tests
 --------------------

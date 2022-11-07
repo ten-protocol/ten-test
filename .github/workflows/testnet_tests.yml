@@ -52,6 +52,7 @@ jobs:
           sudo npm install web3 --global 
           sudo npm install commander --global
           sudo npm install ethers --global
+          sudo npm list -g
 
           sudo apt install -y python3-pip
           sudo python3 -m pip install web3
