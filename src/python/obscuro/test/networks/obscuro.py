@@ -54,29 +54,6 @@ class Obscuro(Default):
         return web3, account
 
     @classmethod
-    def wait_for_transaction(cls, test, web3, tx_hash):
-        start = time.time()
-        tx_receipt = None
-        while tx_receipt is None:
-            if (time.time() - start) > 180:
-                test.log.error('Timed out waiting for transaction receipt ... aborting')
-                test.addOutcome(TIMEDOUT, abortOnError=True)
-
-            try:
-                tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
-            except Exception as e:
-                time.sleep(1)
-
-        if tx_receipt.status == 1:
-            test.log.info('Transaction complete gasUsed=%d' % tx_receipt.gasUsed)
-            test.log.info('Transaction receipt block hash %s' % tx_receipt.blockHash.hex())
-        else:
-            test.log.error('Transaction receipt failed')
-            test.log.error('Full receipt: %s' % tx_receipt)
-            test.addOutcome(FAILED, abortOnError=True)
-        return tx_receipt
-
-    @classmethod
     def __generate_viewing_key(cls, web3, host, port, account, private_key):
         # generate a viewing key for this account, sign and post it to the wallet extension
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
