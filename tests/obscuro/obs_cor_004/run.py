@@ -12,7 +12,7 @@ class PySysTest(ObscuroTest):
     def execute(self):
         # connect to network
         network = Obscuro
-        web3, account = network.connect_game_user(self)
+        web3, account = network.connect_account4(self)
         account1 = Web3().eth.account.privateKeyToAccount(Properties().account1pk())
 
         # deploy the storage contract
@@ -20,7 +20,7 @@ class PySysTest(ObscuroTest):
         contract.deploy(network, account)
 
         # run the javascript event log subscriber in the background for the other accounts
-        self.subscribe(network, Properties().gameuserpk(), 'gameuser', contract)
+        self.subscribe(network, Properties().account4pk(), 'account4', contract)
         self.subscribe(network, Properties().account1pk(), 'account1', contract, new_wallet=True)
         self.subscribe(network, Properties().account2pk(), 'account2', contract, new_wallet=True)
         self.subscribe(network, Properties().account3pk(), 'account3', contract, new_wallet=True)
@@ -32,9 +32,9 @@ class PySysTest(ObscuroTest):
                          account, contract.GAS)
         self.wait(float(self.block_time)*1.1)
 
-        # wait and assert that the game user does see this event
-        self.waitForGrep(file='subscriber_gameuser.out', expr='Received event: TwoIndexedAddresses', timeout=20)
-        self.assertGrep(file='subscriber_gameuser.out', expr='Received event: TwoIndexedAddresses')
+        # wait and assert that account4 does see this event
+        self.waitForGrep(file='subscriber_account4.out', expr='Received event: TwoIndexedAddresses', timeout=20)
+        self.assertGrep(file='subscriber_account4.out', expr='Received event: TwoIndexedAddresses')
 
         # wait and assert that account1 does see this event
         self.waitForGrep(file='subscriber_account1.out', expr='Received event: TwoIndexedAddresses', timeout=20)

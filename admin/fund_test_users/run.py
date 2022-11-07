@@ -8,7 +8,7 @@ class PySysTest(ObscuroAdmin):
         Properties().account1pk(),
         Properties().account2pk(),
         Properties().account3pk(),
-        Properties().gameuserpk()
+        Properties().account4pk()
     ]
     OBX = 100 * ObscuroAdmin.ONE_GIGA
     TOKENS = 50 * ObscuroAdmin.ONE_GIGA

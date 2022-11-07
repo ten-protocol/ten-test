@@ -122,7 +122,7 @@ as based on details relevant to the user;
 Account1PK=<private key of account 1 available e.g. via metamask>
 Account2PK=<private key of account 2>
 Account3PK=<private key of account 3>
-GameUserPK=<private key of account 4>
+Account4PK=<private key of account 4>
 
 [env.goerli]
 ProjectID=<project ID>
