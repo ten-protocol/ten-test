@@ -28,17 +28,24 @@ class Properties:
             raise FileNotFoundException('Solc binary not found at default location %s' % path)
         return path
 
+    def ganache_binary(self):
+        path = self.get('binaries.%s' % PLATFORM, 'ganache')
+        if not os.path.exists(path):
+            raise FileNotFoundException('Ganache binary not found at default location %s' % path)
+        return path
+
     def node_binary(self):
         path = self.get('binaries.%s' % PLATFORM, 'node')
         if not os.path.exists(path):
             raise FileNotFoundException('Node binary not found at default location %s' % path)
         return path
 
-    def ganache_binary(self):
-        path = self.get('binaries.%s' % PLATFORM, 'ganache')
+    def node_path(self):
+        path = self.get('binaries.%s' % PLATFORM, 'node_path')
         if not os.path.exists(path):
-            raise FileNotFoundException('Ganache binary not found at default location %s' % path)
+            raise FileNotFoundException('Node path not found at default location %s' % path)
         return path
+
 
     # common to all environments
     def block_time_secs(self, key):
