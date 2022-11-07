@@ -41,11 +41,7 @@ class Properties:
         return path
 
     def node_path(self):
-        path = self.get('binaries.%s' % PLATFORM, 'node_path')
-        if not os.path.exists(path):
-            raise FileNotFoundException('Node path not found at default location %s' % path)
-        return path
-
+        return self.get('binaries.%s' % PLATFORM, 'node_path')
 
     # common to all environments
     def block_time_secs(self, key):
