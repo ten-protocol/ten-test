@@ -118,7 +118,24 @@ python3 -m pip install pysys==1.6.1
 python3 -m pip install py-solc-x
 ```
 
+Once installed it should be possible to run all tests from the pysys.py cli as described in the following sections. Note
+that depending on differences in your installation and should you want to add in your own accounts on Goerli, you 
+may need to override the `.default.properties` file by creating a user specific properties file e.g. 
+`.username.properties` file, where `username` is the output of running `whoami`. Common overrides will inlude the path 
+to various binaries used when running the tests, and account details e.g. for real accounts on Goerli. An example of an 
+override properties file is as given below where binary locations and the Infura project ID for the user are set as 
+overrides;
 
+```
+[binaries.darwin]
+solc = /opt/homebrew/bin/solc 
+ganache = /opt/homebrew/bin/ganache-cli
+node = /opt/homebrew/bin/node
+node_path = /opt/homebrew/lib/node_modules
+
+[env.goerli]
+ProjectID=266273d6b9a544f3ad56c725f38dfd56
+```
 
 
 Pre-setup required for Obscuro
@@ -141,6 +158,7 @@ pysys.py run -m obscuro.sim fund_layer_* fund_test_users
 
 See the [admin README.md](admin/README.md) for more details. Note that this only needs to be performed once on startup 
 of the network. 
+
 
 Print and run tests
 --------------------
@@ -170,8 +188,7 @@ pysys.py run -m ganache
 ```
 
 To run the same tests against Goerli, a `.username.properties` file should be created in the root of the working 
-directory of the project (where `username` is the output of running `whoami`), and the following properties should be added 
-as based on details relevant to the user; 
+directory of the project detailing the existing accounts pre-setup; 
 
 ```
 [env.all]
@@ -184,13 +201,13 @@ Account4PK=<private key of account 4>
 ProjectID=<project ID>
 ```
 
-These need to be real accounts to run on Goerli, whereas for Ganache and Obscuro, currently default ones can be used 
-as detailed in [.default.properties](./.default.properties). To run the tests against Goerli use;
+To run the tests against Goerli use;
 
 ```bash
 # run the tests against goerli
 pysys.py run -m goerli
 ```
+
 
 Running a specific test or range of tests
 -----------------------------------------
