@@ -1,5 +1,4 @@
 import os, copy, sys
-from pysys.constants import PLATFORM
 from pysys.basetest import BaseTest
 from pysys.constants import PROJECT, BACKGROUND
 from obscuro.test.utils.properties import Properties
@@ -19,6 +18,7 @@ class ObscuroTest(BaseTest):
     """
     WEBSOCKET = False   # run with `pysys.py run -XWEBSOCKET` to enable
     PROXY = False       # run with `pysys.py run -XPROXY` to enable
+    ONE_GIGA = 1000000000000000000
 
     def __init__(self, descriptor, outsubdir, runner):
         """Call the parent constructor but set the mode to obscuro if non is set. """
