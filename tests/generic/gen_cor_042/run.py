@@ -1,6 +1,6 @@
 from web3 import Web3
 from pysys.constants import PASSED
-from obscuro.test.obscuro_test import ObscuroTest
+from obscuro.test.basetest import ObscuroTest
 from obscuro.test.utils.properties import Properties
 from obscuro.test.contracts.erc20.obx import OBXCoin
 from obscuro.test.contracts.guesser.guesser_token import GuesserToken

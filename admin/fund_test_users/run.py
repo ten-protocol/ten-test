@@ -1,17 +1,17 @@
-from obscuro.test.obscuro_admin import ObscuroAdmin
+from obscuro.test.basetest import ObscuroTest
 from obscuro.test.utils.properties import Properties
 from obscuro.test.networks.obscuro import Obscuro
 
 
-class PySysTest(ObscuroAdmin):
+class PySysTest(ObscuroTest):
     USERS = [
         Properties().account1pk(),
         Properties().account2pk(),
         Properties().account3pk(),
         Properties().account4pk()
     ]
-    OBX = 100 * ObscuroAdmin.ONE_GIGA
-    TOKENS = 50 * ObscuroAdmin.ONE_GIGA
+    OBX = 100 * ObscuroTest.ONE_GIGA
+    TOKENS = 50 * ObscuroTest.ONE_GIGA
 
     def execute(self):
         network = Obscuro

@@ -1,5 +1,5 @@
 import os, time
-from obscuro.test.obscuro_test import ObscuroTest
+from obscuro.test.basetest import ObscuroTest
 from obscuro.test.contracts.storage.storage import Storage
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.utils.properties import Properties

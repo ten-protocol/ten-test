@@ -1,4 +1,4 @@
-from obscuro.test.obscuro_test import ObscuroTest
+from obscuro.test.basetest import ObscuroTest
 from obscuro.test.contracts.erc20.obx import OBXCoin
 from obscuro.test.networks.factory import NetworkFactory
 

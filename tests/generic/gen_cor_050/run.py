@@ -1,5 +1,5 @@
 import re
-from obscuro.test.obscuro_test import ObscuroTest
+from obscuro.test.basetest import ObscuroTest
 from obscuro.test.contracts.error.error import Error
 from obscuro.test.networks.factory import NetworkFactory
 

@@ -1,9 +1,9 @@
-from obscuro.test.obscuro_admin import ObscuroAdmin
+from obscuro.test.basetest import ObscuroTest
 from obscuro.test.utils.properties import Properties
 from obscuro.test.networks.obscuro import Obscuro
 
 
-class PySysTest(ObscuroAdmin):
+class PySysTest(ObscuroTest):
     REGISTERED_USERS = [
         '0x686Ad719004590e98F182feA3516d443780C64a1',
         '0x85E1Cc949Bca27912e3e951ad1F68afD1cc4aB15',
@@ -34,7 +34,7 @@ class PySysTest(ObscuroAdmin):
         '0x5c755F5Fac7BC476918a83C0fbAf06c144148bf7'
     ]
     USER = None
-    TOKENS = 50 * ObscuroAdmin.ONE_GIGA
+    TOKENS = 50 * ObscuroTest.ONE_GIGA
 
     def execute(self):
         network = Obscuro
@@ -46,6 +46,5 @@ class PySysTest(ObscuroAdmin):
         for user_address in users:
             self.log.info('')
             self.log.info('Running for address %s' % user_address)
-            self.fund_obx_for_address_only(user_address)
             self.transfer_token(network, 'HOC', hoc_address, web3_distro, account_distro, user_address, self.TOKENS)
             self.transfer_token(network, 'POC', poc_address, web3_distro, account_distro, user_address, self.TOKENS)

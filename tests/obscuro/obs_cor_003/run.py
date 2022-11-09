@@ -1,5 +1,5 @@
 from pysys.constants import FAILED
-from obscuro.test.obscuro_test import ObscuroTest
+from obscuro.test.basetest import ObscuroTest
 from obscuro.test.networks.obscuro import Obscuro
 from obscuro.test.utils.properties import Properties
 from obscuro.test.contracts.relevancy.relevancy import Relevancy
