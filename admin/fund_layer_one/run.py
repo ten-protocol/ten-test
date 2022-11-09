@@ -6,6 +6,7 @@ from obscuro.test.networks.factory import NetworkFactory
 class PySysTest(ObscuroTest):
     ETH = 10 * ObscuroTest.ONE_GIGA
     TOKENS = 5000000 * ObscuroTest.ONE_GIGA
+    TRANSFER_TOKENS = 4000000 * ObscuroTest.ONE_GIGA
 
     def execute(self):
         # connect to the L1 network and get contracts
@@ -19,7 +20,7 @@ class PySysTest(ObscuroTest):
         # fund eth to the distro account
         self.log.info('')
         self.log.info('Funding native ETH to the distro account')
-        self.fund_eth(network, web3_funded, account_funded, web3_distro, account_distro)
+        self.fund_eth(network, web3_funded, account_funded, web3_distro, account_distro, 10)
 
         if not self.is_obscuro_sim():
             # fund tokens on the ERC20s to the distro account from the funded account
@@ -31,5 +32,5 @@ class PySysTest(ObscuroTest):
             # fund tokens on the ERC20s to the bridge account from the distro account
             self.log.info('')
             self.log.info('Bridging HOC and POC to the distro account')
-            self.transfer_token(network, 'HOC', hoc_address, web3_distro, account_distro, bridge_address, self.TOKENS)
-            self.transfer_token(network, 'POC', poc_address, web3_distro, account_distro, bridge_address, self.TOKENS)
+            self.transfer_token(network, 'HOC', hoc_address, web3_distro, account_distro, bridge_address, self.TRANSFER_TOKENS)
+            self.transfer_token(network, 'POC', poc_address, web3_distro, account_distro, bridge_address, self.TRANSFER_TOKENS)
