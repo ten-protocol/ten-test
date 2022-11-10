@@ -1,10 +1,10 @@
-from obscuro.test.obscuro_admin import ObscuroAdmin
+from obscuro.test.basetest import ObscuroTest
 from obscuro.test.utils.properties import Properties
 from obscuro.test.networks.obscuro import Obscuro
 
 
-class PySysTest(ObscuroAdmin):
-    OBX = 50000 * ObscuroAdmin.ONE_GIGA
+class PySysTest(ObscuroTest):
+    OBX = 50000 * ObscuroTest.ONE_GIGA
 
     def execute(self):
         # connect to the L2 network

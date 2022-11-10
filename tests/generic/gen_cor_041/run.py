@@ -1,4 +1,4 @@
-from obscuro.test.obscuro_test import ObscuroTest
+from obscuro.test.basetest import ObscuroTest
 from obscuro.test.contracts.guesser.guesser_constructor import GuesserConstructor
 from obscuro.test.networks.factory import NetworkFactory
 
