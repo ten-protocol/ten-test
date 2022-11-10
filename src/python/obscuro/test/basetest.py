@@ -128,6 +128,12 @@ class ObscuroTest(BaseTest):
         balance = token.functions.balanceOf(account.address).call()
         self.log.info('Token balance for %s = %d ' % (token_name, balance))
 
+    def get_token_balance(self, token_address, web3, account):
+        """Get the ERC20 token balance of a recipient account. """
+        with open(os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'erc20', 'erc20.json')) as f:
+            token = web3.eth.contract(address=token_address, abi=json.load(f))
+        return token.functions.balanceOf(account.address).call()
+
     def __obx_from_faucet_server(self, web3, account):
         """Allocates native OBX to a users account from the faucet server."""
         self.log.info('Running for native OBX token using faucet server')
