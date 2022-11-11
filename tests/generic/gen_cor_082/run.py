@@ -1,12 +1,12 @@
 import os
-from obscuro.test.basetest import ObscuroTest
+from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.contracts.storage.key_storage import KeyStorage
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.utils.properties import Properties
 from obscuro.test.helpers.ws_proxy import WebServerProxy
 
 
-class PySysTest(ObscuroTest):
+class PySysTest(GenericNetworkTest):
 
     def execute(self):
         # connect to network

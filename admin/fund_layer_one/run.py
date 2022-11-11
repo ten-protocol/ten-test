@@ -1,12 +1,13 @@
-from obscuro.test.basetest import ObscuroTest
+from web3 import Web3
+from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.utils.properties import Properties
 from obscuro.test.networks.factory import NetworkFactory
 
 
-class PySysTest(ObscuroTest):
-    ETH = 10 * ObscuroTest.ONE_GIGA
-    TOKENS = 5000000 * ObscuroTest.ONE_GIGA
-    TRANSFER_TOKENS = 4000000 * ObscuroTest.ONE_GIGA
+class PySysTest(ObscuroNetworkTest):
+    ETH = Web3().toWei(10, 'ether')
+    TOKENS = Web3().toWei(5000000, 'ether')
+    TRANSFER_TOKENS = Web3().toWei(4000000, 'ether')
 
     def execute(self):
         # connect to the L1 network and get contracts

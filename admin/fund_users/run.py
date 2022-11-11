@@ -1,9 +1,10 @@
-from obscuro.test.basetest import ObscuroTest
+from web3 import Web3
+from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.utils.properties import Properties
 from obscuro.test.networks.obscuro import Obscuro
 
 
-class PySysTest(ObscuroTest):
+class PySysTest(ObscuroNetworkTest):
     REGISTERED_USERS = [
         '0x686Ad719004590e98F182feA3516d443780C64a1',
         '0x85E1Cc949Bca27912e3e951ad1F68afD1cc4aB15',
@@ -34,7 +35,7 @@ class PySysTest(ObscuroTest):
         '0x5c755F5Fac7BC476918a83C0fbAf06c144148bf7'
     ]
     USER = None
-    TOKENS = 50 * ObscuroTest.ONE_GIGA
+    TOKENS = Web3().toWei(50, 'ether')
 
     def execute(self):
         network = Obscuro

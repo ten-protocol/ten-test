@@ -6,10 +6,10 @@ from obscuro.test.helpers.wallet_extension import WalletExtension
 from obscuro.test.networks.obscuro import Obscuro
 
 
-class ObscuroTest(BaseTest):
+class GenericNetworkTest(BaseTest):
     """The base test used by all tests cases, against any request environment.
 
-    The ObscuroTest class provides common utilities used by all tests, which at the moment are the ability to
+    The GenericNetworkTest class provides common utilities used by all tests, which at the moment are the ability to
     start processes outside of the framework to interact with the network, e.g. written in python or javascript. The
     WEBSOCKET and PROXY values can be set at run time using the -X<ATTRIBUTE> option to the pysys run launcher, and
     respectively force all connections to be over websockets, or for a proxy to set inbetween the client and network
@@ -18,7 +18,6 @@ class ObscuroTest(BaseTest):
     """
     WEBSOCKET = False   # run with `pysys.py run -XWEBSOCKET` to enable
     PROXY = False       # run with `pysys.py run -XPROXY` to enable
-    ONE_GIGA = 1000000000000000000
 
     def __init__(self, descriptor, outsubdir, runner):
         """Call the parent constructor but set the mode to obscuro if non is set. """
@@ -70,6 +69,14 @@ class ObscuroTest(BaseTest):
                                      arguments=arguments, environs=environ, stdout=stdout, stderr=stderr,
                                      state=state, timeout=timeout)
         return hprocess
+
+
+class ObscuroNetworkTest(GenericNetworkTest):
+    """The test used by all Obscuro specific network testcases.
+
+    Test class specific for the Obscuro Network. Provides utilities for funding OBX and ERC20 tokens in the layer1 and
+    layer2 of an Obscuro Network.
+    """
 
     def fund_eth(self, network, web3_from, account_from, web3_to, account_to, eth_amount):
         """A native transfer of ETH from one address to another."""

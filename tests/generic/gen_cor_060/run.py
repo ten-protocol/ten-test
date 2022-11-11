@@ -1,9 +1,9 @@
-from obscuro.test.basetest import ObscuroTest
+from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.contracts.erc20.obx import OBXCoin
 from obscuro.test.networks.factory import NetworkFactory
 
 
-class PySysTest(ObscuroTest):
+class PySysTest(GenericNetworkTest):
 
     def execute(self):
         # deployment of contract
