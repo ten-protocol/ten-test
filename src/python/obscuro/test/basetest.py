@@ -18,6 +18,7 @@ class GenericNetworkTest(BaseTest):
     """
     WEBSOCKET = False   # run with `pysys.py run -XWEBSOCKET` to enable
     PROXY = False       # run with `pysys.py run -XPROXY` to enable
+    MSG_ID = 1
 
     def __init__(self, descriptor, outsubdir, runner):
         """Call the parent constructor but set the mode to obscuro if non is set. """
@@ -175,40 +176,48 @@ class ObscuroNetworkTest(GenericNetworkTest):
 
     def get_total_transactions(self):
         """Return the total number of L2 transactions on Obscuro."""
-        data = {"jsonrpc": "2.0", "method": "obscuroscan_getTotalTransactions", "params": [], "id": 1}
+        data = {"jsonrpc": "2.0", "method": "obscuroscan_getTotalTransactions", "params": [], "id": self.MSG_ID }
         response = self.post(data)
         return int(response.json()['result'])
 
     def get_latest_transactions(self, num):
         """Return the last x number of L2 transactions. """
-        data = {"jsonrpc": "2.0", "method": "obscuroscan_getLatestTransactions", "params": [num], "id": 1}
+        data = {"jsonrpc": "2.0", "method": "obscuroscan_getLatestTransactions", "params": [num], "id": self.MSG_ID }
         response = self.post(data)
         return response.json()['result']
 
     def get_head_rollup_header(self):
         """Get the rollup header of the head rollup. """
-        data = {"jsonrpc": "2.0", "method": "obscuroscan_getHeadRollupHeader", "params": [], "id": 1 }
+        data = {"jsonrpc": "2.0", "method": "obscuroscan_getHeadRollupHeader", "params": [], "id": self.MSG_ID }
+        response = self.post(data)
+        return response.json()['result']
+
+    def get_rollup(self, hash):
+        """Get the rollup by its hash. """
+        data = {"jsonrpc": "2.0", "method": "obscuroscan_getRollup", "params": [hash], "id": self.MSG_ID }
         response = self.post(data)
         return response.json()['result']
 
     def get_rollup_for_transaction(self, tx_hash):
-        """Get the rollup header for a given L2 transaction. """
-        data = {"jsonrpc": "2.0", "method": "obscuroscan_getRollupForTx", "params": [tx_hash], "id": 4 }
+        """Get the rollup for a given L2 transaction. """
+        data = {"jsonrpc": "2.0", "method": "obscuroscan_getRollupForTx", "params": [tx_hash], "id": self.MSG_ID }
         response = self.post(data)
+        self.log.info(response.json())
         return response.json()['result']
 
     def get_l1_block(self, block_hash):
         """Get the block that contains a given rollup (given by the L1Proof value in the header). """
-        data = {"jsonrpc": "2.0", "method": "obscuroscan_getBlockHeaderByHash", "params": [block_hash], "id": 5 }
+        data = {"jsonrpc": "2.0", "method": "obscuroscan_getBlockHeaderByHash", "params": [block_hash], "id": self.MSG_ID }
         response = self.post(data)
         return response.json()['result']
 
     def get_node_attestation(self):
         """Get the node attestation report. """
-        data = {"jsonrpc": "2.0", "method": "obscuroscan_attestation", "params": [], "id": 6 }
+        data = {"jsonrpc": "2.0", "method": "obscuroscan_attestation", "params": [], "id": self.MSG_ID }
         response = self.post(data)
         return response.json()['result']
 
     def post(self, data):
+        self.MSG_ID += 1
         server = 'http://%s:%s' % (Properties().node_host(self.env), Properties().node_port_http(self.env))
         return requests.post(server, json=data)
