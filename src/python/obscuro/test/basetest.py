@@ -173,13 +173,39 @@ class ObscuroNetworkTest(GenericNetworkTest):
             token = web3.eth.contract(address=token_address, abi=json.load(f))
         return token.functions.balanceOf(account.address).call()
 
-    def get_num_transactions(self):
+    def get_total_transactions(self):
+        """Return the total number of L2 transactions on Obscuro."""
         data = {"jsonrpc": "2.0", "method": "obscuroscan_getTotalTransactions", "params": [], "id": 1}
         response = self.post(data)
         return int(response.json()['result'])
 
     def get_latest_transactions(self, num):
+        """Return the last x number of L2 transactions. """
         data = {"jsonrpc": "2.0", "method": "obscuroscan_getLatestTransactions", "params": [num], "id": 1}
+        response = self.post(data)
+        return response.json()['result']
+
+    def get_head_rollup_header(self):
+        """Get the rollup header of the head rollup. """
+        data = {"jsonrpc": "2.0", "method": "obscuroscan_getHeadRollupHeader", "params": [], "id": 1 }
+        response = self.post(data)
+        return response.json()['result']
+
+    def get_rollup_for_transaction(self, tx_hash):
+        """Get the rollup header for a given L2 transaction. """
+        data = {"jsonrpc": "2.0", "method": "obscuroscan_getRollupForTx", "params": [tx_hash], "id": 4 }
+        response = self.post(data)
+        return response.json()['result']
+
+    def get_l1_block(self, block_hash):
+        """Get the block that contains a given rollup (given by the L1Proof value in the header). """
+        data = {"jsonrpc": "2.0", "method": "obscuroscan_getBlockHeaderByHash", "params": [block_hash], "id": 5 }
+        response = self.post(data)
+        return response.json()['result']
+
+    def get_node_attestation(self):
+        """Get the node attestation report. """
+        data = {"jsonrpc": "2.0", "method": "obscuroscan_attestation", "params": [], "id": 6 }
         response = self.post(data)
         return response.json()['result']
 
