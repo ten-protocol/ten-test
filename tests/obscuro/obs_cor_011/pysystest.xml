@@ -2,8 +2,10 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC - obscuroscan specific endpoints</title>
+        <title>Obscuroscan RPC - walk the chain backwards and check transaction count</title>
         <purpose><![CDATA[
+Uses the obscuroscan_ enpoints to get the total number of transactions, and to then walk the chain backwards and
+compare the two results.
 ]]>
         </purpose>
     </description>

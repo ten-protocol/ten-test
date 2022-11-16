@@ -24,6 +24,9 @@ class PySysTest(ObscuroNetworkTest):
                 sum_transactions += num_tx
                 self.log.info('Parent hash: %s, Number: %d, Ntx: %d' % (parent_hash, number, num_tx))
 
+            self.log.info('Calling to get rollup for number %d (the genesis block)' % number)
+            self.get_rollup(parent_hash) # not throwing an exception is a pass
+
         num_transactions = self.get_total_transactions()
         self.log.info('Number of transactions is %d' % num_transactions)
         self.log.info('Summed transactions is %d' % sum_transactions)
