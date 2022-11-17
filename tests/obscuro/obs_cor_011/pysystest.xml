@@ -2,10 +2,10 @@
 <pysystest type="auto">
 
     <description>
-        <title>Obscuroscan RPC - walk the chain backwards and check transaction count</title>
+        <title>Obscuroscan RPC - walk the chain backwards via the parent hash link </title>
         <purpose><![CDATA[
-Uses the obscuroscan_ enpoints to get the total number of transactions, and to then walk the chain backwards and
-compare the two results.
+Uses the obscuroscan_getRollup to walk the chain backwards 100 times. If we don't get to the genesis block than do a
+final call to retrieve it. Just checks that we are able to walk backwards with no exceptions thrown.
 ]]>
         </purpose>
     </description>
