@@ -27,14 +27,14 @@ class PySysTest(ObscuroNetworkTest):
         subscriber = AllEventsLogSubscriber(self, network, contract)
         subscriber.run(Properties().account4pk(), network.connection_url(), network.connection_url(web_socket=True))
 
-        # perform some transactions as account4, resulting in an event with the game user address included
+        # perform some transactions as account4, resulting in an event with the account 4 address included
         self.log.info('Performing transactions ... ')
         network.transact(self, web3, contract.contract.functions.callerIndexedAddress(), account, contract.GAS)
         self.wait(float(self.block_time)*1.1)
 
         # we would expect that given account4 vk is registered it can be decrypted
         try:
-            self.waitForGrep(file='subscriber.out', expr='Received event: CallerIndexedAddress', timeout=block_time)
+            self.waitForGrep(file='subscriber.out', expr='Received event: CallerIndexedAddress', timeout=self.block_time)
         except:
             self.log.error('TImed out waiting for CallerIndexedAddress event log in subscriber')
             self.addOutcome(FAILED)

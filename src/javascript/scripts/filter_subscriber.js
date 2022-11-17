@@ -4,7 +4,7 @@ const commander = require('commander')
 const vk = require('viewing_key.js')
 
 function decodeLog(log) {
-  console.log('Full log: ', log)
+  //console.log('Full log: ', log)
   console.log('Stored value =', Web3.utils.hexToNumber(log.data))
 }
 

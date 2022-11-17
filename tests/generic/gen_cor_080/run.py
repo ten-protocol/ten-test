@@ -12,7 +12,7 @@ class PySysTest(GenericNetworkTest):
         network = NetworkFactory.get_network(self.env)
         web3, account = network.connect_account1(self)
 
-        # deploy the contract, dump out the abi, make some transactions
+        # deploy the contract make some transactions
         storage = Storage(self, web3, 100)
         storage.deploy(network, account)
 

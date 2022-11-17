@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Events - multiple concurrent subscribers, additional subscribing and unsubscribing</title>
+        <purpose><![CDATA[
+A configurable number of subscribers are started to receive events from Obscuro, which stay subscribed for the duration
+of the test. Another configurable number of a bespoke client is started, where they continually subscribe and then
+unsubscribe repeatedly. Once running a set number of transactions are start and which are expected to be received by
+the continual subscribers i.e. the concurrent subscribes and unsubscribes should not cause any issues. 
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+        </groups>
+        <modes inherit="true">
+            <mode>obscuro.dev</mode>
+            <mode>obscuro.local</mode>
+            <mode>obscuro.sim</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
