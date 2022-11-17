@@ -16,6 +16,7 @@ class PySysTest(GenericNetworkTest):
 
         # force a require
         try:
+            self.log.info('Forcing a require on contract function')
             error.contract.functions.force_require().call()
         except Exception as e:
             self.log.info('Exception type: %s' % type(e).__name__)
@@ -25,6 +26,7 @@ class PySysTest(GenericNetworkTest):
 
         # force a revert
         try:
+            self.log.info('Forcing a revert on contract function')
             error.contract.functions.force_revert().call()
         except Exception as e:
             self.log.info('Exception type: %s' % type(e).__name__)
@@ -34,6 +36,7 @@ class PySysTest(GenericNetworkTest):
 
         # force assert
         try:
+            self.log.info('Forcing an assert on contract function')
             error.contract.functions.force_assert().call()
         except Exception as e:
             self.log.info('Exception type: %s' % type(e).__name__)
