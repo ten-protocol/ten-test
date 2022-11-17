@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Error: assert, require and assert on pure function call</title>
+        <title>Error: revert, require and assert on pure function call</title>
         <purpose><![CDATA[]]>
 Deploy a contract and check for error reporting on revert, require and assert.
         </purpose>
