@@ -178,44 +178,57 @@ class ObscuroNetworkTest(GenericNetworkTest):
         """Return the total number of L2 transactions on Obscuro."""
         data = {"jsonrpc": "2.0", "method": "obscuroscan_getTotalTransactions", "params": [], "id": self.MSG_ID }
         response = self.post(data)
-        return int(response.json()['result'])
+        if 'result' in response.json(): return int(response.json()['result'])
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
 
     def get_latest_transactions(self, num):
         """Return the last x number of L2 transactions. """
         data = {"jsonrpc": "2.0", "method": "obscuroscan_getLatestTransactions", "params": [num], "id": self.MSG_ID }
         response = self.post(data)
-        return response.json()['result']
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
 
     def get_head_rollup_header(self):
         """Get the rollup header of the head rollup. """
         data = {"jsonrpc": "2.0", "method": "obscuroscan_getHeadRollupHeader", "params": [], "id": self.MSG_ID }
         response = self.post(data)
-        return response.json()['result']
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
 
     def get_rollup(self, hash):
         """Get the rollup by its hash. """
         data = {"jsonrpc": "2.0", "method": "obscuroscan_getRollup", "params": [hash], "id": self.MSG_ID }
         response = self.post(data)
-        return response.json()['result']
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
 
     def get_rollup_for_transaction(self, tx_hash):
         """Get the rollup for a given L2 transaction. """
         data = {"jsonrpc": "2.0", "method": "obscuroscan_getRollupForTx", "params": [tx_hash], "id": self.MSG_ID }
         response = self.post(data)
-        self.log.info(response.json())
-        return response.json()['result']
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
 
     def get_l1_block(self, block_hash):
         """Get the block that contains a given rollup (given by the L1Proof value in the header). """
         data = {"jsonrpc": "2.0", "method": "obscuroscan_getBlockHeaderByHash", "params": [block_hash], "id": self.MSG_ID }
         response = self.post(data)
-        return response.json()['result']
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
 
     def get_node_attestation(self):
         """Get the node attestation report. """
         data = {"jsonrpc": "2.0", "method": "obscuroscan_attestation", "params": [], "id": self.MSG_ID }
         response = self.post(data)
-        return response.json()['result']
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
 
     def post(self, data):
         self.MSG_ID += 1
