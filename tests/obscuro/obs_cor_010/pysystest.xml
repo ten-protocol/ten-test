@@ -5,7 +5,7 @@
         <title>Bridge - l1 to l2 transfer of funds</title>
         <purpose><![CDATA[
 Fundamentally repeats the process of giving a user ETH and HOC tokens on the l1, then transferring across the bridge,
-giving OBX on the l2, and the transferring some HOC back to the l2 bridge. At the moment l2 to l1 bridging is not
+giving OBX on the l2, and then transferring some HOC back to the l2 bridge. At the moment l2 to l1 bridging is not
 implemented, so the test does not validate if the tokens transfer in this direction.
 ]]>
         </purpose>
