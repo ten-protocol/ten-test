@@ -1,11 +1,11 @@
 import os, time
-from obscuro.test.basetest import ObscuroTest
+from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.contracts.storage.storage import Storage
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.utils.properties import Properties
 
 
-class PySysTest(ObscuroTest):
+class PySysTest(GenericNetworkTest):
 
     def execute(self):
         # connect to network

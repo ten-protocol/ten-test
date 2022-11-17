@@ -1,17 +1,18 @@
-from obscuro.test.basetest import ObscuroTest
+from web3 import Web3
+from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.utils.properties import Properties
 from obscuro.test.networks.obscuro import Obscuro
 
 
-class PySysTest(ObscuroTest):
+class PySysTest(ObscuroNetworkTest):
     USERS = [
         Properties().account1pk(),
         Properties().account2pk(),
         Properties().account3pk(),
         Properties().account4pk()
     ]
-    OBX = 100 * ObscuroTest.ONE_GIGA
-    TOKENS = 50 * ObscuroTest.ONE_GIGA
+    OBX = Web3().toWei(100, 'ether')
+    TOKENS = Web3().toWei(50, 'ether')
 
     def execute(self):
         network = Obscuro

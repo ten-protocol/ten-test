@@ -64,3 +64,5 @@ class Obscuro(Default):
 
         data = {"signature": signed_msg.signature.hex(), "address": account.address}
         requests.post('%s:%d/submitviewingkey/' % (host, port), data=json.dumps(data), headers=headers)
+
+

@@ -1,10 +1,11 @@
-from obscuro.test.basetest import ObscuroTest
+from web3 import Web3
+from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.utils.properties import Properties
 from obscuro.test.networks.obscuro import Obscuro
 
 
-class PySysTest(ObscuroTest):
-    OBX = 50000 * ObscuroTest.ONE_GIGA
+class PySysTest(ObscuroNetworkTest):
+    OBX = Web3().toWei(50000, 'ether')
 
     def execute(self):
         # connect to the L2 network

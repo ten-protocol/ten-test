@@ -1,12 +1,12 @@
 import secrets, time
 from pysys.constants import TIMEDOUT
-from obscuro.test.basetest import ObscuroTest
+from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.networks.obscuro import Obscuro
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.utils.properties import Properties
 
 
-class PySysTest(ObscuroTest):
+class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
         network_l2 = Obscuro
@@ -40,7 +40,7 @@ class PySysTest(ObscuroTest):
         balance1 = self.wait_for_balance(hoc_address_l2, web3_l2, account_l2, 2)
 
         # give the test user some OBX in l1
-        self.fund_obx(network_l2, web3_l2, account_l2, 1 * ObscuroTest.ONE_GIGA)
+        self.fund_obx(network_l2, web3_l2, account_l2, web3_l2.toWei(1, 'ether'))
 
         # transfer some HOC back
         self.transfer_token(network_l2, 'HOC', hoc_address_l2, web3_l2, account_l2, bridge_address_l2, 1)

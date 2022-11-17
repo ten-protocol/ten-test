@@ -1,5 +1,5 @@
 from web3 import Web3
-from obscuro.test.basetest import ObscuroTest
+from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.networks.obscuro import Obscuro
 from obscuro.test.utils.properties import Properties
 from obscuro.test.contracts.relevancy.relevancy import Relevancy
@@ -7,7 +7,7 @@ from obscuro.test.helpers.wallet_extension import WalletExtension
 from obscuro.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
-class PySysTest(ObscuroTest):
+class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
         # connect to network
