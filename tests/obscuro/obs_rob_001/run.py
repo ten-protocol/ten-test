@@ -8,7 +8,7 @@ from obscuro.test.helpers.log_subscriber import FilterLogSubscriber
 class PySysTest(GenericNetworkTest):
     NUM_SUBSCRIBERS=4
     NUM_HAMMERS=5
-    NUM_TRANSACTIONS=100
+    NUM_TRANSACTIONS=15
 
     def execute(self):
         # connect to network

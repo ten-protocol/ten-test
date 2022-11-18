@@ -15,7 +15,7 @@ function subscribe() {
   })
   .on("connected", function(subscriptionId){
       console.log('Successfully unsubscribed with id', subscription.id)
-      unsubscribe()
+      setTimeout(function() { unsubscribe() }, 50);
   })
   .on("data", function(log){})
 }
@@ -25,7 +25,7 @@ function unsubscribe() {
   subscription.unsubscribe(function(error, success){
     if (success) {
         console.log('Successfully unsubscribed')
-        subscribe()
+        setTimeout(function() { subscribe() }, 50);
     }
   })
 }
