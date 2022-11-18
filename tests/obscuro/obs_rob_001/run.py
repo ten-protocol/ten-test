@@ -1,18 +1,18 @@
 import secrets, os
 from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.contracts.storage.storage import Storage
-from obscuro.test.networks.factory import NetworkFactory
+from obscuro.test.networks.obscuro import Obscuro
 from obscuro.test.helpers.log_subscriber import FilterLogSubscriber
 
 
 class PySysTest(GenericNetworkTest):
     NUM_SUBSCRIBERS=4
     NUM_HAMMERS=5
-    NUM_TRANSACTIONS=100
+    NUM_TRANSACTIONS=15
 
     def execute(self):
         # connect to network
-        network = NetworkFactory.get_network(self.env)
+        network = Obscuro
         web3, account = network.connect_account1(self)
 
         # deploy the contract
