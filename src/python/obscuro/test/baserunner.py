@@ -44,6 +44,7 @@ class ObscuroRunnerPlugin():
         arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account3pk()))
         arguments.extend(('--gasLimit', '7200000'))
         arguments.extend(('--blockTime', Properties().block_time_secs(self.env)))
+        arguments.extend(('-k', 'berlin'))
         hprocess = runner.startProcess(command=Properties().ganache_binary(), displayName='ganache',
                                        workingDir=self.output , environs=os.environ, quiet=True,
                                        arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
