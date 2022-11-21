@@ -152,6 +152,9 @@ pysys.py run fund_layer_* fund_test_users
 # to allocate on Obscuro dev-testnet
 pysys.py run -m obscuro.dev fund_layer_* fund_test_users
 
+# to allocate on Obscuro local testnet
+pysys.py run -m obscuro.local fund_layer_* fund_test_users
+
 # to allocate on Obscuro simulation
 pysys.py run -m obscuro.sim fund_layer_* fund_test_users
 ```
@@ -179,6 +182,9 @@ pysys.py run
 
 # run the tests against Obscuro dev-testnet
 pysys.py run -m obscuro.dev 
+
+# run the tests against Obscuro local testnet
+pysys.py run -m obscuro.local
 
 # run the tests against Obscuro simulation
 pysys.py run -m obscuro.sim
