@@ -36,7 +36,7 @@ class PySysTest(ObscuroNetworkTest):
         try:
             self.waitForGrep(file='subscriber.out', expr='Received event: CallerIndexedAddress', timeout=self.block_time)
         except:
-            self.log.error('TImed out waiting for CallerIndexedAddress event log in subscriber')
+            self.log.error('Timed out waiting for CallerIndexedAddress event log in subscriber')
             self.addOutcome(FAILED)
         else:
             self.assertGrep(file='subscriber.out', expr='Received event: CallerIndexedAddress')
