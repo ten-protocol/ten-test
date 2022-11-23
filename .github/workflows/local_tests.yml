@@ -77,7 +77,7 @@ jobs:
       - name: Build geth docker container
         run: |
           cd ${{ github.workspace }}/go-obscuro/testnet
-          docker build -t testnetobscuronet.azurecr.io/obscuronet/obscuro_gethnetwork:latest -f gethnetwork.Dockerfile ..
+          docker build -t testnetobscuronet.azurecr.io/obscuronet/gethnetwork:latest -f gethnetwork.Dockerfile ..
 
   build-obscuro:
     needs: [checkout, docker-clean]
@@ -86,8 +86,8 @@ jobs:
       - name: Build obscuro node and contract deployer docker container
         run: |
           cd ${{ github.workspace }}/go-obscuro/testnet
-          docker build -t testnetobscuronet.azurecr.io/obscuronet/obscuro_host:latest -f ../dockerfiles/host.Dockerfile ..
-          docker build -t testnetobscuronet.azurecr.io/obscuronet/obscuro_contractdeployer:latest -f contractdeployer.Dockerfile ..
+          docker build -t testnetobscuronet.azurecr.io/obscuronet/host:latest -f ../dockerfiles/host.Dockerfile ..
+          docker build -t testnetobscuronet.azurecr.io/obscuronet/contractdeployer:latest -f contractdeployer.Dockerfile ..
 
   build-enclave:
     needs: [checkout, docker-clean]
@@ -96,7 +96,7 @@ jobs:
       - name: Build obscuro enclave docker container
         run: |
           cd ${{ github.workspace }}/go-obscuro/testnet
-          docker build -t testnetobscuronet.azurecr.io/obscuronet/obscuro_enclave:latest -f  ../dockerfiles/enclave.Dockerfile ..
+          docker build -t testnetobscuronet.azurecr.io/obscuronet/enclave:latest -f  ../dockerfiles/enclave.Dockerfile ..
           
   start-testnet:
     needs: [build-wallet, build-geth, build-obscuro, build-enclave]
