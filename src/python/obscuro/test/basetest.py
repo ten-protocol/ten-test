@@ -198,17 +198,17 @@ class ObscuroNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def get_rollup(self, hash):
+    def get_batch(self, hash):
         """Get the rollup by its hash. """
-        data = {"jsonrpc": "2.0", "method": "obscuroscan_getRollup", "params": [hash], "id": self.MSG_ID }
+        data = {"jsonrpc": "2.0", "method": "obscuroscan_getBatch", "params": [hash], "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return response.json()['result']
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def get_rollup_for_transaction(self, tx_hash):
+    def get_batch_for_transaction(self, tx_hash):
         """Get the rollup for a given L2 transaction. """
-        data = {"jsonrpc": "2.0", "method": "obscuroscan_getRollupForTx", "params": [tx_hash], "id": self.MSG_ID }
+        data = {"jsonrpc": "2.0", "method": "obscuroscan_getBatchForTx", "params": [tx_hash], "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return response.json()['result']
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
