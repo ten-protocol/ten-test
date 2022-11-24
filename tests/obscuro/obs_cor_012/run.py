@@ -31,16 +31,16 @@ class PySysTest(ObscuroNetworkTest):
         self.log.info('  Block Hash: %s ' % block_hash)
         self.log.info('  TX Hash:    %s ' % tx_hash)
 
-        rollup = self.get_rollup_for_transaction(tx_hash)
-        if rollup is not None:
-            rollup_number = rollup['Header']['Number']
-            rollup_txns = rollup['TxHashes']
+        batch = self.get_batch_for_transaction(tx_hash)
+        if batch is not None:
+            batch_number = batch['Header']['Number']
+            batch_txns = batch['TxHashes']
 
-            self.log.info('Rollup details;')
-            self.log.info('  Rollup Num:  %s ' % rollup_number)
-            self.log.info('  Tx in list: %s' % (tx_hash in rollup_txns))
+            self.log.info('batch details;')
+            self.log.info('  batch Num:  %s ' % batch_number)
+            self.log.info('  Tx in list: %s' % (tx_hash in batch_txns))
 
-            self.assertTrue(rollup_number==block_num)
-            self.assertTrue((tx_hash in rollup_txns))
+            self.assertTrue(batch_number==block_num)
+            self.assertTrue((tx_hash in batch_txns))
 
         self.log.info('')
