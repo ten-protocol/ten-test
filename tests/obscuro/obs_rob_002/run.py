@@ -1,15 +1,18 @@
 import os, secrets
-from obscuro.test.basetest import GenericNetworkTest
+from web3 import Web3
+from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.contracts.guesser.guesser import Guesser
 from obscuro.test.contracts.storage.storage import Storage
 from obscuro.test.contracts.error.error import Error
 from obscuro.test.networks.obscuro import Obscuro
 
 
-class PySysTest(GenericNetworkTest):
+class PySysTest(ObscuroNetworkTest):
+    NUM_GUESSERS = 2
+    NUM_STORAGE = 2
+    NUM_ERROR = 2
 
     def execute(self):
-        # deployment of contract
         network = Obscuro
         web3, account = network.connect_account1(self, web_socket=self.WEBSOCKET)
 
@@ -22,18 +25,36 @@ class PySysTest(GenericNetworkTest):
         error = Error(self, web3, 'foo')
         error.deploy(network, account)
 
-    def storage_client(self, network, contract_address, abi_path, num):
-        # run a background script to filter and collect events
-        pk=secrets.token_hex(32)
-        self.fund_obx(network, web3_user, account_user, self.OBX)
+        for i in range(0, self.NUM_GUESSERS):
+            self.guesser_client(network, guesser.contract_address, guesser.abi_path, i)
 
-        stdout = os.path.join(self.output, 'storage_client_%d.out' % num)
-        stderr = os.path.join(self.output, 'storage_client_%d.err' % num)
-        script = os.path.join(self.input, 'storage_client.py')
+        for i in range(0, self.NUM_STORAGE):
+            self.storage_client(network, guesser.contract_address, guesser.abi_path, i)
+
+        for i in range(0, self.NUM_ERROR):
+            self.error_client(network, guesser.contract_address, guesser.abi_path, i)
+
+    def guesser_client(self, network, contract_address, abi_path, num):
+        self._client(network, contract_address, abi_path, 'guesser_client', num)
+
+    def storage_client(self, network, contract_address, abi_path, num):
+        self._client(network, contract_address, abi_path, 'storage_client', num)
+
+    def error_client(self, network, contract_address, abi_path, num):
+        self._client(network, contract_address, abi_path, 'error_client', num)
+
+    def _client(self, network, contract_address, abi_path, name, num):
+        pk = secrets.token_hex(32)
+        account = Web3().eth.account.privateKeyToAccount(pk)
+        self.fund_obx(network, account, Web3().toWei(100, 'ether'))
+
+        stdout = os.path.join(self.output, '%s_%d.out' % (name, num))
+        stderr = os.path.join(self.output, '%s_%d.err' % (name, num))
+        script = os.path.join(self.input, '%s.py' % name)
         args = []
         args.extend(['--network_http', '%s' % network.connection_url(web_socket=False)])
         args.extend(['--contract_address', '%s' % contract_address])
         args.extend(['--contract_abi', '%s' % abi_path])
-        args.extend(['--pk_to_register', '%s' % Properties().account3pk()]
+        args.extend(['--pk_to_register', '%s' % pk])
         self.run_python(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting to run the event loop', timeout=10)
+        self.waitForGrep(file=stdout, expr='Client running', timeout=10)
