@@ -52,56 +52,25 @@ jobs:
           path: ./go-obscuro
           ref: ${{ github.event.inputs.target_branch }}
 
-  docker-clean:
-    runs-on: self-hosted
-    steps:
       - name: Docker clean containers and images
         run: |
           for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
           docker system prune -af
 
-  build-wallet:
-    needs: checkout
-    runs-on: self-hosted
-    steps:
       - name: Build wallet_extension
         run: |
           cd ${{ github.workspace }}/go-obscuro/tools/walletextension/main
           go build -o ${{ github.workspace }}/obscuro-test/artifacts/wallet_extension
           ls -l ${{ github.workspace }}/obscuro-test/artifacts   
 
-  build-geth:
-    needs: [checkout, docker-clean]
-    runs-on: self-hosted
-    steps:
-      - name: Build geth docker container
+      - name: Build docker containers
         run: |
           cd ${{ github.workspace }}/go-obscuro/testnet
           docker build -t testnetobscuronet.azurecr.io/obscuronet/gethnetwork:latest -f gethnetwork.Dockerfile ..
-
-  build-obscuro:
-    needs: [checkout, docker-clean]
-    runs-on: self-hosted
-    steps:
-      - name: Build obscuro node and contract deployer docker container
-        run: |
-          cd ${{ github.workspace }}/go-obscuro/testnet
           docker build -t testnetobscuronet.azurecr.io/obscuronet/host:latest -f ../dockerfiles/host.Dockerfile ..
           docker build -t testnetobscuronet.azurecr.io/obscuronet/contractdeployer:latest -f contractdeployer.Dockerfile ..
-
-  build-enclave:
-    needs: [checkout, docker-clean]
-    runs-on: self-hosted
-    steps:
-      - name: Build obscuro enclave docker container
-        run: |
-          cd ${{ github.workspace }}/go-obscuro/testnet
           docker build -t testnetobscuronet.azurecr.io/obscuronet/enclave:latest -f  ../dockerfiles/enclave.Dockerfile ..
-          
-  start-testnet:
-    needs: [build-wallet, build-geth, build-obscuro, build-enclave]
-    runs-on: self-hosted
-    steps:
+
       - name: Start up testnet
         run: |
           cd ${{ github.workspace }}/go-obscuro/testnet
@@ -113,10 +82,6 @@ jobs:
           sleep 30
           ./testnet-deploy-l2-contracts.sh --l2host=testnet-host-1
 
-  run-allocations:
-    needs: start-testnet
-    runs-on: self-hosted
-    steps:
       - name: Run allocations
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
@@ -124,24 +89,13 @@ jobs:
           /usr/local/bin/pysys.py run -m obscuro.local fund_layer_two
           /usr/local/bin/pysys.py run -m obscuro.local fund_test_users
 
-      - name: Upload allocations output
-        uses: actions/upload-artifact@v3
-        if: failure()
-        with:
-          name: allocations-artifact
-          path: |
-            ${{ github.workspace }}/obscuro-test/admin/**/Output
-          retention-days: 2
-
-  run-tests:
-    needs: run-allocations
-    runs-on: self-hosted
-    steps:
       - name: Run tests
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests/generic
           /usr/local/bin/pysys.py run -m obscuro.local -e skip -e events gen_cor_001:
-
+          cd ${{ github.workspace }}/obscuro-test/tests/obscuro
+          /usr/local/bin/pysys.py run -m obscuro.dev -e skip -e events
+          
       - name: Discord notification
         if: failure()
         uses: sarisia/actions-status-discord@v1

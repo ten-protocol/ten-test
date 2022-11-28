@@ -66,15 +66,6 @@ jobs:
           /usr/local/bin/pysys.py run -m obscuro.dev fund_test_users
           /usr/local/bin/pysys.py run -m obscuro.dev fund_users
 
-      - name: Upload wallet extension logs
-        uses: actions/upload-artifact@v3
-        if: failure()
-        with:
-          name: runner-artifact
-          path: |
-            ${{ github.workspace }}/obscuro-test/.runner/*
-          retention-days: 2
-
       - name: Upload testcase output
         uses: actions/upload-artifact@v3
         if: failure()
