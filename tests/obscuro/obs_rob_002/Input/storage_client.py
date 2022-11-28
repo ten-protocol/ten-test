@@ -34,3 +34,25 @@ if __name__ == "__main__":
         contract = web3.eth.contract(address=args.contract_address, abi=json.load(f))
 
     logging.info('Client running')
+    account = web3.eth.account.privateKeyToAccount(args.pk_to_register)
+
+    logging.info('Building transaction')
+    build_tx = contract.functions.store(200).buildTransaction(
+        {
+            'nonce': web3.eth.get_transaction_count(account.address),
+            'gasPrice': 21000,
+            'gas': 720000,
+            'chainId': web3.eth.chain_id
+        }
+    )
+    logging.info('Signing transaction')
+    signed_tx = account.sign_transaction(build_tx)
+    logging.info('Sending raw transaction')
+    tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
+
+    if tx_receipt.status != 1:
+        logging.error('Error performing transaction\n')
+    else:
+        logging.info('Transaction complete')
+

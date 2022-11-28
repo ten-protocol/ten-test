@@ -25,14 +25,16 @@ class PySysTest(ObscuroNetworkTest):
         error = Error(self, web3, 'foo')
         error.deploy(network, account)
 
-        for i in range(0, self.NUM_GUESSERS):
-            self.guesser_client(network, guesser.contract_address, guesser.abi_path, i)
+        #for i in range(0, self.NUM_GUESSERS):
+        #    self.guesser_client(network, guesser.contract_address, guesser.abi_path, i)
 
         for i in range(0, self.NUM_STORAGE):
-            self.storage_client(network, guesser.contract_address, guesser.abi_path, i)
+            self.storage_client(network, storage.contract_address, guesser.abi_path, i)
 
-        for i in range(0, self.NUM_ERROR):
-            self.error_client(network, guesser.contract_address, guesser.abi_path, i)
+        #for i in range(0, self.NUM_ERROR):
+        #    self.error_client(network, error.contract_address, guesser.abi_path, i)
+
+        self.wait(20.0)
 
     def guesser_client(self, network, contract_address, abi_path, num):
         self._client(network, contract_address, abi_path, 'guesser_client', num)
