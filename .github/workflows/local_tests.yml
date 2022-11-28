@@ -12,7 +12,7 @@ on:
         default: 'main'
 
 jobs:
-  checkout:
+  Run-Local-Tests:
     runs-on: self-hosted
     steps:
       - run: echo "Triggered by ${{ github.event_name }} running on obscuro-test branch ${{ github.ref }} "
