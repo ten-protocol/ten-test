@@ -95,7 +95,7 @@ jobs:
           /usr/local/bin/pysys.py run -m obscuro.local -e skip -e events gen_cor_001:
           cd ${{ github.workspace }}/obscuro-test/tests/obscuro
           /usr/local/bin/pysys.py run -m obscuro.dev -e skip -e events
-          
+
       - name: Discord notification
         if: failure()
         uses: sarisia/actions-status-discord@v1

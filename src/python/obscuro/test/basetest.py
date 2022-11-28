@@ -103,17 +103,18 @@ class ObscuroNetworkTest(GenericNetworkTest):
         self.log.info('From balance = %f ' % web3_from.fromWei(from_eth, 'ether'))
         self.log.info('To balance = %f ' % web3_to.fromWei(to_eth, 'ether'))
 
-    def fund_obx(self, network, web3, account, amount):
+    def fund_obx(self, network, account, amount, web3=None):
         """Fund OBX in the L2 to a users account, either through the faucet server or direct from the account."""
         if self.env in ['obscuro', 'obscuro.dev']:
-            self.fund_obx_from_faucet_server(web3, account)
+            self.fund_obx_from_faucet_server(account, web3)
         else:
-            self.fund_obx_from_funded_pk(network, web3, account, amount)
+            self.fund_obx_from_funded_pk(network, account, amount, web3)
 
-    def fund_obx_from_faucet_server(self, web3, account):
+    def fund_obx_from_faucet_server(self, account, web3=None):
         """Allocates native OBX to a users account from the faucet server."""
-        user_obx = web3.eth.get_balance(account.address)
-        self.log.info('OBX User balance   = %d ' % user_obx)
+        if web3 is not None:
+            user_obx = web3.eth.get_balance(account.address)
+            self.log.info('OBX User balance   = %d ' % user_obx)
 
         self.log.info('Running request on %s' % Properties().faucet_url(self.env))
         self.log.info('Running for user address %s' % account.address)
@@ -121,28 +122,30 @@ class ObscuroNetworkTest(GenericNetworkTest):
         data = {"address": account.address}
         requests.post(Properties().faucet_url(self.env), data=json.dumps(data), headers=headers)
 
-        user_obx = web3.eth.get_balance(account.address)
-        self.log.info('OBX User balance   = %d ' % user_obx)
+        if web3 is not None:
+            user_obx = web3.eth.get_balance(account.address)
+            self.log.info('OBX User balance   = %d ' % user_obx)
 
-    def fund_obx_from_funded_pk(self, network, web3, account, amount):
+    def fund_obx_from_funded_pk(self, network, account, amount, web3=None):
         """Allocates native OBX to a users account from the pre-funded account."""
+        if web3 is not None:
+            user_obx = web3.eth.get_balance(account.address)
+            self.log.info('OBX User balance   = %d ' % user_obx)
+            if user_obx < amount: amount = amount - user_obx
+
         web3_funded, account_funded = network.connect(self, Properties().l2_funded_account_pk(self.env))
-        user_obx = web3.eth.get_balance(account.address)
-        self.log.info('OBX User balance   = %d ' % user_obx)
+        tx = {
+            'nonce': web3_funded.eth.get_transaction_count(account_funded.address),
+            'to': account.address,
+            'value': amount,
+            'gas': 4 * 720000,
+            'gasPrice': 21000
+        }
+        tx_sign = account_funded.sign_transaction(tx)
+        tx_hash = network.send_transaction(self, web3_funded, tx_sign)
+        network.wait_for_transaction(self, web3_funded, tx_hash)
 
-        if user_obx < amount:
-            amount = amount - user_obx
-            tx = {
-                'nonce': web3_funded.eth.get_transaction_count(account_funded.address),
-                'to': account.address,
-                'value': amount,
-                'gas': 4 * 720000,
-                'gasPrice': 21000
-            }
-            tx_sign = account_funded.sign_transaction(tx)
-            tx_hash = network.send_transaction(self, web3_funded, tx_sign)
-            network.wait_for_transaction(self, web3_funded, tx_hash)
-
+        if web3 is not None:
             user_obx = web3.eth.get_balance(account.address)
             self.log.info('OBX User balance   = %d ' % user_obx)
 
