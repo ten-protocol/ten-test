@@ -52,14 +52,32 @@ jobs:
           sudo python3 -m pip install pysys==1.6.1
           sudo python3 -m pip install py-solc-x
 
-      - name: Run allocation on Oscuro testnet
+      - name: Run allocation on Obscuro testnet
         if: ${{ github.event.inputs.environment == 'testnet' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
           /usr/local/bin/pysys.py run -XUSER='${{ github.event.inputs.account_address}}' fund_users
 
-      - name: Run allocation on Oscuro dev-testnet
+      - name: Run allocation on Obscuro dev-testnet
         if: ${{ github.event.inputs.environment == 'dev-testnet' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
           /usr/local/bin/pysys.py run -XUSER='${{ github.event.inputs.account_address}}' -m obscuro.dev fund_users
+
+      - name: Upload wallet extension logs
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: runner-artifact
+          path: |
+            ${{ github.workspace }}/obscuro-test/.runner/*
+          retention-days: 2
+
+      - name: Upload testcase output
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: test-artifact
+          path: |
+            ${{ github.workspace }}/obscuro-test/**/Output
+          retention-days: 2
