@@ -36,11 +36,15 @@ if __name__ == "__main__":
     logging.info('Client running')
     while True:
         value = random.randint(0, 3)
-        if value == 0:
-            contract.functions.force_require().call()
-        elif value == 1:
-            contract.functions.force_revert().call()
-        else:
-            contract.functions.force_assert().call()
+        try:
+            if value == 0:
+                contract.functions.force_require().call()
+            elif value == 1:
+                contract.functions.force_revert().call()
+            else:
+                contract.functions.force_assert().call()
+        except Exception as e:
+            logging.info('Exception type: %s' % type(e).__name__)
+            logging.info('Exception args: %s' % e.args[0])
 
         time.sleep(0.1)

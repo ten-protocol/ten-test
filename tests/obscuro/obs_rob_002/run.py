@@ -12,6 +12,7 @@ class PySysTest(ObscuroNetworkTest):
     NUM_GUESSERS = 4
     NUM_STORAGE = 4
     NUM_ERROR = 2
+    DURATION = 120
 
     def execute(self):
         network = Obscuro
@@ -42,11 +43,14 @@ class PySysTest(ObscuroNetworkTest):
         for i in range(0, self.NUM_ERROR):
             self.error_client(network, error.contract_address, error.abi_path, i, error_wallet)
 
-        self.wait(60.0)
-        for client in self.clients:
-            client.stop()
+        self.wait(self.DURATION)
+        self.log.info('Stopping all concurrent clients')
+        for client in self.clients: client.stop()
 
+        self.log.info('Waiting 2 block periods')
         self.wait(2.0*float(self.block_time))
+
+        self.log.info('Transact and check')
         network.transact(self, web3, storage.contract.functions.store(1812), account, storage.GAS)
         value = storage.contract.functions.retrieve().call()
         self.log.info('Call shows value %d' % storage.contract.functions.retrieve().call())
