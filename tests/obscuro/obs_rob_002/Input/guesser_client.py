@@ -20,10 +20,6 @@ def generate_viewing_key(web3, url, private_key):
     requests.post('%s/submitviewingkey/' % url, data=json.dumps(data), headers=headers)
 
 
-def guess_value(guess, contract):
-    contract.functions.guess(guess).call()
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='event_listener')
     parser.add_argument('-u', '--network_http', help='Connection URL')
@@ -39,6 +35,14 @@ if __name__ == "__main__":
 
     logging.info('Client running')
     while True:
-        guess_value(random.randint(0,100), contract)
-        time.sleep(1)
+        guess = random.randint(0, 25)
+        ret = contract.functions.guess(guess).call()
+        if ret == 1:
+            logging.info("Guess is %d, need to go higher" % guess)
+        elif ret == -1:
+            logging.info("Guess is %d, need to go lower" % guess)
+        else:
+            logging.info("You've guessed the secret %s" % guess)
+
+        time.sleep(0.1)
 

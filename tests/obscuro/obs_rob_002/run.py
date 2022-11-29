@@ -39,12 +39,18 @@ class PySysTest(ObscuroNetworkTest):
         for i in range(0, self.NUM_STORAGE):
             self.storage_client(network, storage.contract_address, storage.abi_path, i, storage_wallet)
 
-        #for i in range(0, self.NUM_ERROR):
-        #    self.error_client(network, error.contract_address, error.abi_path, i, error_wallet)
+        for i in range(0, self.NUM_ERROR):
+            self.error_client(network, error.contract_address, error.abi_path, i, error_wallet)
 
         self.wait(60.0)
         for client in self.clients:
             client.stop()
+
+        self.wait(2.0*float(self.block_time))
+        network.transact(self, web3, storage.contract.functions.store(1812), account, storage.GAS)
+        value = storage.contract.functions.retrieve().call()
+        self.log.info('Call shows value %d' % storage.contract.functions.retrieve().call())
+        self.assertTrue(value == 1812)
 
     def guesser_client(self, network, contract_address, abi_path, num, wallet):
         self._client(network, contract_address, abi_path, 'guesser_client', num, wallet)

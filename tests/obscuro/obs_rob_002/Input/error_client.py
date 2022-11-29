@@ -1,6 +1,6 @@
 from web3 import Web3
-import logging, requests
-import argparse, json, sys
+import logging, requests, random
+import argparse, json, sys, time
 from eth_account.messages import encode_defunct
 
 logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
@@ -34,3 +34,13 @@ if __name__ == "__main__":
         contract = web3.eth.contract(address=args.contract_address, abi=json.load(f))
 
     logging.info('Client running')
+    while True:
+        value = random.randint(0, 3)
+        if value == 0:
+            contract.functions.force_require().call()
+        elif value == 1:
+            contract.functions.force_revert().call()
+        else:
+            contract.functions.force_assert().call()
+
+        time.sleep(0.1)

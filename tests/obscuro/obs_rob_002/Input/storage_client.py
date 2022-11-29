@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
     while True:
         store_value(random.randint(0,100), web3, account, contract)
-        time.sleep(0.2)
+        time.sleep(0.1)
 
 
 
