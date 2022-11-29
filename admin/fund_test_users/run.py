@@ -25,7 +25,7 @@ class PySysTest(ObscuroNetworkTest):
             self.log.info('')
             self.log.info('Running for user address %s' % account_user.address)
             self.log.info('Funding native OBX to the test user account')
-            self.fund_obx(network, web3_user, account_user, self.OBX)
+            self.fund_obx(network, account_user, self.OBX, web3_user)
 
             if not self.is_obscuro_sim():
                 self.log.info('Funding HOC and POC to the test user account')

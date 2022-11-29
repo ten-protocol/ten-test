@@ -40,7 +40,7 @@ class PySysTest(ObscuroNetworkTest):
         balance1 = self.wait_for_balance(hoc_address_l2, web3_l2, account_l2, 2)
 
         # give the test user some OBX in l1
-        self.fund_obx(network_l2, web3_l2, account_l2, web3_l2.toWei(1, 'ether'))
+        self.fund_obx(network_l2, account_l2, web3_l2.toWei(1, 'ether'), web3_l2)
 
         # transfer some HOC back
         self.transfer_token(network_l2, 'HOC', hoc_address_l2, web3_l2, account_l2, bridge_address_l2, 1)

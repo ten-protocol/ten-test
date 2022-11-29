@@ -2,12 +2,10 @@
 <pysystest type="auto">
 
     <description>
-        <title>Stress - multiple concurrent subscribers, additional subscribing and unsubscribing</title>
+        <title>Stress - multiple clients performing pure function calls, transactions, revert, require, assert</title>
         <purpose><![CDATA[
-A configurable number of subscribers are started to receive events from Obscuro, which stay subscribed for the duration
-of the test. Another configurable number of a bespoke client is started, where they continually subscribe and then
-unsubscribe repeatedly. Once running a set number of transactions are start and which are expected to be received by
-the continual subscribers i.e. the concurrent subscribes and unsubscribes should not cause any issues. 
+In this test multiple clients are started to run concurrently against the storage, guesser and error contract. The
+intention being to perform long running interactions against the network and ensure that there is no outage.
 ]]>
         </purpose>
     </description>

@@ -21,7 +21,7 @@ class PySysTest(ObscuroNetworkTest):
         # fund obx to the distro account on l2
         self.log.info('')
         self.log.info('Funding native OBX to the distro account')
-        self.fund_obx(network, web3_distro, account_distro, self.OBX)
+        self.fund_obx(network, account_distro, self.OBX, web3_distro)
 
         if not self.is_obscuro_sim():
             # print the ERC20 balances as a check

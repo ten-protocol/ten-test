@@ -82,6 +82,13 @@ jobs:
           sleep 30
           ./testnet-deploy-l2-contracts.sh --l2host=testnet-host-1
 
+      - name: Capture container logs
+        run: |
+          cd ${{ github.workspace }}/go-obscuro/testnet
+          docker logs -f `docker ps -aqf "name=gethnetwork"` > gethnetwork.out &
+          docker logs -f `docker ps -aqf "name=testnet-host-1"` > testnet-host-1.out &
+          docker logs -f `docker ps -aqf "name=testnet-enclave-1"` > testnet-enclave-1.out &
+
       - name: Run allocations
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
@@ -95,7 +102,7 @@ jobs:
           /usr/local/bin/pysys.py run -m obscuro.local -e skip -e events gen_cor_001:
           cd ${{ github.workspace }}/obscuro-test/tests/obscuro
           /usr/local/bin/pysys.py run -m obscuro.dev -e skip -e events
-          
+
       - name: Discord notification
         if: failure()
         uses: sarisia/actions-status-discord@v1
@@ -112,4 +119,13 @@ jobs:
           name: test-artifact
           path: |
             ${{ github.workspace }}/obscuro-test/**/Output
+          retention-days: 2
+
+      - name: Upload container logs
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: container-artifact
+          path: |
+            ${{ github.workspace }}/go-obscuro/testnet/*.out
           retention-days: 2
