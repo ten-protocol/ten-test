@@ -5,11 +5,12 @@ from obscuro.test.contracts.guesser.guesser import Guesser
 from obscuro.test.contracts.storage.storage import Storage
 from obscuro.test.contracts.error.error import Error
 from obscuro.test.networks.obscuro import Obscuro
+from obscuro.test.helpers.wallet_extension import WalletExtension
 
 
 class PySysTest(ObscuroNetworkTest):
-    NUM_GUESSERS = 2
-    NUM_STORAGE = 2
+    NUM_GUESSERS = 4
+    NUM_STORAGE = 4
     NUM_ERROR = 2
 
     def execute(self):
@@ -18,34 +19,43 @@ class PySysTest(ObscuroNetworkTest):
 
         guesser = Guesser(self, web3, 0, 100)
         guesser.deploy(network, account)
+        guesser_wallet = WalletExtension(self, name='guesser')
+        guesser_wallet.run()
 
         storage = Storage(self, web3, 100)
         storage.deploy(network, account)
+        storage_wallet = WalletExtension(self, name='storage')
+        storage_wallet.run()
 
         error = Error(self, web3, 'foo')
         error.deploy(network, account)
+        error_wallet = WalletExtension(self, name='error')
+        error_wallet.run()
 
-        #for i in range(0, self.NUM_GUESSERS):
-        #    self.guesser_client(network, guesser.contract_address, guesser.abi_path, i)
+        self.clients = []
+        for i in range(0, self.NUM_GUESSERS):
+            self.guesser_client(network, guesser.contract_address, guesser.abi_path, i, guesser_wallet)
 
         for i in range(0, self.NUM_STORAGE):
-            self.storage_client(network, storage.contract_address, guesser.abi_path, i)
+            self.storage_client(network, storage.contract_address, storage.abi_path, i, storage_wallet)
 
         #for i in range(0, self.NUM_ERROR):
-        #    self.error_client(network, error.contract_address, guesser.abi_path, i)
+        #    self.error_client(network, error.contract_address, error.abi_path, i, error_wallet)
 
-        self.wait(20.0)
+        self.wait(60.0)
+        for client in self.clients:
+            client.stop()
 
-    def guesser_client(self, network, contract_address, abi_path, num):
-        self._client(network, contract_address, abi_path, 'guesser_client', num)
+    def guesser_client(self, network, contract_address, abi_path, num, wallet):
+        self._client(network, contract_address, abi_path, 'guesser_client', num, wallet)
 
-    def storage_client(self, network, contract_address, abi_path, num):
-        self._client(network, contract_address, abi_path, 'storage_client', num)
+    def storage_client(self, network, contract_address, abi_path, num, wallet):
+        self._client(network, contract_address, abi_path, 'storage_client', num, wallet)
 
-    def error_client(self, network, contract_address, abi_path, num):
-        self._client(network, contract_address, abi_path, 'error_client', num)
+    def error_client(self, network, contract_address, abi_path, num, wallet):
+        self._client(network, contract_address, abi_path, 'error_client', num, wallet)
 
-    def _client(self, network, contract_address, abi_path, name, num):
+    def _client(self, network, contract_address, abi_path, name, num, wallet):
         pk = secrets.token_hex(32)
         account = Web3().eth.account.privateKeyToAccount(pk)
         self.fund_obx(network, account, Web3().toWei(100, 'ether'))
@@ -54,9 +64,9 @@ class PySysTest(ObscuroNetworkTest):
         stderr = os.path.join(self.output, '%s_%d.err' % (name, num))
         script = os.path.join(self.input, '%s.py' % name)
         args = []
-        args.extend(['--network_http', '%s' % network.connection_url(web_socket=False)])
+        args.extend(['--network_http', '%s' % wallet.connection_url(web_socket=False)])
         args.extend(['--contract_address', '%s' % contract_address])
         args.extend(['--contract_abi', '%s' % abi_path])
         args.extend(['--pk_to_register', '%s' % pk])
-        self.run_python(script, stdout, stderr, args)
+        self.clients.append(self.run_python(script, stdout, stderr, args))
         self.waitForGrep(file=stdout, expr='Client running', timeout=10)

@@ -1,6 +1,6 @@
 from web3 import Web3
-import logging, requests
-import argparse, json, sys
+import logging, requests, random
+import argparse, json, sys, time
 from eth_account.messages import encode_defunct
 
 logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
@@ -20,6 +20,10 @@ def generate_viewing_key(web3, url, private_key):
     requests.post('%s/submitviewingkey/' % url, data=json.dumps(data), headers=headers)
 
 
+def guess_value(guess, contract):
+    contract.functions.guess(guess).call()
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='event_listener')
     parser.add_argument('-u', '--network_http', help='Connection URL')
@@ -34,3 +38,7 @@ if __name__ == "__main__":
         contract = web3.eth.contract(address=args.contract_address, abi=json.load(f))
 
     logging.info('Client running')
+    while True:
+        guess_value(random.randint(0,100), contract)
+        time.sleep(1)
+
