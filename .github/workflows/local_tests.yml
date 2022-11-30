@@ -95,7 +95,7 @@ jobs:
 
       - name: Run tests
         run: |
-          cd ${{ github.workspace }}/obscuro-test/tests/generic
+          cd ${{ github.workspace }}/obscuro-test/
           /usr/local/bin/pysys.py run -m obscuro.local -e skip 
 
       - name: Discord notification
