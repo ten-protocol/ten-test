@@ -11,7 +11,7 @@ class PySysTest(ObscuroNetworkTest):
         Properties().account3pk(),
         Properties().account4pk()
     ]
-    OBX = Web3().toWei(100, 'ether')
+    OBX = Web3().toWei(1000, 'ether')
     TOKENS = Web3().toWei(50, 'ether')
 
     def execute(self):
