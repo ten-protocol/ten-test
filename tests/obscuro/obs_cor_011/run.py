@@ -1,3 +1,4 @@
+from pysys.constants import PASSED
 from obscuro.test.basetest import ObscuroNetworkTest
 
 
@@ -34,3 +35,6 @@ class PySysTest(ObscuroNetworkTest):
             self.log.info('Calling to get batch for parent %s' % parent_hash)
             batch = self.get_batch(parent_hash)
             self.log.info('Genesis batch is %s' % batch)
+
+            # if we get this far we've passed
+            self.addOutcome(PASSED)

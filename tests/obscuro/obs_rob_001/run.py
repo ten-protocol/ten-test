@@ -1,4 +1,5 @@
 import secrets, os
+from pysys.constants import PASSED
 from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.contracts.storage.storage import Storage
 from obscuro.test.networks.obscuro import Obscuro
@@ -28,6 +29,9 @@ class PySysTest(GenericNetworkTest):
         # perform some transactions
         for i in range(0, self.NUM_TRANSACTIONS):
             network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS)
+
+        # if we get this far we've passed
+        self.addOutcome(PASSED)
 
     def hammer(self, network, private_key, num):
         stdout = os.path.join(self.output, 'hammer_%d.out'%num)

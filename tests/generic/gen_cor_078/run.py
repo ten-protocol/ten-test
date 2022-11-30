@@ -46,8 +46,9 @@ class PySysTest(GenericNetworkTest):
         self.waitForGrep(file=stdout, expr='Received event type ItemSet3', condition='>= 3', timeout=10)
 
         # validate correct count if duplicates are not allowed
-        if not self.ALLOW_EVENT_DUPLICATES:
-            self.assertLineCount(file=stdout, expr='Received event type ItemSet1', condition='==3')
-            self.assertLineCount(file=stdout, expr='Received event type ItemSet2', condition='==3')
-            self.assertLineCount(file=stdout, expr='Received event type ItemSet3', condition='==3')
+        condition = '>=3'
+        if not self.ALLOW_EVENT_DUPLICATES: condition = '==3'
+        self.assertLineCount(file=stdout, expr='Received event type ItemSet1', condition=condition)
+        self.assertLineCount(file=stdout, expr='Received event type ItemSet2', condition=condition)
+        self.assertLineCount(file=stdout, expr='Received event type ItemSet3', condition=condition)
 
