@@ -85,7 +85,6 @@ jobs:
       - name: Capture container logs
         run: |
           cd ${{ github.workspace }}/go-obscuro/testnet
-          docker logs -f `docker ps -aqf "name=gethnetwork"` > gethnetwork.out &
           docker logs -f `docker ps -aqf "name=testnet-host-1"` > testnet-host-1.out &
           docker logs -f `docker ps -aqf "name=testnet-enclave-1"` > testnet-enclave-1.out &
 
