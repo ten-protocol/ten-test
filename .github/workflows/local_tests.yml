@@ -66,10 +66,10 @@ jobs:
       - name: Build docker containers
         run: |
           cd ${{ github.workspace }}/go-obscuro/testnet
-          docker build -t testnetobscuronet.azurecr.io/obscuronet/gethnetwork:latest -f gethnetwork.Dockerfile ..
-          docker build -t testnetobscuronet.azurecr.io/obscuronet/host:latest -f ../dockerfiles/host.Dockerfile ..
-          docker build -t testnetobscuronet.azurecr.io/obscuronet/contractdeployer:latest -f contractdeployer.Dockerfile ..
-          docker build -t testnetobscuronet.azurecr.io/obscuronet/enclave:latest -f  ../dockerfiles/enclave.Dockerfile ..
+          DOCKER_BUILDKIT=1 docker build -t testnetobscuronet.azurecr.io/obscuronet/gethnetwork:latest -f gethnetwork.Dockerfile ..
+          DOCKER_BUILDKIT=1 docker build -t testnetobscuronet.azurecr.io/obscuronet/host:latest -f ../dockerfiles/host.Dockerfile ..
+          DOCKER_BUILDKIT=1 docker build -t testnetobscuronet.azurecr.io/obscuronet/contractdeployer:latest -f contractdeployer.Dockerfile ..
+          DOCKER_BUILDKIT=1 docker build -t testnetobscuronet.azurecr.io/obscuronet/enclave:latest -f  ../dockerfiles/enclave.Dockerfile ..
 
       - name: Start up testnet
         run: |
