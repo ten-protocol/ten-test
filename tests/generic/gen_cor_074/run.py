@@ -46,12 +46,12 @@ class PySysTest(GenericNetworkTest):
 
         # wait and validate - filter on key is r1
         # event ItemSet1(string indexed key, uint256 value)
-        self.waitForGrep(file=stdout, expr='Task1:', condition='>= 1', timeout=10)
+        self.waitForGrep(file=stdout, expr='Task1:', timeout=10)
         self.assertGrep(file=stdout, expr='Task1: 10')
 
         # wait and validate - ItemSet2 filter on value 2 or 3
         # event ItemSet2(string key, uint256 indexed value)
-        self.waitForGrep(file=stdout, expr='Task2:', condition='>= 3', timeout=10)
+        self.waitForGrep(file=stdout, expr='Task2: k2 2', timeout=10)
         self.assertOrderedGrep(file=stdout, exprList=['Task2: foo 2', 'Task2: bar 3', 'Task2: k2 2'])
 
         # validate correct count if duplicates are not allowed
