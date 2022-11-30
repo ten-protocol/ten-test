@@ -44,7 +44,12 @@ class PySysTest(GenericNetworkTest):
         self.wait(float(self.block_time) * 1.1)
 
         # wait and validate
-        self.waitForGrep(file=stdout, expr='Stored value = [0-9]{3}$', condition='== 4', timeout=20)
+        self.waitForGrep(file=stdout, expr='Stored value = 106', timeout=20)
 
         expr_list = ['Stored value = 101', 'Stored value = 303', 'Stored value = 304', 'Stored value = 106']
         self.assertOrderedGrep(file=stdout, exprList=expr_list)
+
+        # validate correct count if duplicates are not allowed
+        if not self.ALLOW_EVENT_DUPLICATES:
+            self.assertLineCount(file=stdout, expr='Stored value', condition='== 4')
+

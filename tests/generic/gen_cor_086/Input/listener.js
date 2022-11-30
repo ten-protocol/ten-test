@@ -15,14 +15,14 @@ function task1() {
   console.log('Starting task ...')
   filter = contract.filters.ItemSet1(options.filter_key, null)
   contract.on(filter, (key, value, event) => {
-    console.log('ItemSet1, stored value =', value.toNumber())
+    console.log('ItemSet1, key =', options.filter_key, 'stored value =', value.toNumber())
   });
 }
 
 function task2() {
   filter = contract.filters.ItemSet2(null, options.filter_value)
   contract.on(filter, (key, value, event) => {
-    console.log('ItemSet2, stored value =', value.toNumber())
+    console.log('ItemSet2, key =', key, 'stored value =', value.toNumber())
   });
 }
 

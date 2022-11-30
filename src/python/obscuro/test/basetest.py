@@ -16,9 +16,11 @@ class GenericNetworkTest(BaseTest):
     where a test supports these.
 
     """
-    WEBSOCKET = False   # run with `pysys.py run -XWEBSOCKET` to enable
-    PROXY = False       # run with `pysys.py run -XPROXY` to enable
+    ALLOW_EVENT_DUPLICATES = True   # if true we allow duplicate event logs in the test validation
+    WEBSOCKET = False               # run with `pysys.py run -XWEBSOCKET` to enable
+    PROXY = False                   # run with `pysys.py run -XPROXY` to enable
     MSG_ID = 1
+
 
     def __init__(self, descriptor, outsubdir, runner):
         """Call the parent constructor but set the mode to obscuro if non is set. """

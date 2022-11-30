@@ -41,7 +41,8 @@ class PySysTest(GenericNetworkTest):
         network.transact(self, web3, key_storage.contract.functions.setItem('k1', 101), account, storage.GAS)
 
         # wait and validate
-        self.waitForGrep(file=subscriber.stdout, expr='Stored value = [0-9]{1,3}$', condition='== 6', timeout=20)
+        self.waitForGrep(file=subscriber.stdout, expr='Stored value = 4', timeout=20)
+        self.waitForGrep(file=subscriber.stdout, expr='Stored value = 100', timeout=20)
 
         expr_list = []
         expr_list.append('Stored value = 0')
@@ -51,4 +52,8 @@ class PySysTest(GenericNetworkTest):
         expr_list.append('Stored value = 4')
         expr_list.append('Stored value = 100')
         self.assertOrderedGrep(file=subscriber.stdout, exprList=expr_list)
+
+        # validate correct count if duplicates are not allowed
+        if not self.ALLOW_EVENT_DUPLICATES:
+            self.assertLineCount(file=subscriber.stdout, expr='Stored value', condition='== 6')
 
