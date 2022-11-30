@@ -46,13 +46,18 @@ class PySysTest(GenericNetworkTest):
         self.wait(float(self.block_time) * 1.1)
 
         # wait and validate
-        self.waitForGrep(file=stdout, expr='stored value = [0-9]$', condition='== 3', timeout=20)
+        self.waitForGrep(file=stdout, expr='ItemSet1, key = k2 stored value = 4', timeout=20)
+        self.waitForGrep(file=stdout, expr='ItemSet2, key = r2 stored value = 2', timeout=20)
 
         # contract.filters.ItemSet1(options.filter_key, null) - key is k2
-        expr_list = ['ItemSet1, stored value = 4']
+        expr_list = ['ItemSet1, key = k2 stored value = 4']
         self.assertOrderedGrep(file=stdout, exprList=expr_list)
 
         # contract.filters.ItemSet2(null, options.filter_value) - value is 2
-        expr_list = ['ItemSet2, stored value = 2', 'ItemSet2, stored value = 2']
+        expr_list = ['ItemSet2, key = foo stored value = 2', 'ItemSet2, key = r2 stored value = 2']
         self.assertOrderedGrep(file=stdout, exprList=expr_list)
 
+        # validate correct count if duplicates are not allowed
+        if not self.ALLOW_EVENT_DUPLICATES:
+            self.assertLineCount(file=stdout, expr='ItemSet1', condition='== 2')
+            self.assertLineCount(file=stdout, expr='ItemSet2', condition='== 2')
