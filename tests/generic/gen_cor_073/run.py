@@ -7,6 +7,7 @@ from obscuro.test.helpers.ws_proxy import WebServerProxy
 
 
 class PySysTest(GenericNetworkTest):
+    ALLOW_DUPLICATES = True
 
     def execute(self):
         # connect to network
@@ -40,6 +41,9 @@ class PySysTest(GenericNetworkTest):
         self.wait(float(self.block_time) * 1.1)
 
         # wait and validate
-        self.waitForGrep(file=stdout, expr='Stored value = [0-9]$', condition='== 5', timeout=20)
+        self.waitForGrep(file=stdout, expr='Stored value = [0-9]$', condition='>= 5', timeout=20)
         self.assertOrderedGrep(file=stdout, exprList=['Stored value = %d' % x for x in range(0, 5)])
 
+        # duplicates should not exist but for now support them
+        if not self.ALLOW_DUPLICATES:
+            self.assertLineCount(file=stdout, expr='Stored value', condition='== 5')
