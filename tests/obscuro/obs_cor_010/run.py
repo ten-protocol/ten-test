@@ -24,10 +24,10 @@ class PySysTest(ObscuroNetworkTest):
         web3_l2, account_l2 = network_l2.connect(self, private_key)
         web3_l1, account_l1 = network_l1.connect(self, private_key)
 
-        # give the test user some ETH in l1
+        self.log.info('Give the test user some ETH in l1')
         self.fund_eth(network_l1, web3_distro_l1, account_distro_l1, web3_l1, account_l1, 0.01)
 
-        # give the test user some HOC in l1
+        self.log.info('Give the test user some HOC in l1')
         d1 = self.get_token_balance(hoc_address_l1, web3_distro_l1, account_distro_l1)
         u1 = self.get_token_balance(hoc_address_l1, web3_l1, account_l1)
         self.transfer_token(network_l1, 'HOC', hoc_address_l1, web3_distro_l1, account_distro_l1, account_l1.address, 10)
@@ -35,14 +35,14 @@ class PySysTest(ObscuroNetworkTest):
         u2 = self.get_token_balance(hoc_address_l1, web3_l1, account_l1)
         self.log.info("Balances B/A = (%d, %d), (%d, %d)" % (d1,u1,d2,u2))
 
-        # transfer some HOC across the bridge
+        self.log.info('Transfer some HOC across the bridge')
         self.transfer_token(network_l1, 'HOC', hoc_address_l1, web3_l1, account_l1, bridge_address_l1, 2)
         balance1 = self.wait_for_balance(hoc_address_l2, web3_l2, account_l2, 2)
 
-        # give the test user some OBX in l1
+        self.log.info('Give the test user some OBX in l1')
         self.fund_obx(network_l2, account_l2, web3_l2.toWei(1, 'ether'), web3_l2)
 
-        # transfer some HOC back
+        self.log.info('Transfer some HOC back')
         self.transfer_token(network_l2, 'HOC', hoc_address_l2, web3_l2, account_l2, bridge_address_l2, 1)
         balance2 = self.wait_for_balance(hoc_address_l2, web3_l2, account_l2, 1)
 
