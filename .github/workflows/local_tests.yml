@@ -102,7 +102,7 @@ jobs:
           /usr/local/bin/pysys.py run -m obscuro.local -e skip 
 
       - name: Discord notification
-        if: failure()
+        if: always()
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.CONT_INT_WEBHOOK }}
