@@ -66,7 +66,7 @@ jobs:
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.CONT_INT_WEBHOOK }}
-          title: "Run local testnet tests on schedule or manual"
+          title: "Run local testnet tests on merged PR"
           description: "Runs all system tests through a local testnet"
           avatar_url: ${{ secrets.AVATAR_URL }}
 
