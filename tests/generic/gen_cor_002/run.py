@@ -19,6 +19,9 @@ class PySysTest(GenericNetworkTest):
         storage = Storage(self, web3, 100)
         storage.deploy(network, account)
 
+        # wait a couple of block times
+        self.wait(2.0*float(self.block_time))
+
         # get the new block number
         block_number_deploy = web3.eth.get_block_number()
         self.log.info('Block number is %d' % block_number_deploy)
