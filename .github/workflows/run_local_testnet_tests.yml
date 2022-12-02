@@ -1,9 +1,8 @@
-name: Run local tests
+name: Run Local Testnet Tests
+run-name: Deploy to ${{ github.event.inputs.env }} by @${{ github.actor }}
 on:
   schedule:
     - cron: '10 2 * * *'
-  repository_dispatch:
-    types: [merged_pull_request]
   workflow_dispatch:
     inputs:
       target_branch:
@@ -17,10 +16,6 @@ jobs:
     steps:
       - run: echo "Triggered by ${{ github.event_name }} running on obscuro-test branch ${{ github.ref }} "
 
-      - name: Log the PR number for repository dispatch
-        if: ${{ github.event_name == 'repository_dispatch' }}
-        run: echo "Triggered by PR number ${{ github.event.client_payload.number }}"
-
       - name: Log the go-obscuro branch for workflow dispatch
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: echo "Running on go-obscuro branch ${{ github.event.inputs.target_branch }}"
@@ -32,13 +27,6 @@ jobs:
 
       - name: Check out go-obscuro code on schedule trigger
         if: ${{ github.event_name == 'schedule' }}
-        uses: actions/checkout@v3
-        with:
-          repository: obscuronet/go-obscuro
-          path: ./go-obscuro
-
-      - name: Check out go-obscuro code on repository dispatch
-        if: ${{ github.event_name == 'repository_dispatch' }}
         uses: actions/checkout@v3
         with:
           repository: obscuronet/go-obscuro

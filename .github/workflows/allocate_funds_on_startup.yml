@@ -1,4 +1,4 @@
-name: Run tests
+name: Allocate Funds On Startup
 on:
   workflow_dispatch:
     inputs:
@@ -12,12 +12,10 @@ on:
           - dev-testnet
 
 jobs:
-  Run-Tests:
+  Run-Allocation:
     runs-on: ubuntu-20.04
     steps:
-      - run: echo "Triggered by ${{ github.event_name }}"
-      - run: echo "Branch       ${{ github.ref }}"
-      - run: echo "Environment  ${{ github.event.inputs.environment }}"
+      - run: echo "Triggered by ${{ github.event_name }} event running on branch ${{ github.ref }} "
 
       - name: Check out obscuro-test
         uses: actions/checkout@v3
@@ -43,37 +41,30 @@ jobs:
           sudo apt-get install -y software-properties-common
           sudo add-apt-repository ppa:ethereum/ethereum
           sudo apt update
-          sudo apt install -y curl
           sudo apt install -y solc
           
-          sudo curl -sL https://deb.nodesource.com/setup_18.x | sudo bash -
-          sudo apt-get install -y nodejs
-          sudo npm install console-stamp --global
-          sudo npm install web3 --global 
-          sudo npm install commander --global
-          sudo npm install ethers --global
-          sudo npm list -g
-
           sudo apt install -y python3-pip
           sudo python3 -m pip install web3
           sudo python3 -m pip install pysys==1.6.1
           sudo python3 -m pip install py-solc-x
 
-      - name: Run tests on testnet on a manual trigger
+      - name: Run allocation on testnet
         if: ${{ github.event.inputs.environment == 'testnet' }}
         run: |
-          cd ${{ github.workspace }}/obscuro-test/tests/generic
-          /usr/local/bin/pysys.py run -m obscuro.dev -e skip -e events
-          cd ${{ github.workspace }}/obscuro-test/tests/obscuro
-          /usr/local/bin/pysys.py run -m obscuro.dev -e skip -e events
-
-      - name: Run tests on dev-testnet on a manual trigger
+          cd ${{ github.workspace }}/obscuro-test/admin
+          /usr/local/bin/pysys.py run fund_layer_one
+          /usr/local/bin/pysys.py run fund_layer_two
+          /usr/local/bin/pysys.py run fund_test_users
+          /usr/local/bin/pysys.py run fund_users
+          
+      - name: Run allocation on dev-testnet
         if: ${{ github.event.inputs.environment == 'dev-testnet' }}
         run: |
-          cd ${{ github.workspace }}/obscuro-test/tests/generic
-          /usr/local/bin/pysys.py run -m obscuro.dev -e skip -e events
-          cd ${{ github.workspace }}/obscuro-test/tests/obscuro
-          /usr/local/bin/pysys.py run -m obscuro.dev -e skip -e events
+          cd ${{ github.workspace }}/obscuro-test/admin
+          /usr/local/bin/pysys.py run -m obscuro.dev fund_layer_one
+          /usr/local/bin/pysys.py run -m obscuro.dev fund_layer_two
+          /usr/local/bin/pysys.py run -m obscuro.dev fund_test_users
+          /usr/local/bin/pysys.py run -m obscuro.dev fund_users
 
       - name: Upload testcase output
         uses: actions/upload-artifact@v3
