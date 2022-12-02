@@ -1,5 +1,5 @@
 name: Run merge tests
-run-name: Run merge tests for PR ${{ github.event.client_payload.number }} by @${{ github.actor }}
+run-name: Run merge tests for PR ${{ github.event.client_payload.number }} by @${{ github.event.pull_request.user.login }}
 on:
   repository_dispatch:
     types: [merged_pull_request]
