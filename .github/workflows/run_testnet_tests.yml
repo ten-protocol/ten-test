@@ -1,4 +1,4 @@
-name: Run Testnet Tests
+name: Run testnet tests
 on:
   workflow_dispatch:
     inputs:

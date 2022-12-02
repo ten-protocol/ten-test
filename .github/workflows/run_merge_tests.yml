@@ -1,4 +1,4 @@
-name: Run Merge Tests
+name: Run merge tests
 run-name: Run merge tests for PR ${{ github.event.client_payload.number }} by @${{ github.actor }}
 on:
   repository_dispatch:

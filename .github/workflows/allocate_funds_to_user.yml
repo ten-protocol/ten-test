@@ -1,4 +1,4 @@
-name: Allocate Funds To User
+name: Allocate funds to user
 on:
   workflow_dispatch:
     inputs:

@@ -1,4 +1,4 @@
-name: Allocate Funds On Startup
+name: Allocate funds on startup
 on:
   workflow_dispatch:
     inputs:
