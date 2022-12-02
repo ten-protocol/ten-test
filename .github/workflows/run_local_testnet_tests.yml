@@ -1,5 +1,4 @@
 name: Run Local Testnet Tests
-run-name: Deploy to ${{ github.event.inputs.env }} by @${{ github.actor }}
 on:
   schedule:
     - cron: '10 2 * * *'
