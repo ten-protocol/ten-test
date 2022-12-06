@@ -10,36 +10,20 @@ contract GasConsumer {
         number = num;
     }
 
-    function set(uint256 value) public {
-        number = value;
+    function add_once() public {
+        1 + 1;
     }
 
-    function add_once(uint256 value) public view {
-        number = number + value;
+    function add_twice() public {
+        1 + 1 + 1;
     }
 
-    function add_twice(uint256 value) public view {
-        number = number + value + value;
+    function add_thrice() public {
+        1 + 1 + 1 + 1;
     }
 
-    function add_n_times(uint256 value) public view {
-        for (i = 0; i < 10; i = i +1 {
-            number = number + value;
-        }
-    }
-
-    function multiply_once(uint256 value) public view {
-        number = number * value;
-    }
-
-    function multiply_twice(uint256 value) public view {
-        number = number * value * value;
-    }
-
-    function add_n_times(uint256 value) public view {
-        for (i = 0; i < 10; i = i +1 {
-            number = number * value;
-        }
+    function add_three_times_with_a_long_name() public {
+        1 + 1 + 1 + 1;
     }
 
     function destroy() public {
