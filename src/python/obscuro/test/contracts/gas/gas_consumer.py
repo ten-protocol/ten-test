@@ -7,12 +7,12 @@ from obscuro.test.utils.properties import Properties
 class GasConsumer:
     """Abstraction over the test Gas Consumer smart contract."""
     GAS = 720000
+    CONTRACT = 'GasConsumer.sol'
 
-    def __init__(self, test, web3, initial):
+    def __init__(self, test, web3):
         """Create an instance of the gas consumer contract, compile and construct a web3 instance."""
         self.test = test
         self.web3 = web3
-        self.initial = initial
         self.bytecode = None
         self.abi = None
         self.abi_path = None
@@ -23,7 +23,7 @@ class GasConsumer:
 
     def construct(self):
         """Compile and construct an instance. """
-        file = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'gas', 'GasConsumer.sol')
+        file = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'gas', self.CONTRACT)
         with open(file, 'r') as fp:
             compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'],
                                           solc_binary=Properties().solc_binary())
@@ -34,7 +34,7 @@ class GasConsumer:
         self.abi_path = os.path.join(self.test.output, 'gas.abi')
         with open(self.abi_path, 'w') as f: json.dump(self.abi, f)
 
-        self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor(self.initial)
+        self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor()
 
     def deploy(self, network, account):
         """Deploy the contract using a given account."""
@@ -43,3 +43,16 @@ class GasConsumer:
         self.contract_address = tx_receipt.contractAddress
         self.contract = self.web3.eth.contract(address=self.contract_address, abi=self.abi)
         return tx_receipt
+
+
+class GasConsumerAdd(GasConsumer):
+    CONTRACT = 'GasConsumerAdd.sol'
+
+
+class GasConsumerMultiply(GasConsumer):
+    CONTRACT = 'GasConsumerMultiply.sol'
+
+
+class GasConsumerBalance(GasConsumer):
+    CONTRACT = 'GasConsumerBalance.sol'
+

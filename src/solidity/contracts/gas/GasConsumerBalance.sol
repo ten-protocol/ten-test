@@ -8,7 +8,7 @@ contract GasConsumer {
         owner = msg.sender;
     }
 
-    function do_nothing() public { 1 + 2; }
+    function get_balance() public { address(this).balance; }
 
     function destroy() public {
         require(msg.sender == owner, "You are not the owner");

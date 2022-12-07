@@ -58,9 +58,8 @@ class Default:
         build_tx = target.buildTransaction(
             {
                 'nonce': nonce,
-                #'gasPrice': web3.eth.generate_gas_price(rpc_gas_price_strategy),
-                'gasPrice': 21000,
-                'gas': gas_limit,
+                'gasPrice': 1000,             # the price we are willing to pay per gas unit (dimension is gwei)
+                'gas': gas_limit,             # max gas units prepared to pay (dimension is computational units)
                 'chainId': web3.eth.chain_id
             }
         )
