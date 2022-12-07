@@ -6,11 +6,14 @@
         <purpose><![CDATA[]]>
 Checks that you can estimate gas for a contract deployment, and calls made to a contract (to store and retrieve a
 value). We assume it will cost more to deploy than store, and more to store than retrieve.
+
+Intermittent failures need to be investigated.
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
             <group>rpc</group>
             <group>ws</group>
         </groups>
