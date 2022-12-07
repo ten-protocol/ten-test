@@ -5,7 +5,7 @@ from obscuro.test.networks.factory import NetworkFactory
 
 class PySysTest(GenericNetworkTest):
     # as previously reported on ganache and obscuro
-    VALUES = [21186,21296,21208,21230]
+    VALUES = [21209,21274,21231,21253]
 
     def execute(self):
         # deployment of contract
