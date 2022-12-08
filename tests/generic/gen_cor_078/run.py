@@ -35,9 +35,9 @@ class PySysTest(GenericNetworkTest):
         self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
 
         # perform some transactions
-        network.transact(self, web3, storage.contract.functions.setItem('k1', 1), account, storage.GAS)
-        network.transact(self, web3, storage.contract.functions.setItem('k2', 2), account, storage.GAS)
-        network.transact(self, web3, storage.contract.functions.setItem('k3', 3), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.setItem('k1', 1), account, storage.GAS_LIMIT)
+        network.transact(self, web3, storage.contract.functions.setItem('k2', 2), account, storage.GAS_LIMIT)
+        network.transact(self, web3, storage.contract.functions.setItem('k3', 3), account, storage.GAS_LIMIT)
         self.wait(float(self.block_time) * 1.1)
 
         # wait and validate

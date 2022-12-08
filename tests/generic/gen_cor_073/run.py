@@ -36,7 +36,7 @@ class PySysTest(GenericNetworkTest):
 
         # perform some transactions with a sleep in between
         for i in range(0,5):
-            network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS)
+            network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS_LIMIT)
         self.wait(float(self.block_time) * 1.1)
 
         # wait and validate

@@ -29,7 +29,7 @@ class PySysTest(ObscuroNetworkTest):
 
         # perform some transactions as account4, resulting in an event with the account 4 address included
         self.log.info('Performing transactions ... ')
-        network.transact(self, web3, contract.contract.functions.callerIndexedAddress(), account, contract.GAS)
+        network.transact(self, web3, contract.contract.functions.callerIndexedAddress(), account, contract.GAS_LIMIT)
         self.wait(float(self.block_time)*1.1)
 
         # we would expect that given account4 vk is registered it can be decrypted

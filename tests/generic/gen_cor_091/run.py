@@ -26,9 +26,9 @@ class PySysTest(GenericNetworkTest):
         self.percentile_difference('times_twice', self.REFERENCE[1], est_2, 5)
         self.percentile_difference('times_thrice', self.REFERENCE[2], est_3, 5)
 
-        tx1 = network.transact(self, web3, contract.contract.functions.times_once(), account, contract.GAS)
-        tx2 = network.transact(self, web3, contract.contract.functions.times_twice(), account, contract.GAS)
-        tx3 = network.transact(self, web3, contract.contract.functions.times_thrice(), account, contract.GAS)
+        tx1 = network.transact(self, web3, contract.contract.functions.times_once(), account, contract.GAS_LIMIT)
+        tx2 = network.transact(self, web3, contract.contract.functions.times_twice(), account, contract.GAS_LIMIT)
+        tx3 = network.transact(self, web3, contract.contract.functions.times_thrice(), account, contract.GAS_LIMIT)
         self.log.info("Gas used times_once:           %d" % int(tx1["gasUsed"]))
         self.log.info("Gas used times_twice:          %d" % int(tx2["gasUsed"]))
         self.log.info("Gas used times_thrice:         %d" % int(tx3["gasUsed"]))

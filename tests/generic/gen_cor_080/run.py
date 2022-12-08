@@ -16,9 +16,9 @@ class PySysTest(GenericNetworkTest):
         storage = Storage(self, web3, 100)
         storage.deploy(network, account)
 
-        network.transact(self, web3, storage.contract.functions.store(0), account, storage.GAS)
-        tx = network.transact(self, web3, storage.contract.functions.store(1), account, storage.GAS)
-        network.transact(self, web3, storage.contract.functions.store(2), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.store(0), account, storage.GAS_LIMIT)
+        tx = network.transact(self, web3, storage.contract.functions.store(1), account, storage.GAS_LIMIT)
+        network.transact(self, web3, storage.contract.functions.store(2), account, storage.GAS_LIMIT)
 
         # run the javascript event log subscriber in the background
         subscriber = FilterLogSubscriber(self, network)
@@ -30,9 +30,9 @@ class PySysTest(GenericNetworkTest):
         subscriber.subscribe()
 
         # perform some more transactions
-        network.transact(self, web3, storage.contract.functions.store(3), account, storage.GAS)
-        network.transact(self, web3, storage.contract.functions.store(4), account, storage.GAS)
-        network.transact(self, web3, storage.contract.functions.store(5), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.store(3), account, storage.GAS_LIMIT)
+        network.transact(self, web3, storage.contract.functions.store(4), account, storage.GAS_LIMIT)
+        network.transact(self, web3, storage.contract.functions.store(5), account, storage.GAS_LIMIT)
         self.wait(float(self.block_time) * 1.1)
 
         # wait and validate

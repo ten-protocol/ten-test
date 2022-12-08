@@ -17,7 +17,7 @@ class PySysTest(GenericNetworkTest):
 
         erc20 = OBXCoin(self, web3_deploy)
         erc20.deploy(network, deploy_account)
-        network.transact(self, web3_deploy, erc20.contract.functions.transfer(account2.address, 200), deploy_account, erc20.GAS)
+        network.transact(self, web3_deploy, erc20.contract.functions.transfer(account2.address, 200), deploy_account, erc20.GAS_LIMIT)
 
         guesser = GuesserToken(self, web3_deploy, 5, erc20.contract_address)
         guesser.deploy(network, deploy_account)
@@ -29,8 +29,8 @@ class PySysTest(GenericNetworkTest):
 
         for i in range(0,6):
             self.log.info('Guessing number as %d' % i)
-            network.transact(self, web3, token.functions.approve(guesser.contract_address, 1), account, guesser.GAS)
-            network.transact(self, web3, game.functions.attempt(i), account, guesser.GAS)
+            network.transact(self, web3, token.functions.approve(guesser.contract_address, 1), account, guesser.GAS_LIMIT)
+            network.transact(self, web3, game.functions.attempt(i), account, guesser.GAS_LIMIT)
 
             self.log.info('Checking balances ...')
             prize = game.functions.getBalance().call()

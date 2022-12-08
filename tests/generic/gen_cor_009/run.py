@@ -23,7 +23,7 @@ class PySysTest(GenericNetworkTest):
         self.log.info('Count 2: %d' % count_2)
 
         # interact with the contract
-        network.transact(self, web3, storage.contract.functions.store(200), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.store(200), account, storage.GAS_LIMIT)
 
         # get the transaction count
         count_3 = web3.eth.get_transaction_count(account.address)

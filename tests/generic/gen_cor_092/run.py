@@ -19,7 +19,7 @@ class PySysTest(GenericNetworkTest):
 
         self.percentile_difference('get_balance', self.REFERENCE[0], est_1, 5)
 
-        tx1 = network.transact(self, web3, contract.contract.functions.get_balance(), account, contract.GAS)
+        tx1 = network.transact(self, web3, contract.contract.functions.get_balance(), account, contract.GAS_LIMIT)
         self.log.info("Gas used get_balance:    %d" % int(tx1["gasUsed"]))
 
         self.assertTrue(est_1 == int(tx1["gasUsed"]))

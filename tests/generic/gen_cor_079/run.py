@@ -29,16 +29,16 @@ class PySysTest(GenericNetworkTest):
         subscriber.subscribe()
 
         # perform some transactions on the storage contract
-        network.transact(self, web3, storage.contract.functions.store(0), account, storage.GAS)
-        network.transact(self, web3, storage.contract.functions.store(1), account, storage.GAS)
-        network.transact(self, web3, storage.contract.functions.store(2), account, storage.GAS)
-        network.transact(self, web3, storage.contract.functions.store(3), account, storage.GAS)
-        network.transact(self, web3, storage.contract.functions.store(4), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.store(0), account, storage.GAS_LIMIT)
+        network.transact(self, web3, storage.contract.functions.store(1), account, storage.GAS_LIMIT)
+        network.transact(self, web3, storage.contract.functions.store(2), account, storage.GAS_LIMIT)
+        network.transact(self, web3, storage.contract.functions.store(3), account, storage.GAS_LIMIT)
+        network.transact(self, web3, storage.contract.functions.store(4), account, storage.GAS_LIMIT)
         self.wait(float(self.block_time) * 1.1)
 
         # perform some transactions on the key storage contract
-        network.transact(self, web3, key_storage.contract.functions.storeItem(100), account, storage.GAS)
-        network.transact(self, web3, key_storage.contract.functions.setItem('k1', 101), account, storage.GAS)
+        network.transact(self, web3, key_storage.contract.functions.storeItem(100), account, storage.GAS_LIMIT)
+        network.transact(self, web3, key_storage.contract.functions.setItem('k1', 101), account, storage.GAS_LIMIT)
 
         # wait and validate
         self.waitForGrep(file=subscriber.stdout, expr='Stored value = 4', timeout=20)

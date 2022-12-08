@@ -29,7 +29,7 @@ class PySysTest(ObscuroNetworkTest):
         self.log.info('Performing transactions ... ')
         network.transact(self, web3,
                          contract.contract.functions.twoIndexedAddresses(account.address, account1.address),
-                         account, contract.GAS)
+                         account, contract.GAS_LIMIT)
         self.wait(float(self.block_time)*1.1)
 
         # wait and assert that account4 does see this event

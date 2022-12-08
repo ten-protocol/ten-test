@@ -28,7 +28,7 @@ class PySysTest(GenericNetworkTest):
 
         # perform some transactions
         for i in range(0, self.NUM_TRANSACTIONS):
-            network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS)
+            network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS_LIMIT)
 
         # if we get this far we've passed
         self.addOutcome(PASSED)

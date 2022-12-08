@@ -18,7 +18,7 @@ class PySysTest(ObscuroNetworkTest):
         self.check(tx_receipt)
 
         for i in range(0,4):
-            tx_receipt = network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS)
+            tx_receipt = network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS_LIMIT)
             self.wait(float(block_time)*1.1)
             self.check(tx_receipt)
 
