@@ -35,12 +35,12 @@ class PySysTest(GenericNetworkTest):
         self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
 
         # perform some transactions on the key storage contract
-        network.transact(self, web3, key_storage.contract.functions.setItem('k1', 101), account, key_storage.GAS)
-        network.transact(self, web3, key_storage.contract.functions.setItem('k2', 202), account, key_storage.GAS)
-        network.transact(self, web3, key_storage.contract.functions.setItem('k3', 303), account, key_storage.GAS)
-        network.transact(self, web3, key_storage.contract.functions.setItem('k3', 304), account, key_storage.GAS)
-        network.transact(self, web3, key_storage.contract.functions.setItem('k2', 205), account, key_storage.GAS)
-        network.transact(self, web3, key_storage.contract.functions.setItem('k1', 106), account, key_storage.GAS)
+        network.transact(self, web3, key_storage.contract.functions.setItem('k1', 101), account, key_storage.GAS_LIMIT)
+        network.transact(self, web3, key_storage.contract.functions.setItem('k2', 202), account, key_storage.GAS_LIMIT)
+        network.transact(self, web3, key_storage.contract.functions.setItem('k3', 303), account, key_storage.GAS_LIMIT)
+        network.transact(self, web3, key_storage.contract.functions.setItem('k3', 304), account, key_storage.GAS_LIMIT)
+        network.transact(self, web3, key_storage.contract.functions.setItem('k2', 205), account, key_storage.GAS_LIMIT)
+        network.transact(self, web3, key_storage.contract.functions.setItem('k1', 106), account, key_storage.GAS_LIMIT)
         self.wait(float(self.block_time) * 1.1)
 
         # wait and validate

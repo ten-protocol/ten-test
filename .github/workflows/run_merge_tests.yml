@@ -66,8 +66,8 @@ jobs:
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.CONT_INT_WEBHOOK }}
-          title: "Run local testnet tests on merged PR"
-          description: "Runs all system tests through a local testnet"
+          title: "Merge tests for PR ${{ github.event.client_payload.number }} by @${{ github.event.client_payload.owner }}"
+          description: "Local testnet tests on PR merge"
           avatar_url: ${{ secrets.AVATAR_URL }}
 
       - name: Upload testcase output

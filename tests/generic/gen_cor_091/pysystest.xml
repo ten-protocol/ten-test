@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Gas: cost of multiplication</title>
+        <purpose><![CDATA[]]>
+Checks the cost of addition in transactions that perform a different number of multiplications. Note the cost of an
+addition should be 5 gas, so performing once multiplication should be more expensive than performing one addition,
+though this is not seen?
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>gas</group>
+        </groups>
+        <modes inherit="true">
+            <mode>obscuro.dev</mode>
+            <mode>obscuro.local</mode>
+            <mode>obscuro.sim</mode>
+            <mode>goerli</mode>
+            <mode>ganache</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

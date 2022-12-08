@@ -86,8 +86,8 @@ jobs:
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.CONT_INT_WEBHOOK }}
-          title: "Run local testnet tests"
-          description: "Runs all system tests through a local testnet"
+          title: "Local testnet tests for ${{ github.event_name }} trigger"
+          description: "Local testnet tests"
           avatar_url: ${{ secrets.AVATAR_URL }}
 
       - name: Upload testcase output

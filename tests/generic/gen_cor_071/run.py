@@ -20,7 +20,7 @@ class PySysTest(GenericNetworkTest):
 
         # perform some transactions
         for i in range(0, 5):
-            network.transact(self, web3_1, storage.contract.functions.store(i), account1, storage.GAS)
+            network.transact(self, web3_1, storage.contract.functions.store(i), account1, storage.GAS_LIMIT)
         self.wait(float(self.block_time) * 1.1)
 
         # get the new entries from the filter

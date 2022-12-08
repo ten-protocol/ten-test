@@ -37,12 +37,12 @@ class PySysTest(GenericNetworkTest):
         self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
 
         # perform some transactions with a sleep in between
-        network.transact(self, web3, storage.contract.functions.setItem('k1', 1), account, storage.GAS)
-        network.transact(self, web3, storage.contract.functions.setItem('foo', 2), account, storage.GAS)
-        network.transact(self, web3, storage.contract.functions.setItem('bar', 3), account, storage.GAS)
-        network.transact(self, web3, storage.contract.functions.setItem('k2', 4), account, storage.GAS)
-        network.transact(self, web3, storage.contract.functions.setItem('r1', 5), account, storage.GAS)
-        network.transact(self, web3, storage.contract.functions.setItem('r2', 2), account, storage.GAS)
+        network.transact(self, web3, storage.contract.functions.setItem('k1', 1), account, storage.GAS_LIMIT)
+        network.transact(self, web3, storage.contract.functions.setItem('foo', 2), account, storage.GAS_LIMIT)
+        network.transact(self, web3, storage.contract.functions.setItem('bar', 3), account, storage.GAS_LIMIT)
+        network.transact(self, web3, storage.contract.functions.setItem('k2', 4), account, storage.GAS_LIMIT)
+        network.transact(self, web3, storage.contract.functions.setItem('r1', 5), account, storage.GAS_LIMIT)
+        network.transact(self, web3, storage.contract.functions.setItem('r2', 2), account, storage.GAS_LIMIT)
         self.wait(float(self.block_time) * 1.1)
 
         # wait and validate

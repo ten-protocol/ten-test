@@ -1,7 +1,7 @@
 from web3 import Web3
 from pysys.constants import *
 from obscuro.test.utils.properties import Properties
-
+from web3.gas_strategies.rpc import rpc_gas_price_strategy
 
 class Default:
     """A default node giving access to an underlying network."""
@@ -46,20 +46,20 @@ class Default:
         return cls.connect(test, Properties().account4pk(), web_socket)
 
     @classmethod
-    def transact(cls, test, web3, target, account, gas):
-        tx_sign = cls.build_transaction(test, web3, target, account, gas)
+    def transact(cls, test, web3, target, account, gas_limit):
+        tx_sign = cls.build_transaction(test, web3, target, account, gas_limit)
         tx_hash = cls.send_transaction(test, web3, tx_sign)
         tx_recp = cls.wait_for_transaction(test, web3, tx_hash)
         return tx_recp
 
     @classmethod
-    def build_transaction(cls, test, web3, target, account, gas):
+    def build_transaction(cls, test, web3, target, account, gas_limit):
         nonce = web3.eth.get_transaction_count(account.address)
         build_tx = target.buildTransaction(
             {
                 'nonce': nonce,
-                'gasPrice': 21000,
-                'gas': gas,
+                'gasPrice': 1000,             # the price we are willing to pay per gas unit (dimension is gwei)
+                'gas': gas_limit,             # max gas units prepared to pay (dimension is computational units)
                 'chainId': web3.eth.chain_id
             }
         )
