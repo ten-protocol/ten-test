@@ -1,11 +1,37 @@
-import pysys
-from pysys.constants import *
-from pysys.basetest import BaseTest
+import re
+from obscuro.test.basetest import GenericNetworkTest
+from obscuro.test.contracts.gas.gas_consumer import GasConsumerBalance
+from obscuro.test.networks.factory import NetworkFactory
 
-class PySysTest(BaseTest):
-	def execute(self):
-		pass
 
-	def validate(self):
-		pass
-	
+class PySysTest(GenericNetworkTest):
+
+    def execute(self):
+        network = NetworkFactory.get_network(self.env)
+        web3, account = network.connect_account1(self, web_socket=self.WEBSOCKET)
+
+        contract = GasConsumerBalance(self, web3)
+        contract.deploy(network, account)
+
+        est_1 = contract.contract.functions.get_balance().estimate_gas()
+        self.log.info("Estimate get_balance:    %d" % est_1)
+
+        nonce = web3.eth.get_transaction_count(account.address)
+        build_tx = contract.contract.functions.get_balance().buildTransaction(
+            {
+                'nonce': nonce,
+                'gasPrice': 1000,             # the price we are willing to pay per gas unit (dimension is gwei)
+                'gas': int(est_1 / 2),        # max gas units prepared to pay (dimension is computational units)
+                'chainId': web3.eth.chain_id
+            }
+        )
+        signed_tx = account.sign_transaction(build_tx)
+        try:
+            web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+        except Exception as e:
+            self.log.error('Exception type: %s' % type(e))
+            self.log.error('Exception message: %s' % e.args[0]['message'])
+            regex = re.compile('intrinsic gas too low', re.M)
+            self.assertTrue(regex.search(e.args[0]['message']) is not None)
+
+
