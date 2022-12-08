@@ -5,6 +5,8 @@
         <title>Gas: exceed gas limit</title>
         <purpose><![CDATA[]]>
 Checks what happens when a transaction is submitted with a gas limit set to half the estimate.
+
+Not currently working on Obscuro.  
         </purpose>
     </description>
 
