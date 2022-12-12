@@ -34,6 +34,7 @@ class ObscuroRunnerPlugin():
 
     def run_ganache(self, runner):
         """Run ganache for use by the tests. """
+        runner.log.info('Starting ganache server to run tests through managed instance')
         stdout = os.path.join(self.output, 'ganache.out')
         stderr = os.path.join(self.output, 'ganache.err')
 

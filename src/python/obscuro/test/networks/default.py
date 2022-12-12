@@ -1,7 +1,6 @@
 from web3 import Web3
 from pysys.constants import *
 from obscuro.test.utils.properties import Properties
-from web3.gas_strategies.rpc import rpc_gas_price_strategy
 
 class Default:
     """A default node giving access to an underlying network."""

@@ -21,7 +21,6 @@ class GenericNetworkTest(BaseTest):
     PROXY = False                   # run with `pysys.py run -XPROXY` to enable
     MSG_ID = 1
 
-
     def __init__(self, descriptor, outsubdir, runner):
         """Call the parent constructor but set the mode to obscuro if non is set. """
         super().__init__(descriptor, outsubdir, runner)

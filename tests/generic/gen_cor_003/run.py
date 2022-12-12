@@ -12,6 +12,6 @@ class PySysTest(GenericNetworkTest):
 
         # get the balance
         balance = web3.eth.get_balance(account.address)
-        self.log.info('Balance for new accounts is %d' % balance)
+        self.log.info('Balance for account is %d' % balance)
         self.assertTrue(balance >= 0)
 
