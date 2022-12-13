@@ -12,7 +12,6 @@ Skipped - see https://github.com/obscuronet/obscuro-internal/issues/971
 
     <classification>
         <groups inherit="true">
-            <group>ws</group>
             <group>skip</group>
         </groups>
         <modes inherit="true">

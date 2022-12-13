@@ -15,7 +15,6 @@ Intermittent failures need to be investigated.
         <groups inherit="true">
             <group>skip</group>
             <group>rpc</group>
-            <group>ws</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>
