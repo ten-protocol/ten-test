@@ -14,7 +14,6 @@ their balances.
 
     <classification>
         <groups inherit="true">
-            <group>ws</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

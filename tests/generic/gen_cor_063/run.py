@@ -11,7 +11,7 @@ class PySysTest(GenericNetworkTest):
     def execute(self):
         # deployment of contract
         network = NetworkFactory.get_network(self.env)
-        web3, account1 = network.connect_account1(self, web_socket=self.WEBSOCKET)
+        web3, account1 = network.connect_account1(self)
         account2 = Web3().eth.account.privateKeyToAccount(Properties().account2pk())
 
         erc20 = OBXCoin(self, web3)

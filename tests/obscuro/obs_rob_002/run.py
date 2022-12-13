@@ -16,7 +16,7 @@ class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
         network = Obscuro
-        web3, account = network.connect_account1(self, web_socket=self.WEBSOCKET)
+        web3, account = network.connect_account1(self)
 
         guesser = Guesser(self, web3, 0, 100)
         guesser.deploy(network, account)

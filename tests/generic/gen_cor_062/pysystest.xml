@@ -12,7 +12,6 @@ concurrent accounts can be used against the network to send and detect receipt o
 
     <classification>
         <groups inherit="true">
-            <group>ws</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>
