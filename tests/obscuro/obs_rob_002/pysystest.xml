@@ -12,6 +12,8 @@ intention being to perform long running interactions against the network and ens
 
     <classification>
         <groups inherit="true">
+            <group>events</group>
+            <group>robustness</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

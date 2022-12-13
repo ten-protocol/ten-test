@@ -14,6 +14,8 @@ the continual subscribers i.e. the concurrent subscribes and unsubscribes should
 
     <classification>
         <groups inherit="true">
+            <group>events</group>
+            <group>robustness</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>
