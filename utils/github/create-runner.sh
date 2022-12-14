@@ -52,7 +52,7 @@ az vm run-command invoke \
   --scripts "apt update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata \
     && apt-get install -y software-properties-common \
-    && add-apt-repository ppa:ethereum/ethereum \
+    && add-apt-repository --yes ppa:ethereum/ethereum \
     && apt update \
     && apt install -y solc \
     && curl -sL https://deb.nodesource.com/setup_18.x | bash - \
