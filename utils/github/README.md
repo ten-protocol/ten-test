@@ -9,10 +9,12 @@ Run the utility scripts to create the VM and connect;
 
 ```bash
 # create the VM
- ./utils/github/create-runner.sh <SSH PUB KEY>
+ ./utils/github/create-runner.sh --ssh_key=~/.ssh/id_rsa.pub --resource_group=SGXSystemTestHostedRunner \
+                                 --name=SGXLocalTestnetRunner --size=Standard_DC4s_v2
  
 # connect to the VM
-./utils/github/connect-runner.sh <SSH PVT KEY>
+./utils/github/connect-runner.sh --ssh_key=~/.ssh/id_rsa.pub --resource_group=SGXSystemTestHostedRunner \
+                                 --name=SGXLocalTestnetRunner
 ```
 
 # Set permissions on Docker
@@ -33,8 +35,8 @@ runners as being up but idle.
 ```bash
 # download and install (make sure it is for linux!)
 mkdir actions-runner && cd actions-runner
-curl -o actions-runner-osx-x64-2.296.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.296.0/actions-runner-osx-x64-2.296.0.tar.gz
-tar xzf ./actions-runner-osx-x64-2.296.0.tar.gz
+curl -o actions-runner-linux-x64-2.299.1.tar.gz -L https://github.com/actions/runner/releases/download/v2.299.1/actions-runner-linux-x64-2.299.1.tar.gz
+tar xzf ./actions-runner-linux-x64-2.299.1.tar.gz
 ./config.sh --url https://github.com/obscuronet/obscuro-test --token <TOKEN>
 
 # start a tmux session to start the runner
