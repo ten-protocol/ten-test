@@ -14,7 +14,6 @@ code stored on the blockchain is the code without the initialization part.
     <classification>
         <groups inherit="true">
             <group>rpc</group>
-            <group>ws</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

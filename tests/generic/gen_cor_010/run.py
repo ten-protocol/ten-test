@@ -8,7 +8,7 @@ class PySysTest(GenericNetworkTest):
     def execute(self):
         # deployment of contract
         network = NetworkFactory.get_network(self.env)
-        web3, account = network.connect_account1(self, web_socket=self.WEBSOCKET)
+        web3, account = network.connect_account1(self)
 
         # get the transaction count and deploy
         storage = Storage(self, web3, 100)

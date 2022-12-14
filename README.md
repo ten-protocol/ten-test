@@ -80,7 +80,7 @@ brew upgrade
 brew install node
 brew tap ethereum/ethereum
 brew install solidity
-brew install python3
+brew install python
 
 npm install solc@0.8.15 --global
 npm install console-stamp --global
