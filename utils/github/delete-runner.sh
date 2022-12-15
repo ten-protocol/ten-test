@@ -5,12 +5,10 @@ help_and_exit() {
     echo "Usage: $(basename "${0}") --resource_group=<group> >"
     echo " "
     echo "where: "
-    echo "  resource_group      The name of the resource group to use (default SystemTestHostedRunner)"
+    echo "  resource_group      *Required* The name of the resource group to use"
     echo ""
     exit 1
 }
-
-resource_group=SystemTestHostedRunner
 
 for argument in "$@"
 do
@@ -23,6 +21,11 @@ do
             *)
     esac
 done
+
+if [[ -z ${resource_group:-} ]];
+then
+    help_and_exit
+fi
 
 # delete resources in the resource group
 az group delete --name ${resource_group}
