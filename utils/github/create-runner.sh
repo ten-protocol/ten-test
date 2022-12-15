@@ -6,10 +6,10 @@ help_and_exit() {
     echo "Usage: $(basename "${0}") ssh_key=<key> --resource_group=<group> --name=<name> --size=<size>"
     echo " "
     echo "where: "
-    echo "  ssh_key             The name of the SSH public key to use"
-    echo "  resource_group      The name of the resource group to use (default SystemTestHostedRunner)"
-    echo "  name                The name of the VM instance (default LocalTestnetRunner) "
-    echo "  size                The instance type (default Standard_DC4s_v2)"
+    echo "  ssh_key             *Required* The name of the SSH public key to use"
+    echo "  resource_group      *Optional* The name of the resource group to use (default SystemTestHostedRunner)"
+    echo "  name                *Optional* The name of the VM instance (default LocalTestnetRunner) "
+    echo "  size                *Optional* The instance type (default Standard_DC4s_v2)"
     echo ""
     exit 1
 }
