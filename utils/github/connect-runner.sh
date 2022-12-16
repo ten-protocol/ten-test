@@ -38,4 +38,5 @@ fi
 IP=`az vm show -d -g ${resource_group}  -n ${name} --query publicIps -o tsv`
 
 # connect using given SSH key
+echo Connecting to azureuser@$IP
 ssh -i ${ssh_key} azureuser@$IP
