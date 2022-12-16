@@ -5,9 +5,9 @@ help_and_exit() {
     echo "Usage: $(basename "${0}") ssh_key=<key> --resource_group=<group> --name=<name>"
     echo " "
     echo "where: "
-    echo "  ssh_key             The name of the SSH private key to use"
-    echo "  resource_group      The name of the resource group to use (default SystemTestHostedRunner)"
-    echo "  name                The name of the VM instance (default LocalTestnetRunner) "
+    echo "  ssh_key             *Required* The name of the SSH private key to use"
+    echo "  resource_group      *Optional* The name of the resource group to use (default SystemTestHostedRunner)"
+    echo "  name                *Optional* The name of the VM instance (default LocalTestnetRunner) "
     echo ""
     exit 1
 }
@@ -38,4 +38,5 @@ fi
 IP=`az vm show -d -g ${resource_group}  -n ${name} --query publicIps -o tsv`
 
 # connect using given SSH key
+echo Connecting to azureuser@$IP
 ssh -i ${ssh_key} azureuser@$IP
