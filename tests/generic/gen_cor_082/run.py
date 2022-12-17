@@ -32,7 +32,7 @@ class PySysTest(GenericNetworkTest):
         args.extend(['--filter_key2', 'k3'])
         if self.is_obscuro(): args.extend(['--pk_to_register', '%s' % Properties().account3pk()])
         self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
+        self.waitForGrep(file=stdout, expr='Subscribed for event logs', timeout=10)
 
         # perform some transactions on the key storage contract
         network.transact(self, web3, key_storage.contract.functions.setItem('k1', 101), account, key_storage.GAS_LIMIT)

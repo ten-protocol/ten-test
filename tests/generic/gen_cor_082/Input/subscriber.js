@@ -21,7 +21,10 @@ function task() {
         console.log('Stored value =', result.value)
       }
     }
-  )
+  ) .on("connected", function(subscriptionId){
+       console.log('Subscribed for event logs')
+       console.log('Subscription id is', subscriptionId)
+  })
 }
 
 commander
