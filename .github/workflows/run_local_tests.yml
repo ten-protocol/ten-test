@@ -83,15 +83,6 @@ jobs:
           cd ${{ github.workspace }}/obscuro-test/tests
           /usr/local/bin/pysys.py run -m obscuro.local -e skip 
 
-      - name: Discord notification
-        if: always()
-        uses: sarisia/actions-status-discord@v1
-        with:
-          webhook: ${{ secrets.CONT_INT_WEBHOOK }}
-          title: "Local testnet tests for ${{ github.event_name }} trigger"
-          description: "Local testnet tests"
-          avatar_url: ${{ secrets.AVATAR_URL }}
-
       - name: Upload testcase output
         uses: actions/upload-artifact@v3
         if: failure()
