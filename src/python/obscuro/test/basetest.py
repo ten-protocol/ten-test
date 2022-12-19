@@ -26,6 +26,7 @@ class GenericNetworkTest(BaseTest):
         super().__init__(descriptor, outsubdir, runner)
         self.env = 'obscuro' if self.mode is None else self.mode
         self.block_time = Properties().block_time_secs(self.env)
+        self.nonce_db = runner.obscuro_runner.nonce_db
 
         # every test runs a default wallet extension
         if self.is_obscuro(): self.run_wallet(Obscuro.PORT, Obscuro.WS_PORT)

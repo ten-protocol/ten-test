@@ -46,14 +46,21 @@ class Default:
 
     @classmethod
     def transact(cls, test, web3, target, account, gas_limit):
-        tx_sign = cls.build_transaction(test, web3, target, account, gas_limit)
+        nonce = web3.eth.get_transaction_count(account.address)
+        test.nonce_db.insert(account.address, test.env, nonce)
+
+        tx_sign = cls.build_transaction(test, web3, target, nonce, account, gas_limit)
+        test.nonce_db.update(account.address, test.env, nonce, 'SIGNED')
+
         tx_hash = cls.send_transaction(test, web3, tx_sign)
+        test.nonce_db.update(account.address, test.env, nonce, 'SENT')
+
         tx_recp = cls.wait_for_transaction(test, web3, tx_hash)
+        test.nonce_db.update(account.address, test.env, nonce, 'CONFIRMED')
         return tx_recp
 
     @classmethod
-    def build_transaction(cls, test, web3, target, account, gas_limit):
-        nonce = web3.eth.get_transaction_count(account.address)
+    def build_transaction(cls, test, web3, target, nonce, account, gas_limit):
         build_tx = target.buildTransaction(
             {
                 'nonce': nonce,
