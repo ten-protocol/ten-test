@@ -1,3 +1,6 @@
+# Wait for an explicit regex in the enclave to indicate the node is ready to
+# start L2 contract deployment
+#
 container_id=`docker ps -aqf "name=testnet-enclave-1"`
   
 start=`date +%s`
@@ -12,12 +15,12 @@ do
   current=`date +%s`
   wait_time=`expr $current - $start`
 
-  if (( $wait_time > 30 )); then
+  if (( $wait_time > 90 )); then
     echo Exceed maximum wait time ... exiting;
     break
   fi
 
-  echo Regex not seen in container output ... sleeping wait time is $wait_time
+  echo Regex not seen in container output ... wait time is $wait_time
   sleep 1
 done
 
