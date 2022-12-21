@@ -50,7 +50,7 @@ class ObscuroRunnerPlugin():
         arguments.extend(('--blockTime', Properties().block_time_secs(self.env)))
         arguments.extend(('-k', 'berlin'))
         hprocess = runner.startProcess(command=Properties().ganache_binary(), displayName='ganache',
-                                       workingDir=self.output , environs=os.environ, quiet=True,
+                                       workingDir=self.output, environs=os.environ, quiet=True,
                                        arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
 
         runner.waitForSignal(stdout, expr='Listening on 127.0.0.1:%d' % Ganache.PORT, timeout=30)

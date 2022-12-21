@@ -46,7 +46,15 @@ class Default:
 
     @classmethod
     def transact(cls, test, web3, target, account, gas_limit):
-        nonce = web3.eth.get_transaction_count(account.address)
+        remote_nonce = web3.eth.get_transaction_count(account.address)
+        local_nonce = test.nonce_db.get_nonce(account.address, test.env)+1
+
+        nonce = remote_nonce
+        if remote_nonce == 0: test.nonce_db.delete(account.address, test.env)  # new environment
+        if remote_nonce >= local_nonce: nonce = remote_nonce                   # new test deployment
+        else: nonce = local_nonce                                              # likely pending transactions
+
+        test.log.info('Account %s remote %s, local %d, using %d' % (account.address, remote_nonce, local_nonce, nonce))
         test.nonce_db.insert(account.address, test.env, nonce)
 
         tx_sign = cls.build_transaction(test, web3, target, nonce, account, gas_limit)
@@ -69,7 +77,6 @@ class Default:
                 'chainId': web3.eth.chain_id
             }
         )
-        test.log.info('Account %s nonce used is set to %s' % (account.address, nonce))
         signed_tx = account.sign_transaction(build_tx)
         return signed_tx
 
