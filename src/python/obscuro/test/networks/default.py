@@ -45,30 +45,21 @@ class Default:
         return cls.connect(test, Properties().account4pk(), web_socket)
 
     @classmethod
-    def transact(cls, test, web3, target, account, gas_limit):
-        remote_nonce = web3.eth.get_transaction_count(account.address)
-        local_nonce = test.nonce_db.get_nonce(account.address, test.env)+1
-
-        nonce = remote_nonce
-        if remote_nonce == 0: test.nonce_db.delete(account.address, test.env)  # new environment
-        if remote_nonce >= local_nonce: nonce = remote_nonce                   # new test deployment
-        else: nonce = local_nonce                                              # likely pending transactions
-
-        test.log.info('Account %s remote %s, local %d, using %d' % (account.address, remote_nonce, local_nonce, nonce))
-        test.nonce_db.insert(account.address, test.env, nonce)
-
-        tx_sign = cls.build_transaction(test, web3, target, nonce, account, gas_limit)
-        test.nonce_db.update(account.address, test.env, nonce, 'SIGNED')
-
-        tx_hash = cls.send_transaction(test, web3, tx_sign)
-        test.nonce_db.update(account.address, test.env, nonce, 'SENT')
-
-        tx_recp = cls.wait_for_transaction(test, web3, tx_hash)
-        test.nonce_db.update(account.address, test.env, nonce, 'CONFIRMED')
+    def transact(cls, test, web3, target, account, gas_limit, persist_nonce=True):
+        nonce = cls.get_next_nonce(test, web3, account, persist_nonce)
+        tx_sign = cls.build_transaction(test, web3, target, nonce, account, gas_limit, persist_nonce)
+        tx_hash = cls.send_transaction(test, web3, nonce, account, tx_sign, persist_nonce)
+        tx_recp = cls.wait_for_transaction(test, web3, nonce, account, tx_hash, persist_nonce)
         return tx_recp
 
     @classmethod
-    def build_transaction(cls, test, web3, target, nonce, account, gas_limit):
+    def get_next_nonce(cls, test, web3, account, persist_nonce):
+        nonce = test.nonce_db.get_next_nonce(test, web3, account.address, test.env, persist_nonce)
+        test.nonce_db.insert(account.address, test.env, nonce)
+        return nonce
+
+    @classmethod
+    def build_transaction(cls, test, web3, target, nonce, account, gas_limit, persist_nonce):
         build_tx = target.buildTransaction(
             {
                 'nonce': nonce,
@@ -78,13 +69,15 @@ class Default:
             }
         )
         signed_tx = account.sign_transaction(build_tx)
+        if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'SIGNED')
         return signed_tx
 
     @classmethod
-    def send_transaction(cls, test, web3, signed_tx):
+    def send_transaction(cls, test, web3, nonce, account, signed_tx, persist_nonce):
         tx_hash = None
         try:
             tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+            if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'SENT')
         except Exception as e:
             test.log.error('Error sending raw transaction %s' % e)
             test.addOutcome(BLOCKED, abortOnError=True)
@@ -92,11 +85,12 @@ class Default:
         return tx_hash
 
     @classmethod
-    def wait_for_transaction(cls, test, web3, tx_hash):
+    def wait_for_transaction(cls, test, web3, nonce, account, tx_hash, persist_nonce):
         tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
 
         if tx_receipt.status == 1:
             test.log.info('Transaction receipt block hash %s' % tx_receipt.blockHash.hex())
+            if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'CONFIRMED')
         else:
             test.log.error('Transaction receipt failed')
             test.log.error('Full receipt: %s' % tx_receipt)
