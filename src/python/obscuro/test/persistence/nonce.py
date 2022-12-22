@@ -26,9 +26,9 @@ class NoncePersistence:
             self.delete(account, environment)                                 # implies a new testnet deployment
         if persist_nonce:
             nonce = 0 if last_nonce is None else last_nonce+1                 # we have to believe the local store
-            test.log.info("Account %s count %d using nonce %d" % (account, transaction_count, nonce))
+            test.log.info("Account %s count %d using nonce from persistence as %d" % (account, transaction_count, nonce))
         else:
-            test.log.info("Account %s using nonce %d" % (account, nonce))
+            test.log.info("Account %s using nonce from transaction count as %d" % (account, nonce))
         return nonce
 
     def insert(self, account, environment, nonce):

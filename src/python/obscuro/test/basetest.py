@@ -82,7 +82,13 @@ class ObscuroNetworkTest(GenericNetworkTest):
     """
 
     def fund_eth(self, network, web3_from, account_from, web3_to, account_to, eth_amount):
-        """A native transfer of ETH from one address to another."""
+        """A native transfer of ETH from one address to another.
+
+        Any ETH funded operations from the L1 pre-funded account should NOT use local nonce persistence and rely on
+        get_transaction_count. This is because we do not own this account and therefore the transaction account is
+        likely to be greater than zero on a new deployment. At the point of using a persistent L1 allocation to the
+        distribution account used by the tests will need to be performed manually as part of the infra setup.
+        """
         from_eth = web3_from.eth.get_balance(account_from.address)
         to_eth = web3_to.eth.get_balance(account_to.address)
         self.log.info('From balance = %f ' % web3_from.fromWei(from_eth, 'ether'))
