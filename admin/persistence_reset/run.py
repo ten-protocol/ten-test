@@ -22,9 +22,9 @@ class PySysTest(ObscuroNetworkTest):
         network = NetworkFactory.get_network(self.env)
         for pk in PKS:
             web3, account = network.connect(self, pk)
-            count = web3.eth.get_transaction_count(account.address)      # would be the next nonce to use
-            if count > 0:                                                # if zero there aren't any transactions
+            count = web3.eth.get_transaction_count(account.address)  # count is what the next would be
+            if count > 0:                                            # if zero there aren't any transactions, store last
                 self.log.info('Updating last persisted nonce for %s to %d' % (account.address, count-1))
-                self.nonce_db.insert(account.address, self.env, count, 'RESET')
+                self.nonce_db.insert(account.address, self.env, count-1, 'RESET')
 
 
