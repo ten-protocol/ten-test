@@ -61,10 +61,10 @@ jobs:
         if: ${{ github.event.inputs.environment == 'dev-testnet' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
+          /usr/local/bin/pysys.py run -m obscuro.local persistence_reset
           /usr/local/bin/pysys.py run -m obscuro.dev fund_layer_one
           /usr/local/bin/pysys.py run -m obscuro.dev fund_layer_two
           /usr/local/bin/pysys.py run -m obscuro.dev fund_test_users
-          /usr/local/bin/pysys.py run -m obscuro.dev persistence_reset
 
       - name: Upload testcase output
         uses: actions/upload-artifact@v3

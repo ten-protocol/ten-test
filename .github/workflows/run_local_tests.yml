@@ -74,10 +74,11 @@ jobs:
       - name: Run allocations
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
+          /usr/local/bin/pysys.py run -m obscuro.local persistence_reset
           /usr/local/bin/pysys.py run -m obscuro.local fund_layer_one
           /usr/local/bin/pysys.py run -m obscuro.local fund_layer_two
           /usr/local/bin/pysys.py run -m obscuro.local fund_test_users
-          /usr/local/bin/pysys.py run -m obscuro.local persistence_reset
+
 
       - name: Run tests
         run: |
