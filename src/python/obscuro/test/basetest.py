@@ -26,6 +26,7 @@ class GenericNetworkTest(BaseTest):
         super().__init__(descriptor, outsubdir, runner)
         self.env = 'obscuro' if self.mode is None else self.mode
         self.block_time = Properties().block_time_secs(self.env)
+        self.nonce_db = runner.obscuro_runner.nonce_db
 
         # every test runs a default wallet extension
         if self.is_obscuro(): self.run_wallet(Obscuro.PORT, Obscuro.WS_PORT)
@@ -81,23 +82,30 @@ class ObscuroNetworkTest(GenericNetworkTest):
     """
 
     def fund_eth(self, network, web3_from, account_from, web3_to, account_to, eth_amount):
-        """A native transfer of ETH from one address to another."""
+        """A native transfer of ETH from one address to another.
+
+        Any ETH funded operations from the L1 pre-funded account should NOT use local nonce persistence and rely on
+        get_transaction_count. This is because we do not own this account and therefore the transaction account is
+        likely to be greater than zero on a new deployment. At the point of using a persistent L1 allocation to the
+        distribution account used by the tests will need to be performed manually as part of the infra setup.
+        """
         from_eth = web3_from.eth.get_balance(account_from.address)
         to_eth = web3_to.eth.get_balance(account_to.address)
         self.log.info('From balance = %f ' % web3_from.fromWei(from_eth, 'ether'))
         self.log.info('To balance = %f ' % web3_to.fromWei(to_eth, 'ether'))
 
+        nonce = network.get_next_nonce(self, web3_from, account_from, False)
         tx = {
             'chainId': network.chain_id(),
-            'nonce': web3_from.eth.get_transaction_count(account_from.address),
+            'nonce': nonce,
             'to': account_to.address,
             'value': web3_from.toWei(eth_amount, 'ether'),
             'gas': 4*21000,
             'gasPrice': web3_from.eth.gas_price
         }
         tx_sign = account_from.sign_transaction(tx)
-        tx_hash = network.send_transaction(self, web3_from, tx_sign)
-        network.wait_for_transaction(self, web3_from, tx_hash)
+        tx_hash = network.send_transaction(self, web3_from, nonce, account_from, tx_sign, False)
+        network.wait_for_transaction(self, web3_from, nonce, account_from, tx_hash, False)
 
         from_eth = web3_from.eth.get_balance(account_from.address)
         to_eth = web3_to.eth.get_balance(account_to.address)
@@ -128,29 +136,35 @@ class ObscuroNetworkTest(GenericNetworkTest):
             self.log.info('OBX User balance   = %d ' % user_obx)
 
     def fund_obx_from_funded_pk(self, network, account, amount, web3=None):
-        """Allocates native OBX to a users account from the pre-funded account."""
+        """Allocates native OBX to a users account from the pre-funded account.
+
+        Note that as the L2 pre-funder account is not in our control we do not use local persistence for the nonce.
+        A better approach is to always use the faucet server even on local testnet deployments.
+        """
         if web3 is not None:
             user_obx = web3.eth.get_balance(account.address)
             self.log.info('OBX User balance   = %d ' % user_obx)
             if user_obx < amount: amount = amount - user_obx
 
         web3_funded, account_funded = network.connect(self, Properties().l2_funded_account_pk(self.env))
+        nonce = network.get_next_nonce(self, web3_funded, account_funded, False)
         tx = {
-            'nonce': web3_funded.eth.get_transaction_count(account_funded.address),
+            'nonce': nonce,
             'to': account.address,
             'value': amount,
             'gas': 4 * 720000,
             'gasPrice': 21000
         }
         tx_sign = account_funded.sign_transaction(tx)
-        tx_hash = network.send_transaction(self, web3_funded, tx_sign)
-        network.wait_for_transaction(self, web3_funded, tx_hash)
+        tx_hash = network.send_transaction(self, web3_funded, nonce, account_funded, tx_sign, False)
+        network.wait_for_transaction(self, web3_funded, nonce, account_funded, tx_hash, False)
 
         if web3 is not None:
             user_obx = web3.eth.get_balance(account.address)
             self.log.info('OBX User balance   = %d ' % user_obx)
 
-    def transfer_token(self, network, token_name, token_address, web3_from, account_from, address, amount):
+    def transfer_token(self, network, token_name, token_address, web3_from, account_from, address,
+                       amount, persist_nonce=True):
         """Transfer an ERC20 token amount from a recipient account to an address. """
         self.log.info('Running for token %s' % token_name)
 
@@ -159,7 +173,7 @@ class ObscuroNetworkTest(GenericNetworkTest):
 
         balance = token.functions.balanceOf(account_from.address).call()
         self.log.info('%s User balance   = %d ' % (token_name, balance))
-        network.transact(self, web3_from, token.functions.transfer(address, amount), account_from, 7200000)
+        network.transact(self, web3_from, token.functions.transfer(address, amount), account_from, 7200000, persist_nonce)
 
         balance = token.functions.balanceOf(account_from.address).call()
         self.log.info('%s User balance   = %d ' % (token_name, balance))

@@ -1,9 +1,10 @@
 import os, shutil, sys
 from pysys.constants import PROJECT, BACKGROUND
 from pysys.exceptions import AbortExecution
+from obscuro.test.persistence.nonce import NoncePersistence
 from obscuro.test.networks.ganache import Ganache
 from obscuro.test.utils.properties import Properties
-
+from pysys.baserunner import BaseRunner
 
 class ObscuroRunnerPlugin():
     """Runner class for running a set of tests against a given environment.
@@ -21,6 +22,8 @@ class ObscuroRunnerPlugin():
         self.output = os.path.join(PROJECT.root, '.runner')
         if os.path.exists(self.output): shutil.rmtree(self.output)
         os.makedirs(self.output)
+
+        self.nonce_db = NoncePersistence()
 
         try:
             if self.env == 'ganache':
@@ -47,7 +50,7 @@ class ObscuroRunnerPlugin():
         arguments.extend(('--blockTime', Properties().block_time_secs(self.env)))
         arguments.extend(('-k', 'berlin'))
         hprocess = runner.startProcess(command=Properties().ganache_binary(), displayName='ganache',
-                                       workingDir=self.output , environs=os.environ, quiet=True,
+                                       workingDir=self.output, environs=os.environ, quiet=True,
                                        arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
 
         runner.waitForSignal(stdout, expr='Listening on 127.0.0.1:%d' % Ganache.PORT, timeout=30)
