@@ -6,8 +6,35 @@ This directory contains utilities to perform admin operations on Obscuro testnet
 - fund layer 2 distribution account (`fund_layer_two`)
 - fund test users in layer 2 with native OBX and HOC and POC (`fund_test_users`)
 - fund community users in layer 2 with HOC and POC (`fund_users`)
+- delete all entries from the nonce db for a particular environment (`persistence_clear`)
+- reset all persisted nonce db entries for tests users to the latest transaction count (`persistence_reset`)
 
 For setup notes, see the top level [readme](../README.md)
+
+
+Managing the nonce db on a new deployment 
+-----------------------------------------
+We do not use `eth_get_transaction_count` in order to determine a nonce to use in a particular transaction, but use local
+persisted storage maintained by the test framework. As we currently do not run against a persisted L1 or L2, on a new 
+deployment we must clear out the persisted nonce database in order to reset the nonce's to zero (they need to monotonically 
+increase). The `persistence_clear` script will delete all entries for a given environment and should be run after a new 
+deployment. To run use;
+
+```bash
+# to clear all persisted nonces for Obscuro testnet 
+pysys.py run persistence_clear
+
+# to clear all persisted nonces for Obscuro dev-testnet 
+pysys.py run  -m obscuro.dev persistence_clear
+
+# to clear all persisted nonces for Obscuro local testnet 
+pysys.py run  -m obscuro.local persistence_clear
+```
+
+Should a new clone of the test framework be required, then we would need to set the persisted nonces to the latest 
+transaction count, assuming that there are no transactions in the pending state. This is achieved using the 
+`persistence_reset` script and can be run as above but by using this script name. 
+
 
 Fund native ETH, HOC and POC tokens in the Layer 1
 --------------------------------------------------

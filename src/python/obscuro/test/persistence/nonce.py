@@ -8,6 +8,8 @@ class NoncePersistence:
     SQL_UPDATE = "UPDATE nonce_db SET status=? WHERE account=? AND environment=? AND nonce=?"
     SQL_DELETE = "DELETE from nonce_db WHERE account=? AND environment=?"
     SQL_LATEST = "SELECT nonce FROM nonce_db WHERE account=? AND environment=? ORDER BY nonce DESC LIMIT 1"
+    SQL_DELENV = "DELETE from nonce_db WHERE environment=?"
+    SQL_ACCNTS = "SELECT DISTINCT account from nonce_db where environment=?"
 
     def __init__(self):
         self.db_dir = os.path.join(PROJECT.root, '.db')
@@ -31,8 +33,8 @@ class NoncePersistence:
             test.log.info("Account %s using nonce from transaction count as %d" % (account, nonce))
         return nonce
 
-    def insert(self, account, environment, nonce):
-        self.cursor.execute(self.SQL_INSERT, (account, environment, nonce, 'PENDING'))
+    def insert(self, account, environment, nonce, status='PENDING'):
+        self.cursor.execute(self.SQL_INSERT, (account, environment, nonce, status))
         self.connection.commit()
 
     def update(self, account, environment, nonce, status):
@@ -42,6 +44,14 @@ class NoncePersistence:
     def delete(self, account, environment):
         self.cursor.execute(self.SQL_DELETE, (account, environment))
         self.connection.commit()
+
+    def delete_environment(self, environment):
+        self.cursor.execute(self.SQL_DELENV, (environment, ))
+        self.connection.commit()
+
+    def get_accounts(self, environment):
+        self.cursor.execute(self.SQL_ACCNTS, (environment, ))
+        return self.cursor.fetchall()
 
     def get_latest_nonce(self, account, environment):
         self.cursor.execute(self.SQL_LATEST, (account, environment))

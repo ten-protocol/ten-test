@@ -2,9 +2,9 @@
 <pysystest type="auto">
 
     <description>
-        <title>Delete all entries for test users in the persistence nonce db</title>
+        <title>Delete all entries in the persistence nonce db for an environment</title>
         <purpose><![CDATA[
-When running against a new deployment we need to clear out all entries for test users and the distribution user.
+When running against a new deployment we need to clear out all entries for users in the environment.
 ]]>
         </purpose>
     </description>
