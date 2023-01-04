@@ -1,4 +1,5 @@
 name: Run testnet tests
+run-name: Run remote tests against ${{ github.event.inputs.environment }}
 on:
   workflow_dispatch:
     inputs:
