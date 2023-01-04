@@ -138,7 +138,7 @@ class ObscuroNetworkTest(GenericNetworkTest):
     def fund_obx_from_funded_pk(self, network, account, amount, web3=None):
         """Allocates native OBX to a users account from the pre-funded account.
 
-        Note that as the L2 pre-funder account is not in our control we do not use local persistence for the nonce.
+        Note that as the L2 pre-funded account is not in our control we do not use local persistence for the nonce.
         A better approach is to always use the faucet server even on local testnet deployments.
         """
         if web3 is not None:

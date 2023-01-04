@@ -12,7 +12,6 @@ class PySysTest(ObscuroNetworkTest):
             Properties().account2pk(),
             Properties().account3pk(),
             Properties().account4pk(),
-            Properties().l2_funded_account_pk(self.env),
             Properties().distro_account_pk(self.env)
         ]
 

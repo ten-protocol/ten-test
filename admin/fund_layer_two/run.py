@@ -28,5 +28,5 @@ class PySysTest(ObscuroNetworkTest):
             self.log.info('')
             self.log.info('Printing HOC and POC balances for the distro account')
             self.print_token_balance('HOC', hoc_address, web3_distro, account_distro)
-            self.print_token_balance('HOC', poc_address, web3_distro, account_distro)
+            self.print_token_balance('POC', poc_address, web3_distro, account_distro)
 
