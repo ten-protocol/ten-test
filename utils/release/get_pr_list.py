@@ -1,3 +1,4 @@
+#! /usr/bin/env python3
 # Extract a list of PRs from a given tag.
 #
 # The `git` and `gh` CLI tools should be installed, and the script should be run in a clone
@@ -11,7 +12,7 @@ REGEX2 = "(?P<hash>[0-9A-Za-z]{8}) Merge pull request #(?P<number>[0-9]*).*$"
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Extract merged PRs from given tag to current main. ')
-    parser.add_argument('--from', help='Tag to extract PRs from, e.g. v0.7')
+    parser.add_argument('--from_tag', required=True, help='Tag to extract PRs from, e.g. v0.7.0')
     args = parser.parse_args()
 
     process = Popen(['git', 'log', '%s..' % args.from_tag, '--show-pulls', '--first-parent', 'main', '--oneline'],
