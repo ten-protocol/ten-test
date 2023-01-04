@@ -13,7 +13,7 @@ on:
 
 jobs:
   Run-Allocation:
-    runs-on: ubuntu-20.04
+    runs-on: self-hosted
     steps:
       - run: echo "Triggered by ${{ github.event_name }} event running on branch ${{ github.ref }} "
 
@@ -33,20 +33,6 @@ jobs:
           cd ${{ github.workspace }}/go-obscuro/tools/walletextension/main
           go build -o ${{ github.workspace }}/obscuro-test/artifacts/wallet_extension
           ls -l ${{ github.workspace }}/obscuro-test/artifacts
-
-      - name: Install dependencies
-        run: |
-          sudo apt update
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
-          sudo apt-get install -y software-properties-common
-          sudo add-apt-repository ppa:ethereum/ethereum
-          sudo apt update
-          sudo apt install -y solc
-          
-          sudo apt install -y python3-pip
-          sudo python3 -m pip install web3
-          sudo python3 -m pip install pysys==1.6.1
-          sudo python3 -m pip install py-solc-x
 
       - name: Run allocation on testnet
         if: ${{ github.event.inputs.environment == 'testnet' }}

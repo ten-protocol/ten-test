@@ -13,7 +13,7 @@ on:
 
 jobs:
   Run-Tests:
-    runs-on: ubuntu-20.04
+    runs-on: self-hosted
     steps:
       - run: echo "Triggered by ${{ github.event_name }}"
       - run: echo "Branch       ${{ github.ref }}"
@@ -35,29 +35,6 @@ jobs:
           cd ${{ github.workspace }}/go-obscuro/tools/walletextension/main
           go build -o ${{ github.workspace }}/obscuro-test/artifacts/wallet_extension
           ls -l ${{ github.workspace }}/obscuro-test/artifacts
-
-      - name: Install dependencies
-        run: |
-          sudo apt update
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
-          sudo apt-get install -y software-properties-common
-          sudo add-apt-repository ppa:ethereum/ethereum
-          sudo apt update
-          sudo apt install -y curl
-          sudo apt install -y solc
-          
-          sudo curl -sL https://deb.nodesource.com/setup_18.x | sudo bash -
-          sudo apt-get install -y nodejs
-          sudo npm install console-stamp --global
-          sudo npm install web3 --global 
-          sudo npm install commander --global
-          sudo npm install ethers --global
-          sudo npm list -g
-
-          sudo apt install -y python3-pip
-          sudo python3 -m pip install web3
-          sudo python3 -m pip install pysys==1.6.1
-          sudo python3 -m pip install py-solc-x
 
       - name: Run tests on testnet on a manual trigger
         if: ${{ github.event.inputs.environment == 'testnet' }}
