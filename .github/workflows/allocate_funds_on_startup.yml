@@ -38,11 +38,11 @@ jobs:
         if: ${{ github.event.inputs.environment == 'testnet' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
+          /usr/local/bin/pysys.py run persistence_reset
           /usr/local/bin/pysys.py run fund_layer_one
           /usr/local/bin/pysys.py run fund_layer_two
           /usr/local/bin/pysys.py run fund_test_users
-          /usr/local/bin/pysys.py run persistence_reset
-          
+
       - name: Run allocation on dev-testnet
         if: ${{ github.event.inputs.environment == 'dev-testnet' }}
         run: |

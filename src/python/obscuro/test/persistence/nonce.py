@@ -1,5 +1,5 @@
 import sqlite3, os
-from pysys.constants import PROJECT
+from pathlib import Path
 
 
 class NoncePersistence:
@@ -12,7 +12,7 @@ class NoncePersistence:
     SQL_ACCNTS = "SELECT DISTINCT account from nonce_db where environment=?"
 
     def __init__(self):
-        self.db_dir = os.path.join(PROJECT.root, '.db')
+        self.db_dir = os.path.join(str(Path.home()), '.obscurotest')
         if not os.path.exists(self.db_dir): os.makedirs(self.db_dir)
         self.db = os.path.join(self.db_dir, 'nonce.db')
         self.connection = sqlite3.connect(self.db)
