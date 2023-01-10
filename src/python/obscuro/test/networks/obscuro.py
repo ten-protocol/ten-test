@@ -1,4 +1,4 @@
-import requests, json
+import requests, json, os
 from web3 import Web3
 from obscuro.test.networks.default import Default
 from obscuro.test.networks.geth import Geth
@@ -18,7 +18,7 @@ class ObscuroL1Dev(Geth):
 
 
 class ObscuroL1Local(Geth):
-    HOST = 'http://127.0.0.1'
+    HOST = 'http://gethnetwork' if os.getenv('DOCKER_TEST_ENV') else 'http://127.0.0.1'
     PORT = 8025
     WS_PORT = 9002
 
