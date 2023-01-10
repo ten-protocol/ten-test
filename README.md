@@ -38,7 +38,9 @@ The top level structure of the project is as below;
 │    └── obscuro         # Obscuro specific tests 
 └── utils                # The project utils root for utilities used by the tests
      ├── docker          # Docker configuration and build files
-     └── github          # Azure VM github self hosted running build files
+     ├── github          # Azure VM github self hosted running build files
+     ├── release         # Utilitiy scripts for making a new release of go-obscuro
+     └── testnet         # Utilities for building and interacting with a local testnet
 ```
 
 The [.default.properties](./.default.properties) file contains properties for running the tests that are common to any 
@@ -121,7 +123,7 @@ python3 -m pip install py-solc-x
 Once installed it should be possible to run all tests from the pysys.py cli as described in the following sections. Note
 that depending on differences in your installation and should you want to add in your own accounts on Goerli, you 
 may need to override the `.default.properties` file by creating a user specific properties file e.g. 
-`.username.properties` file, where `username` is the output of running `whoami`. Common overrides will inlude the path 
+`.username.properties` file, where `username` is the output of running `whoami`. Common overrides will include the path 
 to various binaries used when running the tests, and account details e.g. for real accounts on Goerli. An example of an 
 override properties file is as given below where binary locations and the Infura project ID for the user are set as 
 overrides;
@@ -147,16 +149,16 @@ you must first change directory into the `obscuro-test\admin` directory and run 
 
 ```bash
 # to allocate on Obscuro testnet
-pysys.py run fund_layer_* fund_test_users
+pysys.py run persistence_reset fund_layer_* fund_test_users
 
 # to allocate on Obscuro dev-testnet
-pysys.py run -m obscuro.dev fund_layer_* fund_test_users
+pysys.py run -m obscuro.dev persistence_reset fund_layer_* fund_test_users
 
 # to allocate on Obscuro local testnet
-pysys.py run -m obscuro.local fund_layer_* fund_test_users
+pysys.py run -m obscuro.local persistence_reset fund_layer_* fund_test_users
 
 # to allocate on Obscuro simulation
-pysys.py run -m obscuro.sim fund_layer_* fund_test_users
+pysys.py run -m obscuro.sim persistence_reset fund_layer_* fund_test_users
 ```
 
 See the [admin README.md](admin/README.md) for more details. Note that this only needs to be performed once on startup 

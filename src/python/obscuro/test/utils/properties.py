@@ -61,6 +61,7 @@ class Properties:
 
     # obscuro specific properties
     def node_host(self, key):
+        if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'NodeHostDockerNetwork')
         return self.get('env.'+key, 'NodeHost')
 
     def node_port_http(self, key):
