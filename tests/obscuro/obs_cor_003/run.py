@@ -1,6 +1,6 @@
 from pysys.constants import FAILED
 from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.networks.obscuro import Obscuro
+from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.utils.properties import Properties
 from obscuro.test.contracts.relevancy.relevancy import Relevancy
 from obscuro.test.helpers.log_subscriber import AllEventsLogSubscriber
@@ -10,7 +10,7 @@ class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
         # connect to network
-        network = Obscuro
+        network = NetworkFactory.get_network(self.env)
 
         # connect via the primary wallet extension used by the test in the order of
         # account1, account2, account3, account4

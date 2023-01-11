@@ -1,7 +1,6 @@
 import secrets, time
 from pysys.constants import TIMEDOUT
 from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.networks.obscuro import Obscuro
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.utils.properties import Properties
 
@@ -9,7 +8,7 @@ from obscuro.test.utils.properties import Properties
 class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
-        network_l2 = Obscuro
+        network = NetworkFactory.get_network(self.env)
         network_l1 = NetworkFactory.get_l1_network(self.env)
         hoc_address_l2 = Properties().l2_hoc_token_address(self.env)
         hoc_address_l1 = Properties().l1_hoc_token_address(self.env)
