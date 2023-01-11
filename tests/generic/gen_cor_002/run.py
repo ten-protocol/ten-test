@@ -7,8 +7,6 @@ from obscuro.test.networks.factory import NetworkFactory
 class PySysTest(GenericNetworkTest):
 
     def execute(self):
-        self.log.info('Thread: %s' % threading.currentThread().getName())
-
         # connect to the network
         network = NetworkFactory.get_network(self.env)
         web3, account = network.connect_account2(self)

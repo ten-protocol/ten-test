@@ -47,17 +47,18 @@ class Properties:
     def block_time_secs(self, key):
         return self.get('env.'+key, 'BlockTimeSecs')
 
-    def account1pk(self):
-        return self.get('env.all', 'Account1PK')
-
-    def account2pk(self):
-        return self.get('env.all', 'Account2PK')
-
-    def account3pk(self):
-        return self.get('env.all', 'Account3PK')
-
-    def account4pk(self):
-        return self.get('env.all', 'Account4PK')
+    def account1pk(self): return self.get('env.all', 'Account1PK')
+    def account2pk(self): return self.get('env.all', 'Account2PK')
+    def account3pk(self): return self.get('env.all', 'Account3PK')
+    def account4pk(self): return self.get('env.all', 'Account4PK')
+    def account5pk(self): return self.get('env.all', 'Account5PK')
+    def account6pk(self): return self.get('env.all', 'Account6PK')
+    def account7pk(self): return self.get('env.all', 'Account7PK')
+    def account8pk(self): return self.get('env.all', 'Account8PK')
+    def account9pk(self): return self.get('env.all', 'Account9PK')
+    def account10pk(self): return self.get('env.all', 'Account10PK')
+    def account11pk(self): return self.get('env.all', 'Account11PK')
+    def account12pk(self): return self.get('env.all', 'Account12PK')
 
     # obscuro specific properties
     def node_host(self, key):

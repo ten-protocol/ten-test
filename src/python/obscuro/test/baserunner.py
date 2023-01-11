@@ -4,7 +4,7 @@ from pysys.exceptions import AbortExecution
 from obscuro.test.persistence.nonce import NoncePersistence
 from obscuro.test.networks.ganache import Ganache
 from obscuro.test.utils.properties import Properties
-from pysys.baserunner import BaseRunner
+
 
 class ObscuroRunnerPlugin():
     """Runner class for running a set of tests against a given environment.
@@ -27,6 +27,7 @@ class ObscuroRunnerPlugin():
 
         try:
             if self.env == 'ganache':
+                self.nonce_db.delete_environment('ganache')
                 self.run_ganache(runner)
         except AbortExecution as e:
             runner.log.info('Error executing runner plugin startup actions', e)
@@ -46,6 +47,11 @@ class ObscuroRunnerPlugin():
         arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account1pk()))
         arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account2pk()))
         arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account3pk()))
+        arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account4pk()))
+        arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account5pk()))
+        arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account6pk()))
+        arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account7pk()))
+        arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account8pk()))
         arguments.extend(('--gasLimit', '7200000'))
         arguments.extend(('--blockTime', Properties().block_time_secs(self.env)))
         arguments.extend(('-k', 'berlin'))

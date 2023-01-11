@@ -15,7 +15,7 @@ class NoncePersistence:
         self.db_dir = os.path.join(str(Path.home()), '.obscurotest')
         if not os.path.exists(self.db_dir): os.makedirs(self.db_dir)
         self.db = os.path.join(self.db_dir, 'nonce.db')
-        self.connection = sqlite3.connect(self.db)
+        self.connection = sqlite3.connect(self.db, check_same_thread=False)
         self.cursor = self.connection.cursor()
         self.cursor.execute(self.SQL_CREATE)
 
