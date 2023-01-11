@@ -6,9 +6,9 @@ from obscuro.test.networks.obscuro import Obscuro
 
 class PySysTest(ObscuroNetworkTest):
     USERS = [
-        Properties().account1pk(), Properties().account2pk(), Properties().account3pk(), Properties().account4pk(),
-        Properties().account5pk(), Properties().account6pk(), Properties().account7pk(), Properties().account8pk(),
-        Properties().account9pk(), Properties().account10pk(), Properties().account11pk(), Properties().account12pk()
+        Properties().account1_1pk(), Properties().account2_1pk(), Properties().account3_1pk(), Properties().account4_1pk(),
+        Properties().account1_2pk(), Properties().account2_2pk(), Properties().account3_2pk(), Properties().account4_2pk(),
+        Properties().account1_3pk(), Properties().account2_3pk(), Properties().account3_3pk(), Properties().account4_3pk()
     ]
     OBX = Web3().toWei(1000, 'ether')
     TOKENS = Web3().toWei(50, 'ether')
