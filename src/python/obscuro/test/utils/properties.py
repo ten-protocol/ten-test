@@ -1,7 +1,7 @@
 import getpass, configparser
 from pysys.constants import *
 from pysys.exceptions import FileNotFoundException
-
+from obscuro.test.utils.threading import thread_num
 
 class Properties:
     """Used as a holding class for properties."""
@@ -47,10 +47,10 @@ class Properties:
     def block_time_secs(self, key):
         return self.get('env.'+key, 'BlockTimeSecs')
 
-    def account1pk(self): return self.account1_1pk()
-    def account2pk(self): return self.account2_1pk()
-    def account3pk(self): return self.account3_1pk()
-    def account4pk(self): return self.account4_1pk()
+    def account1pk(self): return getattr(self, "account1_%dpk" % thread_num())()
+    def account2pk(self): return getattr(self, "account2_%dpk" % thread_num())()
+    def account3pk(self): return getattr(self, "account3_%dpk" % thread_num())()
+    def account4pk(self): return getattr(self, "account4_%dpk" % thread_num())()
 
     # accounts 1 to 4 used by thread-1 or the main thread
     def account1_1pk(self): return self.get('env.all', 'Account1PK')
