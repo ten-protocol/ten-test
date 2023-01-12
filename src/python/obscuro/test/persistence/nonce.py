@@ -1,5 +1,4 @@
 import sqlite3, os
-from pathlib import Path
 
 
 class NoncePersistence:
@@ -11,13 +10,16 @@ class NoncePersistence:
     SQL_DELENV = "DELETE from nonce_db WHERE environment=?"
     SQL_ACCNTS = "SELECT DISTINCT account from nonce_db where environment=?"
 
-    def __init__(self):
-        self.db_dir = os.path.join(str(Path.home()), '.obscurotest')
-        if not os.path.exists(self.db_dir): os.makedirs(self.db_dir)
-        self.db = os.path.join(self.db_dir, 'nonce.db')
-        self.connection = sqlite3.connect(self.db, check_same_thread=False)
+    def __init__(self, db_dir):
+        self.db = os.path.join(db_dir, 'nonce.db')
+        self.connection = sqlite3.connect(self.db)
         self.cursor = self.connection.cursor()
+
+    def create(self):
         self.cursor.execute(self.SQL_CREATE)
+
+    def close(self):
+        self.connection.close()
 
     def get_next_nonce(self, test, web3, account, environment, persist_nonce=True):
         transaction_count = web3.eth.get_transaction_count(account)

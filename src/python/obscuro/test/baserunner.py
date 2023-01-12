@@ -1,8 +1,9 @@
 import os, shutil, sys
+from pathlib import Path
 from pysys.constants import PROJECT, BACKGROUND
 from pysys.exceptions import AbortExecution
-from obscuro.test.persistence.nonce import NoncePersistence
 from obscuro.test.networks.ganache import Ganache
+from obscuro.test.persistence.nonce import NoncePersistence
 from obscuro.test.utils.properties import Properties
 
 
@@ -19,15 +20,20 @@ class ObscuroRunnerPlugin():
         self.env = 'obscuro' if runner.mode is None else runner.mode
         runner.log.info('Runner is executing against environment %s' % self.env)
 
+        # create dir for any runner output
         self.output = os.path.join(PROJECT.root, '.runner')
         if os.path.exists(self.output): shutil.rmtree(self.output)
         os.makedirs(self.output)
 
-        self.nonce_db = NoncePersistence()
+        # create the nonce db if it does not already exist, clean it out if using ganache
+        self.db_dir = os.path.join(str(Path.home()), '.obscurotest')
+        if not os.path.exists(self.db_dir): os.makedirs(self.db_dir)
+        nonce_db = NoncePersistence(self.db_dir)
+        nonce_db.create()
 
         try:
             if self.env == 'ganache':
-                self.nonce_db.delete_environment('ganache')
+                nonce_db.delete_environment('ganache')
                 self.run_ganache(runner)
         except AbortExecution as e:
             runner.log.info('Error executing runner plugin startup actions', e)
@@ -35,6 +41,8 @@ class ObscuroRunnerPlugin():
             runner.log.info('Exiting ...')
             runner.cleanup()
             sys.exit()
+
+        nonce_db.close()
 
     def run_ganache(self, runner):
         """Run ganache for use by the tests. """
