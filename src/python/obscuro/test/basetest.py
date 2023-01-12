@@ -29,7 +29,8 @@ class GenericNetworkTest(BaseTest):
         self.nonce_db = runner.obscuro_runner.nonce_db
 
         # every test runs a default wallet extension
-        if self.is_obscuro(): self.run_wallet(Obscuro.PORT, Obscuro.WS_PORT)
+        if self.is_obscuro():
+            self.wallet_extension = self.run_wallet()
 
     def is_obscuro(self):
         """Return true if we are running against an Obscuro network. """
@@ -39,10 +40,11 @@ class GenericNetworkTest(BaseTest):
         """Return true if we are running against an Obscuro simulation network. """
         return self.env in ['obscuro.sim']
 
-    def run_wallet(self, port, ws_port):
+    def run_wallet(self, port=None, ws_port=None):
         """Run a single wallet extension for use by the tests. """
         extension = WalletExtension(self, port, ws_port, name='primary')
-        return extension.run()
+        extension.run()
+        return extension
 
     def run_python(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
         """Run a python process."""

@@ -33,8 +33,8 @@ class Obscuro(Default):
     """The Obscuro wallet extension giving access to the underlying network."""
     HOST = 'http://127.0.0.1'
     WS_HOST = 'ws://127.0.0.1'
-    PORT = 3000
-    WS_PORT = 3001
+    PORT = None            # set by the factory for the wallet extension port of the accessing test
+    WS_PORT = None         # set by the factory for the wallet extension port of the accessing test
 
     @classmethod
     def chain_id(cls):

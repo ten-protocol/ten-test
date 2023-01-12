@@ -2,6 +2,7 @@ from web3 import Web3
 from pysys.constants import *
 from obscuro.test.utils.properties import Properties
 
+
 class Default:
     """A default node giving access to an underlying network."""
     HOST = 'http://127.0.0.1'
