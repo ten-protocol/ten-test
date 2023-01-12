@@ -12,7 +12,7 @@ class PySysTest(ObscuroNetworkTest):
         block_time = Properties().block_time_secs(self.env)
 
         # connect to network
-        network = NetworkFactory.get_network(self.env)
+        network = NetworkFactory.get_network(self)
         web3, account = network.connect_account4(self)
 
         # deploy the storage contract

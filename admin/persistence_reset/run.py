@@ -8,17 +8,16 @@ class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
         PKS = [
-            Properties().account1pk(),
-            Properties().account2pk(),
-            Properties().account3pk(),
-            Properties().account4pk(),
+            Properties().account1_1pk(), Properties().account2_1pk(), Properties().account3_1pk(), Properties().account4_1pk(),
+            Properties().account1_2pk(), Properties().account2_2pk(), Properties().account3_2pk(), Properties().account4_2pk(),
+            Properties().account1_3pk(), Properties().account2_3pk(), Properties().account3_3pk(), Properties().account4_3pk(),
             Properties().distro_account_pk(self.env)
         ]
 
         self.log.info('Removing entries for environment %s' % self.env)
         self.nonce_db.delete_environment(self.env)
 
-        network = NetworkFactory.get_network(self.env)
+        network = NetworkFactory.get_network(self)
         for pk in PKS:
             web3, account = network.connect(self, pk)
             count = web3.eth.get_transaction_count(account.address)  # count is what the next would be

@@ -10,7 +10,7 @@ class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
         # connect to network
-        network = NetworkFactory.get_network(self.env)
+        network = NetworkFactory.get_network(self)
 
         # connect via the primary wallet extension used by the test in the order of
         # account1, account2, account3, account4

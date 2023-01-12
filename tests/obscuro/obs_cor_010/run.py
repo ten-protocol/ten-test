@@ -8,8 +8,8 @@ from obscuro.test.utils.properties import Properties
 class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
-        network = NetworkFactory.get_network(self.env)
-        network_l1 = NetworkFactory.get_l1_network(self.env)
+        network_l2 = NetworkFactory.get_network(self)
+        network_l1 = NetworkFactory.get_l1_network(self)
         hoc_address_l2 = Properties().l2_hoc_token_address(self.env)
         hoc_address_l1 = Properties().l1_hoc_token_address(self.env)
         bridge_address_l1 = Properties().management_bridge_address(self.env)

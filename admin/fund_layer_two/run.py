@@ -5,11 +5,11 @@ from obscuro.test.networks.factory import NetworkFactory
 
 
 class PySysTest(ObscuroNetworkTest):
-    OBX = Web3().toWei(50000, 'ether')
+    OBX = Web3().toWei(5000, 'ether')
 
     def execute(self):
         # connect to the L2 network
-        network = NetworkFactory.get_network(self.env)
+        network = NetworkFactory.get_network(self)
         hoc_address = Properties().l2_hoc_token_address(self.env)
         poc_address = Properties().l2_poc_token_address(self.env)
         web3_distro, account_distro = network.connect(self, Properties().distro_account_pk(self.env))

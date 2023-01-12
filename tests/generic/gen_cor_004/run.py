@@ -8,7 +8,7 @@ class PySysTest(GenericNetworkTest):
 
     def execute(self):
         # connect to the network
-        network = NetworkFactory.get_network(self.env)
+        network = NetworkFactory.get_network(self)
         web3, account = network.connect_account4(self)
         self.log.info('Using account with address %s' % account.address)
 

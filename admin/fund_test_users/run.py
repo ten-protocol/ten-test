@@ -10,11 +10,11 @@ class PySysTest(ObscuroNetworkTest):
         Properties().account1_2pk(), Properties().account2_2pk(), Properties().account3_2pk(), Properties().account4_2pk(),
         Properties().account1_3pk(), Properties().account2_3pk(), Properties().account3_3pk(), Properties().account4_3pk()
     ]
-    OBX = Web3().toWei(1000, 'ether')
-    TOKENS = Web3().toWei(50, 'ether')
+    OBX = Web3().toWei(100, 'ether')
+    TOKENS = Web3().toWei(20, 'ether')
 
     def execute(self):
-        network = NetworkFactory.get_network(self.env)
+        network = NetworkFactory.get_network(self)
         web3_distro, account_distro = network.connect(self, Properties().distro_account_pk(self.env))
         hoc_address = Properties().l2_hoc_token_address(self.env)
         poc_address = Properties().l2_poc_token_address(self.env)

@@ -38,7 +38,7 @@ class PySysTest(ObscuroNetworkTest):
     TOKENS = Web3().toWei(50, 'ether')
 
     def execute(self):
-        network = NetworkFactory.get_network(self.env)
+        network = NetworkFactory.get_network(self)
         web3_distro, account_distro = network.connect(self, Properties().distro_account_pk(self.env))
         hoc_address = Properties().l2_hoc_token_address(self.env)
         poc_address = Properties().l2_poc_token_address(self.env)

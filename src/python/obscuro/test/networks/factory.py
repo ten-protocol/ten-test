@@ -8,27 +8,27 @@ class NetworkFactory:
     """Factory class to return a network node for a given mode the test is run in. """
 
     @classmethod
-    def get_network(cls, environment):
+    def get_network(cls, test):
         """Get the network node."""
-        if environment == 'obscuro.dev':
+        if test.env == 'obscuro.dev':
             return Obscuro
-        elif environment == 'obscuro.local':
+        elif test.env == 'obscuro.local':
             return Obscuro
-        elif environment == 'obscuro.sim':
+        elif test.env == 'obscuro.sim':
             return Obscuro
-        elif environment == 'goerli':
+        elif test.env == 'goerli':
             return Goerli
-        elif environment == 'ganache':
+        elif test.env == 'ganache':
             return Ganache
         return Obscuro
 
     @classmethod
-    def get_l1_network(cls, environment):
+    def get_l1_network(cls, test):
         """Get the layer 1 network used by a layer 2."""
-        if environment == 'obscuro.dev':
+        if test.env == 'obscuro.dev':
             return ObscuroL1Dev
-        elif environment == 'obscuro.local':
+        elif test.env == 'obscuro.local':
             return ObscuroL1Local
-        elif environment == 'obscuro.sim':
+        elif test.env == 'obscuro.sim':
             return ObscuroL1Sim
         return ObscuroL1

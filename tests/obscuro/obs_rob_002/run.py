@@ -15,7 +15,7 @@ class PySysTest(ObscuroNetworkTest):
     DURATION = 120
 
     def execute(self):
-        network = NetworkFactory.get_network(self.env)
+        network = NetworkFactory.get_network(self)
         web3, account = network.connect_account1(self)
 
         guesser = Guesser(self, web3, 0, 100)
