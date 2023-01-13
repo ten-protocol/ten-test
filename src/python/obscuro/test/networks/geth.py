@@ -6,14 +6,12 @@ from obscuro.test.networks.default import Default
 class Geth(Default):
     """A Geth node giving access to the underlying network."""
 
-    @classmethod
-    def chain_id(cls): return 1337
+    def chain_id(self): return 1337
 
-    @classmethod
-    def connect(cls, test, private_key, web_socket=False):
-        url = cls.connection_url(web_socket)
+    def connect(self, test, private_key, web_socket=False):
+        url = self.connection_url(web_socket)
 
-        test.log.info('Connecting to %s on %s' % (cls.__name__, url))
+        test.log.info('Connecting to %s on %s' % (self.__class__.__name__, url))
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         web3.middleware_onion.inject(geth_poa_middleware, layer=0)
