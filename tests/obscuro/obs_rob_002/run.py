@@ -4,7 +4,7 @@ from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.contracts.guesser.guesser import Guesser
 from obscuro.test.contracts.storage.storage import Storage
 from obscuro.test.contracts.error.error import Error
-from obscuro.test.networks.obscuro import Obscuro
+from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.helpers.wallet_extension import WalletExtension
 
 
@@ -15,7 +15,7 @@ class PySysTest(ObscuroNetworkTest):
     DURATION = 120
 
     def execute(self):
-        network = Obscuro
+        network = NetworkFactory.get_network(self)
         web3, account = network.connect_account1(self)
 
         guesser = Guesser(self, web3, 0, 100)

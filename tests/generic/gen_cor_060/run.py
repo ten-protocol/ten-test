@@ -7,7 +7,7 @@ class PySysTest(GenericNetworkTest):
 
     def execute(self):
         # deployment of contract
-        network = NetworkFactory.get_network(self.env)
+        network = NetworkFactory.get_network(self)
         web3_3, account3 = network.connect_account3(self)
         web3_2, account2 = network.connect_account2(self)
         web3_1, account1 = network.connect_account1(self)

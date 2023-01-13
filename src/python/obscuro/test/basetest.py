@@ -1,7 +1,7 @@
 import os, copy, sys, json, requests
 from pysys.basetest import BaseTest
 from pysys.constants import PROJECT, BACKGROUND
-from obscuro.test.networks.obscuro import Obscuro
+from obscuro.test.persistence.nonce import NoncePersistence
 from obscuro.test.utils.properties import Properties
 from obscuro.test.helpers.wallet_extension import WalletExtension
 
@@ -26,10 +26,18 @@ class GenericNetworkTest(BaseTest):
         super().__init__(descriptor, outsubdir, runner)
         self.env = 'obscuro' if self.mode is None else self.mode
         self.block_time = Properties().block_time_secs(self.env)
-        self.nonce_db = runner.obscuro_runner.nonce_db
+
+        # every test has its own connection to the nonce db
+        self.nonce_db = NoncePersistence(runner.obscuro_runner.db_dir)
+        self.addCleanupFunction(self.close_db)
 
         # every test runs a default wallet extension
-        if self.is_obscuro(): self.run_wallet(Obscuro.PORT, Obscuro.WS_PORT)
+        if self.is_obscuro():
+            self.wallet_extension = self.run_wallet()
+
+    def close_db(self):
+        """Close the connection to the nonce database on completion. """
+        self.nonce_db.close()
 
     def is_obscuro(self):
         """Return true if we are running against an Obscuro network. """
@@ -39,10 +47,11 @@ class GenericNetworkTest(BaseTest):
         """Return true if we are running against an Obscuro simulation network. """
         return self.env in ['obscuro.sim']
 
-    def run_wallet(self, port, ws_port):
+    def run_wallet(self, port=None, ws_port=None):
         """Run a single wallet extension for use by the tests. """
         extension = WalletExtension(self, port, ws_port, name='primary')
-        return extension.run()
+        extension.run()
+        return extension
 
     def run_python(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
         """Run a python process."""

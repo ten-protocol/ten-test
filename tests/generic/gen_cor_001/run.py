@@ -1,3 +1,4 @@
+import threading
 from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.networks.factory import NetworkFactory
 
@@ -5,8 +6,10 @@ from obscuro.test.networks.factory import NetworkFactory
 class PySysTest(GenericNetworkTest):
 
     def execute(self):
+        self.log.info('Thread: %s' % threading.currentThread().getName())
+
         # connect to the network
-        network = NetworkFactory.get_network(self.env)
+        network = NetworkFactory.get_network(self)
         web3, account = network.connect_account1(self)
         self.log.info('Using account with address %s' % account.address)
 

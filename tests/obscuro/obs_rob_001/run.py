@@ -2,7 +2,7 @@ import secrets, os
 from pysys.constants import PASSED
 from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.contracts.storage.storage import Storage
-from obscuro.test.networks.obscuro import Obscuro
+from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.helpers.log_subscriber import FilterLogSubscriber
 
 
@@ -13,7 +13,7 @@ class PySysTest(GenericNetworkTest):
 
     def execute(self):
         # connect to network
-        network = Obscuro
+        network = NetworkFactory.get_network(self)
         web3, account = network.connect_account1(self)
 
         # deploy the contract

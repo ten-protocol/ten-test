@@ -8,7 +8,7 @@ class PySysTest(GenericNetworkTest):
     REFERENCE = [21208, 21274, 21274]  # recorded on ganache
 
     def execute(self):
-        network = NetworkFactory.get_network(self.env)
+        network = NetworkFactory.get_network(self)
         web3, account = network.connect_account1(self)
 
         contract = GasConsumerMultiply(self, web3)
