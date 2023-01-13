@@ -33,8 +33,10 @@ class ObscuroRunnerPlugin():
 
         if self.env in ['obscuro', 'obscuro.dev', 'obscuro.local', 'obscuro.sim'] and runner.threads > 3:
             raise Exception('Max threads against Obscuro cannot be greater than 3')
-        elif self.env == 'ganache' and runner.threads > 2:
-            raise Exception('Max threads against Ganache cannot be greater than 2')
+        elif self.env == 'ganache' and runner.threads > 3:
+            raise Exception('Max threads against Ganache cannot be greater than 3')
+        elif self.env == 'goerli' and runner.threads > 1:
+            raise Exception('Max threads against Goerli cannot be greater than 1')
 
         try:
             if self.env == 'ganache':
@@ -65,6 +67,10 @@ class ObscuroRunnerPlugin():
         arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account2_2pk()))
         arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account3_2pk()))
         arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account4_2pk()))
+        arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account1_3pk()))
+        arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account2_3pk()))
+        arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account3_3pk()))
+        arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account4_3pk()))
         arguments.extend(('--gasLimit', '7200000'))
         arguments.extend(('--blockTime', Properties().block_time_secs(self.env)))
         arguments.extend(('-k', 'berlin'))
