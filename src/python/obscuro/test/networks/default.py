@@ -1,6 +1,7 @@
 from web3 import Web3
 from pysys.constants import *
 from obscuro.test.utils.properties import Properties
+from obscuro.test.helpers.ws_proxy import WebServerProxy
 
 
 class Default:
@@ -16,6 +17,11 @@ class Default:
         port = self.PORT if not web_socket else self.WS_PORT
         host = self.HOST if not web_socket else self.WS_HOST
         return '%s:%d' % (host, port)
+
+    def add_ws_proxy(self, test):
+        proxy = WebServerProxy.create(test)
+        proxy.run(self.connection_url(web_socket=True), 'proxy.logs')
+        self.WS_PORT = proxy.port
 
     def connect(self, test, private_key, web_socket=False):
         url = self.connection_url(web_socket)
