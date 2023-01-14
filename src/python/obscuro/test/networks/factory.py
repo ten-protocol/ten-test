@@ -15,25 +15,25 @@ class NetworkFactory:
     def get_network(cls, test):
         """Get the network node."""
         if test.env in ['obscuro', 'obscuro.dev', 'obscuro.local', 'obscuro.sim']:
-            network = Obscuro
+            network = Obscuro()
             network.PORT = test.wallet_extension.port
             network.WS_PORT = test.wallet_extension.ws_port
             return network
         elif test.env == 'goerli':
-            return Goerli
+            return Goerli()
         elif test.env == 'ganache':
-            return Ganache
-        return Default
+            return Ganache()
+        return Default()
 
     @classmethod
     def get_l1_network(cls, test):
         """Get the layer 1 network used by a layer 2."""
         if test.env == 'obscuro':
-            return ObscuroL1
+            return ObscuroL1()
         elif test.env == 'obscuro.dev':
-            return ObscuroL1Dev
+            return ObscuroL1Dev()
         elif test.env == 'obscuro.local':
-            return ObscuroL1Local
+            return ObscuroL1Local()
         elif test.env == 'obscuro.sim':
-            return ObscuroL1Sim
-        return Default
+            return ObscuroL1Sim()
+        return Default()

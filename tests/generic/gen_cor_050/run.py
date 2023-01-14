@@ -7,9 +7,10 @@ from obscuro.test.networks.factory import NetworkFactory
 class PySysTest(GenericNetworkTest):
 
     def execute(self):
-        # deployment of contract
+        # get the network and put a proxy in the comms
         network = NetworkFactory.get_network(self)
-        web3, account = network.connect_account1(self)
+        network.add_ws_proxy(self)
+        web3, account = network.connect_account1(self, web_socket=True)
 
         error = Error(self, web3, 'foo')
         error.deploy(network, account)

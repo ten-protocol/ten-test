@@ -36,23 +36,19 @@ class Obscuro(Default):
     PORT = None            # set by the factory for the wallet extension port of the accessing test
     WS_PORT = None         # set by the factory for the wallet extension port of the accessing test
 
-    @classmethod
-    def chain_id(cls):
-        return 777
+    def chain_id(self): return 777
 
-    @classmethod
-    def connect(cls, test, private_key, web_socket=False):
-        url = cls.connection_url(web_socket)
+    def connect(self, test, private_key, web_socket=False):
+        url = self.connection_url(web_socket)
 
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)
-        cls.__generate_viewing_key(web3, cls.HOST, cls.PORT, account, private_key)
-        test.log.info('Account %s connected to %s on %s' % (account.address, cls.__name__, url))
+        self.__generate_viewing_key(web3, self.HOST, self.PORT, account, private_key)
+        test.log.info('Account %s connected to %s on %s' % (account.address, self.__class__.__name__, url))
         return web3, account
 
-    @classmethod
-    def __generate_viewing_key(cls, web3, host, port, account, private_key):
+    def __generate_viewing_key(self, web3, host, port, account, private_key):
         # generate a viewing key for this account, sign and post it to the wallet extension
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
 
