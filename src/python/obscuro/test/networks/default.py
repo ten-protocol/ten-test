@@ -2,6 +2,7 @@ from web3 import Web3
 from pysys.constants import *
 from obscuro.test.utils.properties import Properties
 from obscuro.test.helpers.ws_proxy import WebServerProxy
+from obscuro.test.helpers.http_proxy import HTTPProxy
 
 
 class Default:
@@ -22,6 +23,11 @@ class Default:
         proxy = WebServerProxy.create(test)
         proxy.run(self.connection_url(web_socket=True), 'proxy.logs')
         self.WS_PORT = proxy.port
+
+    def add_http_proxy(self, test):
+        proxy = HTTPProxy.create(test)
+        proxy.run(self.HOST, self.PORT, 'proxy.logs')
+        self.PORT = proxy.port
 
     def connect(self, test, private_key, web_socket=False):
         url = self.connection_url(web_socket)
