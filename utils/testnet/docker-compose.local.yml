@@ -22,4 +22,9 @@ services:
     build:
       context: ../../../go-obscuro/
       dockerfile: ./dockerfiles/enclave.Dockerfile
-
+  hardhat-deployer:
+    image: "testnetobscuronet.azurecr.io/obscuronet/hardhatdeployer:latest"
+    build:
+      context: ./../../go-obscuro/
+      dockerfile: ./testnet/hardhatdeployer.Dockerfile
+      
