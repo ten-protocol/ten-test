@@ -10,9 +10,11 @@ class PySysTest(ObscuroNetworkTest):
         PKS = [
             Properties().account1_1pk(), Properties().account2_1pk(), Properties().account3_1pk(), Properties().account4_1pk(),
             Properties().account1_2pk(), Properties().account2_2pk(), Properties().account3_2pk(), Properties().account4_2pk(),
-            Properties().account1_3pk(), Properties().account2_3pk(), Properties().account3_3pk(), Properties().account4_3pk(),
-            Properties().distro_account_pk(self.env)
+            Properties().account1_3pk(), Properties().account2_3pk(), Properties().account3_3pk(), Properties().account4_3pk()
         ]
+
+        if self.is_obscuro():
+            PKS.append(Properties().distro_account_pk(self.env))
 
         self.log.info('Removing entries for environment %s' % self.env)
         self.nonce_db.delete_environment(self.env)

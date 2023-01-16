@@ -7,7 +7,7 @@ class Goerli(Default):
     HOST = 'https://goerli.infura.io/v3'
     WS_HOST = 'wss://goerli.infura.io/ws/v3'
 
-    def chain_id(self): return 3
+    def chain_id(self): return 5
 
     def connection_url(self, web_socket=False):
         return '%s/%s' % (self.HOST if not web_socket else self.WS_HOST, Properties().infuraProjectID())
