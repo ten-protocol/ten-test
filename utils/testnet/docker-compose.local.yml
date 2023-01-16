@@ -25,6 +25,6 @@ services:
   hardhat-deployer:
     image: "testnetobscuronet.azurecr.io/obscuronet/hardhatdeployer:latest"
     build:
-      context: ./../../go-obscuro/
+      context: ../../../go-obscuro/
       dockerfile: ./testnet/hardhatdeployer.Dockerfile
       
