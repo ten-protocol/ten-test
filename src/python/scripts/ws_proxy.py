@@ -41,6 +41,8 @@ if __name__ == '__main__':
     FP = open(args.filename, 'w')
 
     start_server = websockets.serve(hello, args.host, args.port)
+    sys.stdout.write('Connection bound and listening')
+    sys.stdout.flush()
 
     asyncio.get_event_loop().run_until_complete(start_server)
     asyncio.get_event_loop().run_forever()

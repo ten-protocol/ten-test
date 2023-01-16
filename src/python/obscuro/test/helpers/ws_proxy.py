@@ -25,5 +25,7 @@ class WebServerProxy:
         arguments.extend(['--remote_url', remote_url])
         arguments.extend(['--filename', filename])
         self.test.run_python(self.script, self.stdout, self.stderr, arguments)
+        self.test.waitForSignal(self.stdout, expr='Connection bound and listening', timeout=30)
+        self.test.waitForSocket(host=self.host, port=self.port, timeout=30)
         return 'ws://%s:%d' % (self.host, self.port)
 
