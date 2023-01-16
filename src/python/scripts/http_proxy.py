@@ -18,7 +18,7 @@ def start():
 
 def proxy_server(conn, addr, data):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect((args.remote_host, args.remote_port))
+    sock.connect((args.remote_host, int(args.remote_port)))
     sock.send(data)
 
     while True:

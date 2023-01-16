@@ -21,7 +21,7 @@ class HTTPProxy:
         arguments = []
         arguments.extend(['--port', '%d' % self.port])
         arguments.extend(['--remote_host', remote_host])
-        arguments.extend(['--remote_port', remote_port])
+        arguments.extend(['--remote_port', '%d' % remote_port])
         arguments.extend(['--filename', filename])
         self.test.run_python(self.script, self.stdout, self.stderr, arguments)
         self.test.waitForSignal(self.stdout, expr='Connection bound and listening', timeout=30)
