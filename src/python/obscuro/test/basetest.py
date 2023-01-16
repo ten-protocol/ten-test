@@ -180,11 +180,11 @@ class ObscuroNetworkTest(GenericNetworkTest):
         with open(os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'erc20', 'erc20.json')) as f:
             token = web3_from.eth.contract(address=token_address, abi=json.load(f))
 
-        balance = token.functions.balanceOf(account_from.address).call()
+        balance = token.functions.balanceOf(account_from.address).call({"from":account_from.address})
         self.log.info('%s User balance   = %d ' % (token_name, balance))
         network.transact(self, web3_from, token.functions.transfer(address, amount), account_from, 7200000, persist_nonce)
 
-        balance = token.functions.balanceOf(account_from.address).call()
+        balance = token.functions.balanceOf(account_from.address).call({"from":account_from.address})
         self.log.info('%s User balance   = %d ' % (token_name, balance))
 
     def print_token_balance(self, token_name, token_address, web3, account):
