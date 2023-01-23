@@ -10,8 +10,6 @@ class PySysTest(ObscuroNetworkTest):
     def execute(self):
         # connect to the L2 network
         network = NetworkFactory.get_network(self)
-        hoc_address = Properties().l2_hoc_token_address(self.env)
-        poc_address = Properties().l2_poc_token_address(self.env)
         web3_distro, account_distro = network.connect(self, Properties().distro_account_pk(self.env))
 
         # log the current balance
@@ -23,10 +21,5 @@ class PySysTest(ObscuroNetworkTest):
         self.log.info('Funding native OBX to the distro account')
         self.fund_obx(network, account_distro, self.OBX, web3_distro)
 
-        if not self.is_obscuro_sim():
-            # print the ERC20 balances as a check
-            self.log.info('')
-            self.log.info('Printing HOC and POC balances for the distro account')
-            self.print_token_balance('HOC', hoc_address, web3_distro, account_distro)
-            self.print_token_balance('POC', poc_address, web3_distro, account_distro)
+
 
