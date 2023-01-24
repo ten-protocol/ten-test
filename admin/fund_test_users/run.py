@@ -17,10 +17,6 @@ class PySysTest(ObscuroNetworkTest):
 
         for user in self.USERS:
             web3_user, account_user = network.connect(self, user)
-            user_obx = web3_user.eth.get_balance(account_user.address)
             self.log.info('')
             self.log.info('Running for user address %s' % account_user.address)
-            self.log.info('Funding native OBX to the test user account')
-            self.log.info('OBX User balance before = %d ' % user_obx)
             self.fund_obx(network, account_user, self.OBX, web3_user)
-            self.log.info('OBX User balance after = %d ' % user_obx)

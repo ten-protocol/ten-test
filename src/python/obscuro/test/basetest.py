@@ -132,7 +132,7 @@ class ObscuroNetworkTest(GenericNetworkTest):
         """Allocates native OBX to a users account from the faucet server."""
         if web3 is not None:
             user_obx = web3.eth.get_balance(account.address)
-            self.log.info('OBX User balance   = %d ' % user_obx)
+            self.log.info('OBX User balance before = %d ' % user_obx)
 
         self.log.info('Running request on %s' % Properties().faucet_url(self.env))
         self.log.info('Running for user address %s' % account.address)
@@ -142,7 +142,7 @@ class ObscuroNetworkTest(GenericNetworkTest):
 
         if web3 is not None:
             user_obx = web3.eth.get_balance(account.address)
-            self.log.info('OBX User balance   = %d ' % user_obx)
+            self.log.info('OBX User balance after = %d ' % user_obx)
 
     def fund_obx_from_funded_pk(self, network, account, amount, web3=None):
         """Allocates native OBX to a users account from the pre-funded account.
