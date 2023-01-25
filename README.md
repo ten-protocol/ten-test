@@ -81,6 +81,7 @@ brew update
 brew upgrade
 brew install node
 brew tap ethereum/ethereum
+brew install ethereum
 brew install solidity
 brew install python
 

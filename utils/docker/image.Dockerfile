@@ -5,6 +5,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
 RUN apt-get install -y software-properties-common
 RUN add-apt-repository ppa:ethereum/ethereum
 RUN apt update
+RUN apt install -y ethereum
 RUN apt install -y curl
 RUN apt install -y solc
 

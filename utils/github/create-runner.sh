@@ -54,6 +54,7 @@ az vm run-command invoke \
     && apt-get install -y software-properties-common \
     && add-apt-repository --yes ppa:ethereum/ethereum \
     && apt update \
+    && apt install -y ethereum \
     && apt install -y solc \
     && curl -sL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
