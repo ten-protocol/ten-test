@@ -69,7 +69,7 @@ jobs:
           cd ${{ github.workspace }}/obscuro-test/utils/testnet
           ./wait_for_node.sh
           cd ${{ github.workspace }}/go-obscuro/testnet        
-          ./testnet-deploy-l2-contracts.sh --l2host=testnet-host-1
+          ./testnet-deploy-l2-contracts.sh --l2host=testnet-host-1 --l1host=gethnetwork
 
       - name: Run allocations
         run: |
