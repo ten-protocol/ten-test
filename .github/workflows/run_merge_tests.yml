@@ -8,6 +8,35 @@ jobs:
   Run-Local-Tests:
     runs-on: self-hosted
     steps:
+      - name: Map IDs for ObscuroLabs
+        uses: kanga333/variable-mapper@master
+        with:
+          key: "${{ github.event.client_payload.owner }}"
+          map: |
+            {
+              "StefanIliev545": {
+                "discord_id": "1034771491436363797"
+              },
+              "otherview": {
+                "discord_id": "494924753962926120"
+              },
+              "BedrockSquirrel": {
+                "discord_id": "92361563276591104"
+              },
+              "joeldudley": {
+                "discord_id": "930531223779037315"
+              },
+              "moraygrieve": {
+                "discord_id": "814873419207409685"
+              },
+              "tudor-malene": {
+                "discord_id": "921049923414261821"
+              },
+              ".*": {
+                "discord_id": "814873419207409685"
+              }
+            }
+
       - name: Check out obscuro-test
         uses: actions/checkout@v3
         with:
@@ -65,12 +94,22 @@ jobs:
           /usr/local/bin/pysys.py run -m obscuro.local -e skip -e robustness
 
       - name: Discord notification
-        if: always()
+        if: success()
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.CONT_INT_WEBHOOK }}
-          title: "Merge tests for PR ${{ github.event.client_payload.number }} by @${{ github.event.client_payload.owner }}"
+          title: "Merge tests for PR ${{ github.event.client_payload.number }} by @${{ github.event.client_payload.owner }} passed"
           description: "Local testnet tests on PR merge"
+          avatar_url: ${{ secrets.AVATAR_URL }}
+
+      - name: Discord notification
+        if: failure()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.CONT_INT_WEBHOOK }}
+          title: "Merge tests for PR ${{ github.event.client_payload.number }} by @${{ github.event.client_payload.owner }} failed"
+          description: "Local testnet tests on PR merge"
+          content: "Please investigate <@${{ env.discord_id }}>"
           avatar_url: ${{ secrets.AVATAR_URL }}
 
       - name: Upload testcase output
