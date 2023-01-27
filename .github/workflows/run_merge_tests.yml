@@ -56,7 +56,7 @@ jobs:
       - name: Build wallet_extension
         run: |
           cd ${{ github.workspace }}/go-obscuro/tools/walletextension/main
-          go build -o ${{ github.workspace }}/obscuro-test/artifacts/wallet_extension
+          go build -o ${{ github.workspace }}/obscuro-test/artifacts/wallet_extension/wallet_extension
           ls -l ${{ github.workspace }}/obscuro-test/artifacts   
 
       - name: Build docker containers
