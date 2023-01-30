@@ -14,13 +14,13 @@ class ObscuroL1(Geth):
 class ObscuroL1Dev(Geth):
     HOST = 'http://dev-testnet-gethnetwork.uksouth.azurecontainer.io'
     PORT = 8025
-    WS_PORT = 9001
+    WS_PORT = 9000
 
 
 class ObscuroL1Local(Geth):
     HOST = 'http://gethnetwork' if os.getenv('DOCKER_TEST_ENV') else 'http://127.0.0.1'
     PORT = 8025
-    WS_PORT = 9002
+    WS_PORT = 9000
 
 
 class ObscuroL1Sim(Geth):

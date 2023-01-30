@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Obscuroscan Bridge - bride funds bi-directionally</title>
+        <title>Obscuroscan Bridge - whitelist and check wrapped token event log</title>
         <purpose><![CDATA[
 ]]>
         </purpose>
@@ -12,7 +12,7 @@
         <groups inherit="true">
         </groups>
         <modes inherit="true">
-            <mode>obscuro.sim</mode>
+            <mode>obscuro.local</mode>
         </modes>
     </classification>
 
