@@ -100,6 +100,11 @@ class Properties:
     def l2_bridge_address(self, key):
         return self.get('env.'+key, 'EthereumBridgeAddress')
 
+    def l1_message_bus_address(self, key):
+        return self.get('env.'+key, 'MessageBusAddress')
+
+
+
     # infura related
     def infuraProjectID(self):
         return self.get('env.goerli', 'ProjectID')
