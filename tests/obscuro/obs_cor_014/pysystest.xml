@@ -5,7 +5,7 @@
         <title>Obscuroscan Bridge - whitelist and check wrapped token event log</title>
         <purpose><![CDATA[
 Deploy an ERC20 token on the L1, whitelist it, listen to the event emitted and decode it using a JS client,
-decode the log in the transaction receipt and compare the two. 
+decode the log in the transaction receipt and compare the two.
 ]]>
         </purpose>
     </description>
