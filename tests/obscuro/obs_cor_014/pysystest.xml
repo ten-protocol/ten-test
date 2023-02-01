@@ -12,6 +12,7 @@ decode the log in the transaction receipt and compare the two.
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.local</mode>

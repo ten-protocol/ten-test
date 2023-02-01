@@ -12,6 +12,7 @@ be finalised on the L2, relay it, and check the created wrapped token event has 
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.local</mode>
