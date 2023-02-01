@@ -27,7 +27,7 @@ RUN mkdir /home/obscuro-test
 RUN mkdir /home/go-obscuro
 COPY . /home/obscuro-test
 
-WORKDIR /home/obscuro-test/artifacts
+WORKDIR /home/obscuro-test/artifacts/wallet_extension
 RUN rm wallet_extension
 RUN ln -s wallet_extension_linux_amd64 wallet_extension
 

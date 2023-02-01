@@ -7,19 +7,17 @@ from obscuro.test.utils.properties import Properties
 class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
-        block_time = Properties().block_time_secs(self.env)
-
         network = NetworkFactory.get_network(self)
         web3, account = network.connect_account1(self)
 
         storage = Storage(self, web3, 0)
         tx_receipt = storage.deploy(network, account)
-        self.wait(float(block_time)*1.1)
+        self.wait(float(self.block_time)*1.1)
         self.check(tx_receipt)
 
         for i in range(0,4):
             tx_receipt = network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS_LIMIT)
-            self.wait(float(block_time)*1.1)
+            self.wait(float(self.block_time)*1.1)
             self.check(tx_receipt)
 
     def check(self, tx_receipt):

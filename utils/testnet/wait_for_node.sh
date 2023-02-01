@@ -6,7 +6,7 @@ container_id=`docker ps -aqf "name=testnet-enclave-1"`
 start=`date +%s`
 while true; 
 do
-  docker logs $container_id | grep "Obscuro enclave service started" > /dev/null 2>&1
+  docker logs $container_id | grep "RPCServer listening on address" > /dev/null 2>&1
   if [[ $? == 0 ]]; then
     echo Regex seen in container output ... exiting;
     break

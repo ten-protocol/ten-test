@@ -31,7 +31,7 @@ jobs:
       - name: Build artifacts
         run: |
           cd ${{ github.workspace }}/go-obscuro/tools/walletextension/main
-          go build -o ${{ github.workspace }}/obscuro-test/artifacts/wallet_extension
+          go build -o ${{ github.workspace }}/obscuro-test/artifacts/wallet_extension/wallet_extension
           ls -l ${{ github.workspace }}/obscuro-test/artifacts
 
       - name: Run allocation on testnet

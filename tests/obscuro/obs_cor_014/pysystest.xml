@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Obscuroscan Bridge - whitelist and check wrapped token event log</title>
+        <purpose><![CDATA[
+Deploy an ERC20 token on the L1, whitelist it, listen to the event emitted and decode it using a JS client,
+decode the log in the transaction receipt and compare the two.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+        </groups>
+        <modes inherit="true">
+            <mode>obscuro.local</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

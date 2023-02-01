@@ -3,6 +3,7 @@ from pysys.constants import *
 from pysys.exceptions import FileNotFoundException
 from obscuro.test.utils.threading import thread_num
 
+
 class Properties:
     """Used as a holding class for properties."""
 
@@ -92,6 +93,21 @@ class Properties:
 
     def l2_funded_account_pk(self, key):
         return self.get('env.'+key, 'L2FundedAccountPK')
+
+    def l1_bridge_address(self, key):
+        return self.get('env.'+key, 'L1BridgeAddress')
+
+    def l2_bridge_address(self, key):
+        return self.get('env.'+key, 'L2BridgeAddress')
+
+    def l1_message_bus_address(self, key):
+        return self.get('env.'+key, 'L1MessageBusAddress')
+
+    def l2_message_bus_address(self, key):
+        return self.get('env.'+key, 'L2MessageBusAddress')
+
+    def l2_cross_chain_messenger_address(self, key):
+        return self.get('env.'+key, 'L2CrossChainMessengerAddress')
 
     # infura related
     def infuraProjectID(self):

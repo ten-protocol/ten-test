@@ -18,6 +18,7 @@ __pycache__/
 !.default.properties
 
 # ignore any artifacts used
-artifacts/wallet_extension*
+artifacts/wallet_extension
+artifacts/contracts
 artifacts/*.log
 
