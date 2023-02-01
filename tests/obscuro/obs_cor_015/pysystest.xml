@@ -2,10 +2,10 @@
 <pysystest type="auto">
 
     <description>
-        <title>Obscuroscan Bridge - whitelist and check wrapped token event log</title>
+        <title>Obscuroscan Bridge - whitelist and relay to create wrapped token</title>
         <purpose><![CDATA[
-Deploy an ERC20 token on the L1, whitelist it, listen to the event emitted and decode it using a JS client,
-decode the log in the transaction receipt and compare the two.
+Deploy an ERC20 token on the L1, whitelist it, construct the cross chain message from the tx receipt, wait for it to
+be finalised on the L2, relay it, and check the created wrapped token event has the expected values.
 ]]>
         </purpose>
     </description>

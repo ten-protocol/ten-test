@@ -95,15 +95,19 @@ class Properties:
         return self.get('env.'+key, 'L2FundedAccountPK')
 
     def l1_bridge_address(self, key):
-        return self.get('env.'+key, 'ObscuroBridgeAddress')
+        return self.get('env.'+key, 'L1BridgeAddress')
 
     def l2_bridge_address(self, key):
-        return self.get('env.'+key, 'EthereumBridgeAddress')
+        return self.get('env.'+key, 'L2BridgeAddress')
 
     def l1_message_bus_address(self, key):
-        return self.get('env.'+key, 'MessageBusAddress')
+        return self.get('env.'+key, 'L1MessageBusAddress')
 
+    def l2_message_bus_address(self, key):
+        return self.get('env.'+key, 'L2MessageBusAddress')
 
+    def l2_cross_chain_messenger_address(self, key):
+        return self.get('env.'+key, 'L2CrossChainMessengerAddress')
 
     # infura related
     def infuraProjectID(self):

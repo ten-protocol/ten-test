@@ -2,8 +2,8 @@ import os
 from web3._utils.events import EventLogErrorFlags
 from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.contracts.erc20.erc20 import ERC20Token
-from obscuro.test.contracts.bridge.obscuro_bridge import ObscuroBridge
-from obscuro.test.contracts.messaging.message_bus import MessageBus
+from obscuro.test.contracts.bridge.bridge import ObscuroBridge
+from obscuro.test.contracts.bridge.messaging import L1MessageBus
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.utils.properties import Properties
 
@@ -16,12 +16,11 @@ class PySysTest(ObscuroNetworkTest):
         web3_l1, account_l1 = l1.connect(self, Properties().l1_funded_account_pk(self.env))
 
         token = ERC20Token(self, web3_l1, 'DodgyCoin', 'DCX')
-        token.deploy(l1, account_l1, persist_nonce=False)
-        self.log.info('ERC20 deployed with address %s' % token.contract_address)
+        token.deploy(l1, account_l1, persist_nonce=False) # don't persist nonce on l1
 
         # create the contract instances
         l1_bridge = ObscuroBridge(self, web3_l1)
-        message_bus = MessageBus(self, web3_l1)
+        message_bus = L1MessageBus(self, web3_l1)
 
         # run test specific event subscriber
         stdout = os.path.join(self.output, 'subscriber.out')
