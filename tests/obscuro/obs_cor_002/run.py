@@ -30,7 +30,7 @@ class PySysTest(ObscuroNetworkTest):
         self.wait(float(self.block_time)*1.1)
 
         # wait and assert that account4 does see this event
-        self.waitForGrep(file='subscriber_account4.out', expr='Received event: CallerIndexedAddress', timeout=block_time)
+        self.waitForGrep(file='subscriber_account4.out', expr='Received event: CallerIndexedAddress', timeout=self.block_time)
         self.assertGrep(file='subscriber_account4.out', expr='Received event: CallerIndexedAddress')
 
         # ensure that the other users don't see it
