@@ -38,10 +38,10 @@ class ERC20Token:
 
         self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor(self.name, self.symbol)
 
-    def deploy(self, network, account):
+    def deploy(self, network, account, persist_nonce=True):
         """Deploy the contract using a given account."""
         self.account = account
-        tx_receipt = network.transact(self.test, self.web3, self.contract, account, self.GAS_LIMIT)
+        tx_receipt = network.transact(self.test, self.web3, self.contract, account, self.GAS_LIMIT, persist_nonce=persist_nonce)
         self.contract_address = tx_receipt.contractAddress
         self.contract = self.web3.eth.contract(address=self.contract_address, abi=self.abi)
         return tx_receipt

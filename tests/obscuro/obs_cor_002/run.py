@@ -9,7 +9,6 @@ from obscuro.test.helpers.log_subscriber import AllEventsLogSubscriber
 class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
-        block_time = Properties().block_time_secs(self.env)
 
         # connect to network
         network = NetworkFactory.get_network(self)
@@ -28,7 +27,7 @@ class PySysTest(ObscuroNetworkTest):
         # perform some transactions
         self.log.info('Performing transactions ... ')
         network.transact(self, web3, contract.contract.functions.callerIndexedAddress(), account, contract.GAS_LIMIT)
-        self.wait(float(block_time)*1.1)
+        self.wait(float(self.block_time)*1.1)
 
         # wait and assert that account4 does see this event
         self.waitForGrep(file='subscriber_account4.out', expr='Received event: CallerIndexedAddress', timeout=block_time)
