@@ -44,10 +44,10 @@ jobs:
           for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
           docker system prune -af
 
-      - name: Build wallet_extension
+      - name: Build required artifacts
         run: |
-          cd ${{ github.workspace }}/go-obscuro/tools/walletextension/main
-          go build -o ${{ github.workspace }}/obscuro-test/artifacts/wallet_extension/wallet_extension
+          cd ${{ github.workspace }}/obscuro-test
+          ./get_artifacts.sh
           ls -l ${{ github.workspace }}/obscuro-test/artifacts   
 
       - name: Build docker containers
