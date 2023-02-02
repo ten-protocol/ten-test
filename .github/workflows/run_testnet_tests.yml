@@ -31,11 +31,11 @@ jobs:
           repository: obscuronet/go-obscuro
           path: ./go-obscuro
 
-      - name: Build artifacts
+      - name: Build required artifacts for running tests
         run: |
-          cd ${{ github.workspace }}/go-obscuro/tools/walletextension/main
-          go build -o ${{ github.workspace }}/obscuro-test/artifacts/wallet_extension/wallet_extension
-          ls -l ${{ github.workspace }}/obscuro-test/artifacts
+          cd ${{ github.workspace }}/obscuro-test
+          ./get_artifacts.sh
+          ls -l ${{ github.workspace }}/obscuro-test/artifacts   
 
       - name: Run tests on testnet on a manual trigger
         if: ${{ github.event.inputs.environment == 'testnet' }}

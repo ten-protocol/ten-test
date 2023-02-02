@@ -44,12 +44,6 @@ jobs:
           for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
           docker system prune -af
 
-      - name: Build wallet_extension
-        run: |
-          cd ${{ github.workspace }}/go-obscuro/tools/walletextension/main
-          go build -o ${{ github.workspace }}/obscuro-test/artifacts/wallet_extension/wallet_extension
-          ls -l ${{ github.workspace }}/obscuro-test/artifacts   
-
       - name: Build docker containers
         run: |
           cd ${{ github.workspace }}/obscuro-test/utils/testnet
@@ -70,6 +64,12 @@ jobs:
           ./wait_for_node.sh
           cd ${{ github.workspace }}/go-obscuro/testnet        
           ./testnet-deploy-l2-contracts.sh --l2host=testnet-host-1 --l1host=gethnetwork
+
+      - name: Build required artifacts for running tests
+        run: |
+          cd ${{ github.workspace }}/obscuro-test
+          ./get_artifacts.sh
+          ls -l ${{ github.workspace }}/obscuro-test/artifacts   
 
       - name: Run allocations
         run: |
