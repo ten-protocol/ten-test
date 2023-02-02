@@ -1,5 +1,5 @@
 from obscuro.test.basetest import GenericNetworkTest
-from obscuro.test.contracts.erc20.obx import OBXCoin
+from obscuro.test.contracts.erc20.minted_erc20 import MintedERC20Token
 from obscuro.test.networks.factory import NetworkFactory
 
 
@@ -12,7 +12,7 @@ class PySysTest(GenericNetworkTest):
         web3_2, account2 = network.connect_account2(self)
         web3_1, account1 = network.connect_account1(self)
 
-        erc20 = OBXCoin(self, web3_1)
+        erc20 = MintedERC20Token(self, web3_deploy, 'OBXCoin', 'OBX', 10000)
         erc20.deploy(network, account1)
 
         contract_1 = erc20.contract

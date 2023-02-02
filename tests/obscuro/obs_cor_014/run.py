@@ -1,7 +1,7 @@
 import os
 from web3._utils.events import EventLogErrorFlags
 from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.contracts.erc20.erc20 import ERC20Token
+from obscuro.test.contracts.erc20.minted_erc20 import MintedERC20Token
 from obscuro.test.contracts.bridge.bridge import ObscuroBridge
 from obscuro.test.contracts.bridge.messaging import L1MessageBus
 from obscuro.test.networks.factory import NetworkFactory
@@ -15,7 +15,7 @@ class PySysTest(ObscuroNetworkTest):
         l1 = NetworkFactory.get_l1_network(self)
         web3_l1, account_l1 = l1.connect(self, Properties().l1_funded_account_pk(self.env))
 
-        token = ERC20Token(self, web3_l1, 'DodgyCoin', 'DCX')
+        token = MintedERC20Token(self, web3_l1, 'DodgyCoin', 'DCX', 10000)
         token.deploy(l1, account_l1, persist_nonce=False) # don't persist nonce on l1
 
         # create the contract instances

@@ -2,7 +2,7 @@ from web3 import Web3
 from pysys.constants import PASSED
 from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.utils.properties import Properties
-from obscuro.test.contracts.erc20.obx import OBXCoin
+from obscuro.test.contracts.erc20.minted_erc20 import MintedERC20Token
 from obscuro.test.contracts.guesser.guesser_token import GuesserToken
 from obscuro.test.networks.factory import NetworkFactory
 
@@ -15,7 +15,7 @@ class PySysTest(GenericNetworkTest):
         web3_deploy, deploy_account = network.connect_account1(self)
         account2 = Web3().eth.account.privateKeyToAccount(Properties().account2pk())
 
-        erc20 = OBXCoin(self, web3_deploy)
+        erc20 = MintedERC20Token(self, web3_deploy, 'OBXCoin', 'OBX', 10000)
         erc20.deploy(network, deploy_account)
         network.transact(self, web3_deploy, erc20.contract.functions.transfer(account2.address, 200), deploy_account, erc20.GAS_LIMIT)
 

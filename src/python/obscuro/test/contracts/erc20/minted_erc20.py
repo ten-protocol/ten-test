@@ -4,11 +4,11 @@ from solcx import compile_source
 from obscuro.test.utils.properties import Properties
 
 
-class ERC20Token:
+class MintedERC20Token:
     """Abstraction over the ERC20 smart contract used locally."""
     GAS_LIMIT = 7200000
 
-    def __init__(self, test, web3, name, symbol):
+    def __init__(self, test, web3, name, symbol, supply):
         """Create an instance of the ERC20 contract, compile and construct a web3 instance. """
         self.bytecode = None
         self.abi = None
@@ -20,11 +20,12 @@ class ERC20Token:
         self.web3 = web3
         self.name = name
         self.symbol = symbol
+        self.supply = supply
         self.construct()
 
     def construct(self):
         """Compile and construct an instance."""
-        file = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'erc20', 'ERC20.sol')
+        file = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'erc20', 'MintedERC20.sol')
         with open(file, 'r') as fp:
             compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'],
                                           solc_binary=Properties().solc_binary(),
@@ -36,7 +37,7 @@ class ERC20Token:
         self.abi_path = os.path.join(self.test.output, 'erc20.abi')
         with open(self.abi_path, 'w') as f: json.dump(self.abi, f)
 
-        self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor(self.name, self.symbol)
+        self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor(self.name, self.symbol, self.supply)
 
     def deploy(self, network, account, persist_nonce=True):
         """Deploy the contract using a given account."""
