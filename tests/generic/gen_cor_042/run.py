@@ -15,7 +15,7 @@ class PySysTest(GenericNetworkTest):
         web3_deploy, deploy_account = network.connect_account1(self)
         account2 = Web3().eth.account.privateKeyToAccount(Properties().account2pk())
 
-        erc20 = MintedERC20Token(self, web3_deploy, 'OBXCoin', 'OBX', 10000)
+        erc20 = MintedERC20Token(self, web3_deploy, 'OBXCoin', 'OBX', 1000000)
         erc20.deploy(network, deploy_account)
         network.transact(self, web3_deploy, erc20.contract.functions.transfer(account2.address, 200), deploy_account, erc20.GAS_LIMIT)
 

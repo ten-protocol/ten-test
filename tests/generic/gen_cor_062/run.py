@@ -14,7 +14,7 @@ class PySysTest(GenericNetworkTest):
         web3, account1 = network.connect_account1(self)
         account2 = Web3().eth.account.privateKeyToAccount(Properties().account2pk())
 
-        erc20 = MintedERC20Token(self, web3, 'OBXCoin', 'OBX', 10000)
+        erc20 = MintedERC20Token(self, web3, 'OBXCoin', 'OBX', 1000000)
         erc20.deploy(network, account1)
 
         # run a background script to poll for balance

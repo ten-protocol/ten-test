@@ -30,7 +30,7 @@ class MintedERC20Token:
             compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'],
                                           solc_binary=Properties().solc_binary(),
                                           base_path=os.path.dirname(file))
-            contract_interface = compiled_sol['<stdin>:ERC20']
+            contract_interface = compiled_sol['<stdin>:MintedERC20']
             self.bytecode = contract_interface['bin']
             self.abi = contract_interface['abi']
 
