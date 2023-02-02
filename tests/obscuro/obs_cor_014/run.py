@@ -9,13 +9,15 @@ from obscuro.test.utils.properties import Properties
 
 
 class PySysTest(ObscuroNetworkTest):
+    ERC20_NAME = 'DodgyCoin'
+    ERC20_SYMB = 'DCX'
 
     def execute(self):
         # connect and deploy our own ERC20 contract to the L1
         l1 = NetworkFactory.get_l1_network(self)
         web3_l1, account_l1 = l1.connect(self, Properties().l1_funded_account_pk(self.env))
 
-        token = MintedERC20Token(self, web3_l1, 'DodgyCoin', 'DCX', 10000)
+        token = MintedERC20Token(self, web3_l1, self.ERC20_NAME, self.ERC20_SYMB, 10000)
         token.deploy(l1, account_l1, persist_nonce=False) # don't persist nonce on l1
 
         # create the contract instances
@@ -32,20 +34,21 @@ class PySysTest(ObscuroNetworkTest):
         self.waitForGrep(file=stdout, expr='Subscribed for event logs', timeout=10)
 
         # whitelist the token and extract the log message that is published by the message bus
-        tx_receipt = l1.transact(self, web3_l1,
-                    l1_bridge.contract.functions.whitelistToken(token.contract_address, 'DodgyCoin', 'DCX'),
-                    account_l1, gas_limit=7200000, persist_nonce=False)
+        tx_receipt = l1.transact(
+            self, web3_l1,
+            l1_bridge.contract.functions.whitelistToken(token.contract_address, self.ERC20_NAME, self.ERC20_SYMB),
+            account_l1, gas_limit=7200000, persist_nonce=False)
         logs = message_bus.contract.events.LogMessagePublished().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
 
         # verify consistency
         log = logs[1]
-        exprList = []
-        exprList.append('Sender = %s' % log['args']['sender'])
-        exprList.append('Sequence = %s' % log['args']['sequence'])
-        exprList.append('Nonce = %s' % log['args']['nonce'])
-        exprList.append('Topic = %s' % log['args']['topic'])
-        exprList.append('ConsistencyLevel = %s' % log['args']['consistencyLevel'])
-        self.assertOrderedGrep(file=os.path.join(self.output, 'subscriber.out'), exprList=exprList)
+        expr_list = ['Sender = %s' % log['args']['sender'],
+                     'Sequence = %s' % log['args']['sequence'],
+                     'Nonce = %s' % log['args']['nonce'],
+                     'Topic = %s' % log['args']['topic'],
+                     'ConsistencyLevel = %s' % log['args']['consistencyLevel']]
+        self.assertOrderedGrep(file=os.path.join(self.output, 'subscriber.out'), exprList=expr_list)
+        self.assertOrderedGrep(file=os.path.join(self.output, 'subscriber.out'), exprList=expr_list)
 
 
 

@@ -19,7 +19,7 @@ class PySysTest(ObscuroNetworkTest):
         web3_l1, account_l1 = l1.connect(self, Properties().l1_funded_account_pk(self.env))
         web3_l2, account_l2 = l2.connect(self, Properties().l2_funded_account_pk(self.env))
 
-        token = MintedERC20Token(self, web3_l1, 'DodgyCoin', 'DCX', 10000)
+        token = MintedERC20Token(self, web3_l1, self.ERC20_NAME, self.ERC20_SYMB, 10000)
         token.deploy(l1, account_l1, persist_nonce=False) # don't persist nonce on l1
 
         # create the contract instances
@@ -30,9 +30,10 @@ class PySysTest(ObscuroNetworkTest):
         l2_xchain_messenger = CrossChainMessenger(self, web3_l2)
 
         # whitelist the token and extract the log message that is published by the message bus
-        tx_receipt = l1.transact(self, web3_l1,
-                                 l1_bridge.contract.functions.whitelistToken(token.contract_address, 'DodgyCoin', 'DCX'),
-                                 account_l1, gas_limit=7200000, persist_nonce=False)
+        tx_receipt = l1.transact(
+            self, web3_l1,
+            l1_bridge.contract.functions.whitelistToken(token.contract_address, self.ERC20_NAME, self.ERC20_SYMB),
+            account_l1, gas_limit=7200000, persist_nonce=False)
         logs = l1_message_bus.contract.events.LogMessagePublished().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
 
         # construct the cross chain message and wait for it to be verified as finalised
