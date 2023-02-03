@@ -65,20 +65,21 @@ class PySysTest(ObscuroNetworkTest):
             self.log.info('  Account1 ERC20 balance L1 = %d ' % balance)
 
             user_l2_token = l2_web3_user.eth.contract(address=l2_token_address, abi=abi)
-            balance = user_l2_token.functions.balanceOf(l2_account_user.address).call()
+            balance = user_l2_token.functions.balanceOf(l2_account_user.address).call({"from":l2_account_user.address})
             self.log.info('  Account1 ERC20 balance L2 = %d ' % balance)
 
-        # user approves the L1 bridge contract to be able to allocate funds
+        # user approves on the L1 token the bridge to be able to transfer funds on their behalf
         l1.transact(self, l1_web3_user, user_l1_token.functions.approve(l1_bridge_fund.contract_address, 100),
-                    l1_account_user, gas_limit=7200000)
+                    l1_account_user, gas_limit=7200000, persist_nonce=False)
         allowance = user_l1_token.functions.allowance(l1_account_user.address, l1_bridge_fund.contract_address).call()
         self.log.info('Allowance is %s' % allowance)
 
-        # funded user sends some ERC20 tokens across the bridge
-        l1_bridge_user.contract.functions.sendERC20(l1_token_address, 10, l1_account_user.address).call()
-        # l1.transact(self, l1_web3_fund,
-        #             l1_bridge_fund.contract.functions.sendERC20(l1_token_address, 10, l1_account_user.address),
-        #             l1_account_fund, gas_limit=7200000, persist_nonce=False)
+        # user sends some ERC20 tokens across the bridge (balance should be seen to drop)
+        l1.transact(self, l1_web3_user,
+                    l1_bridge_user.contract.functions.sendERC20(l1_token_address, 10, l1_account_user.address),
+                    l1_account_user, gas_limit=7200000, persist_nonce=False)
+        balance = user_l1_token.functions.balanceOf(l1_account_user.address).call()
+        self.log.info('  Account1 ERC20 balance L1 = %d ' % balance)
 
     def wait_for_message(self, l2_message_bus, xchain_msg):
         start = time.time()
