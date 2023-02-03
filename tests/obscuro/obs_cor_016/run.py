@@ -1,4 +1,5 @@
-import time
+import time, os, json
+from pysys.constants import PROJECT
 from web3._utils.events import EventLogErrorFlags
 from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.contracts.erc20.minted_erc20 import MintedERC20Token
@@ -13,38 +14,60 @@ class PySysTest(ObscuroNetworkTest):
     ERC20_SYMB = 'SCN'
 
     def execute(self):
-        # connect and deploy our own ERC20 contract to the L1
+        # connect pre-funded and user accounts to the L1 and L2
         l1 = NetworkFactory.get_l1_network(self)
         l2 = NetworkFactory.get_network(self)
-        web3_l1, account_l1 = l1.connect(self, Properties().l1_funded_account_pk(self.env))
-        web3_l2, account_l2 = l2.connect(self, Properties().l2_funded_account_pk(self.env))
+        l1_web3_fund, l1_account_fund = l1.connect(self, Properties().l1_funded_account_pk(self.env))
+        l2_web3_fund, l2_account_fund = l2.connect(self, Properties().l2_funded_account_pk(self.env))
+        l1_web3_user, l1_account_user = l1.connect(self, Properties().account1pk())
+        l2_web3_user, l2_account_user = l2.connect_account1(self)
 
-        token = MintedERC20Token(self, web3_l1, self.ERC20_NAME, self.ERC20_SYMB, 10000)
-        token.deploy(l1, account_l1, persist_nonce=False)  # don't persist nonce on l1
+        # deploy the ERC20 minted contract to the L1 and allocate some funds to the user account
+        # note that we don't use persisted nonces on the L1 when we transact
+        _token = MintedERC20Token(self, l1_web3_fund, self.ERC20_NAME, self.ERC20_SYMB, 10000)
+        _token.deploy(l1, l1_account_fund, persist_nonce=False)
+        l1_token_address = _token.contract_address
+        l1.transact(self, l1_web3_fund,
+                    _token.contract.functions.transfer(l1_account_user.address, 200),
+                    l1_account_fund, _token.GAS_LIMIT, persist_nonce=False)
 
         # create the contract instances
-        l1_bridge = ObscuroBridge(self, web3_l1)
-        l1_message_bus = L1MessageBus(self, web3_l1)
-        l2_message_bus = L2MessageBus(self, web3_l2)
-        l2_bridge = EthereumBridge(self, web3_l2)
-        l2_xchain_messenger = CrossChainMessenger(self, web3_l2)
+        l1_bridge = ObscuroBridge(self, l1_web3_fund)
+        l1_message_bus = L1MessageBus(self, l1_web3_fund)
+        l2_message_bus = L2MessageBus(self, l2_web3_fund)
+        l2_bridge = EthereumBridge(self, l2_web3_fund)
+        l2_xchain_messenger = CrossChainMessenger(self, l2_web3_fund)
 
-        # whitelist the token and extract the log message that is published by the message bus
-        tx_receipt = l1.transact(
-            self, web3_l1,
-            l1_bridge.contract.functions.whitelistToken(token.contract_address, self.ERC20_NAME, self.ERC20_SYMB),
-            account_l1, gas_limit=7200000, persist_nonce=False)
-        logs = l1_message_bus.contract.events.LogMessagePublished().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
+        # whitelist the token, construct the cross chain message and wait for it to be verified as finalised
+        # and relay the message to create the wrapped token
+        _receipt = l1.transact(
+            self, l1_web3_fund,
+            l1_bridge.contract.functions.whitelistToken(l1_token_address, self.ERC20_NAME, self.ERC20_SYMB),
+            l1_account_fund, gas_limit=7200000, persist_nonce=False)
 
-        # construct the cross chain message and wait for it to be verified as finalised
-        xchain_msg = self.get_cross_chain_message(logs[1])
-        self.wait_for_message(l2_message_bus, xchain_msg)
+        _logs = l1_message_bus.contract.events.LogMessagePublished().processReceipt(_receipt, EventLogErrorFlags.Ignore)
+        _xchain_msg = self.get_cross_chain_message(_logs[1])
+        self.wait_for_message(l2_message_bus, _xchain_msg)
 
-        # relay the message to the L2 bridge
-        tx_receipt = l2.transact(self, web3_l2, l2_xchain_messenger.contract.functions.relayMessage(xchain_msg),
-                                 account_l2, l2_xchain_messenger.GAS_LIMIT, persist_nonce=False)
-        logs = l2_bridge.contract.events.CreatedWrappedToken().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
+        _receipt = l2.transact(self, l2_web3_fund, l2_xchain_messenger.contract.functions.relayMessage(_xchain_msg),
+                                 l2_account_fund, l2_xchain_messenger.GAS_LIMIT, persist_nonce=False)
 
+        _logs = l2_bridge.contract.events.CreatedWrappedToken().processReceipt(_receipt, EventLogErrorFlags.Ignore)
+        l2_token_address = _logs[1]['args']['localAddress']
+
+        # user requests their balance on the L1 and L2 tokens
+        with open(os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'erc20', 'erc20.json')) as f:
+            abi = json.load(f)
+            user_l1_token = l1_web3_user.eth.contract(address=l1_token_address, abi=abi)
+            balance = user_l1_token.functions.balanceOf(l1_account_user.address).call()
+            self.log.info('  Account1 ERC20 balance L1 = %d ' % balance)
+
+            user_l2_token = l2_web3_user.eth.contract(address=l2_token_address, abi=abi)
+            balance = user_l2_token.functions.balanceOf(l2_account_user.address).call()
+            self.log.info('  Account1 ERC20 balance L2 = %d ' % balance)
+
+        # user approves the L1 bridge contract to be able to allocate funds
+        #network.transact(self, web3_1, contract_1.functions.approve(account2.address, 1000), account1, erc20.GAS_LIMIT)
 
     def wait_for_message(self, l2_message_bus, xchain_msg):
         start = time.time()
@@ -52,7 +75,7 @@ class PySysTest(ObscuroNetworkTest):
             ret = l2_message_bus.contract.functions.verifyMessageFinalized(xchain_msg).call()
             self.log.info('Is message verified: %s' % ret)
             if ret: break
-            if time.time() - start > 10:
+            if time.time() - start > 30:
                 raise TimeoutError('Timed out waiting for message to be verified')
             time.sleep(1.0)
 
