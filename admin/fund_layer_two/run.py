@@ -5,7 +5,7 @@ from obscuro.test.networks.factory import NetworkFactory
 
 
 class PySysTest(ObscuroNetworkTest):
-    DIST_OBX = 5000
+    DIST_OBX = 500
     USER_OBX = 100
 
     USERS = [

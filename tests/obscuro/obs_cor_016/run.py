@@ -32,27 +32,29 @@ class PySysTest(ObscuroNetworkTest):
                     l1_account_fund, _token.GAS_LIMIT, persist_nonce=False)
 
         # create the contract instances
-        l1_bridge = ObscuroBridge(self, l1_web3_fund)
-        l1_message_bus = L1MessageBus(self, l1_web3_fund)
-        l2_message_bus = L2MessageBus(self, l2_web3_fund)
-        l2_bridge = EthereumBridge(self, l2_web3_fund)
-        l2_xchain_messenger = CrossChainMessenger(self, l2_web3_fund)
+        l1_bridge_fund = ObscuroBridge(self, l1_web3_fund)
+        l1_message_bus_fund = L1MessageBus(self, l1_web3_fund)
+        l2_message_bus_fund = L2MessageBus(self, l2_web3_fund)
+        l2_bridge_fund = EthereumBridge(self, l2_web3_fund)
+        l2_xchain_messenger_fund = CrossChainMessenger(self, l2_web3_fund)
+
+        l1_bridge_user = ObscuroBridge(self, l1_web3_user)
 
         # whitelist the token, construct the cross chain message and wait for it to be verified as finalised
         # and relay the message to create the wrapped token
         _receipt = l1.transact(
             self, l1_web3_fund,
-            l1_bridge.contract.functions.whitelistToken(l1_token_address, self.ERC20_NAME, self.ERC20_SYMB),
+            l1_bridge_fund.contract.functions.whitelistToken(l1_token_address, self.ERC20_NAME, self.ERC20_SYMB),
             l1_account_fund, gas_limit=7200000, persist_nonce=False)
 
-        _logs = l1_message_bus.contract.events.LogMessagePublished().processReceipt(_receipt, EventLogErrorFlags.Ignore)
+        _logs = l1_message_bus_fund.contract.events.LogMessagePublished().processReceipt(_receipt, EventLogErrorFlags.Ignore)
         _xchain_msg = self.get_cross_chain_message(_logs[1])
-        self.wait_for_message(l2_message_bus, _xchain_msg)
+        self.wait_for_message(l2_message_bus_fund, _xchain_msg)
 
-        _receipt = l2.transact(self, l2_web3_fund, l2_xchain_messenger.contract.functions.relayMessage(_xchain_msg),
-                                 l2_account_fund, l2_xchain_messenger.GAS_LIMIT, persist_nonce=False)
+        _receipt = l2.transact(self, l2_web3_fund, l2_xchain_messenger_fund.contract.functions.relayMessage(_xchain_msg),
+                                 l2_account_fund, l2_xchain_messenger_fund.GAS_LIMIT, persist_nonce=False)
 
-        _logs = l2_bridge.contract.events.CreatedWrappedToken().processReceipt(_receipt, EventLogErrorFlags.Ignore)
+        _logs = l2_bridge_fund.contract.events.CreatedWrappedToken().processReceipt(_receipt, EventLogErrorFlags.Ignore)
         l2_token_address = _logs[1]['args']['localAddress']
 
         # user requests their balance on the L1 and L2 tokens
@@ -67,8 +69,15 @@ class PySysTest(ObscuroNetworkTest):
             self.log.info('  Account1 ERC20 balance L2 = %d ' % balance)
 
         # user approves the L1 bridge contract to be able to allocate funds
-        l1.transact(self, l1_web3_user, user_l1_token.functions.approve(l1_bridge.contract_address, 1000),
+        l1.transact(self, l1_web3_user, user_l1_token.functions.approve(l1_bridge_fund.contract_address, 100),
                     l1_account_user, _token.GAS_LIMIT)
+        allowance = user_l1_token.functions.allowance(l1_account_user.address, l1_bridge_fund.contract_address).call()
+        self.log.info('Allowance is %s' % allowance)
+
+        # funded user sends some ERC20 tokens across the bridge
+        l1.transact(self, l1_web3_fund,
+                    l1_bridge_fund.contract.functions.sendERC20(l1_token_address, 10, l1_account_user.address),
+                    l1_account_fund, gas_limit=7200000, persist_nonce=False)
 
     def wait_for_message(self, l2_message_bus, xchain_msg):
         start = time.time()
