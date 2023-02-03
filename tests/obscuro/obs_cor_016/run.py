@@ -67,7 +67,8 @@ class PySysTest(ObscuroNetworkTest):
             self.log.info('  Account1 ERC20 balance L2 = %d ' % balance)
 
         # user approves the L1 bridge contract to be able to allocate funds
-        #network.transact(self, web3_1, contract_1.functions.approve(account2.address, 1000), account1, erc20.GAS_LIMIT)
+        l1.transact(self, l1_web3_user, user_l1_token.functions.approve(l1_bridge.contract_address, 1000),
+                    l1_account_user, _token.GAS_LIMIT)
 
     def wait_for_message(self, l2_message_bus, xchain_msg):
         start = time.time()
