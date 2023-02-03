@@ -29,7 +29,7 @@ class PySysTest(ObscuroNetworkTest):
         l1_token_address = _token.contract_address
         l1.transact(self, l1_web3_fund,
                     _token.contract.functions.transfer(l1_account_user.address, 200),
-                    l1_account_fund, _token.GAS_LIMIT, persist_nonce=False)
+                    l1_account_fund, gas_limit=7200000, persist_nonce=False)
 
         # create the contract instances
         l1_bridge_fund = ObscuroBridge(self, l1_web3_fund)
@@ -52,7 +52,7 @@ class PySysTest(ObscuroNetworkTest):
         self.wait_for_message(l2_message_bus_fund, _xchain_msg)
 
         _receipt = l2.transact(self, l2_web3_fund, l2_xchain_messenger_fund.contract.functions.relayMessage(_xchain_msg),
-                                 l2_account_fund, l2_xchain_messenger_fund.GAS_LIMIT, persist_nonce=False)
+                                 l2_account_fund, gas_limit=7200000, persist_nonce=False)
 
         _logs = l2_bridge_fund.contract.events.CreatedWrappedToken().processReceipt(_receipt, EventLogErrorFlags.Ignore)
         l2_token_address = _logs[1]['args']['localAddress']
@@ -70,14 +70,15 @@ class PySysTest(ObscuroNetworkTest):
 
         # user approves the L1 bridge contract to be able to allocate funds
         l1.transact(self, l1_web3_user, user_l1_token.functions.approve(l1_bridge_fund.contract_address, 100),
-                    l1_account_user, _token.GAS_LIMIT)
+                    l1_account_user, gas_limit=7200000)
         allowance = user_l1_token.functions.allowance(l1_account_user.address, l1_bridge_fund.contract_address).call()
         self.log.info('Allowance is %s' % allowance)
 
         # funded user sends some ERC20 tokens across the bridge
-        l1.transact(self, l1_web3_fund,
-                    l1_bridge_fund.contract.functions.sendERC20(l1_token_address, 10, l1_account_user.address),
-                    l1_account_fund, gas_limit=7200000, persist_nonce=False)
+        l1_bridge_user.contract.functions.sendERC20(l1_token_address, 10, l1_account_user.address).call()
+        # l1.transact(self, l1_web3_fund,
+        #             l1_bridge_fund.contract.functions.sendERC20(l1_token_address, 10, l1_account_user.address),
+        #             l1_account_fund, gas_limit=7200000, persist_nonce=False)
 
     def wait_for_message(self, l2_message_bus, xchain_msg):
         start = time.time()
