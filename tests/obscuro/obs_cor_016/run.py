@@ -1,103 +1,48 @@
-import time, os, json
-from pysys.constants import PROJECT
-from web3._utils.events import EventLogErrorFlags
 from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.contracts.erc20.minted_erc20 import MintedERC20Token
-from obscuro.test.contracts.bridge.bridge import ObscuroBridge, EthereumBridge
-from obscuro.test.contracts.bridge.messaging import L1MessageBus, L2MessageBus, CrossChainMessenger
-from obscuro.test.networks.factory import NetworkFactory
+from obscuro.test.utils.bridge import BridgeUser
 from obscuro.test.utils.properties import Properties
 
 
 class PySysTest(ObscuroNetworkTest):
-    ERC20_NAME = 'SmartyCoin'
-    ERC20_SYMB = 'SCN'
 
     def execute(self):
-        # connect pre-funded and user accounts to the L1 and L2
-        l1 = NetworkFactory.get_l1_network(self)
-        l2 = NetworkFactory.get_network(self)
-        l1_web3_fund, l1_account_fund = l1.connect(self, Properties().l1_funded_account_pk(self.env))
-        l2_web3_fund, l2_account_fund = l2.connect(self, Properties().l2_funded_account_pk(self.env))
-        l1_web3_user, l1_account_user = l1.connect(self, Properties().account1pk())
-        l2_web3_user, l2_account_user = l2.connect_account1(self)
+        props = Properties()
 
-        # deploy the ERC20 minted contract to the L1 and allocate some funds to the user account
-        # note that we don't use persisted nonces on the L1 when we transact
-        token = MintedERC20Token(self, l1_web3_fund, self.ERC20_NAME, self.ERC20_SYMB, 10000)
-        token.deploy(l1, l1_account_fund, persist_nonce=False)
-        l1_token_address = token.contract_address
-        l1.transact(self, l1_web3_fund,
-                    token.contract.functions.transfer(l1_account_user.address, 200),
-                    l1_account_fund, gas_limit=7200000, persist_nonce=False)
+        # create the L1 and L2 connections, and users for the test
+        funded = BridgeUser(self, props.l1_funded_account_pk(self.env), props.l2_funded_account_pk(self.env))
+        account1 = BridgeUser(self, props.account1pk(), props.account1pk())
 
-        # create the contract instances
-        l1_bridge_fund = ObscuroBridge(self, l1_web3_fund)
-        l1_message_bus_fund = L1MessageBus(self, l1_web3_fund)
-        l2_message_bus_fund = L2MessageBus(self, l2_web3_fund)
-        l2_bridge_fund = EthereumBridge(self, l2_web3_fund)
-        l2_xchain_messenger_fund = CrossChainMessenger(self, l2_web3_fund)
+        # deploy the ERC20 token and set the L1 contract instance
+        token = MintedERC20Token(self, funded.l1.web3, 'SmartyCoin', 'SCN', 10000)
+        token.deploy(funded.l1.network, funded.l1.account, persist_nonce=False)
 
-        l1_bridge_user = ObscuroBridge(self, l1_web3_user)
+        funded.l1.set_token_from_address(token.contract_address)
+        account1.l1.set_token_from_address(token.contract_address)
 
-        # whitelist the token, construct the cross chain message and wait for it to be verified as finalised
-        # and relay the message to create the wrapped token
-        tx_receipt = l1.transact(
-            self, l1_web3_fund,
-            l1_bridge_fund.contract.functions.whitelistToken(l1_token_address, self.ERC20_NAME, self.ERC20_SYMB),
-            l1_account_fund, gas_limit=7200000, persist_nonce=False)
+        # transfer tokens from the funded account to account1, and account1 approves the bridge to transfer
+        funded.l1.transfer_token(account1.l1.account.address, 200)
+        account1.l1.approve_token(account1.l1.bridge.contract_address, 100)
 
-        logs = l1_message_bus_fund.contract.events.LogMessagePublished().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
-        xchain_msg = self.get_cross_chain_message(logs[1])
-        self.wait_for_message(l2_message_bus_fund, xchain_msg)
+        # whitelist the token, wait for it to be verified as finalised on L2
+        _, xchain_msg = funded.l1.white_list_token()
+        funded.l2.wait_for_message(xchain_msg)
 
-        tx_receipt = l2.transact(self, l2_web3_fund, l2_xchain_messenger_fund.contract.functions.relayMessage(xchain_msg),
-                                 l2_account_fund, gas_limit=7200000, persist_nonce=False)
+        # relay the whitelisting message and set the L2 contract instance
+        _, l2_token_address = funded.l2.relay_whitelist_message(xchain_msg)
+        
+        funded.l2.set_token_from_address(l2_token_address)
+        account1.l2.set_token_from_address(l2_token_address)
 
-        logs = l2_bridge_fund.contract.events.CreatedWrappedToken().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
-        l2_token_address = logs[1]['args']['localAddress']
+        # send tokens across the bridge, and wait for it to be verified as finalised on L2
+        _, xchain_msg = account1.l1.token_send_erc20(account1.l2.account.address, 10)
+        funded.l2.wait_for_message(xchain_msg)
 
-        # user requests their balance on the L1 and L2 tokens
-        with open(os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'erc20', 'erc20.json')) as f:
-            abi = json.load(f)
-            user_l1_token = l1_web3_user.eth.contract(address=l1_token_address, abi=abi)
-            balance = user_l1_token.functions.balanceOf(l1_account_user.address).call()
-            self.log.info('  Account1 ERC20 balance L1 = %d ' % balance)
-
-            user_l2_token = l2_web3_user.eth.contract(address=l2_token_address, abi=abi)
-            balance = user_l2_token.functions.balanceOf(l2_account_user.address).call({"from":l2_account_user.address})
-            self.log.info('  Account1 ERC20 balance L2 = %d ' % balance)
-
-        # user approves on the L1 token the bridge to be able to transfer funds on their behalf
-        l1.transact(self, l1_web3_user, user_l1_token.functions.approve(l1_bridge_fund.contract_address, 100),
-                    l1_account_user, gas_limit=7200000, persist_nonce=False)
-        allowance = user_l1_token.functions.allowance(l1_account_user.address, l1_bridge_fund.contract_address).call()
-        self.log.info('Allowance is %s' % allowance)
-
-        # user sends some ERC20 tokens on the L1 bridge across (balance should be seen to drop)
-        l1.transact(self, l1_web3_user,
-                    l1_bridge_user.contract.functions.sendERC20(l1_token_address, 10, l1_account_user.address),
-                    l1_account_user, gas_limit=7200000, persist_nonce=False)
-        balance = user_l1_token.functions.balanceOf(l1_account_user.address).call()
+        # print out the balances
+        balance = account1.l1.token.functions.balanceOf(account1.l1.acount.address).call()
         self.log.info('  Account1 ERC20 balance L1 = %d ' % balance)
+        balance = account1.l2.token.functions.balanceOf(account1.l2.account.address).call({"from":account1.l2.account.address})
+        self.log.info('  Account1 ERC20 balance L2 = %d ' % balance)
 
-    def wait_for_message(self, l2_message_bus, xchain_msg):
-        start = time.time()
-        while True:
-            ret = l2_message_bus.contract.functions.verifyMessageFinalized(xchain_msg).call()
-            self.log.info('Is message verified: %s' % ret)
-            if ret: break
-            if time.time() - start > 30:
-                raise TimeoutError('Timed out waiting for message to be verified')
-            time.sleep(1.0)
 
-    def get_cross_chain_message(self, log):
-        message = {
-            'sender': log['args']['sender'],
-            'sequence': log['args']['sequence'],
-            'nonce': log['args']['nonce'],
-            'topic': log['args']['topic'],
-            'payload': log['args']['payload'],
-            'consistencyLevel': log['args']['consistencyLevel']
-        }
-        return message
+
