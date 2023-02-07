@@ -18,7 +18,7 @@ class GuesserToken(Guesser):
         self.abi = None
         self.abi_path = None
         self.contract = None
-        self.contract_address = None
+        self.address = None
         self.account = None
         self.construct()
 
@@ -41,6 +41,6 @@ class GuesserToken(Guesser):
         """Deploy the contract using a given account."""
         self.account = account
         tx_receipt = network.transact(self.test, self.web3, self.contract, account, self.GAS_LIMIT)
-        self.contract_address = tx_receipt.contractAddress
-        self.contract = self.web3.eth.contract(address=self.contract_address, abi=self.abi)
+        self.address = tx_receipt.contractAddress
+        self.contract = self.web3.eth.contract(address=self.address, abi=self.abi)
         return tx_receipt

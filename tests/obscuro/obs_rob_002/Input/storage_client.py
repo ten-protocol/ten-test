@@ -42,7 +42,7 @@ def store_value(value, web3, account, contract):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='event_listener')
     parser.add_argument('-u', '--network_http', help='Connection URL')
-    parser.add_argument('-a', '--contract_address', help='Address of the contract')
+    parser.add_argument('-a', '--address', help='Address of the contract')
     parser.add_argument('-b', '--contract_abi', help='Abi of the contract')
     parser.add_argument('-p', '--pk_to_register', help='Private key of account to poll')
     args = parser.parse_args()
@@ -50,7 +50,7 @@ if __name__ == "__main__":
     web3 = Web3(Web3.HTTPProvider(args.network_http))
     generate_viewing_key(web3, args.network_http, args.pk_to_register)
     with open(args.contract_abi) as f:
-        contract = web3.eth.contract(address=args.contract_address, abi=json.load(f))
+        contract = web3.eth.contract(address=args.address, abi=json.load(f))
 
     logging.info('Client running')
     account = web3.eth.account.privateKeyToAccount(args.pk_to_register)

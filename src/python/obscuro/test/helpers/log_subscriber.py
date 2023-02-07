@@ -19,7 +19,7 @@ class AllEventsLogSubscriber:
         args = []
         args.extend(['--network_http', network_http])
         args.extend(['--network_ws', network_ws])
-        args.extend(['--contract_address', self.contract.contract_address])
+        args.extend(['--address', self.contract.address])
         args.extend(['--contract_abi', self.contract.abi_path])
         args.extend(['--pk_to_register', pk_to_register])
         self.test.run_javascript(self.script, self.stdout, self.stderr, args)

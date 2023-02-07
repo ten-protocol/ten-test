@@ -86,7 +86,6 @@ jobs:
           /usr/local/bin/pysys.py run -m obscuro.local persistence_reset
           /usr/local/bin/pysys.py run -m obscuro.local fund_layer_one
           /usr/local/bin/pysys.py run -m obscuro.local fund_layer_two
-          /usr/local/bin/pysys.py run -m obscuro.local fund_test_users
 
       - name: Run tests
         run: |

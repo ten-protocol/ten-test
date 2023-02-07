@@ -150,16 +150,16 @@ you must first change directory into the `obscuro-test\admin` directory and run 
 
 ```bash
 # to allocate on Obscuro testnet
-pysys.py run persistence_reset fund_layer_* fund_test_users
+pysys.py run persistence_reset fund_layer_* 
 
 # to allocate on Obscuro dev-testnet
-pysys.py run -m obscuro.dev persistence_reset fund_layer_* fund_test_users
+pysys.py run -m obscuro.dev persistence_reset fund_layer_* 
 
 # to allocate on Obscuro local testnet
-pysys.py run -m obscuro.local persistence_reset fund_layer_* fund_test_users
+pysys.py run -m obscuro.local persistence_reset fund_layer_* 
 
 # to allocate on Obscuro simulation
-pysys.py run -m obscuro.sim persistence_reset fund_layer_* fund_test_users
+pysys.py run -m obscuro.sim persistence_reset fund_layer_* 
 ```
 
 See the [admin README.md](admin/README.md) for more details. Note that this only needs to be performed once on startup 

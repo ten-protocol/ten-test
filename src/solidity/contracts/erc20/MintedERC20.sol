@@ -3,9 +3,9 @@ pragma solidity ^0.8.0;
 
 import "./ERC20.sol";
 
-contract OBXCoin is ERC20 {
-    constructor() ERC20("OBXToken", "OBX") {
-        _mint(msg.sender, 1000000);
+contract MintedERC20 is ERC20 {
+    constructor(string memory name, string memory symbol, uint256 supply) ERC20(name, symbol) {
+        _mint(msg.sender, supply);
     }
 
     function balanceOf(address account) public view virtual override returns (uint256) {

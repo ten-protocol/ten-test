@@ -100,8 +100,8 @@ class ObscuroNetworkTest(GenericNetworkTest):
         """
         from_eth = web3_from.eth.get_balance(account_from.address)
         to_eth = web3_to.eth.get_balance(account_to.address)
-        self.log.info('From balance = %f ' % web3_from.fromWei(from_eth, 'ether'))
-        self.log.info('To balance = %f ' % web3_to.fromWei(to_eth, 'ether'))
+        self.log.info('From balance = %f ETH' % web3_from.fromWei(from_eth, 'ether'))
+        self.log.info('To balance = %f ETH' % web3_to.fromWei(to_eth, 'ether'))
 
         nonce = network.get_next_nonce(self, web3_from, account_from, False)
         tx = {
@@ -118,8 +118,8 @@ class ObscuroNetworkTest(GenericNetworkTest):
 
         from_eth = web3_from.eth.get_balance(account_from.address)
         to_eth = web3_to.eth.get_balance(account_to.address)
-        self.log.info('From balance = %f ' % web3_from.fromWei(from_eth, 'ether'))
-        self.log.info('To balance = %f ' % web3_to.fromWei(to_eth, 'ether'))
+        self.log.info('From balance = %f ETH' % web3_from.fromWei(from_eth, 'ether'))
+        self.log.info('To balance = %f ETH' % web3_to.fromWei(to_eth, 'ether'))
 
     def fund_obx(self, network, account, amount, web3=None):
         """Fund OBX in the L2 to a users account, either through the faucet server or direct from the account."""
@@ -132,7 +132,7 @@ class ObscuroNetworkTest(GenericNetworkTest):
         """Allocates native OBX to a users account from the faucet server."""
         if web3 is not None:
             user_obx = web3.eth.get_balance(account.address)
-            self.log.info('OBX User balance before = %d ' % user_obx)
+            self.log.info('User balance before = %d OBX' % web3.fromWei(user_obx, 'ether'))
 
         self.log.info('Running request on %s' % Properties().faucet_url(self.env))
         self.log.info('Running for user address %s' % account.address)
@@ -142,7 +142,7 @@ class ObscuroNetworkTest(GenericNetworkTest):
 
         if web3 is not None:
             user_obx = web3.eth.get_balance(account.address)
-            self.log.info('OBX User balance after = %d ' % user_obx)
+            self.log.info('User balance after = %d OBX' % web3.fromWei(user_obx, 'ether'))
 
     def fund_obx_from_funded_pk(self, network, account, amount, web3=None):
         """Allocates native OBX to a users account from the pre-funded account.
@@ -152,7 +152,7 @@ class ObscuroNetworkTest(GenericNetworkTest):
         """
         if web3 is not None:
             user_obx = web3.eth.get_balance(account.address)
-            self.log.info('OBX User balance   = %d ' % user_obx)
+            self.log.info('User balance   = %d OBX' % web3.fromWei(user_obx, 'ether'))
             if user_obx < amount: amount = amount - user_obx
 
         web3_funded, account_funded = network.connect(self, Properties().l2_funded_account_pk(self.env))
@@ -160,7 +160,7 @@ class ObscuroNetworkTest(GenericNetworkTest):
         tx = {
             'nonce': nonce,
             'to': account.address,
-            'value': amount,
+            'value': web3_funded.toWei(amount, 'ether'),
             'gas': 4 * 720000,
             'gasPrice': 21000
         }
@@ -170,7 +170,7 @@ class ObscuroNetworkTest(GenericNetworkTest):
 
         if web3 is not None:
             user_obx = web3.eth.get_balance(account.address)
-            self.log.info('OBX User balance   = %d ' % user_obx)
+            self.log.info('User balance   = %d OBX' % web3.fromWei(user_obx, 'ether'))
 
     def transfer_token(self, network, token_name, token_address, web3_from, account_from, address,
                        amount, persist_nonce=True):

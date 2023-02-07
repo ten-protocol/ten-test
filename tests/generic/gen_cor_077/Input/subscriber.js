@@ -24,7 +24,7 @@ commander
   .usage('[OPTIONS]...')
   .option('--network_http <value>', 'Http connection URL to the network')
   .option('--network_ws <value>', 'Web socket connection URL to the network')
-  .option('--contract_address <value>', 'Web socket connection URL to the network')
+  .option('--address <value>', 'Web socket connection URL to the network')
   .option('--contract_abi <value>', 'Web socket connection URL to the network')
   .option('--pk_to_register <value>', 'Private key used to register for a viewing key (obscuro only)')
   .parse(process.argv)
@@ -34,7 +34,7 @@ const web3 = new Web3(`${options.network_ws}`)
 
 var json = fs.readFileSync(`${options.contract_abi}`)
 var abi = JSON.parse(json)
-const contract = new web3.eth.Contract(abi, `${options.contract_address}`)
+const contract = new web3.eth.Contract(abi, `${options.address}`)
 
 if (options.pk_to_register) {
   let sign = (message) => { return web3.eth.accounts.sign(message, '0x' + options.pk_to_register) }

@@ -11,11 +11,11 @@ class ObscuroBridge:
         """Construct an instance of the web3 contract class for the L1 bridge contract. """
         self.test = test
         self.web3 = web3
-        self.contract_address = Properties().l1_bridge_address(test.env)
+        self.address = Properties().l1_bridge_address(test.env)
         with open(os.path.join(PROJECT.root, 'artifacts', 'contracts', 'bridge', 'L1', 'ObscuroBridge.sol',
                                'ObscuroBridge.json'), 'r') as fp:
             self.abi = json.load(fp)
-        self.contract = self.web3.eth.contract(address=self.contract_address, abi=self.abi)
+        self.contract = self.web3.eth.contract(address=self.address, abi=self.abi)
 
 
 class EthereumBridge:
@@ -26,8 +26,8 @@ class EthereumBridge:
         """Construct an instance of the web3 contract class for the L2 bridge contract. """
         self.test = test
         self.web3 = web3
-        self.contract_address = Properties().l2_bridge_address(test.env)
+        self.address = Properties().l2_bridge_address(test.env)
         with open(os.path.join(PROJECT.root, 'artifacts', 'contracts', 'bridge', 'L2', 'EthereumBridge.sol',
                                   'EthereumBridge.json'), 'r') as fp:
             self.abi = json.load(fp)
-        self.contract = self.web3.eth.contract(address=self.contract_address, abi=self.abi)
+        self.contract = self.web3.eth.contract(address=self.address, abi=self.abi)

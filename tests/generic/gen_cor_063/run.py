@@ -1,7 +1,7 @@
 import os
 from web3 import Web3
 from obscuro.test.basetest import GenericNetworkTest
-from obscuro.test.contracts.erc20.obx import OBXCoin
+from obscuro.test.contracts.erc20.minted_erc20 import MintedERC20Token
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.utils.properties import Properties
 
@@ -14,7 +14,7 @@ class PySysTest(GenericNetworkTest):
         web3, account1 = network.connect_account1(self)
         account2 = Web3().eth.account.privateKeyToAccount(Properties().account2pk())
 
-        erc20 = OBXCoin(self, web3)
+        erc20 = MintedERC20Token(self, web3, 'OBXCoin', 'OBX', 1000000)
         erc20.deploy(network, account1)
 
         # run a background script to poll for balance
@@ -23,7 +23,7 @@ class PySysTest(GenericNetworkTest):
         script = os.path.join(self.input, 'balance_poller.js')
         args = []
         args.extend(['--network_http', '%s' % network.connection_url(web_socket=False)])
-        args.extend(['--contract_address', '%s' % erc20.contract_address])
+        args.extend(['--address', '%s' % erc20.address])
         args.extend(['--contract_abi', '%s' % erc20.abi_path])
         args.extend(['--private_key', '%s' % Properties().account2pk()])
         if self.is_obscuro(): args.append('--is_obscuro')

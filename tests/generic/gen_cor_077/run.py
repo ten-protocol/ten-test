@@ -28,7 +28,7 @@ class PySysTest(GenericNetworkTest):
         args = []
         args.extend(['--network_http', '%s' % network.connection_url(web_socket=False)])
         args.extend(['--network_ws', ws_url])
-        args.extend(['--contract_address', '%s' % storage.contract_address])
+        args.extend(['--address', '%s' % storage.address])
         args.extend(['--contract_abi', '%s' % storage.abi_path])
         if self.is_obscuro(): args.extend(['--pk_to_register', '%s' % Properties().account3pk()])
         self.run_javascript(script, stdout, stderr, args)

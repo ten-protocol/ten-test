@@ -11,11 +11,11 @@ class L1MessageBus:
         """Contract an instance of the web3 contract class for the L2 bridge contract. """
         self.test = test
         self.web3 = web3
-        self.contract_address = Properties().l1_message_bus_address(test.env)
+        self.address = Properties().l1_message_bus_address(test.env)
         with open(os.path.join(PROJECT.root, 'artifacts', 'contracts', 'messaging', 'MessageBus.sol',
                                   'MessageBus.json'), 'r') as fp:
             self.abi = json.load(fp)
-        self.contract = self.web3.eth.contract(address=self.contract_address, abi=self.abi)
+        self.contract = self.web3.eth.contract(address=self.address, abi=self.abi)
 
 
 class L2MessageBus:
@@ -26,11 +26,11 @@ class L2MessageBus:
         """Contract an instance of the web3 contract class for the L2 bridge contract. """
         self.test = test
         self.web3 = web3
-        self.contract_address = Properties().l2_message_bus_address(test.env)
+        self.address = Properties().l2_message_bus_address(test.env)
         with open(os.path.join(PROJECT.root, 'artifacts', 'contracts', 'messaging', 'MessageBus.sol',
                                'MessageBus.json'), 'r') as fp:
             self.abi = json.load(fp)
-        self.contract = self.web3.eth.contract(address=self.contract_address, abi=self.abi)
+        self.contract = self.web3.eth.contract(address=self.address, abi=self.abi)
 
 
 class CrossChainMessenger:
@@ -41,9 +41,9 @@ class CrossChainMessenger:
         """Contract an instance of the web3 contract class for the L2 cross chain messenger."""
         self.test = test
         self.web3 = web3
-        self.contract_address = Properties().l2_cross_chain_messenger_address(test.env)
+        self.address = Properties().l2_cross_chain_messenger_address(test.env)
         with open(os.path.join(PROJECT.root, 'artifacts', 'contracts', 'messaging', 'messenger',
                                'CrossChainMessenger.sol', 'CrossChainMessenger.json'), 'r') as fp:
             self.abi = json.load(fp)
-        self.contract = self.web3.eth.contract(address=self.contract_address, abi=self.abi)
+        self.contract = self.web3.eth.contract(address=self.address, abi=self.abi)
 
