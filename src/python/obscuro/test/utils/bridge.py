@@ -100,14 +100,13 @@ class L2BridgeDetails:
         tx_receipt = self.network.transact(self.test, self.web3,
                                            self.xchain.contract.functions.relayMessage(xchain_msg),
                                            self.account, gas_limit=7200000)
-        logs = self.bridge.contract.events.CreatedWrappedToken().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
-        return tx_receipt, logs
+        return tx_receipt
 
     def relay_whitelist_message(self, xchain_msg):
         """Relay a cross chain message specific to a whitelisting. """
-        tx_receipt, logs = self.relay_message(xchain_msg)
-        l2_token_address = logs[1]['args']['localAddress']
-        return tx_receipt, l2_token_address
+        tx_receipt = self.relay_message(xchain_msg)
+        logs = self.bridge.contract.events.CreatedWrappedToken().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
+        return tx_receipt, logs[1]['args']['localAddress']
 
 
 class BridgeUser:

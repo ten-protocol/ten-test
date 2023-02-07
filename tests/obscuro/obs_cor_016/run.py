@@ -21,7 +21,7 @@ class PySysTest(ObscuroNetworkTest):
         funded.l1.set_token_contract(token.address, token.name, token.symbol)
         accnt1.l1.set_token_contract(token.address, token.name, token.symbol)
 
-        # transfer tokens from the funded account to account1, and account1 approves the bridge to transfer
+        # transfer tokens from the funded account to account1, account1 approves the bridge to transfer
         self.log.info('-- Transfer and approve tokens')
         funded.l1.transfer_token(accnt1.l1.account.address, 200)
         accnt1.l1.approve_token(accnt1.l1.bridge.address, 100)
@@ -29,26 +29,32 @@ class PySysTest(ObscuroNetworkTest):
         # whitelist the token, wait for it to be verified as finalised on L2
         self.log.info('-- Whitelist the token')
         _, xchain_msg = funded.l1.white_list_token()
-        funded.l2.wait_for_message(xchain_msg)
+        accnt1.l2.wait_for_message(xchain_msg)
 
         # relay the whitelisting message and set the L2 contract instance
         self.log.info('-- Relay the token on L2')
-        _, l2_token_address = funded.l2.relay_whitelist_message(xchain_msg)
-        
+        _, l2_token_address = accnt1.l2.relay_whitelist_message(xchain_msg)
+
         funded.l2.set_token_contract(l2_token_address, token.name, token.symbol)
         accnt1.l2.set_token_contract(l2_token_address, token.name, token.symbol)
 
-        # send tokens across the bridge, and wait for it to be verified as finalised on L2
+        # send tokens across the bridge, and wait for it to be verified as finalised on L2, and then relay
         self.log.info('-- Send tokens on the L1 to cross the bridge')
         _, xchain_msg = accnt1.l1.send_erc20(accnt1.l2.account.address, 10)
-        funded.l2.wait_for_message(xchain_msg)
+        accnt1.l2.wait_for_message(xchain_msg)
 
-        # print out the balances
+        self.log.info('-- Relay the send tokens request')
+        _ = accnt1.l2.relay_message(xchain_msg)
+
+        # print out the balances and perform test validation
         self.log.info('-- Print out token balances')
-        balance = accnt1.l1.token.contract.functions.balanceOf(accnt1.l1.account.address).call()
-        self.log.info('    Account1 ERC20 balance L1 = %d ' % balance)
-        balance = accnt1.l2.token.contract.functions.balanceOf(accnt1.l2.account.address).call({"from":accnt1.l2.account.address})
-        self.log.info('    Account1 ERC20 balance L2 = %d ' % balance)
+        balance_l1 = accnt1.l1.token.contract.functions.balanceOf(accnt1.l1.account.address).call()
+        self.log.info('    Account1 ERC20 balance L1 = %d ' % balance_l1)
+        balance_l2 = accnt1.l2.token.contract.functions.balanceOf(accnt1.l2.account.address).call({"from":accnt1.l2.account.address})
+        self.log.info('    Account1 ERC20 balance L2 = %d ' % balance_l2)
+
+        self.assertTrue(balance_l1 == 190)
+        self.assertTrue(balance_l2 == 10)
 
 
 
