@@ -8,7 +8,7 @@ require('console-stamp')(console, 'HH:MM:ss')
 function task() {
   console.log('Starting task ...')
   filter = {
-    address: options.contract_address,
+    address: options.address,
     topics: [
       ethers.utils.id('ItemSet3(string,uint256)'),
       ethers.utils.id(options.filter_key)
@@ -25,7 +25,7 @@ commander
   .usage('[OPTIONS]...')
   .option('--network_http <value>', 'Http connection URL to the network')
   .option('--network_ws <value>', 'Web socket connection URL to the network')
-  .option('--contract_address <value>', 'Web socket connection URL to the network')
+  .option('--address <value>', 'Web socket connection URL to the network')
   .option('--contract_abi <value>', 'Web socket connection URL to the network')
   .option('--filter_key <value>', 'Key to filter ony')
   .option('--pk_to_register <value>', 'Private key used to register for a viewing key (obscuro only)')
@@ -37,7 +37,7 @@ const provider = new ethers.providers.WebSocketProvider(options.network_ws)
 
 var json = fs.readFileSync(options.contract_abi)
 var abi = JSON.parse(json)
-const contract = new ethers.Contract(options.contract_address, abi, provider)
+const contract = new ethers.Contract(options.address, abi, provider)
 const interface = new ethers.utils.Interface(abi)
 
 if (options.pk_to_register) {

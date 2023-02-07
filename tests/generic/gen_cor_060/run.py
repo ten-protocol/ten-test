@@ -16,8 +16,8 @@ class PySysTest(GenericNetworkTest):
         erc20.deploy(network, account1)
 
         contract_1 = erc20.contract
-        contract_2 = web3_2.eth.contract(address=erc20.contract_address, abi=erc20.abi)
-        contract_3 = web3_3.eth.contract(address=erc20.contract_address, abi=erc20.abi)
+        contract_2 = web3_2.eth.contract(address=erc20.address, abi=erc20.abi)
+        contract_3 = web3_3.eth.contract(address=erc20.address, abi=erc20.abi)
 
         # check initial allocations
         self.log.info('Balances at initial allocation')

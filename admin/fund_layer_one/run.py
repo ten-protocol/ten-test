@@ -5,8 +5,8 @@ from obscuro.test.networks.factory import NetworkFactory
 
 
 class PySysTest(ObscuroNetworkTest):
-    DIST_AMOUNT = 50
-    USER_AMOUNT = 1
+    DIST_ETH = 50
+    USER_ETH = 1
 
     USERS = [
         Properties().account1_1pk(), Properties().account2_1pk(), Properties().account3_1pk(), Properties().account4_1pk(),
@@ -23,10 +23,10 @@ class PySysTest(ObscuroNetworkTest):
         # fund eth to the distro account
         self.log.info('')
         self.log.info('Funding native ETH to the distro account')
-        self.fund_eth(network, web3_funded_l1, account_funded_l1, web3_distro_l1, account_distro_l1, self.DIST_AMOUNT)
+        self.fund_eth(network, web3_funded_l1, account_funded_l1, web3_distro_l1, account_distro_l1, self.DIST_ETH)
 
         for user in self.USERS:
             web3_user, account_user = network.connect(self, user)
             self.log.info('')
             self.log.info('Funding native ETH to the users account %s' % account_user.address)
-            self.fund_eth(network, web3_distro_l1, account_distro_l1, web3_user, account_user, self.USER_AMOUNT)
+            self.fund_eth(network, web3_distro_l1, account_distro_l1, web3_user, account_user, self.USER_ETH)

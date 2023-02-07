@@ -31,7 +31,7 @@ commander
   .usage('[OPTIONS]...')
   .option('--network_http <value>', 'Http connection URL to the network')
   .option('--network_ws <value>', 'Web socket connection URL to the network')
-  .option('--contract_address <value>', 'Web socket connection URL to the network')
+  .option('--address <value>', 'Web socket connection URL to the network')
   .option('--contract_abi <value>', 'Web socket connection URL to the network')
   .option('--pk_to_register <value>', 'Private key used to register for a viewing key (obscuro only)')
   .parse(process.argv)
@@ -41,7 +41,7 @@ const provider = new ethers.providers.WebSocketProvider(options.network_ws)
 
 var json = fs.readFileSync(options.contract_abi)
 var abi = JSON.parse(json)
-const contract = new ethers.Contract(options.contract_address, abi, provider)
+const contract = new ethers.Contract(options.address, abi, provider)
 const interface = new ethers.utils.Interface(abi)
 
 if (options.pk_to_register) {

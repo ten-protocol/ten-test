@@ -23,7 +23,7 @@ class PySysTest(GenericNetworkTest):
         script = os.path.join(self.input, 'balance_poller.js')
         args = []
         args.extend(['--network_http', '%s' % network.connection_url(web_socket=False)])
-        args.extend(['--contract_address', '%s' % erc20.contract_address])
+        args.extend(['--address', '%s' % erc20.address])
         args.extend(['--contract_abi', '%s' % erc20.abi_path])
         args.extend(['--private_key', '%s' % Properties().account2pk()])
         if self.is_obscuro(): args.append('--is_obscuro')

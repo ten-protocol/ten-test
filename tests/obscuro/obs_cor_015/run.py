@@ -32,7 +32,7 @@ class PySysTest(ObscuroNetworkTest):
         # whitelist the token and extract the log message that is published by the message bus
         tx_receipt = l1.transact(
             self, web3_l1,
-            l1_bridge.contract.functions.whitelistToken(token.contract_address, self.ERC20_NAME, self.ERC20_SYMB),
+            l1_bridge.contract.functions.whitelistToken(token.address, self.ERC20_NAME, self.ERC20_SYMB),
             account_l1, gas_limit=7200000, persist_nonce=False)
         logs = l1_message_bus.contract.events.LogMessagePublished().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
 
@@ -52,7 +52,7 @@ class PySysTest(ObscuroNetworkTest):
         self.log.info('Name = %s' % log['args']['name'])
         self.log.info('Symbol = %s' % log['args']['symbol'])
 
-        self.assertTrue(log['args']['remoteAddress'] == token.contract_address)
+        self.assertTrue(log['args']['remoteAddress'] == token.address)
         self.assertTrue(log['args']['name'] == self.ERC20_NAME)
         self.assertTrue(log['args']['symbol'] == self.ERC20_SYMB)
 

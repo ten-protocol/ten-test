@@ -19,17 +19,17 @@ class PySysTest(GenericNetworkTest):
         erc20.deploy(network, deploy_account)
         network.transact(self, web3_deploy, erc20.contract.functions.transfer(account2.address, 200), deploy_account, erc20.GAS_LIMIT)
 
-        guesser = GuesserToken(self, web3_deploy, 5, erc20.contract_address)
+        guesser = GuesserToken(self, web3_deploy, 5, erc20.address)
         guesser.deploy(network, deploy_account)
 
         # the user starts making guesses
         web3, account = network.connect_account2(self)
-        token = web3.eth.contract(address=erc20.contract_address, abi=erc20.abi)
-        game = web3.eth.contract(address=guesser.contract_address, abi=guesser.abi)
+        token = web3.eth.contract(address=erc20.address, abi=erc20.abi)
+        game = web3.eth.contract(address=guesser.address, abi=guesser.abi)
 
         for i in range(0,6):
             self.log.info('Guessing number as %d' % i)
-            network.transact(self, web3, token.functions.approve(guesser.contract_address, 1), account, guesser.GAS_LIMIT)
+            network.transact(self, web3, token.functions.approve(guesser.address, 1), account, guesser.GAS_LIMIT)
             network.transact(self, web3, game.functions.attempt(i), account, guesser.GAS_LIMIT)
 
             self.log.info('Checking balances ...')

@@ -38,7 +38,7 @@ commander
   .version('1.0.0', '-v, --version')
   .usage('[OPTIONS]...')
   .option('--network_http <value>', 'Http connection URL to the network')
-  .option('--contract_address <value>', 'Web socket connection URL to the network')
+  .option('--address <value>', 'Web socket connection URL to the network')
   .option('--contract_abi <value>', 'Web socket connection URL to the network')
   .option('--private_key <value>', 'Private key for the account')
   .option('--is_obscuro', 'True if running against obscuro', false)
@@ -49,7 +49,7 @@ const web3 = new Web3(`${options.network_http}`)
 
 var json = fs.readFileSync(`${options.contract_abi}`)
 var abi = JSON.parse(json)
-const contract = new web3.eth.Contract(abi, `${options.contract_address}`)
+const contract = new web3.eth.Contract(abi, `${options.address}`)
 const address = web3.eth.accounts.privateKeyToAccount(options.private_key).address
 
 if (options.is_obscuro == true) {

@@ -21,7 +21,7 @@ def generate_viewing_key(web3, url, address, private_key):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='balance_poller')
     parser.add_argument('-u', '--network_http', help='Connection URL')
-    parser.add_argument('-a', '--contract_address', help='Address of the contract')
+    parser.add_argument('-a', '--address', help='Address of the contract')
     parser.add_argument('-b', '--contract_abi', help='Abi of the contract')
     parser.add_argument('-p', '--private_key', help='Private key of account to poll')
     parser.add_argument("--is_obscuro", action='store_true', help='True if running against obscuro')
@@ -31,7 +31,7 @@ if __name__ == "__main__":
     account = web3.eth.account.privateKeyToAccount(args.private_key)
     if args.is_obscuro: generate_viewing_key(web3, args.network_http, account.address, args.private_key)
     with open(args.contract_abi) as f:
-        contract = web3.eth.contract(address=args.contract_address, abi=json.load(f))
+        contract = web3.eth.contract(address=args.address, abi=json.load(f))
 
     logging.info('Account balance is %d' % web3.eth.get_balance(account.address))
     logging.info('Starting to run the polling loop')

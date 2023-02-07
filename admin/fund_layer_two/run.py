@@ -1,11 +1,10 @@
-from web3 import Web3
 from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.utils.properties import Properties
 from obscuro.test.networks.factory import NetworkFactory
 
 
 class PySysTest(ObscuroNetworkTest):
-    DIST_OBX = 500
+    DIST_OBX = 10000
     USER_OBX = 100
 
     USERS = [
