@@ -1,4 +1,5 @@
 name: Run local tests
+run-name: Run local tests (${{ github.event.inputs.arguments }})
 on:
   schedule:
     - cron: '10 2 * * *'
