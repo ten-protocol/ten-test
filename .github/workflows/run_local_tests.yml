@@ -11,7 +11,7 @@ on:
       arguments:
         description: 'Arguments to the pysys run'
         required: true
-        default: '-e skip -e robustness -e bridge'
+        default: '-e skip -e robustness'
 
 jobs:
   Run-Local-Tests:
