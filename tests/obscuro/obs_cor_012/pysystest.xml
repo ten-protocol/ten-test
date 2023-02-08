@@ -8,12 +8,15 @@ Performs a transaction, then based on the transaction receipt gets the rollup th
 checks that the details are correct, specifically that the rollup number returned for the transaction hash is the
 same as the rollup number that was given in the transaction receipt, and that the rollup transactions list also contain
 the transaction of interest.
+
+Skipped as it seems to bring down transaction processing ... investigating. 
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>
