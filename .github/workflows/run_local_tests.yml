@@ -8,6 +8,10 @@ on:
         description: 'Branch of go-obscuro to run against'
         required: true
         default: 'main'
+      arguments:
+        description: 'Arguments to the pysys run'
+        required: true
+        default: '-e skip -e robustness'
 
 jobs:
   Run-Local-Tests:
@@ -81,7 +85,7 @@ jobs:
       - name: Run tests
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -m obscuro.local -e skip -e robustness
+          /usr/local/bin/pysys.py run -m obscuro.local ${{ github.event.inputs.arguments }}
 
       - name: Upload testcase output
         uses: actions/upload-artifact@v3
