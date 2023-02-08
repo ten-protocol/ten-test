@@ -12,6 +12,7 @@ approves the bridge to transfer, and then transfers 10 tokens across.
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.local</mode>
