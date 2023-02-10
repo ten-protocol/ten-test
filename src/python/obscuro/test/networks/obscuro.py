@@ -6,19 +6,19 @@ from eth_account.messages import encode_defunct
 
 
 class ObscuroL1(Geth):
-    HOST = 'http://testnet-gethnetwork.uksouth.azurecontainer.io'
+    HOST = 'http://testnet-eth2network.uksouth.azurecontainer.io'
     PORT = 8025
     WS_PORT = 9000
 
 
 class ObscuroL1Dev(Geth):
-    HOST = 'http://dev-testnet-gethnetwork.uksouth.azurecontainer.io'
+    HOST = 'http://dev-testnet-eth2network.uksouth.azurecontainer.io'
     PORT = 8025
     WS_PORT = 9000
 
 
 class ObscuroL1Local(Geth):
-    HOST = 'http://gethnetwork' if os.getenv('DOCKER_TEST_ENV') else 'http://127.0.0.1'
+    HOST = 'http://eth2network' if os.getenv('DOCKER_TEST_ENV') else 'http://127.0.0.1'
     PORT = 8025
     WS_PORT = 9000
 
