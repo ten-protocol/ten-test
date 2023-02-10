@@ -6,7 +6,7 @@ services:
     image: "testnetobscuronet.azurecr.io/obscuronet/gethnetwork:latest"
     build:
       context: ../../../go-obscuro/
-      dockerfile: ./testnet/gethnetwork.Dockerfile
+      dockerfile: ./testnet/eth2network.Dockerfile
   host:
     image: "testnetobscuronet.azurecr.io/obscuronet/host:latest"
     build:
