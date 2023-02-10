@@ -15,44 +15,53 @@ class L1BridgeDetails:
         self.web3, self.account = self.network.connect(test, pk)
         self.bridge = ObscuroBridge(test, self.web3)
         self.bus = L1MessageBus(test, self.web3)
-        self.token = None
+        self.tokens = {}
 
-    def set_token_contract(self, address, name, symbol):
+    def add_token_contract(self, address, name, symbol):
         """Set the web3 contract instance for the ERC20 token."""
-        self.token = ERC20Token(self.test, self.web3, name, symbol, address)
+        self.tokens[symbol] = ERC20Token(self.test, self.web3, name, symbol, address)
 
-    def transfer_token(self, address, amount):
+    def transfer_token(self, symbol, address, amount):
         """Transfer tokens within the ERC contract from this address to another. """
+        token = self.tokens[symbol]
         tx_receipt = self.network.transact(self.test, self.web3,
-                                           self.token.contract.functions.transfer(address, amount),
-                                           self.account, gas_limit=self.token.GAS_LIMIT, persist_nonce=False)
+                                           token.contract.functions.transfer(address, amount),
+                                           self.account, gas_limit=token.GAS_LIMIT, persist_nonce=False)
         return tx_receipt
 
-    def approve_token(self, address, amount):
+    def approve_token(self, symbol, address, amount):
         """Approve another address to spend ERC20 on behalf of this address. """
+        token = self.tokens[symbol]
         tx_receipt = self.network.transact(self.test, self.web3,
-                                           self.token.contract.functions.approve(address, amount),
-                                           self.account, gas_limit=self.token.GAS_LIMIT, persist_nonce=False)
+                                           token.contract.functions.approve(address, amount),
+                                           self.account, gas_limit=token.GAS_LIMIT, persist_nonce=False)
         return tx_receipt
 
-    def white_list_token(self):
+    def white_list_token(self, symbol):
         """Whitelist the token to be available on the L2 side of the bridge. """
+        token = self.tokens[symbol]
         tx_receipt = self.network.transact(self.test, self.web3,
-                                           self.bridge.contract.functions.whitelistToken(self.token.address,
-                                                                                         self.token.name,
-                                                                                         self.token.symbol),
+                                           self.bridge.contract.functions.whitelistToken(token.address,
+                                                                                         token.name,
+                                                                                         token.symbol),
                                            self.account, gas_limit=self.bridge.GAS_LIMIT, persist_nonce=False)
         logs = self.bus.contract.events.LogMessagePublished().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, L1BridgeDetails.get_cross_chain_message(logs[1])
 
-    def send_erc20(self, address, amount):
+    def send_erc20(self, symbol, address, amount):
         """Send tokens across the bridge. """
+        token = self.tokens[symbol]
         tx_receipt = self.network.transact(self.test, self.web3,
-                                           self.bridge.contract.functions.sendERC20(self.token.address,
+                                           self.bridge.contract.functions.sendERC20(token.address,
                                                                                     amount, address),
                                            self.account, gas_limit=self.bridge.GAS_LIMIT, persist_nonce=False)
         logs = self.bus.contract.events.LogMessagePublished().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, L1BridgeDetails.get_cross_chain_message(logs[2])
+
+    def balance_for_token(self, symbol):
+        """Get the balance for a token. """
+        token = self.tokens[symbol]
+        return token.contract.functions.balanceOf(self.account.address).call()
 
     @classmethod
     def get_cross_chain_message(cls, log):
@@ -78,11 +87,11 @@ class L2BridgeDetails:
         self.bridge = EthereumBridge(test, self.web3)
         self.bus = L2MessageBus(test, self.web3)
         self.xchain = CrossChainMessenger(test, self.web3)
-        self.token = None
+        self.tokens = {}
 
     def set_token_contract(self, address, name, symbol):
         """Set the web3 contract instance for the ERC20 token."""
-        self.token = ERC20Token(self.test, self.web3, name, symbol, address)
+        self.tokens[symbol] = ERC20Token(self.test, self.web3, name, symbol, address)
 
     def wait_for_message(self, xchain_msg, timeout=30):
         """Wait for a cross chain message to be verified as final. """
@@ -106,6 +115,11 @@ class L2BridgeDetails:
         tx_receipt = self.relay_message(xchain_msg)
         logs = self.bridge.contract.events.CreatedWrappedToken().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, logs[1]['args']['localAddress']
+
+    def balance_for_token(self, symbol):
+        """Get the balance for a token. """
+        token = self.tokens[symbol]
+        return token.contract.functions.balanceOf(self.account.address).call({"from":self.account.address})
 
 
 class BridgeUser:
