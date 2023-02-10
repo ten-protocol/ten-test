@@ -3,7 +3,7 @@
 version: '3.9'
 services:
   gethnetwork:
-    image: "testnetobscuronet.azurecr.io/obscuronet/gethnetwork:latest"
+    image: "testnetobscuronet.azurecr.io/obscuronet/eth2network:latest"
     build:
       context: ../../../go-obscuro/
       dockerfile: ./testnet/eth2network.Dockerfile
