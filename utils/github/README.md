@@ -9,12 +9,12 @@ Run the utility scripts to create the VM and connect;
 
 ```bash
 # create the VM
- ./utils/github/create-runner.sh --ssh_key=~/.ssh/id_rsa.pub --resource_group=SGXSystemTestHostedRunner \
-                                 --name=SGXLocalTestnetRunner --size=Standard_DC4s_v2
+ ./utils/github/create-runner.sh --ssh_key=~/.ssh/id_rsa --resource_group=SystemTestHostedRunner \
+                                 --name=LocalTestnetRunner --size=Standard_DC4s_v2
  
 # connect to the VM
-./utils/github/connect-runner.sh --ssh_key=~/.ssh/id_rsa.pub --resource_group=SGXSystemTestHostedRunner \
-                                 --name=SGXLocalTestnetRunner
+./utils/github/connect-runner.sh --ssh_key=~/.ssh/id_rsa --resource_group=SystemTestHostedRunner \
+                                 --name=LocalTestnetRunner
 ```
 
 # Set permissions on Docker
