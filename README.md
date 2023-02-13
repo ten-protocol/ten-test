@@ -53,10 +53,9 @@ will first be looked for in a `.username.properties` should it exist, and if not
 Quickstart Setup and Run (via docker)
 -------------------------------------
 The easiest way to set up a host to run the tests is to create a docker container with all dependencies pre-installed. 
-The obscuro-test repository should be cloned into the same parent directory as 
-[go-obscuro](https://github.com/obscuronet/go-obscuro) as running the tests will use the wallet_extension built from the 
-working copy of go-obscuro. To build the wallet_extension and the docker container, in the root of working directory of
-obscuro-test run;
+The obscuro-test repository should be cloned into the same parent directory as [go-obscuro](https://github.com/obscuronet/go-obscuro) 
+as running the tests will use the wallet_extension and bridge contract ABIs built from the working copy of go-obscuro. 
+To build the artifacts and the docker container, in the root of working directory of obscuro-test run;
 
 ```bash
 ./utils/docker/build_image.sh
@@ -68,13 +67,19 @@ Once built, to connect to the container run;
 ./utils/docker/run_image.sh
 ```
 
+Once logged into the container you can run the tests against a local testnet, dev-testnet, or the main testnet as 
+described further below. 
+
 
 Setup and Run locally on host machine
 -------------------------------------
-If you want full control to develop tests, and/or to run against the go-obscuro simulation or a locally deployed 
-testnet, the preferred way is to install all dependencies on the local machine. To install use the following;
+If you want full control to develop tests, and/or to run against the go-obscuro simulation, the recommended way is to 
+install all dependencies on the local machine. As stated earlier, running the tests requires the `obscuro-test` repository 
+to be cloned in the same parent directory as `go-obscuro`, and the dependent artifacts to be built. To build the 
+artifacts use the `get_artifacts.sh` script in the root of the`obscuro-test` repository. To install all dependencies for 
+running the Obscuro tests use the following on OSX or Linux accordingly;
 
-### Mac OSX (Monterey 12.4)
+### OSX (Monterey 12.4)
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew update
@@ -122,7 +127,7 @@ python3 -m pip install py-solc-x
 ```
 
 Once installed it should be possible to run all tests from the pysys.py cli as described in the following sections. Note
-that depending on differences in your installation and should you want to add in your own accounts on Goerli, you 
+that depending on differences in your installation, and should you want to add in your own accounts on Goerli, you 
 may need to override the `.default.properties` file by creating a user specific properties file e.g. 
 `.username.properties` file, where `username` is the output of running `whoami`. Common overrides will include the path 
 to various binaries used when running the tests, and account details e.g. for real accounts on Goerli. An example of an 
@@ -139,7 +144,6 @@ node_path = /opt/homebrew/lib/node_modules
 [env.goerli]
 ProjectID=266273d6b9a544f3ad56c725f38dfd56
 ```
-
 
 Pre-setup required for Obscuro
 ------------------------------

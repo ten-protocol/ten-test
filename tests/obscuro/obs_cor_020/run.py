@@ -11,7 +11,7 @@ class PySysTest(ObscuroNetworkTest):
     def execute(self):
         props = Properties()
 
-        # create the L1 and L2 connections, and users for the test
+        # create the users for the test
         funded = BridgeUser(self, props.l1_funded_account_pk(self.env), props.l2_funded_account_pk(self.env))
         accnt1 = BridgeUser(self, props.account1pk(), props.account1pk())
 
