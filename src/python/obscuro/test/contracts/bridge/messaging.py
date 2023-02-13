@@ -8,7 +8,7 @@ class L1MessageBus:
     GAS_LIMIT = 7200000
 
     def __init__(self, test, web3):
-        """Contract an instance of the web3 contract class for the L2 bridge contract. """
+        """Construct an instance of the web3 contract class for the L2 bridge contract. """
         self.test = test
         self.web3 = web3
         self.address = Properties().l1_message_bus_address(test.env)
@@ -23,7 +23,7 @@ class L2MessageBus:
     GAS_LIMIT = 7200000
 
     def __init__(self, test, web3):
-        """Contract an instance of the web3 contract class for the L2 bridge contract. """
+        """Construct an instance of the web3 contract class for the L2 bridge contract. """
         self.test = test
         self.web3 = web3
         self.address = Properties().l2_message_bus_address(test.env)
@@ -38,7 +38,7 @@ class CrossChainMessenger:
     GAS_LIMIT = 7200000
 
     def __init__(self, test, web3):
-        """Contract an instance of the web3 contract class for the L2 cross chain messenger."""
+        """Construct an instance of the web3 contract class for the L2 cross chain messenger."""
         self.test = test
         self.web3 = web3
         self.address = Properties().l2_cross_chain_messenger_address(test.env)
