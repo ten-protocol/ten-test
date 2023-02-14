@@ -9,7 +9,7 @@ Run the utility scripts to create the VM and connect;
 
 ```bash
 # create the VM
- ./utils/github/create-runner.sh --ssh_key=~/.ssh/id_rsa --resource_group=SystemTestHostedRunner \
+ ./utils/github/create-runner.sh --ssh_key=~/.ssh/id_rsa.pub --resource_group=SystemTestHostedRunner \
                                  --name=LocalTestnetRunner --size=Standard_DC4s_v2
  
 # connect to the VM
