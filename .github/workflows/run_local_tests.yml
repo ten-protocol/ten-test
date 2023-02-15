@@ -1,5 +1,5 @@
 name: Run local tests
-run-name: Run local tests (${{ github.event_name}} ${{ github.event.inputs.arguments }})
+run-name: Run local tests (${{ github.event_name }})
 on:
   schedule:
     - cron: '10 2 * * *'
@@ -20,23 +20,23 @@ jobs:
     steps:
       - run: echo "Triggered by ${{ github.event_name }} running on obscuro-test branch ${{ github.ref }} "
 
-      - name: Log the go-obscuro branch for workflow dispatch
+      - name: 'Log the go-obscuro branch for workflow dispatch'
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: echo "Running on go-obscuro branch ${{ github.event.inputs.target_branch }}"
 
-      - name: Check out obscuro-test
+      - name: 'Check out obscuro-test'
         uses: actions/checkout@v3
         with:
           path: ./obscuro-test
 
-      - name: Check out go-obscuro code on schedule trigger
+      - name: 'Check out go-obscuro code on schedule trigger'
         if: ${{ github.event_name == 'schedule' }}
         uses: actions/checkout@v3
         with:
           repository: obscuronet/go-obscuro
           path: ./go-obscuro
 
-      - name: Check out go-obscuro code on workflow dispatch
+      - name: 'Check out go-obscuro code on workflow dispatch'
         if: ${{ github.event_name == 'workflow_dispatch' }}
         uses: actions/checkout@v3
         with:
@@ -44,17 +44,17 @@ jobs:
           path: ./go-obscuro
           ref: ${{ github.event.inputs.target_branch }}
 
-      - name: Docker clean containers and images
+      - name: 'Docker clean containers and images'
         run: |
           for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
           docker system prune -af
 
-      - name: Build docker containers
+      - name: 'Build docker containers'
         run: |
           cd ${{ github.workspace }}/obscuro-test/utils/testnet
           docker compose -f docker-compose.local.yml build --parallel 
 
-      - name: Start up testnet
+      - name: 'Start up testnet'
         run: |
           cd ${{ github.workspace }}/go-obscuro/testnet
           ./testnet-local-eth2network.sh --pkaddresses=0x13E23Ca74DE0206C56ebaE8D51b5622EFF1E9944,0x0654D8B60033144D567f25bF41baC1FB0D60F23B
@@ -64,39 +64,39 @@ jobs:
           docker logs -f `docker ps -aqf "name=testnet-host-1"` > testnet-host-1.out &
           docker logs -f `docker ps -aqf "name=testnet-enclave-1"` > testnet-enclave-1.out &
 
-      - name: Wait for node and then deploy L2 contracts
+      - name: 'Wait for node and then deploy L2 contracts'
         run: |
           cd ${{ github.workspace }}/obscuro-test/utils/testnet
           ./wait_for_node.sh
           cd ${{ github.workspace }}/go-obscuro/testnet        
           ./testnet-deploy-l2-contracts.sh --l2host=testnet-host-1 --l1host=eth2network
 
-      - name: Build required artifacts for running tests
+      - name: 'Build required artifacts for running tests'
         run: |
           cd ${{ github.workspace }}/obscuro-test
           ./get_artifacts.sh
           ls -l ${{ github.workspace }}/obscuro-test/artifacts   
 
-      - name: Run allocations
+      - name: 'Run allocations'
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
           /usr/local/bin/pysys.py run -m obscuro.local persistence_reset
           /usr/local/bin/pysys.py run -m obscuro.local fund_layer_one
           /usr/local/bin/pysys.py run -m obscuro.local fund_layer_two
 
-      - name: Run tests on workflow dispatch
+      - name: 'Run tests on workflow dispatch'
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
           /usr/local/bin/pysys.py run -m obscuro.local ${{ github.event.inputs.arguments }}
 
-      - name: Run tests on schedule
+      - name: 'Run tests on schedule'
         if: ${{ github.event_name == 'schedule' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
           /usr/local/bin/pysys.py run -m obscuro.local -e skip -e robustness
 
-      - name: Upload testcase output
+      - name: 'Upload testcase output'
         uses: actions/upload-artifact@v3
         if: failure()
         with:
@@ -105,7 +105,7 @@ jobs:
             ${{ github.workspace }}/obscuro-test/**/Output
           retention-days: 2
 
-      - name: Upload container logs
+      - name: 'Upload container logs'
         uses: actions/upload-artifact@v3
         if: failure()
         with:
