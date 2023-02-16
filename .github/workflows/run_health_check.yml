@@ -1,6 +1,6 @@
 # Run a set of sanity tests on testnet to ensure it is up and running.
 
-name: Run testnet health check
+name: Run health check
 on:
   schedule:
     - cron: '10 1 * * *'
