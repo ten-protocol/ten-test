@@ -1,0 +1,60 @@
+# Run a set of sanity tests on testnet to ensure it is up and running.
+
+name: Run testnet health check
+on:
+  schedule:
+    - cron: '10 1 * * *'
+
+jobs:
+  Run-Tests:
+    runs-on: self-hosted
+    steps:
+      - name: 'Check out obscuro-test'
+        uses: actions/checkout@v3
+        with:
+          path: ./obscuro-test
+
+      - name: 'Check out go-obscuro code'
+        uses: actions/checkout@v3
+        with:
+          repository: obscuronet/go-obscuro
+          path: ./go-obscuro
+
+      - name: 'Build required artifacts for running tests'
+        run: |
+          cd ${{ github.workspace }}/obscuro-test
+          ./get_artifacts.sh
+          ls -l ${{ github.workspace }}/obscuro-test/artifacts   
+
+      - name: 'Run sanity tests'
+        run: |
+          cd ${{ github.workspace }}/obscuro-test/tests
+          /usr/local/bin/pysys.py run -i sanity
+
+      - name: 'Upload testcase output'
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: test-artifact
+          path: |
+            ${{ github.workspace }}/obscuro-test/**/Output
+          retention-days: 2
+
+      - name: 'Discord notification on success'
+        if: success()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.CONT_INT_WEBHOOK }}
+          title: "Testnet health check tests passed"
+          description: "Testnet sanity tests run on schedule"
+          avatar_url: ${{ secrets.AVATAR_URL }}
+
+      - name: 'Discord notification on failure'
+        if: failure()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.CONT_INT_WEBHOOK }}
+          title: "Testnet health check tests failed"
+          description: "Testnet sanity tests run on schedule"
+          content: "Please investigate <@814873419207409685>"
+          avatar_url: ${{ secrets.AVATAR_URL }}

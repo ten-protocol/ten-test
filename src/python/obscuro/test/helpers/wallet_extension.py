@@ -29,7 +29,7 @@ class WalletExtension:
         props = Properties()
 
         arguments = []
-        arguments.extend(('--nodeHost', props.node_host(self.test.env)))
+        arguments.extend(('--nodeHost', props.node_host(self.test)))
         arguments.extend(('--nodePortHTTP', props.node_port_http(self.test.env)))
         arguments.extend(('--nodePortWS', props.node_port_ws(self.test.env)))
         arguments.extend(('--port', str(self.port)))
