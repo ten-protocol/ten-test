@@ -12,14 +12,16 @@ class GenericNetworkTest(BaseTest):
     The GenericNetworkTest class provides common utilities used by all tests, which at the moment are the ability to
     start processes outside of the framework to interact with the network, e.g. written in python or javascript. The
     WEBSOCKET and PROXY values can be set at run time using the -X<ATTRIBUTE> option to the pysys run launcher, and
-    respectively force all connections to be over websockets, or for a proxy to set inbetween the client and network
-    where a test supports these.
+    respectively force all connections to be over websockets, or for a proxy to sit inbetween the client and network
+    (where a test supports these). TO override the node host FQDN (e.g. to target a specific node, rather than go
+    through a
 
     """
     ALLOW_EVENT_DUPLICATES = True   # if true we allow duplicate event logs in the test validation
-    WEBSOCKET = False               # run with `pysys.py run -XWEBSOCKET` to enable
-    PROXY = False                   # run with `pysys.py run -XPROXY` to enable
-    MSG_ID = 1
+    WEBSOCKET = False               # if true use websockets for all comms to the wallet extension
+    PROXY = False                   # if true run all websocket connections through a recording proxy
+    MSG_ID = 1                      # global used for http message requests numbers
+    NODE_HOST = None                # if not none overrides the node host from the properties file
 
     def __init__(self, descriptor, outsubdir, runner):
         """Call the parent constructor but set the mode to obscuro if non is set. """
@@ -259,5 +261,5 @@ class ObscuroNetworkTest(GenericNetworkTest):
 
     def post(self, data):
         self.MSG_ID += 1
-        server = 'http://%s:%s' % (Properties().node_host(self.env), Properties().node_port_http(self.env))
+        server = 'http://%s:%s' % (Properties().node_host(self), Properties().node_port_http(self.env))
         return requests.post(server, json=data)
