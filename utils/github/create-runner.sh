@@ -60,7 +60,7 @@ az vm run-command invoke \
     && apt-get install -y nodejs \
     && npm install console-stamp --global \
     && npm install web3 --global \
-    && npm install ethers --global \
+    && npm install ethers@5.4 --global \
     && npm install commander --global  \
     && npm install -g ganache  \
     && npm install -g ganache-cli \

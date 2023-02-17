@@ -14,7 +14,7 @@ RUN apt-get install -y nodejs
 RUN npm install console-stamp --global
 RUN npm install ganache --global
 RUN npm install web3 --global
-RUN npm install ethers --global
+RUN npm install ethers@5.4 --global
 RUN npm install commander --global
 
 RUN apt install -y vim
