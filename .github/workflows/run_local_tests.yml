@@ -44,10 +44,10 @@ jobs:
           path: ./go-obscuro
           ref: ${{ github.event.inputs.target_branch }}
 
-      - name: 'Docker clean containers and images'
+      - name: 'Docker clean containers and images before the test'
         run: |
           for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
-          docker system prune -af
+          docker system prune -af --volumes
 
       - name: 'Build docker containers'
         run: |
@@ -113,3 +113,9 @@ jobs:
           path: |
             ${{ github.workspace }}/go-obscuro/testnet/*.out
           retention-days: 2
+
+      - name: 'Docker clean containers and images after the test'
+        if: always()
+        run: |
+          for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
+          docker system prune -af --volumes
