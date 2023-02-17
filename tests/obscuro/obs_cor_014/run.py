@@ -11,9 +11,11 @@ class PySysTest(ObscuroNetworkTest):
 
         storage = Storage(self, web3, 0)
         tx_receipt = storage.deploy(network, account)
+        tx_hash = tx_receipt['transactionHash'].hex()
 
-        # get the transaction
-        tx = web3.eth.get_transaction(tx_receipt.transactionHash)
-        l1_proof = tx.L1Proof
-        self.log.info('L1 proof hash is %s' % l1_proof)
+        # get the rollup
+        batch = self.get_batch_for_transaction(tx_hash)
+        self.log.info(batch)
+        l1_proof = batch['Header']['L1Proof']
+        self.log.info(l1_proof)
 
