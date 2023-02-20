@@ -5,9 +5,10 @@
         <title>Stress - multiple concurrent subscribers, additional subscribing and unsubscribing</title>
         <purpose><![CDATA[
 A configurable number of subscribers are started to receive events from Obscuro, which stay subscribed for the duration
-of the test. Another configurable number of a bespoke client is started, where they continually subscribe and then
-unsubscribe repeatedly. Once running a set number of transactions are start and which are expected to be received by
-the continual subscribers i.e. the concurrent subscribes and unsubscribes should not cause any issues.
+of the test. Another configurable number of subscribers are started, where they continually subscribe and then
+unsubscribe once call back on successful subscription is confirmed. Once running a set number of transactions are
+performed where they are expected to be received by the permanent subscribers i.e. the concurrent subscribes and
+unsubscribes should not cause any disruption to event notification / call back.
 
 Skipped due to https://github.com/obscuronet/obscuro-internal/issues/1457
 ]]>
