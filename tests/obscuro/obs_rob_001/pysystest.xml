@@ -7,7 +7,9 @@
 A configurable number of subscribers are started to receive events from Obscuro, which stay subscribed for the duration
 of the test. Another configurable number of a bespoke client is started, where they continually subscribe and then
 unsubscribe repeatedly. Once running a set number of transactions are start and which are expected to be received by
-the continual subscribers i.e. the concurrent subscribes and unsubscribes should not cause any issues. 
+the continual subscribers i.e. the concurrent subscribes and unsubscribes should not cause any issues.
+
+Skipped due to https://github.com/obscuronet/obscuro-internal/issues/1457
 ]]>
         </purpose>
     </description>
@@ -16,6 +18,7 @@ the continual subscribers i.e. the concurrent subscribes and unsubscribes should
         <groups inherit="true">
             <group>events</group>
             <group>robustness</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>
