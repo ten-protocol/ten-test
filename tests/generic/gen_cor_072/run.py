@@ -26,7 +26,7 @@ class PySysTest(GenericNetworkTest):
         args.extend(['--contract_abi', '%s' % storage.abi_path])
         if self.is_obscuro(): args.extend(['--pk_to_register', '%s' % Properties().account3pk()])
         self.run_python(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting to run the event loop', timeout=10)
+        self.waitForGrep(file=stdout, expr='Starting the polling loop', timeout=10)
 
         # perform some transactions with a sleep in between
         for i in range(0,5):

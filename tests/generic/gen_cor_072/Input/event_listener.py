@@ -36,6 +36,7 @@ if __name__ == "__main__":
 
     logging.info('Starting to run the event loop')
     event_filter = contract.events.Stored.createFilter(fromBlock='latest')
+    logging.info('Starting the polling loop')
     while True:
         for event in event_filter.get_new_entries():
             logging.info('Stored value = %s' % event['args']['value'])
