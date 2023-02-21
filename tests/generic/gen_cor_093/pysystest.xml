@@ -6,7 +6,7 @@
         <purpose><![CDATA[]]>
 Checks what happens when a transaction is submitted with a gas limit set to half the estimate.
 
-Not currently working on Obscuro.  
+Gas mechanics is currently not yet implemented on Obscuro.
         </purpose>
     </description>
 
