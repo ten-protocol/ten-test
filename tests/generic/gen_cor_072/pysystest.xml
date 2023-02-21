@@ -8,7 +8,7 @@ This is a polling implementation in python to get event logs from a contract as 
 time. It creates a filter on the events.Event method on the contract instance, then repeatedly calls for
 get_new_entries() on the filter to return new logs. As a polling implementation it uses HTTP for the connection protocol.
 
-Skipped as the method eth_newFilter does not exist/is not available currently in web3.py
+Skipped due to https://github.com/obscuronet/obscuro-internal/issues/1461
         </purpose>
     </description>
 
