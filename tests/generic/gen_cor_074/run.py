@@ -37,10 +37,15 @@ class PySysTest(GenericNetworkTest):
 
         # perform some transactions
         network.transact(self, web3, storage.contract.functions.setItem('k1', 1), account, storage.GAS_LIMIT)
+        self.wait(float(self.block_time) * 1.1)
         network.transact(self, web3, storage.contract.functions.setItem('foo', 2), account, storage.GAS_LIMIT)
+        self.wait(float(self.block_time) * 1.1)
         network.transact(self, web3, storage.contract.functions.setItem('bar', 3), account, storage.GAS_LIMIT)
+        self.wait(float(self.block_time) * 1.1)
         network.transact(self, web3, storage.contract.functions.setItem('k2', 2), account, storage.GAS_LIMIT)
+        self.wait(float(self.block_time) * 1.1)
         network.transact(self, web3, storage.contract.functions.setItem('r1', 10), account, storage.GAS_LIMIT)
+        self.wait(float(self.block_time) * 1.1)
         network.transact(self, web3, storage.contract.functions.setItem('r2', 11), account, storage.GAS_LIMIT)
         self.wait(float(self.block_time) * 1.1)
 

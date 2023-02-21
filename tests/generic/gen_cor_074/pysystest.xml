@@ -7,6 +7,8 @@
 Uses filter and topic to extract events of interest as a polling approach using getPastLogs. It filters on a set of
 integer fields, and on a string field. As a string it seems you cannot filter within web3, but rather you sha3 the
 string value and specify it in the topic list as part of the bloom filters.
+
+Skipped see https://github.com/obscuronet/obscuro-internal/issues/1083 and https://github.com/obscuronet/obscuro-internal/issues/1147
         </purpose>
     </description>
 
