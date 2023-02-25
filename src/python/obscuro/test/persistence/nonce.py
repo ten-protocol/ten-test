@@ -23,12 +23,15 @@ class NoncePersistence:
 
     def get_next_nonce(self, test, web3, account, environment, persist_nonce=True):
         transaction_count = web3.eth.get_transaction_count(account)
-        last_nonce = self.get_latest_nonce(account, environment)
+        persisted_nonce = self.get_latest_nonce(account, environment)
 
         nonce = transaction_count
         if persist_nonce:
-            if transaction_count == 0: self.delete(account, environment)      # implies a new testnet deployment
-            nonce = 0 if last_nonce is None else last_nonce+1                 # we have to believe the local store
+            if transaction_count == 0:                                                 # implies a new testnet deployment
+                test.log.info('Clearing nonce_db for %s on zero tx count' % account)   # so clear out the persistence
+                self.delete(account, environment)
+            else:
+                nonce = 0 if persisted_nonce is None else persisted_nonce+1      # we have to believe the local store
             test.log.info("Account %s count %d using nonce from persistence as %d" % (account, transaction_count, nonce))
         else:
             test.log.info("Account %s using nonce from transaction count as %d" % (account, nonce))

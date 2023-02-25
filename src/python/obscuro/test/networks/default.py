@@ -29,7 +29,7 @@ class Default:
         proxy.run(self.HOST, self.PORT, 'proxy.logs')
         self.PORT = proxy.port
 
-    def connect(self, test, private_key, web_socket=False):
+    def connect(self, test, private_key, web_socket=False, check_funds=True):
         url = self.connection_url(web_socket)
 
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
@@ -38,17 +38,17 @@ class Default:
         test.log.info('Account %s connected to %s on %s' % (account.address, self.__class__.__name__, url))
         return web3, account
 
-    def connect_account1(self, test, web_socket=False):
-        return self.connect(test, Properties().account1pk(), web_socket)
+    def connect_account1(self, test, web_socket=False, check_funds=True):
+        return self.connect(test, Properties().account1pk(), web_socket, check_funds)
 
-    def connect_account2(self, test, web_socket=False):
-        return self.connect(test, Properties().account2pk(), web_socket)
+    def connect_account2(self, test, web_socket=False, check_funds=True):
+        return self.connect(test, Properties().account2pk(), web_socket, check_funds)
 
-    def connect_account3(self, test, web_socket=False):
-        return self.connect(test, Properties().account3pk(), web_socket)
+    def connect_account3(self, test, web_socket=False, check_funds=True):
+        return self.connect(test, Properties().account3pk(), web_socket, check_funds)
 
-    def connect_account4(self, test, web_socket=False):
-        return self.connect(test, Properties().account4pk(), web_socket)
+    def connect_account4(self, test, web_socket=False, check_funds=True):
+        return self.connect(test, Properties().account4pk(), web_socket, check_funds)
 
     def transact(self, test, web3, target, account, gas_limit, persist_nonce=True):
         nonce = self.get_next_nonce(test, web3, account, persist_nonce)

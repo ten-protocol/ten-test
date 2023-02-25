@@ -10,7 +10,6 @@ class PySysTest(GenericNetworkTest):
         # connect to the network
         network = NetworkFactory.get_network(self)
         web3, account = network.connect_account2(self)
-        self.log.info('Using account with address %s' % account.address)
 
         # get the block number
         block_number_initial = web3.eth.get_block_number()

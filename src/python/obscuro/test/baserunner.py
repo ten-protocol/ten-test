@@ -5,7 +5,7 @@ from pysys.exceptions import AbortExecution
 from obscuro.test.networks.ganache import Ganache
 from obscuro.test.persistence.nonce import NoncePersistence
 from obscuro.test.utils.properties import Properties
-
+from obscuro.test.networks.factory import NetworkFactory
 
 class ObscuroRunnerPlugin():
     """Runner class for running a set of tests against a given environment.
@@ -31,7 +31,7 @@ class ObscuroRunnerPlugin():
         nonce_db = NoncePersistence(self.db_dir)
         nonce_db.create()
 
-        if self.env in ['obscuro', 'obscuro.dev', 'obscuro.local', 'obscuro.sim'] and runner.threads > 3:
+        if self.is_obscuro() and runner.threads > 3:
             raise Exception('Max threads against Obscuro cannot be greater than 3')
         elif self.env == 'ganache' and runner.threads > 3:
             raise Exception('Max threads against Ganache cannot be greater than 3')
@@ -50,6 +50,10 @@ class ObscuroRunnerPlugin():
             sys.exit()
 
         nonce_db.close()
+
+    def is_obscuro(self):
+        """Return true if we are running against an Obscuro network. """
+        return self.env in ['obscuro', 'obscuro.dev', 'obscuro.local', 'obscuro.sim']
 
     def run_ganache(self, runner):
         """Run ganache for use by the tests. """
