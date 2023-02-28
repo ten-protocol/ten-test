@@ -17,7 +17,7 @@ class PySysTest(GenericNetworkTest):
         # estimate the deployment cost
         build_tx = storage.contract.buildTransaction(
             {
-                'nonce': self.nonce_db.get_next_nonce(self, web3, account.address, self.env),
+                'nonce': self.nonce_db.get_next_nonce(self, web3, account.address, self.env, False),
                 'gasPrice': 21000,
                 'gas': 720000,
                 'chainId': web3.eth.chain_id

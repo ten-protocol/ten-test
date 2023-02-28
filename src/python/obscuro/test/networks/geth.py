@@ -8,7 +8,7 @@ class Geth(Default):
 
     def chain_id(self): return 1337
 
-    def connect(self, test, private_key, web_socket=False):
+    def connect(self, test, private_key, web_socket=False, check_funds=True):
         url = self.connection_url(web_socket)
 
         test.log.info('Connecting to %s on %s' % (self.__class__.__name__, url))

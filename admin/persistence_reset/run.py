@@ -21,7 +21,7 @@ class PySysTest(ObscuroNetworkTest):
 
         network = NetworkFactory.get_network(self)
         for pk in PKS:
-            web3, account = network.connect(self, pk)
+            web3, account = network.connect(self, pk, check_funds=False)
             count = web3.eth.get_transaction_count(account.address)  # count is what the next would be
             if count > 0:                                            # if zero there aren't any transactions, store last
                 self.log.info('Updating last persisted nonce for %s to %d' % (account.address, count-1))
