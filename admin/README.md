@@ -23,8 +23,3 @@ pysys.py run  -m obscuro.dev persistence_reset
 # to clear all persisted nonces for Obscuro local testnet 
 pysys.py run  -m obscuro.local persistence_reset
 ```
-
-Note that any connection to Obscuro L2 will perform a balance check for the account connecting, and if the balance is 
-below a set threshold, it will allocate more. 
-
-
