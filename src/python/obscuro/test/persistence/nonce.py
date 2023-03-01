@@ -32,6 +32,7 @@ class NoncePersistence:
                 self.delete(account, environment)
             else:
                 nonce = 0 if persisted_nonce is None else persisted_nonce+1      # we have to believe the local store
+                test.nonce_db.insert(account.address, test.env, nonce)
             test.log.info("Account %s count %d using nonce from persistence as %d" % (account, transaction_count, nonce))
         else:
             test.log.info("Account %s using nonce from transaction count as %d" % (account, nonce))
