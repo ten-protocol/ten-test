@@ -12,7 +12,7 @@ class PySysTest(ObscuroNetworkTest):
         props = Properties()
 
         # create the users for the test
-        funded = BridgeUser(self, props.l1_funded_account_pk(self.env), props.l2_funded_account_pk(self.env))
+        funded = BridgeUser(self, props.l1_test_bridge_account_pk(self.env), props.account2pk())
         accnt1 = BridgeUser(self, props.account1pk(), props.account1pk())
 
         # deploy the ERC20 token and set the L1 contract instance

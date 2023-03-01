@@ -111,7 +111,7 @@ class Properties:
         return self.get('env.'+key, 'L2CrossChainMessengerAddress')
 
     def l1_test_bridge_account_pk(self, key):
-        return self.get('env.'+key, 'L1TestBridgeAccount')
+        return self.get('env.'+key, 'L1TestBridgeAccountPK')
 
     # infura related
     def infuraProjectID(self):
