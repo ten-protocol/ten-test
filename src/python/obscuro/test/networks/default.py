@@ -59,7 +59,6 @@ class Default:
 
     def get_next_nonce(self, test, web3, account, persist_nonce):
         nonce = test.nonce_db.get_next_nonce(test, web3, account.address, test.env, persist_nonce)
-        if persist_nonce: test.nonce_db.insert(account.address, test.env, nonce)
         return nonce
 
     def build_transaction(self, test, web3, target, nonce, account, gas_limit, persist_nonce):

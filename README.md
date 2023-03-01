@@ -145,31 +145,6 @@ node_path = /opt/homebrew/lib/node_modules
 ProjectID=266273d6b9a544f3ad56c725f38dfd56
 ```
 
-Pre-setup required for Obscuro
-------------------------------
-Whilst the repo is set up to run against a variety of different networks, to run against Obscuro some specific setup 
-tasks are required. This is because currently we need to allocate native OBX for gas usage to all test user accounts, and 
-also for Obscuro specific tests which require tokens to be available in well known ERC20 contracts. To allocate these
-you must first change directory into the `obscuro-test\admin` directory and run the below;
-
-```bash
-# to allocate on Obscuro testnet
-pysys.py run persistence_reset fund_layer_* 
-
-# to allocate on Obscuro dev-testnet
-pysys.py run -m obscuro.dev persistence_reset fund_layer_* 
-
-# to allocate on Obscuro local testnet
-pysys.py run -m obscuro.local persistence_reset fund_layer_* 
-
-# to allocate on Obscuro simulation
-pysys.py run -m obscuro.sim persistence_reset fund_layer_* 
-```
-
-See the [admin README.md](admin/README.md) for more details. Note that this only needs to be performed once on startup 
-of the network. 
-
-
 Print and run tests
 --------------------
 Each test is a separate directory within `obscuro-test/tests` where the directory name denotes the testcase id. Each 
