@@ -85,25 +85,20 @@ class GenericNetworkTest(BaseTest):
         return hprocess
 
     def fund_eth(self, network, account, amount):
-        """A native transfer of ETH from one address to another.
-
-        Any ETH funded operations from the L1 pre-funded account should NOT use local nonce persistence and rely on
-        get_transaction_count. This is because we do not own this account and therefore the transaction account is
-        likely to be greater than zero on a new deployment.
-        """
-        web3_funded_l1, account_funded_l1 = network.connect(self, Properties().l1_funded_account_pk(self.env))
-        nonce = network.get_next_nonce(self, web3_funded_l1, account_funded_l1, False)
+        """A native transfer of ETH from one address to another."""
+        web3_l1, account_l1 = network.connect(self, Properties().l1_test_account_pk(self.env))
+        nonce = network.get_next_nonce(self, web3_l1, account_l1, False)
         tx = {
             'chainId': network.chain_id(),
             'nonce': nonce,
             'to': account.address,
-            'value': web3_funded_l1.toWei(amount, 'ether'),
+            'value': web3_l1.toWei(amount, 'ether'),
             'gas': 4*21000,
-            'gasPrice': web3_funded_l1.eth.gas_price
+            'gasPrice': web3_l1.eth.gas_price
         }
-        tx_sign = account_funded_l1.sign_transaction(tx)
-        tx_hash = network.send_transaction(self, web3_funded_l1, nonce, account_funded_l1, tx_sign, False)
-        network.wait_for_transaction(self, web3_funded_l1, nonce, account_funded_l1, tx_hash, False)
+        tx_sign = account_l1.sign_transaction(tx)
+        tx_hash = network.send_transaction(self, web3_l1, nonce, account_l1, tx_sign, False)
+        network.wait_for_transaction(self, web3_l1, nonce, account_l1, tx_hash, False)
 
     def fund_obx(self, network, account, amount):
         """Fund OBX in the L2 to a users account, either through the faucet server or direct from the account."""
