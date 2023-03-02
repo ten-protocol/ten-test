@@ -5,7 +5,7 @@ name: Run remote tests
 run-name: Run remote tests (${{ github.event_name }})
 on:
   repository_dispatch:
-    types: [ scheduled_deployment ]
+    types: [ faucet_dev_deployment ]
   workflow_dispatch:
     inputs:
       environment:
