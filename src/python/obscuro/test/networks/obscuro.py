@@ -20,11 +20,11 @@ class ObscuroDefaultL1(Geth):
         test.log.info('Account %s connected to %s on %s' % (account.address, self.__class__.__name__, url))
 
         balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
-        test.log.info('Account %s balance %.3f ETH' % (account.address, balance))
+        test.log.info('Account %s balance %.6f ETH' % (account.address, balance))
         if check_funds and balance < self.ETH_LIMIT:
-            test.log.info('Account balance %.3f ETH below threshold %s, allocating more ...' % (balance, self.ETH_LIMIT))
+            test.log.info('Account balance %.6f ETH below threshold %s, allocating more ...' % (balance, self.ETH_LIMIT))
             test.fund_eth(self, account, self.ETH_ALLOC)
-            test.log.info('Account new balance %.3f ETH' % web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
+            test.log.info('Account new balance %.6f ETH' % web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
         return web3, account
 
 
@@ -73,11 +73,11 @@ class Obscuro(Default):
         test.log.info('Account %s connected to %s on %s' % (account.address, self.__class__.__name__, url))
 
         balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
-        test.log.info('Account %s balance %.3f OBX' % (account.address, balance))
+        test.log.info('Account %s balance %.6f OBX' % (account.address, balance))
         if check_funds and balance < self.OBX_LIMIT:
-            test.log.info('Account balance %.3f OBX below threshold %s, allocating more ...' % (balance, self.OBX_LIMIT))
+            test.log.info('Account balance %.6f OBX below threshold %s, allocating more ...' % (balance, self.OBX_LIMIT))
             test.fund_obx(self, account, self.OBX_ALLOC)
-            test.log.info('Account new balance %.3f OBX' % web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
+            test.log.info('Account new balance %.6f OBX' % web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
         return web3, account
 
     def __generate_viewing_key(self, web3, host, port, account, private_key):

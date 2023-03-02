@@ -17,6 +17,7 @@ class PySysTest(ObscuroNetworkTest):
         self.log.info('')
         self.log.info('Printing balance for the L1 accounts')
         for pk in L1PKS: network.connect(self, pk, check_funds=False)
+        for pk in L2PKS: network.connect(self, pk, check_funds=False)
 
         network = NetworkFactory.get_network(self)
         self.log.info('')
