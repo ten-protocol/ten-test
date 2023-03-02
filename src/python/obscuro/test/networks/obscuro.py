@@ -13,16 +13,18 @@ class ObscuroDefaultL1(Geth):
     def connect(self, test, private_key, web_socket=False, check_funds=True):
         url = self.connection_url(web_socket)
 
-        test.log.info('Connecting to %s on %s' % (self.__class__.__name__, url))
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         web3.middleware_onion.inject(geth_poa_middleware, layer=0)
         account = web3.eth.account.privateKeyToAccount(private_key)
+        test.log.info('Account %s connected to %s on %s' % (account.address, self.__class__.__name__, url))
+
         balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+        test.log.info('Account %s balance %.3f ETH' % (account.address, balance))
         if check_funds and balance < self.ETH_LIMIT:
-            test.log.info('Account balance %d ETH below threshold %s, allocating more ...' % (balance, self.ETH_LIMIT))
+            test.log.info('Account balance %.3f ETH below threshold %s, allocating more ...' % (balance, self.ETH_LIMIT))
             test.fund_eth(self, account, self.ETH_ALLOC)
-            test.log.info('Account new balance %d ETH' % web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
+            test.log.info('Account new balance %.3f ETH' % web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
         return web3, account
 
 
@@ -71,11 +73,11 @@ class Obscuro(Default):
         test.log.info('Account %s connected to %s on %s' % (account.address, self.__class__.__name__, url))
 
         balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
-        test.log.info('Account %s balance %d OBX' % (account.address, balance))
+        test.log.info('Account %s balance %.3f OBX' % (account.address, balance))
         if check_funds and balance < self.OBX_LIMIT:
-            test.log.info('Account balance %d OBX below threshold %s, allocating more ...' % (balance, self.OBX_LIMIT))
+            test.log.info('Account balance %.3f OBX below threshold %s, allocating more ...' % (balance, self.OBX_LIMIT))
             test.fund_obx(self, account, self.OBX_ALLOC)
-            test.log.info('Account new balance %d OBX' % web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
+            test.log.info('Account new balance %.3f OBX' % web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
         return web3, account
 
     def __generate_viewing_key(self, web3, host, port, account, private_key):

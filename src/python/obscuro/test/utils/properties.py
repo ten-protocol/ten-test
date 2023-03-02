@@ -86,12 +86,6 @@ class Properties:
     def faucet_url(self, key):
         return self.get('env.'+key, 'FaucetURL')
 
-    def distro_account_pk(self, key):
-        return self.get('env.'+key, 'DistroAccountPK')
-
-    def l1_funded_account_pk(self, key):
-        return self.get('env.'+key, 'L1FundedAccountPK')
-
     def l2_funded_account_pk(self, key):
         return self.get('env.'+key, 'L2FundedAccountPK')
 
@@ -112,6 +106,9 @@ class Properties:
 
     def l2_cross_chain_messenger_address(self, key):
         return self.get('env.'+key, 'L2CrossChainMessengerAddress')
+
+    def l1_test_account_pk(self, key):
+        return self.get('env.'+key, 'L1TestBridgeAccountPK')
 
     # infura related
     def infuraProjectID(self):
