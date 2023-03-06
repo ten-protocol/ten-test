@@ -45,3 +45,4 @@ class Game:
         self.address = tx_receipt.contractAddress
         self.contract = self.web3.eth.contract(address=self.address, abi=self.abi)
         return tx_receipt
+
