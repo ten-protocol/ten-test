@@ -25,8 +25,9 @@ class Token:
         file = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'GuessToken.sol')
         with open(file, 'r') as fp:
             compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'],
-                                          solc_binary=Properties().solc_binary())
-            contract_id, contract_interface = compiled_sol.popitem()
+                                          solc_binary=Properties().solc_binary(),
+                                          base_path=os.path.dirname(file))
+            contract_interface = compiled_sol['<stdin>:GuessToken']
             self.bytecode = contract_interface['bin']
             self.abi = contract_interface['abi']
 

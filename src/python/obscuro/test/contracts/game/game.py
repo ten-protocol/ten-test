@@ -27,8 +27,9 @@ class Game:
         file = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'GuessGame.sol')
         with open(file, 'r') as fp:
             compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'],
-                                          solc_binary=Properties().solc_binary())
-            contract_id, contract_interface = compiled_sol.popitem()
+                                          solc_binary=Properties().solc_binary(),
+                                          base_path=os.path.dirname(file))
+            contract_interface = compiled_sol['<stdin>:GuessGame']
             self.bytecode = contract_interface['bin']
             self.abi = contract_interface['abi']
 
