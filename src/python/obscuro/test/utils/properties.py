@@ -71,6 +71,10 @@ class Properties:
     def account3_3pk(self): return self.get('env.all', 'Account11PK')
     def account4_3pk(self): return self.get('env.all', 'Account12PK')
 
+    # guessing game accounts
+    def gg_appdev_pk(self): return self.get('env.all', 'GGAppDevPK')
+    def gg_endusr_pk(self): return self.get('env.all', 'GGEndUsrPK')
+
     # obscuro specific properties
     def node_host(self, test):
         if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+test.env, 'NodeHostDockerNetwork')
