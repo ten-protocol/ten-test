@@ -17,9 +17,10 @@ and event emission;
   Event is emitted containing address of user account
 
 Under this sequence currently the event is not decrypted and sent back to the subscription id, as it by default binds
-to the first registered key.
+to the first registered key which is account 1. Note that it should be possible for account 4 to see the event regardless
+of the order of viewing key subscriptions, thus this is a failing test at the moment and skipped.
 
-Skipped - see https://github.com/obscuronet/obscuro-internal/issues/1083
+Skipped - see https://github.com/obscuronet/obscuro-internal/issues/1046
 ]]>
         </purpose>
     </description>

@@ -6,11 +6,12 @@ from obscuro.test.networks.obscuro import Obscuro
 
 class WalletExtension:
 
-    def __init__(self, test, port=None, ws_port=None, name=None):
+    def __init__(self, test, port=None, ws_port=None, name=None, verbose=True):
         """Create an instance of the event log subscriber."""
         self.test = test
         self.port = port if port is not None else test.getNextAvailableTCPPort()
         self.ws_port = ws_port if ws_port is not None else test.getNextAvailableTCPPort()
+        self.verbose = verbose
 
         if name is None: name = str(port)
         self.logPath = os.path.join(test.output, 'wallet_%s_logs.txt' % name)
@@ -36,6 +37,7 @@ class WalletExtension:
         arguments.extend(('--portWS', str(self.ws_port)))
         arguments.extend(('--logPath', self.logPath))
         arguments.extend(('--persistencePath', self.persistencePath))
+        if self.verbose: arguments.append('--verbose')
         hprocess = self.test.startProcess(command=self.binary, displayName='wallet_extension',
                                           workingDir=self.test.output, environs=os.environ, quiet=True,
                                           arguments=arguments, stdout=self.stdout, stderr=self.stderr, state=BACKGROUND)

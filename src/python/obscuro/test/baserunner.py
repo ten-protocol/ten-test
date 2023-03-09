@@ -75,6 +75,8 @@ class ObscuroRunnerPlugin():
         arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account2_3pk()))
         arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account3_3pk()))
         arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().account4_3pk()))
+        arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().gg_appdev_pk()))
+        arguments.extend(('--account', '0x%s,1000000000000000000' % Properties().gg_endusr_pk()))
         arguments.extend(('--gasLimit', '7200000'))
         arguments.extend(('--blockTime', Properties().block_time_secs(self.env)))
         arguments.extend(('-k', 'berlin'))

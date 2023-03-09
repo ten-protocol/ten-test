@@ -3,6 +3,8 @@ Admin controls on Obscuro Testnet
 This directory contains utilities to perform admin operations on Obscuro testnet. Currently, this is to;
 
 - reset all persisted nonce db entries for test users (`persistence_reset`)
+- fund users on the L2 explicitly (`fund_users`)
+- print user balances on L2 (`print_balances`)
 
 
 Managing the nonce db on a new deployment 

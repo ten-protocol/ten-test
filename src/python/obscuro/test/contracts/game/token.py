@@ -2,18 +2,16 @@ import json
 from solcx import compile_source
 from pysys.constants import *
 from obscuro.test.utils.properties import Properties
-from obscuro.test.contracts.guesser.guesser import Guesser
 
 
-class GuesserToken(Guesser):
+class Token:
     """Abstraction over the pay to play guessing game smart contract."""
+    GAS_LIMIT = 4 * 720000
 
-    def __init__(self, test, web3, size, token_address):
+    def __init__(self, test, web3):
         """Create an instance of the ERC20 contract, compile and construct a web3 instance. """
         self.test = test
         self.web3 = web3
-        self.size = size
-        self.token_address = token_address
         self.bytecode = None
         self.abi = None
         self.abi_path = None
@@ -24,18 +22,19 @@ class GuesserToken(Guesser):
 
     def construct(self):
         """Compile and construct an instance. """
-        file = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'guesser', 'Guesser_token.sol')
+        file = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'GuessToken.sol')
         with open(file, 'r') as fp:
             compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'],
-                                          solc_binary=Properties().solc_binary())
-            contract_interface = compiled_sol['<stdin>:Guess']
+                                          solc_binary=Properties().solc_binary(),
+                                          base_path=os.path.dirname(file))
+            contract_interface = compiled_sol['<stdin>:GuessToken']
             self.bytecode = contract_interface['bin']
             self.abi = contract_interface['abi']
 
-        self.abi_path = os.path.join(self.test.output, 'guesser_token.abi')
+        self.abi_path = os.path.join(self.test.output, 'guess_token.abi')
         with open(self.abi_path, 'w') as f: json.dump(self.abi, f)
 
-        self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor(self.size, self.token_address)
+        self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor()
 
     def deploy(self, network, account):
         """Deploy the contract using a given account."""
