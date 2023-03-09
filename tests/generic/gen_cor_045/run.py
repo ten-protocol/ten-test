@@ -8,7 +8,6 @@ from obscuro.test.utils.properties import Properties
 
 
 class PySysTest(GenericNetworkTest):
-    GENERAL_SUB = False
 
     def execute(self):
         # deployment of contract
