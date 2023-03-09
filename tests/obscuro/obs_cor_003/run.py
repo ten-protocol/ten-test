@@ -16,14 +16,14 @@ class PySysTest(ObscuroNetworkTest):
         # account1, account2, account3, account4
         network.connect_account1(self)
         network.connect_account2(self)
-        network.connect_account1(self)
+        network.connect_account3(self)
         web3, account = network.connect_account4(self)
 
-        # deploy the storage contract
+        # deploy the storage contract as account 4
         contract = Relevancy(self, web3)
         contract.deploy(network, account)
 
-        # run a background script to filter and collect events (this is not tied to any account)
+        # run a background script to filter and collect events
         subscriber = AllEventsLogSubscriber(self, network, contract)
         subscriber.run(Properties().account4pk(), network.connection_url(), network.connection_url(web_socket=True))
 
