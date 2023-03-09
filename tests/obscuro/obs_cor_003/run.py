@@ -34,7 +34,7 @@ class PySysTest(ObscuroNetworkTest):
 
         # we would expect that given account4 vk is registered it can be decrypted
         try:
-            self.waitForGrep(file='subscriber.out', expr='Received event: CallerIndexedAddress', timeout=self.block_time)
+            self.waitForGrep(file='subscriber.out', expr='Received event: CallerIndexedAddress', timeout=10)
         except:
             self.log.error('Timed out waiting for CallerIndexedAddress event log in subscriber')
             self.addOutcome(FAILED)

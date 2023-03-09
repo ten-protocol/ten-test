@@ -13,6 +13,7 @@ class PySysTest(GenericNetworkTest):
     def execute(self):
         # deployment of contract
         network = NetworkFactory.get_network(self)
+        web3_usr, account_usr = network.connect(self, Properties().gg_endusr_pk())
         web3_dev, account_dev = network.connect(self, Properties().gg_appdev_pk())
 
         token = Token(self, web3_dev)
@@ -45,7 +46,6 @@ class PySysTest(GenericNetworkTest):
         self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
 
         # approve the game to spend tokens on behalf of the user
-        web3_usr, account_usr = web3, account = network.connect(self, Properties().gg_endusr_pk())
         token_player = web3_usr.eth.contract(address=token.address, abi=token.abi)
         network.transact(self, web3_usr, token_player.functions.approve(game.address, Web3().toWei(10, 'ether')), account_usr, game.GAS_LIMIT)
 
@@ -56,5 +56,6 @@ class PySysTest(GenericNetworkTest):
             balance = token_player.functions.balanceOf(account_usr.address).call({"from":account_usr.address})
             self.log.info('Allowance is %.3f' % Web3().fromWei(allowance, 'ether'))
             self.log.info('Balance is %.3f' % Web3().fromWei(balance, 'ether'))
-            network.transact(self, web3, game_player.functions.attempt(i), account_usr, game.GAS_LIMIT)
+            network.transact(self, web3_usr, game_player.functions.attempt(i), account_usr, game.GAS_LIMIT)
+            self.wait(float(self.block_time)*1.1)
 
