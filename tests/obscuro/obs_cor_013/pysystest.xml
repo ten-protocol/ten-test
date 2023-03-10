@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Relevancy - only the deployer of a contract can see the balance of a contract</title>
+        <purpose><![CDATA[
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+        </groups>
+        <modes inherit="true">
+            <mode>obscuro.dev</mode>
+            <mode>obscuro.local</mode>
+            <mode>obscuro.sim</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
