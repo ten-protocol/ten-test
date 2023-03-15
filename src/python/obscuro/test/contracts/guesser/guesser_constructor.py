@@ -1,31 +1,41 @@
-import json, random
-from solcx import compile_source
+import random
 from pysys.constants import *
-from obscuro.test.utils.properties import Properties
 from obscuro.test.contracts.guesser.guesser import Guesser
 
 
 class GuesserConstructor(Guesser):
-    """Abstraction over the guessing game smart contract using a constructor."""
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'guesser', 'Guesser_constructor.sol')
+    CONTRACT = 'GuesserConstructor'
 
-    def __init__(self, test, web3, lower=0, upper=100):
+    def __init__(self, test, web3, *args):
         """Call the parent constructor but set the secret first."""
-        self.secret = random.randint(lower, upper)
+        self.lower = args[0]
+        self.upper =  args[1]
+        self.secret = random.randint(args[0], args[1])
         test.log.info('Secret number to guess will be %d' % self.secret)
-        super().__init__(test, web3, lower=0, upper=100)
+        super().__init__(test, web3, self.secret)
 
-    def construct(self):
-        """Compile and construct contract instance. """
-        file = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'guesser', 'Guesser_constructor.sol')
-        with open(file, 'r') as fp:
-            compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'],
-                                          solc_binary=Properties().solc_binary())
-            contract_id, contract_interface = compiled_sol.popitem()
-            self.bytecode = contract_interface['bin']
-            self.abi = contract_interface['abi']
+    def guess(self, max_guesses=100):
+        """Perform a guessing game to get the secret number."""
+        lower = self.lower
+        upper = self.upper
+        nguess = 0
+        while True:
+            nguess += 1
+            if nguess > max_guesses:
+                self.test .log.warn("Exceeded guess count ... exiting")
+                self.test .addOutcome(FAILED)
+                return None
 
-        self.abi_path = os.path.join(self.test.output, 'guesser_constructor.abi')
-        with open(self.abi_path, 'w') as f: json.dump(self.abi, f)
-
-        self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor(self.secret)
-
+            guess = random.randrange(lower, upper)
+            ret = self.contract.functions.guess(guess).call()
+            if ret == 1:
+                self.test.log.info("Guess is %d, need to go higher" % guess)
+                lower = guess+1
+            elif ret == -1:
+                self.test.log.info("Guess is %d, need to go lower" % guess)
+                upper = guess
+            else:
+                self.test.log.info("You've guessed the secret %s" % guess)
+                self.test.addOutcome(PASSED)
+                return guess

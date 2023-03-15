@@ -41,6 +41,7 @@ class DefaultContract:
 
     def deploy(self, network, account):
         """Deploy using the given account."""
+        self.test.log.info('Deploying the %s contract' % self.CONTRACT)
         self.account = account
         tx_receipt = network.transact(self.test, self.web3, self.contract, account, self.GAS_LIMIT)
         self.address = tx_receipt.contractAddress
