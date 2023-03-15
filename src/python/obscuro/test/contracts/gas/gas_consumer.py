@@ -10,7 +10,7 @@ class GasConsumer:
     CONTRACT = 'GasConsumer.sol'
 
     def __init__(self, test, web3):
-        """Create an instance of the gas consumer contract, compile and construct a web3 instance."""
+        """Create an instance of the abstraction."""
         self.test = test
         self.web3 = web3
         self.bytecode = None
@@ -22,7 +22,7 @@ class GasConsumer:
         self.construct()
 
     def construct(self):
-        """Compile and construct an instance. """
+        """Compile and construct contract instance. """
         file = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'gas', self.CONTRACT)
         with open(file, 'r') as fp:
             compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'],

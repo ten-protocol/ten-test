@@ -9,7 +9,7 @@ class Game:
     GAS_LIMIT = 4 * 720000
 
     def __init__(self, test, web3, range, token_address):
-        """Create an instance of the ERC20 contract, compile and construct a web3 instance. """
+        """Create an instance of the abstraction."""
         self.test = test
         self.web3 = web3
         self.range = range
@@ -23,7 +23,7 @@ class Game:
         self.construct()
 
     def construct(self):
-        """Compile and construct an instance. """
+        """Compile and construct contract instance. """
         file = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'GuessGame.sol')
         with open(file, 'r') as fp:
             compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'],

@@ -8,7 +8,7 @@ class Management:
     GAS_LIMIT = 7200000
 
     def __init__(self, test, web3):
-        """Construct an instance of the web3 contract class for the L1 management contract. """
+        """Create an instance of the abstraction."""
         self.test = test
         self.web3 = web3
         self.address = Properties().l1_bridge_address(test.env)

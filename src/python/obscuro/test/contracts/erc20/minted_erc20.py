@@ -9,7 +9,7 @@ class MintedERC20Token:
     GAS_LIMIT = 7200000
 
     def __init__(self, test, web3, name, symbol, supply):
-        """Create an instance of the ERC20 contract, compile and construct a web3 instance. """
+        """Create an instance of the abstraction."""
         self.bytecode = None
         self.abi = None
         self.abi_path = None

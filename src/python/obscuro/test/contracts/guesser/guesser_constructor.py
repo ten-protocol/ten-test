@@ -15,7 +15,7 @@ class GuesserConstructor(Guesser):
         super().__init__(test, web3, lower=0, upper=100)
 
     def construct(self):
-        """Compile and construct an instance."""
+        """Compile and construct contract instance. """
         file = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'guesser', 'Guesser_constructor.sol')
         with open(file, 'r') as fp:
             compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'],

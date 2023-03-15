@@ -7,7 +7,7 @@ class ERC20Token:
     GAS_LIMIT = 7200000
 
     def __init__(self, test, web3, name, symbol, address):
-        """Construct an instance of the web3 contract class for a generic ERC20 contract. """
+        """Create an instance of the abstraction."""
         self.test = test
         self.web3 = web3
         self.name = name

@@ -9,7 +9,7 @@ class Guesser:
     GAS_LIMIT = 4 * 720000
 
     def __init__(self, test, web3, lower=0, upper=100):
-        """Create an instance of the guesser contract, compile and construct a web3 instance."""
+        """Create an instance of the abstraction."""
         self.bytecode = None
         self.abi = None
         self.abi_path = None
@@ -23,7 +23,7 @@ class Guesser:
         self.construct()
 
     def construct(self):
-        """Compile and construct an instance. """
+        """Compile and construct contract instance. """
         file = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'guesser', 'Guesser.sol')
         with open(file, 'r') as fp:
             compiled_sol = compile_source(source=fp.read(), output_values=['abi', 'bin'],
