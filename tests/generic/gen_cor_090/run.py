@@ -1,6 +1,6 @@
 from pysys.constants import FAILED, PASSED
 from obscuro.test.basetest import GenericNetworkTest
-from obscuro.test.contracts.gas.gas_consumer import GasConsumerAdd
+from obscuro.test.contracts.gas import GasConsumerAdd
 from obscuro.test.networks.factory import NetworkFactory
 
 

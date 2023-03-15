@@ -1,24 +1,22 @@
 import random
 from pysys.constants import *
-from obscuro.test.contracts.guesser.guesser import Guesser
+from obscuro.test.contracts import BaseContract
 
 
-class GuesserConstructor(Guesser):
-    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'guesser', 'Guesser_constructor.sol')
-    CONTRACT = 'GuesserConstructor'
+class Guesser(BaseContract):
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'guesser', 'Guesser.sol')
+    CONTRACT = 'Guesser'
 
     def __init__(self, test, web3, *args):
         """Call the parent constructor but set the secret first."""
         self.lower = args[0]
         self.upper =  args[1]
-        self.secret = random.randint(args[0], args[1])
-        test.log.info('Secret number to guess will be %d' % self.secret)
-        super().__init__(test, web3, self.secret)
+        super().__init__(test, web3)
 
     def guess(self, max_guesses=100):
         """Perform a guessing game to get the secret number."""
-        lower = self.lower
-        upper = self.upper
+        lower = self.args[0]
+        upper = self.args[1] + 1
         nguess = 0
         while True:
             nguess += 1
@@ -39,3 +37,16 @@ class GuesserConstructor(Guesser):
                 self.test.log.info("You've guessed the secret %s" % guess)
                 self.test.addOutcome(PASSED)
                 return guess
+
+
+class GuesserConstructor(Guesser):
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'guesser', 'Guesser_constructor.sol')
+    CONTRACT = 'GuesserConstructor'
+
+    def __init__(self, test, web3, *args):
+        """Call the parent constructor but set the secret first."""
+        self.lower = args[0]
+        self.upper =  args[1]
+        self.secret = random.randint(args[0], args[1])
+        test.log.info('Secret number to guess will be %d' % self.secret)
+        super().__init__(test, web3, self.secret)

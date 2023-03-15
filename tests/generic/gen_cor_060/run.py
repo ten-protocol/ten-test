@@ -1,5 +1,5 @@
 from obscuro.test.basetest import GenericNetworkTest
-from obscuro.test.contracts.erc20.minted_erc20 import MintedERC20Token
+from obscuro.test.contracts.erc20 import MintedERC20Token
 from obscuro.test.networks.factory import NetworkFactory
 
 

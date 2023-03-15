@@ -1,8 +1,7 @@
 import os
 from web3 import Web3
 from obscuro.test.basetest import GenericNetworkTest
-from obscuro.test.contracts.game.token import Token
-from obscuro.test.contracts.game.game import Game
+from obscuro.test.contracts.game import Token, Game
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.utils.properties import Properties
 

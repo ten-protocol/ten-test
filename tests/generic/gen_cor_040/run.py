@@ -1,5 +1,5 @@
 from obscuro.test.basetest import GenericNetworkTest
-from obscuro.test.contracts.guesser.guesser import Guesser
+from obscuro.test.contracts.guesser import Guesser
 from obscuro.test.networks.factory import NetworkFactory
 
 

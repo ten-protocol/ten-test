@@ -1,12 +1,10 @@
-"""Package of abstractions over the supported solidity contracts.
-"""
 import json
 from solcx import compile_source
 from pysys.constants import *
 from obscuro.test.utils.properties import Properties
 
 
-class DefaultContract:
+class BaseContract:
     GAS_LIMIT = 720000
     SOURCE = None
     CONTRACT = None
@@ -39,11 +37,11 @@ class DefaultContract:
 
         self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor(*self.args)
 
-    def deploy(self, network, account):
+    def deploy(self, network, account, persist_nonce=True):
         """Deploy using the given account."""
         self.test.log.info('Deploying the %s contract' % self.CONTRACT)
         self.account = account
-        tx_receipt = network.transact(self.test, self.web3, self.contract, account, self.GAS_LIMIT)
+        tx_receipt = network.transact(self.test, self.web3, self.contract, account, self.GAS_LIMIT, persist_nonce)
         self.address = tx_receipt.contractAddress
         self.contract = self.web3.eth.contract(address=self.address, abi=self.abi)
         return tx_receipt

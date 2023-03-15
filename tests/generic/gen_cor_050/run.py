@@ -1,6 +1,6 @@
 import re
 from obscuro.test.basetest import GenericNetworkTest
-from obscuro.test.contracts.error.error import Error
+from obscuro.test.contracts.error import Error
 from obscuro.test.networks.factory import NetworkFactory
 
 

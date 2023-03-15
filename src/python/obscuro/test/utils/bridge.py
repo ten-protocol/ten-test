@@ -1,9 +1,9 @@
 import time
 from web3._utils.events import EventLogErrorFlags
 from obscuro.test.networks.factory import NetworkFactory
-from obscuro.test.contracts.erc20.erc20 import ERC20Token
-from obscuro.test.contracts.bridge.bridge import ObscuroBridge, EthereumBridge
-from obscuro.test.contracts.bridge.messaging import L1MessageBus, L2MessageBus, CrossChainMessenger
+from obscuro.test.contracts.erc20 import ERC20Token
+from obscuro.test.contracts.bridge import ObscuroBridge, EthereumBridge
+from obscuro.test.contracts.messaging import L1MessageBus, L2MessageBus, CrossChainMessenger
 
 
 class L1BridgeDetails:

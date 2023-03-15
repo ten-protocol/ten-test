@@ -2,7 +2,7 @@ from web3 import Web3
 from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.utils.properties import Properties
-from obscuro.test.contracts.relevancy.relevancy import Relevancy
+from obscuro.test.contracts.relevancy import Relevancy
 from obscuro.test.helpers.wallet_extension import WalletExtension
 from obscuro.test.helpers.log_subscriber import AllEventsLogSubscriber
 

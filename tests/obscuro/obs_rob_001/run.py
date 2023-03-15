@@ -1,7 +1,7 @@
 import secrets, os
 from pysys.constants import PASSED
 from obscuro.test.basetest import GenericNetworkTest
-from obscuro.test.contracts.storage.storage import Storage
+from obscuro.test.contracts.storage import Storage
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.helpers.log_subscriber import FilterLogSubscriber
 
