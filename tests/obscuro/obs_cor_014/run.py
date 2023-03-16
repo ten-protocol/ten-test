@@ -13,7 +13,7 @@ class PySysTest(ObscuroNetworkTest):
         tx_receipt = storage.deploy(network, account)
         tx_hash = tx_receipt['transactionHash'].hex()
 
-        # get the rollup
+        # get the batch for transaction and from that the l1 proof
         batch = self.get_batch_for_transaction(tx_hash)
         self.log.info(batch)
         l1_proof = batch['Header']['L1Proof']
