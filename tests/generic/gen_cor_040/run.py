@@ -10,9 +10,9 @@ class PySysTest(GenericNetworkTest):
         network = NetworkFactory.get_network(self)
         web3, account = network.connect_account1(self)
 
-        guesser = Guesser(self, web3, 0, 100)
+        guesser = Guesser(self, web3)
         guesser.deploy(network, account)
 
         # guess the number
         self.log.info('Starting guessing game')
-        self.assertTrue(guesser.guess() == 12)
+        self.assertTrue(guesser.guess(0, 100) == 12)
