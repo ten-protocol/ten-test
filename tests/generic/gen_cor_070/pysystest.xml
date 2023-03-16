@@ -3,9 +3,10 @@
 
     <description>
         <title>Events: transact and check transaction receipt event log</title>
-        <purpose><![CDATA[]]>
+        <purpose><![CDATA[
 Deploy the storage contract, call to get the current value, store a new value as a transaction, extract the
 value from the transaction log, and call again.
+]]>
         </purpose>
     </description>
 

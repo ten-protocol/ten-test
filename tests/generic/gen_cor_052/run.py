@@ -2,6 +2,7 @@ from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.contracts.payable import ReceiveEther, SendEther
 
+
 class PySysTest(ObscuroNetworkTest):
 
     def execute(self):

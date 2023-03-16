@@ -3,8 +3,9 @@
 
     <description>
         <title>Gas: cost of getting account balance (in contract)</title>
-        <purpose><![CDATA[]]>
+        <purpose><![CDATA[
 Checks the cost of requesting the balance of an account.
+]]>
         </purpose>
     </description>
 

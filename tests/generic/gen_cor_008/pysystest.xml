@@ -3,11 +3,12 @@
 
     <description>
         <title>RPC API: check estimate_gas</title>
-        <purpose><![CDATA[]]>
+        <purpose><![CDATA[
 Checks that you can estimate gas for a contract deployment, and calls made to a contract (to store and retrieve a
 value). We assume it will cost more to deploy than store, and more to store than retrieve.
 
 Skipped due to https://github.com/obscuronet/obscuro-internal/issues/1459.
+]]>
         </purpose>
     </description>
 

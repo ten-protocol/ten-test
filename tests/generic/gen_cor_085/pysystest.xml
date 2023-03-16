@@ -3,10 +3,11 @@
 
     <description>
         <title>Events: ethers client using contract.on, with event name</title>
-        <purpose><![CDATA[]]>
+        <purpose><![CDATA[
 One approach to subscribe for emitted events using the contract instance on method, where the event name is supplied
 and a callback function where the event parameters are returned. There is no filtering on this approach as the callback
 occurs for any emitted event of this name within the contract.
+]]>
         </purpose>
     </description>
 

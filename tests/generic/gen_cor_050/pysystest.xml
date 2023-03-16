@@ -3,8 +3,9 @@
 
     <description>
         <title>Error: revert, require and assert on pure function call</title>
-        <purpose><![CDATA[]]>
+        <purpose><![CDATA[
 Deploy a contract and check for error reporting on revert, require and assert.
+]]>
         </purpose>
     </description>
 

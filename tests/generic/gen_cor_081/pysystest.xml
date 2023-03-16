@@ -3,8 +3,9 @@
 
     <description>
         <title>Events: web3js client using eth.subscribe on logs for event and contract address</title>
-        <purpose><![CDATA[]]>
+        <purpose><![CDATA[
 Uses the general subscriber script to subscribe to a particular event from a particular contract.
+]]>
         </purpose>
     </description>
 

@@ -3,10 +3,11 @@
 
     <description>
         <title>Gas: exceed gas limit</title>
-        <purpose><![CDATA[]]>
+        <purpose><![CDATA[
 Checks what happens when a transaction is submitted with a gas limit set to half the estimate.
 
 Gas mechanics is currently not yet implemented on Obscuro.
+]]>
         </purpose>
     </description>
 
