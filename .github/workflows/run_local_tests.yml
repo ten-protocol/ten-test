@@ -58,6 +58,7 @@ jobs:
         run: |
           cd ${{ github.workspace }}/go-obscuro/
           go run ./testnet/launcher/cmd
+          echo "Run docker container log background processes"
           docker logs -f `docker ps -aqf "name=validator-host"` > validator-host.out &
           docker logs -f `docker ps -aqf "name=validator-enclave"` > validator-enclave.out &
           docker logs -f `docker ps -aqf "name=sequencer-host"` > sequencer-host.out &
@@ -104,7 +105,7 @@ jobs:
         with:
           name: container-artifact
           path: |
-            ${{ github.workspace }}/go-obscuro/testnet/*.out
+            ${{ github.workspace }}/go-obscuro/*.out
           retention-days: 2
 
       - name: 'Docker clean containers and images after the test'
