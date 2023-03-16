@@ -1,6 +1,6 @@
 import json
 from pysys.constants import *
-from obscuro.test.contracts import BaseContract
+from obscuro.test.contracts.default import DefaultContract
 
 
 class ERC20Token:
@@ -17,6 +17,6 @@ class ERC20Token:
         self.contract = self.web3.eth.contract(address=self.address, abi=self.abi)
 
 
-class MintedERC20Token(BaseContract):
+class MintedERC20Token(DefaultContract):
     SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'erc20', 'MintedERC20.sol')
     CONTRACT = 'MintedERC20'

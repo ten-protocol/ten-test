@@ -1,9 +1,9 @@
 import random
 from pysys.constants import *
-from obscuro.test.contracts import BaseContract
+from obscuro.test.contracts.default import DefaultContract
 
 
-class Guesser(BaseContract):
+class Guesser(DefaultContract):
     SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'guesser', 'Guesser.sol')
     CONTRACT = 'Guesser'
 

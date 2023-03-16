@@ -1,7 +1,7 @@
 from pysys.constants import *
-from obscuro.test.contracts import BaseContract
+from obscuro.test.contracts.default import DefaultContract
 
 
-class Error(BaseContract):
+class Error(DefaultContract):
     SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'error', 'Error.sol')
     CONTRACT = 'Error'
