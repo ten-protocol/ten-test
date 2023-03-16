@@ -62,8 +62,11 @@ jobs:
         run: |
           cd ${{ github.workspace }}/go-obscuro/
           go run ./testnet/launcher/cmd
-          docker logs -f `docker ps -aqf "name=testnet-host-1"` > testnet-host-1.out &
-          docker logs -f `docker ps -aqf "name=testnet-enclave-1"` > testnet-enclave-1.out &
+          docker logs -f `docker ps -aqf "name=validator-host"` > validator-host.out &
+          docker logs -f `docker ps -aqf "name=validator-enclave"` > validator-enclave.out &
+          docker logs -f `docker ps -aqf "name=sequencer-host"` > sequencer-host.out &
+          docker logs -f `docker ps -aqf "name=sequencer-enclave"` > sequencer-enclave.out &
+          docker logs -f `docker ps -aqf "name=eth2network"` > eth2network.out &
 
       - name: 'Build required artifacts for running tests'
         run: |
