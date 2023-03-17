@@ -58,17 +58,30 @@ class Default:
         """Connect account 4 to the network. """
         return self.connect(test, Properties().account4pk(), web_socket, check_funds)
 
+    def tx(self, test, web3, tx, account, persist_nonce=True):
+        """Transact using the supplied transaction dictionary.
+
+        Note that the nonce and chainId will automatically be added into the transaction dictionary in this method
+        and therefore do not need to be supplied by the caller.
+        """
+        nonce = self.get_next_nonce(test, web3, account, persist_nonce)
+        tx['nonce'] = nonce
+        tx['chainId'] = web3.eth.chain_id
+        tx_sign = self.sign_transaction(test, tx, nonce, account, persist_nonce)
+        tx_hash = self.send_transaction(test, web3, nonce, account, tx_sign, persist_nonce)
+        tx_recp = self.wait_for_transaction(test, web3, nonce, account, tx_hash, persist_nonce)
+        return tx_recp
+
     def transact(self, test, web3, target, account, gas_limit, persist_nonce=True):
         """Transact using either a contract constructor or contract function as the target.
 
-        When the target is supplied it is encoded into the transaction dictionary using the web3.py
-        builtTransaction method on the target. Note that the majority of transaction calls fall into this
-        category. If required to manually construct the transaction dictionary then this can be performed
-        by signing the transaction manually, and then using the send_transaction and wait_for_transaction
-        helper methods.
+        This method expects the target to be a contract constructor or function, and will build this into the
+        transaction dictionary using buildTransaction on the target. The nonce will be automatically added during this
+        process.
         """
         nonce = self.get_next_nonce(test, web3, account, persist_nonce)
-        tx_sign = self.build_transaction(test, web3, target, nonce, account, gas_limit, persist_nonce)
+        tx = self.build_transaction(web3, target, nonce, gas_limit)
+        tx_sign = self.sign_transaction(test, tx, nonce, account, persist_nonce)
         tx_hash = self.send_transaction(test, web3, nonce, account, tx_sign, persist_nonce)
         tx_recp = self.wait_for_transaction(test, web3, nonce, account, tx_hash, persist_nonce)
         return tx_recp
@@ -78,8 +91,8 @@ class Default:
         nonce = test.nonce_db.get_next_nonce(test, web3, account.address, test.env, persist_nonce)
         return nonce
 
-    def build_transaction(self, test, web3, target, nonce, account, gas_limit, persist_nonce):
-        """Build the transaction dictionary from the contract target. """
+    def build_transaction(self, web3, target, nonce, gas_limit):
+        """Build the transaction dictionary from the contract constructor or function target. """
         build_tx = target.buildTransaction(
             {
                 'nonce': nonce,
@@ -88,7 +101,10 @@ class Default:
                 'chainId': web3.eth.chain_id
             }
         )
-        signed_tx = account.sign_transaction(build_tx)
+        return build_tx
+
+    def sign_transaction(self, test, tx, nonce, account, persist_nonce):
+        signed_tx = account.sign_transaction(tx)
         if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'SIGNED')
         return signed_tx
 

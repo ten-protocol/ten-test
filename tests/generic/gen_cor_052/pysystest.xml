@@ -2,9 +2,10 @@
 <pysystest type="auto">
 
     <description>
-        <title>Payable: </title>
+        <title>Payable: send native funds to a contract address</title>
         <purpose><![CDATA[
-
+Deploys the ReceiveEth contract and transfers funds to it by constructing a tx using the to and value field to denote
+the contract address, and the amount of funds to transfer. 
 ]]>
         </purpose>
     </description>
