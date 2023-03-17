@@ -47,6 +47,8 @@ function task() {
       updateAllowance(allowance)
       displayMessage(`Uh oh. Your guess of ${guess} was worse than your previous try. Take heart! Your allowance is ${ethers.utils.formatEther(allowance)} and the prize pool is ${ethers.utils.formatEther(prize)} OGG.`)
   })
+
+  console.log('Registered all subscriptions')
 }
 
 commander

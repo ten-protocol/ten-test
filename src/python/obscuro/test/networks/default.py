@@ -15,21 +15,25 @@ class Default:
     def chain_id(self): return None
 
     def connection_url(self, web_socket=False):
+        """Return the connection URL to the network. """
         port = self.PORT if not web_socket else self.WS_PORT
         host = self.HOST if not web_socket else self.WS_HOST
         return '%s:%d' % (host, port)
 
     def add_ws_proxy(self, test):
+        """Add a web socket proxy between the client and the network. """
         proxy = WebServerProxy.create(test)
         proxy.run(self.connection_url(web_socket=True), 'proxy.logs')
         self.WS_PORT = proxy.port
 
     def add_http_proxy(self, test):
+        """Add an HTTP socket proxy between the client and the network. """
         proxy = HTTPProxy.create(test)
         proxy.run(self.HOST, self.PORT, 'proxy.logs')
         self.PORT = proxy.port
 
     def connect(self, test, private_key, web_socket=False, check_funds=True):
+        """Connect to the network using a given private key. """
         url = self.connection_url(web_socket)
 
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
@@ -39,18 +43,30 @@ class Default:
         return web3, account
 
     def connect_account1(self, test, web_socket=False, check_funds=True):
+        """Connect account 1 to the network. """
         return self.connect(test, Properties().account1pk(), web_socket, check_funds)
 
     def connect_account2(self, test, web_socket=False, check_funds=True):
+        """Connect account 2 to the network. """
         return self.connect(test, Properties().account2pk(), web_socket, check_funds)
 
     def connect_account3(self, test, web_socket=False, check_funds=True):
+        """Connect account 3 to the network. """
         return self.connect(test, Properties().account3pk(), web_socket, check_funds)
 
     def connect_account4(self, test, web_socket=False, check_funds=True):
+        """Connect account 4 to the network. """
         return self.connect(test, Properties().account4pk(), web_socket, check_funds)
 
     def transact(self, test, web3, target, account, gas_limit, persist_nonce=True):
+        """Transact using either a contract constructor or contract function as the target.
+
+        When the target is supplied it is encoded into the transaction dictionary using the web3.py
+        builtTransaction method on the target. Note that the majority of transaction calls fall into this
+        category. If required to manually construct the transaction dictionary then this can be performed
+        by signing the transaction manually, and then using the send_transaction and wait_for_transaction
+        helper methods.
+        """
         nonce = self.get_next_nonce(test, web3, account, persist_nonce)
         tx_sign = self.build_transaction(test, web3, target, nonce, account, gas_limit, persist_nonce)
         tx_hash = self.send_transaction(test, web3, nonce, account, tx_sign, persist_nonce)
@@ -58,10 +74,12 @@ class Default:
         return tx_recp
 
     def get_next_nonce(self, test, web3, account, persist_nonce):
+        """Get the next nonce, either from persistence or from the transaction count. """
         nonce = test.nonce_db.get_next_nonce(test, web3, account.address, test.env, persist_nonce)
         return nonce
 
     def build_transaction(self, test, web3, target, nonce, account, gas_limit, persist_nonce):
+        """Build the transaction dictionary from the contract target. """
         build_tx = target.buildTransaction(
             {
                 'nonce': nonce,
@@ -75,6 +93,7 @@ class Default:
         return signed_tx
 
     def send_transaction(self, test, web3, nonce, account, signed_tx, persist_nonce):
+        """Send the signed transaction to the network. """
         tx_hash = None
         try:
             tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
@@ -86,6 +105,7 @@ class Default:
         return tx_hash
 
     def wait_for_transaction(self, test, web3, nonce, account, tx_hash, persist_nonce):
+        """Wait for the transaction from the network to be acknowledged. """
         tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
 
         if tx_receipt.status == 1:

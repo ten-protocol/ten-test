@@ -15,3 +15,17 @@ class PySysTest(ObscuroNetworkTest):
 
         snd_eth = SendEther(self, web3)
         snd_eth.deploy(network, account)
+
+    def send(self, network, web3, account, address, amount):
+        nonce = network.get_next_nonce(self, web3, account, False)
+        tx = {
+            'chainId': network.chain_id(),
+            'nonce': nonce,
+            'to': address,
+            'value': web3.toWei(amount, 'ether'),
+            'gas': 4*21000,
+            'gasPrice': web3.eth.gas_price
+        }
+        tx_sign = account.sign_transaction(tx)
+        tx_hash = network.send_transaction(self, web3, nonce, account, tx_sign, False)
+        network.wait_for_transaction(self, web3, nonce, account, tx_hash, False)
