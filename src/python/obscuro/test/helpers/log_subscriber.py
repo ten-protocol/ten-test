@@ -4,6 +4,7 @@ from obscuro.test.helpers.ws_proxy import WebServerProxy
 
 
 class AllEventsLogSubscriber:
+    """A wrapper over the JS all events log subscribing cli tool. """
 
     def __init__(self, test, network, contract, stdout='subscriber.out', stderr='subscriber.err'):
         """Create an instance of the event log subscriber."""
@@ -15,7 +16,7 @@ class AllEventsLogSubscriber:
         self.script = os.path.join(PROJECT.root, 'src', 'javascript', 'scripts', 'all_events_subscriber.js')
 
     def run(self, pk_to_register=None, network_http=None, network_ws=None):
-        """Run a javascript client event log subscriber. """
+        """Run the javascript client event log subscriber. """
         args = []
         args.extend(['--network_http', network_http])
         args.extend(['--network_ws', network_ws])
@@ -27,6 +28,7 @@ class AllEventsLogSubscriber:
 
 
 class FilterLogSubscriber:
+    """A wrapper over the JS filter log subscribing cli tool. """
 
     def __init__(self, test, network, stdout='subscriber.out', stderr='subscriber.err'):
         """Create an instance of the event log subscriber."""
@@ -39,7 +41,7 @@ class FilterLogSubscriber:
 
     def run(self, filter_address=None, filter_from_block=None, filter_topics=None, pk_to_register=None,
             network_http=None, network_ws=None):
-        """Run a javascript client event log subscriber. """
+        """Run the javascript client event log subscriber. """
         if network_ws is None:
             network_ws = self.network.connection_url(web_socket=True)
             if self.test.PROXY: network_ws = WebServerProxy.create(self.test).run(network_ws, 'proxy.logs')

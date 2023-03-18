@@ -7,6 +7,7 @@ from web3.middleware import geth_poa_middleware
 
 
 class ObscuroDefaultL1(Geth):
+    """The Obscuro default L1 network. """
     ETH_LIMIT = 1
     ETH_ALLOC = 10
 
@@ -29,31 +30,35 @@ class ObscuroDefaultL1(Geth):
 
 
 class ObscuroL1(ObscuroDefaultL1):
+    """The L1 network for testnet. """
     HOST = 'http://testnet-eth2network.uksouth.azurecontainer.io'
     PORT = 8025
     WS_PORT = 9000
 
 
 class ObscuroL1Dev(ObscuroDefaultL1):
+    """The L1 network for dev-testnet. """
     HOST = 'http://dev-testnet-eth2network.uksouth.azurecontainer.io'
     PORT = 8025
     WS_PORT = 9000
 
 
 class ObscuroL1Local(ObscuroDefaultL1):
+    """The L1 network for a local testnet. """
     HOST = 'http://eth2network' if os.getenv('DOCKER_TEST_ENV') else 'http://127.0.0.1'
     PORT = 8025
     WS_PORT = 9000
 
 
 class ObscuroL1Sim(ObscuroDefaultL1):
+    """The L1 network for the dev simulation. """
     HOST = 'http://127.0.0.1'
     PORT = 37025
     WS_PORT = 37100
 
 
 class Obscuro(Default):
-    """The Obscuro wallet extension giving access to the underlying network."""
+    """The L2 network for all Obscuro modes (all go through the wallet extension). """
     HOST = 'http://127.0.0.1'
     WS_HOST = 'ws://127.0.0.1'
     PORT = None            # set by the factory for the wallet extension port of the accessing test
@@ -81,7 +86,6 @@ class Obscuro(Default):
         return web3, account
 
     def __generate_viewing_key(self, web3, host, port, account, private_key):
-        # generate a viewing key for this account, sign and post it to the wallet extension
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
 
         data = {"address": account.address}

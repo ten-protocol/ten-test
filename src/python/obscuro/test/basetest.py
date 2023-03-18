@@ -13,7 +13,7 @@ class GenericNetworkTest(BaseTest):
     start processes outside of the framework to interact with the network, e.g. written in python or javascript. The
     WEBSOCKET and PROXY values can be set at run time using the -X<ATTRIBUTE> option to the pysys run launcher, and
     respectively force all connections to be over websockets, or for a proxy to sit inbetween the client and network
-    (where a test supports these). TO override the node host FQDN (e.g. to target a specific node, rather than go
+    (where a test supports these). To override the node host FQDN (e.g. to target a specific node, rather than go
     through a
 
     """
@@ -56,7 +56,7 @@ class GenericNetworkTest(BaseTest):
         return extension
 
     def run_python(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
-        """Run a python process."""
+        """Run a python process. """
         self.log.info('Running python script %s' % os.path.basename(script))
         arguments = [script]
         if args is not None: arguments.extend(args)
@@ -68,7 +68,7 @@ class GenericNetworkTest(BaseTest):
         return hprocess
 
     def run_javascript(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
-        """Run a javascript process."""
+        """Run a javascript process. """
         self.log.info('Running javascript %s' % os.path.basename(script))
         arguments = [script]
         if args is not None: arguments.extend(args)
@@ -85,7 +85,7 @@ class GenericNetworkTest(BaseTest):
         return hprocess
 
     def fund_eth(self, network, account, amount):
-        """A native transfer of ETH from one address to another."""
+        """A native transfer of ETH from one address to another. """
         web3_l1, account_l1 = network.connect(self, Properties().l1_test_account_pk(self.env))
         nonce = network.get_next_nonce(self, web3_l1, account_l1, False)
         tx = {
@@ -101,14 +101,14 @@ class GenericNetworkTest(BaseTest):
         network.wait_for_transaction(self, web3_l1, nonce, account_l1, tx_hash, False)
 
     def fund_obx(self, network, account, amount):
-        """Fund OBX in the L2 to a users account, either through the faucet server or direct from the account."""
+        """Fund OBX in the L2 to a users account, either through the faucet server or direct from the account. """
         if self.env in ['obscuro', 'obscuro.dev']:
             self.fund_obx_from_faucet_server(account)
         else:
             self.fund_obx_from_funded_pk(network, account, amount)
 
     def fund_obx_from_faucet_server(self, account):
-        """Allocates native OBX to a users account from the faucet server."""
+        """Allocates native OBX to a users account from the faucet server. """
         self.log.info('Running request on %s' % Properties().faucet_url(self.env))
         self.log.info('Running for user address %s' % account.address)
         headers = {'Content-Type': 'application/json'}
@@ -172,7 +172,7 @@ class ObscuroNetworkTest(GenericNetworkTest):
     """
 
     def get_total_transactions(self):
-        """Return the total number of L2 transactions on Obscuro."""
+        """Return the total number of L2 transactions on Obscuro. """
         data = {"jsonrpc": "2.0", "method": "obscuroscan_getTotalTransactions", "params": [], "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return int(response.json()['result'])

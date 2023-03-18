@@ -10,6 +10,7 @@ class L1BridgeDetails:
     """Abstraction over the L1 side of the bridge for a particular account. """
 
     def __init__(self, test, pk):
+        """Instantiate an instance. """
         self.test = test
         self.network = NetworkFactory.get_l1_network(test)
         self.web3, self.account = self.network.connect(test, pk)
@@ -18,7 +19,7 @@ class L1BridgeDetails:
         self.tokens = {}
 
     def add_token_contract(self, address, name, symbol):
-        """Store a reference to the ERC20 token, keyed on its symbol ."""
+        """Store a reference to the ERC20 token, keyed on its symbol. """
         self.tokens[symbol] = ERC20Token(self.test, self.web3, name, symbol, address)
 
     def transfer_token(self, symbol, to_address, amount):
@@ -87,6 +88,7 @@ class L2BridgeDetails:
     """Abstraction of the L2 side of the bridge for a particular address. """
 
     def __init__(self, test, pk):
+        """Instantiate an instance. """
         self.test = test
         self.network = NetworkFactory.get_network(test)
         self.web3, self.account = self.network.connect(test, pk)
@@ -96,7 +98,7 @@ class L2BridgeDetails:
         self.tokens = {}
 
     def set_token_contract(self, address, name, symbol):
-        """Store a reference to the ERC20 token, keyed on its symbol ."""
+        """Store a reference to the ERC20 token, keyed on its symbol. """
         self.tokens[symbol] = ERC20Token(self.test, self.web3, name, symbol, address)
 
     def balance_for_token(self, symbol):
