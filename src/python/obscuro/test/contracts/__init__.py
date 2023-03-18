@@ -1,2 +1,2 @@
-"""Package of wrappers over helper processes.
+"""Package of contract abstractions.
 """

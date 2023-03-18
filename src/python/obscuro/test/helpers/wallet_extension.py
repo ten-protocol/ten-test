@@ -5,9 +5,10 @@ from obscuro.test.networks.obscuro import Obscuro
 
 
 class WalletExtension:
+    """A wrapper over the Obscuro wallet extension. """
 
     def __init__(self, test, port=None, ws_port=None, name=None, verbose=True):
-        """Create an instance of the event log subscriber."""
+        """Create an instance of the wrapper. """
         self.test = test
         self.port = port if port is not None else test.getNextAvailableTCPPort()
         self.ws_port = ws_port if ws_port is not None else test.getNextAvailableTCPPort()
@@ -25,7 +26,7 @@ class WalletExtension:
             os.remove(self.persistencePath)
 
     def run(self):
-        """Run a single wallet extension for use by the tests. """
+        """Run an instance of the wallet extension. """
         self.test .log.info('Starting wallet extension on port=%d, ws_port=%d' % (self.port, self.ws_port))
         props = Properties()
 
@@ -45,6 +46,7 @@ class WalletExtension:
         return hprocess
 
     def connection_url(self, web_socket=False):
+        """Return the connection URL to the wallet extension. """
         port = self.port if not web_socket else self.ws_port
         host = Obscuro.HOST if not web_socket else Obscuro.WS_HOST
         return '%s:%d' % (host, port)

@@ -5,18 +5,18 @@ from pysys.exceptions import AbortExecution
 from obscuro.test.networks.ganache import Ganache
 from obscuro.test.persistence.nonce import NoncePersistence
 from obscuro.test.utils.properties import Properties
-from obscuro.test.networks.factory import NetworkFactory
+
 
 class ObscuroRunnerPlugin():
     """Runner class for running a set of tests against a given environment.
 
     The runner is responsible for starting any applications up prior to running the requested tests. When running
-    against Ganache, a local Ganache will be started; when running against Obscuro, the Obscuro wallet extension
-    will be started. All processes started by the runner are automatically stopped when the tests are complete.
+    against Ganache, a local Ganache will be started. All processes started by the runner are automatically stopped
+    when the tests are complete.
     """
 
     def setup(self, runner):
-        """Set up a runner plugin to start any processes required to execute the tests."""
+        """Set up a runner plugin to start any processes required to execute the tests. """
         self.env = 'obscuro' if runner.mode is None else runner.mode
         runner.log.info('Runner is executing against environment %s' % self.env)
 
@@ -88,5 +88,5 @@ class ObscuroRunnerPlugin():
         runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
 
     def __stop_process(self, hprocess):
-        """Stop a process started by this runner plugin."""
+        """Stop a process started by this runner plugin. """
         hprocess.stop()

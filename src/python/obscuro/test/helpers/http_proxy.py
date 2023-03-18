@@ -3,12 +3,18 @@ from pysys.constants import PROJECT
 
 
 class HTTPProxy:
+    """A wrapper of the python HTTP proxy to log messages communications.
+
+    Note the HTTP proxy is still a work in progress. Should you want to use a proxy it is currently
+    recommended to use the WebSocketProxy instead. """
 
     @classmethod
     def create(cls, test):
+        """Class method to create and return an instance of the proxy. """
         return HTTPProxy(test)
 
     def __init__(self, test):
+        """Instantiate an instance of the proxy. """
         self.test = test
         self.script = os.path.join(PROJECT.root, 'src', 'python', 'scripts', 'http_proxy.py')
         self.stdout = os.path.join(test.output, 'http_proxy.out')
