@@ -1,6 +1,8 @@
 from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.networks.factory import NetworkFactory
-from obscuro.test.contracts.payable import ReceiveEther, SendEther
+from obscuro.test.contracts.payable import ReceiveEther
+from obscuro.test.utils.properties import Properties
+from obscuro.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
 class PySysTest(ObscuroNetworkTest):
@@ -14,6 +16,12 @@ class PySysTest(ObscuroNetworkTest):
         # deploy the contract and send eth to it
         contract = ReceiveEther(self, web3)
         contract.deploy(network, account)
+
+        # run a background script to filter and collect events
+        subscriber = AllEventsLogSubscriber(self, network, contract)
+        subscriber.run(Properties().account4pk(), network.connection_url(), network.connection_url(web_socket=True))
+
+        # get balances and perform the transfer
         balance1 = web3.eth.get_balance(contract.address)
         self.log.info('Balance before %.3f' % web3.fromWei(balance1, 'ether'))
 
