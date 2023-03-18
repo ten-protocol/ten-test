@@ -3,10 +3,11 @@
 
     <description>
         <title>Error: require on transaction</title>
-        <purpose><![CDATA[]]>
+        <purpose><![CDATA[
 Deploy a contract and check for error reporting on failure of a transaction.
 
 Skipped - see https://github.com/obscuronet/obscuro-internal/issues/971
+]]>
         </purpose>
     </description>
 

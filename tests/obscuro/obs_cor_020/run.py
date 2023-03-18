@@ -1,5 +1,5 @@
 from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.contracts.erc20.minted_erc20 import MintedERC20Token
+from obscuro.test.contracts.erc20 import MintedERC20Token
 from obscuro.test.utils.bridge import BridgeUser
 from obscuro.test.utils.properties import Properties
 

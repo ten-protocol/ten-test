@@ -1,9 +1,9 @@
 import os, secrets
 from web3 import Web3
 from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.contracts.guesser.guesser import Guesser
-from obscuro.test.contracts.storage.storage import Storage
-from obscuro.test.contracts.error.error import Error
+from obscuro.test.contracts.guesser import Guesser
+from obscuro.test.contracts.storage import Storage
+from obscuro.test.contracts.error import Error
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.helpers.wallet_extension import WalletExtension
 

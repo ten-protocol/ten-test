@@ -1,6 +1,6 @@
 import re
 from obscuro.test.basetest import GenericNetworkTest
-from obscuro.test.contracts.gas.gas_consumer import GasConsumerBalance
+from obscuro.test.contracts.gas import GasConsumerBalance
 from obscuro.test.networks.factory import NetworkFactory
 
 

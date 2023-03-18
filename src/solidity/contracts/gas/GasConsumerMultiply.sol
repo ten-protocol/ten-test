@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.0;
 
-contract GasConsumer {
+contract GasConsumerMultiply {
     address public owner;
 
     constructor() {

@@ -3,10 +3,11 @@
 
     <description>
         <title>Events: web3js client using contract.events.Event</title>
-        <purpose><![CDATA[]]>
+        <purpose><![CDATA[
 This is the second of three ways to get event logs for a contract event that is emitted. It is a subscription
 approach where the events.Event constructor on the contract instance is used, passing the filter options and supplying
 a callback function to process the result and any potential errors.
+]]>
         </purpose>
     </description>
 

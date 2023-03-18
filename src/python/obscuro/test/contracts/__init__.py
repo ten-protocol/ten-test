@@ -1,2 +1,2 @@
-"""Package of abstractions over the supported solidity contracts.
+"""Package of wrappers over helper processes.
 """

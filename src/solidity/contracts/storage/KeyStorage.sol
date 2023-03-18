@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.0;
 
-contract Store {
+contract KeyStorage {
     // two fields, string indexed only
     event ItemSet1(string indexed key, uint256 value);
 

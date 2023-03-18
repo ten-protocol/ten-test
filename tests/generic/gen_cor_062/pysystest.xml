@@ -3,10 +3,11 @@
 
     <description>
         <title>ERC20: repeated transfer with concurrent python client polling balance</title>
-        <purpose><![CDATA[]]>
+        <purpose><![CDATA[
 Account1 sends five lots of 1 token to account2. Account2 has a polling check on the balance out of process
 as a python script and checks that it can detect the updates to the balance. The intention here is to show that two
 concurrent accounts can be used against the network to send and detect receipt of funds.
+]]>
         </purpose>
     </description>
 

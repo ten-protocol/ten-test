@@ -3,9 +3,10 @@
 
     <description>
         <title>ERC20: repeated transfer with concurrent javascript client polling balance</title>
-        <purpose><![CDATA[]]>
+        <purpose><![CDATA[
 Account1 sends five lots of 1 token to account2. Account2 has a polling check on the balance out of process
 as a javascript script and checks that it can detect the updates to the balance.
+]]>
         </purpose>
     </description>
 

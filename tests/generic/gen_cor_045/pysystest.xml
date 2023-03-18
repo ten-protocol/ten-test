@@ -4,13 +4,17 @@
     <description>
         <title>Game: play a sample guessing game</title>
         <purpose><![CDATA[
+Plays an example guessing game where the user approves a token to allow the game to spend money on it's behalf. Mimics
+the number guessing game in the samples repository for local testing on an arbitrary network.
 
+Skipped due to https://github.com/obscuronet/obscuro-internal/issues/1519.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

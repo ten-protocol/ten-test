@@ -1,6 +1,5 @@
-import threading
 from obscuro.test.basetest import GenericNetworkTest
-from obscuro.test.contracts.storage.storage import Storage
+from obscuro.test.contracts.storage import Storage
 from obscuro.test.networks.factory import NetworkFactory
 
 
@@ -20,7 +19,7 @@ class PySysTest(GenericNetworkTest):
         storage.deploy(network, account)
 
         # wait a couple of block times
-        self.wait(2.0*float(self.block_time))
+        self.wait(5.0*float(self.block_time))
 
         # get the new block number
         block_number_deploy = web3.eth.get_block_number()

@@ -3,10 +3,11 @@
 
     <description>
         <title>Gas: cost of addition</title>
-        <purpose><![CDATA[]]>
+        <purpose><![CDATA[
 Checks the cost of addition in transactions that perform a different number of operations. Note the cost of an
 addition should be 3 gas, so the assumption is that each operation (add once, twice, thrice) should get more expensive
 by a value of 3. In fact it doesn't and there is no correlation i.e. it is cheaper to add three times than it is twice?
+]]>
         </purpose>
     </description>
 

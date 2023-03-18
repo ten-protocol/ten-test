@@ -1,8 +1,7 @@
 import os
 from web3 import Web3
 from obscuro.test.basetest import GenericNetworkTest
-from obscuro.test.contracts.game.token import Token
-from obscuro.test.contracts.game.game import Game
+from obscuro.test.contracts.game import Token, Game
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.utils.properties import Properties
 
@@ -14,12 +13,13 @@ class PySysTest(GenericNetworkTest):
         network = NetworkFactory.get_network(self)
 
         # we need to register the end user first for event relevancy rules to take effect
-        web3_usr, account_usr = network.connect(self, Properties().gg_endusr_pk())
+        web3_usr, account_usr = network.connect_account1(self)
 
         # deploy as the app developer
-        web3_dev, account_dev = network.connect(self, Properties().gg_appdev_pk())
+        web3_dev, account_dev = network.connect_account2(self)
         token = Token(self, web3_dev)
         token.deploy(network, account_dev)
+
         game = Game(self, web3_dev, 10, token.address)
         game.deploy(network, account_dev)
 
@@ -37,7 +37,7 @@ class PySysTest(GenericNetworkTest):
         args.extend(['--pk_address', '%s' % Web3().eth.account.privateKeyToAccount(Properties().gg_endusr_pk()).address])
         if self.is_obscuro(): args.extend(['--pk_to_register', '%s' % Properties().gg_endusr_pk()])
         self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
+        self.waitForGrep(file=stdout, expr='Registered all subscriptions', timeout=10)
 
         # approve the game to spend tokens on behalf of the user
         token_player = web3_usr.eth.contract(address=token.address, abi=token.abi)
@@ -53,5 +53,9 @@ class PySysTest(GenericNetworkTest):
             network.transact(self, web3_usr, game_player.functions.attempt(i), account_usr, game.GAS_LIMIT)
             self.wait(float(self.block_time)*1.1)
 
+        # we should have won at some point, and all are guesses should have been logged
         self.assertGrep(file='subscriber.out', filedir=self.output,
                         expr='Congratulations! Your guess of.*has won you the prize of.*OGG')
+
+        self.assertOrderedGrep(file='subscriber.out', filedir=self.output,
+                               exprList=['Your guess of %d' % x for x in range(0, 10)])
