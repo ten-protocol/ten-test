@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Payable: sendViaTransfer funds to a contract address from another contract</title>
+        <purpose><![CDATA[
+Uses the solidity by example Receieve and Send Ether example to send funds from one contract to another, using the
+sendViaTransfer function.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>payable</group>
+        </groups>
+        <modes inherit="true">
+            <mode>obscuro.dev</mode>
+            <mode>obscuro.local</mode>
+            <mode>obscuro.sim</mode>
+            <mode>goerli</mode>
+            <mode>ganache</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

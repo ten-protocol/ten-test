@@ -36,16 +36,21 @@ contract ReceiveEther {
 }
 
 contract SendEther {
+    event Send(string key, uint value);
+
     function sendViaTransfer(address payable _to) public payable {
+        emit Send("sendViaTransfer", msg.value);
         _to.transfer(msg.value);
     }
 
     function sendViaSend(address payable _to) public payable {
+        emit Send("sendViaSend", msg.value);
         bool sent = _to.send(msg.value);
         require(sent, "Failed to send Ether");
     }
 
     function sendViaCall(address payable _to) public payable {
+        emit Send("sendViaCall", msg.value);
         (bool sent, bytes memory data) = _to.call{value: msg.value}("");
         require(sent, "Failed to send Ether");
     }
