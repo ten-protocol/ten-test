@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Payable: only the contract owner can see the balance</title>
+        <title>Payable: only the contract owner can see the balance of the contract address</title>
         <purpose><![CDATA[
 Checks that only the deployer of a contract can read the balance of the contract when funds are sent to it.
 ]]>

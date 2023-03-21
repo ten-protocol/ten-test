@@ -2,10 +2,10 @@
 <pysystest type="auto">
 
     <description>
-        <title>Payable: sendViaTransfer funds to a contract address from another contract</title>
+        <title>Payable: send funds to a contract address from another contract</title>
         <purpose><![CDATA[
 Uses the solidity by example Receieve and Send Ether example to send funds from one contract to another, using the
-sendViaTransfer function.
+sendViaTransfer, sendViaSend, and sendViaCall function.
 ]]>
         </purpose>
     </description>
