@@ -27,18 +27,20 @@ class PySysTest(ObscuroNetworkTest):
         send_sub = AllEventsLogSubscriber(self, network, send_contract, stdout='send_sub.out', stderr='send_sub.err')
         send_sub.run(Properties().account4pk(), network.connection_url(), network.connection_url(web_socket=True))
 
-        # get balances and perform the transfer by encoding the function call
-        balance1 = web3.eth.get_balance(recv_contract.address)
-        self.log.info('Balance before %.3f' % web3.fromWei(balance1, 'ether'))
+        # perform transfers
+        last_balance = 0
+        for fn in ['sendViaTransfer', 'sendViaSend', 'sendViaCall']:
+            self.log.info('Encoding and transferring using %s' % fn)
 
-        data = send_contract.contract.encodeABI(fn_name='sendViaTransfer', args=[recv_contract.address])
-        self.send(network, web3, send_contract, account, data, 0.5)
+            data = send_contract.contract.encodeABI(fn_name=fn, args=[recv_contract.address])
+            self.send(network, web3, send_contract, account, data, 0.5)
 
-        balance2 = web3.eth.get_balance(recv_contract.address)
-        self.log.info('Balance after %.3f' % web3.fromWei(balance2, 'ether'))
+            balance = web3.eth.get_balance(recv_contract.address)
+            self.log.info('Last balance: %s', web3.fromWei(last_balance, 'ether'))
+            self.log.info('New balance : %s', web3.fromWei(balance, 'ether'))
 
-        # assert funds have gone to the contract
-        self.assertTrue(web3.fromWei(balance2, 'ether') == 0.5)
+            self.assertTrue(balance == last_balance + web3.toWei(0.5, 'ether'))
+            last_balance = balance
 
     def send(self, network, web3, contract, account, data, amount):
         tx = {
