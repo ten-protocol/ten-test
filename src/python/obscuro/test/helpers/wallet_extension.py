@@ -7,6 +7,12 @@ from obscuro.test.networks.obscuro import Obscuro
 class WalletExtension:
     """A wrapper over the Obscuro wallet extension. """
 
+    @classmethod
+    def start(cls, test, port=None, ws_port=None, name=None, verbose=True):
+        extension = WalletExtension(test, port, ws_port, name, verbose)
+        extension.run()
+        return extension
+
     def __init__(self, test, port=None, ws_port=None, name=None, verbose=True):
         """Create an instance of the wrapper. """
         self.test = test
