@@ -17,7 +17,6 @@ Skipped as a breaking change in ethers is messing up the test - will re-enable w
         <groups inherit="true">
             <group>events</group>
             <group>ethers</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>
