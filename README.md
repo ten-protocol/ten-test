@@ -93,11 +93,11 @@ brew install python
 npm install solc@0.8.15 --global
 npm install console-stamp --global
 npm install ganache --global
-npm install web3 --global
-npm install ethers --global
+npm install web3@1.9.0 --global
+npm install ethers@5.7.2 --global
 npm install commander --global
 
-pip3 install web3
+pip3 install web3==5.31.3
 pip3 install pysys==1.6.1
 pip3 install py-solc-x
 ```
@@ -116,12 +116,12 @@ curl -sL https://deb.nodesource.com/setup_18.x | bash -
 apt-get install -y nodejs
 npm install console-stamp --global
 npm install ganache --global
-npm install web3 --global
-npm install ethers --global
+npm install web3@1.9.0 --global
+npm install ethers@5.7.2 --global
 npm install commander --global
 
 apt install -y python3-pip
-python3 -m pip install web3
+python3 -m pip install web3==5.31.3
 python3 -m pip install pysys==1.6.1
 python3 -m pip install py-solc-x
 ```
