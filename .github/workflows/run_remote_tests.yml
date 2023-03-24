@@ -1,11 +1,16 @@
 # Run a set of E2E tests on a remote obscuro network (dev-testnet or testnet). The workflow action can be
-# triggered either manually via a workflow dispatch, or via a repository dispatch event.
+# triggered
+#   a) via a workflow dispatch manually triggered
+#   b) via a repository dispatch event on end of the scheduled deployment of dev-testnet
+#   c) via a schedule at 12:05 on a Saturday to run weekend soak tests
 
 name: Run remote tests
 run-name: Run remote tests (${{ github.event_name }})
 on:
   repository_dispatch:
     types: [ faucet_dev_deployment ]
+  schedule:
+    - cron: '05 12 * * 6'
   workflow_dispatch:
     inputs:
       environment:
@@ -16,6 +21,10 @@ on:
         options:
           - testnet
           - dev-testnet
+      arguments:
+        description: 'Arguments to the pysys run'
+        required: true
+        default: '-e skip -e robustness'
 
 jobs:
   Run-Tests:
@@ -45,19 +54,25 @@ jobs:
         if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.environment == 'testnet') }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -e skip -e robustness
+          /usr/local/bin/pysys.py run ${{ github.event.inputs.arguments }}
 
       - name: 'Run tests on dev-testnet on a workflow_dispatch'
         if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.environment == 'dev-testnet') }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -m obscuro.dev -e skip -e robustness
+          /usr/local/bin/pysys.py run -m obscuro.dev ${{ github.event.inputs.arguments }}
 
       - name: 'Run tests on dev-testnet on a repository_dispatch trigger of a new deployment'
         if: ${{ (github.event_name == 'repository_dispatch') && (github.event.client_payload.env == 'dev-testnet') }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
           /usr/local/bin/pysys.py run -m obscuro.dev -e skip -e robustness
+
+      - name: 'Run tests on dev-testnet on a schedule'
+        if: ${{ (github.event_name == 'schedule')
+        run: |
+          cd ${{ github.workspace }}/obscuro-test/tests
+          /usr/local/bin/pysys.py run -m obscuro.dev -e skip -v CRIT -c 100
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v3
