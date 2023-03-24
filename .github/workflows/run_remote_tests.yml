@@ -17,7 +17,7 @@ on:
         type: choice
         description: Environment
         required: true
-        default: testnet
+        default: dev-testnet
         options:
           - testnet
           - dev-testnet
