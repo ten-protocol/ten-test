@@ -21,7 +21,7 @@ def generate_viewing_key(web3, url, private_key):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(prog='event_listener')
+    parser = argparse.ArgumentParser(prog='error_client')
     parser.add_argument('-u', '--network_http', help='Connection URL')
     parser.add_argument('-a', '--address', help='Address of the contract')
     parser.add_argument('-b', '--contract_abi', help='Abi of the contract')

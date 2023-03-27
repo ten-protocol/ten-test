@@ -20,44 +20,39 @@ def generate_viewing_key(web3, url, private_key):
     requests.post('%s/submitviewingkey/' % url, data=json.dumps(data), headers=headers)
 
 
-def store_value(value, web3, account, contract):
-    build_tx = contract.functions.store(value).buildTransaction(
-        {
-            'nonce': web3.eth.get_transaction_count(account.address),
-            'gasPrice': 21000,
-            'gas': 720000,
-            'chainId': web3.eth.chain_id
-        }
-    )
-    signed_tx = account.sign_transaction(build_tx)
+def transfer_value(web3, account, amount, recipient):
+    tx = {
+        'nonce': web3.eth.get_transaction_count(account.address),
+        'to': recipient,
+        'value': web3.toWei(amount, 'ether'),
+        'gas': 4 * 720000,
+        'gasPrice': 21000
+    }
+    signed_tx = account.sign_transaction(tx)
     tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
     tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
 
     if tx_receipt.status != 1:
-        logging.error('Error performing transaction\n')
+        logging.error('Error performing transaction')
     else:
-        logging.info('Transaction complete - stored value %d' % value)
+        logging.info('Transaction complete ... transferred %d to %s' % (amount, recipient))
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(prog='storage_client')
+    parser = argparse.ArgumentParser(prog='funds_client')
     parser.add_argument('-u', '--network_http', help='Connection URL')
-    parser.add_argument('-a', '--address', help='Address of the contract')
-    parser.add_argument('-b', '--contract_abi', help='Abi of the contract')
     parser.add_argument('-p', '--pk_to_register', help='Private key of account to poll')
+    parser.add_argument('-r', '--recipients', help='Comma separated list of recipient pks')
     args = parser.parse_args()
 
     web3 = Web3(Web3.HTTPProvider(args.network_http))
     generate_viewing_key(web3, args.network_http, args.pk_to_register)
-    with open(args.contract_abi) as f:
-        contract = web3.eth.contract(address=args.address, abi=json.load(f))
+    account = web3.eth.account.privateKeyToAccount(args.pk_to_register)
+    recipients = args.recipients.split(',')
 
     logging.info('Client running')
-    account = web3.eth.account.privateKeyToAccount(args.pk_to_register)
-
     while True:
-        store_value(random.randint(0,100), web3, account, contract)
-        time.sleep(0.1)
-
-
+        balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+        logging.info('Account balance is %.9f' % balance)
+        transfer_value(web3, account, 0.001, random.choice(recipients))
 
