@@ -56,12 +56,11 @@ class PySysTest(ObscuroNetworkTest):
         self.wait(self.DURATION)
         self.log.info('Stopping all concurrent clients')
         for client in self.clients: client.stop()
-
-        self.log.info('Waiting 2 block periods')
         self.wait(2.0*float(self.block_time))
 
         self.log.info('Transact and check')
         network.transact(self, web3, storage.contract.functions.store(1812), account, storage.GAS_LIMIT)
+        self.wait(2.0*float(self.block_time))
         value = storage.contract.functions.retrieve().call()
         self.log.info('Call shows value %d' % storage.contract.functions.retrieve().call())
         self.assertTrue(value == 1812)
