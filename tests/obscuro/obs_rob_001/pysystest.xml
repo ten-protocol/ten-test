@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Stress - multiple concurrent subscribers, additional subscribing and unsubscribing</title>
+        <title>Stress - multiple concurrent subscribers, additional clients subscribing and unsubscribing</title>
         <purpose><![CDATA[
 A configurable number of subscribers are started to receive events from Obscuro, which stay subscribed for the duration
 of the test. Another configurable number of subscribers are started, where they continually subscribe and then

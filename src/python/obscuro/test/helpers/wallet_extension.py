@@ -13,7 +13,7 @@ class WalletExtension:
         extension.run()
         return extension
 
-    def __init__(self, test, port=None, ws_port=None, name=None, verbose=True):
+    def __init__(self, test, port=None, ws_port=None, name=None, verbose=False):
         """Create an instance of the wrapper. """
         self.test = test
         self.port = port if port is not None else test.getNextAvailableTCPPort()
