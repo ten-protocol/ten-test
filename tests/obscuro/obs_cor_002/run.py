@@ -19,7 +19,7 @@ class PySysTest(ObscuroNetworkTest):
         contract.deploy(network, account)
 
         # run the javascript event log subscriber in the background for the other accounts
-        self.subscribe(network, Properties().account4pk(), 'account4', contract)
+        self.subscribe(network, None, 'account4', contract)
         self.subscribe(network, Properties().account1pk(), 'account1', contract, new_wallet=True)
         self.subscribe(network, Properties().account2pk(), 'account2', contract, new_wallet=True)
         self.subscribe(network, Properties().account3pk(), 'account3', contract, new_wallet=True)
