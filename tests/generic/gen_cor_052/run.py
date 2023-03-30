@@ -19,7 +19,7 @@ class PySysTest(ObscuroNetworkTest):
 
         # run a background script to filter and collect events
         subscriber = AllEventsLogSubscriber(self, network, contract)
-        subscriber.run(Properties().account4pk(), network.connection_url(), network.connection_url(web_socket=True))
+        subscriber.run(None, network.connection_url(), network.connection_url(web_socket=True))
 
         # get balances and perform the transfer
         balance1 = web3.eth.get_balance(contract.address)
