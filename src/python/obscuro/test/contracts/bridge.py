@@ -42,7 +42,20 @@ class L2MessageBus:
         self.contract = self.web3.eth.contract(address=self.address, abi=self.abi)
 
 
-class CrossChainMessenger:
+class L1CrossChainMessenger:
+    GAS_LIMIT = 7200000
+
+    def __init__(self, test, web3):
+        self.test = test
+        self.web3 = web3
+        self.address = Properties().l1_cross_chain_messenger_address(test.env)
+        with open(os.path.join(PROJECT.root, 'artifacts', 'contracts', 'messaging', 'messenger',
+                               'CrossChainMessenger.sol', 'CrossChainMessenger.json'), 'r') as fp:
+            self.abi = json.load(fp)
+        self.contract = self.web3.eth.contract(address=self.address, abi=self.abi)
+
+
+class L2CrossChainMessenger:
     GAS_LIMIT = 7200000
 
     def __init__(self, test, web3):

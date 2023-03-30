@@ -108,6 +108,9 @@ class Properties:
     def l2_message_bus_address(self, key):
         return self.get('env.'+key, 'L2MessageBusAddress')
 
+    def l1_cross_chain_messenger_address(self, key):
+        return self.get('env.'+key, 'L1CrossChainMessengerAddress')
+
     def l2_cross_chain_messenger_address(self, key):
         return self.get('env.'+key, 'L2CrossChainMessengerAddress')
 

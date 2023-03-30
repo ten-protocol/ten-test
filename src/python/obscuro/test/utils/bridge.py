@@ -3,19 +3,63 @@ from web3._utils.events import EventLogErrorFlags
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.contracts.erc20 import ERC20Token
 from obscuro.test.contracts.bridge import ObscuroBridge, EthereumBridge
-from obscuro.test.contracts.messaging import L1MessageBus, L2MessageBus, CrossChainMessenger
+from obscuro.test.contracts.bridge import L1MessageBus, L2MessageBus, L1CrossChainMessenger, L2CrossChainMessenger
 
 
-class L1BridgeDetails:
+class BridgeDetails:
+
+    def __init__(self, test, web3, account, network, bridge, bus, xchain):
+        """Instantiate an instance. """
+        self.test = test
+        self.web3 = web3
+        self.account = account
+        self.network = network
+        self.bridge = bridge
+        self.bus = bus
+        self.xchain = xchain
+
+    def relay_message(self, xchain_msg):
+        """Relay a cross chain message. """
+        tx_receipt = self.network.transact(self.test, self.web3,
+                                           self.xchain.contract.functions.relayMessage(xchain_msg),
+                                           self.account, gas_limit=self.xchain.GAS_LIMIT)
+        return tx_receipt
+
+    def wait_for_message(self, xchain_msg, timeout=30):
+        """Wait for a cross chain message to be verified as final. """
+        start = time.time()
+        while True:
+            ret = self.bus.contract.functions.verifyMessageFinalized(xchain_msg).call()
+            if ret: break
+            if time.time() - start > timeout:
+                raise TimeoutError('Timed out waiting for message to be verified')
+            time.sleep(1.0)
+
+    @classmethod
+    def get_cross_chain_message(cls, log):
+        """Extract the cross chain message from an event log. """
+        message = {
+            'sender': log['args']['sender'],
+            'sequence': log['args']['sequence'],
+            'nonce': log['args']['nonce'],
+            'topic': log['args']['topic'],
+            'payload': log['args']['payload'],
+            'consistencyLevel': log['args']['consistencyLevel']
+        }
+        return message
+
+
+class L1BridgeDetails(BridgeDetails):
     """Abstraction over the L1 side of the bridge for a particular account. """
 
     def __init__(self, test, pk):
         """Instantiate an instance. """
-        self.test = test
-        self.network = NetworkFactory.get_l1_network(test)
-        self.web3, self.account = self.network.connect(test, pk)
-        self.bridge = ObscuroBridge(test, self.web3)  # the L1 side contract for the bridge
-        self.bus = L1MessageBus(test, self.web3)      # the L1 side contract for the message bus
+        network = NetworkFactory.get_l1_network(test)
+        web3, account = network.connect(test, pk)
+        bridge = ObscuroBridge(test, web3)
+        bus = L1MessageBus(test, web3)
+        xchain = L1CrossChainMessenger(test, web3)
+        super().__init__(test, web3, account, network, bridge, bus, xchain)
         self.tokens = {}
 
     def add_token_contract(self, address, name, symbol):
@@ -55,7 +99,7 @@ class L1BridgeDetails:
                                                                                          token.symbol),
                                            self.account, gas_limit=self.bridge.GAS_LIMIT, persist_nonce=False)
         logs = self.bus.contract.events.LogMessagePublished().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
-        return tx_receipt, L1BridgeDetails.get_cross_chain_message(logs[1])
+        return tx_receipt, self.get_cross_chain_message(logs[1])
 
     def send_erc20(self, symbol, address, amount):
         """Send tokens across the bridge.
@@ -68,33 +112,20 @@ class L1BridgeDetails:
                                                                                     amount, address),
                                            self.account, gas_limit=self.bridge.GAS_LIMIT, persist_nonce=False)
         logs = self.bus.contract.events.LogMessagePublished().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
-        return tx_receipt, L1BridgeDetails.get_cross_chain_message(logs[2])
-
-    @classmethod
-    def get_cross_chain_message(cls, log):
-        """Extract the cross chain message from an event log. """
-        message = {
-            'sender': log['args']['sender'],
-            'sequence': log['args']['sequence'],
-            'nonce': log['args']['nonce'],
-            'topic': log['args']['topic'],
-            'payload': log['args']['payload'],
-            'consistencyLevel': log['args']['consistencyLevel']
-        }
-        return message
+        return tx_receipt, self.get_cross_chain_message(logs[2])
 
 
-class L2BridgeDetails:
+class L2BridgeDetails(BridgeDetails):
     """Abstraction of the L2 side of the bridge for a particular address. """
 
     def __init__(self, test, pk):
         """Instantiate an instance. """
-        self.test = test
-        self.network = NetworkFactory.get_network(test)
-        self.web3, self.account = self.network.connect(test, pk)
-        self.bridge = EthereumBridge(test, self.web3)
-        self.bus = L2MessageBus(test, self.web3)
-        self.xchain = CrossChainMessenger(test, self.web3)
+        network = NetworkFactory.get_network(test)
+        web3, account = network.connect(test, pk)
+        bridge = EthereumBridge(test, web3)
+        bus = L2MessageBus(test, web3)
+        xchain = L2CrossChainMessenger(test, web3)
+        super().__init__(test, web3, account, network, bridge, bus, xchain)
         self.tokens = {}
 
     def set_token_contract(self, address, name, symbol):
@@ -106,28 +137,24 @@ class L2BridgeDetails:
         token = self.tokens[symbol]
         return token.contract.functions.balanceOf(self.account.address).call({"from":self.account.address})
 
-    def wait_for_message(self, xchain_msg, timeout=30):
-        """Wait for a cross chain message to be verified as final. """
-        start = time.time()
-        while True:
-            ret = self.bus.contract.functions.verifyMessageFinalized(xchain_msg).call()
-            if ret: break
-            if time.time() - start > timeout:
-                raise TimeoutError('Timed out waiting for message to be verified')
-            time.sleep(1.0)
-
-    def relay_message(self, xchain_msg):
-        """Relay a cross chain message. """
-        tx_receipt = self.network.transact(self.test, self.web3,
-                                           self.xchain.contract.functions.relayMessage(xchain_msg),
-                                           self.account, gas_limit=self.xchain.GAS_LIMIT)
-        return tx_receipt
-
     def relay_whitelist_message(self, xchain_msg):
         """Relay a cross chain message specific to a whitelisting. """
         tx_receipt = self.relay_message(xchain_msg)
         logs = self.bridge.contract.events.CreatedWrappedToken().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, logs[1]['args']['localAddress']
+
+    def send_erc20(self, symbol, address, amount):
+        """Send tokens across the bridge.
+
+        The ERC20 contract must have been whitelisted for this operation to be successful.
+        """
+        token = self.tokens[symbol]
+        tx_receipt = self.network.transact(self.test, self.web3,
+                                           self.bridge.contract.functions.sendERC20(token.address,
+                                                                                    amount, address),
+                                           self.account, gas_limit=self.bridge.GAS_LIMIT)
+        logs = self.bus.contract.events.LogMessagePublished().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
+        return tx_receipt, self.get_cross_chain_message(logs[1])
 
 
 class BridgeUser:
