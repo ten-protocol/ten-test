@@ -6,16 +6,15 @@
         <purpose><![CDATA[
 This is all implemented in the process of the test, where after performing transactions on a contract a filter is placed
 on the contract and all new entries are queried for.
-
-Skipped due to https://github.com/obscuronet/obscuro-internal/issues/1461
 ]]>
         </purpose>
     </description>
 
+    <skipped reason="https://github.com/obscuronet/obscuro-internal/issues/1461"/>
+
     <classification>
         <groups inherit="true">
             <group>events</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>
