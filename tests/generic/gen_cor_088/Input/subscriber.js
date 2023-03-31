@@ -3,10 +3,10 @@ const commander = require('commander')
 
 require('console-stamp')(console, 'HH:MM:ss')
 
-function task() {
-  console.log('Starting task ...')
-  topic = web3.utils.sha3('CallerIndexedAddress(address)')
-  topics = [ topic ]
+function task(address) {
+  console.log('Starting subscription for address', address)
+  topic = web3.utils.sha3('IndexedAddressAndNumber(address,uint256)')
+  topics = [ topic, address ]
   web3.eth.subscribe('logs', {
       topics: topics
     },
@@ -32,8 +32,9 @@ commander
 
 const options = commander.opts()
 const web3 = new Web3(`${options.network_ws}`)
-task()
 
+address = `${web3.utils.padLeft('0x', 24)}${options.address.split('0x')[1]}`
+task(address)
 
 
 

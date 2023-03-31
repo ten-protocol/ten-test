@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Events: web3js client using eth.subscribe on logs for event and EOA</title>
+        <title>Events: web3js client using eth.subscribe on logs for event with account address</title>
         <purpose><![CDATA[
 Uses a bespoke subscriber script to subscribe to a particular event, for a particular externally owned address.
 ]]>
