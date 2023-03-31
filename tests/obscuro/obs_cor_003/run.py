@@ -1,9 +1,8 @@
 from pysys.constants import FAILED
 from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.networks.factory import NetworkFactory
-from obscuro.test.utils.properties import Properties
 from obscuro.test.contracts.relevancy import Relevancy
-from obscuro.test.helpers.log_subscriber import AllEventsLogSubscriber
+from obscuro.test.helpers.log_subscriber import FilterLogSubscriber
 
 
 class PySysTest(ObscuroNetworkTest):
@@ -14,18 +13,24 @@ class PySysTest(ObscuroNetworkTest):
 
         # connect via the primary wallet extension used by the test in the order of
         # account1, account2, account3, account4
+        web3, account = network.connect_account4(self)
         network.connect_account1(self)
         network.connect_account2(self)
         network.connect_account3(self)
-        web3, account = network.connect_account4(self)
 
         # deploy the storage contract as account 4
         contract = Relevancy(self, web3)
         contract.deploy(network, account)
 
         # run a background script to filter and collect events
-        subscriber = AllEventsLogSubscriber(self, network, contract)
-        subscriber.run(Properties().account4pk(), network.connection_url(), network.connection_url(web_socket=True))
+        subscriber = FilterLogSubscriber(self, network)
+        subscriber.run(
+            filter_address=contract.address,
+            filter_topics=[
+                web3.keccak(text='CallerIndexedAddress(address)').hex(),
+                web3.utils.sha3(account.address)
+            ]
+        )
 
         # perform some transactions as account4, resulting in an event with the account 4 address included
         self.log.info('Performing transactions ... ')

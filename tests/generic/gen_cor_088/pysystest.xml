@@ -2,10 +2,9 @@
 <pysystest type="auto">
 
     <description>
-        <title>Events: web3js client using eth.subscribe on logs for event and range of values</title>
+        <title>Events: web3js client using eth.subscribe on logs for event and EOA</title>
         <purpose><![CDATA[
-Uses a bespoke subscriber script to subscribe to a particular event, for a combination of particular values in an
-indexed parameter field.
+Uses a bespoke subscriber script to subscribe to a particular event, for a particular externally owned address.
 ]]>
         </purpose>
     </description>
