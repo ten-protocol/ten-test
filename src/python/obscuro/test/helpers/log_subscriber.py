@@ -22,7 +22,7 @@ class AllEventsLogSubscriber:
         args.extend(['--network_ws', network_ws])
         args.extend(['--address', self.contract.address])
         args.extend(['--contract_abi', self.contract.abi_path])
-        args.extend(['--pk_to_register', pk_to_register])
+        if pk_to_register: args.extend(['--pk_to_register', pk_to_register])
         self.test.run_javascript(self.script, self.stdout, self.stderr, args)
         self.test.waitForGrep(file=self.stdout, expr='Subscription confirmed with id:', timeout=10)
 

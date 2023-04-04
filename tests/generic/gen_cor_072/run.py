@@ -24,7 +24,6 @@ class PySysTest(GenericNetworkTest):
         args.extend(['--network_http', '%s' % network.connection_url(web_socket=False)])
         args.extend(['--address', '%s' % storage.address])
         args.extend(['--contract_abi', '%s' % storage.abi_path])
-        if self.is_obscuro(): args.extend(['--pk_to_register', '%s' % Properties().account3pk()])
         self.run_python(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting the polling loop', timeout=10)
 

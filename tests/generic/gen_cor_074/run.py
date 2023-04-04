@@ -26,12 +26,10 @@ class PySysTest(GenericNetworkTest):
         stderr = os.path.join(self.output, 'poller.err')
         script = os.path.join(self.input, 'poller.js')
         args = []
-        args.extend(['--network_http', '%s' % network.connection_url(web_socket=False)])
         args.extend(['--network_ws', ws_url])
         args.extend(['--address', '%s' % storage.address])
         args.extend(['--contract_abi', '%s' % storage.abi_path])
         args.extend(['--filter_key', '%s' % 'r1'])
-        if self.is_obscuro(): args.extend(['--pk_to_register', '%s' % Properties().account3pk()])
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Started tasks', timeout=10)
 

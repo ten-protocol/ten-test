@@ -26,11 +26,9 @@ class PySysTest(GenericNetworkTest):
         stderr = os.path.join(self.output, 'subscriber.err')
         script = os.path.join(self.input, 'subscriber.js')
         args = []
-        args.extend(['--network_http', '%s' % network.connection_url(web_socket=False)])
         args.extend(['--network_ws', ws_url])
         args.extend(['--filter_key1', 'k1'])
         args.extend(['--filter_key2', 'k3'])
-        if self.is_obscuro(): args.extend(['--pk_to_register', '%s' % Properties().account3pk()])
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Subscribed for event logs', timeout=10)
 
