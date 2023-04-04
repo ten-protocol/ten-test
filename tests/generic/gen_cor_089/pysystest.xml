@@ -13,6 +13,7 @@ Uses a bespoke subscriber script to subscribe to the CallerIndexedAddress event 
         <groups inherit="true">
             <group>events</group>
             <group>web3js</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>
