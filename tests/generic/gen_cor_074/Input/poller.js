@@ -54,13 +54,11 @@ function task2(from) {
 commander
   .version('1.0.0', '-v, --version')
   .usage('[OPTIONS]...')
-  .option('--network_http <value>', 'Http connection URL to the network')
   .option('--network_ws <value>', 'Web socket connection URL to the network')
   .option('--address <value>', 'Web socket connection URL to the network')
   .option('--contract_abi <value>', 'Web socket connection URL to the network')
   .option('--filter_address <value>', 'Web socket connection URL to the network')
   .option('--filter_key <value>', 'Web socket connection URL to the network')
-  .option('--pk_to_register <value>', 'Private key used to register for a viewing key (obscuro only)')
   .parse(process.argv)
 
 const options = commander.opts()

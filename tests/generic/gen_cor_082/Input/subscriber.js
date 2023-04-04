@@ -30,24 +30,15 @@ function task() {
 commander
   .version('1.0.0', '-v, --version')
   .usage('[OPTIONS]...')
-  .option('--network_http <value>', 'Http connection URL to the network')
   .option('--network_ws <value>', 'Web socket connection URL to the network')
   .option('--filter_key1 <value>', 'The first key value to filter on')
   .option('--filter_key2 <value>', 'The second key value to filter on')
-  .option('--pk_to_register <value>', 'Private key used to register for a viewing key (obscuro only)', null)
   .parse(process.argv)
 
 const options = commander.opts()
 const web3 = new Web3(`${options.network_ws}`)
+task()
 
-if (options.pk_to_register) {
-  let sign = (message) => { return web3.eth.accounts.sign(message, '0x' + options.pk_to_register) }
-  let address = web3.eth.accounts.privateKeyToAccount(options.pk_to_register).address
-  vk.generate_viewing_key(sign, options.network_http, address, task)
-}
-else {
-  task()
-}
 
 
 
