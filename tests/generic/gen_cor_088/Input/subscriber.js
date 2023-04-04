@@ -14,7 +14,7 @@ function task(address) {
       if (error) {
         console.log('Error returned is ', error)
       } else {
-        console.log('Result = ', result)
+        console.log('Result =', Web3.utils.hexToNumber(result.data))
       }
     }
   ) .on("connected", function(subscriptionId){

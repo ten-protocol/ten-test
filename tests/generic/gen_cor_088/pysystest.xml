@@ -2,9 +2,10 @@
 <pysystest type="auto">
 
     <description>
-        <title>Events: web3js client using eth.subscribe on logs for event with account address</title>
+        <title>Events: web3js client using eth.subscribe on logs for event with account address and number</title>
         <purpose><![CDATA[
-Uses a bespoke subscriber script to subscribe to a particular event, for a particular externally owned address.
+Uses a bespoke subscriber script to subscribe to the IndexedAddressAndNumber event from the relevancy contract, for a
+particular externally owned address.
 ]]>
         </purpose>
     </description>
