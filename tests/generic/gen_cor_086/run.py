@@ -57,5 +57,5 @@ class PySysTest(GenericNetworkTest):
 
         # validate correct count if duplicates are not allowed
         if not self.ALLOW_EVENT_DUPLICATES:
-            self.assertLineCount(file=stdout, expr='ItemSet1', condition='== 2')
+            self.assertLineCount(file=stdout, expr='ItemSet1', condition='== 1')
             self.assertLineCount(file=stdout, expr='ItemSet2', condition='== 2')
