@@ -1,3 +1,5 @@
+# Utility script to create a private key and log the account address
+#
 import secrets
 from web3 import Web3
 

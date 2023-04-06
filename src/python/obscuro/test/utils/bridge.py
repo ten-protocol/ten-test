@@ -2,6 +2,7 @@ import time
 from web3._utils.events import EventLogErrorFlags
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.contracts.erc20 import ERC20Token
+from obscuro.test.contracts.bridge import WrappedERC20
 from obscuro.test.contracts.bridge import ObscuroBridge, EthereumBridge
 from obscuro.test.contracts.bridge import L1MessageBus, L2MessageBus, L1CrossChainMessenger, L2CrossChainMessenger
 
@@ -130,7 +131,7 @@ class L2BridgeDetails(BridgeDetails):
 
     def set_token_contract(self, address, name, symbol):
         """Store a reference to the ERC20 token, keyed on its symbol. """
-        self.tokens[symbol] = ERC20Token(self.test, self.web3, name, symbol, address)
+        self.tokens[symbol] = WrappedERC20(self.test, self.web3, name, symbol, address)
 
     def balance_for_token(self, symbol):
         """Get the balance for a token. """
@@ -143,12 +144,22 @@ class L2BridgeDetails(BridgeDetails):
         logs = self.bridge.contract.events.CreatedWrappedToken().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, logs[1]['args']['localAddress']
 
+    def approve_token(self, symbol, approval_address, amount):
+        """Approve another address to spend ERC20 on behalf of this account. """
+        token = self.tokens[symbol]
+        tx_receipt = self.network.transact(self.test, self.web3,
+                                           token.contract.functions.approve(approval_address, amount),
+                                           self.account, gas_limit=token.GAS_LIMIT)
+        return tx_receipt
+
     def send_erc20(self, symbol, address, amount):
         """Send tokens across the bridge.
 
         The ERC20 contract must have been whitelisted for this operation to be successful.
         """
         token = self.tokens[symbol]
+        self.test.log.info(address)
+        self.test.log.info(amount)
         tx_receipt = self.network.transact(self.test, self.web3,
                                            self.bridge.contract.functions.sendERC20(token.address,
                                                                                     amount, address),
