@@ -1,4 +1,5 @@
-import os, copy, sys, json, requests
+import os, copy, sys, json, requests, secrets
+from web3 import Web3
 from pysys.basetest import BaseTest
 from pysys.constants import PROJECT, BACKGROUND
 from obscuro.test.persistence.nonce import NoncePersistence
@@ -17,7 +18,6 @@ class GenericNetworkTest(BaseTest):
     through a
 
     """
-    ALLOW_EVENT_DUPLICATES = True   # if true we allow duplicate event logs in the test validation
     WEBSOCKET = False               # if true use websockets for all comms to the wallet extension
     PROXY = False                   # if true run all websocket connections through a recording proxy
     MSG_ID = 1                      # global used for http message requests numbers
@@ -231,3 +231,24 @@ class ObscuroNetworkTest(GenericNetworkTest):
         self.MSG_ID += 1
         server = 'http://%s:%s' % (Properties().node_host(self), Properties().node_port_http(self.env))
         return requests.post(server, json=data)
+
+    def background_funders(self, network, num_funders):
+        funders = [secrets.token_hex() for _ in range(0, num_funders)]
+
+        for i in range(0, len(funders)):
+            recipients = [Web3().eth.account.privateKeyToAccount(x).address for x in funders if x != funders[i]]
+            self.funds_client(network, funders[i], recipients, i)
+
+    def funds_client(self, network, pk, recipients, num):
+        wallet = WalletExtension.start(self, name='funds_%d' % num)
+        self.fund_obx(network, Web3().eth.account.privateKeyToAccount(pk), 10)
+
+        stdout = os.path.join(self.output, 'funds_%d.out' % num)
+        stderr = os.path.join(self.output, 'funds_%d.err' % num)
+        script = os.path.join(PROJECT.root, 'src', 'python', 'scripts', 'funds_client.py')
+        args = []
+        args.extend(['--network_http', '%s' % wallet.connection_url()])
+        args.extend(['--pk_to_register', '%s' % pk])
+        args.extend(['--recipients', ','.join([str(i) for i in recipients])])
+        self.run_python(script, stdout, stderr, args)
+        self.waitForGrep(file=stdout, expr='Client running', timeout=10)

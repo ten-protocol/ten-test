@@ -1,3 +1,5 @@
+# Websocket proxy to log traffic between web3 and the wallet extension
+#
 import argparse, asyncio, websockets, sys
 
 
