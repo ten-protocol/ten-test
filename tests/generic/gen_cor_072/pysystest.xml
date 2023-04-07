@@ -16,7 +16,6 @@ get_new_entries() on the filter to return new logs. As a polling implementation 
     <classification>
         <groups inherit="true">
             <group>events</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

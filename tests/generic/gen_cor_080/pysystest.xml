@@ -5,8 +5,6 @@
         <title>Events: web3js client using eth.subscribe on logs for event and fromBlock</title>
         <purpose><![CDATA[
 Uses the general subscriber script to subscribe to a particular event from a particular block number.
-
-Skipped - see https://github.com/obscuronet/obscuro-internal/issues/1083
 ]]>
         </purpose>
     </description>
@@ -15,7 +13,6 @@ Skipped - see https://github.com/obscuronet/obscuro-internal/issues/1083
         <groups inherit="true">
             <group>events</group>
             <group>web3js</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>
