@@ -51,8 +51,5 @@ class PySysTest(GenericNetworkTest):
         expr_list.append('Stored value = 4')
         expr_list.append('Stored value = 100')
         self.assertOrderedGrep(file=subscriber.stdout, exprList=expr_list)
-
-        # validate correct count if duplicates are not allowed
-        if not self.ALLOW_EVENT_DUPLICATES:
-            self.assertLineCount(file=subscriber.stdout, expr='Stored value', condition='== 6')
+        self.assertLineCount(file=subscriber.stdout, expr='Stored value', condition='== 6')
 

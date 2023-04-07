@@ -18,7 +18,6 @@ class GenericNetworkTest(BaseTest):
     through a
 
     """
-    ALLOW_EVENT_DUPLICATES = True   # if true we allow duplicate event logs in the test validation
     WEBSOCKET = False               # if true use websockets for all comms to the wallet extension
     PROXY = False                   # if true run all websocket connections through a recording proxy
     MSG_ID = 1                      # global used for http message requests numbers

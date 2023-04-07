@@ -42,8 +42,4 @@ class PySysTest(GenericNetworkTest):
         # wait and validate
         self.waitForGrep(file=stdout, expr='Result =', timeout=20)
         self.assertGrep(file=stdout, expr='Result = 1', contains=False)
-        if not self.ALLOW_EVENT_DUPLICATES:
-            self.assertLineCount(file=stdout, expr='Result = 2', condition='==1')
-        else:
-            self.assertGrep(file=stdout, expr='Result = 2')
-
+        self.assertLineCount(file=stdout, expr='Result = 2', condition='==1')

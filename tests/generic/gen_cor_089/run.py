@@ -42,5 +42,4 @@ class PySysTest(GenericNetworkTest):
         exprList.append('0xfee74d7ba76b50e00cddc7a9272495f4b15537b41c964eb4e2e6345a84ac8bcc')
         exprList.append('0x000000000000000000000000025c2f7473eebd20e6a8cb4ebb96465a5c09d5a3')
         self.assertOrderedGrep(file='subscriber.out', exprList=exprList)
-        if not self.ALLOW_EVENT_DUPLICATES:
-            self.assertLineCount(file=stdout, expr='Result = ', condition='==1')
+        self.assertLineCount(file=stdout, expr='Result = ', condition='==1')

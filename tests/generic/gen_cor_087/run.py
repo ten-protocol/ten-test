@@ -46,7 +46,4 @@ class PySysTest(GenericNetworkTest):
         self.waitForGrep(file=stdout, expr='Stored value = 6', timeout=20)
         expr_list = ['Stored value = 1', 'Stored value = 6']
         self.assertOrderedGrep(file=stdout, exprList=expr_list)
-
-        # validate correct count if duplicates are not allowed
-        if not self.ALLOW_EVENT_DUPLICATES:
-            self.assertLineCount(file=stdout, expr='Stored value = [0-9]$', condition='== 2')
+        self.assertLineCount(file=stdout, expr='Stored value = [0-9]$', condition='== 2')

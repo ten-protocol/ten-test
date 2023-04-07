@@ -54,8 +54,5 @@ class PySysTest(GenericNetworkTest):
         # contract.filters.ItemSet2(null, options.filter_value) - value is 2
         expr_list = ['ItemSet2, key = foo stored value = 2', 'ItemSet2, key = r2 stored value = 2']
         self.assertOrderedGrep(file=stdout, exprList=expr_list)
-
-        # validate correct count if duplicates are not allowed
-        if not self.ALLOW_EVENT_DUPLICATES:
-            self.assertLineCount(file=stdout, expr='ItemSet1', condition='== 1')
-            self.assertLineCount(file=stdout, expr='ItemSet2', condition='== 2')
+        self.assertLineCount(file=stdout, expr='ItemSet1', condition='== 1')
+        self.assertLineCount(file=stdout, expr='ItemSet2', condition='== 2')
