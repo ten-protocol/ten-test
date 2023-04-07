@@ -5,11 +5,13 @@ from obscuro.test.contracts.erc20 import ERC20Token
 from obscuro.test.contracts.bridge import WrappedERC20
 from obscuro.test.contracts.bridge import ObscuroBridge, EthereumBridge
 from obscuro.test.contracts.bridge import L1MessageBus, L2MessageBus, L1CrossChainMessenger, L2CrossChainMessenger
+from obscuro.test.helpers.wallet_extension import WalletExtension
+from obscuro.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
 class BridgeDetails:
 
-    def __init__(self, test, web3, account, network, bridge, bus, xchain):
+    def __init__(self, test, web3, account, network, bridge, bus, xchain, name):
         """Instantiate an instance. """
         self.test = test
         self.web3 = web3
@@ -18,6 +20,7 @@ class BridgeDetails:
         self.bridge = bridge
         self.bus = bus
         self.xchain = xchain
+        self.name = name
 
     def relay_message(self, xchain_msg):
         """Relay a cross chain message. """
@@ -53,19 +56,26 @@ class BridgeDetails:
 class L1BridgeDetails(BridgeDetails):
     """Abstraction over the L1 side of the bridge for a particular account. """
 
-    def __init__(self, test, pk):
+    def __init__(self, test, pk, name):
         """Instantiate an instance. """
         network = NetworkFactory.get_l1_network(test)
         web3, account = network.connect(test, pk)
         bridge = ObscuroBridge(test, web3)
         bus = L1MessageBus(test, web3)
         xchain = L1CrossChainMessenger(test, web3)
-        super().__init__(test, web3, account, network, bridge, bus, xchain)
+        super().__init__(test, web3, account, network, bridge, bus, xchain, name)
         self.tokens = {}
 
     def add_token_contract(self, address, name, symbol):
         """Store a reference to the ERC20 token, keyed on its symbol. """
         self.tokens[symbol] = ERC20Token(self.test, self.web3, name, symbol, address)
+        return self.tokens[symbol]
+
+    def add_token_subscriber(self, symbol):
+        token = self.tokens[symbol]
+        subscriber = AllEventsLogSubscriber(self.test, self.network, token,
+                                            stdout='l1_sub_%s.out' % self.name, stderr='l1_sub_%s.err' % self.name)
+        subscriber.run()
 
     def transfer_token(self, symbol, to_address, amount):
         """Transfer tokens within the ERC contract from this user account to another address. """
@@ -119,19 +129,29 @@ class L1BridgeDetails(BridgeDetails):
 class L2BridgeDetails(BridgeDetails):
     """Abstraction of the L2 side of the bridge for a particular address. """
 
-    def __init__(self, test, pk):
+    def __init__(self, test, pk, name):
         """Instantiate an instance. """
         network = NetworkFactory.get_network(test)
+        network.PORT = test.getNextAvailableTCPPort()
+        network.WS_PORT = test.getNextAvailableTCPPort()
+        WalletExtension.start(test, network.PORT, network.WS_PORT, name=name)
         web3, account = network.connect(test, pk)
         bridge = EthereumBridge(test, web3)
         bus = L2MessageBus(test, web3)
         xchain = L2CrossChainMessenger(test, web3)
-        super().__init__(test, web3, account, network, bridge, bus, xchain)
+        super().__init__(test, web3, account, network, bridge, bus, xchain, name)
         self.tokens = {}
 
     def set_token_contract(self, address, name, symbol):
         """Store a reference to the ERC20 token, keyed on its symbol. """
         self.tokens[symbol] = WrappedERC20(self.test, self.web3, name, symbol, address)
+        return self.tokens[symbol]
+
+    def add_token_subscriber(self, symbol):
+        token = self.tokens[symbol]
+        subscriber = AllEventsLogSubscriber(self.test, self.network, token,
+                                            stdout='l2_sub_%s.out' % self.name, stderr='l2_sub_%s.err' % self.name)
+        subscriber.run()
 
     def balance_for_token(self, symbol):
         """Get the balance for a token. """
@@ -158,8 +178,6 @@ class L2BridgeDetails(BridgeDetails):
         The ERC20 contract must have been whitelisted for this operation to be successful.
         """
         token = self.tokens[symbol]
-        self.test.log.info(address)
-        self.test.log.info(amount)
         tx_receipt = self.network.transact(self.test, self.web3,
                                            self.bridge.contract.functions.sendERC20(token.address,
                                                                                     amount, address),
@@ -170,6 +188,6 @@ class L2BridgeDetails(BridgeDetails):
 
 class BridgeUser:
     """Abstracts the L1 and L2 sides of the bridge for a user. """
-    def __init__(self, test, l1_pk, l2_pk):
-        self.l1 = L1BridgeDetails(test, l1_pk)
-        self.l2 = L2BridgeDetails(test, l2_pk)
+    def __init__(self, test, l1_pk, l2_pk, name):
+        self.l1 = L1BridgeDetails(test, l1_pk, name)
+        self.l2 = L2BridgeDetails(test, l2_pk, name)

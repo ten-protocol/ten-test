@@ -18,7 +18,9 @@ class AllEventsLogSubscriber:
     def run(self, pk_to_register=None, network_http=None, network_ws=None):
         """Run the javascript client event log subscriber. """
         args = []
-        if network_http: args.extend(['--network_http', network_http])
+        if network_http is None: network_http = self.network.connection_url(web_socket=False)
+        if network_ws is None: network_ws = self.network.connection_url(web_socket=True)
+        args.extend(['--network_http', network_http])
         args.extend(['--network_ws', network_ws])
         args.extend(['--address', self.contract.address])
         args.extend(['--contract_abi', self.contract.abi_path])
