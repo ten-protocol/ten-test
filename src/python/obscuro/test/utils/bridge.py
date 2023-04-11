@@ -22,13 +22,6 @@ class BridgeDetails:
         self.xchain = xchain
         self.name = name
 
-    def relay_message(self, xchain_msg):
-        """Relay a cross chain message. """
-        tx_receipt = self.network.transact(self.test, self.web3,
-                                           self.xchain.contract.functions.relayMessage(xchain_msg),
-                                           self.account, gas_limit=self.xchain.GAS_LIMIT)
-        return tx_receipt
-
     def wait_for_message(self, xchain_msg, timeout=30):
         """Wait for a cross chain message to be verified as final. """
         start = time.time()
@@ -125,6 +118,13 @@ class L1BridgeDetails(BridgeDetails):
         logs = self.bus.contract.events.LogMessagePublished().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, self.get_cross_chain_message(logs[2])
 
+    def relay_message(self, xchain_msg):
+        """Relay a cross chain message. """
+        tx_receipt = self.network.transact(self.test, self.web3,
+                                           self.xchain.contract.functions.relayMessage(xchain_msg),
+                                           self.account, gas_limit=self.xchain.GAS_LIMIT, persist_nonce=False)
+        return tx_receipt
+
 
 class L2BridgeDetails(BridgeDetails):
     """Abstraction of the L2 side of the bridge for a particular address. """
@@ -184,6 +184,13 @@ class L2BridgeDetails(BridgeDetails):
                                            self.account, gas_limit=self.bridge.GAS_LIMIT)
         logs = self.bus.contract.events.LogMessagePublished().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, self.get_cross_chain_message(logs[1])
+
+    def relay_message(self, xchain_msg):
+        """Relay a cross chain message. """
+        tx_receipt = self.network.transact(self.test, self.web3,
+                                           self.xchain.contract.functions.relayMessage(xchain_msg),
+                                           self.account, gas_limit=self.xchain.GAS_LIMIT)
+        return tx_receipt
 
 
 class BridgeUser:
