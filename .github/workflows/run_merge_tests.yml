@@ -64,11 +64,11 @@ jobs:
           cd ${{ github.workspace }}/go-obscuro/
           go run ./testnet/launcher/cmd
           echo "Run docker container log background processes"
-          docker logs -f `docker ps -aqf "name=validator-host"` > validator-host.out &
-          docker logs -f `docker ps -aqf "name=validator-enclave"` > validator-enclave.out &
-          docker logs -f `docker ps -aqf "name=sequencer-host"` > sequencer-host.out &
-          docker logs -f `docker ps -aqf "name=sequencer-enclave"` > sequencer-enclave.out &
-          docker logs -f `docker ps -aqf "name=eth2network"` > eth2network.out &
+          docker logs -f `docker ps -aqf "name=validator-host"` > validator-host.out 2>&1 &
+          docker logs -f `docker ps -aqf "name=validator-enclave"` > validator-enclave.out 2>&1 &
+          docker logs -f `docker ps -aqf "name=sequencer-host"` > sequencer-host.out 2>&1 &
+          docker logs -f `docker ps -aqf "name=sequencer-enclave"` > sequencer-enclave.out 2>&1 &
+          docker logs -f `docker ps -aqf "name=eth2network"` > eth2network.out 2>&1 &
 
       - name: 'Build required artifacts for running tests'
         run: |
