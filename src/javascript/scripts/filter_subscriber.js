@@ -12,7 +12,7 @@ function subscribe() {
   dict = []
   if (options.filter_from_block) dict["fromBlock"] = options.filter_from_block
   if (options.filter_address) dict["address"] = options.filter_address
-  if (options.filter_topics) dict["topics"] = options.filter_topics
+  if (options.filter_topics) dict["topics"] = filter_topics
   console.log('Options: ', dict)
 
   subscription = web3.eth.subscribe('logs', dict,
@@ -77,6 +77,7 @@ commander
 var subscription = null
 const options = commander.opts()
 const web3 = new Web3(`${options.network_ws}`)
+filter_topics = (options.filter_topics + '').split(' ')
 
 // if pk supplied generate viewing key else just run
 if (options.pk_to_register) {

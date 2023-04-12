@@ -28,9 +28,10 @@ class PySysTest(ObscuroNetworkTest):
             filter_address=contract.address,
             filter_topics=[
                 web3.keccak(text='CallerIndexedAddress(address)').hex(),
-                web3.utils.sha3(account.address)
+                '0x'+(24*'0')+str(account.address.split('0x')[1])
             ]
         )
+        subscriber.subscribe()
 
         # perform some transactions as account4, resulting in an event with the account 4 address included
         self.log.info('Performing transactions ... ')
