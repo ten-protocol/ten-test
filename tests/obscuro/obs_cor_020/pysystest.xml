@@ -2,10 +2,9 @@
 <pysystest type="auto">
 
     <description>
-        <title>Bridge - create and whitelist token, send tokens across the bridge</title>
+        <title>Bridge - create and whitelist tokens, send tokens across the bridge</title>
         <purpose><![CDATA[
-Deploys an ERC20 contract on the L1, whitelists it and sends it across the bridge. A user has tokens on the L1
-approves the bridge to transfer, and then transfers 10 tokens across.
+Deploys ERC20 contracts on the L1, whitelists them and sends tokens across the bridge.
 ]]>
         </purpose>
     </description>
