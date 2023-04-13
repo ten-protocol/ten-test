@@ -2,25 +2,22 @@
 <pysystest type="auto">
 
     <description>
-        <title>Event relevancy - four subscriptions through single WE, event is relevant to account registered last</title>
+        <title>Event relevancy - four subscriptions through single WE, event is relevant to account registered first</title>
         <purpose><![CDATA[
 Account4 deploys the Relevancy contract, calls the method on the contract to emit the CallerIndexedAddress
 with addr = the user account address. The following accounts are used to register (in this order) + the subscription
 and event emission;
 
+  Account 4 - shared wallet extension
   Account 1 - shared wallet extension
   Account 2 - shared wallet extension
   Account 3 - shared wallet extension
-  Account 4 - shared wallet extension
 
   Subscribe for the CallerIndexedAddress event which contains a single indexed address field (all)
-  Event is emitted containing address of user account
+  Event is emitted containing address of user account4, account3, account2, account1.
 
-Under this sequence currently the event is not decrypted and sent back to the subscription id, as it by default binds
-to the first registered key which is account 1. Note that it should be possible for account 4 to see the event regardless
-of the order of viewing key subscriptions, thus this is a failing test at the moment and skipped.
-
-Skipped - see https://github.com/obscuronet/obscuro-internal/issues/1046
+Under this sequence only the event emitted for account4 should bre received, as all subscriptions are performed with the
+first registered accounts viewing key.
 ]]>
         </purpose>
     </description>
@@ -29,7 +26,6 @@ Skipped - see https://github.com/obscuronet/obscuro-internal/issues/1046
         <groups inherit="true">
             <group>events</group>
             <group>web3js</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>
