@@ -3,7 +3,7 @@
 #
 from web3 import Web3
 import logging, requests, random
-import argparse, json, sys, time
+import argparse, json, sys
 from eth_account.messages import encode_defunct
 
 logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)

@@ -86,9 +86,9 @@ class Default:
         tx_recp = self.wait_for_transaction(test, web3, nonce, account, tx_hash, persist_nonce)
         return tx_recp
 
-    def get_next_nonce(self, test, web3, account, persist_nonce):
+    def get_next_nonce(self, test, web3, account, persist_nonce, log=True):
         """Get the next nonce, either from persistence or from the transaction count. """
-        nonce = test.nonce_db.get_next_nonce(test, web3, account.address, test.env, persist_nonce)
+        nonce = test.nonce_db.get_next_nonce(test, web3, account.address, test.env, persist_nonce, log)
         return nonce
 
     def build_transaction(self, web3, target, nonce, gas_limit):
@@ -108,7 +108,7 @@ class Default:
         if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'SIGNED')
         return signed_tx
 
-    def send_transaction(self, test, web3, nonce, account, signed_tx, persist_nonce):
+    def send_transaction(self, test, web3, nonce, account, signed_tx, persist_nonce, log=True):
         """Send the signed transaction to the network. """
         tx_hash = None
         try:
@@ -117,7 +117,7 @@ class Default:
         except Exception as e:
             test.log.error('Error sending raw transaction %s' % e)
             test.addOutcome(BLOCKED, abortOnError=True)
-        test.log.info('Transaction sent with hash %s' % tx_hash.hex())
+        if log: test.log.info('Transaction sent with hash %s' % tx_hash.hex())
         return tx_hash
 
     def wait_for_transaction(self, test, web3, nonce, account, tx_hash, persist_nonce):
