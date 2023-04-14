@@ -26,7 +26,7 @@ class NoncePersistence:
         """Close the connection to the underlying persistence. """
         self.connection.close()
 
-    def get_next_nonce(self, test, web3, account, environment, persist_nonce=True):
+    def get_next_nonce(self, test, web3, account, environment, persist_nonce=True, log=True):
         """Get the next nonce to use in a transaction.
 
         If persist_nonce is false then the return value will be the transaction count as received from the network.
@@ -40,14 +40,14 @@ class NoncePersistence:
         nonce = transaction_count
         if persist_nonce:
             if transaction_count == 0:                                                 # implies a new testnet deployment
-                test.log.info('Clearing nonce_db for %s on zero tx count' % account)   # so clear out the persistence
+                if log: test.log.info('Clearing nonce_db for %s on zero tx count' % account)   # so clear out the persistence
                 self.delete(account, environment)
             else:
                 nonce = 0 if persisted_nonce is None else persisted_nonce+1      # we have to believe the local store
             test.nonce_db.insert(account, test.env, nonce)
-            test.log.info("Account %s count %d using nonce from persistence as %d" % (account, transaction_count, nonce))
+            if log: test.log.info("Account %s count %d using nonce from persistence as %d" % (account, transaction_count, nonce))
         else:
-            test.log.info("Account %s using nonce from transaction count as %d" % (account, nonce))
+            if log: test.log.info("Account %s using nonce from transaction count as %d" % (account, nonce))
         return nonce
 
     def insert(self, account, environment, nonce, status='PENDING'):
