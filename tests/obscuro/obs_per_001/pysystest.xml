@@ -10,7 +10,7 @@
 
     <classification>
         <groups inherit="true">
-            <group>bridge</group>
+            <group>performance</group>
             <group>skip</group>
         </groups>
         <modes inherit="true">
