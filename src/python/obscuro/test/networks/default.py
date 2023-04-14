@@ -86,9 +86,9 @@ class Default:
         tx_recp = self.wait_for_transaction(test, web3, nonce, account, tx_hash, persist_nonce)
         return tx_recp
 
-    def get_next_nonce(self, test, web3, account, persist_nonce, log=True):
+    def get_next_nonce(self, test, web3, account, persist_nonce, clear_on_zero=True, log=True):
         """Get the next nonce, either from persistence or from the transaction count. """
-        nonce = test.nonce_db.get_next_nonce(test, web3, account.address, test.env, persist_nonce, log)
+        nonce = test.nonce_db.get_next_nonce(test, web3, account.address, test.env, persist_nonce, clear_on_zero, log)
         return nonce
 
     def build_transaction(self, web3, target, nonce, gas_limit):
@@ -120,9 +120,9 @@ class Default:
         if log: test.log.info('Transaction sent with hash %s' % tx_hash.hex())
         return tx_hash
 
-    def wait_for_transaction(self, test, web3, nonce, account, tx_hash, persist_nonce):
+    def wait_for_transaction(self, test, web3, nonce, account, tx_hash, persist_nonce, timeout=120):
         """Wait for the transaction from the network to be acknowledged. """
-        tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
+        tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash, timeout=timeout)
 
         if tx_receipt.status == 1:
             test.log.info('Transaction receipt block hash %s' % tx_receipt.blockHash.hex())

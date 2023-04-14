@@ -35,6 +35,12 @@ class Properties:
             raise FileNotFoundException('Ganache binary not found at default location %s' % path)
         return path
 
+    def gnuplot_binary(self):
+        path = self.get('binaries.%s' % PLATFORM, 'gnuplot')
+        if not os.path.exists(path):
+            raise FileNotFoundException('Gnuplot binary not found at default location %s' % path)
+        return path
+
     def node_binary(self):
         path = self.get('binaries.%s' % PLATFORM, 'node')
         if not os.path.exists(path):
