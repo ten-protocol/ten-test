@@ -1,12 +1,13 @@
 import secrets, random, os
 from web3 import Web3
 from collections import OrderedDict
+from obscuro.test.contracts.error import Error
 from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.networks.factory import NetworkFactory
 
 
 class PySysTest(GenericNetworkTest):
-    ITERATIONS = 500
+    ITERATIONS = 5000
     BINS = OrderedDict()
 
     def execute(self):
@@ -14,43 +15,41 @@ class PySysTest(GenericNetworkTest):
         network = NetworkFactory.get_network(self)
         web3, account = network.connect_account1(self)
 
+        # we need to perform a transaction on the account to ensure the nonce is greater than zero for the
+        # following bulk loading (a hack to avoid count=0 being considered a new deployment and clearing the db)
+        error = Error(self, web3)
+        error.deploy(network, account)
+
         # a list of recipient accounts
         accounts = [Web3().eth.account.privateKeyToAccount(x).address for x in [secrets.token_hex()]*25]
 
         # bulk load transactions to the accounts, and wait for the last
-        self.log.info('Creating transactions')
+        self.log.info('Creating and signing %d transactions' % self.ITERATIONS)
         txs = []
         for i in range(0, self.ITERATIONS):
-            recip = random.choice(accounts)
-            nonce = network.get_next_nonce(self, web3, account, persist_nonce=True, clear_on_zero=False, log=True)
-            tx_sign = self.send_funds(network, web3, account, nonce, recip, 0.00000001)
-            txs.append((tx_sign, nonce))
+            nonce = network.get_next_nonce(self, web3, account, True, False)
+            tx = self.send_funds(network, web3, account, nonce, random.choice(accounts), 0.0000000001)
+            txs.append((tx, nonce))
 
-        self.log.info('Sending transactions')
-        nonce = None
-        tx_hash = None
-        hashes = []
+        self.log.info('Bulk sending transactions to the network')
+        tx_receipts = []
         for tx in txs:
-            nonce = tx[1]
-            tx_hash = network.send_transaction(self, web3, nonce, account, tx[0], persist_nonce=True, log=False)
-            hashes.append(tx_hash)
+            tx_receipts.append((network.send_transaction(self, web3, tx[1], account, tx[0], True, False), tx[1]))
 
         self.log.info('Waiting for last transaction')
-        network.wait_for_transaction(self, web3, nonce, account, tx_hash, persist_nonce=True, timeout=600)
+        network.wait_for_transaction(self, web3, tx_receipts[-1][1], account, tx_receipts[-1][0], True, timeout=600)
 
-        self.log.info('Constructing binned data')
-        for hash in hashes:
-            block_number_deploy = web3.eth.get_transaction(hash).blockNumber
-            block = web3.eth.get_block(block_number_deploy)
-            timestamp = int(block.timestamp)
-            if timestamp not in self.BINS:
-                self.BINS[timestamp]=1
-            else:
-                self.BINS[timestamp] = self.BINS[timestamp] + 1
+        # bin the data into timestamp intervals and log out to file
+        self.log.info('Constructing binned data from the transaction receipts')
+        for tx_receipt in tx_receipts:
+            block_number_deploy = web3.eth.get_transaction(tx_receipt[0]).blockNumber
+            timestamp = int(web3.eth.get_block(block_number_deploy).timestamp)
+            self.BINS[timestamp] = 1 if timestamp not in self.BINS else self.BINS[timestamp] + 1
 
+        times = list(self.BINS)
         with open(os.path.join(self.output, 'data.bin'), 'w') as fp:
-            for timestamp in self.BINS.keys():
-                fp.write('%d %d\n' % (timestamp, self.BINS[timestamp]))
+            for i in range(times[0], times[-1]+1):
+                fp.write('%d %d\n' % (self.BINS[i] if i in self.BINS else 0, num))
 
     def send_funds(self, network, web3, account, nonce, address, amount):
         tx = {'nonce': nonce,
@@ -60,4 +59,5 @@ class PySysTest(GenericNetworkTest):
               'gasPrice': 21000,
               'chainId': network.chain_id()
               }
-        return network.sign_transaction(self, tx, nonce, account, persist_nonce=True)
+        return network.sign_transaction(self, tx, nonce, account, True)
+

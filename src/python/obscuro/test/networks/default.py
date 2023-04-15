@@ -86,9 +86,9 @@ class Default:
         tx_recp = self.wait_for_transaction(test, web3, nonce, account, tx_hash, persist_nonce)
         return tx_recp
 
-    def get_next_nonce(self, test, web3, account, persist_nonce, clear_on_zero=True, log=True):
+    def get_next_nonce(self, test, web3, account, persist_nonce, log=True):
         """Get the next nonce, either from persistence or from the transaction count. """
-        nonce = test.nonce_db.get_next_nonce(test, web3, account.address, test.env, persist_nonce, clear_on_zero, log)
+        nonce = test.nonce_db.get_next_nonce(test, web3, account.address, test.env, persist_nonce, log)
         return nonce
 
     def build_transaction(self, web3, target, nonce, gas_limit):

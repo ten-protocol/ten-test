@@ -1,0 +1,19 @@
+set terminal pdf enhanced size 18cm, 18cm
+set output ARG2.".pdf"
+set multiplot layout 2,2 rowsfirst title ARG2.": ".ARG1 noenhanced scale 0.95,0.95
+set grid
+set lmargin 10
+set bmargin 3
+set key font 'Courier,10'
+set key right bottom
+set xtics font "Courier,11"
+set ytics font "Courier,11"
+
+#plot 1
+set size 0.5, 0.45
+set origin 0.0, 0.50
+set style data histograms
+set title "{/Arial:Bold=13 Binned Transactions}"
+set xlabel "Epoch seconds" font "Courier,12"
+set ylabel "Transactions" font "Courier,12" offset 1,0
+plot "data.bin" using 2:xtic(1)
