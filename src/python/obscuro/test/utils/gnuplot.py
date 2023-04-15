@@ -28,6 +28,7 @@ class GnuplotHelper:
             with open(ifile, 'r') as fp:
                 for line in fp.readlines():
                     if line.startswith('BRANCH:'): branch = line.split(':')[1].strip()
-                    if line.startswith('HASH:'): hash = line.split(':')[1].strip()
-                    if line.startswith('DATE:'): date = line.split(':')[1].strip()
+                    if line.startswith('HASH:'): hash = (line.split(':')[1].strip())[:8]
+                    if line.startswith('DATE:'): date = line.replace('DATE:','').strip()
+        branch = branch.replace('_', r'\_')
         return BuildInfo(branch, hash, date)

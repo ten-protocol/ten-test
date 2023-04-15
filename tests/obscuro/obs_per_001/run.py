@@ -1,14 +1,14 @@
-import secrets, random, os
+import secrets, random, os, shutil
 from web3 import Web3
 from collections import OrderedDict
 from obscuro.test.contracts.error import Error
 from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.networks.factory import NetworkFactory
+from obscuro.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(GenericNetworkTest):
     ITERATIONS = 5000
-    BINS = OrderedDict()
 
     def execute(self):
         # connect to the network
@@ -41,15 +41,26 @@ class PySysTest(GenericNetworkTest):
 
         # bin the data into timestamp intervals and log out to file
         self.log.info('Constructing binned data from the transaction receipts')
+        bins = OrderedDict()
         for tx_receipt in tx_receipts:
             block_number_deploy = web3.eth.get_transaction(tx_receipt[0]).blockNumber
             timestamp = int(web3.eth.get_block(block_number_deploy).timestamp)
-            self.BINS[timestamp] = 1 if timestamp not in self.BINS else self.BINS[timestamp] + 1
+            bins[timestamp] = 1 if timestamp not in bins else bins[timestamp] + 1
 
-        times = list(self.BINS)
+        times = list(bins)
+        first = times[0]
         with open(os.path.join(self.output, 'data.bin'), 'w') as fp:
             for i in range(times[0], times[-1]+1):
-                fp.write('%d %d\n' % (self.BINS[i] if i in self.BINS else 0, num))
+                num = bins[i] if i in bins else 0
+                fp.write('%d %d\n' % ((i - first), num))
+
+        # graph the output
+        build_info = GnuplotHelper.buildInfo()
+        duration = times[-1]-times[0]
+        average = float(self.ITERATIONS) / float(duration)
+        GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
+                            build_info.date,
+                            str(self.mode), str(self.ITERATIONS), str(duration), '%.3f'%average)
 
     def send_funds(self, network, web3, account, nonce, address, amount):
         tx = {'nonce': nonce,

@@ -5,15 +5,20 @@ set grid
 set lmargin 10
 set bmargin 3
 set key font 'Courier,10'
-set key right bottom
+set key right top
 set xtics font "Courier,11"
 set ytics font "Courier,11"
+set label "{/Courier:Bold=13 Date}: ".ARG3 left at screen 0.59, screen 0.93
+set label "{/Courier:Bold=13 Environment}: ".ARG4 left at screen 0.59, screen 0.905
+set label "{/Courier:Bold=13 Transactions}: ".ARG5 left at screen 0.59, screen 0.88
+set label "{/Courier:Bold=13 Duration}: ".ARG6 left at screen 0.59, screen 0.855
+set label "{/Courier:Bold=13 Average}: ".ARG7 left at screen 0.59, screen 0.83
+stats "data.bin" using 1:2 nooutput
 
 #plot 1
 set size 0.5, 0.45
 set origin 0.0, 0.50
-set style data histograms
 set title "{/Arial:Bold=13 Binned Transactions}"
-set xlabel "Epoch seconds" font "Courier,12"
+set xlabel "Time (seconds)" font "Courier,12"
 set ylabel "Transactions" font "Courier,12" offset 1,0
-plot "data.bin" using 2:xtic(1)
+plot "data.bin" using 1:2 with boxes title "Binned", "" using 1:(STATS_mean_x) with lines title "Average"
