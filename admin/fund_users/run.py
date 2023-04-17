@@ -14,6 +14,7 @@ class PySysTest(ObscuroNetworkTest):
             Properties().account3_2pk(), Properties().account4_2pk(),
             Properties().account1_3pk(), Properties().account2_3pk(),
             Properties().account3_3pk(), Properties().account4_3pk(),
+            Properties().account3_3pk(), Properties().gg_appdev_pk(),
             Properties().gg_appdev_pk(), Properties().gg_endusr_pk()
         ]
 

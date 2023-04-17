@@ -15,6 +15,7 @@
         </groups>
         <modes inherit="true">
             <mode>obscuro.local</mode>
+            <mode>obscuro.dev</mode>
         </modes>
     </classification>
 

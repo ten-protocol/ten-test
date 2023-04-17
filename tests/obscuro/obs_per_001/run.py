@@ -1,5 +1,6 @@
 import secrets, random, os, shutil
 from web3 import Web3
+from datetime import datetime
 from collections import OrderedDict
 from obscuro.test.contracts.error import Error
 from obscuro.test.basetest import GenericNetworkTest
@@ -28,7 +29,7 @@ class PySysTest(GenericNetworkTest):
         txs = []
         for i in range(0, self.ITERATIONS):
             nonce = network.get_next_nonce(self, web3, account, True, False)
-            tx = self.send_funds(network, web3, account, nonce, random.choice(accounts), 0.0000000001)
+            tx = self.create_signed_tx(network, web3, account, nonce, random.choice(accounts), 0.0000000001)
             txs.append((tx, nonce))
 
         self.log.info('Bulk sending transactions to the network')
@@ -55,14 +56,15 @@ class PySysTest(GenericNetworkTest):
                 fp.write('%d %d\n' % ((i - first), num))
 
         # graph the output
-        build_info = GnuplotHelper.buildInfo()
+        branch = GnuplotHelper.buildInfo().branch
+        date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         duration = times[-1]-times[0]
         average = float(self.ITERATIONS) / float(duration)
-        GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
-                            build_info.date,
+        GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'), branch, date,
                             str(self.mode), str(self.ITERATIONS), str(duration), '%.3f'%average)
 
-    def send_funds(self, network, web3, account, nonce, address, amount):
+    def create_signed_tx(self, network, web3, account, nonce, address, amount):
+        """Creates a signed transaction ready for the sending of funds to an account. """
         tx = {'nonce': nonce,
               'to': address,
               'value': web3.toWei(amount, 'ether'),
@@ -72,3 +74,13 @@ class PySysTest(GenericNetworkTest):
               }
         return network.sign_transaction(self, tx, nonce, account, True)
 
+    def execute_graph(self):
+        """Test method to develop graph creation. """
+        branch = GnuplotHelper.buildInfo().branch
+        duration = 93
+        average = 53.1234
+        date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+        shutil.copy(os.path.join(self.input, 'data.bin'), os.path.join(self.output, 'data.bin'))
+        GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
+                            branch, date,
+                            str(self.mode), str(self.ITERATIONS), str(duration), '%.3f'%average)

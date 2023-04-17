@@ -34,8 +34,7 @@ class GenericNetworkTest(BaseTest):
         self.addCleanupFunction(self.close_db)
 
         # every test runs a default wallet extension
-        if self.is_obscuro():
-            self.wallet_extension = self.run_wallet()
+        if self.is_obscuro(): self.wallet_extension = self.run_wallet()
 
     def close_db(self):
         """Close the connection to the nonce database on completion. """
