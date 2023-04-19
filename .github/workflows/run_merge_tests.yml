@@ -32,6 +32,9 @@ jobs:
               "tudor-malene": {
                 "discord_id": "921049923414261821"
               },
+              "zkokelj": {
+                "discord_id": "639076633994592256"
+              },
               ".*": {
                 "discord_id": "814873419207409685"
               }
