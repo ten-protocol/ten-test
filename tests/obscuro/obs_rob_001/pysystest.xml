@@ -19,7 +19,6 @@ Skipped due to https://github.com/obscuronet/obscuro-internal/issues/1457
         <groups inherit="true">
             <group>events</group>
             <group>robustness</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>

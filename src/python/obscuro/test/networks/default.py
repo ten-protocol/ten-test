@@ -120,9 +120,9 @@ class Default:
         if log: test.log.info('Transaction sent with hash %s' % tx_hash.hex())
         return tx_hash
 
-    def wait_for_transaction(self, test, web3, nonce, account, tx_hash, persist_nonce):
+    def wait_for_transaction(self, test, web3, nonce, account, tx_hash, persist_nonce, timeout=120):
         """Wait for the transaction from the network to be acknowledged. """
-        tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
+        tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash, timeout=timeout)
 
         if tx_receipt.status == 1:
             test.log.info('Transaction receipt block hash %s' % tx_receipt.blockHash.hex())

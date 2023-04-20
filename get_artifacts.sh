@@ -3,10 +3,24 @@
 script_path="$(cd "$(dirname "${0}")" && pwd)"
 src_path="${script_path}/../go-obscuro"
 
+# extract branch and commit hash
+cd $src_path
+HASH=`git rev-parse HEAD`
+BRANCH=`git rev-parse --abbrev-ref HEAD`
+cd $script_path
+
 # purge artifacts
 echo Purging artifacts directory
+rm ${script_path}/artifacts/build.info
 rm -rf ${script_path}/artifacts/wallet_extension
 rm -rf ${script_path}/artifacts/contracts
+
+# write the build info
+echo Creating build info
+echo "BRANCH: " $BRANCH > ${script_path}/artifacts/build.info
+echo "HASH:   " $HASH  >> ${script_path}/artifacts/build.info
+echo "DATE:   " `date` >> ${script_path}/artifacts/build.info
+echo "" >> ${script_path}/artifacts/build.info
 
 # run the wallet extension build
 echo Building the wallet extension
@@ -26,7 +40,6 @@ env GOOS=windows GOARCH=amd64 go build -o ${script_path}/artifacts/wallet_extens
 
 echo Building GOOS=linux GOARCH=amd64
 env GOOS=linux GOARCH=amd64 go build -o ${script_path}/artifacts/wallet_extension/wallet_extension_linux_amd64
-
 
 # run the abigen to create the contract ABIs
 cd $src_path/contracts
