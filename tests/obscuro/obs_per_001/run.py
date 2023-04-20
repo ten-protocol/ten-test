@@ -33,18 +33,18 @@ class PySysTest(GenericNetworkTest):
             txs.append((tx, nonce))
 
         self.log.info('Bulk sending transactions to the network')
-        tx_receipts = []
+        receipts = []
         for tx in txs:
-            tx_receipts.append((network.send_transaction(self, web3, tx[1], account, tx[0], True, False), tx[1]))
+            receipts.append((network.send_transaction(self, web3, tx[1], account, tx[0], True, False), tx[1]))
 
         self.log.info('Waiting for last transaction')
-        network.wait_for_transaction(self, web3, tx_receipts[-1][1], account, tx_receipts[-1][0], True, timeout=600)
+        network.wait_for_transaction(self, web3, receipts[-1][1], account, receipts[-1][0], True, timeout=600)
 
         # bin the data into timestamp intervals and log out to file
         self.log.info('Constructing binned data from the transaction receipts')
         bins = OrderedDict()
-        for tx_receipt in tx_receipts:
-            block_number_deploy = web3.eth.get_transaction(tx_receipt[0]).blockNumber
+        for receipt in receipts:
+            block_number_deploy = web3.eth.get_transaction(receipt[0]).blockNumber
             timestamp = int(web3.eth.get_block(block_number_deploy).timestamp)
             bins[timestamp] = 1 if timestamp not in bins else bins[timestamp] + 1
 

@@ -2,8 +2,15 @@
 <pysystest type="auto">
 
     <description>
-        <title>TPS - bulk loading the mempool</title>
+        <title>TPS - bulk loading the mempool, once complete extract the block times for the TPS profile</title>
         <purpose><![CDATA[
+In this test, a bulk amount of native OBC transfer transactions are created and signed (1 transfer account, to 25
+recipient accounts). Each transaction has a monotonically increasing nonce. Once created all transactions are sent
+to the node, and the transaction hash stored. The test waits for the last transaction none to be mined/included in a
+batch, and once done fetches the block/batch each transaction was included into. From this it is possible to then
+extract the timestamp of the block and graph the number of transactions as a function of time, offset from the first
+batch. This thus gives a temporal profile of the TPS, and an overall rate based on the total time to send and mine
+all transactions.
 ]]>
         </purpose>
     </description>
@@ -11,7 +18,6 @@
     <classification>
         <groups inherit="true">
             <group>performance</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.local</mode>
