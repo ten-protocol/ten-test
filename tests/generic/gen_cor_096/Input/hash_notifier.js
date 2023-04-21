@@ -3,10 +3,17 @@ const commander = require('commander')
 
 require('console-stamp')(console, 'HH:MM:ss')
 
-function task() {
+function mined(tx) {
+  provider.once(tx, (transaction) => {
+    console.log('Mined', transaction.transactionHash)
+  });
+}
+
+function pending() {
   console.log('Starting task ...')
-  provider.on("block", (blockNumber) => {
-    console.log('Block Number =', blockNumber)
+  provider.on("pending", (tx) => {
+    console.log('Pending', tx)
+    mined(tx)
   });
 }
 
@@ -18,6 +25,6 @@ commander
 
 const options = commander.opts()
 const provider = new ethers.providers.WebSocketProvider(options.network_ws)
-task()
+pending()
 
 
