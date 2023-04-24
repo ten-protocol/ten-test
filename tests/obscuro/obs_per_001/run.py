@@ -9,7 +9,7 @@ from obscuro.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(GenericNetworkTest):
-    ITERATIONS = 1000
+    ITERATIONS = 5000
 
     def execute(self):
         # connect to the network
