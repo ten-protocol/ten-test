@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Callback: provider on pending and then once on txHash</title>
+        <purpose><![CDATA[
+Uses the javascript ethers library to register a provider on pending transactions (i.e. added to the mempool). When
+triggered another listener is created to wait for that txHash to be mined. Validation is ensuring that for both
+callbacks are received.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+        </groups>
+        <modes inherit="true">
+            <mode>goerli</mode>
+            <mode>ganache</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
