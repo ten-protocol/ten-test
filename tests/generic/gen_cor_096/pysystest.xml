@@ -2,11 +2,13 @@
 <pysystest type="auto">
 
     <description>
-        <title>Callback: provider on pending (newPendingTransactions) and then once on txHash</title>
+        <title>Callback: ethers client using provider on pending (newPendingTransactions) and then once on txHash</title>
         <purpose><![CDATA[
 Uses the javascript ethers library to register a provider on pending transactions (i.e. added to the mempool). When
 triggered another listener is created to wait for that txHash to be mined. Validation is ensuring that for both
 callbacks are received.
+
+Not yet supported on Obscuro - see https://github.com/obscuronet/obscuro-internal/issues/1627
 ]]>
         </purpose>
     </description>
