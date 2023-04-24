@@ -16,12 +16,16 @@ class PySysTest(GenericNetworkTest):
         storage = KeyStorage(self, web3)
         storage.deploy(network, account)
 
+        # go through a proxy to log websocket communications if needed
+        ws_url = network.connection_url(web_socket=True)
+        if self.PROXY: ws_url = WebServerProxy.create(self).run(ws_url, 'proxy.logs')
+
         # run a background script to filter and collect events
         stdout = os.path.join(self.output, 'hash_notifier.out')
         stderr = os.path.join(self.output, 'hash_notifier.err')
         script = os.path.join(self.input, 'hash_notifier.js')
         args = []
-        args.extend(['--network_ws', network.connection_url(web_socket=True)])
+        args.extend(['--network_ws', ws_url])
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
 

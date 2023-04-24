@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Callback: provider on block</title>
+        <title>Callback: provider on block (newHeads)</title>
         <purpose><![CDATA[
 Uses the javascript ethers library to register a provider on block listener. When triggered the block is retrieved
 and the transactions in the block extracted to be logged. Validation is ensuring that for successful transactions

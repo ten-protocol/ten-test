@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Callback: provider on pending and then once on txHash</title>
+        <title>Callback: provider on pending (newPendingTransactions) and then once on txHash</title>
         <purpose><![CDATA[
 Uses the javascript ethers library to register a provider on pending transactions (i.e. added to the mempool). When
 triggered another listener is created to wait for that txHash to be mined. Validation is ensuring that for both
