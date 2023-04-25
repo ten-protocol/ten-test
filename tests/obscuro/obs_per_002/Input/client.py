@@ -45,24 +45,21 @@ def run(name, chainId, web3, account, num_accounts, num_iterations):
     logging.info('Bulk sending transactions to the network')
     receipts = []
     for tx in txs:
-        receipts.append((web3.eth.send_raw_transaction(tx[0].rawTransaction), tx[1]))
+        try:
+            receipts.append((web3.eth.send_raw_transaction(tx[0].rawTransaction), tx[1]))
+        except:
+            logging.info('Error sending raw transaction, sent = %d' % len(receipts))
 
     logging.info('Waiting for last transaction')
     web3.eth.wait_for_transaction_receipt(receipts[-1][0], timeout=600)
 
     logging.info('Constructing binned data from the transaction receipts')
-    bins = OrderedDict()
-    for receipt in receipts:
-        block_number_deploy = web3.eth.get_transaction(receipt[0]).blockNumber
-        timestamp = int(web3.eth.get_block(block_number_deploy).timestamp)
-        bins[timestamp] = 1 if timestamp not in bins else bins[timestamp] + 1
-
-    times = list(bins)
-    first = times[0]
     with open('data_%s.bin' % name, 'w') as fp:
-        for i in range(times[0], times[-1]+1):
-            num = bins[i] if i in bins else 0
-            fp.write('%d %d\n' % ((i - first), num))
+        for receipt in receipts:
+            block_number_deploy = web3.eth.get_transaction(receipt[0]).blockNumber
+            timestamp = int(web3.eth.get_block(block_number_deploy).timestamp)
+            fp.write('%d %d\n' % (receipt[1], timestamp))
+
     logging.info('Client %s completed' % name)
 
 

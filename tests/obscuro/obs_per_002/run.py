@@ -1,5 +1,4 @@
 import os, shutil, secrets
-from web3 import Web3
 from datetime import datetime
 from obscuro.test.contracts.error import Error
 from obscuro.test.basetest import GenericNetworkTest
@@ -9,12 +8,12 @@ from obscuro.test.helpers.wallet_extension import WalletExtension
 
 
 class PySysTest(GenericNetworkTest):
-    ITERATIONS = 1000
+    ITERATIONS = 2500
     CLIENTS = 1
     ACCOUNTS = 20
 
     def execute(self):
-        self.execute_graph()
+        self.execute_run()
 
     def execute_run(self):
         # connect to the network
@@ -27,8 +26,18 @@ class PySysTest(GenericNetworkTest):
         error.deploy(network, account)
 
         # run a client
-        self.run_client('one', network)
-        self.waitForGrep(file='client_one.out', expr='Client one completed', timeout=60)
+        for i in ['one', 'two']:
+            self.run_client(i, network)
+            self.wait(5.0)
+
+        for i in ['one', 'two']:
+            self.waitForGrep(file='client_%s.out'%i, expr='Client %s completed'%i, timeout=600)
+
+        # graph the output
+        branch = GnuplotHelper.buildInfo().branch
+        date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+        GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'), branch, date,
+                            str(self.mode), str(self.ITERATIONS))
 
     def run_client(self, name, network):
         """Run a background load client. """
