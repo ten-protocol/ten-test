@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>TPS - bulk loading the mempool using multiple external clients</title>
+        <title>TPS - bulk loading the mempool using two external concurrent clients</title>
         <purpose><![CDATA[
 ]]>
         </purpose>
