@@ -3,7 +3,6 @@ from obscuro.test.contracts.storage import Storage
 from obscuro.test.contracts.storage import KeyStorage
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.helpers.log_subscriber import FilterLogSubscriber
-from obscuro.test.utils.properties import Properties
 
 
 class PySysTest(GenericNetworkTest):

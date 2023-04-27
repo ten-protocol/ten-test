@@ -1,7 +1,6 @@
 from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.contracts.payable import ReceiveEther, SendEther
-from obscuro.test.utils.properties import Properties
 from obscuro.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
