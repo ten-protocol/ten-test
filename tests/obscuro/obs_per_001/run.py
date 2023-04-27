@@ -59,7 +59,7 @@ class PySysTest(GenericNetworkTest):
         branch = GnuplotHelper.buildInfo().branch
         date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         duration = times[-1]-times[0]
-        average = float(self.ITERATIONS) / float(duration)
+        average = float(self.ITERATIONS) / float(duration) if duration != 0 else 0
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'), branch, date,
                             str(self.mode), str(self.ITERATIONS), str(duration), '%.3f'%average)
 

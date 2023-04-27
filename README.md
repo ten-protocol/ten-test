@@ -89,6 +89,7 @@ brew tap ethereum/ethereum
 brew install ethereum
 brew install solidity
 brew install python
+brew install gnuplot
 
 npm install solc@0.8.15 --global
 npm install console-stamp --global
@@ -111,6 +112,7 @@ add-apt-repository ppa:ethereum/ethereum
 apt update
 apt install -y curl
 apt install -y solc
+apt install -y gnuplot
 
 curl -sL https://deb.nodesource.com/setup_18.x | bash -
 apt-get install -y nodejs

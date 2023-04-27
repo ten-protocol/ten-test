@@ -56,6 +56,7 @@ az vm run-command invoke \
     && apt update \
     && apt install -y ethereum \
     && apt install -y solc \
+    && apt install -y gnuplot \
     && curl -sL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
     && npm install console-stamp --global \
