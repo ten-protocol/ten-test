@@ -2,7 +2,6 @@ from web3 import Web3
 import secrets, requests, json
 import logging, random, argparse, sys
 from eth_account.messages import encode_defunct
-from collections import OrderedDict
 
 logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
 
@@ -54,7 +53,7 @@ def run(name, chainId, web3, account, num_accounts, num_iterations):
     web3.eth.wait_for_transaction_receipt(receipts[-1][0], timeout=600)
 
     logging.info('Constructing binned data from the transaction receipts')
-    with open('data_%s.bin' % name, 'w') as fp:
+    with open('%s.log' % name, 'w') as fp:
         for receipt in receipts:
             block_number_deploy = web3.eth.get_transaction(receipt[0]).blockNumber
             timestamp = int(web3.eth.get_block(block_number_deploy).timestamp)
