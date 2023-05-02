@@ -83,9 +83,9 @@ class GenericNetworkTest(BaseTest):
                                      state=state, timeout=timeout)
         return hprocess
 
-    def fund_eth(self, network, account, amount):
+    def fund_eth(self, network, account, amount, pk):
         """A native transfer of ETH from one address to another. """
-        web3_l1, account_l1 = network.connect(self, Properties().l1_bridge_admin_pk(self.env))
+        web3_l1, account_l1 = network.connect(self, pk)
         nonce = network.get_next_nonce(self, web3_l1, account_l1, False)
         tx = {
             'chainId': network.chain_id(),

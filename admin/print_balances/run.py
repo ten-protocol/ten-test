@@ -6,7 +6,7 @@ from obscuro.test.networks.factory import NetworkFactory
 class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
-        L1PKS = [Properties().l1_bridge_admin_pk(self.env)]
+        L1PKS = [Properties().l1_funded_account_pk(self.env)]
         L2PKS = [
             Properties().account1_1pk(), Properties().account2_1pk(),
             Properties().account3_1pk(), Properties().account4_1pk(),

@@ -54,6 +54,8 @@ class Properties:
     def block_time_secs(self, key):
         return self.get('env.'+key, 'BlockTimeSecs')
 
+    def pre_funded_pk(self): return self.get('env.all', 'PreFundsPK')
+
     def account1pk(self): return getattr(self, "account1_%dpk" % thread_num())()
     def account2pk(self): return getattr(self, "account2_%dpk" % thread_num())()
     def account3pk(self): return getattr(self, "account3_%dpk" % thread_num())()
@@ -96,6 +98,9 @@ class Properties:
     def faucet_url(self, key):
         return self.get('env.'+key, 'FaucetURL')
 
+    def l1_funded_account_pk(self, key):
+        return self.get('env.'+key, 'L1FundedAccountPK')
+
     def l2_funded_account_pk(self, key):
         return self.get('env.'+key, 'L2FundedAccountPK')
 
@@ -119,9 +124,6 @@ class Properties:
 
     def l2_cross_chain_messenger_address(self, key):
         return self.get('env.'+key, 'L2CrossChainMessengerAddress')
-
-    def l1_bridge_admin_pk(self, key):
-        return self.get('env.'+key, 'L1BridgeAdminPK')
 
     # infura related
     def infuraProjectID(self):

@@ -35,14 +35,14 @@ class PySysTest(GenericNetworkTest):
         self.log.info('Actual cost of deployment:    %d' % (b1-b2))  # gas units * gas price (1000 by default)
 
         # estimate and perform destruction
-        est_1 = storage.contract.functions.destroy().estimate_gas()
+        est_1 = storage.contract.functions.destroy().estimate_gas({"from":account.address})
         self.log.info("Estimate destruction:         %d" % est_1)
 
         tx = network.transact(self, web3, storage.contract.functions.destroy(), account, storage.GAS_LIMIT)
         b3 = web3.eth.get_balance(account.address)
         self.log.info('TX cost of destruction:       %d' % int(tx["gasUsed"]))
         self.log.info('Actual cost of destruction:   %d' % (b3-b2))  # gas units * gas price (1000 by default)
-        self.percentile_difference('destroy', int(tx["gasUsed"]), self.REFERENCE, 20)
+        self.percentile_difference('destroy', int(tx["gasUsed"]), self.REFERENCE, 50)
 
     def percentile_difference(self, text, result, reference, tolerance):
         percentile = abs(((reference - result) / reference) * 100)

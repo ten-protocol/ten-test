@@ -11,6 +11,8 @@ class Default:
     WS_HOST = 'ws://127.0.0.1'
     PORT = 8545
     WS_PORT = 8545
+    ETH_LIMIT = 0.0001
+    ETH_ALLOC = 0.0002
 
     def chain_id(self): return None
 
@@ -40,6 +42,14 @@ class Default:
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)
         test.log.info('Account %s connected to %s on %s' % (account.address, self.__class__.__name__, url))
+
+        balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+        test.log.info('Account %s balance %.6f ETH' % (account.address, balance))
+        if check_funds and balance < self.ETH_LIMIT:
+            test.log.info('Account balance %.6f ETH below threshold %s, allocating more ...' % (balance, self.ETH_LIMIT))
+            test.fund_eth(self, account, self.ETH_ALLOC, Properties().pre_funded_pk())
+            test.log.info('Account %s new balance %.6f ETH' % (account.address,
+                                                               web3.fromWei(web3.eth.get_balance(account.address), 'ether')))
         return web3, account
 
     def connect_account1(self, test, web_socket=False, check_funds=True):
