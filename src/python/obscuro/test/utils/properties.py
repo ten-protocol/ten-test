@@ -128,3 +128,7 @@ class Properties:
     # infura related
     def infuraProjectID(self):
         return self.get('env.goerli', 'ProjectID')
+
+    # arbitrum related
+    def abitrumAPIKey(self):
+        return self.get('env.arbitrum', 'APIKey')

@@ -1,6 +1,7 @@
 from obscuro.test.networks.default import Default
 from obscuro.test.networks.ganache import Ganache
 from obscuro.test.networks.goerli import Goerli
+from obscuro.test.networks.arbitrum import Arbitrum
 from obscuro.test.networks.obscuro import Obscuro
 from obscuro.test.networks.obscuro import ObscuroL1, ObscuroL1Local, ObscuroL1Dev, ObscuroL1Sim
 
@@ -23,6 +24,8 @@ class NetworkFactory:
             return Goerli()
         elif test.env == 'ganache':
             return Ganache()
+        elif test.env == 'arbitrum':
+            return Arbitrum()
         return Default()
 
     @classmethod

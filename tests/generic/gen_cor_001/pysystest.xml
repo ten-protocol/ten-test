@@ -19,6 +19,7 @@ Checks call to eth.chain_id.
             <mode>obscuro.sim</mode>
             <mode>goerli</mode>
             <mode>ganache</mode>
+            <mode>arbitrum</mode>
         </modes>
     </classification>
 
