@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Set the variables
         env:
-          DEFAULT_VERSION: 'releases/v0.11'
+          DEFAULT_VERSION: 'v0.13.0'
         run: echo "VERSION=${{ github.event.inputs.release || env.DEFAULT_VERSION }}" >> $GITHUB_ENV
 
       - name: 'Check out obscuro-test'
