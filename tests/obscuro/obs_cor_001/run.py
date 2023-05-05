@@ -43,6 +43,6 @@ class PySysTest(ObscuroNetworkTest):
             'to': contract.address,
             'value': web3.toWei(amount, 'ether'),
             'gas': contract.GAS_LIMIT,
-            'gasPrice': 1000
+            'gasPrice': web3.eth.gas_price
         }
         return network.tx(self, web3, tx, account)

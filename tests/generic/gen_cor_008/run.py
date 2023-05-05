@@ -18,7 +18,7 @@ class PySysTest(GenericNetworkTest):
         build_tx = storage.contract.buildTransaction(
             {
                 'nonce': self.nonce_db.get_next_nonce(self, web3, account.address, self.env, False),
-                'gasPrice': 21000,
+                'gasPrice': web3.eth.gas_price,
                 'gas': 720000,
                 'chainId': web3.eth.chain_id
             }

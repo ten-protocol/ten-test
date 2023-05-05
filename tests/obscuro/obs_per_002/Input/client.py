@@ -25,7 +25,7 @@ def create_signed_tx(chainId, web3, account, nonce, address, amount):
           'to': address,
           'value': web3.toWei(amount, 'ether'),
           'gas': 4 * 720000,
-          'gasPrice': 21000,
+          'gasPrice': web3.eth.gas_price,
           'chainId': chainId
           }
     return account.sign_transaction(tx)

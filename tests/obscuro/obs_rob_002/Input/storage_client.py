@@ -24,7 +24,7 @@ def store_value(value, web3, account, contract):
     build_tx = contract.functions.store(value).buildTransaction(
         {
             'nonce': web3.eth.get_transaction_count(account.address),
-            'gasPrice': 21000,
+            'gasPrice': web3.eth.gas_price,
             'gas': 720000,
             'chainId': web3.eth.chain_id
         }

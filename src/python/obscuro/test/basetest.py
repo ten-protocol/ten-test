@@ -127,7 +127,7 @@ class GenericNetworkTest(BaseTest):
             'to': account.address,
             'value': web3_funded.toWei(amount, 'ether'),
             'gas': 4 * 720000,
-            'gasPrice': 21000
+            'gasPrice': web3_funded.eth.gas_price
         }
         tx_sign = account_funded.sign_transaction(tx)
         tx_hash = network.send_transaction(self, web3_funded, nonce, account_funded, tx_sign, False)

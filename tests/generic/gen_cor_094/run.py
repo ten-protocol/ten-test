@@ -21,7 +21,7 @@ class PySysTest(GenericNetworkTest):
         build_tx = storage.contract.buildTransaction(
             {
                 'nonce': web3.eth.get_transaction_count(account.address),
-                'gasPrice': 21000,
+                'gasPrice': web3.eth.gas_price,
                 'gas': Storage.GAS_LIMIT,
                 'chainId': web3.eth.chain_id
             }
