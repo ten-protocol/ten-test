@@ -21,7 +21,7 @@ class PySysTest(GenericNetworkTest):
             {
                 'nonce': nonce,
                 'gasPrice': web3.eth.gas_price, # the price we are willing to pay per gas unit (dimension is gwei)
-                'gas': int(est_1 / 2),             # max gas units prepared to pay (dimension is computational units)
+                'gas': int(est_1 / 2),          # max gas units prepared to pay (dimension is computational units)
                 'chainId': web3.eth.chain_id
             }
         )

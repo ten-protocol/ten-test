@@ -90,7 +90,7 @@ class Default:
         process.
         """
         nonce = self.get_next_nonce(test, web3, account, persist_nonce)
-        tx = self.build_transaction(web3, target, nonce, gas_limit)
+        tx = self.build_transaction(test, web3, target, nonce, gas_limit)
         tx_sign = self.sign_transaction(test, tx, nonce, account, persist_nonce)
         tx_hash = self.send_transaction(test, web3, nonce, account, tx_sign, persist_nonce)
         tx_recp = self.wait_for_transaction(test, web3, nonce, account, tx_hash, persist_nonce)
@@ -101,13 +101,22 @@ class Default:
         nonce = test.nonce_db.get_next_nonce(test, web3, account.address, test.env, persist_nonce, log)
         return nonce
 
-    def build_transaction(self, web3, target, nonce, gas_limit):
+    def build_transaction(self, test, web3, target, nonce, gas_limit):
         """Build the transaction dictionary from the contract constructor or function target. """
+
+        try:
+            gas_estimate = target.estimate_gas()
+            test.log.info('Gas estimate, cost is %d' % gas_estimate)
+            gas_estimate = gas_estimate*2
+        except Exception as e:
+            test.log.warn('Gas estimate, %s' % e.args[0])
+            gas_estimate = gas_limit
+
         build_tx = target.buildTransaction(
             {
                 'nonce': nonce,
                 'gasPrice': web3.eth.gas_price,   # the price we are willing to pay per gas unit (dimension is gwei)
-                'gas': gas_limit,                 # max gas units prepared to pay (dimension is computational units)
+                'gas': gas_estimate,              # max gas units prepared to pay (dimension is computational units)
                 'chainId': web3.eth.chain_id
             }
         )
@@ -127,6 +136,7 @@ class Default:
         except Exception as e:
             test.log.error('Error sending raw transaction %s' % e)
             test.addOutcome(BLOCKED, abortOnError=True)
+            if persist_nonce: test.nonce_db.delete_entries(account.address, test.env, nonce)
         if log: test.log.info('Transaction sent with hash %s' % tx_hash.hex())
         return tx_hash
 
