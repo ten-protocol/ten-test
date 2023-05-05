@@ -19,6 +19,7 @@ test repository against an existing installation, then reset the persisted nonce
             <mode>obscuro.local</mode>
             <mode>obscuro.sim</mode>
             <mode>goerli</mode>
+            <mode>arbitrum</mode>
         </modes>
     </classification>
 
