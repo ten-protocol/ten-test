@@ -13,6 +13,7 @@ class Default:
     WS_PORT = 8545
     ETH_LIMIT = 0.0001
     ETH_ALLOC = 0.0002
+    GAS_MULT = 2
 
     def chain_id(self): return None
 
@@ -107,7 +108,7 @@ class Default:
         try:
             gas_estimate = target.estimate_gas()
             test.log.info('Gas estimate, cost is %d' % gas_estimate)
-            gas_estimate = gas_estimate*2
+            gas_estimate = gas_estimate * self.GAS_MULT
         except Exception as e:
             test.log.warn('Gas estimate, %s' % e.args[0])
             gas_estimate = gas_limit
@@ -115,9 +116,9 @@ class Default:
         build_tx = target.buildTransaction(
             {
                 'nonce': nonce,
+                'chainId': web3.eth.chain_id,
                 'gasPrice': web3.eth.gas_price,   # the price we are willing to pay per gas unit (dimension is gwei)
-                'gas': gas_estimate,              # max gas units prepared to pay (dimension is computational units)
-                'chainId': web3.eth.chain_id
+                'gas': gas_estimate               # max gas units prepared to pay (dimension is computational units)
             }
         )
         return build_tx
@@ -135,8 +136,8 @@ class Default:
             if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'SENT')
         except Exception as e:
             test.log.error('Error sending raw transaction %s' % e)
-            test.addOutcome(BLOCKED, abortOnError=True)
             if persist_nonce: test.nonce_db.delete_entries(account.address, test.env, nonce)
+            test.addOutcome(BLOCKED, abortOnError=True)
         if log: test.log.info('Transaction sent with hash %s' % tx_hash.hex())
         return tx_hash
 
@@ -150,5 +151,6 @@ class Default:
         else:
             test.log.error('Transaction receipt failed')
             test.log.error('Full receipt: %s' % tx_receipt)
+            if persist_nonce: test.nonce_db.delete_entries(account.address, test.env, nonce)
             test.addOutcome(FAILED, abortOnError=True)
         return tx_receipt
