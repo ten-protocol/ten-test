@@ -120,7 +120,7 @@ class GenericNetworkTest(BaseTest):
         Note that as the L2 pre-funded account is not in our control we do not use local persistence for the nonce.
         A better approach is to always use the faucet server even on local testnet deployments.
         """
-        web3_funded, account_funded = network.connect(self, Properties().l2_funded_account_pk(self.env), check_funds=False)
+        web3_funded, account_funded = network.connect(self, Properties().funded_account_pk(self.env), check_funds=False)
         nonce = network.get_next_nonce(self, web3_funded, account_funded, False)
         tx = {
             'nonce': nonce,

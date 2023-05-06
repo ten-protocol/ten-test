@@ -48,7 +48,7 @@ class Default:
         test.log.info('Account %s balance %.6f ETH' % (account.address, balance))
         if check_funds and balance < self.ETH_LIMIT:
             test.log.info('Account balance %.6f ETH below threshold %s, allocating more ...' % (balance, self.ETH_LIMIT))
-            test.fund_eth(self, account, self.ETH_ALLOC, Properties().pre_funded_pk())
+            test.fund_eth(self, account, self.ETH_ALLOC, Properties().funded_account_pk(test.env))
             test.log.info('Account %s new balance %.6f ETH' % (account.address,
                                                                web3.fromWei(web3.eth.get_balance(account.address), 'ether')))
         return web3, account
@@ -107,9 +107,8 @@ class Default:
 
         try:
             gas_estimate = target.estimate_gas()
-            test.log.info('Gas estimate, cost is %d' % gas_estimate)
-
-            test.log.info('Total potential cost is %.5f' % web3.fromWei(gas_estimate*web3.eth.gas_price, 'ether'))
+            test.log.info('Gas estimate, cost is %d WEI' % gas_estimate)
+            test.log.info('Total potential cost is %df WEI' % gas_estimate*web3.eth.gas_price)
             gas_estimate = gas_estimate * self.GAS_MULT
         except Exception as e:
             test.log.warn('Gas estimate, %s' % e.args[0])

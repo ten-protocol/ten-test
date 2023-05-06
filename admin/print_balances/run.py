@@ -1,4 +1,4 @@
-from pysys.constants import LOG_TRACEBACK
+from pysys.constants import LOG_TRACEBACK, LOG_WARN
 from pysys.utils.logutils import BaseLogFormatter
 from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.utils.properties import Properties
@@ -9,6 +9,11 @@ class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
         network = NetworkFactory.get_network(self)
+
+        self.log.info("")
+        self.log.info("Checking funds for %s:", "funded_account_pk", extra=BaseLogFormatter.tag(LOG_WARN, 0))
+        network.connect(self, Properties().funded_account_pk(self.env), check_funds=False)
+
         for fn in Properties().accounts():
             self.log.info("")
             self.log.info("Checking funds for %s:", fn.__name__, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))

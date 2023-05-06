@@ -57,15 +57,13 @@ class Properties:
     # all accounts on the network layer that may hold funds
     def accounts(self):
         return [
-            self.pre_funded_pk,
             self.account1_1pk, self.account2_1pk, self.account3_1pk, self.account4_1pk,
             self.account2_2pk, self.account2_2pk, self.account3_2pk, self.account4_2pk,
             self.account1_3pk, self.account2_3pk, self.account3_3pk, self.account4_3pk,
             self.gg_appdev_pk, self.gg_endusr_pk
         ]
 
-    def pre_funded_pk(self): return self.get('env.all', 'PreFundsPK')
-
+    def funded_account_pk(self, key): return self.get('env.'+key, 'FundedAccountPK')
     def account1pk(self): return getattr(self, "account1_%dpk" % thread_num())()
     def account2pk(self): return getattr(self, "account2_%dpk" % thread_num())()
     def account3pk(self): return getattr(self, "account3_%dpk" % thread_num())()

@@ -63,7 +63,7 @@ class ObscuroRunnerPlugin():
 
         arguments = []
         arguments.extend(('--port', str(Ganache.PORT)))
-        arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().pre_funded_pk()))
+        arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().funded_account_pk(self.env)))
         arguments.extend(('--gasLimit', '7200000'))
         arguments.extend(('--gasPrice', '1000'))
         arguments.extend(('--blockTime', Properties().block_time_secs(self.env)))

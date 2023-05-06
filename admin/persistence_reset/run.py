@@ -8,7 +8,7 @@ class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
         PKS = [
-            Properties().pre_funded_pk(),
+            Properties().funded_account_pk(self.env),
             Properties().account1_1pk(), Properties().account2_1pk(), Properties().account3_1pk(), Properties().account4_1pk(),
             Properties().account1_2pk(), Properties().account2_2pk(), Properties().account3_2pk(), Properties().account4_2pk(),
             Properties().account1_3pk(), Properties().account2_3pk(), Properties().account3_3pk(), Properties().account4_3pk()
