@@ -54,6 +54,16 @@ class Properties:
     def block_time_secs(self, key):
         return self.get('env.'+key, 'BlockTimeSecs')
 
+    # all accounts on the network layer that may hold funds
+    def accounts(self):
+        return [
+            self.pre_funded_pk,
+            self.account1_1pk, self.account2_1pk, self.account3_1pk, self.account4_1pk,
+            self.account2_2pk, self.account2_2pk, self.account3_2pk, self.account4_2pk,
+            self.account1_3pk, self.account2_3pk, self.account3_3pk, self.account4_3pk,
+            self.gg_appdev_pk, self.gg_endusr_pk
+        ]
+
     def pre_funded_pk(self): return self.get('env.all', 'PreFundsPK')
 
     def account1pk(self): return getattr(self, "account1_%dpk" % thread_num())()
