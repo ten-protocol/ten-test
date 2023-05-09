@@ -26,7 +26,7 @@ def transfer_value(web3, account, amount, recipient):
         'to': recipient,
         'value': web3.toWei(amount, 'ether'),
         'gas': 4 * 720000,
-        'gasPrice': 21000
+        'gasPrice': web3.eth.gas_price
     }
     signed_tx = account.sign_transaction(tx)
     tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)

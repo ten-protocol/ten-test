@@ -10,6 +10,10 @@ class PySysTest(GenericNetworkTest):
         network = NetworkFactory.get_network(self)
         web3, account = network.connect_account2(self)
 
+        # get the gas price for reference
+        gas_price = web3.eth.gas_price
+        self.log.info('Gas price is %d' % gas_price)
+
         # get the block number
         block_number_initial = web3.eth.get_block_number()
         self.log.info('Block number is %d' % block_number_initial)

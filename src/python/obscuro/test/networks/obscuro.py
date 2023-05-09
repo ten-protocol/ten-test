@@ -2,6 +2,7 @@ import requests, json, os
 from web3 import Web3
 from obscuro.test.networks.default import Default
 from obscuro.test.networks.geth import Geth
+from obscuro.test.utils.properties import Properties
 from eth_account.messages import encode_defunct
 from web3.middleware import geth_poa_middleware
 
@@ -24,7 +25,7 @@ class ObscuroDefaultL1(Geth):
         test.log.info('Account %s balance %.6f ETH' % (account.address, balance))
         if check_funds and balance < self.ETH_LIMIT:
             test.log.info('Account balance %.6f ETH below threshold %s, allocating more ...' % (balance, self.ETH_LIMIT))
-            test.fund_eth(self, account, self.ETH_ALLOC)
+            test.fund_eth(self, account, self.ETH_ALLOC, Properties().l1_funded_account_pk(test.env))
             test.log.info('Account new balance %.6f ETH' % web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
         return web3, account
 

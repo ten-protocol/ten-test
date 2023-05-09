@@ -69,7 +69,7 @@ class PySysTest(GenericNetworkTest):
               'to': address,
               'value': web3.toWei(amount, 'ether'),
               'gas': 4 * 720000,
-              'gasPrice': 21000,
+              'gasPrice': web3.eth.gas_price,
               'chainId': network.chain_id()
               }
         return network.sign_transaction(self, tx, nonce, account, True)

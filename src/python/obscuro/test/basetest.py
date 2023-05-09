@@ -83,21 +83,21 @@ class GenericNetworkTest(BaseTest):
                                      state=state, timeout=timeout)
         return hprocess
 
-    def fund_eth(self, network, account, amount):
+    def fund_eth(self, network, account, amount, pk):
         """A native transfer of ETH from one address to another. """
-        web3_l1, account_l1 = network.connect(self, Properties().l1_test_account_pk(self.env))
-        nonce = network.get_next_nonce(self, web3_l1, account_l1, False)
+        web3_pk, account_pk = network.connect(self, pk)
+        nonce = network.get_next_nonce(self, web3_pk, account_pk, False)
         tx = {
             'chainId': network.chain_id(),
             'nonce': nonce,
             'to': account.address,
-            'value': web3_l1.toWei(amount, 'ether'),
+            'value': web3_pk.toWei(amount, 'ether'),
             'gas': 4*21000,
-            'gasPrice': web3_l1.eth.gas_price
+            'gasPrice': web3_pk.eth.gas_price
         }
-        tx_sign = account_l1.sign_transaction(tx)
-        tx_hash = network.send_transaction(self, web3_l1, nonce, account_l1, tx_sign, False)
-        network.wait_for_transaction(self, web3_l1, nonce, account_l1, tx_hash, False)
+        tx_sign = account_pk.sign_transaction(tx)
+        tx_hash = network.send_transaction(self, web3_pk, nonce, account_pk, tx_sign, False)
+        network.wait_for_transaction(self, web3_pk, nonce, account_pk, tx_hash, False)
 
     def fund_obx(self, network, account, amount):
         """Fund OBX in the L2 to a users account, either through the faucet server or direct from the account. """
@@ -120,14 +120,14 @@ class GenericNetworkTest(BaseTest):
         Note that as the L2 pre-funded account is not in our control we do not use local persistence for the nonce.
         A better approach is to always use the faucet server even on local testnet deployments.
         """
-        web3_funded, account_funded = network.connect(self, Properties().l2_funded_account_pk(self.env), check_funds=False)
+        web3_funded, account_funded = network.connect(self, Properties().funded_account_pk(self.env), check_funds=False)
         nonce = network.get_next_nonce(self, web3_funded, account_funded, False)
         tx = {
             'nonce': nonce,
             'to': account.address,
             'value': web3_funded.toWei(amount, 'ether'),
             'gas': 4 * 720000,
-            'gasPrice': 21000
+            'gasPrice': web3_funded.eth.gas_price
         }
         tx_sign = account_funded.sign_transaction(tx)
         tx_hash = network.send_transaction(self, web3_funded, nonce, account_funded, tx_sign, False)

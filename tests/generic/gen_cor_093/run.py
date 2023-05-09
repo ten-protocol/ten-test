@@ -20,8 +20,8 @@ class PySysTest(GenericNetworkTest):
         build_tx = contract.contract.functions.get_balance().buildTransaction(
             {
                 'nonce': nonce,
-                'gasPrice': 1000,             # the price we are willing to pay per gas unit (dimension is gwei)
-                'gas': int(est_1 / 2),        # max gas units prepared to pay (dimension is computational units)
+                'gasPrice': web3.eth.gas_price, # the price we are willing to pay per gas unit (dimension is gwei)
+                'gas': int(est_1 / 2),          # max gas units prepared to pay (dimension is computational units)
                 'chainId': web3.eth.chain_id
             }
         )

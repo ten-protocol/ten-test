@@ -54,6 +54,16 @@ class Properties:
     def block_time_secs(self, key):
         return self.get('env.'+key, 'BlockTimeSecs')
 
+    # all accounts on the network layer that may hold funds
+    def accounts(self):
+        return [
+            self.account1_1pk, self.account2_1pk, self.account3_1pk, self.account4_1pk,
+            self.account2_2pk, self.account2_2pk, self.account3_2pk, self.account4_2pk,
+            self.account1_3pk, self.account2_3pk, self.account3_3pk, self.account4_3pk,
+            self.gg_appdev_pk, self.gg_endusr_pk
+        ]
+
+    def funded_account_pk(self, key): return self.get('env.'+key, 'FundedAccountPK')
     def account1pk(self): return getattr(self, "account1_%dpk" % thread_num())()
     def account2pk(self): return getattr(self, "account2_%dpk" % thread_num())()
     def account3pk(self): return getattr(self, "account3_%dpk" % thread_num())()
@@ -96,6 +106,9 @@ class Properties:
     def faucet_url(self, key):
         return self.get('env.'+key, 'FaucetURL')
 
+    def l1_funded_account_pk(self, key):
+        return self.get('env.'+key, 'L1FundedAccountPK')
+
     def l2_funded_account_pk(self, key):
         return self.get('env.'+key, 'L2FundedAccountPK')
 
@@ -120,9 +133,10 @@ class Properties:
     def l2_cross_chain_messenger_address(self, key):
         return self.get('env.'+key, 'L2CrossChainMessengerAddress')
 
-    def l1_test_account_pk(self, key):
-        return self.get('env.'+key, 'L1TestAccountPK')
-
     # infura related
     def infuraProjectID(self):
         return self.get('env.goerli', 'ProjectID')
+
+    # arbitrum related
+    def abitrumAPIKey(self):
+        return self.get('env.arbitrum', 'APIKey')

@@ -11,6 +11,7 @@ class NoncePersistence:
     SQL_LATEST = "SELECT nonce FROM nonce_db WHERE account=? AND environment=? ORDER BY nonce DESC LIMIT 1"
     SQL_DELENV = "DELETE from nonce_db WHERE environment=?"
     SQL_ACCNTS = "SELECT DISTINCT account from nonce_db where environment=?"
+    SQL_DELENT = "DELETE from nonce_db WHERE account=? AND environment=? AND nonce=?"
 
     def __init__(self, db_dir):
         """Instantiate an instance. """
@@ -68,6 +69,11 @@ class NoncePersistence:
     def delete_environment(self, environment):
         """Delete all nonce entries for all accounts for a given environment. """
         self.cursor.execute(self.SQL_DELENV, (environment, ))
+        self.connection.commit()
+
+    def delete_entries(self, account, environment, nonce):
+        """Delete all nonce entries in the persistence for a given account and environment and nonce. """
+        self.cursor.execute(self.SQL_DELENT, (account, environment, nonce))
         self.connection.commit()
 
     def get_accounts(self, environment):

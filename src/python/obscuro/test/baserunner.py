@@ -63,21 +63,9 @@ class ObscuroRunnerPlugin():
 
         arguments = []
         arguments.extend(('--port', str(Ganache.PORT)))
-        arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().account1_1pk()))
-        arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().account2_1pk()))
-        arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().account3_1pk()))
-        arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().account4_1pk()))
-        arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().account1_2pk()))
-        arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().account2_2pk()))
-        arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().account3_2pk()))
-        arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().account4_2pk()))
-        arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().account1_3pk()))
-        arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().account2_3pk()))
-        arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().account3_3pk()))
-        arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().account4_3pk()))
-        arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().gg_appdev_pk()))
-        arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().gg_endusr_pk()))
+        arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().funded_account_pk(self.env)))
         arguments.extend(('--gasLimit', '7200000'))
+        arguments.extend(('--gasPrice', '1000'))
         arguments.extend(('--blockTime', Properties().block_time_secs(self.env)))
         arguments.extend(('-k', 'berlin'))
         hprocess = runner.startProcess(command=Properties().ganache_binary(), displayName='ganache',

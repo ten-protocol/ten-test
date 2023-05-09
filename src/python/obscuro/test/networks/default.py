@@ -11,6 +11,9 @@ class Default:
     WS_HOST = 'ws://127.0.0.1'
     PORT = 8545
     WS_PORT = 8545
+    ETH_LIMIT = 0.0001
+    ETH_ALLOC = 0.0002
+    GAS_MULT = 2
 
     def chain_id(self): return None
 
@@ -40,6 +43,14 @@ class Default:
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)
         test.log.info('Account %s connected to %s on %s' % (account.address, self.__class__.__name__, url))
+
+        balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+        test.log.info('Account %s balance %.6f ETH' % (account.address, balance))
+        if check_funds and balance < self.ETH_LIMIT:
+            test.log.info('Account balance %.6f ETH below threshold %s, allocating more ...' % (balance, self.ETH_LIMIT))
+            test.fund_eth(self, account, self.ETH_ALLOC, Properties().funded_account_pk(test.env))
+            test.log.info('Account %s new balance %.6f ETH' % (account.address,
+                                                               web3.fromWei(web3.eth.get_balance(account.address), 'ether')))
         return web3, account
 
     def connect_account1(self, test, web_socket=False, check_funds=True):
@@ -80,7 +91,7 @@ class Default:
         process.
         """
         nonce = self.get_next_nonce(test, web3, account, persist_nonce)
-        tx = self.build_transaction(web3, target, nonce, gas_limit)
+        tx = self.build_transaction(test, web3, target, nonce, gas_limit)
         tx_sign = self.sign_transaction(test, tx, nonce, account, persist_nonce)
         tx_hash = self.send_transaction(test, web3, nonce, account, tx_sign, persist_nonce)
         tx_recp = self.wait_for_transaction(test, web3, nonce, account, tx_hash, persist_nonce)
@@ -91,14 +102,24 @@ class Default:
         nonce = test.nonce_db.get_next_nonce(test, web3, account.address, test.env, persist_nonce, log)
         return nonce
 
-    def build_transaction(self, web3, target, nonce, gas_limit):
+    def build_transaction(self, test, web3, target, nonce, gas_limit):
         """Build the transaction dictionary from the contract constructor or function target. """
+
+        try:
+            gas_estimate = target.estimate_gas()
+            test.log.info('Gas estimate, cost is %d WEI' % gas_estimate)
+            test.log.info('Total potential cost is %df WEI' % gas_estimate*web3.eth.gas_price)
+            gas_estimate = gas_estimate * self.GAS_MULT
+        except Exception as e:
+            test.log.warn('Gas estimate, %s' % e.args[0])
+            gas_estimate = gas_limit
+
         build_tx = target.buildTransaction(
             {
                 'nonce': nonce,
-                'gasPrice': 1000,             # the price we are willing to pay per gas unit (dimension is gwei)
-                'gas': gas_limit,             # max gas units prepared to pay (dimension is computational units)
-                'chainId': web3.eth.chain_id
+                'chainId': web3.eth.chain_id,
+                'gasPrice': web3.eth.gas_price,   # the price we are willing to pay per gas unit (dimension is gwei)
+                'gas': gas_estimate               # max gas units prepared to pay (dimension is computational units)
             }
         )
         return build_tx
@@ -116,6 +137,7 @@ class Default:
             if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'SENT')
         except Exception as e:
             test.log.error('Error sending raw transaction %s' % e)
+            if persist_nonce: test.nonce_db.delete_entries(account.address, test.env, nonce)
             test.addOutcome(BLOCKED, abortOnError=True)
         if log: test.log.info('Transaction sent with hash %s' % tx_hash.hex())
         return tx_hash
@@ -130,5 +152,6 @@ class Default:
         else:
             test.log.error('Transaction receipt failed')
             test.log.error('Full receipt: %s' % tx_receipt)
+            if persist_nonce: test.nonce_db.delete_entries(account.address, test.env, nonce)
             test.addOutcome(FAILED, abortOnError=True)
         return tx_receipt
