@@ -1,5 +1,4 @@
-from web3 import Web3
-from pysys.constants import LOG_TRACEBACK, LOG_WARN
+from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
 from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.utils.properties import Properties

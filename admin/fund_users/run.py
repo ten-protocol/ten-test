@@ -9,7 +9,6 @@ from obscuro.test.networks.factory import NetworkFactory
 class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
-
         network = NetworkFactory.get_network(self)
         for fn in Properties().accounts():
             account = Web3().eth.account.privateKeyToAccount(fn())
