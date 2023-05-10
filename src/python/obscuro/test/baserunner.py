@@ -4,6 +4,7 @@ from pysys.constants import PROJECT, BACKGROUND
 from pysys.exceptions import AbortExecution
 from obscuro.test.networks.ganache import Ganache
 from obscuro.test.persistence.nonce import NoncePersistence
+from obscuro.test.persistence.contract import ContractPersistence
 from obscuro.test.utils.properties import Properties
 
 
@@ -30,6 +31,9 @@ class ObscuroRunnerPlugin():
         if not os.path.exists(self.db_dir): os.makedirs(self.db_dir)
         nonce_db = NoncePersistence(self.db_dir)
         nonce_db.create()
+
+        contracts_db = ContractPersistence(self.db_dir)
+        contracts_db.create()
 
         if self.is_obscuro() and runner.threads > 3:
             raise Exception('Max threads against Obscuro cannot be greater than 3')
