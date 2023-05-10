@@ -2,7 +2,7 @@ from pysys.constants import *
 from obscuro.test.contracts.default import DefaultContract
 
 
-class Game(DefaultContract):
+class GasConsumer(DefaultContract):
     SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'gas', 'GasConsumer.sol')
     CONTRACT = 'GuessGame'
 

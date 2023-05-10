@@ -1,10 +1,11 @@
 import json
 from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.contracts.relevancy import Relevancy
+from obscuro.test.contracts.guesser import Guesser
 from obscuro.test.contracts.payable import ReceiveEther, SendEther
 from obscuro.test.contracts.storage import Storage, KeyStorage
 from obscuro.test.networks.factory import NetworkFactory
-
+from obscuro.test.contracts.error import Error
 
 class PySysTest(GenericNetworkTest):
 
@@ -23,6 +24,8 @@ class PySysTest(GenericNetworkTest):
         contracts.append(Relevancy(self, web3))
         contracts.append(ReceiveEther(self, web3))
         contracts.append(SendEther(self, web3))
+        contracts.append(Guesser(self, web3))
+        contracts.append(Error(self, web3))
 
         for contract in contracts:
             self.log.info("")
