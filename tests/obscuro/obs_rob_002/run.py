@@ -34,7 +34,7 @@ class PySysTest(ObscuroNetworkTest):
         storage.deploy(network, account)
         storage_wallet = WalletExtension.start(self, name='storage')
 
-        error = Error(self, web3, 'foo')
+        error = Error(self, web3)
         error.deploy(network, account)
         error_wallet = WalletExtension.start(self, name='error')
 

@@ -1,6 +1,8 @@
 import json
 from solcx import compile_source
 from pysys.constants import *
+from pysys.constants import LOG_WARN
+from pysys.utils.logutils import BaseLogFormatter
 from obscuro.test.utils.properties import Properties
 
 
@@ -39,7 +41,7 @@ class DefaultContract:
 
     def deploy(self, network, account, persist_nonce=True):
         """Deploy using the given account."""
-        self.test.log.info('Deploying the %s contract' % self.CONTRACT)
+        self.test.log.info('Deploying the %s contract', self.CONTRACT, extra=BaseLogFormatter.tag(LOG_WARN, 0))
         self.account = account
         tx_receipt = network.transact(self.test, self.web3, self.contract, account, self.GAS_LIMIT, persist_nonce)
         self.address = tx_receipt.contractAddress

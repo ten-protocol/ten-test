@@ -12,7 +12,7 @@ class PySysTest(GenericNetworkTest):
         network.add_ws_proxy(self)
         web3, account = network.connect_account1(self, web_socket=True)
 
-        error = Error(self, web3, 'foo')
+        error = Error(self, web3)
         error.deploy(network, account)
 
         # force a require
