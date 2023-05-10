@@ -19,6 +19,10 @@ class ContractPersistence:
         """Create the cursor to the underlying persistence. """
         self.cursor.execute(self.SQL_CREATE)
 
+    def delete(self, environment):
+        """Delete all stored contract addresses for a particular environment. """
+        self.cursor.execute(self.SQL_DELETE)
+
     def insert(self, name, environment, address, abi):
         """Insert a new nonce into the persistence. """
         self.cursor.execute(self.SQL_INSERT, (name, environment, address, abi))
