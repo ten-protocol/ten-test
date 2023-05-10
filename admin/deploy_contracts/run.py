@@ -17,4 +17,5 @@ class PySysTest(GenericNetworkTest):
         # deploy the contract
         storage = Storage(self, web3, 100)
         storage.deploy(network, account)
+        self.log.info('Deployed %s contract to address %s' % (Storage.CONTRACT, storage.address))
         self.contract_db.insert(storage.CONTRACT, self.env, storage.address, json.dumps(storage.abi))

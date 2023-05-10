@@ -19,10 +19,12 @@ class PySysTest(GenericNetworkTest):
             contract = web3.eth.contract(address=address, abi=abi)
 
         else:
-            # deploy the contract
+            # deploy the contract (should never be the base if the admin deploy is run on a
+            # new instantiation of the network
             storage = Storage(self, web3, 100)
             storage.deploy(network, account)
             contract = storage.contract
+            self.log.warn('Deployed %s contract to address %s' % (storage.CONTRACT, storage.address))
 
             # save the contract details to the persistence file
             self.contract_db.insert(storage.CONTRACT, self.env, storage.address, json.dumps(storage.abi))

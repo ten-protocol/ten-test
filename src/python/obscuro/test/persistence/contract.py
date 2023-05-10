@@ -21,7 +21,8 @@ class ContractPersistence:
 
     def delete(self, environment):
         """Delete all stored contract addresses for a particular environment. """
-        self.cursor.execute(self.SQL_DELETE)
+        self.cursor.execute(self.SQL_DELETE, (environment, ))
+        self.connection.commit()
 
     def insert(self, name, environment, address, abi):
         """Insert a new nonce into the persistence. """
