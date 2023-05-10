@@ -3,6 +3,7 @@ from web3 import Web3
 from pysys.basetest import BaseTest
 from pysys.constants import PROJECT, BACKGROUND
 from obscuro.test.persistence.nonce import NoncePersistence
+from obscuro.test.persistence.contract import ContractPersistence
 from obscuro.test.utils.properties import Properties
 from obscuro.test.helpers.wallet_extension import WalletExtension
 
@@ -29,8 +30,9 @@ class GenericNetworkTest(BaseTest):
         self.env = 'obscuro' if self.mode is None else self.mode
         self.block_time = Properties().block_time_secs(self.env)
 
-        # every test has its own connection to the nonce db
+        # every test has its own connection to the nonce and contract db
         self.nonce_db = NoncePersistence(runner.obscuro_runner.db_dir)
+        self.contract_db = ContractPersistence(runner.obscuro_runner.db_dir)
         self.addCleanupFunction(self.close_db)
 
         # every test runs a default wallet extension
