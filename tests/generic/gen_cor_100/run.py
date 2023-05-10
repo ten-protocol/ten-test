@@ -27,9 +27,14 @@ class PySysTest(GenericNetworkTest):
             # save the contract details to the persistence file
             self.contract_db.insert(storage.CONTRACT, self.env, storage.address, json.dumps(storage.abi))
 
+        # retrieve the current value
         value = contract.functions.retrieve().call()
         self.log.info('Call shows value %d' % value)
 
-        # set the value via a transaction, compare to call and transaction log
-        tx_receipt = network.transact(self, web3, contract.functions.store(value+1), account, Storage.GAS_LIMIT)
-        self.log.info('Call shows value %d' % contract.functions.retrieve().call())
+        # set the value via a transaction and retrieve the new value
+        network.transact(self, web3, contract.functions.store(value+1), account, Storage.GAS_LIMIT)
+        value_after = contract.functions.retrieve().call()
+        self.log.info('Call shows value %d' % value_after)
+
+        # perform assert
+        self.assertTrue(value_after == value+1)
