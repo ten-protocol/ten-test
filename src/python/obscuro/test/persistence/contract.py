@@ -7,7 +7,7 @@ class ContractPersistence:
     SQL_CREATE = "CREATE TABLE IF NOT EXISTS contracts (name TEXT, environment TEXT, address INTEGER, abi STRING)"
     SQL_INSERT = "INSERT INTO contracts VALUES (?, ?, ?, ?)"
     SQL_DELETE = "DELETE from contracts WHERE environment=?"
-    SQL_LATEST = "SELECT address, abi FROM contracts WHERE name=? AND environment=? ORDER BY name DESC LIMIT 1"
+    SQL_SELECT = "SELECT address, abi FROM contracts WHERE name=? AND environment=? ORDER BY name DESC LIMIT 1"
 
     def __init__(self, db_dir):
         """Instantiate an instance. """
@@ -23,4 +23,9 @@ class ContractPersistence:
         """Insert a new nonce into the persistence. """
         self.cursor.execute(self.SQL_INSERT, (name, environment, address, abi))
         self.connection.commit()
+
+    def get_contract(self, name, environment):
+        """Return a list of all accounts with persisted values for a given environment. """
+        self.cursor.execute(self.SQL_SELECT, (name, environment))
+        return self.cursor.fetchall()
 
