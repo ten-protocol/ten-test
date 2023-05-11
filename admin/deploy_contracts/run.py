@@ -1,8 +1,11 @@
 import json
 from obscuro.test.basetest import GenericNetworkTest
-from obscuro.test.contracts.storage import Storage
+from obscuro.test.contracts.relevancy import Relevancy
+from obscuro.test.contracts.guesser import Guesser
+from obscuro.test.contracts.payable import ReceiveEther, SendEther
+from obscuro.test.contracts.storage import Storage, KeyStorage
 from obscuro.test.networks.factory import NetworkFactory
-
+from obscuro.test.contracts.error import Error
 
 class PySysTest(GenericNetworkTest):
 
@@ -14,8 +17,18 @@ class PySysTest(GenericNetworkTest):
         network = NetworkFactory.get_network(self)
         web3, account = network.connect_account1(self)
 
-        # deploy the contract
-        storage = Storage(self, web3, 100)
-        storage.deploy(network, account)
-        self.log.info('Deployed %s contract to address %s' % (Storage.CONTRACT, storage.address))
-        self.contract_db.insert(storage.CONTRACT, self.env, storage.address, json.dumps(storage.abi))
+        # deploy the storage contract
+        contracts = []
+        contracts.append(Storage(self, web3, 250))
+        contracts.append(KeyStorage(self, web3))
+        contracts.append(Relevancy(self, web3))
+        contracts.append(ReceiveEther(self, web3))
+        contracts.append(SendEther(self, web3))
+        contracts.append(Guesser(self, web3))
+        contracts.append(Error(self, web3))
+
+        for contract in contracts:
+            self.log.info("")
+            contract.deploy(network, account)
+            self.log.info('Deployed %s contract to address %s' % (contract.CONTRACT, contract.address))
+            self.contract_db.insert(contract.CONTRACT, self.env, contract.address, json.dumps(contract.abi))

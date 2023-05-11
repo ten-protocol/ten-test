@@ -19,7 +19,7 @@ class PySysTest(GenericNetworkTest):
             contract = web3.eth.contract(address=address, abi=abi)
 
         else:
-            # deploy the contract (should never be the base if the admin deploy is run on a
+            # deploy the contract (should never be the case if the admin deploy_contracts is run on a
             # new instantiation of the network
             storage = Storage(self, web3, 100)
             storage.deploy(network, account)

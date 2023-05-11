@@ -108,7 +108,7 @@ class Default:
         try:
             gas_estimate = target.estimate_gas()
             test.log.info('Gas estimate, cost is %d WEI' % gas_estimate)
-            test.log.info('Total potential cost is %d WEI' % gas_estimate*web3.eth.gas_price)
+            test.log.info('Total potential cost is %d WEI' % (gas_estimate*web3.eth.gas_price))
             gas_estimate = gas_estimate * self.GAS_MULT
         except Exception as e:
             test.log.warn('Gas estimate, %s' % e.args[0])

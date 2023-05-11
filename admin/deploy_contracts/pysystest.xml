@@ -16,6 +16,7 @@
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
             <mode>obscuro.sim</mode>
+            <mode>ganache</mode>
             <mode>goerli</mode>
             <mode>arbitrum</mode>
         </modes>

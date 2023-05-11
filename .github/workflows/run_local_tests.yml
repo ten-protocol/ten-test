@@ -72,12 +72,11 @@ jobs:
           ./get_artifacts.sh
           ls -l ${{ github.workspace }}/obscuro-test/artifacts   
 
-      # in principle this is not required as when the test framework sees a transaction count of 0
-      # to an account that had a higher nonce value, it will assume a new deployment and reset
-      - name: 'Do a persistence reset'
+      - name: 'Do a persistence reset for nonce and contracts'
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
           /usr/local/bin/pysys.py run -m obscuro.local persistence_reset
+          /usr/local/bin/pysys.py run -m obscuro.local deploy_contracts
 
       - name: 'Run tests on workflow dispatch'
         if: ${{ github.event_name == 'workflow_dispatch' }}

@@ -10,7 +10,7 @@ class PySysTest(GenericNetworkTest):
         network = NetworkFactory.get_network(self)
         web3, account = network.connect_account1(self)
 
-        error = Error(self, web3, 'foo')
+        error = Error(self, web3)
         error.deploy(network, account)
 
         self.log.info('Getting the contract bytecode ...')
