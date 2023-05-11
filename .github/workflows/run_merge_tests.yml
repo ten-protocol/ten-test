@@ -1,3 +1,6 @@
+# Builds a local testnet and runs a set of E2E tests. Is run via a repository dispatch when a PR is merged down to
+# main in the go-obscuro repo
+#
 name: Run merge tests
 run-name: Run merge tests for PR ${{ github.event.client_payload.number }} by @${{ github.event.client_payload.owner }}
 on:
@@ -22,9 +25,6 @@ jobs:
               },
               "BedrockSquirrel": {
                 "discord_id": "92361563276591104"
-              },
-              "joeldudley": {
-                "discord_id": "930531223779037315"
               },
               "moraygrieve": {
                 "discord_id": "814873419207409685"

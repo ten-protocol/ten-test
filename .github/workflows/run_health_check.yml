@@ -1,9 +1,10 @@
-# Run a set of sanity tests on testnet to ensure it is up and running.
-
+# Run a set of sanity tests on testnet to ensure it is up and running. The workflow is run either manually from
+# a workflow dispatch, or every two hours.
+#
 name: Run health check
 on:
   schedule:
-    - cron: '10 */6 * * *'
+    - cron: '10 */2 * * *'
   workflow_dispatch:
     inputs:
       release:

@@ -1,0 +1,66 @@
+# Run tests on a new deployment of testnet or dev-testnet. On a new deployment we need to reset the persistence, and
+# redeploy the contracts that live on the network and are used by the tests. The workflow is only triggered on a
+# repository dispatch sent by the deployment of the faucet.
+#
+name: Run remote tests against a newly deployed network
+run-name: Run for new deployment
+on:
+  repository_dispatch:
+    types: [ faucet_deployment ]
+
+jobs:
+  Run-Tests:
+    runs-on: self-hosted
+    steps:
+      - run: echo "Triggered by ${{ github.event_name }}"
+      - run: echo "Branch       ${{ github.ref }}"
+
+      - name: Set the variables
+        env:
+          DEFAULT_VERSION: 'main'
+        run: echo "VERSION=${{ github.event.inputs.release || env.DEFAULT_VERSION }}" >> $GITHUB_ENV
+
+      - name: 'Check out obscuro-test'
+        uses: actions/checkout@v3
+        with:
+          path: ./obscuro-test
+
+      - name: 'Check out go-obscuro code'
+        uses: actions/checkout@v3
+        with:
+          repository: obscuronet/go-obscuro
+          path: ./go-obscuro
+          ref: ${{env.VERSION}}
+
+      - name: 'Build required artifacts for running tests'
+        run: |
+          cd ${{ github.workspace }}/obscuro-test
+          ./get_artifacts.sh
+          ls -l ${{ github.workspace }}/obscuro-test/artifacts   
+
+      - name: 'Run tests on dev-testnet on a repository_dispatch trigger of a new deployment'
+        if: ${{ (github.event_name == 'repository_dispatch') && (github.event.client_payload.env == 'dev-testnet') }}
+        run: |
+          cd ${{ github.workspace }}/obscuro-test/admin
+          /usr/local/bin/pysys.py run -m obscuro.dev persistence_reset
+          /usr/local/bin/pysys.py run -m obscuro.dev deploy_contracts
+          cd ${{ github.workspace }}/obscuro-test/tests
+          /usr/local/bin/pysys.py run -m obscuro.dev -e skip -e robustness -e performance
+
+      - name: 'Run tests on testnet on a repository_dispatch trigger of a new deployment'
+        if: ${{ (github.event_name == 'repository_dispatch') && (github.event.client_payload.env == 'testnet') }}
+        run: |
+          cd ${{ github.workspace }}/obscuro-test/admin
+          /usr/local/bin/pysys.py run persistence_reset
+          /usr/local/bin/pysys.py run deploy_contracts
+          cd ${{ github.workspace }}/obscuro-test/tests
+          /usr/local/bin/pysys.py run -e skip -e robustness -e performance
+
+      - name: 'Upload testcase output'
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: test-artifact
+          path: |
+            ${{ github.workspace }}/obscuro-test/**/Output
+          retention-days: 2
