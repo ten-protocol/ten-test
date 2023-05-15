@@ -9,7 +9,7 @@ from obscuro.test.helpers.wallet_extension import WalletExtension
 
 
 class PySysTest(GenericNetworkTest):
-    ITERATIONS = 2000
+    ITERATIONS = 5000
     ACCOUNTS = 20
     CLIENTS = 4
 
@@ -53,7 +53,7 @@ class PySysTest(GenericNetworkTest):
                             branch, date,
                             str(self.mode), str(self.CLIENTS*self.ITERATIONS), str(duration), '%d' % self.CLIENTS)
 
-    def run_client(self, name, network, offset=5.0):
+    def run_client(self, name, network, offset=2.0):
         """Run a background load client. """
         pk = secrets.token_hex(32)
         _, account = network.connect(self, private_key=pk)

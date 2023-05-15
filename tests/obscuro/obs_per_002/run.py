@@ -51,7 +51,7 @@ class PySysTest(GenericNetworkTest):
                             branch, date,
                             str(self.mode), str(len(clients)*self.ITERATIONS), str(duration), '%.3f' % average)
 
-    def run_client(self, name, network, offset=5.0):
+    def run_client(self, name, network, offset=2.0):
         """Run a background load client. """
         pk = secrets.token_hex(32)
         _, account = network.connect(self, private_key=pk)
