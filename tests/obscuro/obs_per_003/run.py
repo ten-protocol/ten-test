@@ -9,11 +9,14 @@ from obscuro.test.helpers.wallet_extension import WalletExtension
 
 
 class PySysTest(GenericNetworkTest):
-    ITERATIONS = 5000
+    ITERATIONS = 2000
     ACCOUNTS = 20
     CLIENTS = 4
 
     def execute(self):
+        self.execute_run()
+
+    def execute_run(self):
         # connect to the network
         network = NetworkFactory.get_network(self)
         web3, account = network.connect_account1(self)
@@ -23,28 +26,34 @@ class PySysTest(GenericNetworkTest):
         error = Error(self, web3)
         error.deploy(network, account)
 
-        # run the clients, wait for them to complete concurrently, process their output
+        # run the clients
         for i in range(self.CLIENTS): self.run_client('client_%d' % i, network)
-        for i in range(self.CLIENTS): self.waitForGrep(file='client_%d.out' % i, expr='Client client_%d completed' % i, timeout=600)
-        data = [self.load_data('client_%d.log' % i) for i in range(self.CLIENTS)]
+        for i in range(self.CLIENTS):
+            self.waitForGrep(file='client_%d.out' % i, expr='Client client_%d completed' % i, timeout=600)
 
-        # between first and last batch time, bin each client's data, then aggregate the total tps
+        # process and graph the output
+        data = [self.load_data('client_%d.log' % i) for i in range(self.CLIENTS)]
         first = int(data[0][0][1])
         last = int(data[-1][-1][1])
+
         data_binned = [self.bin_data(first, last, d, OrderedDict()) for d in data]
+        with open(os.path.join(self.output, 'clients_all.bin'), 'w') as fp:
+            for t in range(0, last + 1 - first):
+                fp.write('%d %s\n' % (t, ' '.join([str(d[t]) for d in data_binned])))
+
         with open(os.path.join(self.output, 'clients.bin'), 'w') as fp:
             for t in range(0, last + 1 - first):
                 fp.write('%d %d\n' % (t, sum([d[t] for d in data_binned])))
 
+        # plot out the results
         branch = GnuplotHelper.buildInfo().branch
         duration = last - first
-        average = float(2 * self.ITERATIONS) / float(duration) if duration != 0 else 0
         date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
                             branch, date,
-                            str(self.mode), str(self.CLIENTS * self.ITERATIONS), str(self.CLIENTS), '%.3f' % average)
+                            str(self.mode), str(self.CLIENTS*self.ITERATIONS), str(duration), '%d' % self.CLIENTS)
 
-    def run_client(self, name, network, offset=3.0):
+    def run_client(self, name, network, offset=5.0):
         """Run a background load client. """
         pk = secrets.token_hex(32)
         _, account = network.connect(self, private_key=pk)
@@ -87,8 +96,9 @@ class PySysTest(GenericNetworkTest):
 
     def execute_graph(self):
         """Test method to develop graph creation. """
+        shutil.copy(os.path.join(self.input, 'clients_all.bin'), os.path.join(self.output, 'clients_all.bin'))
         shutil.copy(os.path.join(self.input, 'clients.bin'), os.path.join(self.output, 'clients.bin'))
         branch = GnuplotHelper.buildInfo().branch
         date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
-                            branch, date, str(self.mode), str(2 * self.ITERATIONS), '112', '89.286')
+                            branch, date, str(self.mode), str(2 * self.ITERATIONS), '96', '4')

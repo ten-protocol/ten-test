@@ -13,6 +13,8 @@ class PySysTest(GenericNetworkTest):
     ACCOUNTS = 20
 
     def execute(self):
+        clients = ['one', 'two'] # need to manually change the gnuplot.in file for more clients
+
         # connect to the network
         network = NetworkFactory.get_network(self)
         web3, account = network.connect_account1(self)
@@ -23,38 +25,33 @@ class PySysTest(GenericNetworkTest):
         error.deploy(network, account)
 
         # run the clients
-        self.run_client('client_one', network)
-        self.wait(5.0) # offset the clients running
-        self.run_client('client_two', network)
-        self.waitForGrep(file='client_one.out', expr='Client client_one completed', timeout=600)
-        self.waitForGrep(file='client_two.out', expr='Client client_two completed', timeout=600)
+        for i in clients: self.run_client('client_%s' % i, network)
+        for i in clients:
+            self.waitForGrep(file='client_%s.out' % i, expr='Client client_%s completed' % i, timeout=600)
 
         # process and graph the output
-        data1 = self.load_data('client_one.log')
-        data2 = self.load_data('client_one.log')
-        first = int(data1[0][1])
-        last = int(data2[-1][1])
+        data = [self.load_data('client_%s.log' % i) for i in clients]
+        first = int(data[0][0][1])
+        last = int(data[-1][-1][1])
 
-        data1_binned = self.bin_data(first, last, data1, OrderedDict())
-        with open(os.path.join(self.output, 'client_one.bin'), 'w') as fp:
-            for key, value in data1_binned.items(): fp.write('%d %d\n' % (key, value))
-
-        data2_binned = self.bin_data(first, last, data2, OrderedDict())
-        with open(os.path.join(self.output, 'client_two.bin'), 'w') as fp:
-            for key, value in data2_binned.items(): fp.write('%d %d\n' % (key, value))
+        data_binned = [self.bin_data(first, last, d, OrderedDict()) for d in data]
+        for i in clients:
+            with open(os.path.join(self.output, 'client_%s.bin' % i), 'w') as fp:
+                for key, value in data_binned[clients.index(i)].items(): fp.write('%d %d\n' % (key, value))
 
         with open(os.path.join(self.output, 'clients.bin'), 'w') as fp:
-            for t in range(0, last+1-first): fp.write('%d %d\n' % (t, data1_binned[t]+data2_binned[t]))
+            for t in range(0, last + 1 - first):
+                fp.write('%d %d\n' % (t, sum([d[t] for d in data_binned])))
 
         branch = GnuplotHelper.buildInfo().branch
         duration = last - first
-        average = float(2*self.ITERATIONS) / float(duration) if duration != 0 else 0
+        average = float(len(clients)*self.ITERATIONS) / float(duration) if duration != 0 else 0
         date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
                             branch, date,
-                            str(self.mode), str(2*self.ITERATIONS), str(duration), '%.3f' % average)
+                            str(self.mode), str(len(clients)*self.ITERATIONS), str(duration), '%.3f' % average)
 
-    def run_client(self, name, network):
+    def run_client(self, name, network, offset=5.0):
         """Run a background load client. """
         pk = secrets.token_hex(32)
         _, account = network.connect(self, private_key=pk)
@@ -77,6 +74,7 @@ class PySysTest(GenericNetworkTest):
         args.extend(['--client_name', name])
         self.run_python(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting client %s' % name, timeout=10)
+        self.wait(offset)
 
     def load_data(self, file):
         """Load a client transaction log into memory. """

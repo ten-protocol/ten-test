@@ -12,13 +12,38 @@ set label "{/Courier:Bold=13 Branch}: ".ARG3 left at screen 0.59, screen 0.925
 set label "{/Courier:Bold=13 Date}: ".ARG4 left at screen 0.59, screen 0.900
 set label "{/Courier:Bold=13 Environment}: ".ARG5 left at screen 0.59, screen 0.875
 set label "{/Courier:Bold=13 Transactions}: ".ARG6 left at screen 0.59, screen 0.850
-set label "{/Courier:Bold=13 Clients}: ".ARG7 left at screen 0.59, screen 0.825
-set label "{/Courier:Bold=13 Average}: ".ARG8 left at screen 0.59, screen 0.800
+set label "{/Courier:Bold=13 Duration}: ".ARG7 left at screen 0.59, screen 0.825
+set label "{/Courier:Bold=13 Clients}: ".ARG8 left at screen 0.59, screen 0.800
 stats "clients.bin" using 1:2 nooutput
 
-#plot 1
+
+# plot1
+set grid z dt '- -' lc 'black' lw 2
+unset key
+unset ytics
+set view 70, 355, 1.3
+set xyplane 0
+set xr [0:ARG7]
+set yr [2:(ARG8+1)]
+set xlabel "Time (seconds)" font "Courier,12" rotate parallel
+set zlabel "Transactions" font "Courier,12" offset 1,0 rotate parallel
+splot for [client = (ARG8+1) : 2 : -1 ] 'clients_all.bin' using 1:(client):(column(client)):(client) with boxes
+
+# plot 2
+unset grid
+unset xr
+unset yr
+unset ytics
+unset xlabel
+unset zlabel
+set style fill solid 0.5
+set xtics font "Courier,11"
+set ytics font "Courier,11"
+set key font 'Courier,10'
+set key right top
 set size 0.5, 0.45
-set origin 0.0, 0.50
+set origin 0.0, 0.04
+set yr [0: ((STATS_max_y)*1.1)]
 set title "{/Arial:Bold=13 Binned Transactions}"
 set xlabel "Time (seconds)" font "Courier,12"
 set ylabel "Transactions" font "Courier,12" offset 1,0
