@@ -2,11 +2,11 @@
 <pysystest type="auto">
 
     <description>
-        <title>TPS - bulk loading the mempool, two external concurrent clients</title>
+        <title>TPS - bulk loading the mempool, configurable number of external concurrent clients</title>
         <purpose><![CDATA[
-The test uses two clients to perform the bulk loading of transactions into the network concurrently, as per
-obs_per_001. The test looks to see if the TPS can be increased using multiple clients feeding transactions at the same
-time, and also the trend of the processing i.e. do we see synchronised pauses implying that the network is at issue. 
+The test uses N clients to perform the bulk loading of transactions into the network concurrently, as per
+obs_per_002. The test looks to see if the TPS can be increased using multiple clients feeding transactions at the same
+time, and also the trend of the processing i.e. do we see synchronised pauses implying that the network is at issue.
 ]]>
         </purpose>
     </description>

@@ -2,7 +2,7 @@
 # redeploy the contracts that live on the network and are used by the tests. The workflow is only triggered on a
 # repository dispatch sent by the deployment of the faucet.
 #
-name: Run remote tests against a newly deployed network
+name: Run deploy tests
 run-name: Run for new deployment
 on:
   repository_dispatch:

@@ -11,10 +11,12 @@ from obscuro.test.helpers.wallet_extension import WalletExtension
 class PySysTest(GenericNetworkTest):
     ITERATIONS = 5000
     ACCOUNTS = 20
+    CLIENTS = 4
 
     def execute(self):
-        clients = ['one', 'two'] # need to manually change the gnuplot.in file for more clients
+        self.execute_run()
 
+    def execute_run(self):
         # connect to the network
         network = NetworkFactory.get_network(self)
         web3, account = network.connect_account1(self)
@@ -25,31 +27,31 @@ class PySysTest(GenericNetworkTest):
         error.deploy(network, account)
 
         # run the clients
-        for i in clients: self.run_client('client_%s' % i, network)
-        for i in clients:
-            self.waitForGrep(file='client_%s.out' % i, expr='Client client_%s completed' % i, timeout=600)
+        for i in range(self.CLIENTS): self.run_client('client_%d' % i, network)
+        for i in range(self.CLIENTS):
+            self.waitForGrep(file='client_%d.out' % i, expr='Client client_%d completed' % i, timeout=600)
 
         # process and graph the output
-        data = [self.load_data('client_%s.log' % i) for i in clients]
+        data = [self.load_data('client_%d.log' % i) for i in range(self.CLIENTS)]
         first = int(data[0][0][1])
         last = int(data[-1][-1][1])
 
         data_binned = [self.bin_data(first, last, d, OrderedDict()) for d in data]
-        for i in clients:
-            with open(os.path.join(self.output, 'client_%s.bin' % i), 'w') as fp:
-                for key, value in data_binned[clients.index(i)].items(): fp.write('%d %d\n' % (key, value))
+        with open(os.path.join(self.output, 'clients_all.bin'), 'w') as fp:
+            for t in range(0, last + 1 - first):
+                fp.write('%d %s\n' % (t, ' '.join([str(d[t]) for d in data_binned])))
 
         with open(os.path.join(self.output, 'clients.bin'), 'w') as fp:
             for t in range(0, last + 1 - first):
                 fp.write('%d %d\n' % (t, sum([d[t] for d in data_binned])))
 
+        # plot out the results
         branch = GnuplotHelper.buildInfo().branch
         duration = last - first
-        average = float(len(clients)*self.ITERATIONS) / float(duration) if duration != 0 else 0
         date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
                             branch, date,
-                            str(self.mode), str(len(clients)*self.ITERATIONS), str(duration), '%.3f' % average)
+                            str(self.mode), str(self.CLIENTS*self.ITERATIONS), str(duration), '%d' % self.CLIENTS)
 
     def run_client(self, name, network, offset=2.0):
         """Run a background load client. """
@@ -89,18 +91,14 @@ class PySysTest(GenericNetworkTest):
         """Bin a client transaction data and offset the time. """
         b = OrderedDict()
         for _, t in data: b[t] = 1 if t not in b else b[t] + 1
-        for t in range(first, last+1): binned_data[t-first] = 0 if t not in b else b[t]
+        for t in range(first, last + 1): binned_data[t - first] = 0 if t not in b else b[t]
         return binned_data
 
     def execute_graph(self):
         """Test method to develop graph creation. """
-        shutil.copy(os.path.join(self.input, 'client_one.bin'), os.path.join(self.output, 'client_one.bin'))
-        shutil.copy(os.path.join(self.input, 'client_two.bin'), os.path.join(self.output, 'client_two.bin'))
+        shutil.copy(os.path.join(self.input, 'clients_all.bin'), os.path.join(self.output, 'clients_all.bin'))
         shutil.copy(os.path.join(self.input, 'clients.bin'), os.path.join(self.output, 'clients.bin'))
         branch = GnuplotHelper.buildInfo().branch
         date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
-                            branch, date, str(self.mode), str(2*self.ITERATIONS), '112', '89.286')
-
-
-
+                            branch, date, str(self.mode), str(2 * self.ITERATIONS), '96', '4')
