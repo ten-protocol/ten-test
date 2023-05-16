@@ -12,7 +12,10 @@ class PySysTest(ObscuroNetworkTest):
         self.nonce_db.delete_environment(self.env)
 
         network = NetworkFactory.get_network(self)
-        self.reset('funded_account_pk', *network.connect(self, Properties().funded_account_pk(self.env), check_funds=False))
+
+        if not self.is_obscuro(): # on obscuro the funded account is used by the faucet so we don't want to connect
+            self.reset('funded_account_pk', *network.connect(self, Properties().funded_account_pk(self.env), check_funds=False))
+
         for fn in Properties().accounts(): self.reset(fn.__name__, *network.connect(self, fn(), check_funds=False))
 
     def reset(self, name, web3, account):

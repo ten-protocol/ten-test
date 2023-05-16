@@ -10,9 +10,10 @@ class PySysTest(ObscuroNetworkTest):
     def execute(self):
         network = NetworkFactory.get_network(self)
 
-        self.log.info("")
-        self.log.info("Checking funds for %s:", "funded_account_pk", extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
-        network.connect(self, Properties().funded_account_pk(self.env), check_funds=False)
+        if not self.is_obscuro(): # on obscuro the funded account is used by the faucet so we don't want to connect
+            self.log.info("")
+            self.log.info("Checking funds for %s:", "funded_account_pk", extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+            network.connect(self, Properties().funded_account_pk(self.env), check_funds=False)
 
         for fn in Properties().accounts():
             self.log.info("")
