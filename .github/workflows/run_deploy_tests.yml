@@ -3,7 +3,7 @@
 # deployment. For testnet only a persistence reset will be performed on a new deployment.
 #
 name: Run deploy tests
-run-name: Run for new deployment
+run-name: Run deployment tests on ${{ github.event.action }}
 on:
   repository_dispatch:
     types: [ faucet_testnet_deployed, faucet_testnet_upgraded, faucet_dev_testnet_deployed, faucet_dev_testnet_upgraded ]
