@@ -27,4 +27,8 @@ services:
     build:
       context: ../../../go-obscuro/
       dockerfile: ./testnet/hardhatdeployer.Dockerfile
-      
+  faucet-server:
+    image: "testnetobscuronet.azurecr.io/obscuronet/faucet_testnet:latest"
+    build:
+      context: ../../../faucet/
+      dockerfile: ./Dockerfile

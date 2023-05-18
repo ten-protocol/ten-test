@@ -45,6 +45,12 @@ jobs:
         with:
           path: ./obscuro-test
 
+      - name: 'Check out faucet code'
+        uses: actions/checkout@v3
+        with:
+          repository: obscuronet/faucet
+          path: ./faucet
+
       - name: 'Check out go-obscuro code'
         uses: actions/checkout@v3
         with:
@@ -72,6 +78,11 @@ jobs:
           docker logs -f `docker ps -aqf "name=sequencer-host"` > sequencer-host.out 2>&1 &
           docker logs -f `docker ps -aqf "name=sequencer-enclave"` > sequencer-enclave.out 2>&1 &
           docker logs -f `docker ps -aqf "name=eth2network"` > eth2network.out 2>&1 &
+
+      - name: 'Start up the faucet'
+        run: |
+          cd ${{ github.workspace }}/faucet/
+          ./container_run.sh
 
       - name: 'Build required artifacts for running tests'
         run: |
