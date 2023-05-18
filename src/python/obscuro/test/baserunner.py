@@ -44,7 +44,9 @@ class ObscuroRunnerPlugin():
             raise Exception('Max threads against Goerli cannot be greater than 1')
 
         try:
-            if self.env == 'ganache':
+            if self.is_obscuro():
+                self.fund_obx_from_faucet_server()
+            elif self.env == 'ganache':
                 nonce_db.delete_environment('ganache')
                 self.run_ganache(runner)
         except AbortExecution as e:
