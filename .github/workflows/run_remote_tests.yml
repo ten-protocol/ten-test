@@ -32,7 +32,7 @@ on:
           - releases/v0.11
 
 jobs:
-  Run-Tests:
+  Run-Remote-Tests:
     runs-on: self-hosted
     steps:
       - run: echo "Triggered by ${{ github.event_name }}"
