@@ -64,8 +64,8 @@ class Obscuro(Default):
     WS_HOST = 'ws://127.0.0.1'
     PORT = None            # set by the factory for the wallet extension port of the accessing test
     WS_PORT = None         # set by the factory for the wallet extension port of the accessing test
-    OBX_LIMIT = 10
-    OBX_ALLOC = 100
+    OBX_LIMIT = 0.5
+    OBX_ALLOC = 1
 
     def chain_id(self): return 777
 
