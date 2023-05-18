@@ -64,7 +64,7 @@ class Properties:
             self.gg_appdev_pk, self.gg_endusr_pk
         ]
 
-    def funded_account_pk(self, key): return self.get('env.'+key, 'FundAcntPK')
+    def funded_account_pk(self): return self.get('env.all', 'FundAcntPK')
     def account1pk(self): return getattr(self, "account1_%dpk" % thread_num())()
     def account2pk(self): return getattr(self, "account2_%dpk" % thread_num())()
     def account3pk(self): return getattr(self, "account3_%dpk" % thread_num())()

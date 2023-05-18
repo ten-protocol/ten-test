@@ -82,7 +82,7 @@ class Obscuro(Default):
         test.log.info('Account %s balance %.6f OBX' % (account.address, balance))
         if check_funds and balance < self.OBX_LIMIT:
             test.log.info('Account balance %.6f OBX below threshold %s, allocating more ...' % (balance, self.OBX_LIMIT))
-            test.fund_native(self, account, self.OBX_ALLOC, Properties().funded_account_pk(test.env))
+            test.fund_native(self, account, self.OBX_ALLOC, Properties().funded_account_pk())
             test.log.info('Account new balance %.6f OBX' % web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
         return web3, account
 
