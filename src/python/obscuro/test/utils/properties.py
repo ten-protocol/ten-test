@@ -110,9 +110,6 @@ class Properties:
     def l1_funded_account_pk(self, key):
         return self.get('env.'+key, 'L1FundedAccountPK')
 
-    def l2_funded_account_pk(self, key):
-        return self.get('env.'+key, 'L2FundedAccountPK')
-
     def l1_management_address(self, key):
         return self.get('env.'+key, 'L1ManagementAddress')
 
