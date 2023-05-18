@@ -1,4 +1,5 @@
-import os, shutil, sys
+import os, shutil, sys, json, requests
+from web3 import Web3
 from pathlib import Path
 from pysys.constants import PROJECT, BACKGROUND
 from pysys.exceptions import AbortExecution
@@ -78,6 +79,15 @@ class ObscuroRunnerPlugin():
 
         runner.waitForSignal(stdout, expr='Listening on 127.0.0.1:%d' % Ganache.PORT, timeout=30)
         runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
+
+    def fund_obx_from_faucet_server(self, runner):
+        """Allocates native OBX to a users account from the faucet server. """
+        account = Web3().eth.account.privateKeyToAccount(Properties().funded_account_pk())
+        runner.log.info('Running request on %s' % Properties().faucet_url(self.env))
+        runner.log.info('Running for user address %s' % account.address)
+        headers = {'Content-Type': 'application/json'}
+        data = {"address": account.address}
+        requests.post(Properties().faucet_url(self.env), data=json.dumps(data), headers=headers)
 
     def __stop_process(self, hprocess):
         """Stop a process started by this runner plugin. """
