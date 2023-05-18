@@ -6,6 +6,7 @@ from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.utils.gnuplot import GnuplotHelper
 from obscuro.test.helpers.wallet_extension import WalletExtension
+from obscuro.test.utils.properties import Properties
 
 
 class PySysTest(GenericNetworkTest):
@@ -57,7 +58,7 @@ class PySysTest(GenericNetworkTest):
         """Run a background load client. """
         pk = secrets.token_hex(32)
         _, account = network.connect(self, private_key=pk)
-        self.fund_obx(network, account, 10)
+        self.fund_native(network, account, 1, Properties().funded_account_pk(self))
 
         http_port = self.getNextAvailableTCPPort()
         ws_port = self.getNextAvailableTCPPort()

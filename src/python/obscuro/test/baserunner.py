@@ -45,7 +45,7 @@ class ObscuroRunnerPlugin():
 
         try:
             if self.is_obscuro():
-                self.fund_obx_from_faucet_server()
+                self.fund_obx_from_faucet_server(runner)
             elif self.env == 'ganache':
                 nonce_db.delete_environment('ganache')
                 self.run_ganache(runner)

@@ -86,7 +86,7 @@ class GenericNetworkTest(BaseTest):
         return hprocess
 
     def fund_native(self, network, account, amount, pk):
-        """A native transfer of ETH from one address to another. """
+        """A native transfer of funds from one address to another. """
         web3_pk, account_pk = network.connect(self, pk)
         nonce = network.get_next_nonce(self, web3_pk, account_pk, False)
         tx = {
@@ -208,7 +208,7 @@ class ObscuroNetworkTest(GenericNetworkTest):
 
     def funds_client(self, network, pk, recipients, num):
         wallet = WalletExtension.start(self, name='funds_%d' % num)
-        self.fund_obx(network, Web3().eth.account.privateKeyToAccount(pk), 10)
+        self.fund_native(network, Web3().eth.account.privateKeyToAccount(pk), 1, Properties().funded_account_pk())
 
         stdout = os.path.join(self.output, 'funds_%d.out' % num)
         stderr = os.path.join(self.output, 'funds_%d.err' % num)
