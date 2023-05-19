@@ -18,7 +18,7 @@ on:
           - v0.11.0
 
 jobs:
-  Run-Sanity-Tests:
+  Run-Health-Check:
     runs-on: self-hosted
     steps:
       - name: Set the variables
