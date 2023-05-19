@@ -12,5 +12,7 @@ class PySysTest(ObscuroNetworkTest):
         for fn in Properties().accounts():
             self.log.info("")
             self.log.info("Checking funds for %s:", fn.__name__, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
-            network.connect(self, fn(), check_funds=False)
+            web3, account = network.connect(self, fn(), check_funds=False)
+            balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+            self.log.info('Account %s balance %.6f OBX' % (account.address, balance))
 

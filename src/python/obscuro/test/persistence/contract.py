@@ -19,6 +19,10 @@ class ContractPersistence:
         """Create the cursor to the underlying persistence. """
         self.cursor.execute(self.SQL_CREATE)
 
+    def close(self):
+        """Close the connection to the underlying persistence. """
+        self.connection.close()
+
     def delete(self, environment):
         """Delete all stored contract addresses for a particular environment. """
         self.cursor.execute(self.SQL_DELETE, (environment, ))

@@ -44,13 +44,13 @@ class Default:
         account = web3.eth.account.privateKeyToAccount(private_key)
         test.log.info('Account %s connected to %s on %s' % (account.address, self.__class__.__name__, url))
 
-        balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
-        test.log.info('Account %s balance %.6f ETH' % (account.address, balance))
-        if check_funds and balance < self.ETH_LIMIT:
-            test.log.info('Account balance %.6f ETH below threshold %s, allocating more ...' % (balance, self.ETH_LIMIT))
-            test.fund_native(self, account, self.ETH_ALLOC, Properties().fundacntpk())
-            test.log.info('Account %s new balance %.6f ETH' % (account.address,
-                                                               web3.fromWei(web3.eth.get_balance(account.address), 'ether')))
+        if check_funds:
+            balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+            if balance < self.ETH_LIMIT:
+                test.log.info('Account %s balance %.6f ETH' % (account.address, balance))
+                test.log.info('Account balance %.6f ETH below threshold %s' % (balance, self.ETH_LIMIT))
+                test.fund_native(self, account, self.ETH_ALLOC, Properties().fundacntpk())
+                test.log.info('Account balance %.6f ETH' % (web3.fromWei(web3.eth.get_balance(account.address), 'ether')))
         return web3, account
 
     def connect_account1(self, test, web_socket=False, check_funds=True):
