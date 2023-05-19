@@ -57,13 +57,14 @@ class Properties:
     # all accounts on the network layer that may hold funds
     def accounts(self):
         return [
+            self.fundacntpk,
             self.account1_1pk, self.account2_1pk, self.account3_1pk, self.account4_1pk,
             self.account2_2pk, self.account2_2pk, self.account3_2pk, self.account4_2pk,
             self.account1_3pk, self.account2_3pk, self.account3_3pk, self.account4_3pk,
             self.gg_appdev_pk, self.gg_endusr_pk
         ]
 
-    def funded_account_pk(self, key): return self.get('env.'+key, 'FundedAccountPK')
+    def fundacntpk(self): return self.get('env.all', 'FundAcntPK')
     def account1pk(self): return getattr(self, "account1_%dpk" % thread_num())()
     def account2pk(self): return getattr(self, "account2_%dpk" % thread_num())()
     def account3pk(self): return getattr(self, "account3_%dpk" % thread_num())()
@@ -92,10 +93,9 @@ class Properties:
     def gg_endusr_pk(self): return self.get('env.all', 'GGEndUsrPK')
 
     # obscuro specific properties
-    def node_host(self, test):
-        if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+test.env, 'NodeHostDockerNetwork')
-        if test.NODE_HOST is not None: return test.NODE_HOST
-        return self.get('env.'+test.env, 'NodeHost')
+    def node_host(self, key):
+        if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'NodeHostDockerNetwork')
+        return self.get('env.'+key, 'NodeHost')
 
     def node_port_http(self, key):
         return self.get('env.'+key, 'NodePortHTTP')
@@ -104,13 +104,11 @@ class Properties:
         return self.get('env.'+key, 'NodePortWS')
 
     def faucet_url(self, key):
+        if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'FaucetURLDockerNetwork')
         return self.get('env.'+key, 'FaucetURL')
 
     def l1_funded_account_pk(self, key):
         return self.get('env.'+key, 'L1FundedAccountPK')
-
-    def l2_funded_account_pk(self, key):
-        return self.get('env.'+key, 'L2FundedAccountPK')
 
     def l1_management_address(self, key):
         return self.get('env.'+key, 'L1ManagementAddress')
@@ -118,17 +116,17 @@ class Properties:
     def l1_bridge_address(self, key):
         return self.get('env.'+key, 'L1BridgeAddress')
 
-    def l2_bridge_address(self, key):
-        return self.get('env.'+key, 'L2BridgeAddress')
-
     def l1_message_bus_address(self, key):
         return self.get('env.'+key, 'L1MessageBusAddress')
 
-    def l2_message_bus_address(self, key):
-        return self.get('env.'+key, 'L2MessageBusAddress')
-
     def l1_cross_chain_messenger_address(self, key):
         return self.get('env.'+key, 'L1CrossChainMessengerAddress')
+
+    def l2_bridge_address(self, key):
+        return self.get('env.'+key, 'L2BridgeAddress')
+
+    def l2_message_bus_address(self, key):
+        return self.get('env.'+key, 'L2MessageBusAddress')
 
     def l2_cross_chain_messenger_address(self, key):
         return self.get('env.'+key, 'L2CrossChainMessengerAddress')

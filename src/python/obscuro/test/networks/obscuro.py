@@ -25,7 +25,7 @@ class ObscuroDefaultL1(Geth):
         test.log.info('Account %s balance %.6f ETH' % (account.address, balance))
         if check_funds and balance < self.ETH_LIMIT:
             test.log.info('Account balance %.6f ETH below threshold %s, allocating more ...' % (balance, self.ETH_LIMIT))
-            test.fund_eth(self, account, self.ETH_ALLOC, Properties().l1_funded_account_pk(test.env))
+            test.fund_native(self, account, self.ETH_ALLOC, Properties().l1_funded_account_pk(test.env))
             test.log.info('Account new balance %.6f ETH' % web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
         return web3, account
 
@@ -64,8 +64,8 @@ class Obscuro(Default):
     WS_HOST = 'ws://127.0.0.1'
     PORT = None            # set by the factory for the wallet extension port of the accessing test
     WS_PORT = None         # set by the factory for the wallet extension port of the accessing test
-    OBX_LIMIT = 10
-    OBX_ALLOC = 100
+    OBX_LIMIT = 0.5
+    OBX_ALLOC = 1
 
     def chain_id(self): return 777
 
@@ -82,7 +82,7 @@ class Obscuro(Default):
         test.log.info('Account %s balance %.6f OBX' % (account.address, balance))
         if check_funds and balance < self.OBX_LIMIT:
             test.log.info('Account balance %.6f OBX below threshold %s, allocating more ...' % (balance, self.OBX_LIMIT))
-            test.fund_obx(self, account, self.OBX_ALLOC)
+            test.fund_native(self, account, self.OBX_ALLOC, Properties().fundacntpk())
             test.log.info('Account new balance %.6f OBX' % web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
         return web3, account
 

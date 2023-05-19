@@ -6,6 +6,7 @@ from obscuro.test.contracts.storage import Storage
 from obscuro.test.contracts.error import Error
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.helpers.wallet_extension import WalletExtension
+from obscuro.test.utils.properties import Properties
 
 
 class PySysTest(ObscuroNetworkTest):
@@ -67,7 +68,7 @@ class PySysTest(ObscuroNetworkTest):
 
     def funds_client(self, network, pk, recipients, num):
         wallet = WalletExtension.start(self, name='funds_%d' % num)
-        self.fund_obx(network, Web3().eth.account.privateKeyToAccount(pk), 10)
+        self.fund_native(network, Web3().eth.account.privateKeyToAccount(pk), 1, Properties().fundacntpk())
 
         stdout = os.path.join(self.output, 'funds_%d.out' % num)
         stderr = os.path.join(self.output, 'funds_%d.err' % num)
@@ -91,7 +92,7 @@ class PySysTest(ObscuroNetworkTest):
     def _client(self, network, address, abi_path, name, num, wallet):
         pk = secrets.token_hex(32)
         account = Web3().eth.account.privateKeyToAccount(pk)
-        self.fund_obx(network, account, 10)
+        self.fund_native(network, account, 1, Properties().fundacntpk())
 
         stdout = os.path.join(self.output, '%s_%d.out' % (name, num))
         stderr = os.path.join(self.output, '%s_%d.err' % (name, num))

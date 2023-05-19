@@ -1,4 +1,5 @@
-import os, shutil, sys
+import os, shutil, sys, json, requests
+from web3 import Web3
 from pathlib import Path
 from pysys.constants import PROJECT, BACKGROUND
 from pysys.exceptions import AbortExecution
@@ -6,6 +7,7 @@ from obscuro.test.networks.ganache import Ganache
 from obscuro.test.persistence.nonce import NoncePersistence
 from obscuro.test.persistence.contract import ContractPersistence
 from obscuro.test.utils.properties import Properties
+from obscuro.test.helpers.wallet_extension import WalletExtension
 
 
 class ObscuroRunnerPlugin():
@@ -43,7 +45,9 @@ class ObscuroRunnerPlugin():
             raise Exception('Max threads against Goerli cannot be greater than 1')
 
         try:
-            if self.env == 'ganache':
+            if self.is_obscuro():
+                self.fund_obx_from_faucet_server(runner)
+            elif self.env == 'ganache':
                 nonce_db.delete_environment('ganache')
                 self.run_ganache(runner)
         except AbortExecution as e:
@@ -67,7 +71,7 @@ class ObscuroRunnerPlugin():
 
         arguments = []
         arguments.extend(('--port', str(Ganache.PORT)))
-        arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().funded_account_pk(self.env)))
+        arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().fundacntpk()))
         arguments.extend(('--gasLimit', '7200000'))
         arguments.extend(('--gasPrice', '1000'))
         arguments.extend(('--blockTime', Properties().block_time_secs(self.env)))
@@ -78,6 +82,21 @@ class ObscuroRunnerPlugin():
 
         runner.waitForSignal(stdout, expr='Listening on 127.0.0.1:%d' % Ganache.PORT, timeout=30)
         runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
+
+    def run_wallet(self, runner):
+        """Run a single wallet extension for use by the tests. """
+        extension = WalletExtension(self, name='runner')
+        hprocess = extension.run()
+        runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
+
+    def fund_obx_from_faucet_server(self, runner):
+        """Allocates native OBX to a users account from the faucet server. """
+        account = Web3().eth.account.privateKeyToAccount(Properties().fundacntpk())
+        runner.log.info('Running request on %s' % Properties().faucet_url(self.env))
+        runner.log.info('Running for user address %s' % account.address)
+        headers = {'Content-Type': 'application/json'}
+        data = {"address": account.address}
+        requests.post(Properties().faucet_url(self.env), data=json.dumps(data), headers=headers)
 
     def __stop_process(self, hprocess):
         """Stop a process started by this runner plugin. """
