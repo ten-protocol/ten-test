@@ -7,6 +7,7 @@ from obscuro.test.networks.ganache import Ganache
 from obscuro.test.persistence.nonce import NoncePersistence
 from obscuro.test.persistence.contract import ContractPersistence
 from obscuro.test.utils.properties import Properties
+from obscuro.test.helpers.wallet_extension import WalletExtension
 
 
 class ObscuroRunnerPlugin():
@@ -80,6 +81,12 @@ class ObscuroRunnerPlugin():
                                        arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
 
         runner.waitForSignal(stdout, expr='Listening on 127.0.0.1:%d' % Ganache.PORT, timeout=30)
+        runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
+
+    def run_wallet(self, runner):
+        """Run a single wallet extension for use by the tests. """
+        extension = WalletExtension(self, name='runner')
+        hprocess = extension.run()
         runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
 
     def fund_obx_from_faucet_server(self, runner):
