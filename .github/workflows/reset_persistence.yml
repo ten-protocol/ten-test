@@ -15,7 +15,7 @@ on:
           - dev-testnet
 
 jobs:
-  Reset:
+  Reset-Persistence:
     runs-on: self-hosted
     steps:
       - run: echo "Triggered by ${{ github.event_name }} event running on branch ${{ github.ref }} "

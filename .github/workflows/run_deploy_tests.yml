@@ -3,23 +3,18 @@
 # deployment. For testnet only a persistence reset will be performed on a new deployment.
 #
 name: Run deploy tests
-run-name: Run remote tests (${{ github.event.action }})
+run-name: Run deploy tests (${{ github.event.action }})
 on:
   repository_dispatch:
     types: [ faucet_testnet_deployed, faucet_testnet_upgraded, faucet_dev_testnet_deployed, faucet_dev_testnet_upgraded ]
 
 jobs:
-  Run-Remote-Tests:
+  Run-Deploy-Tests:
     runs-on: self-hosted
     steps:
       - run: echo "Triggered by ${{ github.event_name }}"
       - run: echo "Action       ${{ github.action }}"
       - run: echo "Branch       ${{ github.ref }}"
-
-      - name: Set the variables
-        env:
-          DEFAULT_VERSION: 'main'
-        run: echo "VERSION=${{ github.event.inputs.release || env.DEFAULT_VERSION }}" >> $GITHUB_ENV
 
       - name: 'Check out obscuro-test'
         uses: actions/checkout@v3
@@ -31,7 +26,6 @@ jobs:
         with:
           repository: obscuronet/go-obscuro
           path: ./go-obscuro
-          ref: ${{env.VERSION}}
 
       - name: 'Build required artifacts for running tests'
         run: |
