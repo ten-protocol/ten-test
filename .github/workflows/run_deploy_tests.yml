@@ -16,11 +16,6 @@ jobs:
       - run: echo "Action       ${{ github.action }}"
       - run: echo "Branch       ${{ github.ref }}"
 
-      - name: Set the variables
-        env:
-          DEFAULT_VERSION: 'main'
-        run: echo "VERSION=${{ github.event.inputs.release || env.DEFAULT_VERSION }}" >> $GITHUB_ENV
-
       - name: 'Check out obscuro-test'
         uses: actions/checkout@v3
         with:
@@ -31,7 +26,6 @@ jobs:
         with:
           repository: obscuronet/go-obscuro
           path: ./go-obscuro
-          ref: ${{env.VERSION}}
 
       - name: 'Build required artifacts for running tests'
         run: |
