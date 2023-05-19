@@ -57,14 +57,14 @@ class Properties:
     # all accounts on the network layer that may hold funds
     def accounts(self):
         return [
-            self.funded_account_pk,
+            self.fundacntpk,
             self.account1_1pk, self.account2_1pk, self.account3_1pk, self.account4_1pk,
             self.account2_2pk, self.account2_2pk, self.account3_2pk, self.account4_2pk,
             self.account1_3pk, self.account2_3pk, self.account3_3pk, self.account4_3pk,
             self.gg_appdev_pk, self.gg_endusr_pk
         ]
 
-    def funded_account_pk(self): return self.get('env.all', 'FundAcntPK')
+    def fundacntpk(self): return self.get('env.all', 'FundAcntPK')
     def account1pk(self): return getattr(self, "account1_%dpk" % thread_num())()
     def account2pk(self): return getattr(self, "account2_%dpk" % thread_num())()
     def account3pk(self): return getattr(self, "account3_%dpk" % thread_num())()
@@ -116,17 +116,17 @@ class Properties:
     def l1_bridge_address(self, key):
         return self.get('env.'+key, 'L1BridgeAddress')
 
-    def l2_bridge_address(self, key):
-        return self.get('env.'+key, 'L2BridgeAddress')
-
     def l1_message_bus_address(self, key):
         return self.get('env.'+key, 'L1MessageBusAddress')
 
-    def l2_message_bus_address(self, key):
-        return self.get('env.'+key, 'L2MessageBusAddress')
-
     def l1_cross_chain_messenger_address(self, key):
         return self.get('env.'+key, 'L1CrossChainMessengerAddress')
+
+    def l2_bridge_address(self, key):
+        return self.get('env.'+key, 'L2BridgeAddress')
+
+    def l2_message_bus_address(self, key):
+        return self.get('env.'+key, 'L2MessageBusAddress')
 
     def l2_cross_chain_messenger_address(self, key):
         return self.get('env.'+key, 'L2CrossChainMessengerAddress')

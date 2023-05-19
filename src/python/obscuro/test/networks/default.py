@@ -48,7 +48,7 @@ class Default:
         test.log.info('Account %s balance %.6f ETH' % (account.address, balance))
         if check_funds and balance < self.ETH_LIMIT:
             test.log.info('Account balance %.6f ETH below threshold %s, allocating more ...' % (balance, self.ETH_LIMIT))
-            test.fund_native(self, account, self.ETH_ALLOC, Properties().funded_account_pk())
+            test.fund_native(self, account, self.ETH_ALLOC, Properties().fundacntpk())
             test.log.info('Account %s new balance %.6f ETH' % (account.address,
                                                                web3.fromWei(web3.eth.get_balance(account.address), 'ether')))
         return web3, account

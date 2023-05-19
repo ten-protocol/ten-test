@@ -56,7 +56,7 @@ class PySysTest(GenericNetworkTest):
         """Run a background load client. """
         pk = secrets.token_hex(32)
         _, account = network.connect(self, private_key=pk)
-        self.fund_native(network, account, 1, Properties().funded_account_pk())
+        self.fund_native(network, account, 1, Properties().fundacntpk())
 
         http_port = self.getNextAvailableTCPPort()
         ws_port = self.getNextAvailableTCPPort()

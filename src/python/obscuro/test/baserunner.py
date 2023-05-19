@@ -70,7 +70,7 @@ class ObscuroRunnerPlugin():
 
         arguments = []
         arguments.extend(('--port', str(Ganache.PORT)))
-        arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().funded_account_pk()))
+        arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().fundacntpk()))
         arguments.extend(('--gasLimit', '7200000'))
         arguments.extend(('--gasPrice', '1000'))
         arguments.extend(('--blockTime', Properties().block_time_secs(self.env)))
@@ -84,7 +84,7 @@ class ObscuroRunnerPlugin():
 
     def fund_obx_from_faucet_server(self, runner):
         """Allocates native OBX to a users account from the faucet server. """
-        account = Web3().eth.account.privateKeyToAccount(Properties().funded_account_pk())
+        account = Web3().eth.account.privateKeyToAccount(Properties().fundacntpk())
         runner.log.info('Running request on %s' % Properties().faucet_url(self.env))
         runner.log.info('Running for user address %s' % account.address)
         headers = {'Content-Type': 'application/json'}
