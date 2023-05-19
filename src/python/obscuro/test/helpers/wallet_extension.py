@@ -23,7 +23,7 @@ class WalletExtension:
         self.ws_port = ws_port if ws_port is not None else process_user.getNextAvailableTCPPort()
         self.verbose = verbose
 
-        if name is None: name = str(port) d
+        if name is None: name = str(port) 
         self.logPath = os.path.join(process_user.output, 'wallet_%s_logs.txt' % name)
         self.persistencePath = os.path.join(process_user.output, 'wallet_%s_database' % name)
         self.stdout = os.path.join(process_user.output, 'wallet_%s.out' % name)
