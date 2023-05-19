@@ -93,10 +93,9 @@ class Properties:
     def gg_endusr_pk(self): return self.get('env.all', 'GGEndUsrPK')
 
     # obscuro specific properties
-    def node_host(self, test):
-        if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+test.env, 'NodeHostDockerNetwork')
-        if test.NODE_HOST is not None: return test.NODE_HOST
-        return self.get('env.'+test.env, 'NodeHost')
+    def node_host(self, key):
+        if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'NodeHostDockerNetwork')
+        return self.get('env.'+key, 'NodeHost')
 
     def node_port_http(self, key):
         return self.get('env.'+key, 'NodePortHTTP')
@@ -105,6 +104,7 @@ class Properties:
         return self.get('env.'+key, 'NodePortWS')
 
     def faucet_url(self, key):
+        if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'FaucetURLDockerNetwork')
         return self.get('env.'+key, 'FaucetURL')
 
     def l1_funded_account_pk(self, key):
