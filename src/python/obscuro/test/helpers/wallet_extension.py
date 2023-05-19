@@ -22,14 +22,14 @@ class WalletExtension:
 
         if name is None: name = str(port)
         self.logPath = os.path.join(test.output, 'wallet_%s_logs.txt' % name)
-        self.persistencePath = os.path.join(test.output, 'wallet_%s_persistence' % name)
+        self.databasePath = os.path.join(test.output, 'wallet_%s_database' % name)
         self.stdout = os.path.join(test.output, 'wallet_%s.out' % name)
         self.stderr = os.path.join(test.output, 'wallet_%s.err' % name)
         self.binary = os.path.join(PROJECT.root, 'artifacts', 'wallet_extension', 'wallet_extension')
 
-        if os.path.exists(self.persistencePath):
+        if os.path.exists(self.databasePath):
             test.log.info('Removing wallet extension persistence file')
-            os.remove(self.persistencePath)
+            os.remove(self.databasePath)
 
     def run(self):
         """Run an instance of the wallet extension. """
@@ -43,7 +43,7 @@ class WalletExtension:
         arguments.extend(('--port', str(self.port)))
         arguments.extend(('--portWS', str(self.ws_port)))
         arguments.extend(('--logPath', self.logPath))
-        arguments.extend(('--persistencePath', self.persistencePath))
+        arguments.extend(('--databasePath', self.databasePath))
         if self.verbose: arguments.append('--verbose')
         hprocess = self.test.startProcess(command=self.binary, displayName='wallet_extension',
                                           workingDir=self.test.output, environs=os.environ, quiet=True,
