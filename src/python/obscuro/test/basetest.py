@@ -1,5 +1,6 @@
 import os, copy, sys, json, requests, secrets
 from web3 import Web3
+from pathlib import Path
 from pysys.basetest import BaseTest
 from pysys.constants import PROJECT, BACKGROUND
 from obscuro.test.persistence.nonce import NoncePersistence
@@ -30,8 +31,9 @@ class GenericNetworkTest(BaseTest):
         self.block_time = Properties().block_time_secs(self.env)
 
         # every test has its own connection to the nonce and contract db
-        self.nonce_db = NoncePersistence(runner.obscuro_runner.db_dir)
-        self.contract_db = ContractPersistence(runner.obscuro_runner.db_dir)
+        db_dir = os.path.join(str(Path.home()), '.obscurotest')
+        self.nonce_db = NoncePersistence(db_dir)
+        self.contract_db = ContractPersistence(db_dir)
         self.addCleanupFunction(self.close_db)
 
         # every test runs a default wallet extension
@@ -40,6 +42,7 @@ class GenericNetworkTest(BaseTest):
     def close_db(self):
         """Close the connection to the nonce database on completion. """
         self.nonce_db.close()
+        self.contract_db.close()
 
     def is_obscuro(self):
         """Return true if we are running against an Obscuro network. """
