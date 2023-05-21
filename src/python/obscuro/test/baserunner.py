@@ -53,7 +53,7 @@ class ObscuroRunnerPlugin():
                 network = Obscuro()
                 network.PORT = self.wallet_extension.port
                 network.WS_PORT = self.wallet_extension.ws_port
-                web3, account = network.connect(runner, Properties().fundacntpk(), check_funds=False)
+                web3, account = network.connect(runner, Properties().fundacntpk(), check_funds=False, log=False)
                 tx_count = web3.eth.get_transaction_count(account.address)
                 balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
 
@@ -63,14 +63,11 @@ class ObscuroRunnerPlugin():
                     contracts_db.delete(runner.env)
 
                 if balance < 100:
-                    runner.log.info('Balance for %s is %.6f OBX < threshold ... making faucet call ',
-                                    Properties().fundacntpk.__name__, balance,
-                                    extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+                    runner.log.info('Funded key balance below threshold ... making faucet call')
                     self.fund_obx_from_faucet_server(runner)
-                    balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
-                runner.log.info('Balance for %s is %.6f OBX',
-                                Properties().fundacntpk.__name__, balance,
-                                extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+
+                balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+                runner.log.info('Funded account balance is %.6f OBX', balance)
 
             elif runner.env == 'ganache':
                 nonce_db.delete_environment('ganache')

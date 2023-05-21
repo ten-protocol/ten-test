@@ -35,22 +35,21 @@ class Default:
         proxy.run(self.HOST, self.PORT, 'proxy.logs')
         self.PORT = proxy.port
 
-    def connect(self, test, private_key, web_socket=False, check_funds=True):
+    def connect(self, test, private_key, web_socket=False, check_funds=True, log=True):
         """Connect to the network using a given private key. """
         url = self.connection_url(web_socket)
 
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)
-        test.log.info('Account %s connected to %s on %s' % (account.address, self.__class__.__name__, url))
+        if log: test.log.info('Account %s connected to %s on %s' % (account.address, self.__class__.__name__, url))
 
         if check_funds:
             balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
             if balance < self.ETH_LIMIT:
-                test.log.info('Account %s balance %.6f ETH' % (account.address, balance))
-                test.log.info('Account balance %.6f ETH below threshold %s' % (balance, self.ETH_LIMIT))
+                if log: test.log.info('Account balance %.6f ETH below threshold %s' % (balance, self.ETH_LIMIT))
                 test.fund_native(self, account, self.ETH_ALLOC, Properties().fundacntpk())
-                test.log.info('Account balance %.6f ETH' % (web3.fromWei(web3.eth.get_balance(account.address), 'ether')))
+                if log: test.log.info('Account balance %.6f ETH' % (web3.fromWei(web3.eth.get_balance(account.address), 'ether')))
         return web3, account
 
     def connect_account1(self, test, web_socket=False, check_funds=True):
