@@ -4,8 +4,8 @@
 name: Run remote tests
 run-name: Run remote tests (${{ github.event_name }})
 on:
-  schedule:
-    - cron: '05 12 * * 6'
+#  schedule:
+#    - cron: '05 12 * * 6'
   workflow_dispatch:
     inputs:
       environment:
