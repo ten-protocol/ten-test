@@ -40,11 +40,7 @@ class NoncePersistence:
 
         nonce = transaction_count
         if persist_nonce:
-            if transaction_count == 0:                                                         # implies a new testnet deployment
-                if log: test.log.info('Clearing nonce_db for %s on zero tx count' % account)   # so clear out the persistence
-                self.delete(account, environment)
-            else:
-                nonce = 0 if persisted_nonce is None else persisted_nonce+1      # we have to believe the local store
+            nonce = 0 if persisted_nonce is None else persisted_nonce+1      # we have to believe the local store
             test.nonce_db.insert(account, test.env, nonce)
             if log: test.log.info("Account %s count %d using nonce from persistence as %d" % (account, transaction_count, nonce))
         else:

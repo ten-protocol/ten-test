@@ -3,6 +3,8 @@ from web3 import Web3
 from pathlib import Path
 from pysys.constants import PROJECT, BACKGROUND
 from pysys.exceptions import AbortExecution
+from pysys.constants import LOG_TRACEBACK
+from pysys.utils.logutils import BaseLogFormatter
 from obscuro.test.networks.ganache import Ganache
 from obscuro.test.persistence.nonce import NoncePersistence
 from obscuro.test.persistence.contract import ContractPersistence
@@ -52,12 +54,23 @@ class ObscuroRunnerPlugin():
                 network.PORT = self.wallet_extension.port
                 network.WS_PORT = self.wallet_extension.ws_port
                 web3, account = network.connect(runner, Properties().fundacntpk(), check_funds=False)
+                tx_count = web3.eth.get_transaction_count(account.address)
                 balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+
+                if tx_count == 0:
+                    runner.log.info('Funded key tx count is zero ... clearing persistence')
+                    nonce_db.delete_environment(runner.env)
+                    contracts_db.delete(runner.env)
+
                 if balance < 100:
-                    runner.log.info('Funded balance %.6f OBX < threshold ... making faucet call ' % balance)
+                    runner.log.info('Balance for %s is %.6f OBX < threshold ... making faucet call ',
+                                    Properties().fundacntpk.__name__, balance,
+                                    extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
                     self.fund_obx_from_faucet_server(runner)
                     balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
-                runner.log.info('Funded balance %.6f OBX' % balance)
+                runner.log.info('Balance for %s is %.6f OBX',
+                                Properties().fundacntpk.__name__, balance,
+                                extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
 
             elif runner.env == 'ganache':
                 nonce_db.delete_environment('ganache')
