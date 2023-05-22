@@ -31,9 +31,7 @@ class NoncePersistence:
         """Get the next nonce to use in a transaction.
 
         If persist_nonce is false then the return value will be the transaction count as received from the network.
-        Otherwise, this method will look up the last persisted value and return the next value to use. Note that the
-        method performs some logic around persistence reset i.e. if the transaction count is zero it assumes a new
-        network has been deployed and clears the persistence for that account.
+        Otherwise, this method will look up the last persisted value and return the next value to use.
         """
         transaction_count = web3.eth.get_transaction_count(account)
         persisted_nonce = self.get_latest_nonce(account, environment)
@@ -53,7 +51,7 @@ class NoncePersistence:
         self.connection.commit()
 
     def update(self, account, environment, nonce, status):
-        """Update the statuus of a transaction for a given nonce into the persistence. """
+        """Update the status of a transaction for a given nonce into the persistence. """
         self.cursor.execute(self.SQL_UPDATE, (status, account, environment, nonce))
         self.connection.commit()
 
