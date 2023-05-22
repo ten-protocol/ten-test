@@ -87,3 +87,11 @@ jobs:
           path: |
             ${{ github.workspace }}/obscuro-test/**/Output
           retention-days: 2
+
+      - name: 'Upload performance output'
+        uses: actions/upload-artifact@v3
+        with:
+          name: performance-artifact
+          path: |
+            ${{ github.workspace }}/obscuro-test/**/Output/*/*.pdf
+          retention-days: 2
