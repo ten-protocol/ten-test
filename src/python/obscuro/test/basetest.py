@@ -1,4 +1,5 @@
-import os, copy, sys, json, requests, secrets
+import os, copy, sys, json
+import threading, requests, secrets
 from web3 import Web3
 from pathlib import Path
 from pysys.basetest import BaseTest
@@ -27,6 +28,7 @@ class GenericNetworkTest(BaseTest):
     def __init__(self, descriptor, outsubdir, runner):
         """Call the parent constructor but set the mode to obscuro if non is set. """
         super().__init__(descriptor, outsubdir, runner)
+        self.log.info('Running test in thread %s' % threading.currentThread().getName())
         self.env = 'obscuro' if self.mode is None else self.mode
         self.block_time = Properties().block_time_secs(self.env)
 

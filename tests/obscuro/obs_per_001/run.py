@@ -77,8 +77,8 @@ class PySysTest(GenericNetworkTest):
     def execute_graph(self):
         """Test method to develop graph creation. """
         branch = GnuplotHelper.buildInfo().branch
-        duration = 93
-        average = 53.1234
+        duration = 114
+        average = 43.860
         date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         shutil.copy(os.path.join(self.input, 'data.bin'), os.path.join(self.output, 'data.bin'))
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
