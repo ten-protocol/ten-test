@@ -11,6 +11,7 @@ class PySysTest(GenericNetworkTest):
         network = NetworkFactory.get_network(self)
         web3, account = network.connect_account1(self)
 
+        # get contract address, or deploy 
         cursor = self.contract_db.get_contract(Storage.CONTRACT, self.env)
         if len(cursor) > 0:
             address = cursor[0][0]
@@ -21,7 +22,6 @@ class PySysTest(GenericNetworkTest):
                 contract = self.deploy(network, web3, account)
             else:
                 contract = web3.eth.contract(address=address, abi=abi)
-
         else:
             contract = self.deploy(network, web3, account)
 
@@ -33,19 +33,11 @@ class PySysTest(GenericNetworkTest):
         network.transact(self, web3, contract.functions.store(value+1), account, Storage.GAS_LIMIT)
         value_after = contract.functions.retrieve().call()
         self.log.info('Call shows value %d' % value_after)
-
-        # perform assert
         self.assertTrue(value_after == value+1)
 
     def deploy(self, network, web3, account):
-        # deploy the contract (should never be the case if the admin deploy_contracts is run on a
-        # new instantiation of the network
         storage = Storage(self, web3, 100)
         storage.deploy(network, account)
-        contract = storage.contract
         self.log.warn('Deployed %s contract to address %s' % (storage.CONTRACT, storage.address))
-
-        # save the contract details to the persistence file
         self.contract_db.insert(storage.CONTRACT, self.env, storage.address, json.dumps(storage.abi))
-
-        return contract
+        return storage.contract
