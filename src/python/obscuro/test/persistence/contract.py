@@ -36,5 +36,6 @@ class ContractPersistence:
     def get_contract(self, name, environment):
         """Return the address and abi for a particular deployed contract. """
         self.cursor.execute(self.SQL_SELECT, (name, environment))
-        return self.cursor.fetchall()
-
+        cursor = self.cursor.fetchall()
+        if len(cursor) > 0: return cursor[0][0], cursor[0][1]
+        return None, None

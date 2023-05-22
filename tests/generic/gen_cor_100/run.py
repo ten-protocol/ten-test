@@ -11,11 +11,9 @@ class PySysTest(GenericNetworkTest):
         network = NetworkFactory.get_network(self)
         web3, account = network.connect_account1(self)
 
-        # get contract address, or deploy 
-        cursor = self.contract_db.get_contract(Storage.CONTRACT, self.env)
-        if len(cursor) > 0:
-            address = cursor[0][0]
-            abi = cursor[0][1]
+        # get contract address, or deploy
+        address, abi = self.contract_db.get_contract(Storage.CONTRACT, self.env)
+        if address is not None:
             self.log.info('Using pre-deployed contract at address %s' % address)
             if web3.eth.getCode(address) == b'':
                 self.log.warn('Contract address does not appear to be a deployed contract')
@@ -23,6 +21,7 @@ class PySysTest(GenericNetworkTest):
             else:
                 contract = web3.eth.contract(address=address, abi=abi)
         else:
+            self.log.warn('Contract does not appear to be deployed')
             contract = self.deploy(network, web3, account)
 
         # retrieve the current value
