@@ -25,8 +25,8 @@ class ObscuroDefaultL1(Geth):
             balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
             if balance < self.ETH_LIMIT:
                 if log: test.log.info('Account balance %.6f ETH below threshold %s' % (balance, self.ETH_LIMIT))
-                test.fund_native(self, account, self.ETH_ALLOC, Properties().l1_funded_account_pk(test.env))
-                if log: test.log.info('Account balance %.6f ETH' % web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
+                test.fund_native(self, account, self.ETH_ALLOC, Properties().l1_funded_account_pk(test.env), persist_nonce=False)
+            if log: test.log.info('Account balance %.6f ETH' % web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
         return web3, account
 
 
@@ -82,8 +82,8 @@ class Obscuro(Default):
             balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
             if balance < self.OBX_LIMIT:
                 if log: test.log.info('Account balance %.6f OBX below threshold %s' % (balance, self.OBX_LIMIT))
-                test.fund_native(self, account, self.OBX_ALLOC, Properties().fundacntpk())
-                if log: test.log.info('Account balance %.6f OBX' % web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
+                test.distribute_native(self, account, self.OBX_ALLOC)
+            if log: test.log.info('Account balance %.6f OBX' % web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
         return web3, account
 
     def __generate_viewing_key(self, web3, host, port, account, private_key):

@@ -87,21 +87,27 @@ class GenericNetworkTest(BaseTest):
                                      state=state, timeout=timeout)
         return hprocess
 
-    def fund_native(self, network, account, amount, pk):
-        """A native transfer of funds from one address to another. """
-        web3_pk, account_pk = network.connect(self, pk)
-        nonce = network.get_next_nonce(self, web3_pk, account_pk, False)
+    def distribute_native(self, network, account, amount):
+        """A native transfer of funds from the single funder account to another. """
+        web3_pk, account_pk = network.connect(self, Properties().fundacntpk(), check_funds=False)
         tx = {
-            'chainId': network.chain_id(),
-            'nonce': nonce,
             'to': account.address,
             'value': web3_pk.toWei(amount, 'ether'),
             'gas': 4*21000,
             'gasPrice': web3_pk.eth.gas_price
         }
-        tx_sign = account_pk.sign_transaction(tx)
-        tx_hash = network.send_transaction(self, web3_pk, nonce, account_pk, tx_sign, False)
-        network.wait_for_transaction(self, web3_pk, nonce, account_pk, tx_hash, False)
+        network.tx(self, web3_pk, tx, account_pk)
+
+    def fund_native(self, network, account, amount, pk, persist_nonce=True):
+        """A native transfer of funds from one address to another. """
+        web3_pk, account_pk = network.connect(self, pk, persist_nonce=persist_nonce)
+        tx = {
+            'to': account.address,
+            'value': web3_pk.toWei(amount, 'ether'),
+            'gas': 4*21000,
+            'gasPrice': web3_pk.eth.gas_price
+        }
+        network.tx(self, web3_pk, tx, account_pk, persist_nonce=persist_nonce)
 
     def transfer_token(self, network, token_name, token_address, web3_from, account_from, address,
                        amount, persist_nonce=True):

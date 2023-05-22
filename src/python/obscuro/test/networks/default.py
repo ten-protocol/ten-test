@@ -48,8 +48,8 @@ class Default:
             balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
             if balance < self.ETH_LIMIT:
                 if log: test.log.info('Account balance %.6f ETH below threshold %s' % (balance, self.ETH_LIMIT))
-                test.fund_native(self, account, self.ETH_ALLOC, Properties().fundacntpk())
-                if log: test.log.info('Account balance %.6f ETH' % (web3.fromWei(web3.eth.get_balance(account.address), 'ether')))
+                test.distribute_native(self, account, self.ETH_ALLOC)
+            if log: test.log.info('Account balance %.6f ETH' % (web3.fromWei(web3.eth.get_balance(account.address), 'ether')))
         return web3, account
 
     def connect_account1(self, test, web_socket=False, check_funds=True):
