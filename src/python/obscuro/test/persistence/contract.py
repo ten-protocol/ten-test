@@ -24,17 +24,18 @@ class ContractPersistence:
         self.connection.close()
 
     def delete(self, environment):
-        """Delete all stored contract addresses for a particular environment. """
+        """Delete all stored contract details for a particular environment. """
         self.cursor.execute(self.SQL_DELETE, (environment, ))
         self.connection.commit()
 
     def insert(self, name, environment, address, abi):
-        """Insert a new nonce into the persistence. """
+        """Insert a new contract into the persistence. """
         self.cursor.execute(self.SQL_INSERT, (name, environment, address, abi))
         self.connection.commit()
 
     def get_contract(self, name, environment):
-        """Return a list of all accounts with persisted values for a given environment. """
+        """Return the address and abi for a particular deployed contract. """
         self.cursor.execute(self.SQL_SELECT, (name, environment))
-        return self.cursor.fetchall()
-
+        cursor = self.cursor.fetchall()
+        if len(cursor) > 0: return cursor[0][0], cursor[0][1]
+        return None, None

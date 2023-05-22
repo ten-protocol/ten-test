@@ -151,6 +151,6 @@ class Default:
         else:
             test.log.error('Transaction receipt failed')
             test.log.error('Full receipt: %s' % tx_receipt)
-            if persist_nonce: test.nonce_db.delete_entries(account.address, test.env, nonce)
+            if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'FAILED')
             test.addOutcome(FAILED, abortOnError=True)
         return tx_receipt
