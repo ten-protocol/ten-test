@@ -7,6 +7,7 @@ from obscuro.test.contracts.storage import Storage, KeyStorage
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.contracts.error import Error
 
+
 class PySysTest(GenericNetworkTest):
 
     def execute(self):
@@ -31,4 +32,4 @@ class PySysTest(GenericNetworkTest):
             self.log.info("")
             contract.deploy(network, account)
             self.log.info('Deployed %s contract to address %s' % (contract.CONTRACT, contract.address))
-            self.contract_db.insert(contract.CONTRACT, self.env, contract.address, json.dumps(contract.abi))
+            self.contract_db.insert_contract(contract.CONTRACT, self.env, contract.address, json.dumps(contract.abi))
