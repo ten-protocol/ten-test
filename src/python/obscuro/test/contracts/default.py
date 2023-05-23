@@ -47,3 +47,18 @@ class DefaultContract:
         self.address = tx_receipt.contractAddress
         self.contract = self.web3.eth.contract(address=self.address, abi=self.abi)
         return tx_receipt
+
+    def get_or_deploy(self, network, account, persist_nonce=True):
+        """Get the contract from persistence, or deploy if it is not there. """
+        address, abi = self.test.contract_db.get_contract(self.CONTRACT, self.test.env)
+        if address is not None:
+            self.test.log.info('Using pre-deployed contract at address %s' % address)
+            if self.web3.eth.getCode(address) == b'':
+                self.test.log.warn('Contract address does not appear to be a deployed contract ... deploying')
+                self.deploy(network, account, persist_nonce=persist_nonce)
+            else:
+                self.address = address
+                self.contract = self.web3.eth.contract(address=address, abi=abi)
+        else:
+            self.test.log.warn('Contract does not appear to be deployed ... deploying')
+            self.deploy(network, account, persist_nonce=persist_nonce)

@@ -1,4 +1,3 @@
-import json
 from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.contracts.storage import KeyStorage
 from obscuro.test.networks.factory import NetworkFactory
@@ -12,32 +11,15 @@ class PySysTest(GenericNetworkTest):
         web3, account = network.connect_account1(self)
 
         # get contract address, or deploy
-        address, abi = self.contract_db.get_contract(KeyStorage.CONTRACT, self.env)
-        if address is not None:
-            self.log.info('Using pre-deployed contract at address %s' % address)
-            if web3.eth.getCode(address) == b'':
-                self.log.warn('Contract address does not appear to be a deployed contract')
-                contract = self.deploy(network, web3, account)
-            else:
-                contract = web3.eth.contract(address=address, abi=abi)
-        else:
-            self.log.warn('Contract does not appear to be deployed')
-            contract = self.deploy(network, web3, account)
+        storage = KeyStorage(self, web3)
+        storage.get_or_deploy(network, account, persist_nonce=True)
 
         # retrieve the current value
-        value = contract.functions.getItem('key').call()
+        value = storage.contract.functions.getItem('key').call()
         self.log.info('Call shows value %d' % value)
 
         # set the value via a transaction and retrieve the new value
-        network.transact(self, web3, contract.functions.setItem('key', value+1), account, KeyStorage.GAS_LIMIT)
-        value_after = contract.functions.getItem('key').call()
+        network.transact(self, web3, storage.contract.functions.setItem('key', value+1), account, KeyStorage.GAS_LIMIT)
+        value_after = storage.contract.functions.getItem('key').call()
         self.log.info('Call shows value %d' % value_after)
         self.assertTrue(value_after == value + 1)
-
-    def deploy(self, network, web3, account):
-        storage = KeyStorage(self, web3)
-        storage.deploy(network, account)
-        self.log.warn('Deployed %s contract to address %s' % (storage.CONTRACT, storage.address))
-        network.transact(self, web3, storage.contract.functions.setItem('key', 1), account, KeyStorage.GAS_LIMIT)
-        self.contract_db.insert(storage.CONTRACT, self.env, storage.address, json.dumps(storage.abi))
-        return storage.contract
