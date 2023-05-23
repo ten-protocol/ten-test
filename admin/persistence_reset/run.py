@@ -8,7 +8,7 @@ from obscuro.test.networks.factory import NetworkFactory
 class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
-        self.log.info('Removing entries for environment %s' % self.env)
+        self.log.info('Removing entries for environment %s', self.env)
         self.nonce_db.delete_environment(self.env)
         self.contract_db.delete_environment(self.env)
 
@@ -19,7 +19,7 @@ class PySysTest(ObscuroNetworkTest):
         self.log.info("")
         self.log.info("Resetting persistence for  %s:", name, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
         count = web3.eth.get_transaction_count(account.address)  # count is what the next would be
-        self.log.info('Account %s transaction count is %d' % (account.address, count))
+        self.log.info('Account %s transaction count is %d', account.address, count)
         if count > 0:
-            self.log.info('Account %s updating last persisted nonce to %d' % (account.address, count-1))
+            self.log.info('Account %s updating last persisted nonce to %d', account.address, count-1)
             self.nonce_db.insert(account.address, self.env, count-1, 'RESET')

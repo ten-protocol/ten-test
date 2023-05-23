@@ -21,5 +21,5 @@ if __name__ == "__main__":
     logging.info('Starting the polling loop')
     while True:
         for event in event_filter.get_new_entries():
-            logging.info('Stored value = %s' % event['args']['value'])
+            logging.info('Stored value = %s', event['args']['value'])
         time.sleep(2)

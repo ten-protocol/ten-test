@@ -7,7 +7,7 @@ logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=l
 
 
 def generate_viewing_key(web3, url, private_key):
-    logging.info('Generating viewing key for %s' % private_key)
+    logging.info('Generating viewing key for %s', private_key)
 
     account = web3.eth.account.privateKeyToAccount(private_key)
 
@@ -44,7 +44,7 @@ if __name__ == "__main__":
             else:
                 contract.functions.force_assert().call()
         except Exception as e:
-            logging.info('Exception type: %s' % type(e).__name__)
-            logging.info('Exception args: %s' % e.args[0])
+            logging.info('Exception type: %s', type(e).__name__)
+            logging.info('Exception args: %s', e.args[0])
 
         time.sleep(0.1)

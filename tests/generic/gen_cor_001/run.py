@@ -12,5 +12,5 @@ class PySysTest(GenericNetworkTest):
 
         # get the chain id
         chain_id = web3.eth.chain_id
-        self.log.info('Chain id is %d' % chain_id)
+        self.log.info('Chain id is %d', chain_id)
         self.assertTrue(chain_id == network.chain_id())

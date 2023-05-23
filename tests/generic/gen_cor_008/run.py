@@ -9,7 +9,7 @@ class PySysTest(GenericNetworkTest):
         # connect to the network
         network = NetworkFactory.get_network(self)
         web3, account = network.connect_account1(self)
-        self.log.info('Using account with address %s' % account.address)
+        self.log.info('Using account with address %s', account.address)
 
         # create the storage contract but don't deploy yet
         storage = Storage(self, web3, 100)
@@ -24,7 +24,7 @@ class PySysTest(GenericNetworkTest):
             }
         )
         deploy_gas = web3.eth.estimate_gas(build_tx)
-        self.log.info('Deployment gas estimate is %d' % deploy_gas)
+        self.log.info('Deployment gas estimate is %d', deploy_gas)
 
         # deploy the storage contract
         storage.deploy(network, account)
@@ -32,8 +32,8 @@ class PySysTest(GenericNetworkTest):
         # estimate a function call
         store_gas = storage.contract.functions.store(200).estimate_gas()
         retrieve_gas = storage.contract.functions.retrieve().estimate_gas()
-        self.log.info('Store gas estimate is %d' % store_gas)
-        self.log.info('Retrieve gas estimate is %d' % retrieve_gas)
+        self.log.info('Store gas estimate is %d', store_gas)
+        self.log.info('Retrieve gas estimate is %d', retrieve_gas)
 
         # we would expect the cost to deploy to be higher that the cost to store,
         # and the cost of store to be higher than retrieve

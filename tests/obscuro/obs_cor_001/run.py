@@ -28,14 +28,14 @@ class PySysTest(ObscuroNetworkTest):
         raised = False
         try:
             balance = web3_user.eth.get_balance(contract.address)
-            self.log.info('Contract balance is %.3f' % web3_user.fromWei(balance, 'ether'))
+            self.log.info('Contract balance is %.3f', web3_user.fromWei(balance, 'ether'))
         except Exception as e:
             raised = True
         self.assertTrue(raised)
 
         # the deployer should still be able to read their balance
         balance = web3_deploy.eth.get_balance(contract.address)
-        self.log.info('Contract balance is %.3f' % web3_deploy.fromWei(balance, 'ether'))
+        self.log.info('Contract balance is %.3f', web3_deploy.fromWei(balance, 'ether'))
         self.assertTrue(balance == web3_deploy.toWei(0.5, 'ether'))
 
     def send(self, network, web3, account, contract, amount):

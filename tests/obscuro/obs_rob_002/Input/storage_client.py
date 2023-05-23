@@ -7,7 +7,7 @@ logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=l
 
 
 def generate_viewing_key(web3, url, private_key):
-    logging.info('Generating viewing key for %s' % private_key)
+    logging.info('Generating viewing key for %s', private_key)
 
     account = web3.eth.account.privateKeyToAccount(private_key)
 
@@ -36,7 +36,7 @@ def store_value(value, web3, account, contract):
     if tx_receipt.status != 1:
         logging.error('Error performing transaction\n')
     else:
-        logging.info('Transaction complete - stored value %d' % value)
+        logging.info('Transaction complete - stored value %d', value)
 
 
 if __name__ == "__main__":

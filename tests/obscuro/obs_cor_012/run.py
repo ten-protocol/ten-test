@@ -24,9 +24,9 @@ class PySysTest(ObscuroNetworkTest):
         tx_hash = tx_receipt['transactionHash'].hex()
         block_num = tx_receipt['blockNumber']
         block_hash = tx_receipt['blockHash'].hex()
-        self.log.info('  Block Num:  %s ' % block_num)
-        self.log.info('  Block Hash: %s ' % block_hash)
-        self.log.info('  TX Hash:    %s ' % tx_hash)
+        self.log.info('  Block Num:  %s ', block_num)
+        self.log.info('  Block Hash: %s ', block_hash)
+        self.log.info('  TX Hash:    %s ', tx_hash)
 
         batch = self.get_batch_for_transaction(tx_hash)
         if batch is not None:
@@ -34,8 +34,8 @@ class PySysTest(ObscuroNetworkTest):
             batch_txns = batch['TxHashes']
 
             self.log.info('batch details;')
-            self.log.info('  batch Num:  %s ' % batch_number)
-            self.log.info('  Tx in list: %s' % (tx_hash in batch_txns))
+            self.log.info('  batch Num:  %s ', batch_number)
+            self.log.info('  Tx in list: %s', tx_hash in batch_txns)
 
             self.assertTrue(batch_number==block_num)
             self.assertTrue((tx_hash in batch_txns))

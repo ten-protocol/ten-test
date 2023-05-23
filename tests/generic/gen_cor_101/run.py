@@ -16,10 +16,10 @@ class PySysTest(GenericNetworkTest):
 
         # retrieve the current value
         value = storage.contract.functions.getItem('key').call()
-        self.log.info('Call shows value %d' % value)
+        self.log.info('Call shows value %d', value)
 
         # set the value via a transaction and retrieve the new value
         network.transact(self, web3, storage.contract.functions.setItem('key', value+1), account, KeyStorage.GAS_LIMIT)
         value_after = storage.contract.functions.getItem('key').call()
-        self.log.info('Call shows value %d' % value_after)
+        self.log.info('Call shows value %d', value_after)
         self.assertTrue(value_after == value + 1)

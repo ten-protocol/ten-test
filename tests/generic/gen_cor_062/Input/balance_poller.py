@@ -7,7 +7,7 @@ logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=l
 
 
 def generate_viewing_key(web3, url, address, private_key):
-    logging.info('Generating viewing key for %s' % private_key)
+    logging.info('Generating viewing key for %s', private_key)
 
     headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
     data = {"address": address}
@@ -33,14 +33,14 @@ if __name__ == "__main__":
     with open(args.contract_abi) as f:
         contract = web3.eth.contract(address=args.address, abi=json.load(f))
 
-    logging.info('Account balance is %d' % web3.eth.get_balance(account.address))
+    logging.info('Account balance is %d', web3.eth.get_balance(account.address))
     logging.info('Starting to run the polling loop')
     last_balance = 0
     while True:
         balance = contract.functions.balanceOf(account.address).call()
         if balance > last_balance:
             last_balance = balance
-            logging.info('New balance = %s' % balance)
+            logging.info('New balance = %s', balance)
         time.sleep(2)
 
 
