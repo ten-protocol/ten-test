@@ -14,6 +14,7 @@ class Default:
     ETH_LIMIT = 0.0001
     ETH_ALLOC = 0.0002
     GAS_MULT = 2
+    CURRENCY = 'ETH'
 
     def chain_id(self): return None
 

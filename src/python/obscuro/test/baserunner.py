@@ -60,7 +60,7 @@ class ObscuroRunnerPlugin():
                 if tx_count == 0:
                     runner.log.info('Funded key tx count is zero ... clearing persistence')
                     nonce_db.delete_environment(runner.env)
-                    contracts_db.delete(runner.env)
+                    contracts_db.delete_environment(runner.env)
 
                 if balance < 100:
                     runner.log.info('Funded key balance below threshold ... making faucet call')

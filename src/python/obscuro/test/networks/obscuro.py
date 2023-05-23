@@ -66,6 +66,7 @@ class Obscuro(Default):
     WS_PORT = None         # set by the factory for the wallet extension port of the accessing test
     OBX_LIMIT = 0.5
     OBX_ALLOC = 1
+    CURRENCY = 'OBX'
 
     def chain_id(self): return 777
 
