@@ -56,9 +56,20 @@ class DefaultContract:
             if self.web3.eth.getCode(address) == b'':
                 self.test.log.warn('Contract address does not appear to be a deployed contract ... deploying')
                 self.deploy(network, account, persist_nonce=persist_nonce)
+                self.test.contract_db.insert_contract(self.CONTRACT, self.test.env, self.address, json.dumps(self.abi))
             else:
                 self.address = address
                 self.contract = self.web3.eth.contract(address=address, abi=abi)
         else:
             self.test.log.warn('Contract does not appear to be deployed ... deploying')
             self.deploy(network, account, persist_nonce=persist_nonce)
+            self.test.contract_db.insert_contract(self.CONTRACT, self.test.env, self.address, json.dumps(self.abi))
+
+    def set_persisted_param(self, key, value):
+        """Persist a parameter value for this contract. """
+        self.test.contract_db.insert_param(self.address, self.test.env, key, value)
+
+    def get_persisted_param(self, key, default):
+        """Get a persisted parameter for this contract, or return the default if it does not exist. """
+        value = self.test.contract_db.get_param(self.address, self.test.env, key)
+        return default if value is None else value

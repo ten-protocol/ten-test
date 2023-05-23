@@ -4,15 +4,20 @@ import sqlite3, os
 class ContractPersistence:
     """Abstracts the persistence of contract addresses into a local database. """
 
-    SQL_CREATE = "CREATE TABLE IF NOT EXISTS contracts (name TEXT, environment TEXT, address INTEGER, abi STRING)"
-    SQL_INSERT = "INSERT INTO contracts VALUES (?, ?, ?, ?)"
+    SQL_CREATE = "CREATE TABLE IF NOT EXISTS contracts " \
+                 "(name TEXT, environment TEXT, address INTEGER, abi STRING, " \
+                 "PRIMARY KEY (name, environment))"
+    SQL_INSERT = "INSERT OR REPLACE INTO contracts VALUES (?, ?, ?, ?)"
     SQL_DELETE = "DELETE from contracts WHERE environment=?"
     SQL_SELECT = "SELECT address, abi FROM contracts WHERE name=? AND environment=? ORDER BY name DESC LIMIT 1"
 
-    SQL_CRT_PARAMS = "CREATE TABLE IF NOT EXISTS params (name TEXT, environment TEXT, key STRING, value STRING)"
-    SQL_INS_PARAMS = "INSERT INTO params VALUES (?, ?, ?, ?)"
+    SQL_CRT_PARAMS = "CREATE TABLE IF NOT EXISTS params " \
+                     "(address INTEGER, environment TEXT, key STRING, value STRING, " \
+                     "PRIMARY KEY (address, environment, key))"
+    SQL_INS_PARAMS = "INSERT OR REPLACE INTO params VALUES (?, ?, ?, ?)"
     SQL_DEL_PARAMS = "DELETE from params WHERE environment=?"
-    SQL_SEL_PARAMS = "SELECT value FROM params WHERE name=? AND environment=? AND key=? ORDER BY name DESC LIMIT 1"
+    SQL_SEL_PARAMS = "SELECT value FROM params WHERE address=? AND environment=? AND key=? " \
+                     "ORDER BY address DESC LIMIT 1"
 
     def __init__(self, db_dir):
         """Instantiate an instance. """
@@ -47,14 +52,14 @@ class ContractPersistence:
         if len(cursor) > 0: return cursor[0][0], cursor[0][1]
         return None, None
 
-    def insert_param(self, name, environment, key, value):
+    def insert_param(self, address, environment, key, value):
         """Insert a parameter for a named contract. """
-        self.cursor.execute(self.SQL_INS_PARAMS, (name, environment, key, value))
+        self.cursor.execute(self.SQL_INS_PARAMS, (address, environment, key, value))
         self.connection.commit()
 
-    def get_param(self, name, environment, key):
+    def get_param(self, address, environment, key):
         """Return the address and abi for a particular deployed contract. """
-        self.cursor.execute(self.SQL_SEL_PARAMS, (name, environment, key))
+        self.cursor.execute(self.SQL_SEL_PARAMS, (address, environment, key))
         cursor = self.cursor.fetchall()
         if len(cursor) > 0: return cursor[0][0]
         return None

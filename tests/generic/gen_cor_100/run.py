@@ -16,11 +16,17 @@ class PySysTest(GenericNetworkTest):
         storage.get_or_deploy(network, account, persist_nonce=True)
 
         # retrieve the current value
-        value = storage.contract.functions.retrieve().call()
-        self.log.info('Call shows value %d' % value)
+        expected = storage.get_persisted_param('value', 0)
+        actual = storage.contract.functions.retrieve().call()
+        self.log.info('Last persisted value is stored as %d', expected)
+        self.log.info('Current retrieved value is %d', actual)
+        self.assertTrue(expected == actual)
 
         # set the value via a transaction and retrieve the new value
-        network.transact(self, web3, storage.contract.functions.store(value+1), account, Storage.GAS_LIMIT)
-        value_after = storage.contract.functions.retrieve().call()
-        self.log.info('Call shows value %d' % value_after)
-        self.assertTrue(value_after == value+1)
+        self.log.info('Incrementing the current value by 1')
+        tx_receipt = network.transact(self, web3, storage.contract.functions.store(actual+1), account, Storage.GAS_LIMIT)
+        if tx_receipt.status == 1: storage.set_persisted_param('value', actual+1)
+
+        actual_after = storage.contract.functions.retrieve().call()
+        self.log.info('Current retrieved value is %d', actual_after)
+        self.assertTrue(actual_after == actual+1)
