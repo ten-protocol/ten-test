@@ -2,7 +2,6 @@ Admin controls on Obscuro Testnet
 =================================
 This directory contains utilities to perform admin operations on Obscuro testnet. Currently, this is to;
 
-- deploy a set of contracts that can be used across different tests (`deploy_contracts`)
 - reset all persisted nonce db entries for test users (`persistence_reset`)
 - print user balances on L2 (`print_balances`)
 
