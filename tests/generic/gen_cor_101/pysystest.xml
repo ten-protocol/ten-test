@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Persistent: running against a pre-deployed storage contract </title>
+        <title>Persistent: running against a pre-deployed key storage contract</title>
         <purpose><![CDATA[
 ]]>
         </purpose>

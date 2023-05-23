@@ -28,6 +28,10 @@ contract KeyStorage {
         emit ItemSet3(key, value);
     }
 
+    function getItem(string calldata key) public view returns (uint256) {
+        return items[key];
+    }
+
     function storeItem(uint256 value) external {
         items['_'] = value;
         emit Stored(value);
