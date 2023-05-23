@@ -102,7 +102,7 @@ class GenericNetworkTest(BaseTest):
 
     def fund_native(self, network, account, amount, pk, persist_nonce=True):
         """A native transfer of funds from one address to another. """
-        web3_pk, account_pk = network.connect(self, pk, persist_nonce=persist_nonce)
+        web3_pk, account_pk = network.connect(self, pk)
         tx = {
             'to': account.address,
             'value': web3_pk.toWei(amount, 'ether'),
