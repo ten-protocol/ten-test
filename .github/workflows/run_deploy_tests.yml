@@ -38,7 +38,6 @@ jobs:
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
           /usr/local/bin/pysys.py run -m obscuro.dev persistence_reset
-          /usr/local/bin/pysys.py run -m obscuro.dev deploy_contracts
           cd ${{ github.workspace }}/obscuro-test/tests
           /usr/local/bin/pysys.py run -m obscuro.dev -e skip -e robustness -e performance
 
@@ -53,7 +52,6 @@ jobs:
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
           /usr/local/bin/pysys.py run persistence_reset
-          /usr/local/bin/pysys.py run deploy_contracts
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v3

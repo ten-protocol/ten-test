@@ -10,6 +10,7 @@ class PySysTest(ObscuroNetworkTest):
     def execute(self):
         self.log.info('Removing entries for environment %s' % self.env)
         self.nonce_db.delete_environment(self.env)
+        self.contract_db.delete(self.env)
 
         network = NetworkFactory.get_network(self)
         for fn in Properties().accounts(): self.reset(fn.__name__, *network.connect(self, fn(), check_funds=False))

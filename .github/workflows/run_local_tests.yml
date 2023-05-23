@@ -86,11 +86,10 @@ jobs:
           ./get_artifacts.sh
           ls -l ${{ github.workspace }}/obscuro-test/artifacts   
 
-      - name: 'Do a persistence reset for nonce and contracts'
+      - name: 'Do a persistence reset'
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
           /usr/local/bin/pysys.py run -m obscuro.local persistence_reset
-          /usr/local/bin/pysys.py run -m obscuro.local deploy_contracts
 
       - name: 'Run tests on workflow dispatch'
         if: ${{ github.event_name == 'workflow_dispatch' }}
