@@ -124,6 +124,7 @@ class Default:
         return build_tx
 
     def sign_transaction(self, test, tx, nonce, account, persist_nonce):
+        """Sign a transaction. """
         signed_tx = account.sign_transaction(tx)
         if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'SIGNED')
         return signed_tx
