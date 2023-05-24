@@ -3,8 +3,6 @@ from web3 import Web3
 from pathlib import Path
 from pysys.constants import PROJECT, BACKGROUND
 from pysys.exceptions import AbortExecution
-from pysys.constants import LOG_TRACEBACK
-from pysys.utils.logutils import BaseLogFormatter
 from obscuro.test.networks.ganache import Ganache
 from obscuro.test.persistence.nonce import NoncePersistence
 from obscuro.test.persistence.contract import ContractPersistence
