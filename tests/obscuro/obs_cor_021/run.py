@@ -39,8 +39,8 @@ class PySysTest(ObscuroNetworkTest):
         _, xchain_msg = accnt1.l1.send_erc20(self.SYMB, accnt1.l2.account.address, 10)
         accnt1.l2.wait_for_message(xchain_msg)
         _ = accnt1.l2.relay_message(xchain_msg)
-        self.log.info('Account1 ERC20 balance L1 = %d ' % accnt1.l1.balance_for_token(self.SYMB))
-        self.log.info('Account1 ERC20 balance L2 = %d ' % accnt1.l2.balance_for_token(self.SYMB))
+        self.log.info('Account1 ERC20 balance L1 = %d ', accnt1.l1.balance_for_token(self.SYMB))
+        self.log.info('Account1 ERC20 balance L2 = %d ', accnt1.l2.balance_for_token(self.SYMB))
 
         # send tokens back over the bridge
         self.log.info('Send tokens on the L2 to cross the bridge')
@@ -53,7 +53,7 @@ class PySysTest(ObscuroNetworkTest):
         self.log.info('Print out token balances')
         balance_l1 = accnt1.l1.balance_for_token(self.SYMB)
         balance_l2 = accnt1.l2.balance_for_token(self.SYMB)
-        self.log.info('    Account1 ERC20 balance L1 = %d ' % balance_l1)
-        self.log.info('    Account1 ERC20 balance L2 = %d ' % balance_l2)
+        self.log.info('    Account1 ERC20 balance L1 = %d ', balance_l1)
+        self.log.info('    Account1 ERC20 balance L2 = %d ', balance_l2)
         self.assertTrue(balance_l1 == 192)
         self.assertTrue(balance_l2 == 8)

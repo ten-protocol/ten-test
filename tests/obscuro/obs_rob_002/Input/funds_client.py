@@ -7,7 +7,7 @@ logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=l
 
 
 def generate_viewing_key(web3, url, private_key):
-    logging.info('Generating viewing key for %s' % private_key)
+    logging.info('Generating viewing key for %s', private_key)
 
     account = web3.eth.account.privateKeyToAccount(private_key)
 
@@ -35,7 +35,7 @@ def transfer_value(web3, account, amount, recipient):
     if tx_receipt.status != 1:
         logging.error('Error performing transaction')
     else:
-        logging.info('Transaction complete ... transferred %d to %s' % (amount, recipient))
+        logging.info('Transaction complete ... transferred %d to %s', amount, recipient)
 
 
 if __name__ == "__main__":
@@ -53,6 +53,6 @@ if __name__ == "__main__":
     logging.info('Client running')
     while True:
         balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
-        logging.info('Account balance is %.9f' % balance)
+        logging.info('Account balance is %.9f', balance)
         transfer_value(web3, account, 0.001, random.choice(recipients))
 

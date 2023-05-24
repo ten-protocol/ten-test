@@ -21,7 +21,7 @@ class PySysTest(ObscuroNetworkTest):
             amount = random.randint(1, 20)
 
             self.log.info(" ")
-            self.log.info('Deploy %s (%s) token on the L1' % (name, sym))
+            self.log.info('Deploy %s (%s) token on the L1', name, sym)
             token = MintedERC20Token(self, funded.l1.web3, name, sym, 10000)
             token.deploy(funded.l1.network, funded.l1.account, persist_nonce=False)
             funded.l1.add_token_contract(token.address, name, sym)
@@ -56,7 +56,7 @@ class PySysTest(ObscuroNetworkTest):
             self.log.info('Print out token balances')
             balance_l1 = accnt1.l1.balance_for_token(sym)
             balance_l2 = accnt1.l2.balance_for_token(sym)
-            self.log.info('    Account1 ERC20 balance L1 = %d ' % balance_l1)
-            self.log.info('    Account1 ERC20 balance L2 = %d ' % balance_l2)
+            self.log.info('    Account1 ERC20 balance L1 = %d ', balance_l1)
+            self.log.info('    Account1 ERC20 balance L2 = %d ', balance_l2)
             self.assertTrue(balance_l1 == 200-amount)
             self.assertTrue(balance_l2 == amount)

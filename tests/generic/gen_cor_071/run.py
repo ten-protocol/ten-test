@@ -32,7 +32,7 @@ class PySysTest(GenericNetworkTest):
             entries = event_filter.get_new_entries()
             for event in entries:
                 values.append(event['args']['value'])
-                self.log.info('Stored value = %s' % event['args']['value'])
+                self.log.info('Stored value = %s', event['args']['value'])
             if len(values) == 5 or num_try > 3: break
             time.sleep(0.5)
         self.assertTrue(values == [0,1,2,3,4])

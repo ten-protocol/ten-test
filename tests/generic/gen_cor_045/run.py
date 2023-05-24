@@ -48,8 +48,8 @@ class PySysTest(GenericNetworkTest):
         for i in range(0,10):
             allowance = token_player.functions.allowance(account_usr.address, game.address).call({"from":account_usr.address})
             balance = token_player.functions.balanceOf(account_usr.address).call({"from":account_usr.address})
-            self.log.info('Allowance is %.3f' % Web3().fromWei(allowance, 'ether'))
-            self.log.info('Balance is %.3f' % Web3().fromWei(balance, 'ether'))
+            self.log.info('Allowance is %.3f', Web3().fromWei(allowance, 'ether'))
+            self.log.info('Balance is %.3f', Web3().fromWei(balance, 'ether'))
             network.transact(self, web3_usr, game_player.functions.attempt(i), account_usr, game.GAS_LIMIT)
             self.wait(float(self.block_time)*1.1)
 

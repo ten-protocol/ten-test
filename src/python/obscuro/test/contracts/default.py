@@ -52,7 +52,7 @@ class DefaultContract:
         """Get the contract from persistence, or deploy if it is not there. """
         address, abi = self.test.contract_db.get_contract(self.CONTRACT, self.test.env)
         if address is not None:
-            self.test.log.info('Using pre-deployed contract at address %s' % address)
+            self.test.log.info('Using pre-deployed contract at address %s', address)
             if self.web3.eth.getCode(address) == b'':
                 self.test.log.warn('Contract address does not appear to be a deployed contract ... deploying')
                 self.deploy(network, account, persist_nonce=persist_nonce)

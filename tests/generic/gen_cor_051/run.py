@@ -19,5 +19,5 @@ class PySysTest(GenericNetworkTest):
 
         params = {"disableStorage": "true", "disableMemory": "false", "disableStack": "false", "fullStorage": "false"}
         response = web3.manager.request_blocking('debug_traceTransaction', [tx_receipt.blockHash.hex(), params])
-        self.log.info('Response is %s' % response)
+        self.log.info('Response is %s', response)
 

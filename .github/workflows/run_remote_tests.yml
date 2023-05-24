@@ -94,4 +94,5 @@ jobs:
           name: performance-artifact
           path: |
             ${{ github.workspace }}/obscuro-test/**/Output/*/*.pdf
+          if-no-files-found: ignore
           retention-days: 2

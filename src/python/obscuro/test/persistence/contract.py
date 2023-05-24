@@ -34,7 +34,7 @@ class ContractPersistence:
         """Close the connection to the underlying persistence. """
         self.connection.close()
 
-    def delete(self, environment):
+    def delete_environment(self, environment):
         """Delete all stored contract details for a particular environment. """
         self.cursor.execute(self.SQL_DELETE, (environment, ))
         self.cursor.execute(self.SQL_DEL_PARAMS, (environment, ))

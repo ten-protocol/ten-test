@@ -23,7 +23,7 @@ class HTTPProxy:
 
     def run(self, remote_host, remote_port, filename):
         """Run the http proxy."""
-        self.test.log.info("Running proxy on port %d" % self.port)
+        self.test.log.info("Running proxy on port %d", self.port)
         arguments = []
         arguments.extend(['--port', '%d' % self.port])
         arguments.extend(['--remote_host', remote_host])

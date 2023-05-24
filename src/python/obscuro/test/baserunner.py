@@ -25,7 +25,7 @@ class ObscuroRunnerPlugin():
         """Set up a runner plugin to start any processes required to execute the tests. """
         runner.env = 'obscuro' if runner.mode is None else runner.mode
         runner.output = os.path.join(PROJECT.root, '.runner')
-        runner.log.info('Runner is executing against environment %s' % runner.env)
+        runner.log.info('Runner is executing against environment %s', runner.env)
 
         # create dir for any runner output
         if os.path.exists(runner.output): shutil.rmtree(runner.output)
@@ -60,7 +60,7 @@ class ObscuroRunnerPlugin():
                 if tx_count == 0:
                     runner.log.info('Funded key tx count is zero ... clearing persistence')
                     nonce_db.delete_environment(runner.env)
-                    contracts_db.delete(runner.env)
+                    contracts_db.delete_environment(runner.env)
 
                 if balance < 100:
                     runner.log.info('Funded key balance below threshold ... making faucet call')
@@ -117,8 +117,8 @@ class ObscuroRunnerPlugin():
     def fund_obx_from_faucet_server(self, runner):
         """Allocates native OBX to a users account from the faucet server. """
         account = Web3().eth.account.privateKeyToAccount(Properties().fundacntpk())
-        runner.log.info('Running request on %s' % Properties().faucet_url(runner.env))
-        runner.log.info('Running for user address %s' % account.address)
+        runner.log.info('Running request on %s', Properties().faucet_url(runner.env))
+        runner.log.info('Running for user address %s', account.address)
         headers = {'Content-Type': 'application/json'}
         data = {"address": account.address}
         requests.post(Properties().faucet_url(runner.env), data=json.dumps(data), headers=headers)

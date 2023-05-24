@@ -25,7 +25,7 @@ class PySysTest(GenericNetworkTest):
         accounts = [Web3().eth.account.privateKeyToAccount(x).address for x in [secrets.token_hex()]*25]
 
         # bulk load transactions to the accounts, and wait for the last
-        self.log.info('Creating and signing %d transactions' % self.ITERATIONS)
+        self.log.info('Creating and signing %d transactions', self.ITERATIONS)
         txs = []
         for i in range(0, self.ITERATIONS):
             nonce = network.get_next_nonce(self, web3, account, True, False)
