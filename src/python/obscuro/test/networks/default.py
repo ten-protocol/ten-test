@@ -1,4 +1,5 @@
 from web3 import Web3
+from web3.exceptions import TimeExhausted
 from pysys.constants import *
 from obscuro.test.utils.properties import Properties
 from obscuro.test.helpers.ws_proxy import WebServerProxy
@@ -144,14 +145,23 @@ class Default:
 
     def wait_for_transaction(self, test, web3, nonce, account, tx_hash, persist_nonce, timeout=120):
         """Wait for the transaction from the network to be acknowledged. """
-        tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash, timeout=timeout)
+        tx_receipt = None
+        try:
+            tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash, timeout=timeout)
 
-        if tx_receipt.status == 1:
-            test.log.info('Transaction receipt block hash %s' % tx_receipt.blockHash.hex())
-            if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'CONFIRMED')
-        else:
-            test.log.error('Transaction receipt failed')
-            test.log.error('Full receipt: %s' % tx_receipt)
-            if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'FAILED')
-            test.addOutcome(FAILED, abortOnError=True)
+            if tx_receipt.status == 1:
+                test.log.info('Transaction receipt block hash %s', tx_receipt.blockHash.hex())
+                if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'CONFIRMED')
+            else:
+                test.log.error('Transaction receipt failed')
+                test.log.error('Full receipt: %s', tx_receipt)
+                if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'FAILED')
+                test.addOutcome(FAILED, abortOnError=True)
+
+        except TimeExhausted as e:
+            test.log.error('Transaction timed out:', e)
+            test.log.warn('Deleting nonce entries in the persistence for nonce %d', nonce)
+            if persist_nonce: test.nonce_db.delete_entries(account.address, test.env, nonce)
+            test.addOutcome(TIMEDOUT, abortOnError=True)
+
         return tx_receipt
