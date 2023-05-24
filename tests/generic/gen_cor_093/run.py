@@ -16,7 +16,7 @@ class PySysTest(GenericNetworkTest):
         est_1 = contract.contract.functions.get_balance().estimate_gas()
         self.log.info("Estimate get_balance:    %d", est_1)
 
-        nonce = self.nonce_db.get_next_nonce(self, web3, account.address, self.env)
+        nonce = self.nonce_db.get_next_nonce(self, web3, account.address, self.env, persist_nonce=False)
         build_tx = contract.contract.functions.get_balance().buildTransaction(
             {
                 'nonce': nonce,

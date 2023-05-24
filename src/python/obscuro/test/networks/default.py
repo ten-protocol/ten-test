@@ -112,6 +112,7 @@ class Default:
             test.log.info('Total potential cost is %d WEI', gas_estimate*web3.eth.gas_price)
             gas_estimate = gas_estimate * self.GAS_MULT
         except Exception as e:
+            test.log.warn('Gas estimate, %s' % e.args[0])
             gas_estimate = gas_limit
 
         build_tx = target.buildTransaction(

@@ -1,13 +1,15 @@
 import os, shutil, sys, json, requests
 from web3 import Web3
 from pathlib import Path
+from eth_account.messages import encode_defunct
 from pysys.constants import PROJECT, BACKGROUND
 from pysys.exceptions import AbortExecution
+from pysys.constants import LOG_TRACEBACK
+from pysys.utils.logutils import BaseLogFormatter
 from obscuro.test.networks.ganache import Ganache
 from obscuro.test.persistence.nonce import NoncePersistence
 from obscuro.test.persistence.contract import ContractPersistence
 from obscuro.test.utils.properties import Properties
-from obscuro.test.helpers.wallet_extension import WalletExtension
 from obscuro.test.networks.obscuro import Obscuro
 
 
@@ -16,14 +18,18 @@ class ObscuroRunnerPlugin():
 
     The runner is responsible for starting any applications up prior to running the requested tests. When running
     against Ganache, a local Ganache will be started. All processes started by the runner are automatically stopped
-    when the tests are complete.
+    when the tests are complete. Note the runner should remain independent to the BaseTest, i.e. is standalon as much
+    as possible. That is because most of the framework is written to be test centric.
     """
+
+    def __init__(self):
+        self.env = None
+        self.output = os.path.join(PROJECT.root, '.runner')
 
     def setup(self, runner):
         """Set up a runner plugin to start any processes required to execute the tests. """
-        runner.env = 'obscuro' if runner.mode is None else runner.mode
-        runner.output = os.path.join(PROJECT.root, '.runner')
-        runner.log.info('Runner is executing against environment %s', runner.env)
+        self.env = 'obscuro' if runner.mode is None else runner.mode
+        runner.log.info('Runner is executing against environment %s', self.env)
 
         # create dir for any runner output
         if os.path.exists(runner.output): shutil.rmtree(runner.output)
@@ -37,37 +43,35 @@ class ObscuroRunnerPlugin():
         contracts_db = ContractPersistence(db_dir)
         contracts_db.create()
 
-        if self.is_obscuro(runner) and runner.threads > 3:
+        if self.is_obscuro() and runner.threads > 3:
             raise Exception('Max threads against Obscuro cannot be greater than 3')
-        elif runner.env == 'ganache' and runner.threads > 3:
+        elif self.env == 'ganache' and runner.threads > 3:
             raise Exception('Max threads against Ganache cannot be greater than 3')
-        elif runner.env == 'goerli' and runner.threads > 1:
+        elif self.env == 'goerli' and runner.threads > 1:
             raise Exception('Max threads against Goerli cannot be greater than 1')
 
         try:
-            if self.is_obscuro(runner):
-                self.wallet_extension = self.run_wallet(runner)
-
-                network = Obscuro()
-                network.PORT = self.wallet_extension.port
-                network.WS_PORT = self.wallet_extension.ws_port
-                web3, account = network.connect(runner, Properties().fundacntpk(), check_funds=False, log=False)
+            if self.is_obscuro():
+                port = self.run_wallet(runner)
+                web3, account = self.connect(Properties().fundacntpk(), Obscuro.HOST, port)
                 tx_count = web3.eth.get_transaction_count(account.address)
                 balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
 
                 if tx_count == 0:
                     runner.log.info('Funded key tx count is zero ... clearing persistence')
-                    nonce_db.delete_environment(runner.env)
-                    contracts_db.delete_environment(runner.env)
+                    nonce_db.delete_environment(self.env)
+                    contracts_db.delete_environment(self.env)
 
                 if balance < 100:
                     runner.log.info('Funded key balance below threshold ... making faucet call')
                     self.fund_obx_from_faucet_server(runner)
 
-                balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
-                runner.log.info('Funded account balance is %.6f OBX', balance)
+                for fn in Properties().accounts():
+                    web3, account = self.connect(fn(), Obscuro.HOST, port)
+                    balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+                    runner.log.info("Funds for %s: %.18f OBX", fn.__name__, balance, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
 
-            elif runner.env == 'ganache':
+            elif self.env == 'ganache':
                 nonce_db.delete_environment('ganache')
                 self.run_ganache(runner)
 
@@ -81,10 +85,6 @@ class ObscuroRunnerPlugin():
         nonce_db.close()
         contracts_db.close()
 
-    def is_obscuro(self, runner):
-        """Return true if we are running against an Obscuro network. """
-        return runner.env in ['obscuro', 'obscuro.dev', 'obscuro.local', 'obscuro.sim']
-
     def run_ganache(self, runner):
         """Run ganache for use by the tests. """
         runner.log.info('Starting ganache server to run tests through managed instance')
@@ -96,7 +96,7 @@ class ObscuroRunnerPlugin():
         arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().fundacntpk()))
         arguments.extend(('--gasLimit', '7200000'))
         arguments.extend(('--gasPrice', '1000'))
-        arguments.extend(('--blockTime', Properties().block_time_secs(runner.env)))
+        arguments.extend(('--blockTime', Properties().block_time_secs(self.env)))
         arguments.extend(('-k', 'berlin'))
         hprocess = runner.startProcess(command=Properties().ganache_binary(), displayName='ganache',
                                        workingDir=runner.output, environs=os.environ, quiet=True,
@@ -107,20 +107,61 @@ class ObscuroRunnerPlugin():
 
     def run_wallet(self, runner):
         """Run a single wallet extension for use by the tests. """
-        extension = WalletExtension(runner, name='runner')
-        hprocess = extension.run()
+        runner.log.info('Starting ganache server to run tests through managed instance')
+        port = runner.getNextAvailableTCPPort()
+        stdout = os.path.join(runner.output, 'wallet.out')
+        stderr = os.path.join(runner.output, 'wallet.err')
+
+        props = Properties()
+        arguments = []
+        arguments.extend(('--nodeHost', props.node_host(self.env)))
+        arguments.extend(('--nodePortHTTP', props.node_port_http(self.env)))
+        arguments.extend(('--nodePortWS', props.node_port_ws(self.env)))
+        arguments.extend(('--port', str(port)))
+        arguments.extend(('--portWS', str(runner.getNextAvailableTCPPort())))
+        arguments.extend(('--logPath', os.path.join(self.output, 'wallet_logs.txt')))
+        arguments.extend(('--databasePath', os.path.join(self.output, 'wallet_database')))
+        arguments.append('--verbose')
+        hprocess = runner.startProcess(command=os.path.join(PROJECT.root, 'artifacts', 'wallet_extension', 'wallet_extension'),
+                                       displayName='wallet_extension', workingDir=self.output, environs=os.environ,
+                                       quiet=True, arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
+        runner.waitForSignal(stdout, expr='Wallet extension started', timeout=30)
         runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
-        return extension
+        return port
+
+    def is_obscuro(self):
+        """Return true if we are running against an Obscuro network. """
+        return self.env in ['obscuro', 'obscuro.dev', 'obscuro.local', 'obscuro.sim']
 
     def fund_obx_from_faucet_server(self, runner):
         """Allocates native OBX to a users account from the faucet server. """
         account = Web3().eth.account.privateKeyToAccount(Properties().fundacntpk())
-        runner.log.info('Running request on %s', Properties().faucet_url(runner.env))
+        runner.log.info('Running request on %s', Properties().faucet_url(self.env))
         runner.log.info('Running for user address %s', account.address)
         headers = {'Content-Type': 'application/json'}
         data = {"address": account.address}
-        requests.post(Properties().faucet_url(runner.env), data=json.dumps(data), headers=headers)
+        requests.post(Properties().faucet_url(self.env), data=json.dumps(data), headers=headers)
 
-    def __stop_process(self, hprocess):
+    @staticmethod
+    def __stop_process(hprocess):
         """Stop a process started by this runner plugin. """
         hprocess.stop()
+
+    @staticmethod
+    def connect(private_key, host, port):
+        url = '%s:%s' % (host, port)
+        web3 = Web3(Web3.HTTPProvider(url))
+        account = web3.eth.account.privateKeyToAccount(private_key)
+
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
+
+        data = {"address": account.address}
+        response = requests.post('%s:%d/generateviewingkey/' % (host, port), data=json.dumps(data), headers=headers)
+        signed_msg = web3.eth.account.sign_message(encode_defunct(text='vk' + response.text), private_key=private_key)
+
+        data = {"signature": signed_msg.signature.hex(), "address": account.address}
+        requests.post('%s:%d/submitviewingkey/' % (host, port), data=json.dumps(data), headers=headers)
+
+        return web3, account
+
+

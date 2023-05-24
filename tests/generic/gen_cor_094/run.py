@@ -26,6 +26,7 @@ class PySysTest(GenericNetworkTest):
                 'chainId': web3.eth.chain_id
             }
         )
+
         deploy_gas = web3.eth.estimate_gas(build_tx)
         self.log.info('Deployment gas estimate is %d', deploy_gas)
 
