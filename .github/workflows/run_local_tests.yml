@@ -127,6 +127,7 @@ jobs:
           name: performance-artifact
           path: |
             ${{ github.workspace }}/obscuro-test/**/Output/*/*.pdf
+          if-no-files-found: ignore
           retention-days: 2
 
       - name: 'Docker clean containers and images after the test'
