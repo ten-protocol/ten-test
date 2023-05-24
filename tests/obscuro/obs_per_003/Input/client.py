@@ -8,7 +8,7 @@ logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=l
 
 def generate_viewing_key(web3, url, address, private_key):
     """Generate a viewing key with the wallet extension. """
-    logging.info('Generating viewing key for %s' % private_key)
+    logging.info('Generating viewing key for %s', private_key)
 
     headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
     data = {"address": address}
@@ -35,7 +35,7 @@ def run(name, chainId, web3, account, num_accounts, num_iterations):
     """Run a loop of bulk loading transactions into the mempool, draining, and collating results. """
     accounts = [Web3().eth.account.privateKeyToAccount(x).address for x in [secrets.token_hex()]*num_accounts]
 
-    logging.info('Creating and signing %d transactions' % num_iterations)
+    logging.info('Creating and signing %d transactions', num_iterations)
     txs = []
     for i in range(0, num_iterations):
         tx = create_signed_tx(chainId, web3, account, i, random.choice(accounts), 0.0000000001)
@@ -47,7 +47,7 @@ def run(name, chainId, web3, account, num_accounts, num_iterations):
         try:
             receipts.append((web3.eth.send_raw_transaction(tx[0].rawTransaction), tx[1]))
         except:
-            logging.info('Error sending raw transaction, sent = %d' % len(receipts))
+            logging.info('Error sending raw transaction, sent = %d', len(receipts))
 
     logging.info('Waiting for last transaction')
     web3.eth.wait_for_transaction_receipt(receipts[-1][0], timeout=600)
@@ -59,7 +59,7 @@ def run(name, chainId, web3, account, num_accounts, num_iterations):
             timestamp = int(web3.eth.get_block(block_number_deploy).timestamp)
             fp.write('%d %d\n' % (receipt[1], timestamp))
 
-    logging.info('Client %s completed' % name)
+    logging.info('Client %s completed', name)
 
 
 if __name__ == "__main__":
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     web3 = Web3(Web3.HTTPProvider(args.network_http))
     account = web3.eth.account.privateKeyToAccount(args.pk)
     name = args.client_name
-    logging.info('Starting client %s' % name)
+    logging.info('Starting client %s', name)
 
     generate_viewing_key(web3, args.network_http, account.address, args.pk)
     run(name, int(args.chainId), web3, account, int(args.num_accounts), int(args.num_iterations))

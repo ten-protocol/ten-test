@@ -7,7 +7,7 @@ logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=l
 
 
 def generate_viewing_key(web3, url, private_key):
-    logging.info('Generating viewing key for %s' % private_key)
+    logging.info('Generating viewing key for %s', private_key)
 
     account = web3.eth.account.privateKeyToAccount(private_key)
 
@@ -38,11 +38,11 @@ if __name__ == "__main__":
         guess = random.randint(0, 25)
         ret = contract.functions.guess(guess).call()
         if ret == 1:
-            logging.info("Guess is %d, need to go higher" % guess)
+            logging.info("Guess is %d, need to go higher", guess)
         elif ret == -1:
-            logging.info("Guess is %d, need to go lower" % guess)
+            logging.info("Guess is %d, need to go lower", guess)
         else:
-            logging.info("You've guessed the secret %s" % guess)
+            logging.info("You've guessed the secret %s", guess)
 
         time.sleep(0.1)
 

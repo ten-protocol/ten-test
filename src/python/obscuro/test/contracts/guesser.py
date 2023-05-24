@@ -22,13 +22,13 @@ class Guesser(DefaultContract):
             guess = random.randrange(lower, upper)
             ret = self.contract.functions.guess(guess).call()
             if ret == 1:
-                self.test.log.info("Guess is %d, need to go higher" % guess)
+                self.test.log.info("Guess is %d, need to go higher", guess)
                 lower = guess+1
             elif ret == -1:
-                self.test.log.info("Guess is %d, need to go lower" % guess)
+                self.test.log.info("Guess is %d, need to go lower", guess)
                 upper = guess
             else:
-                self.test.log.info("You've guessed the secret %s" % guess)
+                self.test.log.info("You've guessed the secret %s", guess)
                 self.test.addOutcome(PASSED)
                 return guess
 

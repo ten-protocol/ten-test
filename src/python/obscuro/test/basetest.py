@@ -28,7 +28,7 @@ class GenericNetworkTest(BaseTest):
     def __init__(self, descriptor, outsubdir, runner):
         """Call the parent constructor but set the mode to obscuro if non is set. """
         super().__init__(descriptor, outsubdir, runner)
-        self.log.info('Running test in thread %s' % threading.currentThread().getName())
+        self.log.info('Running test in thread %s', threading.currentThread().getName())
         self.env = 'obscuro' if self.mode is None else self.mode
         self.block_time = Properties().block_time_secs(self.env)
 
@@ -62,7 +62,7 @@ class GenericNetworkTest(BaseTest):
 
     def run_python(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
         """Run a python process. """
-        self.log.info('Running python script %s' % os.path.basename(script))
+        self.log.info('Running python script %s', os.path.basename(script))
         arguments = [script]
         if args is not None: arguments.extend(args)
 
@@ -74,7 +74,7 @@ class GenericNetworkTest(BaseTest):
 
     def run_javascript(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
         """Run a javascript process. """
-        self.log.info('Running javascript %s' % os.path.basename(script))
+        self.log.info('Running javascript %s', os.path.basename(script))
         arguments = [script]
         if args is not None: arguments.extend(args)
 
@@ -114,17 +114,17 @@ class GenericNetworkTest(BaseTest):
     def transfer_token(self, network, token_name, token_address, web3_from, account_from, address,
                        amount, persist_nonce=True):
         """Transfer an ERC20 token amount from a recipient account to an address. """
-        self.log.info('Running for token %s' % token_name)
+        self.log.info('Running for token %s', token_name)
 
         with open(os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'erc20', 'erc20.json')) as f:
             token = web3_from.eth.contract(address=token_address, abi=json.load(f))
 
         balance = token.functions.balanceOf(account_from.address).call({"from":account_from.address})
-        self.log.info('%s User balance   = %d ' % (token_name, balance))
+        self.log.info('%s User balance   = %d ', token_name, balance)
         network.transact(self, web3_from, token.functions.transfer(address, amount), account_from, 7200000, persist_nonce)
 
         balance = token.functions.balanceOf(account_from.address).call({"from":account_from.address})
-        self.log.info('%s User balance   = %d ' % (token_name, balance))
+        self.log.info('%s User balance   = %d ', token_name, balance)
 
     def print_token_balance(self, token_name, token_address, web3, account):
         """Print an ERC20 token balance of a recipient account. """
@@ -132,7 +132,7 @@ class GenericNetworkTest(BaseTest):
             token = web3.eth.contract(address=token_address, abi=json.load(f))
 
         balance = token.functions.balanceOf(account.address).call()
-        self.log.info('%s User balance   = %d ' % (token_name, balance))
+        self.log.info('%s User balance   = %d ', token_name, balance)
 
     def get_token_balance(self, token_address, web3, account):
         """Get the ERC20 token balance of a recipient account. """

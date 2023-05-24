@@ -14,7 +14,7 @@ class PySysTest(GenericNetworkTest):
         contract.deploy(network, account)
 
         est_1 = contract.contract.functions.get_balance().estimate_gas()
-        self.log.info("Estimate get_balance:    %d" % est_1)
+        self.log.info("Estimate get_balance:    %d", est_1)
 
         nonce = self.nonce_db.get_next_nonce(self, web3, account.address, self.env)
         build_tx = contract.contract.functions.get_balance().buildTransaction(
@@ -29,8 +29,8 @@ class PySysTest(GenericNetworkTest):
         try:
             web3.eth.send_raw_transaction(signed_tx.rawTransaction)
         except Exception as e:
-            self.log.error('Exception type: %s' % type(e))
-            self.log.error('Exception message: %s' % e.args[0]['message'])
+            self.log.error('Exception type: %s', type(e))
+            self.log.error('Exception message: %s', e.args[0]['message'])
             regex = re.compile('intrinsic gas too low', re.M)
             self.assertTrue(regex.search(e.args[0]['message']) is not None)
 

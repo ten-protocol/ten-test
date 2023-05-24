@@ -15,7 +15,7 @@ on:
       arguments:
         description: 'Arguments to the pysys run'
         required: true
-        default: '-e skip -e robustness -e performance'
+        default: '-e skip -e robustness -e persistence'
 
 jobs:
   Run-Local-Tests:
@@ -127,6 +127,7 @@ jobs:
           name: performance-artifact
           path: |
             ${{ github.workspace }}/obscuro-test/**/Output/*/*.pdf
+          if-no-files-found: ignore
           retention-days: 2
 
       - name: 'Docker clean containers and images after the test'

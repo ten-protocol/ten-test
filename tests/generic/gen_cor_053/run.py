@@ -10,7 +10,7 @@ class PySysTest(ObscuroNetworkTest):
         network = NetworkFactory.get_network(self)
         web3, account = network.connect_account1(self)
         balance = web3.eth.get_balance(account.address)
-        self.log.info('Balance account %.6f ETH (%d Wei)' % (web3.fromWei(balance, 'ether'), balance))
+        self.log.info('Balance account %.6f ETH (%d Wei)', web3.fromWei(balance, 'ether'), balance)
 
         # deploy the contract and send eth to it
         recv_contract = ReceiveEther(self, web3)
@@ -29,7 +29,7 @@ class PySysTest(ObscuroNetworkTest):
         # perform transfers
         last_balance = 0
         for fn in ['sendViaTransfer', 'sendViaSend', 'sendViaCall']:
-            self.log.info('Encoding and transferring using %s' % fn)
+            self.log.info('Encoding and transferring using %s', fn)
 
             data = send_contract.contract.encodeABI(fn_name=fn, args=[recv_contract.address])
             self.send(network, web3, send_contract, account, data, 100)

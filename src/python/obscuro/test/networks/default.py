@@ -15,6 +15,7 @@ class Default:
     ETH_LIMIT = 0.0001
     ETH_ALLOC = 0.0002
     GAS_MULT = 2
+    CURRENCY = 'ETH'
 
     def chain_id(self): return None
 
@@ -43,14 +44,14 @@ class Default:
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)
-        if log: test.log.info('Account %s connected to %s on %s' % (account.address, self.__class__.__name__, url))
+        if log: test.log.info('Account %s connected to %s on %s', account.address, self.__class__.__name__, url)
 
         if check_funds:
             balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
             if balance < self.ETH_LIMIT:
-                if log: test.log.info('Account balance %.6f ETH below threshold %s' % (balance, self.ETH_LIMIT))
+                if log: test.log.info('Account balance %.6f ETH below threshold %s', balance, self.ETH_LIMIT)
                 test.distribute_native(self, account, self.ETH_ALLOC)
-            if log: test.log.info('Account balance %.6f ETH' % (web3.fromWei(web3.eth.get_balance(account.address), 'ether')))
+            if log: test.log.info('Account balance %.6f ETH', web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
         return web3, account
 
     def connect_account1(self, test, web_socket=False, check_funds=True):
@@ -107,11 +108,11 @@ class Default:
 
         try:
             gas_estimate = target.estimate_gas()
-            test.log.info('Gas estimate, cost is %d WEI' % gas_estimate)
-            test.log.info('Total potential cost is %d WEI' % (gas_estimate*web3.eth.gas_price))
+            test.log.info('Gas estimate, cost is %d WEI', gas_estimate)
+            test.log.info('Total potential cost is %d WEI', gas_estimate*web3.eth.gas_price)
             gas_estimate = gas_estimate * self.GAS_MULT
         except Exception as e:
-            test.log.warn('Gas estimate, %s' % e.args[0])
+            test.log.warn('Gas estimate, %s', e.args[0])
             gas_estimate = gas_limit
 
         build_tx = target.buildTransaction(
@@ -137,10 +138,10 @@ class Default:
             tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
             if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'SENT')
         except Exception as e:
-            test.log.error('Error sending raw transaction %s' % e)
+            test.log.error('Error sending raw transaction %s', e)
             if persist_nonce: test.nonce_db.delete_entries(account.address, test.env, nonce)
             test.addOutcome(BLOCKED, abortOnError=True)
-        if log: test.log.info('Transaction sent with hash %s' % tx_hash.hex())
+        if log: test.log.info('Transaction sent with hash %s', tx_hash.hex())
         return tx_hash
 
     def wait_for_transaction(self, test, web3, nonce, account, tx_hash, persist_nonce, timeout=120):

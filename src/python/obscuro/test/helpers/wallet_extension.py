@@ -35,7 +35,7 @@ class WalletExtension:
 
     def run(self):
         """Run an instance of the wallet extension. """
-        self.parent.log.info('Starting wallet extension on port=%d, ws_port=%d' % (self.port, self.ws_port))
+        self.parent.log.info('Starting wallet extension on port=%d, ws_port=%d', self.port, self.ws_port)
         props = Properties()
 
         arguments = []
