@@ -14,31 +14,35 @@ class PySysTest(GenericNetworkTest):
     def execute(self):
         # connect to the network
         network = NetworkFactory.get_network(self)
-        web3, account = network.connect_account1(self)
+        web3_deploy, account_deploy = network.connect_account1(self)
 
         # we need to perform a transaction on the account to ensure the nonce is greater than zero for the
         # following bulk loading (a hack to avoid count=0 being considered a new deployment and clearing the db)
-        error = Error(self, web3)
-        error.deploy(network, account)
+        error = Error(self, web3_deploy)
+        error.deploy(network, account_deploy)
 
-        # a list of recipient accounts
+        # use an ephemeral accounts so we don't need to manage nonce through persistence
+        web3, account = network.connect(self, private_key=secrets.token_hex())
         accounts = [Web3().eth.account.privateKeyToAccount(x).address for x in [secrets.token_hex()]*25]
 
         # bulk load transactions to the accounts, and wait for the last
         self.log.info('Creating and signing %d transactions', self.ITERATIONS)
+        value = web3.toWei(0.0000000001, 'ether')
+        gas_price = web3.eth.gas_price
+        chain_id = network.chain_id()
+
         txs = []
         for i in range(0, self.ITERATIONS):
-            nonce = network.get_next_nonce(self, web3, account, True, False)
-            tx = self.create_signed_tx(network, web3, account, nonce, random.choice(accounts), 0.0000000001)
-            txs.append((tx, nonce))
+            tx = self.create_signed_tx(network, account, i, random.choice(accounts), value, gas_price, chain_id)
+            txs.append((tx, i))
 
         self.log.info('Bulk sending transactions to the network')
         receipts = []
         for tx in txs:
-            receipts.append((network.send_transaction(self, web3, tx[1], account, tx[0], True, False), tx[1]))
+            receipts.append((network.send_transaction(self, web3, tx[1], account, tx[0], False, False), tx[1]))
 
         self.log.info('Waiting for last transaction')
-        network.wait_for_transaction(self, web3, receipts[-1][1], account, receipts[-1][0], True, timeout=600)
+        network.wait_for_transaction(self, web3, receipts[-1][1], account, receipts[-1][0], False, timeout=600)
 
         # bin the data into timestamp intervals and log out to file
         self.log.info('Constructing binned data from the transaction receipts')
@@ -63,16 +67,16 @@ class PySysTest(GenericNetworkTest):
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'), branch, date,
                             str(self.mode), str(self.ITERATIONS), str(duration), '%.3f'%average)
 
-    def create_signed_tx(self, network, web3, account, nonce, address, amount):
+    def create_signed_tx(self, network, account, nonce, address, value, gas_price, chain_id):
         """Creates a signed transaction ready for the sending of funds to an account. """
         tx = {'nonce': nonce,
               'to': address,
-              'value': web3.toWei(amount, 'ether'),
+              'value': value,
               'gas': 4 * 720000,
-              'gasPrice': web3.eth.gas_price,
-              'chainId': network.chain_id()
+              'gasPrice': gas_price,
+              'chainId': chain_id
               }
-        return network.sign_transaction(self, tx, nonce, account, True)
+        return network.sign_transaction(self, tx, nonce, account, False)
 
     def execute_graph(self):
         """Test method to develop graph creation. """

@@ -19,14 +19,14 @@ def generate_viewing_key(web3, url, address, private_key):
     requests.post('%s/submitviewingkey/' % url, data=json.dumps(data), headers=headers)
 
 
-def create_signed_tx(chainId, web3, account, nonce, address, amount):
+def create_signed_tx(account, nonce, address, value, gas_price, chain_id):
     """Create a signed transaction to transfer funds to an address. """
     tx = {'nonce': nonce,
           'to': address,
-          'value': web3.toWei(amount, 'ether'),
+          'value': value,
           'gas': 4 * 720000,
-          'gasPrice': web3.eth.gas_price,
-          'chainId': chainId
+          'gasPrice': gas_price,
+          'chainId': chain_id
           }
     return account.sign_transaction(tx)
 
@@ -36,9 +36,12 @@ def run(name, chainId, web3, account, num_accounts, num_iterations):
     accounts = [Web3().eth.account.privateKeyToAccount(x).address for x in [secrets.token_hex()]*num_accounts]
 
     logging.info('Creating and signing %d transactions', num_iterations)
+    value = web3.toWei(0.0000000001, 'ether')
+    gas_price = web3.eth.gas_price
+
     txs = []
     for i in range(0, num_iterations):
-        tx = create_signed_tx(chainId, web3, account, i, random.choice(accounts), 0.0000000001)
+        tx = create_signed_tx(account, i, random.choice(accounts), value, gas_price, chainId)
         txs.append((tx, i))
 
     logging.info('Bulk sending transactions to the network')
