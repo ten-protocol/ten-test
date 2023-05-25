@@ -26,7 +26,6 @@ class ObscuroRunnerPlugin():
     def __init__(self):
         """Constructor. """
         self.env = None
-        self.output = os.path.join(PROJECT.root, '.runner')
         self.balances = OrderedDict()
 
     def setup(self, runner):
@@ -56,7 +55,7 @@ class ObscuroRunnerPlugin():
 
         try:
             if self.is_obscuro():
-                port = self.run_wallet(runner)
+                hprocess, port = self.run_wallet(runner)
                 web3, account = self.connect(Properties().fundacntpk(), Obscuro.HOST, port)
                 tx_count = web3.eth.get_transaction_count(account.address)
                 balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
@@ -70,15 +69,22 @@ class ObscuroRunnerPlugin():
                     runner.log.info('Funded key balance below threshold ... making faucet call')
                     self.fund_obx_from_faucet_server(runner)
 
+                runner.log.info('')
+                runner.log.info('Accounts with non-zero funds;')
                 for fn in Properties().accounts():
                     web3, account = self.connect(fn(), Obscuro.HOST, port)
                     self.balances[fn.__name__] = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
-                    runner.log.info("Funds for %s: %.18f OBX", fn.__name__, self.balances[fn.__name__],
-                                    extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+                    if self.balances[fn.__name__] > 0:
+                        runner.log.info("  Funds for %s: %.18f OBX", fn.__name__, self.balances[fn.__name__],
+                                        extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+                runner.log.info('')
+
+                runner.addCleanupFunction(lambda: self.__print_cost(runner, hprocess, port))
 
             elif self.env == 'ganache':
                 nonce_db.delete_environment('ganache')
-                self.run_ganache(runner)
+                hprocess = self.run_ganache(runner)
+                runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
 
         except AbortExecution as e:
             runner.log.info('Error executing runner plugin startup actions', e)
@@ -108,7 +114,7 @@ class ObscuroRunnerPlugin():
                                        arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
 
         runner.waitForSignal(stdout, expr='Listening on 127.0.0.1:%d' % Ganache.PORT, timeout=30)
-        runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
+        return hprocess
 
     def run_wallet(self, runner):
         """Run a single wallet extension for use by the tests. """
@@ -124,15 +130,14 @@ class ObscuroRunnerPlugin():
         arguments.extend(('--nodePortWS', props.node_port_ws(self.env)))
         arguments.extend(('--port', str(port)))
         arguments.extend(('--portWS', str(runner.getNextAvailableTCPPort())))
-        arguments.extend(('--logPath', os.path.join(self.output, 'wallet_logs.txt')))
-        arguments.extend(('--databasePath', os.path.join(self.output, 'wallet_database')))
+        arguments.extend(('--logPath', os.path.join(runner.output, 'wallet_logs.txt')))
+        arguments.extend(('--databasePath', os.path.join(runner.output, 'wallet_database')))
         arguments.append('--verbose')
         hprocess = runner.startProcess(command=os.path.join(PROJECT.root, 'artifacts', 'wallet_extension', 'wallet_extension'),
-                                       displayName='wallet_extension', workingDir=self.output, environs=os.environ,
+                                       displayName='wallet_extension', workingDir=runner.output, environs=os.environ,
                                        quiet=True, arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
         runner.waitForSignal(stdout, expr='Wallet extension started', timeout=30)
-        runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
-        return port
+        return hprocess, port
 
     def is_obscuro(self):
         """Return true if we are running against an Obscuro network. """
@@ -147,8 +152,21 @@ class ObscuroRunnerPlugin():
         data = {"address": account.address}
         requests.post(Properties().faucet_url(self.env), data=json.dumps(data), headers=headers)
 
-    def print_balances(self):
-        pass
+    def __print_cost(self, runner, hprocess, port):
+        """Print out balances. """
+        try:
+            delta = 0
+            for fn in Properties().accounts():
+                web3, account = self.connect(fn(), Obscuro.HOST, port)
+                balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+                if fn.__name__ in self.balances:
+                    delta = delta + (self.balances[fn.__name__] - balance)
+            runner.log.info(' ')
+            runner.log.info("%s: %.18f OBX", 'Total cost', delta, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+        except Exception as e:
+            pass
+        finally:
+            hprocess.stop()
 
     @staticmethod
     def __stop_process(hprocess):
