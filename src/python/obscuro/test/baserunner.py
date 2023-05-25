@@ -1,4 +1,5 @@
 import os, shutil, sys, json, requests
+from collections import OrderedDict
 from web3 import Web3
 from pathlib import Path
 from eth_account.messages import encode_defunct
@@ -16,15 +17,17 @@ from obscuro.test.networks.obscuro import Obscuro
 class ObscuroRunnerPlugin():
     """Runner class for running a set of tests against a given environment.
 
-    The runner is responsible for starting any applications up prior to running the requested tests. When running
+    The runner is responsible for starting any applications prior to running the requested tests. When running
     against Ganache, a local Ganache will be started. All processes started by the runner are automatically stopped
-    when the tests are complete. Note the runner should remain independent to the BaseTest, i.e. is standalon as much
-    as possible. That is because most of the framework is written to be test centric.
+    when the tests are complete. Note the runner should remain independent to the BaseTest, i.e. is stand alone as
+    much as possible. This is because most of the framework is written to be test centric.
     """
 
     def __init__(self):
+        """Constructor. """
         self.env = None
         self.output = os.path.join(PROJECT.root, '.runner')
+        self.balances = OrderedDict()
 
     def setup(self, runner):
         """Set up a runner plugin to start any processes required to execute the tests. """
@@ -69,8 +72,9 @@ class ObscuroRunnerPlugin():
 
                 for fn in Properties().accounts():
                     web3, account = self.connect(fn(), Obscuro.HOST, port)
-                    balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
-                    runner.log.info("Funds for %s: %.18f OBX", fn.__name__, balance, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+                    self.balances[fn.__name__] = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+                    runner.log.info("Funds for %s: %.18f OBX", fn.__name__, self.balances[fn.__name__],
+                                    extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
 
             elif self.env == 'ganache':
                 nonce_db.delete_environment('ganache')
@@ -142,6 +146,9 @@ class ObscuroRunnerPlugin():
         headers = {'Content-Type': 'application/json'}
         data = {"address": account.address}
         requests.post(Properties().faucet_url(self.env), data=json.dumps(data), headers=headers)
+
+    def print_balances(self):
+        pass
 
     @staticmethod
     def __stop_process(hprocess):
