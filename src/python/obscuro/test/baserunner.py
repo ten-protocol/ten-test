@@ -162,7 +162,8 @@ class ObscuroRunnerPlugin():
                 if fn.__name__ in self.balances:
                     delta = delta + (self.balances[fn.__name__] - balance)
             runner.log.info(' ')
-            runner.log.info("%s: %.18f OBX", 'Total cost', delta, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+            runner.log.info("%s: %d Wei", 'Total cost', Web3().toWei(delta, 'ether'),
+                            extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
         except Exception as e:
             pass
         finally:
