@@ -123,6 +123,7 @@ jobs:
 
       - name: 'Upload performance output'
         uses: actions/upload-artifact@v3
+        if: always()
         with:
           name: performance-artifact
           path: |
