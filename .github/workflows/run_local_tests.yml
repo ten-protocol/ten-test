@@ -130,13 +130,14 @@ jobs:
             ${{ github.workspace }}/obscuro-test/**/Output/*/*.pdf
           if-no-files-found: ignore
           retention-days: 2
-
-      - name: 'Publish test results'
-        uses: EnricoMi/publish-unit-test-result-action@v2
+          
+      - name: 'Upload xml reports output'
+        uses: actions/upload-artifact@v3
         if: always()
         with:
-          files: |
-            test-results/*.xml
+          name: reports-artifact
+          path: |
+            ${{ github.workspace }}/obscuro-test/reports/*.xml
 
       - name: 'Docker clean containers and images after the test'
         if: always()
@@ -144,3 +145,24 @@ jobs:
           for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
           docker system prune -af --volumes
           for i in `docker volume ls --filter dangling=true -q`; do docker volume rm $i; done
+
+          retention-days: 2
+
+  publish-results:
+    runs-on: self-hosted
+    needs: run-tests
+    permissions:
+      checks: write
+    if: always()
+
+    steps:
+      - name: 'Download artifacts'
+        uses: actions/download-artifact@v3
+        with:
+          name: reports-artifact
+          path: artifacts
+
+      - name: 'Publish test results'
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: 'artifacts/*.xml'
