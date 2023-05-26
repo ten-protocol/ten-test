@@ -12,6 +12,7 @@ __pycache__/
 **/Output/*
 .runner
 .db
+.test-results
 
 # property files we dont want commited to SCCS
 *.properties

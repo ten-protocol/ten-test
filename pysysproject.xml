@@ -20,6 +20,9 @@
             <property name="showOutputDir" value="false"/>
             <property name="showOutcomeReason" value="true"/>
         </writer>
+        <writer classname="obscuro.test.writer.results.TestsWriter">
+            <property name="outputDir" value="./.test-results"/>
+        </writer>
     </writers>
 
     <default-file-encodings>
