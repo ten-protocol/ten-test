@@ -95,13 +95,13 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -m obscuro.local ${{ github.event.inputs.arguments }}
+          /usr/local/bin/pysys.py run -m obscuro.local -r ${{ github.event.inputs.arguments }}
 
       - name: 'Run tests on schedule'
         if: ${{ github.event_name == 'schedule' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -m obscuro.local -e skip -e robustness -e performance
+          /usr/local/bin/pysys.py run -m obscuro.local -r -e skip -e robustness -e performance
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v3
@@ -130,6 +130,14 @@ jobs:
             ${{ github.workspace }}/obscuro-test/**/Output/*/*.pdf
           if-no-files-found: ignore
           retention-days: 2
+
+      - name: Test Report
+          uses: dorny/test-reporter@v1
+          if: success() || failure()
+          with:
+            name: JEST Tests
+            path: .test-results/jest-*.xml
+            reporter: jest-junit
 
       - name: 'Docker clean containers and images after the test'
         if: always()
