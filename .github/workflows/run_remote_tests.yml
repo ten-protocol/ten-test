@@ -65,19 +65,19 @@ jobs:
         if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.environment == 'testnet') }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run ${{ github.event.inputs.arguments }}
+          /usr/local/bin/pysys.py run -r ${{ github.event.inputs.arguments }}
 
       - name: 'Run tests on dev-testnet on a workflow_dispatch'
         if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.environment == 'dev-testnet') }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -m obscuro.dev ${{ github.event.inputs.arguments }}
+          /usr/local/bin/pysys.py run -m obscuro.dev -r ${{ github.event.inputs.arguments }}
 
       - name: 'Run tests on dev-testnet on a schedule'
         if: ${{ (github.event_name == 'schedule') }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -m obscuro.dev -e skip -v CRIT -c 50
+          /usr/local/bin/pysys.py run -m obscuro.dev -r -e skip -v CRIT -c 50
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v3
@@ -97,3 +97,11 @@ jobs:
             ${{ github.workspace }}/obscuro-test/**/Output/*/*.pdf
           if-no-files-found: ignore
           retention-days: 2
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: JEST Tests
+          path: .test-results/TEST-*.xml
+          reporter: jest-junit
