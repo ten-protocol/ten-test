@@ -103,4 +103,4 @@ jobs:
         if: always()
         with:
           files: |
-            reports/TEST-*.xml
+            reports/**/*.xml
