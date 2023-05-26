@@ -21,7 +21,7 @@
             <property name="showOutcomeReason" value="true"/>
         </writer>
         <writer classname="pysys.writer.outcomes.JUnitXMLResultsWriter">
-            <property name="outputDir" value="./.test-results"/>
+            <property name="outputDir" value="reports"/>
         </writer>
     </writers>
 

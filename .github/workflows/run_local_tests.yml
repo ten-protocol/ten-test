@@ -131,12 +131,12 @@ jobs:
           if-no-files-found: ignore
           retention-days: 2
 
-      - name: Test Report
+      - name: 'Test report'
         uses: dorny/test-reporter@v1
         if: success() || failure()
         with:
           name: JEST Tests
-          path: .test-results/TEST-*.xml
+          path: reports/TEST-*.xml
           reporter: jest-junit
 
       - name: 'Docker clean containers and images after the test'
