@@ -136,7 +136,7 @@ jobs:
         if: success() || failure()
         with:
           name: JEST Tests
-          path: .test-results/jest-*.xml
+          path: .test-results/TEST-*.xml
           reporter: jest-junit
 
       - name: 'Docker clean containers and images after the test'
