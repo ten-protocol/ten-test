@@ -18,7 +18,7 @@ on:
         default: '-e skip -e robustness -e persistence'
 
 jobs:
-  Run-Local-Tests:
+  run-tests:
     runs-on: self-hosted
     steps:
       - run: echo "Triggered by ${{ github.event_name }} running on obscuro-test branch ${{ github.ref }} "
@@ -130,7 +130,7 @@ jobs:
             ${{ github.workspace }}/obscuro-test/**/Output/*/*.pdf
           if-no-files-found: ignore
           retention-days: 2
-          
+
       - name: 'Upload xml reports output'
         uses: actions/upload-artifact@v3
         if: always()
