@@ -136,7 +136,7 @@ jobs:
         if: always()
         with:
           files: |
-            reports/**/*.xml
+            reports/*.xml
 
       - name: 'Docker clean containers and images after the test'
         if: always()
