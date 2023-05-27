@@ -39,13 +39,13 @@ jobs:
           cd ${{ github.workspace }}/obscuro-test/admin
           /usr/local/bin/pysys.py run -m obscuro.dev persistence_reset
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -m obscuro.dev -e skip -e robustness -e performance
+          /usr/local/bin/pysys.py run -m obscuro.dev -r -e skip -e robustness -e performance
 
       - name: 'Run tests on dev-testnet on a repository_dispatch trigger of an upgrade'
         if: ${{ (github.event_name == 'repository_dispatch') && (github.event.action == 'faucet_dev_testnet_upgraded') }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -m obscuro.dev -e skip -e robustness -e performance
+          /usr/local/bin/pysys.py run -m obscuro.dev -r -e skip -e robustness -e performance
 
       - name: 'Run tests on testnet on a repository_dispatch trigger of a new deployment'
         if: ${{ (github.event_name == 'repository_dispatch') && (github.event.action == 'faucet_testnet_deployed') }}
@@ -61,3 +61,12 @@ jobs:
           path: |
             ${{ github.workspace }}/obscuro-test/**/Output
           retention-days: 2
+
+      - name: 'Create test report'
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          working-directory: ${{ github.workspace }}/obscuro-test/
+          name: 'test report'
+          path: 'reports/*.xml'
+          reporter: jest-junit

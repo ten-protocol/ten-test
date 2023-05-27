@@ -137,6 +137,15 @@ jobs:
             ${{ github.workspace }}/go-obscuro/*.out
           retention-days: 2
 
+      - name: 'Create test report'
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          working-directory: ${{ github.workspace }}/obscuro-test/
+          name: 'test report'
+          path: 'reports/*.xml'
+          reporter: jest-junit
+
       - name: 'Docker clean containers and images after the test'
         if: always()
         run: |
