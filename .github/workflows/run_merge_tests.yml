@@ -8,7 +8,7 @@ on:
     types: [merged_pull_request]
 
 jobs:
-  Run-Merge-Tests:
+  run-tests:
     runs-on: self-hosted
     steps:
       - name: 'Map IDs for ObscuroLabs'

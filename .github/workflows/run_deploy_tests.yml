@@ -9,7 +9,7 @@ on:
     types: [ faucet_testnet_deployed, faucet_testnet_upgraded, faucet_dev_testnet_deployed, faucet_dev_testnet_upgraded ]
 
 jobs:
-  Run-Deploy-Tests:
+  run-tests:
     runs-on: self-hosted
     steps:
       - run: echo "Triggered by ${{ github.event_name }}"
