@@ -104,13 +104,13 @@ jobs:
     needs: run-tests
     permissions:
       checks: write
-      max-annotations: '0'
 
     steps:
       - name: 'Test report'
         uses: dorny/test-reporter@v1
         if: success() || failure()
         with:
+          max-annotations: '0'
           name: 'test report'
           artifact: reports-artifact
           path: '*.xml'
