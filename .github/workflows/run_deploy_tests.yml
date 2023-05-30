@@ -71,3 +71,4 @@ jobs:
           path: 'reports/*.xml'
           reporter: java-junit
           fail-on-error: 'false'
+          only-summary: 'true'
