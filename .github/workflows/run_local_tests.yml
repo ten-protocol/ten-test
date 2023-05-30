@@ -106,7 +106,7 @@ jobs:
       - name: 'Collate pdf output'
         run: |
           cd ${{ github.workspace }}/obscuro-test
-          pdftk $(find . -name \*.pdf | sort) cat output results_graphs.pdf'
+          pdftk $(find . -name \*.pdf | sort) cat output results_graphs.pdf
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v3
