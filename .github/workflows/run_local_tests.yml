@@ -138,7 +138,6 @@ jobs:
           working-directory: ${{ github.workspace }}/obscuro-test/
           name: 'test-status'
           path: 'reports/*.xml'
-          only-summary: 'true'
           reporter: java-junit
 
       - name: 'Docker clean containers and images after the test'
