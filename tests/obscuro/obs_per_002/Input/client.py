@@ -58,7 +58,9 @@ def run(name, chainId, web3, account, num_accounts, num_iterations):
     logging.info('Constructing binned data from the transaction receipts')
     with open('%s.log' % name, 'w') as fp:
         for receipt in receipts:
+            logging.info('Getting block number for %s', receipt[0])
             block_number_deploy = web3.eth.get_transaction(receipt[0]).blockNumber
+            logging.info('Block number is %s', block_number_deploy)
             timestamp = int(web3.eth.get_block(block_number_deploy).timestamp)
             fp.write('%d %d\n' % (receipt[1], timestamp))
 
