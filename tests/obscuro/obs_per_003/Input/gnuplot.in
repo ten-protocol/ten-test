@@ -47,4 +47,4 @@ set yr [0: ((STATS_max_y)*1.1)]
 set title "{/Arial:Bold=13 Binned Transactions}"
 set xlabel "Time (seconds)" font "Courier,12"
 set ylabel "Transactions" font "Courier,12" offset 1,0
-plot "clients.bin" using 1:2 with boxes title "Binned", "" using 1:(STATS_mean_x) with lines title "Average"
+plot "clients.bin" using 1:2 with boxes title "Binned", "" using 1:(STATS_mean_y) with lines title "Average"
