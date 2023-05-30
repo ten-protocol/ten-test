@@ -103,6 +103,11 @@ jobs:
           cd ${{ github.workspace }}/obscuro-test/tests
           /usr/local/bin/pysys.py run -m obscuro.local -r -e skip -e robustness -e performance
 
+      - name: 'Collate pdf output'
+        run: |
+          cd ${{ github.workspace }}/obscuro-test
+          pdftk $(find . -name \*.pdf | sort) cat output results_graphs.pdf
+
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v3
         if: failure()
@@ -127,7 +132,7 @@ jobs:
         with:
           name: performance-artifact
           path: |
-            ${{ github.workspace }}/obscuro-test/**/Output/*/*.pdf
+            ${{ github.workspace }}/obscuro-test/results_graphs.pdf
           if-no-files-found: ignore
           retention-days: 2
 
@@ -140,7 +145,8 @@ jobs:
           path: 'reports/*.xml'
           reporter: java-junit
           fail-on-error: 'false'
-
+          only-summary: 'true'
+          
       - name: 'Docker clean containers and images after the test'
         if: always()
         run: |

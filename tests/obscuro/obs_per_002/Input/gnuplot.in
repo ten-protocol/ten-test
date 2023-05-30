@@ -9,6 +9,7 @@ set key right top
 set xtics font "Courier,11"
 set ytics font "Courier,11"
 set xrange [0: ARG7]
+set style fill solid 0.5
 set label "{/Courier:Bold=13 Branch}: ".ARG3 left at screen 0.59, screen 0.925
 set label "{/Courier:Bold=13 Date}: ".ARG4 left at screen 0.59, screen 0.900
 set label "{/Courier:Bold=13 Environment}: ".ARG5 left at screen 0.59, screen 0.875

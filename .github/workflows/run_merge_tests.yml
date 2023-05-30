@@ -146,6 +146,7 @@ jobs:
           path: 'reports/*.xml'
           reporter: java-junit
           fail-on-error: 'false'
+          only-summary: 'true'
 
       - name: 'Docker clean containers and images after the test'
         if: always()
