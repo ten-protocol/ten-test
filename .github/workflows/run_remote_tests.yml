@@ -95,7 +95,7 @@ jobs:
         if: always()
         with:
           working-directory: ${{ github.workspace }}/obscuro-test/
-          name: 'test report'
+          name: 'test-status'
           path: 'reports/*.xml'
           reporter: java-junit
 

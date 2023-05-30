@@ -62,11 +62,11 @@ jobs:
             ${{ github.workspace }}/obscuro-test/**/Output
           retention-days: 2
 
-      - name: 'Create test report'
+      - name: 'Test report'
         uses: dorny/test-reporter@v1
         if: always()
         with:
           working-directory: ${{ github.workspace }}/obscuro-test/
-          name: 'test report'
+          name: 'test-status'
           path: 'reports/*.xml'
-          reporter: jest-junit
+          reporter: java-junit
