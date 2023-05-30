@@ -97,5 +97,5 @@ jobs:
           working-directory: ${{ github.workspace }}/obscuro-test/
           name: 'test report'
           path: 'reports/*.xml'
-          reporter: jest-junit
+          reporter: java-junit
 
