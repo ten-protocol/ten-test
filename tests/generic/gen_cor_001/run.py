@@ -1,4 +1,3 @@
-import threading
 from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.networks.factory import NetworkFactory
 

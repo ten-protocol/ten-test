@@ -18,7 +18,7 @@ on:
         default: '-e skip -e robustness -e persistence'
 
 jobs:
-  Run-Local-Tests:
+  run-tests:
     runs-on: self-hosted
     steps:
       - run: echo "Triggered by ${{ github.event_name }} running on obscuro-test branch ${{ github.ref }} "
@@ -95,13 +95,13 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -m obscuro.local ${{ github.event.inputs.arguments }}
+          /usr/local/bin/pysys.py run -m obscuro.local -r ${{ github.event.inputs.arguments }}
 
       - name: 'Run tests on schedule'
         if: ${{ github.event_name == 'schedule' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -m obscuro.local -e skip -e robustness -e performance
+          /usr/local/bin/pysys.py run -m obscuro.local -r -e skip -e robustness -e performance
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v3
@@ -131,9 +131,20 @@ jobs:
           if-no-files-found: ignore
           retention-days: 2
 
+      - name: 'Test report'
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          working-directory: ${{ github.workspace }}/obscuro-test/
+          name: 'test-status'
+          path: 'reports/*.xml'
+          reporter: java-junit
+          fail-on-error: 'false'
+
       - name: 'Docker clean containers and images after the test'
         if: always()
         run: |
           for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
           docker system prune -af --volumes
           for i in `docker volume ls --filter dangling=true -q`; do docker volume rm $i; done
+

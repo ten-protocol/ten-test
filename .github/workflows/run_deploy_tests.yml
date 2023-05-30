@@ -9,7 +9,7 @@ on:
     types: [ faucet_testnet_deployed, faucet_testnet_upgraded, faucet_dev_testnet_deployed, faucet_dev_testnet_upgraded ]
 
 jobs:
-  Run-Deploy-Tests:
+  run-tests:
     runs-on: self-hosted
     steps:
       - run: echo "Triggered by ${{ github.event_name }}"
@@ -39,13 +39,13 @@ jobs:
           cd ${{ github.workspace }}/obscuro-test/admin
           /usr/local/bin/pysys.py run -m obscuro.dev persistence_reset
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -m obscuro.dev -e skip -e robustness -e performance
+          /usr/local/bin/pysys.py run -m obscuro.dev -r -e skip -e robustness -e performance
 
       - name: 'Run tests on dev-testnet on a repository_dispatch trigger of an upgrade'
         if: ${{ (github.event_name == 'repository_dispatch') && (github.event.action == 'faucet_dev_testnet_upgraded') }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -m obscuro.dev -e skip -e robustness -e performance
+          /usr/local/bin/pysys.py run -m obscuro.dev -r -e skip -e robustness -e performance
 
       - name: 'Run tests on testnet on a repository_dispatch trigger of a new deployment'
         if: ${{ (github.event_name == 'repository_dispatch') && (github.event.action == 'faucet_testnet_deployed') }}
@@ -61,3 +61,13 @@ jobs:
           path: |
             ${{ github.workspace }}/obscuro-test/**/Output
           retention-days: 2
+
+      - name: 'Test report'
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          working-directory: ${{ github.workspace }}/obscuro-test/
+          name: 'test-status'
+          path: 'reports/*.xml'
+          reporter: java-junit
+          fail-on-error: 'false'

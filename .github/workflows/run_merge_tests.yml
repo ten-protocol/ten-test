@@ -8,7 +8,7 @@ on:
     types: [merged_pull_request]
 
 jobs:
-  Run-Merge-Tests:
+  run-tests:
     runs-on: self-hosted
     steps:
       - name: 'Map IDs for ObscuroLabs'
@@ -136,6 +136,16 @@ jobs:
           path: |
             ${{ github.workspace }}/go-obscuro/*.out
           retention-days: 2
+
+      - name: 'Test report'
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          working-directory: ${{ github.workspace }}/obscuro-test/
+          name: 'test-status'
+          path: 'reports/*.xml'
+          reporter: java-junit
+          fail-on-error: 'false'
 
       - name: 'Docker clean containers and images after the test'
         if: always()
