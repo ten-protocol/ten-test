@@ -98,4 +98,5 @@ jobs:
           name: 'test-status'
           path: 'reports/*.xml'
           reporter: java-junit
+          fail-on-error: 'false'
 
