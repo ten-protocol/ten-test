@@ -17,9 +17,9 @@ jobs:
         with:
           path: ./obscuro-test
           token: ${{ secrets.GH_COMMIT_PAT }}
-          ref: ${{ github.ref }}
 
       - name: 'Update the workflow details'
+        if: ${{ github.run_attempt == '1' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test
           echo Date: `date` > .workflow
