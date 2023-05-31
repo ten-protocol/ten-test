@@ -23,8 +23,8 @@ jobs:
       - name: 'Setup git config'
         run: |
           cd ${{ github.workspace }}/obscuro-test
-          git config user.name "GitHub Actions Bot"
-          git config user.email "<>"
+          git config user.name "Moray Grieve"
+          git config user.email "moray.grieve@me.com"
 
       - name: 'Commit'
         run: |
