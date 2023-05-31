@@ -117,6 +117,7 @@ jobs:
           /usr/local/bin/pysys.py run -m obscuro.local -r -e skip -e robustness -e performance
 
       - name: 'Collate pdf output'
+        if: always()
         run: |
           cd ${{ github.workspace }}/obscuro-test
           pdftk $(find . -name \*.pdf | sort) cat output results_graphs.pdf || true
