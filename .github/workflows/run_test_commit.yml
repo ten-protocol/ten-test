@@ -31,4 +31,4 @@ jobs:
           cd ${{ github.workspace }}/obscuro-test
           git add time.txt
           git commit -m "new date commit"
-          git push origin master
+          git push origin main
