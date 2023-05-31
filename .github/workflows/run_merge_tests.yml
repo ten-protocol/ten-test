@@ -45,6 +45,7 @@ jobs:
         with:
           path: ./obscuro-test
           token: ${{ secrets.GH_COMMIT_PAT }}
+          ref: ${{ github.ref }}
 
       - name: 'Update the workflow details'
         run: |
