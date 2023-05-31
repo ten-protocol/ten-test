@@ -55,7 +55,7 @@ jobs:
           git config user.name "Moray Grieve"
           git config user.email "moray.grieve@me.com"
           git add .workflow
-          git commit -m "Update workflow run details"
+          git commit -m "Merge tests run number #${{ github.run_number}}"
           git push origin ${{ github.ref }}
 
       - name: 'Check out faucet code'
