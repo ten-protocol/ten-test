@@ -31,7 +31,7 @@ jobs:
           git config user.name "Moray Grieve"
           git config user.email "moray.grieve@me.com"
           git add .workflow
-          git commit -m "new date commit"
+          git commit -m "Update workflow run details"
           git push origin ${{ github.ref }}
 
       - name: 'Check out go-obscuro code'
