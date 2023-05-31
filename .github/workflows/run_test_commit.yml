@@ -1,0 +1,18 @@
+# Builds a local testnet and runs a set of E2E tests. The workflow is run either manually from a workflow dispatch or
+# on a nightly basis via a schedule task.
+#
+name: Run test commit
+run-name: Run local tests (${{ github.run_id }} ${{ github.run_attempt }})
+on:
+  workflow_dispatch:
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Check out obscuro-test'
+        uses: actions/checkout@v3
+        with:
+          path: ./obscuro-test
+
+
