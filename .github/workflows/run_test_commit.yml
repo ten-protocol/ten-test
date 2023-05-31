@@ -19,9 +19,9 @@ jobs:
       - name: 'Save current date'
         run: |
           cd ${{ github.workspace }}/obscuro-test
-          echo Date: `date` >> .workflow
-          echo Run ID: ${{ github.run_id }} > .workflow
-          echo Run Attempt: ${{ github.run_attempt }} > .workflow
+          echo Date: `date` > .workflow
+          echo Run ID: ${{ github.run_id }} >> .workflow
+          echo Run Attempt: ${{ github.run_attempt }} >> .workflow
 
       - name: 'Setup git config'
         run: |
