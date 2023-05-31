@@ -21,12 +21,6 @@ jobs:
   test-run:
     runs-on: self-hosted
     steps:
-      - run: echo "Triggered by ${{ github.event_name }} running on obscuro-test branch ${{ github.ref }} "
-
-      - name: 'Log the go-obscuro branch for workflow dispatch'
-        if: ${{ github.event_name == 'workflow_dispatch' }}
-        run: echo "Running on go-obscuro branch ${{ github.event.inputs.target_branch }}"
-
       - name: 'Check out obscuro-test'
         uses: actions/checkout@v3
         with:
@@ -42,7 +36,7 @@ jobs:
           git config user.name "Moray Grieve"
           git config user.email "moray.grieve@me.com"
           git add .workflow
-          git commit -m "Local tests run number #${{ github.run_number}}"
+          git commit -m "Local tests run ID ${{ github.run_id}}"
           git push origin ${{ github.ref }}
 
       - name: 'Check out faucet code'

@@ -11,11 +11,9 @@ on:
         type: choice
         description: 'The release version of testnet'
         required: true
-        default: v0.13.0
+        default: releases/v0.13
         options:
-          - v0.13.0
-          - v0.12.0
-          - v0.11.0
+          - releases/v0.13
 
 jobs:
   run-check:
@@ -23,7 +21,7 @@ jobs:
     steps:
       - name: Set the variables
         env:
-          DEFAULT_VERSION: 'v0.13.0'
+          DEFAULT_VERSION: 'releases/v0.13'
         run: echo "VERSION=${{ github.event.inputs.release || env.DEFAULT_VERSION }}" >> $GITHUB_ENV
 
       - name: 'Check out obscuro-test'
@@ -31,6 +29,19 @@ jobs:
         with:
           path: ./obscuro-test
           ref: ${{env.VERSION}}
+          token: ${{ secrets.GH_COMMIT_PAT }}
+
+      - name: 'Update the workflow details'
+        run: |
+          cd ${{ github.workspace }}/obscuro-test
+          echo Date: `date` > .workflow
+          echo Run ID: ${{ github.run_id }} >> .workflow
+          echo Run Attempt: ${{ github.run_attempt }} >> .workflow
+          git config user.name "Moray Grieve"
+          git config user.email "moray.grieve@me.com"
+          git add .workflow
+          git commit -m "Health check run ID ${{ github.run_id}}"
+          git push origin ${{env.VERSION}}
 
       - name: 'Check out go-obscuro code'
         uses: actions/checkout@v3

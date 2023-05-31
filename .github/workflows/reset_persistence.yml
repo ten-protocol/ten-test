@@ -18,12 +18,23 @@ jobs:
   reset-persistence:
     runs-on: self-hosted
     steps:
-      - run: echo "Triggered by ${{ github.event_name }} event running on branch ${{ github.ref }} "
-
       - name: 'Check out obscuro-test'
         uses: actions/checkout@v3
         with:
           path: ./obscuro-test
+          token: ${{ secrets.GH_COMMIT_PAT }}
+
+      - name: 'Update the workflow details'
+        run: |
+          cd ${{ github.workspace }}/obscuro-test
+          echo Date: `date` > .workflow
+          echo Run ID: ${{ github.run_id }} >> .workflow
+          echo Run Attempt: ${{ github.run_attempt }} >> .workflow
+          git config user.name "Moray Grieve"
+          git config user.email "moray.grieve@me.com"
+          git add .workflow
+          git commit -m "Reset persistence run ID ${{ github.run_id}}"
+          git push origin ${{ github.ref }}
 
       - name: 'Check out go-obscuro code'
         uses: actions/checkout@v3
