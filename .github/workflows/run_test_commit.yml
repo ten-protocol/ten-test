@@ -32,6 +32,6 @@ jobs:
       - name: 'Commit'
         run: |
           cd ${{ github.workspace }}/obscuro-test
-          git add time.txt
+          git add .workflow
           git commit -m "new date commit"
           git push origin main
