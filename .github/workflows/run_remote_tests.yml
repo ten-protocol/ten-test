@@ -72,6 +72,7 @@ jobs:
           /usr/local/bin/pysys.py run -m obscuro.dev -r ${{ github.event.inputs.arguments }}
 
       - name: 'Collate pdf output'
+        continue-on-error: true
         run: |
           cd ${{ github.workspace }}/obscuro-test
           pdftk $(find . -name \*.pdf | sort) cat output results_graphs.pdf
