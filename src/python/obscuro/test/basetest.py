@@ -24,6 +24,7 @@ class GenericNetworkTest(BaseTest):
     WEBSOCKET = False               # if true use websockets for all comms to the wallet extension
     PROXY = False                   # if true run all websocket connections through a recording proxy
     MSG_ID = 1                      # global used for http message requests numbers
+    NODE_HOST = None                # if not none overrides the node host from the properties file
 
     def __init__(self, descriptor, outsubdir, runner):
         """Call the parent constructor but set the mode to obscuro if non is set. """
@@ -206,7 +207,7 @@ class ObscuroNetworkTest(GenericNetworkTest):
 
     def post(self, data):
         self.MSG_ID += 1
-        server = 'http://%s:%s' % (Properties().node_host(self.env), Properties().node_port_http(self.env))
+        server = 'http://%s:%s' % (Properties().node_host(self.env, self.NODE_HOST), Properties().node_port_http(self.env))
         return requests.post(server, json=data)
 
     def background_funders(self, network, num_funders):

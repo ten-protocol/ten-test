@@ -33,6 +33,7 @@ class ObscuroRunnerPlugin():
         self.env = 'obscuro' if runner.mode is None else runner.mode
         runner.output = os.path.join(PROJECT.root, '.runner')
         runner.log.info('Runner is executing against environment %s', self.env)
+        runner.NODE_HOST = runner.getXArg('NODE_HOST')
 
         # create dir for any runner output
         if os.path.exists(runner.output): shutil.rmtree(runner.output)
@@ -125,7 +126,7 @@ class ObscuroRunnerPlugin():
 
         props = Properties()
         arguments = []
-        arguments.extend(('--nodeHost', props.node_host(self.env)))
+        arguments.extend(('--nodeHost', Properties().node_host(runner.env,runner.NODE_HOST)))
         arguments.extend(('--nodePortHTTP', props.node_port_http(self.env)))
         arguments.extend(('--nodePortWS', props.node_port_ws(self.env)))
         arguments.extend(('--port', str(port)))
