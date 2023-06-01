@@ -32,7 +32,7 @@ class ObscuroRunnerPlugin():
     def setup(self, runner):
         """Set up a runner plugin to start any processes required to execute the tests. """
         self.env = 'obscuro' if runner.mode is None else runner.mode
-        self.NODE_HOST = runner.getXArg('NODE_HOST', None)
+        self.NODE_HOST = runner.getXArg('NODE_HOST', '')
         runner.output = os.path.join(PROJECT.root, '.runner')
         runner.log.info('Runner is executing against environment %s', self.env)
 
