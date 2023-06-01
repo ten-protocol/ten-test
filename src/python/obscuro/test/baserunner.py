@@ -164,7 +164,7 @@ class ObscuroRunnerPlugin():
             runner.log.info(' ')
             runner.log.info("%s: %d Wei", 'Total cost', Web3().toWei(delta, 'ether'),
                             extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
-            runner.log.info("%s: %d ETH", 'Total cost', delta, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+            runner.log.info("%s: %.9f ETH", 'Total cost', delta, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
         except Exception as e:
             pass
         finally:
