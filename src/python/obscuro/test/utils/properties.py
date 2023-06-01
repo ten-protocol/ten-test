@@ -93,8 +93,9 @@ class Properties:
     def gg_endusr_pk(self): return self.get('env.all', 'GGEndUsrPK')
 
     # obscuro specific properties
-    def node_host(self, key):
+    def node_host(self, key, node_host):
         if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'NodeHostDockerNetwork')
+        if node_host is not None: return node_host
         return self.get('env.'+key, 'NodeHost')
 
     def node_port_http(self, key):
