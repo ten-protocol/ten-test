@@ -81,7 +81,7 @@ jobs:
           name: test-artifact
           path: |
             ${{ github.workspace }}/obscuro-test/**/Output
-          retention-days: 2
+          retention-days: 1
 
       - name: 'Upload performance output'
         uses: actions/upload-artifact@v3
@@ -91,5 +91,5 @@ jobs:
           path: |
             ${{ github.workspace }}/obscuro-test/results_graphs.pdf
           if-no-files-found: ignore
-          retention-days: 2
+          retention-days: 1
 

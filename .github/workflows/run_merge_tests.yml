@@ -126,7 +126,7 @@ jobs:
           name: test-artifact
           path: |
             ${{ github.workspace }}/obscuro-test/**/Output
-          retention-days: 2
+          retention-days: 1
 
       - name: 'Upload container logs'
         uses: actions/upload-artifact@v3
@@ -135,7 +135,7 @@ jobs:
           name: container-artifact
           path: |
             ${{ github.workspace }}/go-obscuro/*.out
-          retention-days: 2
+          retention-days: 1
 
       - name: 'Docker clean containers and images after the test'
         if: always()
