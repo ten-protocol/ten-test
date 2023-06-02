@@ -49,8 +49,9 @@ def run(name, chainId, web3, account, num_accounts, num_iterations):
     for tx in txs:
         try:
             receipts.append((web3.eth.send_raw_transaction(tx[0].rawTransaction), tx[1]))
-        except:
+        except Exception as e:
             logging.info('Error sending raw transaction, sent = %d', len(receipts))
+            logging.info('Exception is', e)
 
     logging.info('Waiting for last transaction')
     web3.eth.wait_for_transaction_receipt(receipts[-1][0], timeout=600)
@@ -58,9 +59,7 @@ def run(name, chainId, web3, account, num_accounts, num_iterations):
     logging.info('Constructing binned data from the transaction receipts')
     with open('%s.log' % name, 'w') as fp:
         for receipt in receipts:
-            logging.info('Getting block number for %s', receipt[0])
             block_number_deploy = web3.eth.get_transaction(receipt[0]).blockNumber
-            logging.info('Block number is %s', block_number_deploy)
             timestamp = int(web3.eth.get_block(block_number_deploy).timestamp)
             fp.write('%d %d\n' % (receipt[1], timestamp))
 

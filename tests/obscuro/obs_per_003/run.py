@@ -28,7 +28,9 @@ class PySysTest(GenericNetworkTest):
         error.deploy(network, account)
 
         # run the clients
-        for i in range(self.CLIENTS): self.run_client('client_%d' % i, network)
+        setup = [self.setup_client(network, 'client_%d' % i) for i in range(self.CLIENTS)]
+        self.log.info(setup)
+        for i in range(self.CLIENTS): self.run_client('client_%d' % i, network, setup[i][0], setup[i][1])
         for i in range(self.CLIENTS):
             self.waitForGrep(file='client_%d.out' % i, expr='Client client_%d completed' % i, timeout=900)
 
@@ -54,8 +56,7 @@ class PySysTest(GenericNetworkTest):
                             branch, date,
                             str(self.mode), str(self.CLIENTS*self.ITERATIONS), str(duration), '%d' % self.CLIENTS)
 
-    def run_client(self, name, network, offset=2.0):
-        """Run a background load client. """
+    def setup_client(self, network, name):
         pk = secrets.token_hex(32)
         _, account = network.connect(self, private_key=pk)
         self.distribute_native(network, account, 1)
@@ -64,20 +65,21 @@ class PySysTest(GenericNetworkTest):
         ws_port = self.getNextAvailableTCPPort()
         extension = WalletExtension(self, http_port, ws_port, name=name)
         extension.run()
+        return pk, extension
 
+    def run_client(self, name, network, pk, wallet):
+        """Run a background load client. """
         stdout = os.path.join(self.output, '%s.out' % name)
         stderr = os.path.join(self.output, '%s.err' % name)
         script = os.path.join(self.input, 'client.py')
         args = []
-        args.extend(['--network_http', 'http://127.0.0.1:%d' % http_port])
+        args.extend(['--network_http', 'http://127.0.0.1:%d' % wallet.port])
         args.extend(['--chainId', '%s' % network.chain_id()])
         args.extend(['--pk', pk])
         args.extend(['--num_accounts', '%d' % self.ACCOUNTS])
         args.extend(['--num_iterations', '%d' % self.ITERATIONS])
         args.extend(['--client_name', name])
         self.run_python(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting client %s' % name, timeout=10)
-        self.wait(offset)
 
     def load_data(self, file):
         """Load a client transaction log into memory. """
