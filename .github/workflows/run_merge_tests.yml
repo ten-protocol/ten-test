@@ -65,8 +65,8 @@ jobs:
 
       - name: 'Build docker containers'
         run: |
-          cd ${{ github.workspace }}/obscuro-test/utils/testnet
-          docker compose -f docker-compose.local.yml build --parallel 
+          cd ${{ github.workspace }}/go-obscuro/testnet
+          ./testnet-local-build_images.sh  
 
       - name: 'Start up testnet'
         run: |
