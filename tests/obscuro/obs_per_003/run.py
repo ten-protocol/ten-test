@@ -29,7 +29,6 @@ class PySysTest(GenericNetworkTest):
 
         # run the clients
         setup = [self.setup_client(network, 'client_%d' % i) for i in range(self.CLIENTS)]
-        self.log.info(setup)
         for i in range(self.CLIENTS): self.run_client('client_%d' % i, network, setup[i][0], setup[i][1])
         for i in range(self.CLIENTS):
             self.waitForGrep(file='client_%d.out' % i, expr='Client client_%d completed' % i, timeout=900)
