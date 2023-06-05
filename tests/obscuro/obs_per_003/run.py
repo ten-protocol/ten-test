@@ -6,7 +6,6 @@ from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.utils.gnuplot import GnuplotHelper
 from obscuro.test.helpers.wallet_extension import WalletExtension
-from obscuro.test.utils.properties import Properties
 
 
 class PySysTest(GenericNetworkTest):
@@ -103,4 +102,4 @@ class PySysTest(GenericNetworkTest):
         branch = GnuplotHelper.buildInfo().branch
         date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
-                            branch, date, str(self.mode), str(2 * self.ITERATIONS), '96', '4')
+                            branch, date, str(self.mode), str(2 * self.ITERATIONS), '49', '4')

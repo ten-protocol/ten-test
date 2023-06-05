@@ -8,7 +8,8 @@ set key font 'Courier,10'
 set key right top
 set xtics font "Courier,11"
 set ytics font "Courier,11"
-set style fill solid 0.5
+set style line 1 lc rgb 'gray30' lt 1 lw 1.2
+set style fill solid 0.3 border rgb 'grey30'
 set label "{/Courier:Bold=13 Branch}: ".ARG3 left at screen 0.59, screen 0.925
 set label "{/Courier:Bold=13 Date}: ".ARG4 left at screen 0.59, screen 0.900
 set label "{/Courier:Bold=13 Environment}: ".ARG5 left at screen 0.59, screen 0.875
@@ -24,4 +25,4 @@ set yr [0:1.1*(STATS_max_y)]
 set title "{/Arial:Bold=13 Binned Transactions}"
 set xlabel "Time (seconds)" font "Courier,12"
 set ylabel "Transactions" font "Courier,12" offset 1,0
-plot "data.bin" using 1:2 with boxes title "Binned", "" using 1:(STATS_mean_y) with lines title "Average"
+plot "data.bin" using 1:2 with boxes ls 1 title "Binned", "" using 1:(STATS_mean_y) with lines title "Average"

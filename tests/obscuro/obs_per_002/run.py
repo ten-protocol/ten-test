@@ -6,7 +6,6 @@ from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.utils.gnuplot import GnuplotHelper
 from obscuro.test.helpers.wallet_extension import WalletExtension
-from obscuro.test.utils.properties import Properties
 
 
 class PySysTest(GenericNetworkTest):
@@ -14,6 +13,9 @@ class PySysTest(GenericNetworkTest):
     ACCOUNTS = 20
 
     def execute(self):
+        self.execute_run()
+
+    def execute_run(self):
         clients = ['one', 'two'] # need to manually change the gnuplot.in file for more clients
 
         # connect to the network
@@ -26,7 +28,10 @@ class PySysTest(GenericNetworkTest):
         error.deploy(network, account)
 
         # run the clients
-        for i in clients: self.run_client('client_%s' % i, network)
+        pk1, we1 = self.setup_client(network, 'client_one')
+        pk2, we2 = self.setup_client(network, 'client_two')
+        self.run_client('client_one', network, pk1, we1)
+        self.run_client('client_two', network, pk2, we2)
         for i in clients:
             self.waitForGrep(file='client_%s.out' % i, expr='Client client_%s completed' % i, timeout=900)
 
@@ -52,8 +57,7 @@ class PySysTest(GenericNetworkTest):
                             branch, date,
                             str(self.mode), str(len(clients)*self.ITERATIONS), str(duration), '%.3f' % average)
 
-    def run_client(self, name, network, offset=2.0):
-        """Run a background load client. """
+    def setup_client(self, network, name):
         pk = secrets.token_hex(32)
         _, account = network.connect(self, private_key=pk)
         self.distribute_native(network, account, 1)
@@ -62,20 +66,21 @@ class PySysTest(GenericNetworkTest):
         ws_port = self.getNextAvailableTCPPort()
         extension = WalletExtension(self, http_port, ws_port, name=name)
         extension.run()
+        return pk, extension
 
+    def run_client(self, name, network, pk, wallet):
+        """Run a background load client. """
         stdout = os.path.join(self.output, '%s.out' % name)
         stderr = os.path.join(self.output, '%s.err' % name)
         script = os.path.join(self.input, 'client.py')
         args = []
-        args.extend(['--network_http', 'http://127.0.0.1:%d' % http_port])
+        args.extend(['--network_http', 'http://127.0.0.1:%d' % wallet.port])
         args.extend(['--chainId', '%s' % network.chain_id()])
         args.extend(['--pk', pk])
         args.extend(['--num_accounts', '%d' % self.ACCOUNTS])
         args.extend(['--num_iterations', '%d' % self.ITERATIONS])
         args.extend(['--client_name', name])
         self.run_python(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting client %s' % name, timeout=10)
-        self.wait(offset)
 
     def load_data(self, file):
         """Load a client transaction log into memory. """
@@ -101,7 +106,7 @@ class PySysTest(GenericNetworkTest):
         branch = GnuplotHelper.buildInfo().branch
         date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
-                            branch, date, str(self.mode), str(2*self.ITERATIONS), '112', '89.286')
+                            branch, date, str(self.mode), str(2*self.ITERATIONS), '51', '196.078')
 
 
 
