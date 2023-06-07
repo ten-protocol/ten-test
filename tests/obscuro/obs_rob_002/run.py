@@ -60,7 +60,7 @@ class PySysTest(ObscuroNetworkTest):
         self.wait(2.0*float(self.block_time))
 
         self.log.info('Transact and check')
-        network.transact(self, web3, storage.contract.functions.store(1812), account, storage.GAS_LIMIT)
+        network.transact(self, web3, storage.contract.functions.store(1812), account, storage.GAS_LIMIT, timeout=300)
         self.wait(2.0*float(self.block_time))
         value = storage.contract.functions.retrieve().call()
         self.log.info('Call shows value %d', storage.contract.functions.retrieve().call())

@@ -69,7 +69,7 @@ jobs:
           ./testnet-local-build_images.sh  
           cd ${{ github.workspace }}/faucet/
           ./container_build.sh
-          
+
       - name: 'Start up testnet'
         run: |
           cd ${{ github.workspace }}/go-obscuro/
