@@ -79,7 +79,7 @@ class PySysTest(GenericNetworkTest):
         args.extend(['--client_name', name])
         self.run_python(script, stdout, stderr, args)
         self.wait(1.0)
-        
+
     def load_data(self, file):
         """Load a client transaction log into memory. """
         data = []
