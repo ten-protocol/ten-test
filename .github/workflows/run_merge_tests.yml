@@ -100,7 +100,7 @@ jobs:
       - name: 'Run tests'
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -m obscuro.local -r -e skip -e robustness -e performance -e persistence
+          /usr/local/bin/pysys.py run -m obscuro.local -r -e skip -e robustness -e persistence
 
       - name: 'Discord notification'
         if: success()
