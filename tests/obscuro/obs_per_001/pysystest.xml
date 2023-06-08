@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>TPS - bulk loading the mempool, single client in process to the test framework</title>
+        <title>TPS - funds transfer, single client in process to the test framework</title>
         <purpose><![CDATA[
 In this test, a bulk amount of native OBC transfer transactions are created and signed (1 transfer account, to 25
 recipient accounts). Each transaction has a monotonically increasing nonce. Once created all transactions are sent
