@@ -1,7 +1,7 @@
 import os, secrets, shutil
 from datetime import datetime
 from collections import OrderedDict
-from obscuro.test.contracts.error import Error
+from obscuro.test.contracts.storage import KeyStorage
 from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.utils.gnuplot import GnuplotHelper
@@ -10,7 +10,6 @@ from obscuro.test.helpers.wallet_extension import WalletExtension
 
 class PySysTest(GenericNetworkTest):
     ITERATIONS = 5000
-    ACCOUNTS = 20
     CLIENTS = 4
 
     def execute(self):
@@ -21,14 +20,13 @@ class PySysTest(GenericNetworkTest):
         network = NetworkFactory.get_network(self)
         web3, account = network.connect_account1(self)
 
-        # we need to perform a transaction on the account to ensure the nonce is greater than zero for the
-        # following bulk loading (a hack to avoid count=0 being considered a new deployment and clearing the db)
-        error = Error(self, web3)
-        error.deploy(network, account)
+        # deploy the contract
+        storage = KeyStorage(self, web3)
+        storage.deploy(network, account)
 
         # run the clients
         setup = [self.setup_client(network, 'client_%d' % i) for i in range(self.CLIENTS)]
-        for i in range(self.CLIENTS): self.run_client('client_%d' % i, network, setup[i][0], setup[i][1])
+        for i in range(self.CLIENTS): self.run_client('client_%d' % i, network, storage, setup[i][0], setup[i][1])
         for i in range(self.CLIENTS):
             self.waitForGrep(file='client_%d.out' % i, expr='Client client_%d completed' % i, timeout=900)
 
@@ -65,16 +63,17 @@ class PySysTest(GenericNetworkTest):
         extension.run()
         return pk, extension
 
-    def run_client(self, name, network, pk, wallet):
+    def run_client(self, name, network, contract, pk, wallet):
         """Run a background load client. """
         stdout = os.path.join(self.output, '%s.out' % name)
         stderr = os.path.join(self.output, '%s.err' % name)
-        script = os.path.join(self.input, 'client.py')
+        script = os.path.join(self.input, 'storage_client.py')
         args = []
         args.extend(['--network_http', 'http://127.0.0.1:%d' % wallet.port])
         args.extend(['--chainId', '%s' % network.chain_id()])
         args.extend(['--pk', pk])
-        args.extend(['--num_accounts', '%d' % self.ACCOUNTS])
+        args.extend(['--contract_address', '%s' % contract.address])
+        args.extend(['--contract_abi', '%s' % contract.abi_path])
         args.extend(['--num_iterations', '%d' % self.ITERATIONS])
         args.extend(['--client_name', name])
         self.run_python(script, stdout, stderr, args)
