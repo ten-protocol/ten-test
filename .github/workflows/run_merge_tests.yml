@@ -102,6 +102,12 @@ jobs:
           cd ${{ github.workspace }}/obscuro-test/tests
           /usr/local/bin/pysys.py run -m obscuro.local -r -e skip -e robustness -e persistence
 
+      - name: 'Collate pdf output'
+        if: always()
+        run: |
+          cd ${{ github.workspace }}/obscuro-test
+          pdftk $(find . -name \*.pdf | sort) cat output results_graphs.pdf || true
+
       - name: 'Discord notification'
         if: success()
         uses: sarisia/actions-status-discord@v1
@@ -137,6 +143,16 @@ jobs:
           name: container-artifact
           path: |
             ${{ github.workspace }}/go-obscuro/*.out
+          retention-days: 1
+
+      - name: 'Upload performance output'
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: performance-artifact
+          path: |
+            ${{ github.workspace }}/obscuro-test/results_graphs.pdf
+          if-no-files-found: ignore
           retention-days: 1
 
       - name: 'Docker clean containers and images after the test'
