@@ -49,6 +49,12 @@ jobs:
           cd ${{ github.workspace }}/obscuro-test/admin
           /usr/local/bin/pysys.py run persistence_reset
 
+      - name: 'Collate pdf output'
+        if: always()
+        run: |
+          cd ${{ github.workspace }}/obscuro-test
+          pdftk $(find . -name \*.pdf | sort) cat output results_graphs.pdf || true
+
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v3
         if: failure()
@@ -56,4 +62,14 @@ jobs:
           name: test-artifact
           path: |
             ${{ github.workspace }}/obscuro-test/**/Output
+          retention-days: 1
+          
+      - name: 'Upload performance output'
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: performance-artifact
+          path: |
+            ${{ github.workspace }}/obscuro-test/results_graphs.pdf
+          if-no-files-found: ignore
           retention-days: 1
