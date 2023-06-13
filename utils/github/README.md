@@ -17,10 +17,19 @@ Run the utility scripts to create the VM and connect;
                                  --name=LocalTestnetRunner
 ```
 
-# Set permissions on Docker
-To set permissions for docker on the VM use the below;
+# Install dependencies
+Once connected to the VM run `sudo ./install.sh` script to install all the required dependencies for running the tests. Once
+done ensure the correct version of solc is used, and set permissions for docker using the below;
 
 ```bash
+# install and use 0.8.18
+solc-select install 0.8.18
+solc-select use 0.8.18
+
+# put this in the .bashrc file to doubly ensure it is picked up by the runner
+export SOLC_VERSION=0.8.18
+
+# set permissions for docker
 sudo groupadd docker
 sudo usermod -aG docker azureuser
 newgrp docker
@@ -48,13 +57,3 @@ tmux new -s github-runner
 ctrl-b-d (to exit tmux)
 ```
 
-# Issues with solc
-Should you have issues running the latest installed version of `solc` to compiled and deploy contracts within the tests, 
-roll back to the 0.8.18 version using the below;
-
-```bash
-pip3 install solc-select
-solc-select install 0.8.18
-solc-select use 0.8.18
-export SOLC_VERSION=0.8.18
-```
