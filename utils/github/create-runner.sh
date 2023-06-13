@@ -55,12 +55,12 @@ az vm run-command invoke \
     && add-apt-repository --yes ppa:ethereum/ethereum \
     && apt update \
     && apt install -y ethereum \
-    && apt install -y solc \
     && apt install -y gnuplot \
     && apt install -y pdftk-java \
     && curl -sL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
     && npm install console-stamp --global \
+    && npm install solc@0.8.18 --global \
     && npm install web3@1.9.0 --global \
     && npm install ethers@5.7.2 --global \
     && npm install commander --global  \
