@@ -47,3 +47,14 @@ tmux new -s github-runner
 # exit the tmux session 
 ctrl-b-d (to exit tmux)
 ```
+
+# Issues with solc
+Should you have issues running the latest installed version of `solc` to compiled and deploy contracts within the tests, 
+roll back to the 0.8.18 version using the below;
+
+```bash
+pip3 install solc-select
+solc-select install 0.8.18
+solc-select use 0.8.18
+export SOLC_VERSION=0.8.18
+```
