@@ -23,7 +23,7 @@ on:
 
 jobs:
   test-run:
-    runs-on: [self-hosted, Linux, X64, SGX]
+    runs-on: self-hosted
     steps:
       - name: 'Check out obscuro-test'
         uses: actions/checkout@v3
