@@ -39,38 +39,16 @@ then
 fi
 
 # create the resource group
+echo "Creating resource group ..."
 az group create --name ${resource_group} --location uksouth
 
 # create the vm in the resources group
+echo "Creating virtual machine ..."
 az vm create --resource-group ${resource_group} --name ${name} --image Canonical:0001-com-ubuntu-server-focal:20_04-lts-gen2:20.04.202206220  --size ${size} --admin-username azureuser --ssh-key-values ${ssh_key}
+sleep 10
 
-# run installation steps
-az vm run-command invoke \
-  --resource-group ${resource_group} \
-  --name ${name} \
-  --command-id RunShellScript \
-  --scripts "apt update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata \
-    && apt-get install -y software-properties-common \
-    && add-apt-repository --yes ppa:ethereum/ethereum \
-    && apt update \
-    && apt install -y ethereum \
-    && apt install -y solc \
-    && apt install -y gnuplot \
-    && apt install -y pdftk-java
-    && curl -sL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs \
-    && npm install console-stamp --global \
-    && npm install web3 --global \
-    && npm install ethers@5.4 --global \
-    && npm install commander --global  \
-    && npm install -g ganache  \
-    && npm install -g ganache-cli \
-    && apt install -y vim \
-    && apt install -y python3-pip \
-    && python3 -m pip install web3 \
-    && python3 -m pip install pysys==1.6.1 \
-    && python3 -m pip install py-solc-x \
-    && snap install go --classic \
-    && curl -fsSL https://get.docker.com -o get-docker.sh \
-    && sh ./get-docker.sh"
+# connect using given SSH key
+echo "Transferring the install script ... "
+IP=`az vm show -d -g ${resource_group}  -n ${name} --query publicIps -o tsv`
+scp -i ${ssh_key} install.sh azureuser@$IP:~
+
