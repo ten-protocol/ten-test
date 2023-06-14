@@ -17,7 +17,7 @@ on:
 
 jobs:
   run-check:
-    runs-on: self-hosted
+    runs-on: [self-hosted, Linux, X64, SystemTestRunner2]
     steps:
       - name: Set the variables
         env:
