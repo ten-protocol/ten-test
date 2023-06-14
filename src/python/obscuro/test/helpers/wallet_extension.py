@@ -13,12 +13,18 @@ class WalletExtension:
         extension.run()
         return extension
 
-    def __init__(self, test, port=None, ws_port=None, name=None, verbose=True):
+    def __init__(self, test, port=None, ws_port=None, name=None, verbose=True,
+                 node_host=None, node_port_http=None, node_port_ws=None):
         """Create an instance of the wrapper. """
         self.test = test
         self.port = port if port is not None else test.getNextAvailableTCPPort()
         self.ws_port = ws_port if ws_port is not None else test.getNextAvailableTCPPort()
         self.verbose = verbose
+
+        props = Properties()
+        self.node_host = node_host if node_host is not None else props.node_host(test.env,test.NODE_HOST)
+        self.node_port_http = node_port_http if node_port_http is not None else props.node_port_http(self.test.env)
+        self.node_port_ws = node_port_ws if node_port_ws is not None else props.node_port_ws(self.test.env)
 
         if name is None: name = str(port)
         self.logPath = os.path.join(test.output, 'wallet_%s_logs.txt' % name)
@@ -37,9 +43,9 @@ class WalletExtension:
         props = Properties()
 
         arguments = []
-        arguments.extend(('--nodeHost', props.node_host(self.test.env,self.test.NODE_HOST)))
-        arguments.extend(('--nodePortHTTP', props.node_port_http(self.test.env)))
-        arguments.extend(('--nodePortWS', props.node_port_ws(self.test.env)))
+        arguments.extend(('--nodeHost', self.node_host))
+        arguments.extend(('--nodePortHTTP', self.node_port_http))
+        arguments.extend(('--nodePortWS', self.node_port_ws))
         arguments.extend(('--port', str(self.port)))
         arguments.extend(('--portWS', str(self.ws_port)))
         arguments.extend(('--logPath', self.logPath))
