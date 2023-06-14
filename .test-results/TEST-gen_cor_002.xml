@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuite name="gen_cor_002" tests="1" failures="0" skipped="0" time="6.62">
+	<testcase classname="PySysTest" name="gen_cor_002"/>
+</testsuite>
