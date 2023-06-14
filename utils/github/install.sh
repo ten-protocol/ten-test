@@ -1,5 +1,3 @@
-#!/bin/bash
-
 apt update
 DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
 apt-get install -y software-properties-common

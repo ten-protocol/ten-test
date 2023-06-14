@@ -2,18 +2,17 @@
 
 help_and_exit() {
     echo ""
-    echo "Usage: $(basename "${0}") ssh_key=<key> --resource_group=<group> --name=<name>"
+    echo "Usage: $(basename "${0}") ssh_key=<key> --name=<name>"
     echo " "
     echo "where: "
-    echo "  ssh_key             *Required* The name of the SSH private key to use"
-    echo "  resource_group      *Optional* The name of the resource group to use (default SystemTestHostedRunner)"
-    echo "  name                *Optional* The name of the VM instance (default LocalTestnetRunner) "
+    echo "  ssh_key             *Optional* The name of the SSH private key to use (default ~/.ssh/id_rsa)"
+    echo "  name                *Optional* The name of the VM instance (default SystemTestRunner) "
     echo ""
     exit 1
 }
 
-resource_group=SystemTestHostedRunner
-name=LocalTestnetRunner
+ssh_key=~/.ssh/id_rsa
+name=SystemTestRunner
 
 for argument in "$@"
 do
@@ -22,21 +21,15 @@ do
 
     case "$key" in
             --ssh_key)                  ssh_key=${value} ;;
-            --resource_group)           resource_group=${value} ;;
             --name)                     name=${value} ;;
             --help)                     help_and_exit ;;
             *)
     esac
 done
 
-if [[ -z ${ssh_key:-} ]];
-then
-    help_and_exit
-fi
-
 # get the IP
-IP=`az vm show -d -g ${resource_group}  -n ${name} --query publicIps -o tsv`
+IP=`az vm show -d -g SystemTestRunners  -n ${name} --query publicIps -o tsv`
 
 # connect using given SSH key
-echo Connecting to azureuser@$IP
-ssh -i ${ssh_key} azureuser@$IP
+echo Connecting to obscuro@$IP
+ssh -i ${ssh_key} obscuro@$IP

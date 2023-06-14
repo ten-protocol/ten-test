@@ -2,13 +2,16 @@
 
 help_and_exit() {
     echo ""
-    echo "Usage: $(basename "${0}") --resource_group=<group> >"
+    echo "Usage: $(basename "${0}") --name=<name>"
     echo " "
     echo "where: "
-    echo "  resource_group      *Required* The name of the resource group to use"
+    echo "  name                *Optional* The name of the VM instance (default SystemTestRunner) "
     echo ""
     exit 1
 }
+
+ssh_key=~/.ssh/id_rsa
+name=SystemTestRunner
 
 for argument in "$@"
 do
@@ -16,16 +19,11 @@ do
     value=$(echo $argument | cut -f2 -d=)
 
     case "$key" in
-            --resource_group)           resource_group=${value} ;;
+            --name)                     name=${value} ;;
             --help)                     help_and_exit ;;
             *)
     esac
 done
 
-if [[ -z ${resource_group:-} ]];
-then
-    help_and_exit
-fi
-
-# delete resources in the resource group
-az group delete --name ${resource_group}
+# delete the vm in the resources group
+az vm delete --resource-group SystemTestRunners --name ${name}
