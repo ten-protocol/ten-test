@@ -6,7 +6,7 @@ name: Run deploy tests
 run-name: Run deploy tests (${{ github.event.action }})
 on:
   repository_dispatch:
-    types: [ faucet_testnet_deployed, faucet_testnet_upgraded, faucet_dev_testnet_deployed, faucet_dev_testnet_upgraded ]
+    types: [ testnet_deployed, testnet_upgraded, dev_testnet_deployed, dev_testnet_upgraded ]
 
 jobs:
   test-run:
