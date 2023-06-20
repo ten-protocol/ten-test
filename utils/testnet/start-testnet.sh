@@ -11,5 +11,5 @@ docker compose -f docker-compose.local.yml build --parallel
 cd ${root_path}/go-obscuro/
 go run ./testnet/launcher/cmd
 
-cd ${root_path}/faucet/
-./container_run.sh
+cd ${root_path}/go-obscuro/tools/faucet
+./container_run.sh --image=testnetobscuronet.azurecr.io/obscuronet/faucet:latest
