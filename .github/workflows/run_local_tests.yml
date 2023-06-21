@@ -76,7 +76,7 @@ jobs:
 
       - name: 'Start up the faucet'
         run: |
-          cd ${{ github.workspace }}/faucet/
+          cd ${{ github.workspace }}/go-obscuro/tools/faucet
           ./container_run.sh --image=testnetobscuronet.azurecr.io/obscuronet/faucet:latest
 
       - name: 'Build required artifacts for running tests'
