@@ -12,7 +12,7 @@ help_and_exit() {
 }
 
 ssh_key=~/.ssh/id_rsa
-name=SystemTestRunner
+name=SystemTestRunners
 
 for argument in "$@"
 do
