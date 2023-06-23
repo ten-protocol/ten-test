@@ -121,7 +121,7 @@ class ObscuroRunnerPlugin():
 
     def run_wallet(self, runner):
         """Run a single wallet extension for use by the tests. """
-        runner.log.info('Starting ganache server to run tests through managed instance')
+        runner.log.info('Starting wallet extension to run tests')
         port = runner.getNextAvailableTCPPort()
         stdout = os.path.join(runner.output, 'wallet.out')
         stderr = os.path.join(runner.output, 'wallet.err')
