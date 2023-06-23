@@ -90,11 +90,11 @@ class ObscuroRunnerPlugin():
                 runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
 
         except AbortExecution as e:
-            runner.log.info('Error executing runner plugin startup actions', e)
+            runner.log.info('Error executing runner plugin startup actions %s', e)
             runner.log.info('See contents of the .runner directory in the project root for any process output')
             runner.log.info('Exiting ...')
             runner.cleanup()
-            sys.exit()
+            sys.exit(1)
 
         nonce_db.close()
         contracts_db.close()
