@@ -45,12 +45,6 @@ jobs:
         with:
           path: ./obscuro-test
 
-      - name: 'Check out faucet code'
-        uses: actions/checkout@v3
-        with:
-          repository: obscuronet/faucet
-          path: ./faucet
-
       - name: 'Check out go-obscuro code'
         uses: actions/checkout@v3
         with:

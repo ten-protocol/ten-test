@@ -12,10 +12,6 @@ on:
         description: 'Branch of go-obscuro to run against'
         required: true
         default: 'main'
-      faucet_branch:
-        description: 'Branch of the faucet to run against'
-        required: true
-        default: 'main'
       arguments:
         description: 'Arguments to the pysys run'
         required: true
@@ -29,13 +25,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           path: ./obscuro-test
-
-      - name: 'Check out faucet code'
-        uses: actions/checkout@v3
-        with:
-          repository: obscuronet/faucet
-          path: ./faucet
-          ref: ${{ github.event.inputs.faucet_branch }}
 
       - name: 'Check out go-obscuro code on schedule trigger'
         if: ${{ github.event_name == 'schedule' }}
