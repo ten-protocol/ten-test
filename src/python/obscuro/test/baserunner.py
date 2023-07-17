@@ -23,8 +23,8 @@ class ObscuroRunnerPlugin():
     much as possible. This is because most of the framework is written to be test centric.
 
     For the new Obscuro Gateway the process of joining and registering keys is as below;
-      Step 1: Call https://<host>/v1/join with the response being the user id
-      Step 2: The Connection URL becomes https://<host>/v1?u=$UserId
+      Step 1: Call https://<host>/join with the response being the user id
+      Step 2: The Connection URL becomes https://<host>/authenticate/?u=$UserId
       Step 3: Register keys at https://<host>/v1?u=$UserId&action=register
     """
 
@@ -64,7 +64,7 @@ class ObscuroRunnerPlugin():
         try:
             if self.is_obscuro():
                 hprocess, port, user_id = self.run_wallet(runner)
-                web3, account = self.connect(Properties().fundacntpk(), Obscuro.HOST, port, user_id)
+                web3, account = self.connect(runner, Properties().fundacntpk(), Obscuro.HOST, port, user_id)
                 tx_count = web3.eth.get_transaction_count(account.address)
                 balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
 
@@ -80,7 +80,7 @@ class ObscuroRunnerPlugin():
                 runner.log.info('')
                 runner.log.info('Accounts with non-zero funds;')
                 for fn in Properties().accounts():
-                    web3, account = self.connect(fn(), Obscuro.HOST, port, user_id)
+                    web3, account = self.connect(runner, fn(), Obscuro.HOST, port, user_id)
                     self.balances[fn.__name__] = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
                     if self.balances[fn.__name__] > 0:
                         runner.log.info("  Funds for %s: %.18f OBX", fn.__name__, self.balances[fn.__name__],
@@ -147,7 +147,7 @@ class ObscuroRunnerPlugin():
         runner.waitForSignal(stdout, expr='Obscuro Gatway started', timeout=30)
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
-        response = requests.get('%s:%d/v1/join/' % (Obscuro.HOST, port),  headers=headers)
+        response = requests.get('%s:%d/join/' % (Obscuro.HOST, port),  headers=headers)
         user_id = response.text
         runner.log.info('Registered user id = %s', user_id)
 
@@ -171,7 +171,7 @@ class ObscuroRunnerPlugin():
         try:
             delta = 0
             for fn in Properties().accounts():
-                web3, account = self.connect(fn(), Obscuro.HOST, port, user_id)
+                web3, account = self.connect(runner, fn(), Obscuro.HOST, port, user_id)
                 balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
                 if fn.__name__ in self.balances:
                     delta = delta + (self.balances[fn.__name__] - balance)
@@ -190,17 +190,19 @@ class ObscuroRunnerPlugin():
         hprocess.stop()
 
     @staticmethod
-    def connect(private_key, host, port, user_id):
-        url = '%s:%d/v1?u=%s' % (host, port, user_id)
+    def connect(runner, private_key, host, port, user_id):
+        url = '%s:%d/?u=%s' % (host, port, user_id)
         web3 = Web3(Web3.HTTPProvider(url))
         account = web3.eth.account.privateKeyToAccount(private_key)
+        runner.log.info('Connecting account %s', account.address)
 
         text_to_sign = "Register " + user_id + " for " + account.address
         signed_msg = web3.eth.account.sign_message(encode_defunct(text=text_to_sign), private_key=private_key)
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         data = {"signature": signed_msg.signature.hex(), "message": text_to_sign}
-        requests.post('%s:%d/v1?u=%s&action=register' % (host, port, user_id), data=json.dumps(data), headers=headers)
+        response = requests.post('%s:%d/authenticate/?u=%s' % (host, port, user_id), data=json.dumps(data), headers=headers)
+        runner.log.info('Registration response %s', response.text)
 
         return web3, account
 
