@@ -21,6 +21,11 @@ class ObscuroRunnerPlugin():
     against Ganache, a local Ganache will be started. All processes started by the runner are automatically stopped
     when the tests are complete. Note the runner should remain independent to the BaseTest, i.e. is stand alone as
     much as possible. This is because most of the framework is written to be test centric.
+
+    For the new Obscuro Gateway the process of joining and registering keys is as below;
+      Step 1: Call https://<host>/v1/join with the response being the user id
+      Step 2: The Connection URL becomes https://<host>/v1?u=$UserId
+      Step 3: Register keys at https://<host>/v1?u=$UserId&action=register
     """
 
     def __init__(self):
@@ -58,8 +63,8 @@ class ObscuroRunnerPlugin():
 
         try:
             if self.is_obscuro():
-                hprocess, port = self.run_wallet(runner)
-                web3, account = self.connect(Properties().fundacntpk(), Obscuro.HOST, port)
+                hprocess, port, user_id = self.run_wallet(runner)
+                web3, account = self.connect(Properties().fundacntpk(), Obscuro.HOST, port, user_id)
                 tx_count = web3.eth.get_transaction_count(account.address)
                 balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
 
@@ -75,14 +80,14 @@ class ObscuroRunnerPlugin():
                 runner.log.info('')
                 runner.log.info('Accounts with non-zero funds;')
                 for fn in Properties().accounts():
-                    web3, account = self.connect(fn(), Obscuro.HOST, port)
+                    web3, account = self.connect(fn(), Obscuro.HOST, port, user_id)
                     self.balances[fn.__name__] = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
                     if self.balances[fn.__name__] > 0:
                         runner.log.info("  Funds for %s: %.18f OBX", fn.__name__, self.balances[fn.__name__],
                                         extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
                 runner.log.info('')
 
-                runner.addCleanupFunction(lambda: self.__print_cost(runner, hprocess, port))
+                runner.addCleanupFunction(lambda: self.__print_cost(runner, hprocess, port, user_id))
 
             elif self.env == 'ganache':
                 nonce_db.delete_environment('ganache')
@@ -139,8 +144,14 @@ class ObscuroRunnerPlugin():
         hprocess = runner.startProcess(command=os.path.join(PROJECT.root, 'artifacts', 'wallet_extension', 'wallet_extension'),
                                        displayName='wallet_extension', workingDir=runner.output, environs=os.environ,
                                        quiet=True, arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
-        runner.waitForSignal(stdout, expr='Wallet extension started', timeout=30)
-        return hprocess, port
+        runner.waitForSignal(stdout, expr='Obscuro Gatway started', timeout=30)
+
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
+        response = requests.get('%s:%d/v1/join/' % (Obscuro.HOST, port),  headers=headers)
+        user_id = response.text
+        runner.log.info('Registered user id = %s', user_id)
+
+        return hprocess, port, user_id
 
     def is_obscuro(self):
         """Return true if we are running against an Obscuro network. """
@@ -155,12 +166,12 @@ class ObscuroRunnerPlugin():
         data = {"address": account.address}
         requests.post(Properties().faucet_url(self.env), data=json.dumps(data), headers=headers)
 
-    def __print_cost(self, runner, hprocess, port):
+    def __print_cost(self, runner, hprocess, port, user_id):
         """Print out balances. """
         try:
             delta = 0
             for fn in Properties().accounts():
-                web3, account = self.connect(fn(), Obscuro.HOST, port)
+                web3, account = self.connect(fn(), Obscuro.HOST, port, user_id)
                 balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
                 if fn.__name__ in self.balances:
                     delta = delta + (self.balances[fn.__name__] - balance)
@@ -179,19 +190,17 @@ class ObscuroRunnerPlugin():
         hprocess.stop()
 
     @staticmethod
-    def connect(private_key, host, port):
-        url = '%s:%s' % (host, port)
+    def connect(private_key, host, port, user_id):
+        url = '%s:%d/v1?u=%s' % (host, port, user_id)
         web3 = Web3(Web3.HTTPProvider(url))
         account = web3.eth.account.privateKeyToAccount(private_key)
 
+        text_to_sign = "Register " + user_id + " for " + account.address
+        signed_msg = web3.eth.account.sign_message(encode_defunct(text=text_to_sign), private_key=private_key)
+
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
-
-        data = {"address": account.address}
-        response = requests.post('%s:%d/generateviewingkey/' % (host, port), data=json.dumps(data), headers=headers)
-        signed_msg = web3.eth.account.sign_message(encode_defunct(text='vk' + response.text), private_key=private_key)
-
-        data = {"signature": signed_msg.signature.hex(), "address": account.address}
-        requests.post('%s:%d/submitviewingkey/' % (host, port), data=json.dumps(data), headers=headers)
+        data = {"signature": signed_msg.signature.hex(), "message": text_to_sign}
+        requests.post('%s:%d/v1?u=%s&action=register' % (host, port, user_id), data=json.dumps(data), headers=headers)
 
         return web3, account
 
