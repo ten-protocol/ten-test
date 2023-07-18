@@ -1,11 +1,11 @@
 # Run a set of E2E tests on a previously deployed obscuro network (dev-testnet or testnet). The workflow is triggered
-# either manually via a workflow dispatch, or on a schedule to run a set of weekend soak tests (dev-testnet only)
+# either manually via a workflow dispatch, or on a schedule (dev-testnet only)
 #
 name: Run remote tests
 run-name: Run remote tests (${{ github.event_name }})
 on:
   schedule:
-    - cron: '10 */3 * * *'
+    - cron: '10 */6 * * *'
   workflow_dispatch:
     inputs:
       environment:
