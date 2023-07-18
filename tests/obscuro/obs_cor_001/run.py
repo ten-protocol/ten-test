@@ -17,6 +17,7 @@ class PySysTest(ObscuroNetworkTest):
         extension = WalletExtension.start(self, name='user')
         network_user.PORT = extension.port
         network_user.WS_PORT = extension.ws_port
+        network_user.USERID = extension.user_id
         web3_user, account_user = network_user.connect_account2(self)
 
         # deploy the contract and send eth to it

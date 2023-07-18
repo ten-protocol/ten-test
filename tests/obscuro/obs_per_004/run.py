@@ -69,7 +69,7 @@ class PySysTest(GenericNetworkTest):
         stderr = os.path.join(self.output, '%s.err' % name)
         script = os.path.join(self.input, 'storage_client.py')
         args = []
-        args.extend(['--network_http', 'http://127.0.0.1:%d' % wallet.port])
+        args.extend(['--network_http', wallet.connection_url()])
         args.extend(['--chainId', '%s' % network.chain_id()])
         args.extend(['--pk', pk])
         args.extend(['--contract_address', '%s' % contract.address])
