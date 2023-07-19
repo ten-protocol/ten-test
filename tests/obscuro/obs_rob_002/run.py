@@ -6,7 +6,6 @@ from obscuro.test.contracts.storage import Storage
 from obscuro.test.contracts.error import Error
 from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.helpers.wallet_extension import WalletExtension
-from obscuro.test.utils.properties import Properties
 
 
 class PySysTest(ObscuroNetworkTest):
@@ -98,7 +97,7 @@ class PySysTest(ObscuroNetworkTest):
         stderr = os.path.join(self.output, '%s_%d.err' % (name, num))
         script = os.path.join(self.input, '%s.py' % name)
         args = []
-        args.extend(['--network_http', '%s' % wallet.connection_url(web_socket=False)])
+        args.extend(['--network_http', '%s' % wallet.connection_url()])
         args.extend(['--address', '%s' % address])
         args.extend(['--contract_abi', '%s' % abi_path])
         args.extend(['--pk_to_register', '%s' % pk])
