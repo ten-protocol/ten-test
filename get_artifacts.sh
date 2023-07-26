@@ -48,3 +48,6 @@ npx hardhat generate-abi-bindings --output-dir generated
 
 cd $script_path
 cp -r $src_path/contracts/exported/src artifacts/contracts
+
+rm -rf $src_path/contracts/exported/
+rm -rf $src_path/contracts/generated/ConstantSupplyERC20/
