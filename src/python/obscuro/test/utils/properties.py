@@ -104,6 +104,9 @@ class Properties:
     def gg_appdev_pk(self): return self.get('env.all', 'GGAppDevPK')
     def gg_endusr_pk(self): return self.get('env.all', 'GGEndUsrPK')
 
+    # accounts that can be used by additional nodes joining the network
+    def extra_node_1pk(self): return self.get('env.all', 'ExtraNode1PK')
+
     # obscuro specific properties
     def node_host(self, key, node_host):
         if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'NodeHostDockerNetwork')
