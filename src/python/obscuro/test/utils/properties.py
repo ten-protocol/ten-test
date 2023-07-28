@@ -50,6 +50,18 @@ class Properties:
     def node_path(self):
         return self.get('binaries.%s' % PLATFORM, 'node_path')
 
+    def go_binary(self):
+        path = self.get('binaries.%s' % PLATFORM, 'go')
+        if not os.path.exists(path):
+            raise FileNotFoundException('Go binary not found at default location %s' % path)
+        return path
+
+    def docker_binary(self):
+        path = self.get('binaries.%s' % PLATFORM, 'docker')
+        if not os.path.exists(path):
+            raise FileNotFoundException('Docker binary not found at default location %s' % path)
+        return path
+
     # common to all environments
     def block_time_secs(self, key):
         return self.get('env.'+key, 'BlockTimeSecs')
@@ -108,6 +120,11 @@ class Properties:
         if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'FaucetURLDockerNetwork')
         return self.get('env.'+key, 'FaucetURL')
 
+    def sequencer_id(self, key):
+        return self.get('env.'+key, 'SequencerID')
+
+
+
     def l1_funded_account_pk(self, key):
         return self.get('env.'+key, 'L1FundedAccountPK')
 
@@ -122,6 +139,9 @@ class Properties:
 
     def l1_cross_chain_messenger_address(self, key):
         return self.get('env.'+key, 'L1CrossChainMessengerAddress')
+
+    def l1_start_block_hash(self, key):
+        return self.get('env.'+key, 'L1StartBlockHash')
 
     def l2_bridge_address(self, key):
         return self.get('env.'+key, 'L2BridgeAddress')
