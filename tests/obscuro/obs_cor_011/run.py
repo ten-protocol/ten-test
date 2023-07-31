@@ -9,8 +9,8 @@ class PySysTest(ObscuroNetworkTest):
         self.log.info('Last transactions are %s', txs)
         if len(txs) >= 1:
             batch = self.get_batch_for_transaction(txs[0])
-            parent_hash = batch['Header']['ParentHash']
-            number = batch['Header']['Number']
+            parent_hash = batch['Header']['parentHash']
+            number = batch['Header']['number']
             num_tx = len(batch['TxHashes'])
             self.log.info('Parent hash: %s, Number: %d, Ntx: %d', parent_hash, number, num_tx)
 
@@ -23,8 +23,8 @@ class PySysTest(ObscuroNetworkTest):
                     self.log.info(batch)
                     break
                 else:
-                    parent_hash = batch['Header']['ParentHash']
-                    number = batch['Header']['Number']
+                    parent_hash = batch['Header']['parentHash']
+                    number = batch['Header']['number']
                     num_tx = len(batch['TxHashes'])
                     self.log.info('Parent hash: %s, Number: %d, Ntx: %d', parent_hash, number, num_tx)
 
