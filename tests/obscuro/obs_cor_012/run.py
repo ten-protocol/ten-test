@@ -30,7 +30,7 @@ class PySysTest(ObscuroNetworkTest):
 
         batch = self.get_batch_for_transaction(tx_hash)
         if batch is not None:
-            batch_number = batch['Header']['Number']
+            batch_number = batch['Header']['number']
             batch_txns = batch['TxHashes']
 
             self.log.info('batch details;')
