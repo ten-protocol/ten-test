@@ -2,17 +2,16 @@
 <pysystest type="auto">
 
     <description>
-        <title>Give out L1 funds to accounts that might want it</title>
+        <title>Node - start a new node to join the network and transact through it</title>
         <purpose><![CDATA[
-This is really used to allocate funds on the L1 to any accounts that might need it as part of local testnet
-testing. At the moment this is for any nodes that are started up by the framework to test their joining.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group></group>
+            <group>infra</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.local</mode>

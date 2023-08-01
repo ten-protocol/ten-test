@@ -104,9 +104,6 @@ class Properties:
     def gg_appdev_pk(self): return self.get('env.all', 'GGAppDevPK')
     def gg_endusr_pk(self): return self.get('env.all', 'GGEndUsrPK')
 
-    # accounts that can be used by additional nodes joining the network
-    def extra_node_1pk(self): return self.get('env.all', 'ExtraNode1PK')
-
     # obscuro specific properties
     def node_host(self, key, node_host):
         if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'NodeHostDockerNetwork')
@@ -126,8 +123,6 @@ class Properties:
     def sequencer_id(self, key):
         return self.get('env.'+key, 'SequencerID')
 
-
-
     def l1_funded_account_pk(self, key):
         return self.get('env.'+key, 'L1FundedAccountPK')
 
@@ -142,9 +137,6 @@ class Properties:
 
     def l1_cross_chain_messenger_address(self, key):
         return self.get('env.'+key, 'L1CrossChainMessengerAddress')
-
-    def l1_start_block_hash(self, key):
-        return self.get('env.'+key, 'L1StartBlockHash')
 
     def l2_bridge_address(self, key):
         return self.get('env.'+key, 'L2BridgeAddress')
