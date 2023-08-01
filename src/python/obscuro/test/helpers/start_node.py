@@ -61,7 +61,7 @@ class LocalValidatorNode:
         stderr = os.path.join(self.test.output, 'start_node.err')
         dir = os.path.join(os.path.dirname(PROJECT.root), 'go-obscuro')
 
-        hprocess = self.test.startProcess(command=self.binary, displayName='wallet_extension',
+        hprocess = self.test.startProcess(command=self.binary, displayName='go',
                                           workingDir=dir, environs=os.environ, quiet=True,
                                           arguments=arguments, stdout=stdout, stderr=stderr, state=FOREGROUND)
         return hprocess
