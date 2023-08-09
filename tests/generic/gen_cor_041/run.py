@@ -11,7 +11,7 @@ class PySysTest(GenericNetworkTest):
         network = NetworkFactory.get_network(self)
         web3, account = network.connect_account1(self)
 
-        value = random.randint(0, 100)
+        value = random.randint(0, 99)
         guesser = GuesserConstructor(self, web3, value)
         guesser.deploy(network, account)
 
