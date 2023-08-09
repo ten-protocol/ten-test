@@ -65,6 +65,8 @@ class ObscuroRunnerPlugin():
             if self.is_obscuro():
                 hprocess, port, user_id = self.run_wallet(runner)
                 web3, account = self.connect(runner, Properties().fundacntpk(), Obscuro.HOST, port, user_id)
+
+                runner.log.info('Getting transaction count for %s', account.address)
                 tx_count = web3.eth.get_transaction_count(account.address)
                 balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
 
@@ -144,7 +146,7 @@ class ObscuroRunnerPlugin():
         hprocess = runner.startProcess(command=os.path.join(PROJECT.root, 'artifacts', 'wallet_extension', 'wallet_extension'),
                                        displayName='wallet_extension', workingDir=runner.output, environs=os.environ,
                                        quiet=True, arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
-        runner.waitForSignal(stdout, expr='Obscuro Gatway started', timeout=30)
+        runner.waitForSignal(stdout, expr='Wallet extension started', timeout=30)
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         response = requests.get('%s:%d/join/' % (Obscuro.HOST, port),  headers=headers)
@@ -194,6 +196,7 @@ class ObscuroRunnerPlugin():
         url = '%s:%d/?u=%s' % (host, port, user_id)
         web3 = Web3(Web3.HTTPProvider(url))
         account = web3.eth.account.privateKeyToAccount(private_key)
+        runner.log.info('Using URL as %s', url)
         runner.log.info('Connecting account %s', account.address)
 
         text_to_sign = "Register " + user_id + " for " + account.address
