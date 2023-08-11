@@ -94,7 +94,7 @@ class GenericNetworkTest(BaseTest):
         """A native transfer of funds from the single funder account to another. """
         web3_pk, account_pk = network.connect(self, Properties().fundacntpk(), check_funds=False)
         balance = web3_pk.eth.get_balance(account.address)
-        self.log.info("Transfer from funds account %s, balance %.18f OBX, amount", account_pk.address, balance, amount)
+        self.log.info("Transfer from funds account %s, balance %.18f OBX, amount %d", account_pk.address, balance, amount)
         tx = {
             'to': account.address,
             'value': web3_pk.toWei(amount, 'ether'),
