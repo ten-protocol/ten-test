@@ -12,7 +12,6 @@ Deploys ERC20 contracts on the L1, whitelists them and sends tokens across the b
     <classification>
         <groups inherit="true">
             <group>bridge</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.local</mode>
