@@ -67,7 +67,7 @@ class PySysTest(ObscuroNetworkTest):
 
     def funds_client(self, network, pk, recipients, num):
         wallet = WalletExtension.start(self, name='funds_%d' % num)
-        self.distribute_native(network, Web3().eth.account.privateKeyToAccount(pk), 1)
+        self.distribute_native(network, Web3().eth.account.privateKeyToAccount(pk), 0.1)
 
         stdout = os.path.join(self.output, 'funds_%d.out' % num)
         stderr = os.path.join(self.output, 'funds_%d.err' % num)

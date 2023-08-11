@@ -68,8 +68,9 @@ class ObscuroRunnerPlugin():
                     nonce_db.delete_environment(self.env)
                     contracts_db.delete_environment(self.env)
 
-                if balance < 100:
+                if balance < 200:
                     runner.log.info('Funded key balance below threshold ... making faucet call')
+                    self.fund_obx_from_faucet_server(runner)
                     self.fund_obx_from_faucet_server(runner)
 
                 runner.log.info('')

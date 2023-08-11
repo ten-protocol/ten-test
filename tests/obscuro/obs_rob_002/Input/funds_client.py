@@ -54,5 +54,5 @@ if __name__ == "__main__":
     while True:
         balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
         logging.info('Account balance is %.9f', balance)
-        transfer_value(web3, account, 0.001, random.choice(recipients))
+        transfer_value(web3, account, 0.0001, random.choice(recipients))
 
