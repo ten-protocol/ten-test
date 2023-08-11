@@ -92,9 +92,7 @@ class GenericNetworkTest(BaseTest):
 
     def distribute_native(self, network, account, amount):
         """A native transfer of funds from the single funder account to another. """
-        web3_pk, account_pk = network.connect(self, Properties().fundacntpk(), check_funds=False)
-        balance = web3_pk.eth.get_balance(account.address)
-        self.log.info("Transfer from funds account %s, balance %.18f OBX, amount %d", account_pk.address, balance, amount)
+        web3_pk, account_pk = network.connect(self, Properties().fundacntpk(), check_funds=True)
         tx = {
             'to': account.address,
             'value': web3_pk.toWei(amount, 'ether'),
