@@ -33,3 +33,13 @@ newgrp docker
 # Configure the runner
 Go to the [runners](https://github.com/obscuronet/obscuro-test/settings/actions/runners) section of the `obscuro-test`
 repo and click on new runner. Follow the commands there to install and run the new runner. 
+
+# Known issues
+For an unknown reason on Azure Ubuntu VMs the `/var/lib/docker/overlay2` folder can grow even through all containers, 
+images, volumes etc have been removed. Should the VM run out of diskspace, perform the following to manually delete;
+
+```bash
+sudo systemctl stop docker
+sudo rm -rf /var/lib/docker/
+sudo systemctl start docker
+```
