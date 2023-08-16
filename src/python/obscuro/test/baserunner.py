@@ -199,14 +199,15 @@ class ObscuroRunnerPlugin():
         runner.log.info('Using URL as %s', url)
         runner.log.info('Connecting account %s', account.address)
 
-        text_to_sign = "Register " + user_id + " for " + account.address
-        signed_msg = web3.eth.account.sign_message(encode_defunct(text=text_to_sign), private_key=private_key)
+        text_to_sign = "Register " + user_id + " for " + str(account.address).lower()
+        eth_message = f"{text_to_sign}"
+        encoded_message = encode_defunct(text=eth_message)
+        signature = account.sign_message(encoded_message)
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
-        data = {"signature": signed_msg.signature.hex(), "message": text_to_sign}
-        response = requests.post('%s:%d/authenticate/?u=%s' % (host, port, user_id), data=json.dumps(data), headers=headers)
+        data = {"signature": signature['signature'].hex(), "message": text_to_sign}
+        response = requests.post('http://%s:%d/authenticate/?u=%s' % (host, port, user_id),
+                                 data=json.dumps(data), headers=headers)
         runner.log.info('Registration response %s', response.text)
-
         return web3, account
-
 
