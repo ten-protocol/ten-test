@@ -63,20 +63,6 @@ class PySysTest(ObscuroNetworkTest):
         self.log.info('Call shows value %d', storage.contract.functions.retrieve().call())
         self.assertTrue(value == 1812)
 
-    def funds_client_2(self, pk, recipients, num):
-        client_conn = self.get_network_connection(name='funds_%d' % num)
-        self.distribute_native(Web3().eth.account.privateKeyToAccount(pk), 0.1)
-
-        stdout = os.path.join(self.output, 'funds_%d.out' % num)
-        stderr = os.path.join(self.output, 'funds_%d.err' % num)
-        script = os.path.join(self.input, 'funds_client.py')
-        args = []
-        args.extend(['--network_http', '%s' % client_conn.connection_url()])
-        args.extend(['--pk_to_register', '%s' % pk])
-        args.extend(['--recipients', ','.join([str(i) for i in recipients])])
-        self.clients.append(self.run_python(script, stdout, stderr, args))
-        self.waitForGrep(file=stdout, expr='Client running', timeout=10)
-
     def guesser_client(self, address, abi_path, num, connection):
         self._client(address, abi_path, 'guesser_client', num, connection)
 

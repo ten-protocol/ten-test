@@ -46,7 +46,7 @@ class GenericNetworkTest(BaseTest):
         self.addCleanupFunction(self.close_db)
 
         # every test has a connection for the funded account
-        self.network_funded = self.get_network_connection('funded')
+        self.network_funding = self.get_network_connection(name='funding_connection')
 
     def close_db(self):
         """Close the connection to the nonce database on completion. """
@@ -88,14 +88,14 @@ class GenericNetworkTest(BaseTest):
 
     def distribute_native(self, account, amount):
         """A native transfer of funds from the funded account to another. """
-        web3_pk, account_pk = self.network_funded.connect(self, Properties().fundacntpk(), check_funds=True)
+        web3_pk, account_pk = self.network_funding.connect(self, Properties().fundacntpk(), check_funds=True)
         tx = {
             'to': account.address,
             'value': web3_pk.toWei(amount, 'ether'),
             'gas': 4*21000,
             'gasPrice': web3_pk.eth.gas_price
         }
-        self.network_funded.tx(self, web3_pk, tx, account_pk)
+        self.network_funding.tx(self, web3_pk, tx, account_pk)
 
     def fund_native(self, network, account, amount, pk, persist_nonce=True):
         """A native transfer of funds from one address to another. """
@@ -137,7 +137,7 @@ class GenericNetworkTest(BaseTest):
             token = web3.eth.contract(address=token_address, abi=json.load(f))
         return token.functions.balanceOf(account.address).call()
 
-    def get_network_connection(self, name='primary'):
+    def get_network_connection(self, name='primary_connection'):
         """Get the network connection."""
         if self.is_obscuro():
             network = Obscuro()

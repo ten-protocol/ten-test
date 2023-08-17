@@ -4,7 +4,6 @@ from obscuro.test.contracts.erc20 import ERC20Token
 from obscuro.test.contracts.bridge import WrappedERC20
 from obscuro.test.contracts.bridge import ObscuroBridge, EthereumBridge
 from obscuro.test.contracts.bridge import L1MessageBus, L2MessageBus, L1CrossChainMessenger, L2CrossChainMessenger
-from obscuro.test.helpers.wallet_extension import WalletExtension
 from obscuro.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
@@ -130,10 +129,7 @@ class L2BridgeDetails(BridgeDetails):
 
     def __init__(self, test, pk, name):
         """Instantiate an instance. """
-        network = test.get_network_connection()
-        network.PORT = test.getNextAvailableTCPPort()
-        network.WS_PORT = test.getNextAvailableTCPPort()
-        WalletExtension.start(test, network.PORT, network.WS_PORT, name=name)
+        network = test.get_network_connection(name=name)
         web3, account = network.connect(test, pk)
         bridge = EthereumBridge(test, web3)
         bus = L2MessageBus(test, web3)
