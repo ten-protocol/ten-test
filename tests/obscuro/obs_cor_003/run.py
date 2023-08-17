@@ -12,7 +12,7 @@ class PySysTest(ObscuroNetworkTest):
         network = NetworkFactory.get_network(self)
 
         # connect via the primary wallet extension used by the test in the order of
-        # account1, account2, account3, account4
+        # account4, account1, account2, account3
         web3_4, account4 = network.connect_account4(self)
         web3_1, account1 = network.connect_account1(self)
         web3_2, account2 = network.connect_account2(self)
@@ -27,6 +27,7 @@ class PySysTest(ObscuroNetworkTest):
                                             stdout='subscriber.out',
                                             stderr='subscriber.err')
         subscriber.run()
+        self.wait(float(self.block_time)*1.1)
 
         # perform some transactions
         self.log.info('Performing transactions ... ')

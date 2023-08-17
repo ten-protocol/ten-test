@@ -24,6 +24,7 @@ class PySysTest(ObscuroNetworkTest):
         self.subscribe(network, Properties().account1pk(), 'account1', contract, new_wallet=True)
         self.subscribe(network, Properties().account2pk(), 'account2', contract, new_wallet=True)
         self.subscribe(network, Properties().account3pk(), 'account3', contract, new_wallet=True)
+        self.wait(float(self.block_time) * 1.1)
 
         # perform some transactions
         self.log.info('Performing transactions ... ')
