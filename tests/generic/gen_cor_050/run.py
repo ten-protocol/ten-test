@@ -1,14 +1,13 @@
 import re
 from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.contracts.error import Error
-from obscuro.test.networks.factory import NetworkFactory
 
 
 class PySysTest(GenericNetworkTest):
 
     def execute(self):
         # get the network and put a proxy in the comms
-        network = NetworkFactory.get_network(self)
+        network = self.get_network_connection()
         network.add_ws_proxy(self)
         web3, account = network.connect_account1(self, web_socket=True)
 

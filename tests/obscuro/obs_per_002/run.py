@@ -3,7 +3,6 @@ from datetime import datetime
 from collections import OrderedDict
 from obscuro.test.contracts.error import Error
 from obscuro.test.basetest import GenericNetworkTest
-from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.utils.gnuplot import GnuplotHelper
 from obscuro.test.helpers.wallet_extension import WalletExtension
 
@@ -19,7 +18,7 @@ class PySysTest(GenericNetworkTest):
         clients = ['one', 'two'] # need to manually change the gnuplot.in file for more clients
 
         # connect to the network
-        network = NetworkFactory.get_network(self)
+        network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
         # we need to perform a transaction on the account to ensure the nonce is greater than zero for the

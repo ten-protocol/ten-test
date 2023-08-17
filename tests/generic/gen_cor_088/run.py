@@ -2,7 +2,6 @@ import os
 from web3 import Web3
 from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.contracts.relevancy import Relevancy
-from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.helpers.ws_proxy import WebServerProxy
 from obscuro.test.utils.properties import Properties
 
@@ -11,7 +10,7 @@ class PySysTest(GenericNetworkTest):
 
     def execute(self):
         # connect to network
-        network = NetworkFactory.get_network(self)
+        network = self.get_network_connection()
         web3, account1 = network.connect_account1(self)
 
         account2 = Web3().eth.account.privateKeyToAccount(Properties().account2pk())

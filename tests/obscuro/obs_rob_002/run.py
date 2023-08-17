@@ -4,7 +4,6 @@ from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.contracts.guesser import Guesser
 from obscuro.test.contracts.storage import Storage
 from obscuro.test.contracts.error import Error
-from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.helpers.wallet_extension import WalletExtension
 
 
@@ -20,7 +19,7 @@ class PySysTest(ObscuroNetworkTest):
         self.clients = []
 
     def execute(self):
-        network = NetworkFactory.get_network(self)
+        network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
         # set up the wallets and deploy contracts

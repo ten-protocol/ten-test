@@ -1,13 +1,12 @@
 from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.contracts.erc20 import MintedERC20Token
-from obscuro.test.networks.factory import NetworkFactory
 
 
 class PySysTest(GenericNetworkTest):
 
     def execute(self):
         # deployment of contract
-        network = NetworkFactory.get_network(self)
+        network = self.get_network_connection()
         web3_3, account3 = network.connect_account3(self)
         web3_2, account2 = network.connect_account2(self)
         web3_1, account1 = network.connect_account1(self)

@@ -1,6 +1,5 @@
 import time
 from web3._utils.events import EventLogErrorFlags
-from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.contracts.erc20 import ERC20Token
 from obscuro.test.contracts.bridge import WrappedERC20
 from obscuro.test.contracts.bridge import ObscuroBridge, EthereumBridge
@@ -51,7 +50,7 @@ class L1BridgeDetails(BridgeDetails):
 
     def __init__(self, test, pk, name):
         """Instantiate an instance. """
-        network = NetworkFactory.get_l1_network(test)
+        network = test.get_l1_network_connection()
         web3, account = network.connect(test, pk)
         bridge = ObscuroBridge(test, web3)
         bus = L1MessageBus(test, web3)
@@ -131,7 +130,7 @@ class L2BridgeDetails(BridgeDetails):
 
     def __init__(self, test, pk, name):
         """Instantiate an instance. """
-        network = NetworkFactory.get_network(test)
+        network = test.get_network_connection()
         network.PORT = test.getNextAvailableTCPPort()
         network.WS_PORT = test.getNextAvailableTCPPort()
         WalletExtension.start(test, network.PORT, network.WS_PORT, name=name)

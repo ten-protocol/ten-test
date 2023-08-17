@@ -1,12 +1,11 @@
 from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.contracts.storage import Storage
-from obscuro.test.networks.factory import NetworkFactory
 
 
 class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
-        network = NetworkFactory.get_network(self)
+        network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
         storage = Storage(self, web3, 0)

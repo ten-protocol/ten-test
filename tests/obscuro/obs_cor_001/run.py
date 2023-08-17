@@ -1,22 +1,16 @@
 from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.contracts.payable import ReceiveEther
-from obscuro.test.networks.obscuro import Obscuro
-from obscuro.test.helpers.wallet_extension import WalletExtension
 
 
 class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
         # the deployer goes through the test wallet extension
-        network_deploy = NetworkFactory.get_network(self)
+        network_deploy = self.get_network_connection()
         web3_deploy, account_deploy = network_deploy.connect_account1(self)
 
         # the user goes through their own instance of the wallet extension
-        network_user = Obscuro()
-        extension = WalletExtension.start(self, name='user')
-        network_user.PORT = extension.port
-        network_user.WS_PORT = extension.ws_port
+        network_user = self.get_network_connection(name='user')
         web3_user, account_user = network_user.connect_account2(self)
 
         # deploy the contract and send eth to it

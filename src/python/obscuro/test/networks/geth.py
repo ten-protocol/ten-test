@@ -4,7 +4,7 @@ from obscuro.test.networks.default import Default
 
 
 class Geth(Default):
-    """A Geth node giving access to the underlying network."""
+    """A Geth connection giving access to the underlying network."""
 
     def chain_id(self): return 1337
 

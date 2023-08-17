@@ -7,7 +7,7 @@ from obscuro.test.helpers.http_proxy import HTTPProxy
 
 
 class Default:
-    """A default node giving access to an underlying network."""
+    """A default connection giving access to an underlying network."""
     HOST = 'http://127.0.0.1'
     WS_HOST = 'ws://127.0.0.1'
     PORT = 8545

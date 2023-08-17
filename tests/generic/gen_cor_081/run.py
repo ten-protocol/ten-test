@@ -1,7 +1,6 @@
 from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.contracts.storage import Storage
 from obscuro.test.contracts.storage import KeyStorage
-from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.helpers.log_subscriber import FilterLogSubscriber
 
 
@@ -9,7 +8,7 @@ class PySysTest(GenericNetworkTest):
 
     def execute(self):
         # connect to network
-        network = NetworkFactory.get_network(self)
+        network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
         # deploy the storage and key_storage contracts

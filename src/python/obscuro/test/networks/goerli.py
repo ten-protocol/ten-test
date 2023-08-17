@@ -3,7 +3,7 @@ from obscuro.test.networks.default import Default
 
 
 class Goerli(Default):
-    """A Goerli node giving access to the underlying network."""
+    """A Goerli connection giving access to the underlying network."""
     HOST = 'https://goerli.infura.io/v3'
     WS_HOST = 'wss://goerli.infura.io/ws/v3'
 

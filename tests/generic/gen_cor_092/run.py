@@ -1,14 +1,13 @@
 from pysys.constants import FAILED, PASSED
 from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.contracts.gas import GasConsumerBalance
-from obscuro.test.networks.factory import NetworkFactory
 
 
 class PySysTest(GenericNetworkTest):
     REFERENCE = [21230]  # recorded on ganache
 
     def execute(self):
-        network = NetworkFactory.get_network(self)
+        network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
         contract = GasConsumerBalance(self, web3)
