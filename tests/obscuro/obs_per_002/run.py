@@ -4,7 +4,6 @@ from collections import OrderedDict
 from obscuro.test.contracts.error import Error
 from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.utils.gnuplot import GnuplotHelper
-from obscuro.test.helpers.wallet_extension import WalletExtension
 
 
 class PySysTest(GenericNetworkTest):
@@ -27,10 +26,10 @@ class PySysTest(GenericNetworkTest):
         error.deploy(network, account)
 
         # run the clients
-        pk1, we1 = self.setup_client(network, 'client_one')
-        pk2, we2 = self.setup_client(network, 'client_two')
-        self.run_client('client_one', network, pk1, we1)
-        self.run_client('client_two', network, pk2, we2)
+        pk1, conn1 = self.setup_client('client_one')
+        pk2, conn2 = self.setup_client('client_two')
+        self.run_client('client_one', pk1, conn1)
+        self.run_client('client_two', pk2, conn2)
         for i in clients:
             self.waitForGrep(file='client_%s.out' % i, expr='Client client_%s completed' % i, timeout=900)
 
@@ -56,25 +55,21 @@ class PySysTest(GenericNetworkTest):
                             branch, date,
                             str(self.mode), str(len(clients)*self.ITERATIONS), str(duration), '%.3f' % average)
 
-    def setup_client(self, network, name):
+    def setup_client(self, name):
         pk = secrets.token_hex(32)
-        _, account = network.connect(self, private_key=pk)
-        self.distribute_native(network, account, 1)
+        connection = self.get_network_connection(name=name)
+        _, account = connection.connect(self, private_key=pk)
+        self.distribute_native(account, 1)
+        return pk, connection
 
-        http_port = self.getNextAvailableTCPPort()
-        ws_port = self.getNextAvailableTCPPort()
-        extension = WalletExtension(self, http_port, ws_port, name=name)
-        extension.run()
-        return pk, extension
-
-    def run_client(self, name, network, pk, wallet):
+    def run_client(self, name, pk, connection):
         """Run a background load client. """
         stdout = os.path.join(self.output, '%s.out' % name)
         stderr = os.path.join(self.output, '%s.err' % name)
         script = os.path.join(self.input, 'client.py')
         args = []
-        args.extend(['--network_http', wallet.connection_url()])
-        args.extend(['--chainId', '%s' % network.chain_id()])
+        args.extend(['--network_http', connection.connection_url()])
+        args.extend(['--chainId', '%s' % connection.chain_id()])
         args.extend(['--pk', pk])
         args.extend(['--num_accounts', '%d' % self.ACCOUNTS])
         args.extend(['--num_iterations', '%d' % self.ITERATIONS])

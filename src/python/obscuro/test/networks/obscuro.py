@@ -83,11 +83,12 @@ class Obscuro(Default):
             balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
             if balance < self.OBX_LIMIT:
                 if log: test.log.info('Account balance %.6f OBX below threshold %s', balance, self.OBX_LIMIT)
-                test.distribute_native(self, account, self.OBX_ALLOC)
+                test.distribute_native(account, self.OBX_ALLOC)
             if log: test.log.info('Account balance %.6f OBX', web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
         return web3, account
 
-    def __generate_viewing_key(self, web3, host, port, account, private_key):
+    @staticmethod
+    def __generate_viewing_key(web3, host, port, account, private_key):
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
 
         data = {"address": account.address}

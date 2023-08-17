@@ -45,6 +45,9 @@ class GenericNetworkTest(BaseTest):
         self.contract_db = ContractPersistence(db_dir)
         self.addCleanupFunction(self.close_db)
 
+        # every test has a connection for the funded account
+        self.network_funded = self.get_network_connection('funded')
+
     def close_db(self):
         """Close the connection to the nonce database on completion. """
         self.nonce_db.close()
@@ -53,12 +56,6 @@ class GenericNetworkTest(BaseTest):
     def is_obscuro(self):
         """Return true if we are running against an Obscuro network. """
         return self.env in ['obscuro', 'obscuro.dev', 'obscuro.local', 'obscuro.sim']
-
-    def run_wallet(self, port=None, ws_port=None, name=None):
-        """Run a single wallet extension for use by the tests. """
-        extension = WalletExtension(self, port, ws_port, name=name)
-        extension.run()
-        return extension
 
     def run_python(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
         """Run a python process. """
@@ -89,16 +86,16 @@ class GenericNetworkTest(BaseTest):
                                      state=state, timeout=timeout)
         return hprocess
 
-    def distribute_native(self, network, account, amount):
-        """A native transfer of funds from the single funder account to another. """
-        web3_pk, account_pk = network.connect(self, Properties().fundacntpk(), check_funds=True)
+    def distribute_native(self, account, amount):
+        """A native transfer of funds from the funded account to another. """
+        web3_pk, account_pk = self.network_funded.connect(self, Properties().fundacntpk(), check_funds=True)
         tx = {
             'to': account.address,
             'value': web3_pk.toWei(amount, 'ether'),
             'gas': 4*21000,
             'gasPrice': web3_pk.eth.gas_price
         }
-        network.tx(self, web3_pk, tx, account_pk)
+        self.network_funded.tx(self, web3_pk, tx, account_pk)
 
     def fund_native(self, network, account, amount, pk, persist_nonce=True):
         """A native transfer of funds from one address to another. """
@@ -144,7 +141,8 @@ class GenericNetworkTest(BaseTest):
         """Get the network connection."""
         if self.is_obscuro():
             network = Obscuro()
-            wallet_extension = self.run_wallet(name=name)
+            wallet_extension = WalletExtension(self, name=name)
+            wallet_extension.run()
             network.PORT = wallet_extension.port
             network.WS_PORT = wallet_extension.ws_port
             return network
@@ -244,15 +242,15 @@ class ObscuroNetworkTest(GenericNetworkTest):
             recipients = [Web3().eth.account.privateKeyToAccount(x).address for x in funders if x != funders[i]]
             self.funds_client(network, funders[i], recipients, i)
 
-    def funds_client(self, network, pk, recipients, num):
-        wallet = WalletExtension.start(self, name='funds_%d' % num)
-        self.distribute_native(network, Web3().eth.account.privateKeyToAccount(pk), 1)
+    def funds_client(self, pk, recipients, num):
+        connection = self.get_network_connection(name='funds_%d' % num)
+        self.distribute_native(Web3().eth.account.privateKeyToAccount(pk), 1)
 
         stdout = os.path.join(self.output, 'funds_%d.out' % num)
         stderr = os.path.join(self.output, 'funds_%d.err' % num)
         script = os.path.join(PROJECT.root, 'src', 'python', 'scripts', 'funds_client.py')
         args = []
-        args.extend(['--network_http', '%s' % wallet.connection_url()])
+        args.extend(['--network_http', '%s' % connection.connection_url()])
         args.extend(['--pk_to_register', '%s' % pk])
         args.extend(['--recipients', ','.join([str(i) for i in recipients])])
         self.run_python(script, stdout, stderr, args)
