@@ -5,13 +5,7 @@ from obscuro.test.networks.obscuro import Obscuro
 
 
 class WalletExtension:
-    """A wrapper over the Obscuro wallet extension / gateway.
-
-    For the new Obscuro Gateway the process of joining and registering keys is as below;
-      Step 1: Call https://<host>/v1/join with the response being the user id
-      Step 2: The Connection URL becomes https://<host>/v1?u=$UserId
-      Step 3: Register keys at https://<host>/v1?u=$UserId&action=register
-    """
+    """A wrapper over the Obscuro wallet extension."""
 
     @classmethod
     def start(cls, parent, port=None, ws_port=None, name=None, verbose=True):
@@ -25,6 +19,7 @@ class WalletExtension:
         self.test = test
         self.port = port if port is not None else test.getNextAvailableTCPPort()
         self.ws_port = ws_port if ws_port is not None else test.getNextAvailableTCPPort()
+        self.user_id = None
         self.verbose = verbose
 
         props = Properties()
@@ -59,17 +54,16 @@ class WalletExtension:
         hprocess = self.test.startProcess(command=self.binary, displayName='wallet_extension',
                                           workingDir=self.test.output, environs=os.environ, quiet=True,
                                           arguments=arguments, stdout=self.stdout, stderr=self.stderr, state=BACKGROUND)
-        self.test.waitForSignal(self.stdout, expr='Obscuro Gatway started', timeout=30)
+        self.test.waitForSignal(self.stdout, expr='Wallet extension started', timeout=30)
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
-        response = requests.get('%s:%d/v1/join/' % (Obscuro.HOST, self.port),  headers=headers)
+        response = requests.get('%s:%d/join/' % (Obscuro.HOST, self.port),  headers=headers)
         self.user_id = response.text
         self.test.log.info('Registered user id = %s', self.user_id)
-
         return hprocess
 
     def connection_url(self, web_socket=False):
         """Return the connection URL to the wallet extension. """
         port = self.port if not web_socket else self.ws_port
         host = Obscuro.HOST if not web_socket else Obscuro.WS_HOST
-        return '%s:%d/v1?u=%s' % (host, port, self.user_id)
+        return '%s:%d/?u=%s' % (host, port, self.user_id)

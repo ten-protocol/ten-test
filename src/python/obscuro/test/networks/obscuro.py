@@ -75,7 +75,7 @@ class Obscuro(Default):
     def connection_url(self, web_socket=False):
         host = self.HOST if not web_socket else self.WS_HOST
         port = self.PORT if not web_socket else self.WS_PORT
-        return '%s:%d/%s?u=%s' % (host, port, self.VERSION, self.USERID)
+        return '%s:%d/?u=%s' % (host, port, self.USERID)
 
     def connect(self, test, private_key, web_socket=False, check_funds=True, log=True):
         url = self.connection_url(web_socket)
@@ -83,7 +83,7 @@ class Obscuro(Default):
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)
-        self.__generate_viewing_key(web3, self.HOST, self.PORT, account, private_key)
+        self.__register(self.HOST, self.PORT, self.USERID, account)
         if log: test.log.info('Account %s connected to %s on %s', account.address, self.__class__.__name__, url)
 
         if check_funds :
@@ -94,11 +94,12 @@ class Obscuro(Default):
             if log: test.log.info('Account balance %.6f OBX', web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
         return web3, account
 
-    def __generate_viewing_key(self, web3, host, port, account, private_key):
+    def __register(self, host, port, user_id, account):
+        text_to_sign = "Register " + user_id + " for " + str(account.address).lower()
+        eth_message = f"{text_to_sign}"
+        encoded_message = encode_defunct(text=eth_message)
+        signature = account.sign_message(encoded_message)
+
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
-
-        text_to_sign = "Register " + self.USERID + " for " + account.address
-        signed_msg = web3.eth.account.sign_message(encode_defunct(text=text_to_sign), private_key=private_key)
-
-        data = {"signature": signed_msg.signature.hex(), "message": text_to_sign}
-        requests.post('%s:%d/authenticate/?u=%s' % (host, port, self.USERID), data=json.dumps(data), headers=headers)
+        data = {"signature": signature['signature'].hex(), "message": text_to_sign}
+        requests.post('%s:%d/authenticate/?u=%s' % (host, port, user_id), data=json.dumps(data), headers=headers)

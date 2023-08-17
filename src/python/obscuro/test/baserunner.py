@@ -63,10 +63,15 @@ class ObscuroRunnerPlugin():
 
         try:
             if self.is_obscuro():
-                hprocess, port, user_id = self.run_wallet(runner)
-                web3, account = self.connect(runner, Properties().fundacntpk(), Obscuro.HOST, port, user_id)
+                hprocess, port = self.run_wallet(runner)
+                user_id = self.join(Obscuro.HOST, port)
+
+                account = Web3().eth.account.privateKeyToAccount(Properties().fundacntpk())
+                self.connect(account, Obscuro.HOST, port, user_id)
 
                 runner.log.info('Getting transaction count for %s', account.address)
+                url = '%s:%d/?u=%s' % (Obscuro.HOST, port, user_id)
+                web3 = Web3(Web3.HTTPProvider(url))
                 tx_count = web3.eth.get_transaction_count(account.address)
                 balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
 
@@ -82,7 +87,8 @@ class ObscuroRunnerPlugin():
                 runner.log.info('')
                 runner.log.info('Accounts with non-zero funds;')
                 for fn in Properties().accounts():
-                    web3, account = self.connect(runner, fn(), Obscuro.HOST, port, user_id)
+                    account = Web3().eth.account.privateKeyToAccount(fn())
+                    self.connect(account, Obscuro.HOST, port, user_id)
                     self.balances[fn.__name__] = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
                     if self.balances[fn.__name__] > 0:
                         runner.log.info("  Funds for %s: %.18f OBX", fn.__name__, self.balances[fn.__name__],
@@ -147,13 +153,7 @@ class ObscuroRunnerPlugin():
                                        displayName='wallet_extension', workingDir=runner.output, environs=os.environ,
                                        quiet=True, arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
         runner.waitForSignal(stdout, expr='Wallet extension started', timeout=30)
-
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
-        response = requests.get('%s:%d/join/' % (Obscuro.HOST, port),  headers=headers)
-        user_id = response.text
-        runner.log.info('Registered user id = %s', user_id)
-
-        return hprocess, port, user_id
+        return hprocess, port
 
     def is_obscuro(self):
         """Return true if we are running against an Obscuro network. """
@@ -186,19 +186,16 @@ class ObscuroRunnerPlugin():
         finally:
             hprocess.stop()
 
-    @staticmethod
-    def __stop_process(hprocess):
+    def __stop_process(self, hprocess):
         """Stop a process started by this runner plugin. """
         hprocess.stop()
 
-    @staticmethod
-    def connect(runner, private_key, host, port, user_id):
-        url = '%s:%d/?u=%s' % (host, port, user_id)
-        web3 = Web3(Web3.HTTPProvider(url))
-        account = web3.eth.account.privateKeyToAccount(private_key)
-        runner.log.info('Using URL as %s', url)
-        runner.log.info('Connecting account %s', account.address)
+    def join(self, host, port):
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
+        response = requests.get('%s:%d/join/' % (host, port),  headers=headers)
+        return response.text
 
+    def connect(self, account, host, port, user_id):
         text_to_sign = "Register " + user_id + " for " + str(account.address).lower()
         eth_message = f"{text_to_sign}"
         encoded_message = encode_defunct(text=eth_message)
@@ -206,8 +203,6 @@ class ObscuroRunnerPlugin():
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         data = {"signature": signature['signature'].hex(), "message": text_to_sign}
-        response = requests.post('http://%s:%d/authenticate/?u=%s' % (host, port, user_id),
+        response = requests.post('%s:%d/authenticate/?u=%s' % (host, port, user_id),
                                  data=json.dumps(data), headers=headers)
-        runner.log.info('Registration response %s', response.text)
-        return web3, account
-
+        return response
