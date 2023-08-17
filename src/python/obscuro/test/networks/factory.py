@@ -19,7 +19,7 @@ class NetworkFactory:
             network = Obscuro()
             network.PORT = test.wallet_extension.port
             network.WS_PORT = test.wallet_extension.ws_port
-            network.USERID = test.wallet_extension.user_id
+            network.ID = test.wallet_extension.user_id
             return network
         elif test.env == 'goerli':
             return Goerli()

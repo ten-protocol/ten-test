@@ -64,8 +64,7 @@ class Obscuro(Default):
     WS_HOST = 'ws://127.0.0.1'
     PORT = None            # set by the factory for the wallet extension
     WS_PORT = None         # set by the factory for the wallet extension
-    VERSION = 'v1'
-    USERID = ''            # set by the factory for the wallet extension
+    UNIQUE_ID = ''         # set by the factory for the wallet extension
     OBX_LIMIT = 0.5
     OBX_ALLOC = 1
     CURRENCY = 'OBX'
@@ -75,7 +74,7 @@ class Obscuro(Default):
     def connection_url(self, web_socket=False):
         host = self.HOST if not web_socket else self.WS_HOST
         port = self.PORT if not web_socket else self.WS_PORT
-        return '%s:%d/?u=%s' % (host, port, self.USERID)
+        return '%s:%d/?u=%s' % (host, port, self.ID)
 
     def connect(self, test, private_key, web_socket=False, check_funds=True, log=True):
         url = self.connection_url(web_socket)
@@ -83,7 +82,7 @@ class Obscuro(Default):
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)
-        self.__register(self.HOST, self.PORT, self.USERID, account)
+        self.__register(self.HOST, self.PORT, self.ID, account)
         if log: test.log.info('Account %s connected to %s on %s', account.address, self.__class__.__name__, url)
 
         if check_funds :
@@ -94,12 +93,12 @@ class Obscuro(Default):
             if log: test.log.info('Account balance %.6f OBX', web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
         return web3, account
 
-    def __register(self, host, port, user_id, account):
-        text_to_sign = "Register " + user_id + " for " + str(account.address).lower()
+    def __register(self, host, port, id, account):
+        text_to_sign = "Register " + id + " for " + str(account.address).lower()
         eth_message = f"{text_to_sign}"
         encoded_message = encode_defunct(text=eth_message)
         signature = account.sign_message(encoded_message)
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         data = {"signature": signature['signature'].hex(), "message": text_to_sign}
-        requests.post('%s:%d/authenticate/?u=%s' % (host, port, user_id), data=json.dumps(data), headers=headers)
+        requests.post('%s:%d/authenticate/?u=%s' % (host, port, id), data=json.dumps(data), headers=headers)

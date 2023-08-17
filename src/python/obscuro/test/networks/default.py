@@ -8,12 +8,14 @@ from obscuro.test.helpers.http_proxy import HTTPProxy
 
 class Default:
     """A default node giving access to an underlying network."""
-    HOST = 'http://127.0.0.1'
-    WS_HOST = 'ws://127.0.0.1'
-    PORT = 8545
-    WS_PORT = 8545
-    ETH_LIMIT = 0.0001
-    ETH_ALLOC = 0.0002
+    HOST = 'http://127.0.0.1'     # base url for http
+    WS_HOST = 'ws://127.0.0.1'    # base url for web sockets
+    PORT = 8545                   # port server http connections
+    WS_PORT = 8545                # port serving websocket connects
+    VERSION = None                # a version of the protocol for the connection
+    ID = None                     # a unique ID for the connection (e.g. project or user id)
+    ETH_LIMIT = 0.0001            # minimum limit for accounts when exceeded will be allocated more
+    ETH_ALLOC = 0.0002            # amount to allocate when minimum funds are seen
     GAS_MULT = 2
     CURRENCY = 'ETH'
 
@@ -23,7 +25,10 @@ class Default:
         """Return the connection URL to the network. """
         port = self.PORT if not web_socket else self.WS_PORT
         host = self.HOST if not web_socket else self.WS_HOST
-        return '%s:%d' % (host, port)
+        url = '%s:%d' % (host, port)
+        if self.VERSION is not None:  url = '%s/%s' % (url, self.VERSION)
+        if self.ID is not None:  url = '%s/%s' % (url, self.ID)
+        return url
 
     def add_ws_proxy(self, test):
         """Add a web socket proxy between the client and the network. """
