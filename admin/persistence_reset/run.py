@@ -2,7 +2,6 @@ from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
 from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.utils.properties import Properties
-from obscuro.test.networks.factory import NetworkFactory
 
 
 class PySysTest(ObscuroNetworkTest):
@@ -12,7 +11,7 @@ class PySysTest(ObscuroNetworkTest):
         self.nonce_db.delete_environment(self.env)
         self.contract_db.delete_environment(self.env)
 
-        network = NetworkFactory.get_network(self)
+        network = self.get_network_connection()
         for fn in Properties().accounts(): self.reset(fn.__name__, *network.connect(self, fn(), check_funds=False))
 
     def reset(self, name, web3, account):

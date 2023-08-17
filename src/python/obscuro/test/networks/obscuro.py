@@ -8,7 +8,7 @@ from web3.middleware import geth_poa_middleware
 
 
 class ObscuroDefaultL1(Geth):
-    """The Obscuro default L1 network. """
+    """The Obscuro default L1 connection. """
     ETH_LIMIT = 1
     ETH_ALLOC = 10
 
@@ -31,35 +31,35 @@ class ObscuroDefaultL1(Geth):
 
 
 class ObscuroL1(ObscuroDefaultL1):
-    """The L1 network for testnet. """
+    """The L1 connection for testnet. """
     HOST = 'http://testnet-eth2network.uksouth.azurecontainer.io'
     PORT = 8025
     WS_PORT = 9000
 
 
 class ObscuroL1Dev(ObscuroDefaultL1):
-    """The L1 network for dev-testnet. """
+    """The L1 connection for dev-testnet. """
     HOST = 'http://dev-testnet-eth2network.uksouth.azurecontainer.io'
     PORT = 8025
     WS_PORT = 9000
 
 
 class ObscuroL1Local(ObscuroDefaultL1):
-    """The L1 network for a local testnet. """
+    """The L1 connection for a local testnet. """
     HOST = 'http://eth2network' if os.getenv('DOCKER_TEST_ENV') else 'http://127.0.0.1'
     PORT = 8025
     WS_PORT = 9000
 
 
 class ObscuroL1Sim(ObscuroDefaultL1):
-    """The L1 network for the dev simulation. """
+    """The L1 connection for the dev simulation. """
     HOST = 'http://127.0.0.1'
     PORT = 37025
     WS_PORT = 37100
 
 
 class Obscuro(Default):
-    """The L2 network for all Obscuro modes (all go through the wallet extension). """
+    """The L2 connection for Obscuro. """
     HOST = 'http://127.0.0.1'
     WS_HOST = 'ws://127.0.0.1'
     PORT = None            # set by the factory for the wallet extension port of the accessing test
@@ -83,11 +83,12 @@ class Obscuro(Default):
             balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
             if balance < self.OBX_LIMIT:
                 if log: test.log.info('Account balance %.6f OBX below threshold %s', balance, self.OBX_LIMIT)
-                test.distribute_native(self, account, self.OBX_ALLOC)
+                test.distribute_native(account, self.OBX_ALLOC)
             if log: test.log.info('Account balance %.6f OBX', web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
         return web3, account
 
-    def __generate_viewing_key(self, web3, host, port, account, private_key):
+    @staticmethod
+    def __generate_viewing_key(web3, host, port, account, private_key):
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
 
         data = {"address": account.address}

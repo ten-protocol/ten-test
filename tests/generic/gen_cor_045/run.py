@@ -2,7 +2,6 @@ import os
 from web3 import Web3
 from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.contracts.game import Token, Game
-from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.utils.properties import Properties
 
 
@@ -10,7 +9,7 @@ class PySysTest(GenericNetworkTest):
 
     def execute(self):
         # deployment of contract
-        network = NetworkFactory.get_network(self)
+        network = self.get_network_connection()
 
         # we need to register the end user first for event relevancy rules to take effect
         web3_usr, account_usr = network.connect_account1(self)

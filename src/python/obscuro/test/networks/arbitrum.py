@@ -3,7 +3,7 @@ from obscuro.test.networks.default import Default
 
 
 class Arbitrum(Default):
-    """An Arbitrum node giving access to the underlying network."""
+    """An Arbitrum connection giving access to the underlying network."""
     HOST = 'https://arb-goerli.g.alchemy.com/v2'
     WS_HOST = 'wss://arb-goerli.g.alchemy.com/v2'
 

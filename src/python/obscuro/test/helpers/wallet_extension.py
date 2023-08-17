@@ -1,7 +1,6 @@
 import os
 from pysys.constants import PROJECT, BACKGROUND
 from obscuro.test.utils.properties import Properties
-from obscuro.test.networks.obscuro import Obscuro
 
 
 class WalletExtension:
@@ -27,6 +26,7 @@ class WalletExtension:
         self.node_port_ws = node_port_ws if node_port_ws is not None else props.node_port_ws(self.test.env)
 
         if name is None: name = str(port)
+        self.name = name
         self.logPath = os.path.join(test.output, 'wallet_%s_logs.txt' % name)
         self.databasePath = os.path.join(test.output, 'wallet_%s_database' % name)
         self.stdout = os.path.join(test.output, 'wallet_%s.out' % name)
@@ -39,8 +39,7 @@ class WalletExtension:
 
     def run(self):
         """Run an instance of the wallet extension. """
-        self.test.log.info('Starting wallet extension on port=%d, ws_port=%d', self.port, self.ws_port)
-        props = Properties()
+        self.test.log.info('Starting %s wallet extension on port=%d, ws_port=%d', self.name, self.port, self.ws_port)
 
         arguments = []
         arguments.extend(('--nodeHost', self.node_host))
@@ -56,9 +55,3 @@ class WalletExtension:
                                           arguments=arguments, stdout=self.stdout, stderr=self.stderr, state=BACKGROUND)
         self.test.waitForSignal(self.stdout, expr='Wallet extension started', timeout=30)
         return hprocess
-
-    def connection_url(self, web_socket=False):
-        """Return the connection URL to the wallet extension. """
-        port = self.port if not web_socket else self.ws_port
-        host = Obscuro.HOST if not web_socket else Obscuro.WS_HOST
-        return '%s:%d' % (host, port)

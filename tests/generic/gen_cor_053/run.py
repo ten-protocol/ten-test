@@ -1,5 +1,4 @@
 from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.networks.factory import NetworkFactory
 from obscuro.test.contracts.payable import ReceiveEther, SendEther
 from obscuro.test.helpers.log_subscriber import AllEventsLogSubscriber
 
@@ -7,7 +6,7 @@ from obscuro.test.helpers.log_subscriber import AllEventsLogSubscriber
 class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
-        network = NetworkFactory.get_network(self)
+        network = self.get_network_connection()
         web3, account = network.connect_account1(self)
         balance = web3.eth.get_balance(account.address)
         self.log.info('Balance account %.6f ETH (%d Wei)', web3.fromWei(balance, 'ether'), balance)

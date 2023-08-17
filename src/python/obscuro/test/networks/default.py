@@ -7,7 +7,7 @@ from obscuro.test.helpers.http_proxy import HTTPProxy
 
 
 class Default:
-    """A default node giving access to an underlying network."""
+    """A default connection giving access to an underlying network."""
     HOST = 'http://127.0.0.1'
     WS_HOST = 'ws://127.0.0.1'
     PORT = 8545
@@ -50,7 +50,7 @@ class Default:
             balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
             if balance < self.ETH_LIMIT:
                 if log: test.log.info('Account balance %.6f ETH below threshold %s', balance, self.ETH_LIMIT)
-                test.distribute_native(self, account, self.ETH_ALLOC)
+                test.distribute_native(account, self.ETH_ALLOC)
             if log: test.log.info('Account balance %.6f ETH', web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
         return web3, account
 
