@@ -20,6 +20,7 @@ class ObscuroL1(Geth):
         self.WS_HOST = props.l1_host_http(test.env)
         self.PORT = props.l1_port_http(test.env)
         self.WS_PORT = props.l1_port_ws(test.env)
+        self.CHAIN_ID = props.chain_id(test.env)
 
     def connect(self, test, private_key, web_socket=False, check_funds=True, log=True, **kwargs):
         url = self.connection_url(web_socket)
@@ -47,6 +48,7 @@ class Obscuro(Default):
 
     def __init__(self, test, name):
         super().__init__(test, name)
+        props = Properties()
 
         # run a wallet extensions locally to override
         wallet_extension = WalletExtension(test, name=name)
@@ -55,6 +57,7 @@ class Obscuro(Default):
         self.WS_HOST = 'ws://127.0.0.1'
         self.PORT = wallet_extension.port
         self.WS_PORT = wallet_extension.ws_port
+        self.CHAIN_ID = props.chain_id(test.env)
 
     def connect(self, test, private_key, web_socket=False, check_funds=True, log=True, **kwargs):
         url = self.connection_url(web_socket)

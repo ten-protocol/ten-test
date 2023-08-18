@@ -15,11 +15,11 @@ class Default:
 
     def __init__(self, test, name=None):
         props = Properties()
-        self.HOST = props.host_http(test.env)
-        self.WS_HOST = props.host_ws(test.env)
-        self.PORT = props.port_http(test.env)
-        self.WS_PORT = props.port_ws(test.env)
-        self.CHAIN_ID = props.chain_id(test.env)
+        self.HOST = props.host_http('default')
+        self.WS_HOST = props.host_ws('default')
+        self.PORT = props.port_http('default')
+        self.WS_PORT = props.port_ws('default')
+        self.CHAIN_ID = props.chain_id('default')
 
     def chain_id(self): return self.CHAIN_ID
 

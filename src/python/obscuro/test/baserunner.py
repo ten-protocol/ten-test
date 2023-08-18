@@ -105,9 +105,10 @@ class ObscuroRunnerPlugin():
         runner.log.info('Starting ganache server to run tests through managed instance')
         stdout = os.path.join(runner.output, 'ganache.out')
         stderr = os.path.join(runner.output, 'ganache.err')
+        port = Properties().port_http(key='ganache')
 
         arguments = []
-        arguments.extend(('--port', str(Ganache.PORT)))
+        arguments.extend(('--port', str(port)))
         arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().fundacntpk()))
         arguments.extend(('--gasLimit', '7200000'))
         arguments.extend(('--gasPrice', '1000'))
@@ -117,7 +118,7 @@ class ObscuroRunnerPlugin():
                                        workingDir=runner.output, environs=os.environ, quiet=True,
                                        arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
 
-        runner.waitForSignal(stdout, expr='Listening on 127.0.0.1:%d' % Ganache.PORT, timeout=30)
+        runner.waitForSignal(stdout, expr='Listening on 127.0.0.1:%d' % port, timeout=30)
         return hprocess
 
     def run_wallet(self, runner):
