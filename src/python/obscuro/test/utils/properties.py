@@ -92,17 +92,36 @@ class Properties:
     def gg_appdev_pk(self): return self.get('env.all', 'GGAppDevPK')
     def gg_endusr_pk(self): return self.get('env.all', 'GGEndUsrPK')
 
+    # network connection properties
+    def host_http(self, key): return self.get('env.'+key, 'HostHTTP')
+    def host_ws(self, key): return self.get('env.'+key, 'HostWS')
+    def port_http(self, key): return int(self.get('env.'+key, 'PortHTTP'))
+    def port_ws(self, key): return int(self.get('env.'+key, 'PortWS'))
+    def chain_id(self, key): return int(self.get('env.'+key, 'ChainID'))
+
     # obscuro specific properties
     def node_host(self, key, node_host):
         if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'NodeHostDockerNetwork')
         if node_host is not None: return node_host
-        return self.get('env.'+key, 'NodeHost')
+        return self.get('env.'+key, 'L2NodeHost')
+
+    def l1_host_http(self, key):
+        return self.get('env.'+key, 'L1NodeHostHTTP')
+
+    def l1_host_ws(self, key):
+        return self.get('env.'+key, 'L1NodeHostWS')
+
+    def l1_port_http(self, key):
+        return int(self.get('env.'+key, 'L1NodePortHTTP'))
+
+    def l1_port_ws(self, key):
+        return int(self.get('env.'+key, 'L1NodePortWS'))
 
     def node_port_http(self, key):
-        return self.get('env.'+key, 'NodePortHTTP')
+        return int(self.get('env.'+key, 'L2NodePortHTTP'))
 
     def node_port_ws(self, key):
-        return self.get('env.'+key, 'NodePortWS')
+        return int(self.get('env.'+key, 'L2NodePortWS'))
 
     def faucet_url(self, key):
         if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'FaucetURLDockerNetwork')

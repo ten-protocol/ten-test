@@ -8,16 +8,20 @@ from obscuro.test.helpers.http_proxy import HTTPProxy
 
 class Default:
     """A default connection giving access to an underlying network."""
-    HOST = 'http://127.0.0.1'
-    WS_HOST = 'ws://127.0.0.1'
-    PORT = 8545
-    WS_PORT = 8545
     ETH_LIMIT = 0.0001
     ETH_ALLOC = 0.0002
     GAS_MULT = 2
     CURRENCY = 'ETH'
 
-    def chain_id(self): return None
+    def __init__(self, test, name=None):
+        props = Properties()
+        self.HOST = props.host_http('default')
+        self.WS_HOST = props.host_ws('default')
+        self.PORT = props.port_http('default')
+        self.WS_PORT = props.port_ws('default')
+        self.CHAIN_ID = props.chain_id('default')
+
+    def chain_id(self): return self.CHAIN_ID
 
     def connection_url(self, web_socket=False):
         """Return the connection URL to the network. """
@@ -37,7 +41,7 @@ class Default:
         proxy.run(self.HOST, self.PORT, 'proxy.logs')
         self.PORT = proxy.port
 
-    def connect(self, test, private_key, web_socket=False, check_funds=True, log=True):
+    def connect(self, test, private_key, web_socket=False, check_funds=True, log=True, **kwargs):
         """Connect to the network using a given private key. """
         url = self.connection_url(web_socket)
 

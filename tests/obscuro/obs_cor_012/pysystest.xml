@@ -18,7 +18,6 @@ the transaction of interest.
         <modes inherit="true">
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
-            <mode>obscuro.sim</mode>
         </modes>
     </classification>
 

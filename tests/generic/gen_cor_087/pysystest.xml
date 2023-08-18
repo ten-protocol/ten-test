@@ -19,7 +19,6 @@ and a string value of one of the parameters.
         <modes inherit="true">
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
-            <mode>obscuro.sim</mode>
             <mode>goerli</mode>
             <mode>ganache</mode>
         </modes>

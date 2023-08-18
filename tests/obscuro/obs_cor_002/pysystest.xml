@@ -26,7 +26,6 @@ the subscription made on account 4 sees the event (as expected).
         <modes inherit="true">
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
-            <mode>obscuro.sim</mode>
         </modes>
     </classification>
 

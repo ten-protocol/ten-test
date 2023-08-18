@@ -1,18 +1,28 @@
-import requests, json, os
+import requests, json
 from web3 import Web3
 from obscuro.test.networks.default import Default
 from obscuro.test.networks.geth import Geth
 from obscuro.test.utils.properties import Properties
 from eth_account.messages import encode_defunct
 from web3.middleware import geth_poa_middleware
+from obscuro.test.helpers.wallet_extension import WalletExtension
 
 
-class ObscuroDefaultL1(Geth):
-    """The Obscuro default L1 connection. """
+class ObscuroL1(Geth):
+    """The Obscuro L1 connection. """
     ETH_LIMIT = 1
     ETH_ALLOC = 10
 
-    def connect(self, test, private_key, web_socket=False, check_funds=True, log=True):
+    def __init__(self, test, name):
+        super().__init__(test, name)
+        props = Properties()
+        self.HOST = props.l1_host_http(test.env)
+        self.WS_HOST = props.l1_host_ws(test.env)
+        self.PORT = props.l1_port_http(test.env)
+        self.WS_PORT = props.l1_port_ws(test.env)
+        self.CHAIN_ID = props.chain_id(test.env)
+
+    def connect(self, test, private_key, web_socket=False, check_funds=True, log=True, **kwargs):
         url = self.connection_url(web_socket)
 
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
@@ -30,47 +40,26 @@ class ObscuroDefaultL1(Geth):
         return web3, account
 
 
-class ObscuroL1(ObscuroDefaultL1):
-    """The L1 connection for testnet. """
-    HOST = 'http://testnet-eth2network.uksouth.azurecontainer.io'
-    PORT = 8025
-    WS_PORT = 9000
-
-
-class ObscuroL1Dev(ObscuroDefaultL1):
-    """The L1 connection for dev-testnet. """
-    HOST = 'http://dev-testnet-eth2network.uksouth.azurecontainer.io'
-    PORT = 8025
-    WS_PORT = 9000
-
-
-class ObscuroL1Local(ObscuroDefaultL1):
-    """The L1 connection for a local testnet. """
-    HOST = 'http://eth2network' if os.getenv('DOCKER_TEST_ENV') else 'http://127.0.0.1'
-    PORT = 8025
-    WS_PORT = 9000
-
-
-class ObscuroL1Sim(ObscuroDefaultL1):
-    """The L1 connection for the dev simulation. """
-    HOST = 'http://127.0.0.1'
-    PORT = 37025
-    WS_PORT = 37100
-
-
 class Obscuro(Default):
     """The L2 connection for Obscuro. """
-    HOST = 'http://127.0.0.1'
-    WS_HOST = 'ws://127.0.0.1'
-    PORT = None            # set by the factory for the wallet extension port of the accessing test
-    WS_PORT = None         # set by the factory for the wallet extension port of the accessing test
     OBX_LIMIT = 0.5
     OBX_ALLOC = 1
     CURRENCY = 'OBX'
 
-    def chain_id(self): return 777
+    def __init__(self, test, name):
+        super().__init__(test, name)
+        props = Properties()
 
-    def connect(self, test, private_key, web_socket=False, check_funds=True, log=True):
+        # run a wallet extensions locally to override
+        wallet_extension = WalletExtension(test, name=name)
+        wallet_extension.run()
+        self.HOST = 'http://127.0.0.1'
+        self.WS_HOST = 'ws://127.0.0.1'
+        self.PORT = wallet_extension.port
+        self.WS_PORT = wallet_extension.ws_port
+        self.CHAIN_ID = props.chain_id(test.env)
+
+    def connect(self, test, private_key, web_socket=False, check_funds=True, log=True, **kwargs):
         url = self.connection_url(web_socket)
 
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
@@ -79,7 +68,7 @@ class Obscuro(Default):
         self.__generate_viewing_key(web3, self.HOST, self.PORT, account, private_key)
         if log: test.log.info('Account %s connected to %s on %s', account.address, self.__class__.__name__, url)
 
-        if check_funds :
+        if check_funds:
             balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
             if balance < self.OBX_LIMIT:
                 if log: test.log.info('Account balance %.6f OBX below threshold %s', balance, self.OBX_LIMIT)

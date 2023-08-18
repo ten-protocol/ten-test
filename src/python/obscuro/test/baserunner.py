@@ -59,7 +59,7 @@ class ObscuroRunnerPlugin():
         try:
             if self.is_obscuro():
                 hprocess, port = self.run_wallet(runner)
-                web3, account = self.connect(Properties().fundacntpk(), Obscuro.HOST, port)
+                web3, account = self.connect(Properties().fundacntpk(), port)
                 tx_count = web3.eth.get_transaction_count(account.address)
                 balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
 
@@ -76,7 +76,7 @@ class ObscuroRunnerPlugin():
                 runner.log.info('')
                 runner.log.info('Accounts with non-zero funds;')
                 for fn in Properties().accounts():
-                    web3, account = self.connect(fn(), Obscuro.HOST, port)
+                    web3, account = self.connect(fn(), port)
                     self.balances[fn.__name__] = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
                     if self.balances[fn.__name__] > 0:
                         runner.log.info("  Funds for %s: %.18f OBX", fn.__name__, self.balances[fn.__name__],
@@ -105,9 +105,10 @@ class ObscuroRunnerPlugin():
         runner.log.info('Starting ganache server to run tests through managed instance')
         stdout = os.path.join(runner.output, 'ganache.out')
         stderr = os.path.join(runner.output, 'ganache.err')
+        port = Properties().port_http(key='ganache')
 
         arguments = []
-        arguments.extend(('--port', str(Ganache.PORT)))
+        arguments.extend(('--port', str(port)))
         arguments.extend(('--account', '0x%s,5000000000000000000' % Properties().fundacntpk()))
         arguments.extend(('--gasLimit', '7200000'))
         arguments.extend(('--gasPrice', '1000'))
@@ -117,7 +118,7 @@ class ObscuroRunnerPlugin():
                                        workingDir=runner.output, environs=os.environ, quiet=True,
                                        arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
 
-        runner.waitForSignal(stdout, expr='Listening on 127.0.0.1:%d' % Ganache.PORT, timeout=30)
+        runner.waitForSignal(stdout, expr='Listening on 127.0.0.1:%d' % port, timeout=30)
         return hprocess
 
     def run_wallet(self, runner):
@@ -130,8 +131,8 @@ class ObscuroRunnerPlugin():
         props = Properties()
         arguments = []
         arguments.extend(('--nodeHost', Properties().node_host(self.env, self.NODE_HOST)))
-        arguments.extend(('--nodePortHTTP', props.node_port_http(self.env)))
-        arguments.extend(('--nodePortWS', props.node_port_ws(self.env)))
+        arguments.extend(('--nodePortHTTP', str(props.node_port_http(self.env))))
+        arguments.extend(('--nodePortWS', str(props.node_port_ws(self.env))))
         arguments.extend(('--port', str(port)))
         arguments.extend(('--portWS', str(runner.getNextAvailableTCPPort())))
         arguments.extend(('--logPath', os.path.join(runner.output, 'wallet_logs.txt')))
@@ -145,7 +146,7 @@ class ObscuroRunnerPlugin():
 
     def is_obscuro(self):
         """Return true if we are running against an Obscuro network. """
-        return self.env in ['obscuro', 'obscuro.dev', 'obscuro.local', 'obscuro.sim']
+        return self.env in ['obscuro', 'obscuro.dev', 'obscuro.local']
 
     def fund_obx_from_faucet_server(self, runner):
         """Allocates native OBX to a users account from the faucet server. """
@@ -161,7 +162,7 @@ class ObscuroRunnerPlugin():
         try:
             delta = 0
             for fn in Properties().accounts():
-                web3, account = self.connect(fn(), Obscuro.HOST, port)
+                web3, account = self.connect(fn(), port)
                 balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
                 if fn.__name__ in self.balances:
                     delta = delta + (self.balances[fn.__name__] - balance)
@@ -180,19 +181,19 @@ class ObscuroRunnerPlugin():
         hprocess.stop()
 
     @staticmethod
-    def connect(private_key, host, port):
-        url = '%s:%s' % (host, port)
+    def connect(private_key, port):
+        url = 'http://127.0.0.1:%d' % port
         web3 = Web3(Web3.HTTPProvider(url))
         account = web3.eth.account.privateKeyToAccount(private_key)
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
 
         data = {"address": account.address}
-        response = requests.post('%s:%d/generateviewingkey/' % (host, port), data=json.dumps(data), headers=headers)
+        response = requests.post('http://127.0.0.1:%d/generateviewingkey/' % port, data=json.dumps(data), headers=headers)
         signed_msg = web3.eth.account.sign_message(encode_defunct(text='vk' + response.text), private_key=private_key)
 
         data = {"signature": signed_msg.signature.hex(), "address": account.address}
-        requests.post('%s:%d/submitviewingkey/' % (host, port), data=json.dumps(data), headers=headers)
+        requests.post('http://127.0.0.1:%d/submitviewingkey/' % port, data=json.dumps(data), headers=headers)
 
         return web3, account
 

@@ -7,13 +7,12 @@ from pysys.constants import PROJECT, BACKGROUND
 from obscuro.test.persistence.nonce import NoncePersistence
 from obscuro.test.persistence.contract import ContractPersistence
 from obscuro.test.utils.properties import Properties
-from obscuro.test.helpers.wallet_extension import WalletExtension
 from obscuro.test.networks.default import Default
 from obscuro.test.networks.ganache import Ganache
 from obscuro.test.networks.goerli import Goerli
 from obscuro.test.networks.arbitrum import Arbitrum
 from obscuro.test.networks.obscuro import Obscuro
-from obscuro.test.networks.obscuro import ObscuroL1, ObscuroL1Local, ObscuroL1Dev, ObscuroL1Sim
+from obscuro.test.networks.obscuro import ObscuroL1
 
 
 class GenericNetworkTest(BaseTest):
@@ -55,7 +54,7 @@ class GenericNetworkTest(BaseTest):
 
     def is_obscuro(self):
         """Return true if we are running against an Obscuro network. """
-        return self.env in ['obscuro', 'obscuro.dev', 'obscuro.local', 'obscuro.sim']
+        return self.env in ['obscuro', 'obscuro.dev', 'obscuro.local']
 
     def run_python(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
         """Run a python process. """
@@ -140,31 +139,20 @@ class GenericNetworkTest(BaseTest):
     def get_network_connection(self, name='primary_connection'):
         """Get the network connection."""
         if self.is_obscuro():
-            network = Obscuro()
-            wallet_extension = WalletExtension(self, name=name)
-            wallet_extension.run()
-            network.PORT = wallet_extension.port
-            network.WS_PORT = wallet_extension.ws_port
-            return network
+            return Obscuro(self, name)
         elif self.env == 'goerli':
-            return Goerli()
+            return Goerli(self, name)
         elif self.env == 'ganache':
-            return Ganache()
+            return Ganache(self, name)
         elif self.env == 'arbitrum':
-            return Arbitrum()
-        return Default()
+            return Arbitrum(self, name)
+        return Default(self, name)
 
-    def get_l1_network_connection(self):
+    def get_l1_network_connection(self, name='primary_l1_connection'):
         """Get the layer 1 network connection used by a layer 2."""
-        if self.env == 'obscuro':
-            return ObscuroL1()
-        elif self.env == 'obscuro.dev':
-            return ObscuroL1Dev()
-        elif self.env == 'obscuro.local':
-            return ObscuroL1Local()
-        elif self.env == 'obscuro.sim':
-            return ObscuroL1Sim()
-        return Default()
+        if self.is_obscuro():
+            return ObscuroL1(self, name)
+        return Default(self, name)
 
 
 class ObscuroNetworkTest(GenericNetworkTest):
