@@ -17,7 +17,7 @@ class ObscuroL1(Geth):
         super().__init__(test, name)
         props = Properties()
         self.HOST = props.l1_host_http(test.env)
-        self.WS_HOST = props.l1_host_http(test.env)
+        self.WS_HOST = props.l1_host_ws(test.env)
         self.PORT = props.l1_port_http(test.env)
         self.WS_PORT = props.l1_port_ws(test.env)
         self.CHAIN_ID = props.chain_id(test.env)

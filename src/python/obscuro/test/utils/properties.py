@@ -106,7 +106,10 @@ class Properties:
         return self.get('env.'+key, 'L2NodeHost')
 
     def l1_host_http(self, key):
-        return self.get('env.'+key, 'L1NodeHost')
+        return self.get('env.'+key, 'L1NodeHostHTTP')
+
+    def l1_host_ws(self, key):
+        return self.get('env.'+key, 'L1NodeHostWS')
 
     def l1_port_http(self, key):
         return int(self.get('env.'+key, 'L1NodePortHTTP'))
