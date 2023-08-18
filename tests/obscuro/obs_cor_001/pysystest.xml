@@ -16,7 +16,6 @@ Checks that only the deployer of a contract can read the balance of the contract
         <modes inherit="true">
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
-            <mode>obscuro.sim</mode>
         </modes>
     </classification>
 

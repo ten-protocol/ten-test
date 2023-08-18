@@ -17,7 +17,6 @@ Uses a bespoke subscriber script to subscribe to the CallerIndexedAddress event 
         <modes inherit="true">
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
-            <mode>obscuro.sim</mode>
             <mode>goerli</mode>
             <mode>ganache</mode>
         </modes>

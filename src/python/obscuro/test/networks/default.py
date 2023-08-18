@@ -8,16 +8,20 @@ from obscuro.test.helpers.http_proxy import HTTPProxy
 
 class Default:
     """A default connection giving access to an underlying network."""
-    HOST = 'http://127.0.0.1'
-    WS_HOST = 'ws://127.0.0.1'
-    PORT = 8545
-    WS_PORT = 8545
     ETH_LIMIT = 0.0001
     ETH_ALLOC = 0.0002
     GAS_MULT = 2
     CURRENCY = 'ETH'
 
-    def chain_id(self): return None
+    def __init__(self, test, name=None):
+        props = Properties()
+        self.HOST = props.host_http(test.env)
+        self.WS_HOST = props.host_ws(test.env)
+        self.PORT = props.port_http(test.env)
+        self.WS_PORT = props.port_ws(test.env)
+        self.CHAIN_ID = props.chain_id(test.env)
+
+    def chain_id(self): return self.CHAIN_ID
 
     def connection_url(self, web_socket=False):
         """Return the connection URL to the network. """

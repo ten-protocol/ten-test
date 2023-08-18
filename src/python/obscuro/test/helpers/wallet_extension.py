@@ -43,8 +43,8 @@ class WalletExtension:
 
         arguments = []
         arguments.extend(('--nodeHost', self.node_host))
-        arguments.extend(('--nodePortHTTP', self.node_port_http))
-        arguments.extend(('--nodePortWS', self.node_port_ws))
+        arguments.extend(('--nodePortHTTP', str(self.node_port_http)))
+        arguments.extend(('--nodePortWS', str(self.node_port_ws)))
         arguments.extend(('--port', str(self.port)))
         arguments.extend(('--portWS', str(self.ws_port)))
         arguments.extend(('--logPath', self.logPath))

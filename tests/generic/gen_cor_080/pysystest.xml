@@ -17,7 +17,6 @@ Uses the general subscriber script to subscribe to a particular event from a par
         <modes inherit="true">
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
-            <mode>obscuro.sim</mode>
             <mode>goerli</mode>
             <mode>ganache</mode>
         </modes>

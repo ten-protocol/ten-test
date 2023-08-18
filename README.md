@@ -170,9 +170,6 @@ pysys.py run -m obscuro.dev
 # run the tests against Obscuro local testnet
 pysys.py run -m obscuro.local
 
-# run the tests against Obscuro simulation
-pysys.py run -m obscuro.sim
-
 # run the tests against a local ganache network 
 pysys.py run -m ganache
 ```
