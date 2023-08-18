@@ -70,7 +70,7 @@ class Obscuro(Default):
 
     def chain_id(self): return 777
 
-    def connect(self, test, private_key, web_socket=False, check_funds=True, log=True):
+    def connect(self, test, private_key, web_socket=False, check_funds=True, log=True, **kwargs):
         url = self.connection_url(web_socket)
 
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
@@ -79,7 +79,7 @@ class Obscuro(Default):
         self.__generate_viewing_key(web3, self.HOST, self.PORT, account, private_key)
         if log: test.log.info('Account %s connected to %s on %s', account.address, self.__class__.__name__, url)
 
-        if check_funds :
+        if check_funds:
             balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
             if balance < self.OBX_LIMIT:
                 if log: test.log.info('Account balance %.6f OBX below threshold %s', balance, self.OBX_LIMIT)

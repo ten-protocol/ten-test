@@ -37,7 +37,7 @@ class Default:
         proxy.run(self.HOST, self.PORT, 'proxy.logs')
         self.PORT = proxy.port
 
-    def connect(self, test, private_key, web_socket=False, check_funds=True, log=True):
+    def connect(self, test, private_key, web_socket=False, check_funds=True, log=True, **kwargs):
         """Connect to the network using a given private key. """
         url = self.connection_url(web_socket)
 
