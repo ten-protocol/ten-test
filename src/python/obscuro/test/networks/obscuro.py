@@ -13,8 +13,8 @@ class ObscuroL1(Geth):
     ETH_LIMIT = 1
     ETH_ALLOC = 10
 
-    def __init__(self, test, name):
-        super().__init__(test, name)
+    def __init__(self, test, name=None, **kwargs):
+        super().__init__(test, name, **kwargs)
         props = Properties()
         self.HOST = props.l1_host_http(test.env)
         self.WS_HOST = props.l1_host_ws(test.env)
@@ -46,26 +46,32 @@ class Obscuro(Default):
     OBX_ALLOC = 1
     CURRENCY = 'OBX'
 
-    def __init__(self, test, name):
-        super().__init__(test, name)
-        props = Properties()
+    def __init__(self, test, name=None, **kwargs):
+        super().__init__(test, name, **kwargs)
+        self.CHAIN_ID = Properties().chain_id(test.env)
 
-        # run a wallet extensions locally to override
-        wallet_extension = WalletExtension(test, name=name)
-        wallet_extension.run()
+        if 'wallet' in kwargs: self.WALLET = kwargs['wallet']
+        else: self.WALLET = WalletExtension.start(test, name=name)
+
         self.HOST = 'http://127.0.0.1'
         self.WS_HOST = 'ws://127.0.0.1'
-        self.PORT = wallet_extension.port
-        self.WS_PORT = wallet_extension.ws_port
-        self.CHAIN_ID = props.chain_id(test.env)
+        self.PORT = self.WALLET.port
+        self.WS_PORT = self.WALLET.ws_port
+        self.ID = self.__join()
+        test.log.info('Wallet %s has user id %s', name, self.ID)
 
-    def connect(self, test, private_key, web_socket=False, check_funds=True, log=True, **kwargs):
+    def connection_url(self, web_socket=False):
+        port = self.PORT if not web_socket else self.WS_PORT
+        host = self.HOST if not web_socket else self.WS_HOST
+        return '%s:%d/?u=%s' % (host, port, self.ID)
+
+    def connect(self, test, private_key, web_socket=False, check_funds=True, log=True):
         url = self.connection_url(web_socket)
 
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)
-        self.__generate_viewing_key(web3, self.HOST, self.PORT, account, private_key)
+        self.__register(account)
         if log: test.log.info('Account %s connected to %s on %s', account.address, self.__class__.__name__, url)
 
         if check_funds:
@@ -76,15 +82,21 @@ class Obscuro(Default):
             if log: test.log.info('Account balance %.6f OBX', web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
         return web3, account
 
-    @staticmethod
-    def __generate_viewing_key(web3, host, port, account, private_key):
+    def __join(self):
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
+        response = requests.get('%s:%d/join/' % (self.HOST, self.PORT),  headers=headers)
+        return response.text
 
-        data = {"address": account.address}
-        response = requests.post('%s:%d/generateviewingkey/' % (host, port), data=json.dumps(data), headers=headers)
-        signed_msg = web3.eth.account.sign_message(encode_defunct(text='vk' + response.text), private_key=private_key)
+    def __register(self, account):
+        text_to_sign = "Register " + self.ID + " for " + str(account.address).lower()
+        eth_message = f"{text_to_sign}"
+        encoded_message = encode_defunct(text=eth_message)
+        signature = account.sign_message(encoded_message)
 
-        data = {"signature": signed_msg.signature.hex(), "address": account.address}
-        requests.post('%s:%d/submitviewingkey/' % (host, port), data=json.dumps(data), headers=headers)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
+        data = {"signature": signature['signature'].hex(), "message": text_to_sign}
+        requests.post('%s:%d/authenticate/?u=%s' % (self.HOST, self.PORT, self.ID),
+                      data=json.dumps(data), headers=headers)
+
 
 

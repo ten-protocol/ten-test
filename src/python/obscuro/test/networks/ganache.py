@@ -5,8 +5,8 @@ from obscuro.test.utils.properties import Properties
 class Ganache(Default):
     """A Ganache connection giving access to the underlying network."""
 
-    def __init__(self, test, name=None):
-        super().__init__(test, name)
+    def __init__(self, test, name=None, **kwargs):
+        super().__init__(test, name, **kwargs)
         props = Properties()
         self.HOST = props.host_http('ganache')
         self.WS_HOST = props.host_ws('ganache')

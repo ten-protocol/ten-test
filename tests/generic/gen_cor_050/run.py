@@ -6,9 +6,7 @@ from obscuro.test.contracts.error import Error
 class PySysTest(GenericNetworkTest):
 
     def execute(self):
-        # get the network and put a proxy in the comms
         network = self.get_network_connection()
-        network.add_ws_proxy(self)
         web3, account = network.connect_account1(self, web_socket=True)
 
         error = Error(self, web3)

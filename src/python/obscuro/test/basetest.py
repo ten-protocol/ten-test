@@ -16,18 +16,7 @@ from obscuro.test.networks.obscuro import ObscuroL1
 
 
 class GenericNetworkTest(BaseTest):
-    """The base test used by all tests cases, against any request environment.
-
-    The GenericNetworkTest class provides common utilities used by all tests, which at the moment are the ability to
-    start processes outside of the framework to interact with the network, e.g. written in python or javascript. The
-    WEBSOCKET and PROXY values can be set at run time using the -X<ATTRIBUTE> option to the pysys run launcher, and
-    respectively force all connections to be over websockets, or for a proxy to sit inbetween the client and network
-    (where a test supports these). To override the node host FQDN (e.g. to target a specific node, rather than go
-    through a
-
-    """
-    WEBSOCKET = False               # if true use websockets for all comms to the wallet extension
-    PROXY = False                   # if true run all websocket connections through a recording proxy
+    """The base test used by all tests cases, against any request environment. """
     MSG_ID = 1                      # global used for http message requests numbers
     NODE_HOST = None                # if not none overrides the node host from the properties file
 

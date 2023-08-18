@@ -46,7 +46,6 @@ class FilterLogSubscriber:
         """Run the javascript client event log subscriber. """
         if network_ws is None:
             network_ws = self.network.connection_url(web_socket=True)
-            if self.test.PROXY: network_ws = WebServerProxy.create(self.test).run(network_ws, 'proxy.logs')
 
         if network_http is None:
             network_http = self.network.connection_url(web_socket=False)

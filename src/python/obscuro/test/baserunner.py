@@ -59,7 +59,12 @@ class ObscuroRunnerPlugin():
         try:
             if self.is_obscuro():
                 hprocess, port = self.run_wallet(runner)
-                web3, account = self.connect(Properties().fundacntpk(), port)
+                user_id = self.__join(port)
+
+                web3 = Web3(Web3.HTTPProvider('http://127.0.0.1:%d/?u=%s' % (port, user_id)))
+                account = web3.eth.account.privateKeyToAccount(Properties().fundacntpk())
+                self.__register(account, port, user_id)
+
                 tx_count = web3.eth.get_transaction_count(account.address)
                 balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
 
@@ -76,14 +81,16 @@ class ObscuroRunnerPlugin():
                 runner.log.info('')
                 runner.log.info('Accounts with non-zero funds;')
                 for fn in Properties().accounts():
-                    web3, account = self.connect(fn(), port)
+                    account = web3.eth.account.privateKeyToAccount(fn())
+                    self.__register(account, port, user_id)
+
                     self.balances[fn.__name__] = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
                     if self.balances[fn.__name__] > 0:
                         runner.log.info("  Funds for %s: %.18f OBX", fn.__name__, self.balances[fn.__name__],
                                         extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
                 runner.log.info('')
 
-                runner.addCleanupFunction(lambda: self.__print_cost(runner, hprocess, port))
+                runner.addCleanupFunction(lambda: self.__print_cost(runner, hprocess, port, web3, user_id))
 
             elif self.env == 'ganache':
                 nonce_db.delete_environment('ganache')
@@ -157,12 +164,14 @@ class ObscuroRunnerPlugin():
         data = {"address": account.address}
         requests.post(Properties().faucet_url(self.env), data=json.dumps(data), headers=headers)
 
-    def __print_cost(self, runner, hprocess, port):
+    def __print_cost(self, runner, hprocess, port, web3, user_id):
         """Print out balances. """
         try:
             delta = 0
             for fn in Properties().accounts():
-                web3, account = self.connect(fn(), port)
+                account = web3.eth.account.privateKeyToAccount(fn())
+                self.__register(account, port, user_id)
+
                 balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
                 if fn.__name__ in self.balances:
                     delta = delta + (self.balances[fn.__name__] - balance)
@@ -181,20 +190,21 @@ class ObscuroRunnerPlugin():
         hprocess.stop()
 
     @staticmethod
-    def connect(private_key, port):
-        url = 'http://127.0.0.1:%d' % port
-        web3 = Web3(Web3.HTTPProvider(url))
-        account = web3.eth.account.privateKeyToAccount(private_key)
+    def __join(port):
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
+        response = requests.get('http://127.0.0.1:%d/join/' % port,  headers=headers)
+        return response.text
+
+    @staticmethod
+    def __register(
+            account, port, user_id):
+        text_to_sign = "Register " + user_id + " for " + str(account.address).lower()
+        eth_message = f"{text_to_sign}"
+        encoded_message = encode_defunct(text=eth_message)
+        signature = account.sign_message(encoded_message)
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
-
-        data = {"address": account.address}
-        response = requests.post('http://127.0.0.1:%d/generateviewingkey/' % port, data=json.dumps(data), headers=headers)
-        signed_msg = web3.eth.account.sign_message(encode_defunct(text='vk' + response.text), private_key=private_key)
-
-        data = {"signature": signed_msg.signature.hex(), "address": account.address}
-        requests.post('http://127.0.0.1:%d/submitviewingkey/' % port, data=json.dumps(data), headers=headers)
-
-        return web3, account
-
+        data = {"signature": signature['signature'].hex(), "message": text_to_sign}
+        requests.post('http://127.0.0.1:%d/authenticate/?u=%s' % (port, user_id),
+                      data=json.dumps(data), headers=headers)
 

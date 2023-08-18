@@ -13,7 +13,7 @@ class Default:
     GAS_MULT = 2
     CURRENCY = 'ETH'
 
-    def __init__(self, test, name=None):
+    def __init__(self, test, name=None, **kwargs):
         props = Properties()
         self.HOST = props.host_http('default')
         self.WS_HOST = props.host_ws('default')
@@ -29,19 +29,7 @@ class Default:
         host = self.HOST if not web_socket else self.WS_HOST
         return '%s:%d' % (host, port)
 
-    def add_ws_proxy(self, test):
-        """Add a web socket proxy between the client and the network. """
-        proxy = WebServerProxy.create(test)
-        proxy.run(self.connection_url(web_socket=True), 'proxy.logs')
-        self.WS_PORT = proxy.port
-
-    def add_http_proxy(self, test):
-        """Add an HTTP socket proxy between the client and the network. """
-        proxy = HTTPProxy.create(test)
-        proxy.run(self.HOST, self.PORT, 'proxy.logs')
-        self.PORT = proxy.port
-
-    def connect(self, test, private_key, web_socket=False, check_funds=True, log=True, **kwargs):
+    def connect(self, test, private_key, web_socket=False, check_funds=True, log=True):
         """Connect to the network using a given private key. """
         url = self.connection_url(web_socket)
 
