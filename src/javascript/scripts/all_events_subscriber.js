@@ -40,7 +40,6 @@ var web3_ws = new Web3(options.network_ws)
 var json = fs.readFileSync(options.contract_abi)
 var abi = JSON.parse(json)
 const contract = new web3_ws.eth.Contract(abi, options.contract_address)
-console.log(options.network_ws)
 
 if (options.pk_to_register) {
   let sign = (message) => { return web3_http.eth.accounts.sign(message, '0x' + options.pk_to_register) }
