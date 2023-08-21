@@ -44,7 +44,7 @@ const contract = new web3_ws.eth.Contract(abi, options.contract_address)
 
 if (options.pk_to_register) {
   let account = web3_http.eth.accounts.privateKeyToAccount(options.pk_to_register)
-  let sign = (message) => { return web3_ws.eth.accounts.sign(message, account.privateKey) }
+  let sign = (message) => { return web3_http.eth.accounts.sign(message, account.privateKey) }
   reg.register(sign, options.host, options.port, options.user_id, account.address, subscribe)
 }
 else
