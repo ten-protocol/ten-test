@@ -29,7 +29,7 @@ class AllEventsLogSubscriber:
         args.extend(['--user_id', self.network.ID])
         if pk_to_register: args.extend(['--pk_to_register', pk_to_register])
         self.test.run_javascript(self.script, self.stdout, self.stderr, args)
-        self.test.waitForGrep(file=self.stdout, expr='Subscription confirmed with id:', timeout=10)
+        self.test.waitForGrep(file=self.stdout, expr='Subscription confirmed with id:', timeout=30)
 
 
 class FilterLogSubscriber:

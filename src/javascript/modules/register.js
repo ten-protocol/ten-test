@@ -5,7 +5,7 @@ module.exports = { register }
 
 async function register(sign, host, port, user_id, address, callback) {
     console.log('Registering', address)
-    text_to_sign = "Register " + user_id + " for " + address
+    text_to_sign = "Register " + user_id + " for " + address.toLowerCase()
     signed_msg = sign(text_to_sign)
 
     response = await fetch(host + ':' + port + '/authenticate/?u=' + user_id, {
@@ -13,7 +13,8 @@ async function register(sign, host, port, user_id, address, callback) {
       headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
       body: JSON.stringify( {signature: signed_msg.signature, message: text_to_sign})
     })
-    text = await response.text()
-    console.log(text)
-    callback()
+    .then(response => response.text())
+    .then((response) => {
+      callback()
+     })
 }

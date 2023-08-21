@@ -6,6 +6,7 @@ const reg = require('register.js')
 require('console-stamp')(console, 'HH:MM:ss')
 
 function subscribe() {
+  console.log('Making subscription for contract events')
   contract.events.allEvents({fromBlock:'latest'},
     function(error, result) {
       if (error) {
@@ -42,9 +43,9 @@ var abi = JSON.parse(json)
 const contract = new web3_ws.eth.Contract(abi, options.contract_address)
 
 if (options.pk_to_register) {
-  let sign = (message) => { return web3_http.eth.accounts.sign(message, '0x' + options.pk_to_register) }
-  let address = web3_http.eth.accounts.privateKeyToAccount(options.pk_to_register).address
-  reg.register(sign, options.host, options.port, options.user_id, address, subscribe)
+  let account = web3_http.eth.accounts.privateKeyToAccount(options.pk_to_register)
+  let sign = (message) => { return web3_ws.eth.accounts.sign(message, account.privateKey) }
+  reg.register(sign, options.host, options.port, options.user_id, account.address, subscribe)
 }
 else
   subscribe()
