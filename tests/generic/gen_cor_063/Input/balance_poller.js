@@ -40,8 +40,7 @@ commander
   .option('--network_http <value>', 'Http connection URL to the network')
   .option('--address <value>', 'Contract address')
   .option('--contract_abi <value>', 'Contract ABI file')
-  .option('--private_key <value>', 'Private key for the account')
-  .option('--is_obscuro', 'True if running against obscuro', false)
+  .option('--polling_address <value>', 'Address for the account to poll')
   .parse(process.argv)
 
 const options = commander.opts()
@@ -50,15 +49,10 @@ const web3 = new Web3(`${options.network_http}`)
 var json = fs.readFileSync(`${options.contract_abi}`)
 var abi = JSON.parse(json)
 const contract = new web3.eth.Contract(abi, `${options.address}`)
-const address = web3.eth.accounts.privateKeyToAccount(options.private_key).address
+const address = options.polling_address
 
-if (options.is_obscuro == true) {
-  let sign = (message) => { return web3.eth.accounts.sign(message, '0x' + options.private_key) }
-  vk.generate_viewing_key(sign, options.network_http, address, get_balance)
-}
-else {
-  get_balance()
-}
+get_balance()
+
 
 
 
