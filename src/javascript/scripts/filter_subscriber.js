@@ -1,7 +1,7 @@
 const Web3 = require('web3')
 const http = require('http')
 const commander = require('commander')
-const vk = require('viewing_key.js')
+const reg = require('register.js')
 
 function decodeLog(log) {
   //console.log('Full log: ', log)
@@ -15,7 +15,7 @@ function subscribe() {
   if (options.filter_topics) dict["topics"] = filter_topics
   console.log('Options: ', dict)
 
-  subscription = web3.eth.subscribe('logs', dict,
+  subscription = web3_ws.eth.subscribe('logs', dict,
     function(error, result) {
       if (error)
         console.log('Error returned is ', error)
@@ -70,20 +70,24 @@ commander
   .option('--filter_address <value>', 'The contract address to filter on', null)
   .option('--filter_from_block <value>', 'The from block to filter on', null)
   .option('--filter_topics <values...>', 'The first filter topic', null)
-  .option('--pk_to_register <value>', 'Private key used to register for a viewing key (obscuro only)', null)
+  .option('--host <value>', 'Http host')
+  .option('--port <value>', 'Http port')
+  .option('--user_id <value>', 'The user id')
+  .option('--pk_to_register <value>', 'Private key')
   .parse(process.argv)
 
 // in global scope the options, web3 connection and server reference
 var subscription = null
 const options = commander.opts()
-const web3 = new Web3(`${options.network_ws}`)
+var web3_http = new Web3(options.network_http)
+const web3_ws = new Web3(options.network_ws)
 filter_topics = (options.filter_topics + '').split(' ')
 
 // if pk supplied generate viewing key else just run
 if (options.pk_to_register) {
-  let sign = (message) => { return web3.eth.accounts.sign(message, '0x' + options.pk_to_register) }
-  let address = web3.eth.accounts.privateKeyToAccount(options.pk_to_register).address
-  vk.generate_viewing_key(sign, options.network_http, address, startServer)
+  let account = web3_http.eth.accounts.privateKeyToAccount(options.pk_to_register)
+  let sign = (message) => { return web3_http.eth.accounts.sign(message, account.privateKey) }
+  reg.register(sign, options.host, options.port, options.user_id, account.address, startServer)
 }
 else
   startServer()

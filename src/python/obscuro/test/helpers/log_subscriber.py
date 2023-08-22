@@ -24,10 +24,11 @@ class AllEventsLogSubscriber:
         args.extend(['--network_ws', network_ws])
         args.extend(['--contract_address', self.contract.address])
         args.extend(['--contract_abi', self.contract.abi_path])
-        args.extend(['--host', self.network.HOST])
-        args.extend(['--port', str(self.network.PORT)])
-        args.extend(['--user_id', self.network.ID])
-        if pk_to_register: args.extend(['--pk_to_register', pk_to_register])
+        if pk_to_register:
+            args.extend(['--host', self.network.HOST])
+            args.extend(['--port', str(self.network.PORT)])
+            args.extend(['--user_id', self.network.ID])
+            args.extend(['--pk_to_register', pk_to_register])
         self.test.run_javascript(self.script, self.stdout, self.stderr, args)
         self.test.waitForGrep(file=self.stdout, expr='Subscription confirmed with id:', timeout=30)
 
@@ -60,7 +61,11 @@ class FilterLogSubscriber:
         if filter_from_block: args.extend(['--filter_from_block', '%d' % filter_from_block])
         if filter_address: args.extend(['--filter_address', filter_address])
         if filter_topics:args.extend(['--filter_topics', " ".join(filter_topics)])
-        if pk_to_register: args.extend(['--pk_to_register', '%s' % pk_to_register])
+        if pk_to_register:
+            args.extend(['--host', self.network.HOST])
+            args.extend(['--port', str(self.network.PORT)])
+            args.extend(['--user_id', self.network.ID])
+            args.extend(['--pk_to_register', pk_to_register])
         self.test.run_javascript(self.script, self.stdout, self.stderr, args)
         self.test.waitForGrep(file=self.stdout, expr='Subscriber listening for instructions', timeout=10)
 
