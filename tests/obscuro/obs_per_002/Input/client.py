@@ -1,22 +1,8 @@
 from web3 import Web3
-import secrets, requests, json
+import secrets
 import logging, random, argparse, sys
-from eth_account.messages import encode_defunct
 
 logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
-
-
-def generate_viewing_key(web3, url, address, private_key):
-    """Generate a viewing key with the wallet extension. """
-    logging.info('Generating viewing key for %s', private_key)
-
-    headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
-    data = {"address": address}
-    response = requests.post('%s/generateviewingkey/' % url, data=json.dumps(data), headers=headers)
-
-    signed_msg = web3.eth.account.sign_message(encode_defunct(text='vk' + response.text), private_key=private_key)
-    data = {"signature": signed_msg.signature.hex(), "address": address}
-    requests.post('%s/submitviewingkey/' % url, data=json.dumps(data), headers=headers)
 
 
 def create_signed_tx(account, nonce, address, value, gas_price, chain_id):
@@ -80,5 +66,4 @@ if __name__ == "__main__":
     name = args.client_name
     logging.info('Starting client %s', name)
 
-    generate_viewing_key(web3, args.network_http, account.address, args.pk)
     run(name, int(args.chainId), web3, account, int(args.num_accounts), int(args.num_iterations))

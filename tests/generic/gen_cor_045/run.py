@@ -22,7 +22,9 @@ class PySysTest(GenericNetworkTest):
         game = Game(self, web3_dev, 10, token.address)
         game.deploy(network, account_dev)
 
-        # run a background script to filter and collect events
+        # run a background script to filter and collect events (register out-side of the script)
+        network.connect(self, private_key=Properties().gg_endusr_pk())
+
         stdout = os.path.join(self.output, 'subscriber.out')
         stderr = os.path.join(self.output, 'subscriber.err')
         script = os.path.join(self.input, 'listener.js')
@@ -33,8 +35,6 @@ class PySysTest(GenericNetworkTest):
         args.extend(['--erc_abi', '%s' % token.abi_path])
         args.extend(['--game_address', '%s' % game.address])
         args.extend(['--game_abi', '%s' % game.abi_path])
-        args.extend(['--pk_address', '%s' % Web3().eth.account.privateKeyToAccount(Properties().gg_endusr_pk()).address])
-        if self.is_obscuro(): args.extend(['--pk_to_register', '%s' % Properties().gg_endusr_pk()])
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Registered all subscriptions', timeout=10)
 

@@ -76,6 +76,7 @@ class PySysTest(ObscuroNetworkTest):
         pk = secrets.token_hex(32)
         account = Web3().eth.account.privateKeyToAccount(pk)
         self.distribute_native(account, 1)
+        connection.connect(private_key=pk)
 
         stdout = os.path.join(self.output, '%s_%d.out' % (name, num))
         stderr = os.path.join(self.output, '%s_%d.err' % (name, num))

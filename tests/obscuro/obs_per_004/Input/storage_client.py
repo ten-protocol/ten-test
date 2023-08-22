@@ -1,23 +1,8 @@
 from web3 import Web3
-import logging, requests
+import logging
 import argparse, json, sys
-from eth_account.messages import encode_defunct
 
 logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
-
-
-def generate_viewing_key(web3, url, private_key):
-    logging.info('Generating viewing key for %s', private_key)
-
-    account = web3.eth.account.privateKeyToAccount(private_key)
-
-    headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
-    data = {"address": account.address}
-    response = requests.post('%s/generateviewingkey/' % url, data=json.dumps(data), headers=headers)
-
-    signed_msg = web3.eth.account.sign_message(encode_defunct(text='vk' + response.text), private_key=private_key)
-    data = {"signature": signed_msg.signature.hex(), "address": account.address}
-    requests.post('%s/submitviewingkey/' % url, data=json.dumps(data), headers=headers)
 
 
 def create_signed_tx(name, account, nonce, contract, gas_price, chainId):
@@ -77,7 +62,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     web3 = Web3(Web3.HTTPProvider(args.network_http))
-    generate_viewing_key(web3, args.network_http, args.pk)
     with open(args.contract_abi) as f:
         contract = web3.eth.contract(address=args.contract_address, abi=json.load(f))
     account = web3.eth.account.privateKeyToAccount(args.pk)
