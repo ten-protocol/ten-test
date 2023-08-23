@@ -7,17 +7,24 @@ from obscuro.test.helpers.log_subscriber import AllEventsLogSubscriber
 class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
+        # start a single wallet extension
         wallet = WalletExtension.start(self, name='shared')
+
+        # create two connections, each with their own user id (via a join call)
         network_connection_1 = self.get_network_connection(wallet=wallet)
         network_connection_2 = self.get_network_connection(wallet=wallet)
 
+        # each user id has two registered accounts made against it
         web3_1, account_1 = network_connection_1.connect_account1(self)
         web3_2, account_2 = network_connection_1.connect_account2(self)
         web3_3, account_3 = network_connection_2.connect_account3(self)
         web3_4, account_4 = network_connection_2.connect_account4(self)
 
+        # deploy a contract that emits a lifecycle event on calling a specific method as a transaction
         storage = Storage(self, web3_1, 100)
         storage.deploy(network_connection_1, account_1)
+
+        # make a subscription for all events to the contract, one through each of the connections
         subscriber_1 = AllEventsLogSubscriber(self, network_connection_1, storage,
                                               stdout='subscriber_1.out',
                                               stderr='subscriber_2.err')
@@ -28,6 +35,8 @@ class PySysTest(ObscuroNetworkTest):
                                               stderr='subscriber_2.err')
         subscriber_2.run()
 
+        # each account performs a transaction against the storage contract which results in a lifecycle
+        # event being emitted
         count = 0
         for (web3, account, network) in [(web3_1, account_1, network_connection_1),
                                          (web3_2, account_2, network_connection_1),
