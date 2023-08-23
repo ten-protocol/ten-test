@@ -2,7 +2,6 @@ import os
 from web3 import Web3
 from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.contracts.relevancy import Relevancy
-from obscuro.test.helpers.ws_proxy import WebServerProxy
 from obscuro.test.utils.properties import Properties
 
 
