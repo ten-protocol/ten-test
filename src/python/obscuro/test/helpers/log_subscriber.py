@@ -1,6 +1,5 @@
 import os, requests
 from pysys.constants import PROJECT
-from obscuro.test.helpers.ws_proxy import WebServerProxy
 
 
 class AllEventsLogSubscriber:
