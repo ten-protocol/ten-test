@@ -33,13 +33,15 @@ class PySysTest(GenericNetworkTest):
         self.addOutcome(PASSED)
 
     def hammer(self, network, private_key, num):
+        # register out-side of the script
+        network.connect(self, private_key=private_key)
+
+        # create the client
         stdout = os.path.join(self.output, 'hammer_%d.out'%num)
         stderr = os.path.join(self.output, 'hammer_%d.err'%num)
         script = os.path.join(self.input, 'hammer.js')
         args = []
-        args.extend(['--network_http', network.connection_url()])
         args.extend(['--network_ws', network.connection_url(web_socket=True)])
-        args.extend(['--pk_to_register', '%s' % private_key])
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Subscribing for event logs', timeout=10)
 

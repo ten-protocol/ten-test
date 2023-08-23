@@ -15,16 +15,12 @@ class PySysTest(GenericNetworkTest):
         key_storage = KeyStorage(self, web3)
         key_storage.deploy(network, account)
 
-        # go through a proxy to log websocket communications if needed
-        ws_url = network.connection_url(web_socket=True)
-        if self.PROXY: ws_url = WebServerProxy.create(self).run(ws_url, 'proxy.logs')
-
         # run test specific event subscriber
         stdout = os.path.join(self.output, 'subscriber.out')
         stderr = os.path.join(self.output, 'subscriber.err')
         script = os.path.join(self.input, 'subscriber.js')
         args = []
-        args.extend(['--network_ws', ws_url])
+        args.extend(['--network_ws', network.connection_url(web_socket=True)])
         args.extend(['--filter_key1', 'k1'])
         args.extend(['--filter_key2', 'k3'])
         self.run_javascript(script, stdout, stderr, args)

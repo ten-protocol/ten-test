@@ -1,7 +1,6 @@
 const fs = require('fs')
 const ethers = require('ethers')
 const commander = require('commander')
-const vk = require('viewing_key.js')
 
 require('console-stamp')(console, 'HH:MM:ss')
 
@@ -61,7 +60,6 @@ commander
   .option('--game_address <value>', 'Guess game contract address')
   .option('--game_abi <value>', 'Path to the Guess game ABI')
   .option('--pk_address <value>', 'The address of the account')
-  .option('--pk_to_register <value>', 'Private key used to register for a viewing key (obscuro only)')
   .parse(process.argv)
 
 const options = commander.opts()
@@ -70,14 +68,6 @@ const provider = new ethers.providers.WebSocketProvider(options.network_ws)
 const erc_contract = new ethers.Contract(options.erc_address, JSON.parse(fs.readFileSync(options.erc_abi)), provider)
 const game_contract = new ethers.Contract(options.game_address, JSON.parse(fs.readFileSync(options.game_abi)), provider)
 
-if (options.pk_to_register) {
-  let wallet = new ethers.Wallet('0x' + options.pk_to_register)
-  let sign = (message) => { return wallet.signMessage(message) }
-  let address = wallet.getAddress()
-  vk.generate_viewing_key(sign, options.network_http, address, task)
-}
-else {
-  task()
-}
+task()
 
 

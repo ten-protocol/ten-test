@@ -11,7 +11,7 @@ class PySysTest(GenericNetworkTest):
         # deployment of contract
         network = self.get_network_connection()
         web3, account1 = network.connect_account1(self)
-        account2 = Web3().eth.account.privateKeyToAccount(Properties().account2pk())
+        _, account2 = network.connect_account2(self)
 
         erc20 = MintedERC20Token(self, web3, 'OBXCoin', 'OBX', 1000000)
         erc20.deploy(network, account1)
@@ -24,8 +24,7 @@ class PySysTest(GenericNetworkTest):
         args.extend(['--network_http', '%s' % network.connection_url(web_socket=False)])
         args.extend(['--address', '%s' % erc20.address])
         args.extend(['--contract_abi', '%s' % erc20.abi_path])
-        args.extend(['--private_key', '%s' % Properties().account2pk()])
-        if self.is_obscuro(): args.append('--is_obscuro')
+        args.extend(['--polling_address', '%s' % account2.address])
         self.run_python(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting to run the polling loop', timeout=10)
 

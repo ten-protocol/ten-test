@@ -6,7 +6,10 @@ from obscuro.test.networks.default import Default
 class Geth(Default):
     """A Geth connection giving access to the underlying network."""
 
-    def connect(self, test, private_key, web_socket=False, check_funds=True, log=True, **kwargs):
+    def __init__(self, test, name=None, **kwargs):
+        super().__init__(test, name, **kwargs)
+
+    def connect(self, test, private_key, web_socket=False, check_funds=True, log=True):
         url = self.connection_url(web_socket)
 
         if log: test.log.info('Connecting to %s on %s', self.__class__.__name__, url)

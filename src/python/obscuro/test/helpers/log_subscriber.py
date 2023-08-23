@@ -20,13 +20,12 @@ class AllEventsLogSubscriber:
         args = []
         if network_http is None: network_http = self.network.connection_url(web_socket=False)
         if network_ws is None: network_ws = self.network.connection_url(web_socket=True)
-        args.extend(['--network_http', network_http])
         args.extend(['--network_ws', network_ws])
-        args.extend(['--address', self.contract.address])
+        args.extend(['--contract_address', self.contract.address])
         args.extend(['--contract_abi', self.contract.abi_path])
-        if pk_to_register: args.extend(['--pk_to_register', pk_to_register])
+        if pk_to_register: self.network.connect(self.test, private_key=pk_to_register)
         self.test.run_javascript(self.script, self.stdout, self.stderr, args)
-        self.test.waitForGrep(file=self.stdout, expr='Subscription confirmed with id:', timeout=10)
+        self.test.waitForGrep(file=self.stdout, expr='Subscription confirmed with id:', timeout=30)
 
 
 class FilterLogSubscriber:
@@ -46,19 +45,17 @@ class FilterLogSubscriber:
         """Run the javascript client event log subscriber. """
         if network_ws is None:
             network_ws = self.network.connection_url(web_socket=True)
-            if self.test.PROXY: network_ws = WebServerProxy.create(self.test).run(network_ws, 'proxy.logs')
 
         if network_http is None:
             network_http = self.network.connection_url(web_socket=False)
 
         args = []
         args.extend(['--script_server_port', '%d' % self.port])
-        args.extend(['--network_http', '%s' % network_http])
         args.extend(['--network_ws', network_ws])
         if filter_from_block: args.extend(['--filter_from_block', '%d' % filter_from_block])
         if filter_address: args.extend(['--filter_address', filter_address])
         if filter_topics:args.extend(['--filter_topics', " ".join(filter_topics)])
-        if pk_to_register: args.extend(['--pk_to_register', '%s' % pk_to_register])
+        if pk_to_register: self.network.connect(self.test, private_key=pk_to_register)
         self.test.run_javascript(self.script, self.stdout, self.stderr, args)
         self.test.waitForGrep(file=self.stdout, expr='Subscriber listening for instructions', timeout=10)
 

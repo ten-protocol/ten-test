@@ -1,26 +1,12 @@
 # Utility script for a funded client to transfer funds to a set of recipients. Used when we want to
-# create some transactions running in the background for a given test.
+# create some transactions running in the background for a given test. Note that it is assumed the
+# client / account has been registered outside the scope of this script (e.g. for use against obscuro)
 #
 from web3 import Web3
-import logging, requests, random
-import argparse, json, sys
-from eth_account.messages import encode_defunct
+import logging, random
+import argparse, sys
 
 logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
-
-
-def generate_viewing_key(web3, url, private_key):
-    logging.info('Generating viewing key for %s', private_key)
-
-    account = web3.eth.account.privateKeyToAccount(private_key)
-
-    headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
-    data = {"address": account.address}
-    response = requests.post('%s/generateviewingkey/' % url, data=json.dumps(data), headers=headers)
-
-    signed_msg = web3.eth.account.sign_message(encode_defunct(text='vk' + response.text), private_key=private_key)
-    data = {"signature": signed_msg.signature.hex(), "address": account.address}
-    requests.post('%s/submitviewingkey/' % url, data=json.dumps(data), headers=headers)
 
 
 def transfer_value(web3, account, amount, recipient):
@@ -49,7 +35,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     web3 = Web3(Web3.HTTPProvider(args.network_http))
-    generate_viewing_key(web3, args.network_http, args.pk_to_register)
     account = web3.eth.account.privateKeyToAccount(args.pk_to_register)
     recipients = args.recipients.split(',')
 

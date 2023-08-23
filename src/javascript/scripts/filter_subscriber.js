@@ -1,7 +1,9 @@
+// Subscribe to specific events on the network. Note that it is assumed the client / account has been registered
+// outside the scope of this script e.g. for use against obscuro.
+//
 const Web3 = require('web3')
 const http = require('http')
 const commander = require('commander')
-const vk = require('viewing_key.js')
 
 function decodeLog(log) {
   //console.log('Full log: ', log)
@@ -65,25 +67,15 @@ commander
   .version('1.0.0', '-v, --version')
   .usage('[OPTIONS]...')
   .option('--script_server_port <value>', 'This script listening port for HTTP posts')
-  .option('--network_http <value>', 'Http connection URL to the network')
   .option('--network_ws <value>', 'Web socket connection URL to the network')
   .option('--filter_address <value>', 'The contract address to filter on', null)
   .option('--filter_from_block <value>', 'The from block to filter on', null)
   .option('--filter_topics <values...>', 'The first filter topic', null)
-  .option('--pk_to_register <value>', 'Private key used to register for a viewing key (obscuro only)', null)
   .parse(process.argv)
 
 // in global scope the options, web3 connection and server reference
 var subscription = null
 const options = commander.opts()
-const web3 = new Web3(`${options.network_ws}`)
+const web3 = new Web3(options.network_ws)
 filter_topics = (options.filter_topics + '').split(' ')
-
-// if pk supplied generate viewing key else just run
-if (options.pk_to_register) {
-  let sign = (message) => { return web3.eth.accounts.sign(message, '0x' + options.pk_to_register) }
-  let address = web3.eth.accounts.privateKeyToAccount(options.pk_to_register).address
-  vk.generate_viewing_key(sign, options.network_http, address, startServer)
-}
-else
-  startServer()
+startServer()

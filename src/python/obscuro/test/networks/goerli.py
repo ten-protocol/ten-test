@@ -5,8 +5,8 @@ from obscuro.test.networks.default import Default
 class Goerli(Default):
     """A Goerli connection giving access to the underlying network."""
 
-    def __init__(self, test, name=None):
-        super().__init__(test, name)
+    def __init__(self, test, name=None, **kwargs):
+        super().__init__(test, name, **kwargs)
         props = Properties()
         self.HOST = props.host_http('goerli')
         self.WS_HOST = props.host_ws('goerli')

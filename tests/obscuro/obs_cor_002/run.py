@@ -44,6 +44,6 @@ class PySysTest(ObscuroNetworkTest):
         subscriber = AllEventsLogSubscriber(self, network, contract,
                                             stdout='subscriber_%s.out' % name,
                                             stderr='subscriber_%s.err' % name)
-        subscriber.run(pk_to_register, network.connection_url(web_socket=False), network.connection_url(web_socket=True))
+        subscriber.run(pk_to_register)
 
 

@@ -20,10 +20,10 @@ class PySysTest(ObscuroNetworkTest):
 
         # collect events
         recv_sub = AllEventsLogSubscriber(self, network, recv_contract, stdout='recv_sub.out', stderr='recv_sub.err')
-        recv_sub.run(None, network.connection_url(), network.connection_url(web_socket=True))
+        recv_sub.run()
 
         send_sub = AllEventsLogSubscriber(self, network, send_contract, stdout='send_sub.out', stderr='send_sub.err')
-        send_sub.run(None, network.connection_url(), network.connection_url(web_socket=True))
+        send_sub.run()
 
         # perform transfers
         last_balance = 0

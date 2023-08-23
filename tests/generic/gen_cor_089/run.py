@@ -15,16 +15,12 @@ class PySysTest(GenericNetworkTest):
         contract = Relevancy(self, web3)
         contract.deploy(network, account1)
 
-        # go through a proxy to log websocket communications if needed
-        ws_url = network.connection_url(web_socket=True)
-        ws_url = WebServerProxy.create(self).run(ws_url, 'proxy.logs')
-
         # run test specific event subscriber
         stdout = os.path.join(self.output, 'subscriber.out')
         stderr = os.path.join(self.output, 'subscriber.err')
         script = os.path.join(self.input, 'subscriber.js')
         args = []
-        args.extend(['--network_ws', ws_url])
+        args.extend(['--network_ws', network.connection_url(web_socket=True)])
         args.extend(['--address', account1.address])
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Subscribed for event logs', timeout=10)
