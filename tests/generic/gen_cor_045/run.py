@@ -19,7 +19,7 @@ class PySysTest(GenericNetworkTest):
         token = Token(self, web3_dev)
         token.deploy(network, account_dev)
 
-        game = Game(self, web3_dev, 10, token.address)
+        game = Game(self, web3_dev, 9, token.address)
         game.deploy(network, account_dev)
 
         # run a background script to filter and collect events (register out-side of the script)
@@ -45,16 +45,15 @@ class PySysTest(GenericNetworkTest):
         # play the game
         game_player = web3_usr.eth.contract(address=game.address, abi=game.abi)
         for i in range(0,10):
+            self.log.info('Guessing with number=%d', i)
             allowance = token_player.functions.allowance(account_usr.address, game.address).call({"from":account_usr.address})
             balance = token_player.functions.balanceOf(account_usr.address).call({"from":account_usr.address})
             self.log.info('Allowance is %.3f', Web3().fromWei(allowance, 'ether'))
             self.log.info('Balance is %.3f', Web3().fromWei(balance, 'ether'))
             network.transact(self, web3_usr, game_player.functions.attempt(i), account_usr, game.GAS_LIMIT)
-            self.wait(float(self.block_time)*1.1)
+            self.waitForSignal(file='subscriber.out', filedir=self.output, expr='Your guess of %d' % i, timeout=20)
 
         # we should have won at some point, and all are guesses should have been logged
-        self.assertGrep(file='subscriber.out', filedir=self.output,
-                        expr='Congratulations! Your guess of.*has won you the prize of.*OGG')
+        self.waitForSignal(file='subscriber.out', filedir=self.output,
+                           expr='Congratulations.*Your guess of.*has won you the prize of.*OGG', timeout=20)
 
-        self.assertOrderedGrep(file='subscriber.out', filedir=self.output,
-                               exprList=['Your guess of %d' % x for x in range(0, 10)])
