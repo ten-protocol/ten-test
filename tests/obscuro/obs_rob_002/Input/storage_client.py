@@ -29,6 +29,7 @@ if __name__ == "__main__":
     parser.add_argument('-u', '--network_http', help='Connection URL')
     parser.add_argument('-a', '--address', help='Address of the contract')
     parser.add_argument('-b', '--contract_abi', help='Abi of the contract')
+    parser.add_argument('-p', '--pk_to_register', help='Private key of account to poll')
     args = parser.parse_args()
 
     web3 = Web3(Web3.HTTPProvider(args.network_http))
