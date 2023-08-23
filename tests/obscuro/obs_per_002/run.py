@@ -57,19 +57,19 @@ class PySysTest(GenericNetworkTest):
 
     def setup_client(self, name):
         pk = secrets.token_hex(32)
-        connection = self.get_network_connection(name=name)
-        _, account = connection.connect(self, private_key=pk)
+        network = self.get_network_connection(name=name)
+        _, account = network.connect(self, private_key=pk)
         self.distribute_native(account, 1)
-        return pk, connection
+        return pk, network
 
-    def run_client(self, name, pk, connection):
+    def run_client(self, name, pk, network):
         """Run a background load client. """
         stdout = os.path.join(self.output, '%s.out' % name)
         stderr = os.path.join(self.output, '%s.err' % name)
         script = os.path.join(self.input, 'client.py')
         args = []
-        args.extend(['--network_http', connection.connection_url()])
-        args.extend(['--chainId', '%s' % connection.chain_id()])
+        args.extend(['--network_http', network.connection_url()])
+        args.extend(['--chainId', '%s' % network.chain_id()])
         args.extend(['--pk', pk])
         args.extend(['--num_accounts', '%d' % self.ACCOUNTS])
         args.extend(['--num_iterations', '%d' % self.ITERATIONS])

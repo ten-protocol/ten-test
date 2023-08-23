@@ -1,7 +1,6 @@
 const Web3 = require('web3')
 const http = require('http')
 const commander = require('commander')
-const vk = require('viewing_key.js')
 
 require('console-stamp')(console, 'HH:MM:ss')
 

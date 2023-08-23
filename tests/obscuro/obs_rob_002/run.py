@@ -11,7 +11,7 @@ class PySysTest(ObscuroNetworkTest):
     NUM_GUESSERS = 4
     NUM_STORAGE = 4
     NUM_ERROR = 2
-    DURATION = 120
+    DURATION = 60
 
     def __init__(self, descriptor, outsubdir, runner):
         super().__init__(descriptor, outsubdir, runner)
@@ -63,26 +63,26 @@ class PySysTest(ObscuroNetworkTest):
         self.log.info('Call shows value %d', storage.contract.functions.retrieve().call())
         self.assertTrue(value == 1812)
 
-    def guesser_client(self, address, abi_path, num, connection):
-        self._client(address, abi_path, 'guesser_client', num, connection)
+    def guesser_client(self, address, abi_path, num, network):
+        self._client(address, abi_path, 'guesser_client', num, network)
 
-    def storage_client(self, address, abi_path, num, connection):
-        self._client(address, abi_path, 'storage_client', num, connection)
+    def storage_client(self, address, abi_path, num, network):
+        self._client(address, abi_path, 'storage_client', num, network)
 
-    def error_client(self, address, abi_path, num, connection):
-        self._client(address, abi_path, 'error_client', num, connection)
+    def error_client(self, address, abi_path, num, network):
+        self._client(address, abi_path, 'error_client', num, network)
 
-    def _client(self, address, abi_path, name, num, connection):
+    def _client(self, address, abi_path, name, num, network):
         pk = secrets.token_hex(32)
         account = Web3().eth.account.privateKeyToAccount(pk)
         self.distribute_native(account, 1)
-        connection.connect(self, private_key=pk)
+        network.connect(self, private_key=pk)
 
         stdout = os.path.join(self.output, '%s_%d.out' % (name, num))
         stderr = os.path.join(self.output, '%s_%d.err' % (name, num))
         script = os.path.join(self.input, '%s.py' % name)
         args = []
-        args.extend(['--network_http', '%s' % connection.connection_url()])
+        args.extend(['--network_http', '%s' % network.connection_url()])
         args.extend(['--address', '%s' % address])
         args.extend(['--contract_abi', '%s' % abi_path])
         args.extend(['--pk_to_register', '%s' % pk])

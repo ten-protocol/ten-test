@@ -1,10 +1,10 @@
 # Utility script for a funded client to transfer funds to a set of recipients. Used when we want to
-# create some transactions running in the background for a given test.
+# create some transactions running in the background for a given test. Note that it is assumed the
+# client / account has been registered outside the scope of this script (e.g. for use against obscuro)
 #
 from web3 import Web3
-import logging, requests, random
-import argparse, json, sys
-from eth_account.messages import encode_defunct
+import logging, random
+import argparse, sys
 
 logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
 

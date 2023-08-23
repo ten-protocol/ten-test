@@ -1,7 +1,6 @@
 const fs = require('fs')
 const Web3 = require('web3')
 const commander = require('commander')
-const vk = require('viewing_key.js')
 
 require('console-stamp')(console, 'HH:MM:ss')
 
@@ -11,7 +10,6 @@ function get_balance() {
       if (error) {
         console.log('Error returned is ', error)
       } else {
-        //this should only pass if the viewing key was registered successfully
         console.log('Account balance is', result)
         console.log('Starting to run the polling loop')
         task();

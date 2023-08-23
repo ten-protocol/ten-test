@@ -220,14 +220,15 @@ class ObscuroNetworkTest(GenericNetworkTest):
             self.funds_client(network, funders[i], recipients, i)
 
     def funds_client(self, pk, recipients, num):
-        connection = self.get_network_connection(name='funds_%d' % num)
+        network = self.get_network_connection(name='funds_%d' % num)
+        network.connect(self, private_key=pk)
         self.distribute_native(Web3().eth.account.privateKeyToAccount(pk), 1)
 
         stdout = os.path.join(self.output, 'funds_%d.out' % num)
         stderr = os.path.join(self.output, 'funds_%d.err' % num)
         script = os.path.join(PROJECT.root, 'src', 'python', 'scripts', 'funds_client.py')
         args = []
-        args.extend(['--network_http', '%s' % connection.connection_url()])
+        args.extend(['--network_http', '%s' % network.connection_url()])
         args.extend(['--pk_to_register', '%s' % pk])
         args.extend(['--recipients', ','.join([str(i) for i in recipients])])
         self.run_python(script, stdout, stderr, args)
