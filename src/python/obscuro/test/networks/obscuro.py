@@ -64,7 +64,7 @@ class Obscuro(Default):
 
         self.ID = self.__join()
         if self.ID is None:
-            test.addOutcome(BLOCKED, 'Error joining network for connection')
+            test.addOutcome(BLOCKED, 'Error joining network for connection', abortOnError=True)
         else:
             test.log.info('Wallet %s has user id %s', self.WALLET.name, self.ID)
 

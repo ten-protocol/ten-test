@@ -29,7 +29,7 @@ class PySysTest(ObscuroNetworkTest):
         connections = []
         primary_userid = 1
         additional_userid = 0
-        for i in range(0, 250):
+        for i in range(0, 500):
             self.log.info('')
             pk = secrets.token_hex(32)
             if random.randint(0, 4) < 3:
@@ -50,3 +50,4 @@ class PySysTest(ObscuroNetworkTest):
         self.distribute_native(account, 0.01)
         network_connection.transact(self, web3, storage.contract.functions.store(count), account, storage.GAS_LIMIT)
         self.waitForSignal(file='subscriber.out', expr='Received event: Stored', condition='==1', timeout=10)
+        self.assertGrep(file='subscriber.out', expr='Received event: Stored')
