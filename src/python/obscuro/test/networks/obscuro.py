@@ -1,5 +1,6 @@
 import requests, json
 from web3 import Web3
+from pysys.constants import BLOCKED
 from obscuro.test.networks.default import Default
 from obscuro.test.networks.geth import Geth
 from obscuro.test.utils.properties import Properties
@@ -50,15 +51,22 @@ class Obscuro(Default):
         super().__init__(test, name, **kwargs)
         self.CHAIN_ID = Properties().chain_id(test.env)
 
-        if 'wallet' in kwargs: self.WALLET = kwargs['wallet']
-        else: self.WALLET = WalletExtension.start(test, name=name)
+        if 'wallet' in kwargs:
+            self.WALLET = kwargs['wallet']
+            test.log.info('Using supplied wallet for connection %s', self.WALLET.name)
+        else:
+            self.WALLET = WalletExtension.start(test, name=name)
 
         self.HOST = 'http://127.0.0.1'
         self.WS_HOST = 'ws://127.0.0.1'
         self.PORT = self.WALLET.port
         self.WS_PORT = self.WALLET.ws_port
+
         self.ID = self.__join()
-        test.log.info('Wallet %s has user id %s', name, self.ID)
+        if self.ID is None:
+            test.addOutcome(BLOCKED, 'Error joining network for connection')
+        else:
+            test.log.info('Wallet %s has user id %s', self.WALLET.name, self.ID)
 
     def connection_url(self, web_socket=False):
         port = self.PORT if not web_socket else self.WS_PORT
@@ -85,7 +93,8 @@ class Obscuro(Default):
     def __join(self):
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         response = requests.get('%s:%d/join/' % (self.HOST, self.PORT),  headers=headers)
-        return response.text
+        if response.ok: return response.text.strip()
+        return None
 
     def __register(self, account):
         text_to_sign = "Register " + self.ID + " for " + str(account.address).lower()
