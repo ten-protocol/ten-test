@@ -44,13 +44,13 @@ The top level structure of the project is as below;
 ```
 
 The [.default.properties](./.default.properties) file contains properties for running the tests that are common to any 
-user. User specific properties should be added into a `.username.properties` file (where `username` is the output of 
+user. User specific properties should be added into a `.<username>.properties` file (where `<username>` is the output of 
 running `whoami`) at the root of the project. As this file could contain sensitive data such as account private keys, 
 it should never be committed back into the main repo (the [.gitignore](./.gitignore) should prevent this). Properties 
 will first be looked for in a `.username.properties` should it exist, and if not will fall back to the default properties. 
 
 
-Setup and Run locally on host machine
+Setup and run locally on host machine
 -------------------------------------
 As stated earlier, running the tests requires the `obscuro-test` repository to be cloned in the same parent directory 
 as `go-obscuro`, and the dependent artifacts to be built (these are the wallet extension, and the ABIs for the bridge
@@ -114,10 +114,10 @@ python3 -m pip install py-solc-x
 Once installed it should be possible to run all tests from the pysys.py cli as described in the following sections. Note
 that depending on differences in your installation, and should you want to add in your own accounts on Goerli, you 
 may need to override the `.default.properties` file by creating a user specific properties file e.g. 
-`.username.properties` file, where `username` is the output of running `whoami`. Common overrides will include the path 
-to various binaries used when running the tests, and account details e.g. for real accounts on Goerli. An example of an 
-override properties file is as given below where binary locations and the Infura project ID for the user are set as 
-overrides;
+`.<username>.properties` file, where `<username>` is the output of running `whoami`. Common overrides will include the path 
+to various binaries used when running the tests, and account details e.g. for real accounts on Goerli or Arbitrum. An 
+example of an override properties file is as given below where binary locations and the project ID for Goerli and 
+Arbitrum are set as overrides, along with real accounts as set up within metamask;
 
 ```
 [binaries.darwin]
@@ -126,16 +126,27 @@ ganache = /opt/homebrew/bin/ganache-cli
 node = /opt/homebrew/bin/node
 node_path = /opt/homebrew/lib/node_modules
 
+[env.all]
+Account1PK=<private key of account 1 available e.g. via metamask>
+Account2PK=<private key of account 2>
+Account3PK=<private key of account 3>
+Account4PK=<private key of account 4>
+
 [env.goerli]
-ProjectID=266273d6b9a544f3ad56c725f38dfd56
+ProjectID = <id>
+
+[env.arbitrum]
+APIKey = <api key>
 ```
 
 Print and run tests
 --------------------
 Each test is a separate directory within `obscuro-test/tests` where the directory name denotes the testcase id. Each 
 test will contain a `run.py` file (the execution and validation steps) and a `pysystest.xml` file (metadata about the 
-test such as its title, purpose, supported modes it can be run in etc). To print out information on the tests, or to run 
-them, change directory to `obscuro-test/tests`and run;
+test such as its title, purpose, supported modes it can be run in etc). Note that the tests can be run against a variety 
+of networks using the `-m <mode>` option. The E2E tests have specifically been designed such that any generic tests 
+can be run against Obscuro, Ganache, Arbitrum or Goerli etc. To print out information on the tests, or to run them 
+against a particular network, change directory to `obscuro-test/tests`and run as below;
 
 ```bash
 # print out test titles
@@ -155,28 +166,20 @@ pysys.py run -m obscuro.local
 
 # run the tests against a local ganache network 
 pysys.py run -m ganache
-```
 
-To run the same tests against Goerli, a `.username.properties` file should be created in the root of the working 
-directory of the project detailing the existing accounts pre-setup; 
+# run the tests against the Arbitrum network 
+pysys.py run -m arbitrum
 
-```
-[env.all]
-Account1PK=<private key of account 1 available e.g. via metamask>
-Account2PK=<private key of account 2>
-Account3PK=<private key of account 3>
-Account4PK=<private key of account 4>
-
-[env.goerli]
-ProjectID=<project ID>
-```
-
-To run the tests against Goerli use;
-
-```bash
-# run the tests against goerli
+# run the tests against the Goerli network 
 pysys.py run -m goerli
 ```
+
+Note that should you wish to run against an Obscuro local testnet, you will need to build and run the local testnet 
+yourself using the approach as described in the [go-obscuro readme](https://github.com/obscuronet/go-obscuro#building-and-running-a-local-testnet). 
+Both the local testnet and the faucet will need to be started. For local testnets the `.default.properties` can be used 
+as is as no real accounts are required. To run the same tests against Goerli or Arbitrum, a `.username.properties` 
+file should be created in the root of the working directory of the project detailing the accounts pre-setup as 
+described earlier. 
 
 
 Running a specific test or range of tests
@@ -203,9 +206,6 @@ pysys.py run -c 5 gen_cor_003
 pysys.py run -v DEBUG gen_cor_003
 ```
 
-Whilst pysys does support running tests in a multi-threaded environment, this is currently not supported here due to the 
-nonce needing to be synchronised in a single thread when running using the test accounts. This may be changed in the 
-future where we partition user accounts across running test groups. 
 
 
 
