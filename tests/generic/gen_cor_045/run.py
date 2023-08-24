@@ -16,12 +16,9 @@ class PySysTest(GenericNetworkTest):
         game = Game(self, web3_dev, 9, token.address)
         game.deploy(network_dev, account_dev)
 
-        # we need to register the end user first for event relevancy rules to take effect
+        # end usr playing the game
         network_usr = self.get_network_connection(name='usr_connection')
         web3_usr, account_usr = network_usr.connect_account1(self)
-
-        # run a background script to filter and collect events (register out-side of the script)
-        network_usr.connect(self, private_key=Properties().gg_endusr_pk())
 
         stdout = os.path.join(self.output, 'subscriber.out')
         stderr = os.path.join(self.output, 'subscriber.err')
@@ -42,8 +39,10 @@ class PySysTest(GenericNetworkTest):
 
         # play the game
         game_player = web3_usr.eth.contract(address=game.address, abi=game.abi)
+        expected = []
         for i in range(0,10):
             self.log.info('Guessing with number=%d', i)
+            expected.append('Your guess of %d' % i)
             allowance = token_player.functions.allowance(account_usr.address, game.address).call({"from":account_usr.address})
             balance = token_player.functions.balanceOf(account_usr.address).call({"from":account_usr.address})
             self.log.info('Allowance is %.3f', Web3().fromWei(allowance, 'ether'))
@@ -55,5 +54,5 @@ class PySysTest(GenericNetworkTest):
         self.waitForSignal(file='subscriber.out', filedir=self.output,
                            expr='Congratulations.*Your guess of.*has won you the prize of.*OGG', timeout=20)
 
-        self.assertLineCount(file='subscriber.out', filedir=self.output, expr='Your guess of', condition='==10')
+        self.assertOrderedGrep(file='subscriber.out', exprList=expected)
 
