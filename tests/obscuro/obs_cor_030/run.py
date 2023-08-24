@@ -44,3 +44,20 @@ class PySysTest(ObscuroNetworkTest):
                                          (web3_4, account_4, network_connection_2)]:
             count = count + 1
             network.transact(self, web3, storage.contract.functions.store(count), account, storage.GAS_LIMIT)
+
+        self.waitForSignal(file='subscriber_1.out', expr='Received event: Stored', condition='==4', timeout=10)
+        self.waitForSignal(file='subscriber_1.out', expr='Received event: Stored', condition='==4', timeout=10)
+
+        expr_list = []
+        expr_list.append('Received event: Stored')
+        expr_list.append('returnValues: Result.*value: \'1\'')
+        expr_list.append('Received event: Stored')
+        expr_list.append('returnValues: Result.*value: \'2\'')
+        expr_list.append('Received event: Stored')
+        expr_list.append('returnValues: Result.*value: \'3\'')
+        expr_list.append('Received event: Stored')
+        expr_list.append('returnValues: Result.*value: \'4\'')
+        self.assertOrderedGrep(file='subscriber_1.out', exprList=expr_list)
+        self.assertOrderedGrep(file='subscriber_2.out', exprList=expr_list)
+        self.assertLineCount(file='subscriber_1.out', expr='Received event: Stored', condition='==4')
+        self.assertLineCount(file='subscriber_2.out', expr='Received event: Stored', condition='==4')
