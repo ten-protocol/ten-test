@@ -11,7 +11,7 @@
 
 Project repo for running end to end system tests against a variety of networks, with [obscuro](https://obscu.ro/) being 
 the primary network under test. Other networks supported include [ganache](https://trufflesuite.com/ganache/), 
-[goerli via infura](https://infura.io/), and [geth](https://geth.ethereum.org/docs/getting-started). The repo uses the 
+[goerli via infura](https://infura.io/), [arbitrum](https://arbitrum.io/) and [geth](https://geth.ethereum.org/docs/getting-started). The repo uses the 
 [pysys](https://pysys-test.github.io/pysys-test/) test framework to manage all tests and their execution. All tests are 
 fully system level using [web3.py](https://web3py.readthedocs.io/en/stable/) to interact with the networks which are 
 managed outside the scope of the tests (with the exception of ganache which can be started locally). Note the project is 
