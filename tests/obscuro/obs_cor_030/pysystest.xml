@@ -2,9 +2,9 @@
 <pysystest type="auto">
 
     <description>
-        <title>Gateway - single wallet with two user_id connections</title>
+        <title>Gateway - single wallet with two user_id connections and two accounts registered</title>
         <purpose><![CDATA[Tests transacting and subscribing for event logs with two user_ids, each with two accounts
-registered. For each user_id a single event log subscription is made for all events from a given contract i.e.
+registered. For each user_id a single event log subscription is made for all events from a given contract. 
 
  - One wallet extension
  - Two users ids created through the join operation (id_1 and id_2 say)
