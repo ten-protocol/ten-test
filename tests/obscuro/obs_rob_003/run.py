@@ -6,6 +6,7 @@ from obscuro.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
 class PySysTest(ObscuroNetworkTest):
+    ITERATIONS = 500
 
     def execute(self):
         # start a single wallet extension
@@ -29,7 +30,7 @@ class PySysTest(ObscuroNetworkTest):
         connections = []
         primary_userid = 1
         additional_userid = 0
-        for i in range(0, 500):
+        for i in range(0, self.ITERATIONS):
             self.log.info('')
             pk = secrets.token_hex(32)
             if random.randint(0, 4) < 3:
