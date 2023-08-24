@@ -113,12 +113,12 @@ python3 -m pip install py-solc-x
 ```
 
 Once installed it should be possible to run all tests from the pysys.py cli as described in the following sections. Note
-that depending on differences in your installation, and should you want to add in your own accounts on Goerli, you 
-may need to override the `.default.properties` file by creating a user specific properties file e.g. 
-`.<username>.properties` file, where `<username>` is the output of running `whoami`. Common overrides will include the path 
-to various binaries used when running the tests, and account details e.g. for real accounts on Goerli or Arbitrum. An 
-example of an override properties file is as given below where binary locations and the project ID for Goerli and 
-Arbitrum are set as overrides, along with real accounts as set up within metamask;
+that depending on differences in your installation, and should you want to add in your own accounts on Goerli or Arbitrum, 
+you may need to override the `.default.properties` file by creating a user specific properties file e.g. 
+`.<username>.properties` file, where `<username>` is the output of running `whoami`. Common overrides will include the 
+path to various binaries used when running the tests, and account details. An example of an override properties file is 
+as given below where binary locations and the project ID for Goerli and Arbitrum are set as overrides, along with real 
+accounts as set up within metamask;
 
 ```
 [binaries.darwin]
@@ -144,10 +144,10 @@ Print and run tests
 --------------------
 Each test is a separate directory within `obscuro-test/tests` where the directory name denotes the testcase id. Each 
 test will contain a `run.py` file (the execution and validation steps) and a `pysystest.xml` file (metadata about the 
-test such as its title, purpose, supported modes it can be run in etc). Note that the tests can be run against a variety 
+test such as its title, purpose, supported modes it can be run in). Note that the tests can be run against a variety 
 of networks using the `-m <mode>` option. The E2E tests have specifically been designed such that any generic tests 
-can be run against Obscuro, Ganache, Arbitrum or Goerli etc. To print out information on the tests, or to run them 
-against a particular network, change directory to `obscuro-test/tests`and run as below;
+can be run against Obscuro, Ganache, Arbitrum or Goerli. To print out information on the tests, or to run them 
+against a particular network, change directory to `obscuro-test/tests` and run as below;
 
 ```bash
 # print out test titles
@@ -177,10 +177,10 @@ pysys.py run -m goerli
 
 Note that should you wish to run against an Obscuro local testnet, you will need to build and run the local testnet 
 yourself using the approach as described in the [go-obscuro readme](https://github.com/obscuronet/go-obscuro#building-and-running-a-local-testnet). 
-Both the local testnet and the faucet will need to be started. For local testnets the `.default.properties` can be used 
-as is as no real accounts are required. To run the same tests against Goerli or Arbitrum, a `.username.properties` 
-file should be created in the root of the working directory of the project detailing the accounts pre-setup as 
-described earlier. 
+Both the local testnet and the faucet will need to be started.To run against ganache the test framework will start the 
+local ganache network on your behalf, and tear it down when test execution is complete. To run the same tests against 
+Goerli or Arbitrum, the `.<username>.properties` file should be created in the root `obscuro-test` checkout directory 
+as described earlier. 
 
 
 Running a specific test or range of tests
