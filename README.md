@@ -50,34 +50,12 @@ it should never be committed back into the main repo (the [.gitignore](./.gitign
 will first be looked for in a `.username.properties` should it exist, and if not will fall back to the default properties. 
 
 
-Quickstart Setup and Run (via docker)
--------------------------------------
-The easiest way to set up a host to run the tests is to create a docker container with all dependencies pre-installed. 
-The obscuro-test repository should be cloned into the same parent directory as [go-obscuro](https://github.com/obscuronet/go-obscuro) 
-as running the tests will use the wallet_extension and bridge contract ABIs built from the working copy of go-obscuro. 
-To build the artifacts and the docker container, in the root of working directory of obscuro-test run;
-
-```bash
-./utils/docker/build_image.sh
-```
-
-Once built, to connect to the container run;
-
-```bash
-./utils/docker/run_image.sh
-```
-
-Once logged into the container you can run the tests against a local testnet, dev-testnet, or the main testnet as 
-described further below. 
-
-
 Setup and Run locally on host machine
 -------------------------------------
-If you want full control to develop tests, and/or to run against the go-obscuro simulation, the recommended way is to 
-install all dependencies on the local machine. As stated earlier, running the tests requires the `obscuro-test` repository 
-to be cloned in the same parent directory as `go-obscuro`, and the dependent artifacts to be built. To build the 
-artifacts use the `get_artifacts.sh` script in the root of the`obscuro-test` repository. To install all dependencies for 
-running the Obscuro tests use the following on OSX or Linux accordingly;
+As stated earlier, running the tests requires the `obscuro-test` repository to be cloned in the same parent directory 
+as `go-obscuro`, and the dependent artifacts to be built (these are the wallet extension, and the ABIs for the bridge
+contracts); to build the artifacts run `./get_artifacts.sh` in the root of the`obscuro-test` directory. To install all 
+dependencies for running the Obscuro tests use the following on OSX or Linux accordingly;
 
 ### OSX (Monterey 12.4)
 ```bash
@@ -94,12 +72,14 @@ brew install gnuplot
 npm install solc@0.8.15 --global
 npm install console-stamp --global
 npm install ganache --global
+npm install ganache-cli --global
 npm install web3@1.9.0 --global
 npm install ethers@5.7.2 --global
 npm install commander --global
 
 pip3 install web3==5.31.3
 pip3 install pysys==1.6.1
+pip3 install solc-select
 pip3 install py-solc-x
 ```
 
@@ -113,11 +93,13 @@ apt update
 apt install -y curl
 apt install -y solc
 apt install -y gnuplot
+apt install -y ethereum
 
 curl -sL https://deb.nodesource.com/setup_18.x | bash -
 apt-get install -y nodejs
 npm install console-stamp --global
 npm install ganache --global
+npm install ganache-cli --global
 npm install web3@1.9.0 --global
 npm install ethers@5.7.2 --global
 npm install commander --global
@@ -125,6 +107,7 @@ npm install commander --global
 apt install -y python3-pip
 python3 -m pip install web3==5.31.3
 python3 -m pip install pysys==1.6.1
+python3 -m pip install solc-select
 python3 -m pip install py-solc-x
 ```
 
