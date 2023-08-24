@@ -125,17 +125,17 @@ class GenericNetworkTest(BaseTest):
             token = web3.eth.contract(address=token_address, abi=json.load(f))
         return token.functions.balanceOf(account.address).call()
 
-    def get_network_connection(self, name='primary_connection'):
+    def get_network_connection(self, name='primary_connection', **kwargs):
         """Get the network connection."""
         if self.is_obscuro():
-            return Obscuro(self, name)
+            return Obscuro(self, name, **kwargs)
         elif self.env == 'goerli':
-            return Goerli(self, name)
+            return Goerli(self, name, **kwargs)
         elif self.env == 'ganache':
-            return Ganache(self, name)
+            return Ganache(self, name, **kwargs)
         elif self.env == 'arbitrum':
-            return Arbitrum(self, name)
-        return Default(self, name)
+            return Arbitrum(self, name, **kwargs)
+        return Default(self, name, **kwargs)
 
     def get_l1_network_connection(self, name='primary_l1_connection'):
         """Get the layer 1 network connection used by a layer 2."""

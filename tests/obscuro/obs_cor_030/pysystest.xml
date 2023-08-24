@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Gateway - single wallet with two user_id connections and two accounts registered</title>
+        <purpose><![CDATA[Tests transacting and subscribing for event logs with two user_ids, each with two accounts
+registered. For each user_id a single event log subscription is made for all events from a given contract.
+
+ - One wallet extension
+ - Two users ids created through the join operation (id_1 and id_2 say)
+ - Each user id has two registered accounts (account_1 and account_2 against id_1, account_3 and account_4 against id_2)
+ - A contract is deployed which emits an event of the form event Stored(uint256 value) on a specific transaction,
+   so it has no indexed fields for the relevancy rules and would therefore be treated as a lifecycle event
+ - One subscription is made against each of the user ids for all events from the contract (so there is nothing in the
+   filter condition to identify which account to be used in the subscription with the network)
+ - Each user initiates a transaction to result in a Stored event to be emitted (so a total of 4 events will be emitted)
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>gateway</group>
+        </groups>
+        <modes inherit="true">
+            <mode>obscuro.local</mode>
+            <mode>obscuro.dev</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

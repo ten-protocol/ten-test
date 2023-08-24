@@ -1,7 +1,6 @@
 import os
 from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.contracts.storage import Storage
-from obscuro.test.helpers.ws_proxy import WebServerProxy
 
 
 class PySysTest(GenericNetworkTest):

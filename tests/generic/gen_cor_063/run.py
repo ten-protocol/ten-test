@@ -1,8 +1,6 @@
 import os
-from web3 import Web3
 from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.contracts.erc20 import MintedERC20Token
-from obscuro.test.utils.properties import Properties
 
 
 class PySysTest(GenericNetworkTest):
