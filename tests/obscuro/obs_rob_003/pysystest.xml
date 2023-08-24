@@ -13,6 +13,7 @@ single registered user. Once done we check some random accounts can trade throug
     <classification>
         <groups inherit="true">
             <group>gateway</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.local</mode>
