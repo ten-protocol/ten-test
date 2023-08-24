@@ -47,7 +47,8 @@ The [.default.properties](./.default.properties) file contains properties for ru
 user. User specific properties should be added into a `.<username>.properties` file (where `<username>` is the output of 
 running `whoami`) at the root of the project. As this file could contain sensitive data such as account private keys, 
 it should never be committed back into the main repo (the [.gitignore](./.gitignore) should prevent this). Properties 
-will first be looked for in a `.username.properties` should it exist, and if not will fall back to the default properties. 
+will first be looked for in the `.<username>.properties` should it exist, and if not will fall back to the default
+properties. 
 
 
 Setup and run locally on host machine
