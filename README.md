@@ -55,8 +55,8 @@ Setup and run locally on host machine
 -------------------------------------
 As stated earlier, running the tests requires the `obscuro-test` repository to be cloned in the same parent directory 
 as `go-obscuro`, and the dependent artifacts to be built (these are the wallet extension, and the ABIs for the bridge
-contracts); to build the artifacts run `./get_artifacts.sh` in the root of the`obscuro-test` directory. To install all 
-dependencies for running the Obscuro tests use the following on OSX or Linux accordingly;
+contracts). To build the artifacts run `./get_artifacts.sh` in the root of the `obscuro-test` checkout. To install all 
+dependencies for running the tests use the following on OSX or Linux accordingly;
 
 ### OSX (Monterey 12.4)
 ```bash
