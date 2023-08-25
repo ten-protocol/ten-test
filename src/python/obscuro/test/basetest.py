@@ -104,11 +104,11 @@ class GenericNetworkTest(BaseTest):
         with open(os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'erc20', 'erc20.json')) as f:
             token = web3_from.eth.contract(address=token_address, abi=json.load(f))
 
-        balance = token.functions.balanceOf(account_from.address).call({"gasLimit":1000000, "from":account_from.address})
+        balance = token.functions.balanceOf(account_from.address).call({"gas":1000000, "from":account_from.address})
         self.log.info('%s User balance   = %d ', token_name, balance)
         network.transact(self, web3_from, token.functions.transfer(address, amount), account_from, 7200000, persist_nonce)
 
-        balance = token.functions.balanceOf(account_from.address).call({"gasLimit":1000000, "from":account_from.address})
+        balance = token.functions.balanceOf(account_from.address).call({"gas":1000000, "from":account_from.address})
         self.log.info('%s User balance   = %d ', token_name, balance)
 
     def print_token_balance(self, token_name, token_address, web3, account):
@@ -116,14 +116,14 @@ class GenericNetworkTest(BaseTest):
         with open(os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'erc20', 'erc20.json')) as f:
             token = web3.eth.contract(address=token_address, abi=json.load(f))
 
-        balance = token.functions.balanceOf(account.address).call({"gasLimit":1000000})
+        balance = token.functions.balanceOf(account.address).call({"gas":1000000})
         self.log.info('%s User balance   = %d ', token_name, balance)
 
     def get_token_balance(self, token_address, web3, account):
         """Get the ERC20 token balance of a recipient account. """
         with open(os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'erc20', 'erc20.json')) as f:
             token = web3.eth.contract(address=token_address, abi=json.load(f))
-        return token.functions.balanceOf(account.address).call({"gasLimit":1000000})
+        return token.functions.balanceOf(account.address).call({"gas":1000000})
 
     def get_network_connection(self, name='primary_connection', **kwargs):
         """Get the network connection."""

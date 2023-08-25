@@ -24,7 +24,7 @@ class BridgeDetails:
         """Wait for a cross chain message to be verified as final. """
         start = time.time()
         while True:
-            ret = self.bus.contract.functions.verifyMessageFinalized(xchain_msg).call({"gasLimit":1000000})
+            ret = self.bus.contract.functions.verifyMessageFinalized(xchain_msg).call({"gas":1000000})
             if ret: break
             if time.time() - start > timeout:
                 raise TimeoutError('Timed out waiting for message to be verified')
@@ -87,7 +87,7 @@ class L1BridgeDetails(BridgeDetails):
     def balance_for_token(self, symbol):
         """Get the balance for a token. """
         token = self.tokens[symbol]
-        return token.contract.functions.balanceOf(self.account.address).call({"gasLimit":1000000})
+        return token.contract.functions.balanceOf(self.account.address).call({"gas":1000000})
 
     def white_list_token(self, symbol):
         """Whitelist the ERC20 token for this token to be available on the L2 side of the bridge.
@@ -151,7 +151,7 @@ class L2BridgeDetails(BridgeDetails):
     def balance_for_token(self, symbol):
         """Get the balance for a token. """
         token = self.tokens[symbol]
-        return token.contract.functions.balanceOf(self.account.address).call({"gasLimit":1000000, "from":self.account.address})
+        return token.contract.functions.balanceOf(self.account.address).call({"gas":1000000, "from":self.account.address})
 
     def relay_whitelist_message(self, xchain_msg):
         """Relay a cross chain message specific to a whitelisting. """

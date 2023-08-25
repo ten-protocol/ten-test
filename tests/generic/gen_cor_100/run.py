@@ -15,7 +15,7 @@ class PySysTest(GenericNetworkTest):
 
         # retrieve the current value
         expected = storage.get_persisted_param('value', 0)
-        actual = storage.contract.functions.retrieve().call({"gasLimit":1000000})
+        actual = storage.contract.functions.retrieve().call({"gas":1000000})
         self.log.info('Last persisted value is stored as %d', expected)
         self.log.info('Current retrieved value is %d', actual)
         self.assertTrue(expected == actual)
@@ -25,6 +25,6 @@ class PySysTest(GenericNetworkTest):
         tx_receipt = network.transact(self, web3, storage.contract.functions.store(actual+1), account, Storage.GAS_LIMIT)
         if tx_receipt.status == 1: storage.set_persisted_param('value', actual+1)
 
-        actual_after = storage.contract.functions.retrieve().call({"gasLimit":1000000})
+        actual_after = storage.contract.functions.retrieve().call({"gas":1000000})
         self.log.info('Current retrieved value is %d', actual_after)
         self.assertTrue(actual_after == actual+1)

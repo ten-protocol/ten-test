@@ -28,7 +28,7 @@ class PySysTest(GenericNetworkTest):
 
         # transfer from account1 into account2
         for i in range(0, 5):
-            self.log.info('Account1 balance = %d ', erc20.contract.functions.balanceOf(account1.address).call({"gasLimit":1000000}))
+            self.log.info('Account1 balance = %d ', erc20.contract.functions.balanceOf(account1.address).call({"gas":1000000}))
             network.transact(self, web3, erc20.contract.functions.transfer(account2.address, 1), account1, erc20.GAS_LIMIT)
 
         self.waitForGrep(file=stdout, expr='New balance = 5', timeout=20)

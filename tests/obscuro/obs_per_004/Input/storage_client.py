@@ -38,7 +38,7 @@ def run(name, chainId, web3, account, contract, num_iterations):
 
     logging.info('Waiting for last transaction %s', receipts[-1][0].hex())
     web3.eth.wait_for_transaction_receipt(receipts[-1][0], timeout=900)
-    logging.info('Retrieved value for %s is %d', name, contract.functions.getItem(name).call({"gasLimit":1000000}))
+    logging.info('Retrieved value for %s is %d', name, contract.functions.getItem(name).call({"gas":1000000}))
 
     logging.info('Constructing binned data from the transaction receipts')
     with open('%s.log' % name, 'w') as fp:

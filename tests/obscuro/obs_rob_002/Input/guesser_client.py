@@ -20,7 +20,7 @@ if __name__ == "__main__":
     logging.info('Client running')
     while True:
         guess = random.randint(0, 25)
-        ret = contract.functions.guess(guess).call({"gasLimit":1000000})
+        ret = contract.functions.guess(guess).call({"gas":1000000})
         if ret == 1:
             logging.info("Guess is %d, need to go higher", guess)
         elif ret == -1:

@@ -21,7 +21,7 @@ if __name__ == "__main__":
     logging.info('Starting to run the polling loop')
     last_balance = 0
     while True:
-        balance = contract.functions.balanceOf(args.polling_address).call({"gasLimit":1000000})
+        balance = contract.functions.balanceOf(args.polling_address).call({"gas":1000000})
         if balance > last_balance:
             last_balance = balance
             logging.info('New balance = %s', balance)

@@ -13,11 +13,11 @@ class PySysTest(GenericNetworkTest):
         storage.deploy(network, account)
 
         # retrieve via a call
-        self.log.info('Call shows value %d', storage.contract.functions.retrieve().call({"gasLimit":1000000}))
+        self.log.info('Call shows value %d', storage.contract.functions.retrieve().call({"gas":1000000}))
 
         # set the value via a transaction, compare to call and transaction log
         tx_receipt = network.transact(self, web3, storage.contract.functions.store(200), account, storage.GAS_LIMIT)
-        self.log.info('Call shows value %d', storage.contract.functions.retrieve().call({"gasLimit":1000000}))
+        self.log.info('Call shows value %d', storage.contract.functions.retrieve().call({"gas":1000000}))
 
         tx_log = storage.contract.events.Stored().processReceipt(tx_receipt)[0]
         args_value = tx_log['args']['value']
