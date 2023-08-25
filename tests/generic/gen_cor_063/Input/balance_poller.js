@@ -21,6 +21,7 @@ function get_balance() {
 function task() {
   setTimeout(function() {
     contract.methods.balanceOf(address).call(
+        {"gas": 1000000},
       function(error, result) {
         if (error) {
           console.log('Error returned is ', error)
