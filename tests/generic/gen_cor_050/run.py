@@ -15,7 +15,7 @@ class PySysTest(GenericNetworkTest):
         # force a require
         try:
             self.log.info('Forcing a require on contract function')
-            error.contract.functions.force_require().call()
+            error.contract.functions.force_require().call({"gasLimit":1000000})
         except Exception as e:
             self.log.info('Exception type: %s', type(e).__name__)
             self.log.info('Exception args: %s', e.args[0])
@@ -25,7 +25,7 @@ class PySysTest(GenericNetworkTest):
         # force a revert
         try:
             self.log.info('Forcing a revert on contract function')
-            error.contract.functions.force_revert().call()
+            error.contract.functions.force_revert().call({"gasLimit":1000000})
         except Exception as e:
             self.log.info('Exception type: %s', type(e).__name__)
             self.log.info('Exception args: %s', e.args[0])
@@ -35,7 +35,7 @@ class PySysTest(GenericNetworkTest):
         # force assert
         try:
             self.log.info('Forcing an assert on contract function')
-            error.contract.functions.force_assert().call()
+            error.contract.functions.force_assert().call({"gasLimit":1000000})
         except Exception as e:
             self.log.info('Exception type: %s', type(e).__name__)
             self.log.info('Exception args: %s', e.args[0])

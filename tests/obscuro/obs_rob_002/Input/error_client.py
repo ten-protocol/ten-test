@@ -22,11 +22,11 @@ if __name__ == "__main__":
         value = random.randint(0, 3)
         try:
             if value == 0:
-                contract.functions.force_require().call()
+                contract.functions.force_require().call({"gasLimit":1000000})
             elif value == 1:
-                contract.functions.force_revert().call()
+                contract.functions.force_revert().call({"gasLimit":1000000})
             else:
-                contract.functions.force_assert().call()
+                contract.functions.force_assert().call({"gasLimit":1000000})
         except Exception as e:
             logging.info('Exception type: %s', type(e).__name__)
             logging.info('Exception args: %s', e.args[0])

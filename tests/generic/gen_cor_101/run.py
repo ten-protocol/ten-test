@@ -14,11 +14,11 @@ class PySysTest(GenericNetworkTest):
         storage.get_or_deploy(network, account, persist_nonce=True)
 
         # retrieve the current value
-        value = storage.contract.functions.getItem('key').call()
+        value = storage.contract.functions.getItem('key').call({"gasLimit":1000000})
         self.log.info('Call shows value %d', value)
 
         # set the value via a transaction and retrieve the new value
         network.transact(self, web3, storage.contract.functions.setItem('key', value+1), account, KeyStorage.GAS_LIMIT)
-        value_after = storage.contract.functions.getItem('key').call()
+        value_after = storage.contract.functions.getItem('key').call({"gasLimit":1000000})
         self.log.info('Call shows value %d', value_after)
         self.assertTrue(value_after == value + 1)

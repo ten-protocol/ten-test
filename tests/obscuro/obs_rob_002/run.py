@@ -59,8 +59,8 @@ class PySysTest(ObscuroNetworkTest):
         self.log.info('Transact and check')
         network.transact(self, web3, storage.contract.functions.store(1812), account, storage.GAS_LIMIT, timeout=300)
         self.wait(2.0*float(self.block_time))
-        value = storage.contract.functions.retrieve().call()
-        self.log.info('Call shows value %d', storage.contract.functions.retrieve().call())
+        value = storage.contract.functions.retrieve().call({"gasLimit":1000000})
+        self.log.info('Call shows value %d', storage.contract.functions.retrieve().call({"gasLimit":1000000}))
         self.assertTrue(value == 1812)
 
     def guesser_client(self, address, abi_path, num, network):

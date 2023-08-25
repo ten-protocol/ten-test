@@ -20,7 +20,7 @@ class Guesser(DefaultContract):
                 return None
 
             guess = random.randrange(lower, upper)
-            ret = self.contract.functions.guess(guess).call()
+            ret = self.contract.functions.guess(guess).call({"gasLimit":1000000})
             if ret == 1:
                 self.test.log.info("Guess is %d, need to go higher", guess)
                 lower = guess+1
