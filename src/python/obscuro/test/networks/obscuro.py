@@ -31,7 +31,7 @@ class ObscuroL1(Geth):
         account = web3.eth.account.privateKeyToAccount(private_key)
         if log: test.log.info('Account %s connected to %s on %s', account.address, self.__class__.__name__, url)
 
-        if check_funds:
+        if check_funds and private_key != Properties().l1_funded_account_pk(test.env):
             balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
             if balance < self.ETH_LIMIT:
                 if log: test.log.info('Account balance %.6f ETH below threshold %s', balance, self.ETH_LIMIT)
