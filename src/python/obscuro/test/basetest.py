@@ -75,8 +75,12 @@ class GenericNetworkTest(BaseTest):
         return hprocess
 
     def distribute_native(self, account, amount):
-        """A native transfer of funds from the funded account to another. """
-        web3_pk, account_pk = self.network_funding.connect(self, Properties().fundacntpk(), check_funds=True)
+        """A native transfer of funds from the funded account to another.
+
+        Note that these methods are called from connect to perform a transfer. The account performing the transfer
+        needs to also connect, hence to avoid recursion we don't check funds on the call.
+        """
+        web3_pk, account_pk = self.network_funding.connect(self, Properties().fundacntpk(), check_funds=False)
         tx = {
             'to': account.address,
             'value': web3_pk.toWei(amount, 'ether'),
@@ -86,8 +90,12 @@ class GenericNetworkTest(BaseTest):
         self.network_funding.tx(self, web3_pk, tx, account_pk)
 
     def fund_native(self, network, account, amount, pk, persist_nonce=True):
-        """A native transfer of funds from one address to another. """
-        web3_pk, account_pk = network.connect(self, pk)
+        """A native transfer of funds from one address to another.
+
+        Note that these methods are called from connect to perform a transfer. The account performing the transfer
+        needs to also connect, hence to avoid recursion we don't check funds on the call.
+        """
+        web3_pk, account_pk = network.connect(self, pk, check_funds=False)
         tx = {
             'to': account.address,
             'value': web3_pk.toWei(amount, 'ether'),
