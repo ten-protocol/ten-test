@@ -131,6 +131,7 @@ jobs:
       - name: 'Upload container logs'
         uses: actions/upload-artifact@v3
         if: failure()
+        continue-on-error: true
         with:
           name: container-artifact
           path: |
