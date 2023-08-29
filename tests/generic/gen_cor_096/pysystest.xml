@@ -15,8 +15,11 @@ Not yet supported on Obscuro - see https://github.com/obscuronet/obscuro-interna
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
         </groups>
         <modes inherit="true">
+            <mode>obscuro.dev</mode>
+            <mode>obscuro.local</mode>
             <mode>goerli</mode>
             <mode>ganache</mode>
         </modes>
