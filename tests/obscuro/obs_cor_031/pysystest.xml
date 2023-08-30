@@ -12,6 +12,7 @@
     <classification>
         <groups inherit="true">
             <group>gateway</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.local</mode>
