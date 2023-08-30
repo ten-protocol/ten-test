@@ -59,7 +59,7 @@ class ObscuroRunnerPlugin():
                 hprocess, port = self.run_wallet(runner)
                 user_id = self.__join(port)
 
-                web3 = Web3(Web3.HTTPProvider('http://127.0.0.1:%d/?u=%s' % (port, user_id)))
+                web3 = Web3(Web3.HTTPProvider('http://127.0.0.1:%d/v1/?u=%s' % (port, user_id)))
                 account = web3.eth.account.privateKeyToAccount(Properties().fundacntpk())
                 self.__register(account, port, user_id)
 
@@ -190,7 +190,7 @@ class ObscuroRunnerPlugin():
     @staticmethod
     def __join(port):
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
-        response = requests.get('http://127.0.0.1:%d/join/' % port,  headers=headers)
+        response = requests.get('http://127.0.0.1:%d/v1/join/' % port,  headers=headers)
         return response.text
 
     @staticmethod
@@ -203,6 +203,6 @@ class ObscuroRunnerPlugin():
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         data = {"signature": signature['signature'].hex(), "message": text_to_sign}
-        requests.post('http://127.0.0.1:%d/authenticate/?u=%s' % (port, user_id),
+        requests.post('http://127.0.0.1:%d/v1/authenticate/?u=%s' % (port, user_id),
                       data=json.dumps(data), headers=headers)
 
