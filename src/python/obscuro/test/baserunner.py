@@ -59,7 +59,7 @@ class ObscuroRunnerPlugin():
                 hprocess, port = self.run_wallet(runner)
                 user_id = self.__join(port)
 
-                web3 = Web3(Web3.HTTPProvider('http://127.0.0.1:%d/?u=%s' % (port, user_id)))
+                web3 = Web3(Web3.HTTPProvider('http://127.0.0.1:%d/v1/?u=%s' % (port, user_id)))
                 account = web3.eth.account.privateKeyToAccount(Properties().fundacntpk())
                 self.__register(account, port, user_id)
 
