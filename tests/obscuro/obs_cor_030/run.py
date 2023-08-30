@@ -27,7 +27,7 @@ class PySysTest(ObscuroNetworkTest):
         # make a subscription for all events to the contract, one through each of the connections
         subscriber_1 = AllEventsLogSubscriber(self, network_connection_1, storage,
                                               stdout='subscriber_1.out',
-                                              stderr='subscriber_2.err')
+                                              stderr='subscriber_1.err')
         subscriber_1.run()
 
         subscriber_2 = AllEventsLogSubscriber(self, network_connection_2, storage,
@@ -46,7 +46,7 @@ class PySysTest(ObscuroNetworkTest):
             network.transact(self, web3, storage.contract.functions.store(count), account, storage.GAS_LIMIT)
 
         self.waitForSignal(file='subscriber_1.out', expr='Received event: Stored', condition='==4', timeout=10)
-        self.waitForSignal(file='subscriber_1.out', expr='Received event: Stored', condition='==4', timeout=10)
+        self.waitForSignal(file='subscriber_2.out', expr='Received event: Stored', condition='==4', timeout=10)
 
         expr_list = []
         expr_list.append('Received event: Stored')
