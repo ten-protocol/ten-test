@@ -71,7 +71,7 @@ class Obscuro(Default):
     def connection_url(self, web_socket=False):
         port = self.PORT if not web_socket else self.WS_PORT
         host = self.HOST if not web_socket else self.WS_HOST
-        return '%s:%d/?u=%s' % (host, port, self.ID)
+        return '%s:%d/v1/?u=%s' % (host, port, self.ID)
 
     def connect(self, test, private_key, web_socket=False, check_funds=True, log=True):
         url = self.connection_url(web_socket)
@@ -92,7 +92,7 @@ class Obscuro(Default):
 
     def __join(self):
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
-        response = requests.get('%s:%d/join/' % (self.HOST, self.PORT),  headers=headers)
+        response = requests.get('%s:%d/v1/join/' % (self.HOST, self.PORT),  headers=headers)
         if response.ok: return response.text.strip()
         return None
 
@@ -104,7 +104,7 @@ class Obscuro(Default):
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         data = {"signature": signature['signature'].hex(), "message": text_to_sign}
-        requests.post('%s:%d/authenticate/?u=%s' % (self.HOST, self.PORT, self.ID),
+        requests.post('%s:%d/v1/authenticate/?u=%s' % (self.HOST, self.PORT, self.ID),
                       data=json.dumps(data), headers=headers)
 
 
