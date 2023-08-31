@@ -15,7 +15,7 @@ class PySysTest(ObscuroNetworkTest):
 
         # run the javascript event log subscriber in the background
         subscriber = FilterLogSubscriber(self, network)
-        subscriber.run()
+        subscriber.run(decode_as_stored_event=True)
         subscriber.subscribe()
 
         # perform some transactions

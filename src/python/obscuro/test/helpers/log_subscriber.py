@@ -40,20 +40,18 @@ class FilterLogSubscriber:
         self.script = os.path.join(PROJECT.root, 'src', 'javascript', 'scripts', 'filter_subscriber.js')
 
     def run(self, filter_address=None, filter_from_block=None, filter_topics=None, pk_to_register=None,
-            network_http=None, network_ws=None):
+            network_ws=None, decode_as_stored_event=False):
         """Run the javascript client event log subscriber. """
         if network_ws is None:
             network_ws = self.network.connection_url(web_socket=True)
-
-        if network_http is None:
-            network_http = self.network.connection_url(web_socket=False)
 
         args = []
         args.extend(['--script_server_port', '%d' % self.port])
         args.extend(['--network_ws', network_ws])
         if filter_from_block: args.extend(['--filter_from_block', '%d' % filter_from_block])
         if filter_address: args.extend(['--filter_address', filter_address])
-        if filter_topics:args.extend(['--filter_topics', " ".join(filter_topics)])
+        if filter_topics: args.extend(['--filter_topics', " ".join(filter_topics)])
+        if decode_as_stored_event: args.append('--decode_as_stored_event')
         if pk_to_register: self.network.connect(self.test, private_key=pk_to_register)
         self.test.run_javascript(self.script, self.stdout, self.stderr, args)
         self.test.waitForGrep(file=self.stdout, expr='Subscriber listening for instructions', timeout=10)

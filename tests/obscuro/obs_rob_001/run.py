@@ -48,6 +48,7 @@ class PySysTest(GenericNetworkTest):
     def subscriber(self, web3, network, private_key, num):
         subscriber = FilterLogSubscriber(self, network, stdout='subscriber_%d.out'%num, stderr='subscriber_%d.err'%num)
         subscriber.run(
+            decode_as_stored_event=True,
             pk_to_register=private_key,
             filter_topics=[web3.keccak(text='Stored(uint256)').hex()]
         )
