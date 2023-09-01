@@ -19,8 +19,11 @@ class PySysTest(ObscuroNetworkTest):
         subscriber.subscribe()
 
         # perform some transactions
-        network.transact(self, web3, storage.contract.functions.store(1), account, storage.GAS_LIMIT)
-        network.transact(self, web3, storage.contract.functions.store(2), account, storage.GAS_LIMIT)
+        tx_recp = network.transact(self, web3, storage.contract.functions.store(1), account, storage.GAS_LIMIT)
+        self.log.info('First transaction sent with tx hash %s', tx_recp.transactionHash.hex())
+
+        response = self.get_debug_log_visibility(tx_recp.transactionHash.hex())
+        self.log.info(response)
 
         self.waitForSignal(file='subscriber.out', expr='Stored value = [0-9]', condition='==2', timeout=10)
         self.assertOrderedGrep(file='subscriber.out', exprList=['Stored value = 1', 'Stored value = 2'])
