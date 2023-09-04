@@ -73,7 +73,7 @@ class Obscuro(Default):
                 self.HOST = url
                 self.WS_HOST = url.replace('http','ws')
                 self.PORT = 80
-                self.WS_PORT = 80
+                self.WS_PORT = 3002
 
         self.ID = self.__join()
         if self.ID is None:
