@@ -85,7 +85,10 @@ class ObscuroRunnerPlugin():
                     runner.log.info('Joining network using url %s', '%s/v1/join/' % gateway_url)
                     user_id = self.__join('%s/v1/join/' % gateway_url)
                     runner.log.info('User id is %s', user_id)
-                    self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
+
+                    runner.log.info('Registering account %s with the network', account.address)
+                    response = self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
+                    runner.log.info(response)
                     web3 = Web3(Web3.HTTPProvider('%s/v1/?u=%s' % (gateway_url, user_id)))
                     runner.addCleanupFunction(lambda: self.__print_cost(runner, port, web3, user_id))
 
@@ -228,5 +231,5 @@ class ObscuroRunnerPlugin():
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         data = {"signature": signature['signature'].hex(), "message": text_to_sign}
-        requests.post(url, data=json.dumps(data), headers=headers)
-
+        response = requests.post(url, data=json.dumps(data), headers=headers)
+        return response
