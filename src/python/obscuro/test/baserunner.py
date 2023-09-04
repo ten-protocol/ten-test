@@ -82,8 +82,9 @@ class ObscuroRunnerPlugin():
                     runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
                 else:
                     gateway_url = Properties().gateway_url(self.env)
-                    self.log.info('Joining network using url %s', '%s/v1/join/' % gateway_url)
+                    runner.log.info('Joining network using url %s', '%s/v1/join/' % gateway_url)
                     user_id = self.__join('%s/v1/join/' % gateway_url)
+                    runner.log.info('User id is %s', user_id)
                     self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
                     web3 = Web3(Web3.HTTPProvider('%s/v1/?u=%s' % (gateway_url, user_id)))
                     runner.addCleanupFunction(lambda: self.__print_cost(runner, port, web3, user_id))
