@@ -82,6 +82,7 @@ class ObscuroRunnerPlugin():
                     runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
                 else:
                     gateway_url = Properties().gateway_url(self.env)
+                    self.log.info('Joining network using url %s', '%s/v1/join/' % gateway_url)
                     user_id = self.__join('%s/v1/join/' % gateway_url)
                     self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
                     web3 = Web3(Web3.HTTPProvider('%s/v1/?u=%s' % (gateway_url, user_id)))
@@ -111,7 +112,7 @@ class ObscuroRunnerPlugin():
                         runner.log.info("  Funds for %s: %.18f OBX", fn.__name__, self.balances[fn.__name__],
                                         extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
                 runner.log.info('')
-                
+
             elif self.env == 'ganache':
                 nonce_db.delete_environment('ganache')
                 hprocess = self.run_ganache(runner)
