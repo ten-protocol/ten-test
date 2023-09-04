@@ -111,7 +111,7 @@ class Obscuro(Default):
         if self.ID is None:
             test.addOutcome(BLOCKED, 'Error joining network for connection', abortOnError=True)
         else:
-            test.log.info('Wallet %s has user id %s', self.WALLET.name, self.ID)
+            test.log.info('Wallet %s has user id %s', self.name, self.ID)
 
     def connection_url(self, web_socket=False):
         port = self.PORT if not web_socket else self.WS_PORT
