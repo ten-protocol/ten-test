@@ -101,7 +101,7 @@ class Obscuro(Default):
                 self.WS_PORT = wallet.ws_port
             else:
                 self.name = 'hosted'
-                url = Properties().gateway_url()
+                url = Properties().gateway_url(test.env)
                 self.HOST = url
                 self.WS_HOST = url.replace('http','ws')
                 self.PORT = 80
