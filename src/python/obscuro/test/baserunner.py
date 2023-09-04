@@ -59,7 +59,7 @@ class ObscuroRunnerPlugin():
                 gateway_url = None
                 account = Web3().eth.account.privateKeyToAccount(Properties().fundacntpk())
 
-                if self.is_local_obscuro():
+                if self.is_obscuro():
                     hprocess, port = self.run_wallet(runner)
                     gateway_url = 'http://127.0.0.1:%d/' % port
                     user_id = self.__join('%s/v1/join/' % gateway_url)
