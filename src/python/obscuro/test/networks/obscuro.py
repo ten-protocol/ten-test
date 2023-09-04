@@ -42,7 +42,13 @@ class ObscuroL1(Geth):
 
 
 class Obscuro(Default):
-    """The L2 connection for Obscuro. """
+    """The L2 connection for Obscuro.
+
+    An obscuro network instance requires a wallet extension (gateway) to connect to the network. A gateway can
+    support multiple connections through it through joining as a particular user_id, under which multiple accounts
+    can be registered. If a gateway instance is supplied in the constructor that instance will be used. If one is
+    not supplied, if running against a local testnet an instance will be created; if running against a dev testnet,
+    or testnet, then the hosted instance will be used. """
     OBX_LIMIT = 0.5
     OBX_ALLOC = 1
     CURRENCY = 'OBX'
