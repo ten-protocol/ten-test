@@ -65,7 +65,9 @@ class ObscuroRunnerPlugin():
                     user_id = self.__join('%s/v1/join/' % gateway_url)
                     self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
                     web3 = Web3(Web3.HTTPProvider('%s/v1/?u=%s' % (gateway_url, user_id)))
-                    runner.addCleanupFunction(lambda: self.__print_cost(runner, port, web3, user_id))
+                    runner.addCleanupFunction(lambda: self.__print_cost(runner,
+                                                                        '%s/v1/authenticate/?u=%s' % (gateway_url, user_id),
+                                                                        web3, user_id))
                     runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
                 else:
                     gateway_url = Properties().gateway_url(self.env)
@@ -77,7 +79,9 @@ class ObscuroRunnerPlugin():
                     response = self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
                     runner.log.info('Registration success was %s', response.ok)
                     web3 = Web3(Web3.HTTPProvider('%s/v1/?u=%s' % (gateway_url, user_id)))
-                    runner.addCleanupFunction(lambda: self.__print_cost(runner, port, web3, user_id))
+                    runner.addCleanupFunction(lambda: self.__print_cost(runner,
+                                                                        '%s/v1/authenticate/?u=%s' % (gateway_url, user_id),
+                                                                        web3, user_id))
 
                 tx_count = web3.eth.get_transaction_count(account.address)
                 balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
