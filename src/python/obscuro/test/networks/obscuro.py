@@ -60,7 +60,7 @@ class Obscuro(Default):
             self.PORT = wallet.port
             self.WS_PORT = wallet.ws_port
         else:
-            if test.is_obscuro.local():
+            if test.is_local_obscuro():
                 wallet = WalletExtension.start(test, name=name)
                 self.name = name
                 self.HOST = 'http://127.0.0.1'
