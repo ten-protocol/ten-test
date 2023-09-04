@@ -75,7 +75,7 @@ class ObscuroRunnerPlugin():
 
                     runner.log.info('Registering account %s with the network', account.address)
                     response = self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
-                    runner.log.info(response)
+                    runner.log.info(response.ok)
                     web3 = Web3(Web3.HTTPProvider('%s/v1/?u=%s' % (gateway_url, user_id)))
                     runner.addCleanupFunction(lambda: self.__print_cost(runner, port, web3, user_id))
 
