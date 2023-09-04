@@ -64,6 +64,10 @@ class GenericNetworkTest(BaseTest):
         """Return true if we are running against an Obscuro network. """
         return self.env in ['obscuro', 'obscuro.sepolia', 'obscuro.dev', 'obscuro.local']
 
+    def is_local_obscuro(self):
+        """Return true if we are running against a local Obscuro network. """
+        return self.env in ['obscuro.local']
+
     def run_python(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
         """Run a python process. """
         self.log.info('Running python script %s', os.path.basename(script))
