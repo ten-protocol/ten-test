@@ -56,12 +56,23 @@ class ObscuroRunnerPlugin():
 
         try:
             if self.is_obscuro():
-                hprocess, port = self.run_wallet(runner)
-                user_id = self.__join(port)
+                gateway_url = None
+                account = Web3().eth.account.privateKeyToAccount(Properties().fundacntpk())
 
-                web3 = Web3(Web3.HTTPProvider('http://127.0.0.1:%d/v1/?u=%s' % (port, user_id)))
-                account = web3.eth.account.privateKeyToAccount(Properties().fundacntpk())
-                self.__register(account, port, user_id)
+                if self.is_local_obscuro():
+                    hprocess, port = self.run_wallet(runner)
+                    gateway_url = 'http://127.0.0.1:%d/' % port
+                    user_id = self.__join('%s/v1/join/' % gateway_url)
+                    self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
+                    web3 = Web3(Web3.HTTPProvider('%s/v1/?u=%s' % (gateway_url, user_id)))
+                    runner.addCleanupFunction(lambda: self.__print_cost(runner, port, web3, user_id))
+                    runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
+                else:
+                    gateway_url = Properties().gateway_url(self.env)
+                    user_id = self.__join('%s/v1/join/' % gateway_url)
+                    self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
+                    web3 = Web3(Web3.HTTPProvider('%s/v1/?u=%s' % (gateway_url, user_id)))
+                    runner.addCleanupFunction(lambda: self.__print_cost(runner, port, web3, user_id))
 
                 tx_count = web3.eth.get_transaction_count(account.address)
                 balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
@@ -80,16 +91,14 @@ class ObscuroRunnerPlugin():
                 runner.log.info('Accounts with non-zero funds;')
                 for fn in Properties().accounts():
                     account = web3.eth.account.privateKeyToAccount(fn())
-                    self.__register(account, port, user_id)
+                    self.__register(account, gateway_url, user_id)
 
                     self.balances[fn.__name__] = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
                     if self.balances[fn.__name__] > 0:
                         runner.log.info("  Funds for %s: %.18f OBX", fn.__name__, self.balances[fn.__name__],
                                         extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
                 runner.log.info('')
-
-                runner.addCleanupFunction(lambda: self.__print_cost(runner, hprocess, port, web3, user_id))
-
+                
             elif self.env == 'ganache':
                 nonce_db.delete_environment('ganache')
                 hprocess = self.run_ganache(runner)
@@ -153,6 +162,10 @@ class ObscuroRunnerPlugin():
         """Return true if we are running against an Obscuro network. """
         return self.env in ['obscuro', 'obscuro.dev', 'obscuro.local']
 
+    def is_local_obscuro(self):
+        """Return true if we are running against a local Obscuro network. """
+        return self.env in ['obscuro.local']
+
     def fund_obx_from_faucet_server(self, runner):
         """Allocates native OBX to a users account from the faucet server. """
         account = Web3().eth.account.privateKeyToAccount(Properties().fundacntpk())
@@ -162,13 +175,13 @@ class ObscuroRunnerPlugin():
         data = {"address": account.address}
         requests.post(Properties().faucet_url(self.env), data=json.dumps(data), headers=headers)
 
-    def __print_cost(self, runner, hprocess, port, web3, user_id):
+    def __print_cost(self, runner, url, web3, user_id):
         """Print out balances. """
         try:
             delta = 0
             for fn in Properties().accounts():
                 account = web3.eth.account.privateKeyToAccount(fn())
-                self.__register(account, port, user_id)
+                self.__register(account, url, user_id)
 
                 balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
                 if fn.__name__ in self.balances:
@@ -179,8 +192,6 @@ class ObscuroRunnerPlugin():
             runner.log.info("%s: %.9f ETH", 'Total cost', delta, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
         except Exception as e:
             pass
-        finally:
-            hprocess.stop()
 
     @staticmethod
     def __stop_process(hprocess):
@@ -188,14 +199,13 @@ class ObscuroRunnerPlugin():
         hprocess.stop()
 
     @staticmethod
-    def __join(port):
+    def __join(url):
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
-        response = requests.get('http://127.0.0.1:%d/v1/join/' % port,  headers=headers)
+        response = requests.get(url,  headers=headers)
         return response.text
 
     @staticmethod
-    def __register(
-            account, port, user_id):
+    def __register(account, url, user_id):
         text_to_sign = "Register " + user_id + " for " + str(account.address).lower()
         eth_message = f"{text_to_sign}"
         encoded_message = encode_defunct(text=eth_message)
@@ -203,6 +213,5 @@ class ObscuroRunnerPlugin():
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         data = {"signature": signature['signature'].hex(), "message": text_to_sign}
-        requests.post('http://127.0.0.1:%d/v1/authenticate/?u=%s' % (port, user_id),
-                      data=json.dumps(data), headers=headers)
+        requests.post(url, data=json.dumps(data), headers=headers)
 
