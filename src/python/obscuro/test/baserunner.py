@@ -61,7 +61,7 @@ class ObscuroRunnerPlugin():
 
                 if self.is_obscuro():
                     hprocess, port = self.run_wallet(runner)
-                    gateway_url = 'http://127.0.0.1:%d/' % port
+                    gateway_url = 'http://127.0.0.1:%d' % port
                     runner.log.info('Joining network using url %s', '%s/v1/join/' % gateway_url)
                     user_id = self.__join('%s/v1/join/' % gateway_url)
 
