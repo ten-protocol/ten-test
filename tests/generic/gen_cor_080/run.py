@@ -22,6 +22,7 @@ class PySysTest(GenericNetworkTest):
         # run the javascript event log subscriber in the background
         subscriber = FilterLogSubscriber(self, network)
         subscriber.run(
+            decode_as_stored_event=True,
             filter_from_block=tx.blockNumber,
             filter_topics=[web3.keccak(text='Stored(uint256)').hex()]
         )

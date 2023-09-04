@@ -1,8 +1,6 @@
 import os
 from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.contracts.storage import Storage
-from obscuro.test.helpers.wallet_extension import WalletExtension
-from obscuro.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
 class PySysTest(ObscuroNetworkTest):
@@ -27,7 +25,9 @@ class PySysTest(ObscuroNetworkTest):
         network.transact(self, web3, storage.contract.functions.store(1), account, storage.GAS_LIMIT)
         network.transact(self, web3, storage.contract.functions.store(2), account, storage.GAS_LIMIT)
 
-        self.wait(10.0)
+        self.waitForSignal(file='subscriber.out', expr='Stored value = [0-9]', condition='==2', timeout=10)
+        self.assertOrderedGrep(file='subscriber.out', exprList=['Stored value = 1', 'Stored value = 2'])
+        self.assertLineCount(file='subscriber.out', expr='Stored value = [0-9]', condition='==2')
 
     def subscribe(self, network):
         # run a background script to filter and collect events

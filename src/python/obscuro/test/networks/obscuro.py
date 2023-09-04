@@ -12,7 +12,7 @@ from obscuro.test.helpers.wallet_extension import WalletExtension
 class ObscuroL1(Geth):
     """The Obscuro L1 connection. """
     ETH_LIMIT = 1
-    ETH_ALLOC = 10
+    ETH_ALLOC = 0.2
 
     def __init__(self, test, name=None, **kwargs):
         super().__init__(test, name, **kwargs)

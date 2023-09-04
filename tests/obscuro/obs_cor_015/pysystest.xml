@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Debug APIs - request debug_logVisibility, single lifecycle event</title>
+        <purpose><![CDATA[Makes a call to debug log visibility for a single lifecycle event emitted from the storage
+contract. 
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>debug_apis</group>
+        </groups>
+        <modes inherit="true">
+            <mode>obscuro.local</mode>
+            <mode>obscuro.dev</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

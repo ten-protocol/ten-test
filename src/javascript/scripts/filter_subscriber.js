@@ -5,9 +5,12 @@ const Web3 = require('web3')
 const http = require('http')
 const commander = require('commander')
 
-function decodeLog(log) {
-  //console.log('Full log: ', log)
-  console.log('Stored value =', Web3.utils.hexToNumber(log.data))
+function decodeLog(log, decode_as_stored_event) {
+
+  if (decode_as_stored_event)
+     console.log('Stored value =', Web3.utils.hexToNumber(log.data))
+  else
+     console.log('Full log: ', log)
 }
 
 function subscribe() {
@@ -28,7 +31,7 @@ function subscribe() {
       console.log('Subscription arguments are', subscription.arguments)
   })
   .on("data", function(log){
-      decodeLog(log)
+      decodeLog(log, options.decode_as_stored_event)
   })
 }
 
@@ -71,11 +74,14 @@ commander
   .option('--filter_address <value>', 'The contract address to filter on', null)
   .option('--filter_from_block <value>', 'The from block to filter on', null)
   .option('--filter_topics <values...>', 'The first filter topic', null)
+  .option('--decode_as_stored_event', 'Decode the log as a stored event', false)
   .parse(process.argv)
 
 // in global scope the options, web3 connection and server reference
+
 var subscription = null
 const options = commander.opts()
 const web3 = new Web3(options.network_ws)
 filter_topics = (options.filter_topics + '').split(' ')
+console.log(options.decode_as_stored_event)
 startServer()

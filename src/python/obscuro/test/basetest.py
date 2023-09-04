@@ -215,9 +215,18 @@ class ObscuroNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
+    def get_debug_log_visibility(self, tx_hash):
+        """Get the debug_LogVisibility. """
+        data = {"jsonrpc": "2.0", "method": "debug_eventLogRelevancy", "params": [tx_hash], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
     def post(self, data):
         self.MSG_ID += 1
         server = 'http://%s:%s' % (Properties().node_host(self.env, self.NODE_HOST), Properties().node_port_http(self.env))
+        self.log.info(server)
         return requests.post(server, json=data)
 
     def background_funders(self, network, num_funders):
