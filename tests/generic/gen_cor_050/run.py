@@ -7,7 +7,7 @@ class PySysTest(GenericNetworkTest):
 
     def execute(self):
         network = self.get_network_connection()
-        web3, account = network.connect_account1(self, web_socket=True)
+        web3, account = network.connect_account1(self)
 
         error = Error(self, web3)
         error.deploy(network, account)
