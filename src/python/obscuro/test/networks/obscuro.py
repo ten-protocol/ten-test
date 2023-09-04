@@ -52,15 +52,28 @@ class Obscuro(Default):
         self.CHAIN_ID = Properties().chain_id(test.env)
 
         if 'wallet' in kwargs:
-            self.WALLET = kwargs['wallet']
-            test.log.info('Using supplied wallet for connection %s', self.WALLET.name)
+            wallet = kwargs['wallet']
+            self.name = wallet.name
+            test.log.info('Using supplied wallet for connection %s', name)
+            self.HOST = 'http://127.0.0.1'
+            self.WS_HOST = 'ws://127.0.0.1'
+            self.PORT = wallet.port
+            self.WS_PORT = wallet.ws_port
         else:
-            self.WALLET = WalletExtension.start(test, name=name)
-
-        self.HOST = 'http://127.0.0.1'
-        self.WS_HOST = 'ws://127.0.0.1'
-        self.PORT = self.WALLET.port
-        self.WS_PORT = self.WALLET.ws_port
+            if test.is_obscuro.local():
+                wallet = WalletExtension.start(test, name=name)
+                self.name = name
+                self.HOST = 'http://127.0.0.1'
+                self.WS_HOST = 'ws://127.0.0.1'
+                self.PORT = wallet.port
+                self.WS_PORT = wallet.ws_port
+            else:
+                self.name = 'hosted'
+                url = Properties().gateway_url()
+                self.HOST = url
+                self.WS_HOST = url.replace('http','ws')
+                self.PORT = 80
+                self.WS_PORT = 80
 
         self.ID = self.__join()
         if self.ID is None:
