@@ -55,7 +55,7 @@ class Obscuro(Default):
             self.WALLET = kwargs['wallet']
             test.log.info('Using supplied wallet for connection %s', self.WALLET.name)
         else:
-            self.WALLET = WalletExtension.start(test, name=name)
+            self.WALLET = WalletExtension.start(test, name=name, verbose=True)
 
         self.HOST = 'http://127.0.0.1'
         self.WS_HOST = 'ws://127.0.0.1'
