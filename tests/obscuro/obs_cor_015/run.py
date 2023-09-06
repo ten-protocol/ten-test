@@ -1,4 +1,3 @@
-import web3, json
 from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.contracts.storage import Storage
 from obscuro.test.helpers.log_subscriber import FilterLogSubscriber
