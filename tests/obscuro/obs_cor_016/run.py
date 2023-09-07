@@ -1,48 +1,38 @@
-import json
-from pysys.constants import FAILED, PASSED
 from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.contracts.storage import Storage
+from obscuro.test.helpers.log_subscriber import FilterLogSubscriber
 
 
 class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
-        # first wallet extension, two accounts, account 1 transacts
-        # deploy contract, transact as account 1, account 2 gets the transaction
-        network_1 = self.get_network_connection(name='network_1')
-        web3_1, account_1 = network_1.connect_account1(self)
-        web3_2, account_2 = network_1.connect_account2(self)
+        network = self.get_network_connection()
+        web3, account = network.connect_account1(self)
 
-        storage = Storage(self, web3_1, 100)
-        storage.deploy(network_1, account_1)
-        tx_receipt = network_1.transact(self, web3_1, storage.contract.functions.store(128), account_1, storage.GAS_LIMIT)
+        # deploy a contract that emits a lifecycle event on calling a specific method as a transaction
+        storage = Storage(self, web3, 100)
+        storage.deploy(network, account)
+        self.log.info('Storage contract address is %s', storage.address)
 
-        tx_hash = tx_receipt.transactionHash
-        block_number = tx_receipt.blockNumber
+        # run the javascript event log subscriber in the background
+        subscriber = FilterLogSubscriber(self, network)
+        subscriber.run(decode_as_stored_event=False)
+        subscriber.subscribe()
 
-        self.log.info('Getting transaction for account 2 (through network connection 1)')
-        tx_rec = web3_2.eth.get_transaction_receipt(tx_hash)
-        with open(storage.abi_path) as f: contract = web3_2.eth.contract(address=storage.address, abi=json.load(f))
-        tx_log = contract.events.Stored().processReceipt(tx_rec)[0]
-        args_value = tx_log['args']['value']
-        self.log.info('Transaction log shows value %d', args_value)
-        self.assertTrue(args_value == 128)
+        # perform some transactions
+        tx_recp = network.transact(self, web3, storage.contract.functions.store(1), account, storage.GAS_LIMIT)
+        self.log.info('First transaction block hash %s', tx_recp.blockHash.hex())
+        self.log.info('First transaction tx hash %s', tx_recp.transactionHash.hex())
+        response = self.get_debug_log_visibility(tx_recp.transactionHash.hex())
+        self.log.info(response)
 
-        # second wallet extension, account 3 tries to get the transaction receipt
-        # but also just requests all event logs for the Stored event
-        network_2 = self.get_network_connection(name='network_2')
-        web3_3, account_3 = network_2.connect_account3(self)
+        self.waitForSignal(file='subscriber.out', expr='Full log:', condition='==1', timeout=10)
+        self.assertLineCount(file='subscriber.out', expr='Full log:', condition='==1')
 
-        self.log.info('Getting transaction for account 3 (through network connection 2)')
-        try:
-            web3_3.eth.get_transaction_receipt(tx_hash)
-            self.addOutcome(FAILED)
-        except:
-            self.log.warn('It is not possible to get someone else transaction receipt')
-            self.addOutcome(PASSED)
-
-        self.log.info('Attempting to get the past events from the contract instance')
-        with open(storage.abi_path) as f: contract = web3_3.eth.contract(address=storage.address, abi=json.load(f))
-        events = contract.events.Stored().getLogs(fromBlock=block_number)
-        self.assertTrue(len(events) == 1)
-        self.assertTrue(events[0]['args']['value'] == 128)
+        self.assertTrue(response[0]['address'] == storage.address)
+        self.assertTrue(response[0]['topics'][0] == web3.keccak(text='Stored(uint256)').hex())
+        self.assertTrue(response[0]['transactionHash'] == tx_recp.transactionHash.hex())
+        self.assertTrue(response[0]['blockHash'] == tx_recp.blockHash.hex())
+        self.assertTrue(response[0]['logIndex'] == 0)
+        self.assertTrue(response[0]['blockNumber'] == tx_recp.blockNumber)
+        self.assertTrue(response[0]['lifecycleEvent'] == True)

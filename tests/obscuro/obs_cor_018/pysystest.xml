@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Account going through separate connection can't get receipt but can get logs (lifecycle)</title>
+        <purpose><![CDATA[Through one wallet connection account 1 deploys the storage contract and transacts. Through
+the same wallet connection account 2 requests the transaction receipt and decodes the event log (this should work).
+Through a separate wallet connection account 3 tries to request the transaction receipt but this fails as the
+transaction receipt is encrypted. Instead, it performs a getLogs request on the contract Stored event from the block
+number the event log was added into, and then can finally see the logs.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>persistence</group>
+        </groups>
+        <modes inherit="true">
+            <mode>obscuro.dev</mode>
+            <mode>obscuro.local</mode>
+            <mode>goerli</mode>
+            <mode>ganache</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
