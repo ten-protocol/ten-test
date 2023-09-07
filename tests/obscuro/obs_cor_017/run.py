@@ -1,7 +1,7 @@
 import json
 from pysys.constants import FAILED, PASSED
 from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.contracts.storage import Storage
+from obscuro.test.contracts.relevancy import Relevancy
 
 
 class PySysTest(ObscuroNetworkTest):
@@ -13,20 +13,23 @@ class PySysTest(ObscuroNetworkTest):
         web3_1, account_1 = network_1.connect_account1(self)
         web3_2, account_2 = network_1.connect_account2(self)
 
-        storage = Storage(self, web3_1, 100)
-        storage.deploy(network_1, account_1)
-        tx_receipt = network_1.transact(self, web3_1, storage.contract.functions.store(128), account_1, storage.GAS_LIMIT)
+        relevancy = Relevancy(self, web3_1)
+        relevancy.deploy(network_1, account_1)
+        tx_receipt = network_1.transact(self, web3_1,
+                                        relevancy.contract.functions.indexedAddressAndNumber(account_1.address),
+                                        account_1, relevancy.GAS_LIMIT)
 
         tx_hash = tx_receipt.transactionHash
         block_number = tx_receipt.blockNumber
 
         self.log.info('Getting transaction for account 2 (through network connection 1)')
         tx_rec = web3_2.eth.get_transaction_receipt(tx_hash)
-        with open(storage.abi_path) as f: contract = web3_2.eth.contract(address=storage.address, abi=json.load(f))
-        tx_log = contract.events.Stored().processReceipt(tx_rec)[0]
+        with open(relevancy.abi_path) as f:
+            contract = web3_2.eth.contract(address=relevancy.address, abi=json.load(f))
+        tx_log = contract.events.IndexedAddressAndNumber().processReceipt(tx_rec)[0]
         args_value = tx_log['args']['value']
         self.log.info('Transaction log shows value %d', args_value)
-        self.assertTrue(args_value == 128)
+        self.assertTrue(args_value == 1)
 
         # second wallet extension, account 3 tries to get the transaction receipt
         # but also just requests all event logs for the Stored event
@@ -42,7 +45,8 @@ class PySysTest(ObscuroNetworkTest):
             self.addOutcome(PASSED)
 
         self.log.info('Attempting to get the past events from the contract instance')
-        with open(storage.abi_path) as f: contract = web3_3.eth.contract(address=storage.address, abi=json.load(f))
-        events = contract.events.Stored().getLogs(fromBlock=block_number)
-        self.assertTrue(len(events) == 1)
-        self.assertTrue(events[0]['args']['value'] == 128)
+        with open(relevancy.abi_path) as f:
+            contract = web3_3.eth.contract(address=relevancy.address, abi=json.load(f))
+        events = contract.events.IndexedAddressAndNumber().getLogs(fromBlock=block_number)
+        self.assertTrue(len(events) == 0)
+
