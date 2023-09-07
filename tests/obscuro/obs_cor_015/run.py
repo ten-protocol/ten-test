@@ -25,14 +25,15 @@ class PySysTest(ObscuroNetworkTest):
         self.log.info('First transaction block hash %s', tx_recp.blockHash.hex())
         self.log.info('First transaction tx hash %s', tx_recp.transactionHash.hex())
         response = self.get_debug_log_visibility(tx_recp.transactionHash.hex())
+        self.log.info(response)
 
         self.waitForSignal(file='subscriber.out', expr='Full log:', condition='==1', timeout=10)
         self.assertLineCount(file='subscriber.out', expr='Full log:', condition='==1')
 
-        self.assertTrue(response[0]['address'] == storage.address.lower())
+        self.assertTrue(response[0]['address'] == storage.address)
         self.assertTrue(response[0]['topics'][0] == web3.keccak(text='Stored(uint256)').hex())
         self.assertTrue(response[0]['transactionHash'] == tx_recp.transactionHash.hex())
         self.assertTrue(response[0]['blockHash'] == tx_recp.blockHash.hex())
-        self.assertTrue(int(response[0]['logIndex'], 16) == 0)
-        self.assertTrue(int(response[0]['blockNumber'], 16) == tx_recp.blockNumber)
+        self.assertTrue(response[0]['logIndex'] == 0)
+        self.assertTrue(response[0]['blockNumber'] == tx_recp.blockNumber)
         self.assertTrue(response[0]['lifecycleEvent'] == True)
