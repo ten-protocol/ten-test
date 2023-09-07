@@ -226,7 +226,6 @@ class ObscuroNetworkTest(GenericNetworkTest):
     def post(self, data):
         self.MSG_ID += 1
         server = 'http://%s:%s' % (Properties().node_host(self.env, self.NODE_HOST), Properties().node_port_http(self.env))
-        self.log.info(server)
         return requests.post(server, json=data)
 
     def background_funders(self, network, num_funders):
