@@ -2,25 +2,23 @@
 <pysystest type="auto">
 
     <description>
-        <title>Account going through separate connection can't get receipt but can get logs (lifecycle)</title>
-        <purpose><![CDATA[Through one wallet connection account 1 deploys the storage contract and transacts. Through
-the same wallet connection account 2 requests the transaction receipt and decodes the event log (this should work).
-Through a separate wallet connection account 3 tries to request the transaction receipt but this fails as the
-transaction receipt is encrypted. Instead, it performs a getLogs request on the contract Stored event from the block
-number the event log was added into, and then can finally see the logs.
+        <title>Debug APIs - request debug_logVisibility, single non-lifecycle event</title>
+        <purpose><![CDATA[Makes a call to debug log visibility for a single non-lifecycle event emitted from the
+relevancy contract.
+
+Skip reason https://github.com/obscuronet/obscuro-internal/issues/2140
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>persistence</group>
+            <group>skip</group>
+            <group>debug_apis</group>
         </groups>
         <modes inherit="true">
-            <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
-            <mode>goerli</mode>
-            <mode>ganache</mode>
+            <mode>obscuro.dev</mode>
         </modes>
     </classification>
 
