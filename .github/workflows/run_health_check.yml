@@ -4,14 +4,14 @@
 name: Run health check
 on:
   schedule:
-    - cron: '10 */2 * * *'
+    - cron: '*/30 * * * *'
   workflow_dispatch:
     inputs:
       release:
         type: choice
         description: 'The release version of testnet'
         required: true
-        default: releases/v0.15
+        default: releases/v0.16
         options:
           - releases/v0.16
           - releases/v0.15
@@ -64,7 +64,7 @@ jobs:
         if: success()
         uses: sarisia/actions-status-discord@v1
         with:
-          webhook: ${{ secrets.CONT_INT_WEBHOOK }}
+          webhook: ${{ secrets.TESTNET_HEALTH_WEBHOOK }}
           title: "Testnet health check tests passed"
           description: "Testnet sanity tests run on schedule"
           avatar_url: ${{ secrets.AVATAR_URL }}
@@ -73,8 +73,8 @@ jobs:
         if: failure()
         uses: sarisia/actions-status-discord@v1
         with:
-          webhook: ${{ secrets.CONT_INT_WEBHOOK }}
+          webhook: ${{ secrets.TESTNET_HEALTH_WEBHOOK }}
           title: "Testnet health check tests failed"
           description: "Testnet sanity tests run on schedule"
-          content: "Please investigate <@814873419207409685>"
+          content: "Please investigate <@814873419207409685> <@92361563276591104> <@494924753962926120> <@921049923414261821> <@1034771491436363797> <@639076633994592256>"
           avatar_url: ${{ secrets.AVATAR_URL }}
