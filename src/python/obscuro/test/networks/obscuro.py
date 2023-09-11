@@ -55,7 +55,8 @@ class Obscuro(Default):
 
     def __init__(self, test, name=None, **kwargs):
         super().__init__(test, name, **kwargs)
-        self.CHAIN_ID = Properties().chain_id(test.env)
+        props = Properties()
+        self.CHAIN_ID = props.chain_id(test.env)
 
         if 'wallet' in kwargs:
             wallet = kwargs['wallet']
@@ -78,8 +79,8 @@ class Obscuro(Default):
                 url = Properties().gateway_url(test.env)
                 self.HOST = url
                 self.WS_HOST = url.replace('http','ws')
-                self.PORT = 80
-                self.WS_PORT = 81
+                self.PORT = props.gateway_port_http(test.env)
+                self.WS_PORT = props.gateway_port_ws(test.env)
 
         self.ID = self.__join()
         if self.ID is None:
