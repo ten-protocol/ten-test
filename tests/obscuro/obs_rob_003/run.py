@@ -6,7 +6,8 @@ from obscuro.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
 class PySysTest(ObscuroNetworkTest):
-    ITERATIONS = 500
+    CLIENTS = 500
+    TRANSACTIONS = 10
 
     def execute(self):
         # start a single wallet extension
@@ -18,19 +19,17 @@ class PySysTest(ObscuroNetworkTest):
         storage = Storage(self, web3_1, 100)
         storage.deploy(network_connection_primary, account_1)
 
-        # make a subscription for all events to the contract, one through each of the connections
+        # make a subscription for all events to the contract
         subscriber_1 = AllEventsLogSubscriber(self, network_connection_primary, storage,
                                               stdout='subscriber.out',
                                               stderr='subscriber.err')
         subscriber_1.run()
 
-        # each account performs a transaction against the storage contract which results in a lifecycle
-        # event being emitted
-        count = 0
+        # register, or join and register all the clients
         connections = []
         primary_userid = 1
         additional_userid = 0
-        for i in range(0, self.ITERATIONS):
+        for i in range(0, self.CLIENTS):
             self.log.info('')
             pk = secrets.token_hex(32)
             if random.randint(0, 4) < 3:
@@ -47,8 +46,14 @@ class PySysTest(ObscuroNetworkTest):
 
         self.log.info('Number registrations on primary user id = %d', primary_userid)
         self.log.info('Number registrations on unique user id = %d', additional_userid)
-        web3, account, network_connection = random.choice(connections)
-        self.distribute_native(account, 0.01)
-        network_connection.transact(self, web3, storage.contract.functions.store(count), account, storage.GAS_LIMIT)
-        self.waitForSignal(file='subscriber.out', expr='Received event: Stored', condition='==1', timeout=10)
-        self.assertGrep(file='subscriber.out', expr='Received event: Stored')
+
+        # perform some randon client transactions
+        count = 0
+        for i in range(0, self.TRANSACTIONS):
+            count = count + 1
+            web3, account, network_connection = random.choice(connections)
+            self.distribute_native(account, 0.01)
+            network_connection.transact(self, web3, storage.contract.functions.store(count), account, storage.GAS_LIMIT)
+
+        self.waitForSignal(file='subscriber.out', expr='Received event: Stored', condition='==%d' % self.TRANSACTIONS, timeout=10)
+        self.assertLineCount(file='subscriber.out', expr='Received event: Stored', condition='==%d' % self.TRANSACTIONS)
