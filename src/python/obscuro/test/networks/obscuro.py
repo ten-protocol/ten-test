@@ -78,8 +78,8 @@ class Obscuro(Default):
                 url = Properties().gateway_url(test.env)
                 self.HOST = url
                 self.WS_HOST = url.replace('http','ws')
-                self.PORT = Properties().port_http(test.env)
-                self.WS_PORT = Properties().port_ws(test.env)
+                self.PORT = 80
+                self.WS_PORT = 81
 
         self.ID = self.__join()
         if self.ID is None:
