@@ -50,7 +50,7 @@ jobs:
       - name: 'Run sanity tests'
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -i sanity
+          /usr/local/bin/pysys.py run -i health -XDURATION=0
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v3
