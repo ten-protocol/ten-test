@@ -12,7 +12,7 @@ against Obscuro, Goerli or Ganache. There is no constructor or destructor in the
 
     <classification>
         <groups inherit="true">
-            <group>sanity</group>
+            <group>health</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>
