@@ -5,8 +5,6 @@
         <title>Gas: release funds when deleting a contract</title>
         <purpose><![CDATA[
 Deleting a contract through SELFDESTRUCT should be worth 24,000 gas.
-
-Gas mechanics is currently not yet implemented on Obscuro.
 ]]>
         </purpose>
     </description>
@@ -14,7 +12,6 @@ Gas mechanics is currently not yet implemented on Obscuro.
     <classification>
         <groups inherit="true">
             <group>gas</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>
