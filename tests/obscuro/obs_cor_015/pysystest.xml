@@ -5,15 +5,12 @@
         <title>Debug APIs - request debug_logVisibility, single lifecycle event</title>
         <purpose><![CDATA[Makes a call to debug log visibility for a single lifecycle event emitted from the storage
 contract.
-
-Skip reason https://github.com/obscuronet/obscuro-internal/issues/2140
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>debug_apis</group>
         </groups>
         <modes inherit="true">
