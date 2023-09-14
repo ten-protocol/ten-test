@@ -1,4 +1,5 @@
 import re
+from pysys.constants import FAILED
 from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.contracts.gas import GasConsumerBalance
 
@@ -27,6 +28,7 @@ class PySysTest(GenericNetworkTest):
         signed_tx = account.sign_transaction(build_tx)
         try:
             web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+            self.addOutcome(FAILED, 'Exception should be thrown')
         except Exception as e:
             self.log.error('Exception type: %s', type(e))
             self.log.error('Exception message: %s', e.args[0]['message'])
