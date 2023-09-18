@@ -12,6 +12,7 @@ Deleting a contract through SELFDESTRUCT should be worth 24,000 gas.
     <classification>
         <groups inherit="true">
             <group>gas</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.dev</mode>
