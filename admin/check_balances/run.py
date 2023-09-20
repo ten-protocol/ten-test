@@ -5,6 +5,7 @@ from obscuro.test.utils.properties import Properties
 
 
 class PySysTest(BaseTest):
+    THRESHOLD = 5
 
     def execute(self):
         network = Sepolia(self)
@@ -19,5 +20,5 @@ class PySysTest(BaseTest):
         validator_balance = web3.fromWei(web3.eth.get_balance(validator_address), 'ether')
         self.log.info('Validator account %s balance %.6f %s', validator_address, validator_balance, network.CURRENCY)
 
-        self.assertTrue(sequencer_balance >= 5.0, assertMessage='Sequence balance is below threshold')
-        self.assertTrue(validator_balance >= 5.0, assertMessage='Validator balance is below threshold')
+        self.assertTrue(sequencer_balance >= self.THRESHOLD, assertMessage='Sequence balance is below threshold')
+        self.assertTrue(validator_balance >= self.THRESHOLD, assertMessage='Validator balance is below threshold')
