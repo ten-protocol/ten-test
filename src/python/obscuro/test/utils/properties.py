@@ -155,6 +155,9 @@ class Properties:
     def l2_cross_chain_messenger_address(self, key):
         return self.get('env.'+key, 'L2CrossChainMessengerAddress')
 
+    def l2_funds_account_pk(self, key):
+        return self.get('env.'+key, 'L2FundsAccountPK')
+
     # infura related
     def infuraProjectID(self):
         return self.get('env.goerli', 'ProjectID')

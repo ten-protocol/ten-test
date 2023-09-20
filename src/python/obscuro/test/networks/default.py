@@ -34,7 +34,7 @@ class Default:
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)
-        if log: test.log.info('Account %s connected to %s on %s', account.address, self.__class__.__name__, url)
+        if log: test.log.info('Account %s connected to %s', account.address, self.__class__.__name__)
 
         if check_funds:
             balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
