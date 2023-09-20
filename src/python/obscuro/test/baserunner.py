@@ -240,5 +240,6 @@ class ObscuroRunnerPlugin():
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         data = {"signature": signature['signature'].hex(), "message": text_to_sign}
+        print(data)
         response = requests.post(url, data=json.dumps(data), headers=headers)
         return response
