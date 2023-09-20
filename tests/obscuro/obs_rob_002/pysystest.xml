@@ -17,8 +17,10 @@ network and ensure that there is no outage.
             <group>robustness</group>
         </groups>
         <modes inherit="true">
+            <mode>obscuro</mode>
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
+            <mode>obscuro.sepolia</mode>
         </modes>
     </classification>
 

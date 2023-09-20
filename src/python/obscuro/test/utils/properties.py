@@ -92,6 +92,10 @@ class Properties:
     def gg_appdev_pk(self): return self.get('env.all', 'GGAppDevPK')
     def gg_endusr_pk(self): return self.get('env.all', 'GGEndUsrPK')
 
+    # node addresses
+    def sequencer_address(self, key): return self.get('env.'+key, 'SequencerAddress')
+    def validator_address(self, key): return self.get('env.'+key, 'ValidatorAddress')
+
     # network connection properties
     def host_http(self, key): return self.get('env.'+key, 'HostHTTP')
     def host_ws(self, key): return self.get('env.'+key, 'HostWS')

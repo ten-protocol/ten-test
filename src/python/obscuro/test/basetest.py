@@ -13,7 +13,7 @@ from obscuro.test.networks.goerli import Goerli
 from obscuro.test.networks.arbitrum import Arbitrum
 from obscuro.test.networks.sepolia import Sepolia
 from obscuro.test.networks.obscuro import Obscuro
-from obscuro.test.networks.obscuro import ObscuroL1
+from obscuro.test.networks.obscuro import ObscuroL1Geth, ObscuroL1Sepolia
 
 
 class GenericNetworkTest(BaseTest):
@@ -24,9 +24,9 @@ class GenericNetworkTest(BaseTest):
     def __init__(self, descriptor, outsubdir, runner):
         """Call the parent constructor but set the mode to obscuro if non is set. """
         super().__init__(descriptor, outsubdir, runner)
-        self.log.info('Running test in thread %s', threading.currentThread().getName())
-        self.env = 'obscuro' if self.mode is None else self.mode
+        self.env = self.mode
         self.block_time = Properties().block_time_secs(self.env)
+        self.log.info('Running test in thread %s', threading.currentThread().getName())
 
         # every test has its own connection to the nonce and contract db
         db_dir = os.path.join(str(Path.home()), '.obscurotest')
@@ -44,7 +44,7 @@ class GenericNetworkTest(BaseTest):
 
     def is_obscuro(self):
         """Return true if we are running against an Obscuro network. """
-        return self.env in ['obscuro', 'obscuro.dev', 'obscuro.local']
+        return self.env in ['obscuro', 'obscuro.sepolia', 'obscuro.dev', 'obscuro.local']
 
     def run_python(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
         """Run a python process. """
@@ -150,8 +150,10 @@ class GenericNetworkTest(BaseTest):
 
     def get_l1_network_connection(self, name='primary_l1_connection'):
         """Get the layer 1 network connection used by a layer 2."""
-        if self.is_obscuro():
-            return ObscuroL1(self, name)
+        if self.is_obscuro() and self.env != 'obscuro.sepolia':
+            return ObscuroL1Geth(self, name)
+        elif self.is_obscuro() and self.env == 'obscuro.sepolia':
+            return ObscuroL1Sepolia(self, name)
         return Default(self, name)
 
 

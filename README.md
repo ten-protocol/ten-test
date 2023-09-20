@@ -11,11 +11,12 @@
 
 Project repo for running end to end system tests against a variety of networks, with [obscuro](https://obscu.ro/) being 
 the primary network under test. Other networks supported include [ganache](https://trufflesuite.com/ganache/), 
-[goerli via infura](https://infura.io/), [arbitrum](https://arbitrum.io/) and [geth](https://geth.ethereum.org/docs/getting-started). The repo uses the 
-[pysys](https://pysys-test.github.io/pysys-test/) test framework to manage all tests and their execution. All tests are 
-fully system level using [web3.py](https://web3py.readthedocs.io/en/stable/) to interact with the networks which are 
-managed outside the scope of the tests (with the exception of ganache which can be started locally). Note the project is 
-currently under active development and further information on running the tests will be added to this readme over time. 
+[goerli via infura](https://infura.io/), [arbitrum](https://arbitrum.io/) and [geth](https://geth.ethereum.org/docs/getting-started)
+and [sepolia](https://sepolia.dev/). The repo uses the [pysys](https://pysys-test.github.io/pysys-test/) test framework 
+to manage all tests and their execution. All tests are fully system level using [web3.py](https://web3py.readthedocs.io/en/stable/) 
+to interact with the networks which are managed outside the scope of the tests (with the exception of ganache which can 
+be started locally). Note the project is currently under active development and further information on running the tests 
+will be added to this readme over time. 
 
 Repository Structure
 --------------------
@@ -157,13 +158,16 @@ pysys.py print
 pysys.py print -f
 
 # run the tests against Obscuro testnet
-pysys.py run 
+pysys.py run  -m obscuro
 
 # run the tests against Obscuro dev-testnet
 pysys.py run -m obscuro.dev 
 
 # run the tests against Obscuro local testnet
 pysys.py run -m obscuro.local
+
+# run the tests against Obscuro sepolia testnet
+pysys.py run -m obscuro.sepolia
 
 # run the tests against a local ganache network 
 pysys.py run -m ganache
@@ -173,6 +177,9 @@ pysys.py run -m arbitrum
 
 # run the tests against the Goerli network 
 pysys.py run -m goerli
+
+# run the tests against the Sepolia network 
+pysys.py run -m sepolia
 ```
 
 Note that should you wish to run against an Obscuro local testnet, you will need to build and run the local testnet 
@@ -194,17 +201,17 @@ filter based on the user request e.g.
 
 ```bash
 # run a specific test
-pysys.py run gen_cor_001
+pysys.py run -m obscuro gen_cor_001
 
 # run a range of tests (using python list slicing syntax)
-pysys.py run gen_cor_001:gen_cor_004
-pysys.py run gen_cor_003:
+pysys.py run -m obscuro gen_cor_001:gen_cor_004
+pysys.py run -m obscuro gen_cor_003:
 
 # run a test multiple times
-pysys.py run -c 5 gen_cor_003
+pysys.py run -m obscuro -c 5 gen_cor_003
 
 # run a test with full verbosity logging
-pysys.py run -v DEBUG gen_cor_003
+pysys.py run -m obscuro -v DEBUG gen_cor_003
 ```
 
 

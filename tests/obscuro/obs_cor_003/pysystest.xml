@@ -28,8 +28,10 @@ first registered accounts viewing key.
             <group>web3js</group>
         </groups>
         <modes inherit="true">
+            <mode>obscuro</mode>
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
+            <mode>obscuro.sepolia</mode>
         </modes>
     </classification>
 

@@ -29,7 +29,20 @@ class ObscuroRunnerPlugin():
 
     def setup(self, runner):
         """Set up a runner plugin to start any processes required to execute the tests. """
-        self.env = 'obscuro' if runner.mode is None else runner.mode
+        if runner.mode is None:
+            runner.log.warn('A valid mode must be supplied')
+            runner.log.info('Supported modes are; ')
+            runner.log.info('   obscuro           Obscuro testnet')
+            runner.log.info('   obscuro.dev       Obscuro dev testnet')
+            runner.log.info('   obscuro.local     Obscuro local testnet')
+            runner.log.info('   obscuro.sepolia   Obscuro sepolia testnet')
+            runner.log.info('   goerli            Goerli Network')
+            runner.log.info('   ganache           Ganache Network started by the framework')
+            runner.log.info('   arbitrum          Arbitrum Network')
+            runner.log.info('   sepolia           Sepolia Network')
+            sys.exit()
+
+        self.env = runner.mode
         self.NODE_HOST = runner.getXArg('NODE_HOST', '')
         if self.NODE_HOST == '': self.NODE_HOST = None
         runner.output = os.path.join(PROJECT.root, '.runner')

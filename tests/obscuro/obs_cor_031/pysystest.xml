@@ -18,8 +18,10 @@ event logs from the network, we expect a single call back for our subscriber (de
             <group>skip</group>
         </groups>
         <modes inherit="true">
-            <mode>obscuro.local</mode>
+            <mode>obscuro</mode>
             <mode>obscuro.dev</mode>
+            <mode>obscuro.local</mode>
+            <mode>obscuro.sepolia</mode>
         </modes>
     </classification>
 

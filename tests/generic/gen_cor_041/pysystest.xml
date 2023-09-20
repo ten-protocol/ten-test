@@ -14,10 +14,14 @@ against Obscuro, Goerli or Ganache. There is a constructor and destructor in the
         <groups inherit="true">
         </groups>
         <modes inherit="true">
+            <mode>obscuro</mode>
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
+            <mode>obscuro.sepolia</mode>
             <mode>goerli</mode>
             <mode>ganache</mode>
+            <mode>arbitrum</mode>
+            <mode>sepolia</mode>
         </modes>
     </classification>
 
