@@ -158,3 +158,7 @@ class Properties:
     # arbitrum related
     def abitrumAPIKey(self):
         return self.get('env.arbitrum', 'APIKey')
+
+    # sepolia related
+    def sepoliaAPIKey(self):
+        return self.get('env.sepolia', 'APIKey')

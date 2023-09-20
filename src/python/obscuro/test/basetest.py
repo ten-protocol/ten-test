@@ -11,6 +11,7 @@ from obscuro.test.networks.default import Default
 from obscuro.test.networks.ganache import Ganache
 from obscuro.test.networks.goerli import Goerli
 from obscuro.test.networks.arbitrum import Arbitrum
+from obscuro.test.networks.sepolia import Sepolia
 from obscuro.test.networks.obscuro import Obscuro
 from obscuro.test.networks.obscuro import ObscuroL1
 
@@ -143,6 +144,8 @@ class GenericNetworkTest(BaseTest):
             return Ganache(self, name, **kwargs)
         elif self.env == 'arbitrum':
             return Arbitrum(self, name, **kwargs)
+        elif self.env == 'sepolia':
+            return Sepolia(self, name, **kwargs)
         return Default(self, name, **kwargs)
 
     def get_l1_network_connection(self, name='primary_l1_connection'):
