@@ -88,7 +88,7 @@ class ObscuroRunnerPlugin():
                                                                         web3, user_id))
                     runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
                 else:
-                    gateway_url = '%s:%d' % (props.gateway_url(self.env), props.gateway_port_http(self.env))
+                    gateway_url = '%s' % (props.gateway_url(self.env))
                     runner.log.info('Joining network using url %s', '%s/v1/join/' % gateway_url)
                     user_id = self.__join('%s/v1/join/' % gateway_url)
                     runner.log.info('User id is %s', user_id)
