@@ -2,21 +2,17 @@
 <pysystest type="auto">
 
     <description>
-        <title>Account going through separate connection can't get receipt or logs (non-lifecycle)</title>
+        <title>Check the balances for the sequencer and validator on sepolia</title>
         <purpose><![CDATA[
 ]]>
         </purpose>
     </description>
-
     <classification>
         <groups inherit="true">
-            <group>persistence</group>
+            <group></group>
         </groups>
         <modes inherit="true">
-            <mode>obscuro</mode>
-            <mode>obscuro.dev</mode>
-            <mode>obscuro.local</mode>
-            <mode>obscuro.sepolia</mode>
+            <mode>sepolia</mode>
         </modes>
     </classification>
 

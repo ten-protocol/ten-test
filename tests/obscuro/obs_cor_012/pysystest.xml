@@ -16,8 +16,10 @@ the transaction of interest.
         <groups inherit="true">
         </groups>
         <modes inherit="true">
+            <mode>obscuro</mode>
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
+            <mode>obscuro.sepolia</mode>
         </modes>
     </classification>
 

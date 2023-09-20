@@ -14,10 +14,14 @@ Checks the cost of requesting the balance of an account.
             <group>gas</group>
         </groups>
         <modes inherit="true">
+            <mode>obscuro</mode>
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
+            <mode>obscuro.sepolia</mode>
             <mode>goerli</mode>
             <mode>ganache</mode>
+            <mode>arbitrum</mode>
+            <mode>sepolia</mode>
         </modes>
     </classification>
 

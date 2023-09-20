@@ -14,8 +14,10 @@ contract.
             <group>debug_apis</group>
         </groups>
         <modes inherit="true">
-            <mode>obscuro.local</mode>
+            <mode>obscuro</mode>
             <mode>obscuro.dev</mode>
+            <mode>obscuro.local</mode>
+            <mode>obscuro.sepolia</mode>
         </modes>
     </classification>
 

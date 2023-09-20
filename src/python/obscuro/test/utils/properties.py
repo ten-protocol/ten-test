@@ -92,6 +92,10 @@ class Properties:
     def gg_appdev_pk(self): return self.get('env.all', 'GGAppDevPK')
     def gg_endusr_pk(self): return self.get('env.all', 'GGEndUsrPK')
 
+    # node addresses
+    def sequencer_address(self, key): return self.get('env.'+key, 'SequencerAddress')
+    def validator_address(self, key): return self.get('env.'+key, 'ValidatorAddress')
+
     # network connection properties
     def host_http(self, key): return self.get('env.'+key, 'HostHTTP')
     def host_ws(self, key): return self.get('env.'+key, 'HostWS')
@@ -151,6 +155,9 @@ class Properties:
     def l2_cross_chain_messenger_address(self, key):
         return self.get('env.'+key, 'L2CrossChainMessengerAddress')
 
+    def l2_funds_account_pk(self, key):
+        return self.get('env.'+key, 'L2FundsAccountPK')
+
     # infura related
     def infuraProjectID(self):
         return self.get('env.goerli', 'ProjectID')
@@ -158,3 +165,7 @@ class Properties:
     # arbitrum related
     def abitrumAPIKey(self):
         return self.get('env.arbitrum', 'APIKey')
+
+    # sepolia related
+    def sepoliaAPIKey(self):
+        return self.get('env.sepolia', 'APIKey')

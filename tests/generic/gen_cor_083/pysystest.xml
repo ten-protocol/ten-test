@@ -17,10 +17,14 @@ Filters on events from a particular contract, and subscribes and unsubscribes.
             <group>web3js</group>
         </groups>
         <modes inherit="true">
+            <mode>obscuro</mode>
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
+            <mode>obscuro.sepolia</mode>
             <mode>goerli</mode>
             <mode>ganache</mode>
+            <mode>arbitrum</mode>
+            <mode>sepolia</mode>
         </modes>
     </classification>
 

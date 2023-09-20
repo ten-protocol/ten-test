@@ -17,6 +17,7 @@
             <mode>obscuro.local</mode>
             <mode>goerli</mode>
             <mode>arbitrum</mode>
+            <mode>sepolia</mode>
         </modes>
     </classification>
 
