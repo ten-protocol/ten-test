@@ -147,6 +147,7 @@ class GenericNetworkTest(BaseTest):
     def get_network_connection(self, name='primary_connection', **kwargs):
         """Get the network connection."""
         if self.is_obscuro():
+            print("is obscuro..")
             return Obscuro(self, name, **kwargs)
         elif self.env == 'goerli':
             return Goerli(self, name, **kwargs)
@@ -154,6 +155,8 @@ class GenericNetworkTest(BaseTest):
             return Ganache(self, name, **kwargs)
         elif self.env == 'arbitrum':
             return Arbitrum(self, name, **kwargs)
+
+        print("return default..")
         return Default(self, name, **kwargs)
 
     def get_l1_network_connection(self, name='primary_l1_connection'):
