@@ -24,17 +24,24 @@ class GenericNetworkTest(BaseTest):
         """Call the parent constructor but set the mode to obscuro if non is set. """
         super().__init__(descriptor, outsubdir, runner)
         self.log.info('Running test in thread %s', threading.currentThread().getName())
+        print("test1")
         self.env = 'obscuro' if self.mode is None else self.mode
+        print("test2")
         self.block_time = Properties().block_time_secs(self.env)
+        print("test3")
 
         # every test has its own connection to the nonce and contract db
         db_dir = os.path.join(str(Path.home()), '.obscurotest')
+        print("test4")
         self.nonce_db = NoncePersistence(db_dir)
+        print("test5")
         self.contract_db = ContractPersistence(db_dir)
+        print("test6")
         self.addCleanupFunction(self.close_db)
-
+        print("test7")
         # every test has a connection for the funded account
         self.network_funding = self.get_network_connection(name='funding_connection')
+        print("test8")
 
     def close_db(self):
         """Close the connection to the nonce database on completion. """
