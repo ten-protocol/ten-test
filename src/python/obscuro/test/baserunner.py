@@ -1,4 +1,5 @@
 import os, shutil, sys, json, requests
+import time
 from collections import OrderedDict
 from web3 import Web3
 from pathlib import Path
@@ -119,9 +120,10 @@ class ObscuroRunnerPlugin():
                 runner.log.info('')
                 runner.log.info('Accounts with non-zero funds;')
                 for fn in Properties().accounts():
+                    time.sleep(0.5)
                     account = web3.eth.account.privateKeyToAccount(fn())
-                    self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
-
+                    resp = self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
+                    print("response is: ", resp)
                     self.balances[fn.__name__] = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
                     if self.balances[fn.__name__] > 0:
                         runner.log.info("  Funds for %s: %.18f OBX", fn.__name__, self.balances[fn.__name__],
@@ -248,4 +250,5 @@ class ObscuroRunnerPlugin():
         print("headers: ", headers)
         print("--------------")
         response = requests.post(url, data=json.dumps(data), headers=headers)
+        print(response)
         return response
