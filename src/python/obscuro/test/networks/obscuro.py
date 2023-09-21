@@ -86,10 +86,10 @@ class Obscuro(Default):
                 print("URL is: ", url)
                 self.HOST = url
                 self.WS_HOST = url.replace('http','ws')
-                self.PORT = 80
+                self.PORT = props.gateway_port_http(test.env)
                 print("PORT IS: ", self.PORT)
-                self.WS_PORT = 81
-                print("WSPORT IS: ", self.PORT)
+                self.WS_PORT = props.gateway_port_ws(test.env)
+                print("WSPORT IS: ", self.WS_PORT)
 
         print("before joining")
         self.ID = self.__join()
@@ -102,7 +102,7 @@ class Obscuro(Default):
     def connection_url(self, web_socket=False):
         port = self.PORT if not web_socket else self.WS_PORT
         host = self.HOST if not web_socket else self.WS_HOST
-        return '%s:%d/v1/?u=%s' % (host, port, self.ID)
+        return '%s/v1/?u=%s' % (host, self.ID)
 
     def connect(self, test, private_key, web_socket=False, check_funds=True, log=True):
         url = self.connection_url(web_socket)
@@ -135,7 +135,7 @@ class Obscuro(Default):
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         data = {"signature": signature['signature'].hex(), "message": text_to_sign}
-        requests.post('%s:%d/v1/authenticate/?u=%s' % (self.HOST, self.PORT, self.ID),
+        requests.post('%s/v1/authenticate/?u=%s' % (self.HOST, self.ID),
                       data=json.dumps(data), headers=headers)
 
 
