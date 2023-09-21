@@ -118,9 +118,9 @@ class Obscuro(Default):
                 print("URL is: ", url)
                 self.HOST = url
                 self.WS_HOST = url.replace('http','ws')
-                self.PORT = props.gateway_port_http(test.env)
+                self.PORT = 80
                 print("PORT IS: ", self.PORT)
-                self.WS_PORT = props.gateway_port_ws(test.env)
+                self.WS_PORT = 81
                 print("WSPORT IS: ", self.PORT)
 
         print("before joining")
