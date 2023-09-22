@@ -4,6 +4,8 @@ from web3 import Web3
 from pathlib import Path
 from pysys.basetest import BaseTest
 from pysys.constants import PROJECT, BACKGROUND
+from pysys.constants import LOG_TRACEBACK
+from pysys.utils.logutils import BaseLogFormatter
 from obscuro.test.persistence.nonce import NoncePersistence
 from obscuro.test.persistence.contract import ContractPersistence
 from obscuro.test.utils.properties import Properties
@@ -36,6 +38,20 @@ class GenericNetworkTest(BaseTest):
 
         # every test has a connection for the funded account
         self.network_funding = self.get_network_connection(name='funding_connection')
+        self.balance = 0
+        self.accounts = []
+        for fn in Properties().accounts():
+            web3, account = self.network_funding.connect(self, fn(), check_funds=False, log=False)
+            self.accounts.append((web3, account))
+            self.balance = self.balance + web3.eth.get_balance(account.address)
+        self.addCleanupFunction(self.__test_cost)
+
+    def __test_cost(self):
+        balance = 0
+        for web3, account in self.accounts: balance = balance + web3.eth.get_balance(account.address)
+        delta = self.balance - balance
+        self.log.info("  %s: %d Wei", 'Test cost', delta, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+        self.log.info("  %s: %.9f ETH", 'Test cost', Web3().fromWei(delta, 'ether'), extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
 
     def close_db(self):
         """Close the connection to the nonce database on completion. """
