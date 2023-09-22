@@ -1,3 +1,4 @@
+from web3 import Web3
 import secrets, os
 from pysys.constants import PASSED
 from obscuro.test.basetest import GenericNetworkTest
@@ -34,7 +35,8 @@ class PySysTest(GenericNetworkTest):
 
     def hammer(self, network, private_key, num):
         # register out-side of the script
-        network.connect(self, private_key=private_key)
+        self.distribute_native(Web3().eth.account.privateKeyToAccount(private_key), 0.01)
+        network.connect(self, private_key=private_key, check_funds=False)
 
         # create the client
         stdout = os.path.join(self.output, 'hammer_%d.out'%num)
