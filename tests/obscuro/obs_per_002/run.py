@@ -59,7 +59,7 @@ class PySysTest(GenericNetworkTest):
         pk = secrets.token_hex(32)
         network = self.get_network_connection(name=name)
         _, account = network.connect(self, private_key=pk)
-        self.distribute_native(account, 0.1)
+        self.distribute_native(account, 0.01)
         return pk, network
 
     def run_client(self, name, pk, network):

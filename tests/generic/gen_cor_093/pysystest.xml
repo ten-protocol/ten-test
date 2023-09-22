@@ -14,7 +14,6 @@ Gas mechanics is currently not yet implemented on Obscuro.
     <classification>
         <groups inherit="true">
             <group>gas</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro</mode>

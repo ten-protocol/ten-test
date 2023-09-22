@@ -243,7 +243,7 @@ class ObscuroNetworkTest(GenericNetworkTest):
     def funds_client(self, pk, recipients, num):
         network = self.get_network_connection(name='funds_%d' % num)
         network.connect(self, private_key=pk)
-        self.distribute_native(Web3().eth.account.privateKeyToAccount(pk), 1)
+        self.distribute_native(Web3().eth.account.privateKeyToAccount(pk), 0.01)
 
         stdout = os.path.join(self.output, 'funds_%d.out' % num)
         stderr = os.path.join(self.output, 'funds_%d.err' % num)

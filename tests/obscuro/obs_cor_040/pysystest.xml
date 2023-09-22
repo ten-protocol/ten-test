@@ -11,7 +11,7 @@
 
     <classification>
         <groups inherit="true">
-            <group>gateway</group>
+            <group>gas</group>
             <group>skip</group>
         </groups>
         <modes inherit="true">
