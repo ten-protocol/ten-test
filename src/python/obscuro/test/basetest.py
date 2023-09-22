@@ -105,6 +105,9 @@ class GenericNetworkTest(BaseTest):
             'gasPrice': web3_pk.eth.gas_price
         }
         self.network_funding.tx(self, web3_pk, tx, account_pk)
+        balance = web3_pk.eth.get_balance(account_pk.address)
+        self.log.info("Funds for %s: %.9f ETH", "fundacntpk ", Web3().fromWei(balance, 'ether'),
+                      extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
 
     def fund_native(self, network, account, amount, pk, persist_nonce=True):
         """A native transfer of funds from one address to another.
@@ -258,8 +261,8 @@ class ObscuroNetworkTest(GenericNetworkTest):
 
     def funds_client(self, pk, recipients, num):
         network = self.get_network_connection(name='funds_%d' % num)
-        network.connect(self, private_key=pk)
         self.distribute_native(Web3().eth.account.privateKeyToAccount(pk), 0.01)
+        network.connect(self, private_key=pk, check_funds=False)
 
         stdout = os.path.join(self.output, 'funds_%d.out' % num)
         stderr = os.path.join(self.output, 'funds_%d.err' % num)
