@@ -68,7 +68,6 @@ class PySysTest(ObscuroNetworkTest):
     def funds_client(self, pk, recipients, num, funders_connection):
         web3, account = funders_connection.connect(self, private_key=pk, check_funds=False)
         self.distribute_native(account, 0.01)
-        self.client_connections.append((web3, account, funders_connection))
 
         stdout = os.path.join(self.output, 'funds_%d.out' % num)
         stderr = os.path.join(self.output, 'funds_%d.err' % num)
@@ -110,5 +109,5 @@ class PySysTest(ObscuroNetworkTest):
     def _stop_and_drain(self):
         self.log.info('Stopping all concurrent clients and drain accounts')
         for client in self.clients: client.stop()
-        # for web3, account, network in self.client_connections:
-        #     self.drain_native(web3, account, network)
+        for web3, account, network in self.client_connections:
+             self.drain_native(web3, account, network)

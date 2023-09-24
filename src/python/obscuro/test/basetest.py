@@ -107,7 +107,7 @@ class GenericNetworkTest(BaseTest):
             'gas': 4*21000,
             'gasPrice': web3_pk.eth.gas_price
         }
-        
+
         balance_before = web3_pk.eth.get_balance(account_pk.address)
         self.network_funding.tx(self, web3_pk, tx, account_pk)
         balance_after = web3_pk.eth.get_balance(account_pk.address)
