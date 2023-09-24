@@ -40,6 +40,8 @@ class GenericNetworkTest(BaseTest):
         self.network_funding = self.get_network_connection(name='funding_connection')
         self.balance = 0
         self.accounts = []
+        self.transfer_costs = []
+
         for fn in Properties().accounts():
             web3, account = self.network_funding.connect(self, fn(), check_funds=False, log=False)
             self.accounts.append((web3, account))
@@ -98,16 +100,39 @@ class GenericNetworkTest(BaseTest):
         needs to also connect, hence to avoid recursion we don't check funds on the call.
         """
         web3_pk, account_pk = self.network_funding.connect(self, Properties().fundacntpk(), check_funds=False)
+
         tx = {
             'to': account.address,
             'value': web3_pk.toWei(amount, 'ether'),
             'gas': 4*21000,
             'gasPrice': web3_pk.eth.gas_price
         }
+        
+        balance_before = web3_pk.eth.get_balance(account_pk.address)
         self.network_funding.tx(self, web3_pk, tx, account_pk)
-        balance = web3_pk.eth.get_balance(account_pk.address)
-        self.log.info("Funds for %s: %.9f ETH", "fundacntpk ", Web3().fromWei(balance, 'ether'),
+        balance_after = web3_pk.eth.get_balance(account_pk.address)
+        self.transfer_costs.append((balance_before - web3_pk.toWei(amount, 'ether') - balance_after))
+        average = (sum(self.transfer_costs) / len(self.transfer_costs))
+        self.log.info("Average cost for a transfer is %d", average)
+        self.log.info("Funds for %s: %.18f ETH", "fundacntpk ", Web3().fromWei(balance_after, 'ether'),
                       extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+
+    def drain_native(self, web3, account, network):
+        """A native transfer of all funds from and account to the funded account."""
+        average_cost = int(sum(self.transfer_costs) / len(self.transfer_costs))
+        balance = web3.eth.get_balance(account.address)
+        amount = web3.eth.get_balance(account.address) - 10*average_cost
+        self.log.info("Drain account %s of %d (current balance %d)", account.address, amount, balance)
+
+        address = Web3().eth.account.privateKeyToAccount(Properties().fundacntpk()).address
+        self.log.info('Send to address is %s', address)
+        tx = {
+            'to':  address,
+            'value': amount,
+            'gas': 4*21000,
+            'gasPrice': web3.eth.gas_price
+        }
+        network.tx(self, web3, tx, account, persist_nonce=False)
 
     def fund_native(self, network, account, amount, pk, persist_nonce=True):
         """A native transfer of funds from one address to another.
