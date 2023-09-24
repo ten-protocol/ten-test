@@ -13,10 +13,12 @@ class PySysTest(GenericNetworkTest):
         self.log.info('Using account with address %s', account.address)
 
         # create the storage contract
+        self.log.info('Deploying the storage contract')
         b1 = web3.eth.get_balance(account.address)
         storage = Storage(self, web3, 100)
 
         # estimate and perform deployment
+        self.log.info('Build the transaction to delete the contract')
         build_tx = storage.contract.buildTransaction(
             {
                 'nonce': web3.eth.get_transaction_count(account.address),
@@ -26,6 +28,7 @@ class PySysTest(GenericNetworkTest):
             }
         )
 
+        self.log.info('Estimate the gas')
         deploy_gas = web3.eth.estimate_gas(build_tx)
         self.log.info('Deployment gas estimate is %d', deploy_gas)
 

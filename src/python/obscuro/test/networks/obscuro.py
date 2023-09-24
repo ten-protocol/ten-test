@@ -43,8 +43,8 @@ class ObscuroL1Sepolia(Sepolia):
 
 class ObscuroL1Geth(Geth):
     """The Obscuro L1 Geth implementation connection. """
-    ETH_LIMIT = 1
-    ETH_ALLOC = 0.2
+    ETH_LIMIT = 0.05
+    ETH_ALLOC = 0.02
 
     def __init__(self, test, name=None, **kwargs):
         super().__init__(test, name, **kwargs)
@@ -75,8 +75,8 @@ class ObscuroL1Geth(Geth):
 
 class Obscuro(Default):
     """The L2 connection for Obscuro. """
-    OBX_LIMIT = 0.5
-    OBX_ALLOC = 1
+    OBX_LIMIT = 0.05
+    OBX_ALLOC = 0.1
     CURRENCY = 'OBX'
 
     def __init__(self, test, name=None, **kwargs):
@@ -112,7 +112,7 @@ class Obscuro(Default):
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)
         self.__register(account)
-        if log: test.log.info('Account %s connected to %s on %s', account.address, self.__class__.__name__, url)
+        if log: test.log.info('Account %s connected to %s', account.address, self.__class__.__name__)
 
         if check_funds:
             balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')

@@ -53,7 +53,7 @@ class PySysTest(GenericNetworkTest):
         pk = secrets.token_hex(32)
         account = Web3().eth.account.privateKeyToAccount(pk)
         self.distribute_native(account, 0.01)
-        network.connect(self, private_key=pk)
+        network.connect(self, private_key=pk, check_funds=False)
 
         stdout = os.path.join(self.output, 'client_%d.out' % num)
         stderr = os.path.join(self.output, 'client_%d.err' % num)
