@@ -39,8 +39,9 @@ class GenericNetworkTest(BaseTest):
         # every test has a connection for the funded account
         self.network_funding = self.get_network_connection(name='funding_connection')
         self.balance = 0
-        self.accounts = []
+        self.accounts = []s
         self.transfer_costs = []
+
         for fn in Properties().accounts():
             web3, account = self.network_funding.connect(self, fn(), check_funds=False, log=False)
             self.accounts.append((web3, account))
