@@ -251,25 +251,3 @@ class ObscuroNetworkTest(GenericNetworkTest):
         self.MSG_ID += 1
         server = 'http://%s:%s' % (Properties().node_host(self.env, self.NODE_HOST), Properties().node_port_http(self.env))
         return requests.post(server, json=data)
-
-    def background_funders(self, network, num_funders):
-        funders = [secrets.token_hex() for _ in range(0, num_funders)]
-
-        for i in range(0, len(funders)):
-            recipients = [Web3().eth.account.privateKeyToAccount(x).address for x in funders if x != funders[i]]
-            self.funds_client(network, funders[i], recipients, i)
-
-    def funds_client(self, pk, recipients, num):
-        network = self.get_network_connection(name='funds_%d' % num)
-        self.distribute_native(Web3().eth.account.privateKeyToAccount(pk), 0.01)
-        network.connect(self, private_key=pk, check_funds=False)
-
-        stdout = os.path.join(self.output, 'funds_%d.out' % num)
-        stderr = os.path.join(self.output, 'funds_%d.err' % num)
-        script = os.path.join(PROJECT.root, 'src', 'python', 'scripts', 'funds_client.py')
-        args = []
-        args.extend(['--network_http', '%s' % network.connection_url()])
-        args.extend(['--pk_to_register', '%s' % pk])
-        args.extend(['--recipients', ','.join([str(i) for i in recipients])])
-        self.run_python(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Client running', timeout=10)
