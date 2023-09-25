@@ -74,31 +74,50 @@ class ObscuroL1Geth(Geth):
 
 
 class Obscuro(Default):
-    """The L2 connection for Obscuro. """
-    OBX_LIMIT = 0.05
-    OBX_ALLOC = 0.1
+    """The L2 connection for Obscuro.
+
+    An obscuro network instance requires a wallet extension (gateway) to connect to the network. A gateway can
+    support multiple connections through it through joining as a particular user_id, under which multiple accounts
+    can be registered. If a gateway instance is supplied in the constructor that instance will be used. If one is
+    not supplied, if running against a local testnet an instance will be created; if running against a dev testnet,
+    or testnet, then the hosted instance will be used. """
+    OBX_LIMIT = 0.5
+    OBX_ALLOC = 1
     CURRENCY = 'OBX'
 
     def __init__(self, test, name=None, **kwargs):
         super().__init__(test, name, **kwargs)
-        self.CHAIN_ID = Properties().chain_id(test.env)
+        props = Properties()
+        self.CHAIN_ID = props.chain_id(test.env)
 
         if 'wallet' in kwargs:
-            self.WALLET = kwargs['wallet']
-            test.log.info('Using supplied wallet for connection %s', self.WALLET.name)
+            wallet = kwargs['wallet']
+            self.name = wallet.name
+            test.log.info('Using supplied wallet for connection %s', name)
+            self.HOST = 'http://127.0.0.1'
+            self.WS_HOST = 'ws://127.0.0.1'
+            self.PORT = wallet.port
+            self.WS_PORT = wallet.ws_port
         else:
-            self.WALLET = WalletExtension.start(test, name=name, verbose=True)
-
-        self.HOST = 'http://127.0.0.1'
-        self.WS_HOST = 'ws://127.0.0.1'
-        self.PORT = self.WALLET.port
-        self.WS_PORT = self.WALLET.ws_port
+            if test.is_local_obscuro():
+                wallet = WalletExtension.start(test, name=name)
+                self.name = name
+                self.HOST = props.host_http(test.env)
+                self.WS_HOST = props.host_ws(test.env)
+                self.PORT = wallet.port
+                self.WS_PORT = wallet.ws_port
+            else:
+                self.name = 'hosted'
+                self.HOST = props.host_http(test.env)
+                self.WS_HOST = props.host_ws(test.env)
+                self.PORT = props.port_http(test.env)
+                self.WS_PORT = props.port_ws(test.env)
 
         self.ID = self.__join()
         if self.ID is None:
             test.addOutcome(BLOCKED, 'Error joining network for connection', abortOnError=True)
         else:
-            test.log.info('Wallet %s has user id %s', self.WALLET.name, self.ID)
+            test.log.info('Wallet %s has user id %s', self.name, self.ID)
 
     def connection_url(self, web_socket=False):
         port = self.PORT if not web_socket else self.WS_PORT
