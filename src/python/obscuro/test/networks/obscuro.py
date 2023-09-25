@@ -86,15 +86,11 @@ class Obscuro(Default):
     CURRENCY = 'OBX'
 
     def __init__(self, test, name=None, **kwargs):
-        print("o1")
         super().__init__(test, name, **kwargs)
         props = Properties()
-        print("props: ", props)
         self.CHAIN_ID = props.chain_id(test.env)
-        print("chainID: ", self.CHAIN_ID)
 
         if 'wallet' in kwargs:
-            print("wallet is in kwargs")
             wallet = kwargs['wallet']
             self.name = wallet.name
             test.log.info('Using supplied wallet for connection %s', name)
@@ -104,7 +100,6 @@ class Obscuro(Default):
             self.WS_PORT = wallet.ws_port
         else:
             if test.is_local_obscuro():
-                print("it is local obscuro")
                 wallet = WalletExtension.start(test, name=name)
                 self.name = name
                 self.HOST = 'http://127.0.0.1'
@@ -112,20 +107,17 @@ class Obscuro(Default):
                 self.PORT = wallet.port
                 self.WS_PORT = wallet.ws_port
             else:
-                print("it is hosted obscuro")
                 self.name = 'hosted'
                 url = Properties().gateway_url(test.env)
-                print("URL is: ", url)
                 self.HOST = url
                 self.WS_HOST = url.replace('http','wss')
                 self.PORT = props.gateway_port_http(test.env)
-                print("PORT IS: ", self.PORT)
                 self.WS_PORT = props.gateway_port_ws(test.env)
-                print("WSPORT IS: ", self.WS_PORT)
 
-        print("before joining")
+        test.log.info('Gateway url is %s', self.WS_HOST)
+        test.log.info('Websocket host is %s', self.WS_HOST)
+
         self.ID = self.__join()
-        print("SELF.ID", self.ID)
         if self.ID is None:
             test.addOutcome(BLOCKED, 'Error joining network for connection', abortOnError=True)
         else:
