@@ -89,11 +89,12 @@ class Obscuro(Default):
         super().__init__(test, name, **kwargs)
         props = Properties()
         self.CHAIN_ID = props.chain_id(test.env)
+        self.verbose = kwargs['verbose'] if 'verbose' in kwargs else False
 
         if 'wallet' in kwargs:
             wallet = kwargs['wallet']
             self.name = wallet.name
-            test.log.info('Using supplied wallet for connection %s', name)
+            if self.verbose: test.log.info('Using supplied wallet for connection %s', name)
             self.HOST = 'http://127.0.0.1'
             self.WS_HOST = 'ws://127.0.0.1'
             self.PORT = wallet.port
@@ -117,7 +118,7 @@ class Obscuro(Default):
         if self.ID is None:
             test.addOutcome(BLOCKED, 'Error joining network for connection', abortOnError=True)
         else:
-            test.log.info('Wallet %s has user id %s', self.name, self.ID)
+            if self.verbose: test.log.info('Wallet %s has user id %s', self.name, self.ID)
 
     def connection_url(self, web_socket=False):
         port = self.PORT if not web_socket else self.WS_PORT
@@ -131,7 +132,7 @@ class Obscuro(Default):
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)
         self.__register(account)
-        if log: test.log.info('Account %s connected to %s', account.address, self.__class__.__name__)
+        if self.verbose and log: test.log.info('Account %s connected to %s', account.address, self.__class__.__name__)
 
         if check_funds:
             balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')

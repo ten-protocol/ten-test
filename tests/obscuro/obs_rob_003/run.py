@@ -1,4 +1,4 @@
-import secrets, random
+import secrets, random, time
 from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.contracts.storage import Storage
 from obscuro.test.helpers.wallet_extension import WalletExtension
@@ -30,19 +30,18 @@ class PySysTest(ObscuroNetworkTest):
         primary_userid = 1
         additional_userid = 0
         for i in range(0, self.CLIENTS):
-            self.log.info('')
             pk = secrets.token_hex(32)
             if random.randint(0, 4) < 3:
                 additional_userid = additional_userid + 1
                 self.log.info('Registering client %d with new user id (current total %d)', i, additional_userid)
-                network_connection = self.get_network_connection(wallet=wallet)
+                network_connection = self.get_network_connection(wallet=wallet, log=False)
             else:
                 primary_userid = primary_userid + 1
                 self.log.info('Registering client %d with primary user id (current total %d)', i, primary_userid)
                 network_connection = network_connection_primary
             web3, account = network_connection.connect(self, private_key=pk, check_funds=False)
             connections.append((web3, account, network_connection))
-            self.wait(0.1)
+            time.sleep(0.05)
 
         self.log.info('Number registrations on primary user id = %d', primary_userid)
         self.log.info('Number registrations on unique user id = %d', additional_userid)
