@@ -7,7 +7,6 @@ class PySysTest(GenericNetworkTest):
     def execute(self):
         # deployment of contract
         network = self.get_network_connection()
-        network.add_ws_proxy(self)
         web3, account = network.connect_account1(self, web_socket=True)
 
         error = Error(self, web3)
