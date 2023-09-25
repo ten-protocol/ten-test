@@ -109,5 +109,5 @@ class PySysTest(ObscuroNetworkTest):
     def _stop_and_drain(self):
         self.log.info('Stopping all concurrent clients and drain accounts')
         for client in self.clients: client.stop()
-        for web3, account, network in self.client_connections:
-             self.drain_native(web3, account, network)
+        # for web3, account, network in self.client_connections:
+        #      self.drain_native(web3, account, network)
