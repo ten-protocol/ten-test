@@ -70,20 +70,16 @@ class Obscuro(Default):
             if test.is_local_obscuro():
                 wallet = WalletExtension.start(test, name=name)
                 self.name = name
-                self.HOST = 'http://127.0.0.1'
-                self.WS_HOST = 'ws://127.0.0.1'
+                self.HOST = props.host_http(test.env)
+                self.WS_HOST = props.host_ws(test.env)
                 self.PORT = wallet.port
                 self.WS_PORT = wallet.ws_port
             else:
                 self.name = 'hosted'
-                url = Properties().gateway_url(test.env)
-                self.HOST = url
-                self.WS_HOST = url.replace('https','wss')
-                self.PORT = props.gateway_port_http(test.env)
-                self.WS_PORT = props.gateway_port_ws(test.env)
-
-        test.log.info('Gateway http url is %s', self.HOST)
-        test.log.info('Gateway wss url  is %s', self.WS_HOST)
+                self.HOST = props.host_http(test.env)
+                self.WS_HOST = props.host_ws(test.env)
+                self.PORT = props.port_http(test.env)
+                self.WS_PORT = props.port_ws(test.env)
 
         self.ID = self.__join()
         if self.ID is None:
