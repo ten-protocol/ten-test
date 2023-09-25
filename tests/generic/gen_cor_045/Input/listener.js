@@ -67,7 +67,6 @@ const provider = new ethers.providers.WebSocketProvider(options.network_ws)
 
 const erc_contract = new ethers.Contract(options.erc_address, JSON.parse(fs.readFileSync(options.erc_abi)), provider)
 const game_contract = new ethers.Contract(options.game_address, JSON.parse(fs.readFileSync(options.game_abi)), provider)
-console.log(options.network_ws)
 task()
 
 
