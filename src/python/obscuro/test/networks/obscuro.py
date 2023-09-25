@@ -85,7 +85,7 @@ class Obscuro(Default):
                 url = Properties().gateway_url(test.env)
                 print("URL is: ", url)
                 self.HOST = url
-                self.WS_HOST = url.replace('http','ws')
+                self.WS_HOST = url.replace('http','wss')
                 self.PORT = props.gateway_port_http(test.env)
                 print("PORT IS: ", self.PORT)
                 self.WS_PORT = props.gateway_port_ws(test.env)
