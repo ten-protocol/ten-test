@@ -126,7 +126,7 @@ class Obscuro(Default):
     def connection_url(self, web_socket=False):
         port = self.PORT if not web_socket else self.WS_PORT
         host = self.HOST if not web_socket else self.WS_HOST
-        return '%s/v1/?u=%s' % (host, self.ID)
+        return '%s:%d/v1/?u=%s' % (host, port, self.ID)
 
     def connect(self, test, private_key, web_socket=False, check_funds=True, log=True):
         url = self.connection_url(web_socket)
