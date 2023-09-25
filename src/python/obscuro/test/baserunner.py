@@ -118,7 +118,6 @@ class ObscuroRunnerPlugin():
                 runner.log.info('')
                 runner.log.info('Accounts with non-zero funds;')
                 for fn in Properties().accounts():
-                    time.sleep(0.5)
                     account = web3.eth.account.privateKeyToAccount(fn())
                     resp = self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
                     self.balances[fn.__name__] = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
