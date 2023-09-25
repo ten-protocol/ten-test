@@ -130,15 +130,6 @@ class Properties:
     def node_port_ws(self, key):
         return int(self.get('env.'+key, 'L2NodePortWS'))
 
-    def gateway_url(self, key):
-        return self.get('env.'+key, 'GatewayURL')
-
-    def gateway_port_http(self, key):
-        return int(self.get('env.'+key, 'GatewayPortHTTP'))
-
-    def gateway_port_ws(self, key):
-        return int(self.get('env.'+key, 'GatewayPortWS'))
-
     def faucet_url(self, key):
         if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'FaucetURLDockerNetwork')
         return self.get('env.'+key, 'FaucetURL')
