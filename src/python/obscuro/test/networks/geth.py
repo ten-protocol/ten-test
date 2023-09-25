@@ -9,10 +9,10 @@ class Geth(Default):
     def __init__(self, test, name=None, **kwargs):
         super().__init__(test, name, **kwargs)
 
-    def connect(self, test, private_key, web_socket=False, check_funds=True, log=True):
+    def connect(self, test, private_key, web_socket=False, check_funds=True):
         url = self.connection_url(web_socket)
 
-        if log: test.log.info('Connecting to %s', self.__class__.__name__)
+        if self.verbose: test.log.info('Connecting to %s', self.__class__.__name__)
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         web3.middleware_onion.inject(geth_poa_middleware, layer=0)
