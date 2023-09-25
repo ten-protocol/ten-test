@@ -13,6 +13,7 @@
             <group></group>
         </groups>
         <modes inherit="true">
+            <mode>obscuro</mode>
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
             <mode>goerli</mode>

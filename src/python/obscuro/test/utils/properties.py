@@ -96,6 +96,9 @@ class Properties:
     def sequencer_address(self, key): return self.get('env.'+key, 'SequencerAddress')
     def validator_address(self, key): return self.get('env.'+key, 'ValidatorAddress')
 
+    # L1 deployment address
+    def l1_deployer_address(self, key): return self.get('env.'+key, 'L1DeployerAddress')
+
     # network connection properties
     def host_http(self, key): return self.get('env.'+key, 'HostHTTP')
     def host_ws(self, key): return self.get('env.'+key, 'HostWS')

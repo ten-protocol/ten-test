@@ -20,5 +20,10 @@ class PySysTest(BaseTest):
         validator_balance = web3.fromWei(web3.eth.get_balance(validator_address), 'ether')
         self.log.info('Validator account %s balance %.6f %s', validator_address, validator_balance, network.CURRENCY)
 
+        deployer_address = Properties().l1_deployer_address(key='obscuro.sepolia')
+        deployer_balance = web3.fromWei(web3.eth.get_balance(deployer_address), 'ether')
+        self.log.info('Deployer account %s balance %.6f %s', deployer_address, deployer_balance, network.CURRENCY)
+
         self.assertTrue(sequencer_balance >= self.THRESHOLD, assertMessage='Sequence balance is below threshold')
         self.assertTrue(validator_balance >= self.THRESHOLD, assertMessage='Validator balance is below threshold')
+        self.assertTrue(deployer_balance >= self.THRESHOLD, assertMessage='Deployer balance is below threshold')
