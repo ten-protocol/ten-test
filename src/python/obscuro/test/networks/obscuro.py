@@ -111,7 +111,7 @@ class Obscuro(Default):
 
     def __join(self):
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
-        response = requests.get('%s/v1/join/' % (self.HOST),  headers=headers)
+        response = requests.get('%s:%d/v1/join/' % (self.HOST, self.PORT),  headers=headers)
         if response.ok: return response.text.strip()
         return None
 
@@ -123,7 +123,7 @@ class Obscuro(Default):
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         data = {"signature": signature['signature'].hex(), "message": text_to_sign}
-        requests.post('%s/v1/authenticate/?u=%s' % (self.HOST, self.ID),
+        requests.post('%s:%d/v1/authenticate/?u=%s' % (self.HOST, self.PORT, self.ID),
                       data=json.dumps(data), headers=headers)
 
 
