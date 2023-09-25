@@ -114,8 +114,8 @@ class Obscuro(Default):
                 self.PORT = props.gateway_port_http(test.env)
                 self.WS_PORT = props.gateway_port_ws(test.env)
 
-        test.log.info('Gateway url is %s', self.WS_HOST)
-        test.log.info('Websocket host is %s', self.WS_HOST)
+        test.log.info('Gateway http url is %s', self.WS_HOST)
+        test.log.info('Gateway wss url  is %s', self.WS_HOST)
 
         self.ID = self.__join()
         if self.ID is None:
