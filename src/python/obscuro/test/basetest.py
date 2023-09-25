@@ -35,7 +35,6 @@ class GenericNetworkTest(BaseTest):
         self.nonce_db = NoncePersistence(db_dir)
         self.contract_db = ContractPersistence(db_dir)
         self.addCleanupFunction(self.close_db)
-
         # every test has a connection for the funded account
         self.network_funding = self.get_network_connection(name='funding_connection')
         self.balance = 0
@@ -63,6 +62,10 @@ class GenericNetworkTest(BaseTest):
     def is_obscuro(self):
         """Return true if we are running against an Obscuro network. """
         return self.env in ['obscuro', 'obscuro.sepolia', 'obscuro.dev', 'obscuro.local']
+
+    def is_local_obscuro(self):
+        """Return true if we are running against a local Obscuro network. """
+        return self.env in ['obscuro.local']
 
     def is_local_obscuro(self):
         """Return true if we are running against a local Obscuro network. """
