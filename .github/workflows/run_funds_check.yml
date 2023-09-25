@@ -1,6 +1,6 @@
 # Check key balances on Sepolia.
 #
-name: Run sepolia funds check
+name: Check sepolia funds
 on:
   schedule:
     - cron: '*/30 * * * *'
