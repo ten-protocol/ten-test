@@ -185,7 +185,6 @@ class GenericNetworkTest(BaseTest):
     def get_network_connection(self, name='primary_connection', **kwargs):
         """Get the network connection."""
         if self.is_obscuro():
-            print("is obscuro..")
             return Obscuro(self, name, **kwargs)
         elif self.env == 'goerli':
             return Goerli(self, name, **kwargs)

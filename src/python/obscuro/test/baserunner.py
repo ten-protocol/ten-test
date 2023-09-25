@@ -90,14 +90,12 @@ class ObscuroRunnerPlugin():
                     runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
                 else:
                     gateway_url = '%s' % (props.gateway_url(self.env))
-                    print("gateway url is: ", gateway_url)
                     runner.log.info('Joining network using url %s', '%s/v1/join/' % gateway_url)
                     user_id = self.__join('%s/v1/join/' % gateway_url)
                     runner.log.info('User id is %s', user_id)
 
                     runner.log.info('Registering account %s with the network', account.address)
                     response = self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
-                    print("Authenticate response is: ", response)
                     runner.log.info('Registration success was %s', response.ok)
                     web3 = Web3(Web3.HTTPProvider('%s/v1/?u=%s' % (gateway_url, user_id)))
                     runner.addCleanupFunction(lambda: self.__print_cost(runner,
@@ -123,7 +121,6 @@ class ObscuroRunnerPlugin():
                     time.sleep(0.5)
                     account = web3.eth.account.privateKeyToAccount(fn())
                     resp = self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
-                    print("response is: ", resp)
                     self.balances[fn.__name__] = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
                     if self.balances[fn.__name__] > 0:
                         runner.log.info("  Funds for %s: %.18f OBX", fn.__name__, self.balances[fn.__name__],
@@ -244,11 +241,5 @@ class ObscuroRunnerPlugin():
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         data = {"signature": signature['signature'].hex(), "message": text_to_sign}
-        print("AUTHENTICATING")
-        print("url: ", url)
-        print("data: ", json.dumps(data))
-        print("headers: ", headers)
-        print("--------------")
         response = requests.post(url, data=json.dumps(data), headers=headers)
-        print(response)
         return response
