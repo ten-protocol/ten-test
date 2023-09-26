@@ -1,5 +1,5 @@
 <picture>
-  <img alt="obscuro logo" src=".assets/logo_fade.gif" width="720px"/>
+  <img alt="obscuro logo" src=".assets/logo_fade.gif" width="540px"/>
 </picture>
 
 <h1 align="center">
