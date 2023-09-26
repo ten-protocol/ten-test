@@ -13,6 +13,10 @@ class Default:
 
     def __init__(self, test, name=None, **kwargs):
         props = Properties()
+        self.test = test
+        self.name = name
+        self.log = test.log
+        self.verbose = kwargs['verbose'] if 'verbose' in kwargs else False
         self.HOST = props.host_http('default')
         self.WS_HOST = props.host_ws('default')
         self.PORT = props.port_http('default')
@@ -27,21 +31,21 @@ class Default:
         host = self.HOST if not web_socket else self.WS_HOST
         return '%s:%d' % (host, port)
 
-    def connect(self, test, private_key, web_socket=False, check_funds=True, log=True):
+    def connect(self, test, private_key, web_socket=False, check_funds=True):
         """Connect to the network using a given private key. """
         url = self.connection_url(web_socket)
 
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)
-        if log: test.log.info('Account %s connected to %s', account.address, self.__class__.__name__)
+        if self.verbose: test.log.info('Account %s connected to %s', account.address, self.__class__.__name__)
 
         if check_funds:
             balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
             if balance < self.ETH_LIMIT:
-                if log: test.log.info('Account balance %.6f ETH below threshold %s', balance, self.ETH_LIMIT)
+                if self.verbose: test.log.info('Account balance %.6f ETH below threshold %s', balance, self.ETH_LIMIT)
                 test.distribute_native(account, self.ETH_ALLOC)
-            if log: test.log.info('Account balance %.6f ETH', web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
+            if self.verbose: test.log.info('Account balance %.6f ETH', web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
         return web3, account
 
     def connect_account1(self, test, web_socket=False, check_funds=True):
@@ -88,9 +92,9 @@ class Default:
         tx_recp = self.wait_for_transaction(test, web3, nonce, account, tx_hash, persist_nonce, timeout=timeout)
         return tx_recp
 
-    def get_next_nonce(self, test, web3, account, persist_nonce, log=True):
+    def get_next_nonce(self, test, web3, account, persist_nonce):
         """Get the next nonce, either from persistence or from the transaction count. """
-        nonce = test.nonce_db.get_next_nonce(test, web3, account.address, test.env, persist_nonce, log)
+        nonce = test.nonce_db.get_next_nonce(test, web3, account.address, test.env, persist_nonce, self.verbose)
         return nonce
 
     def build_transaction(self, test, web3, target, nonce, gas_limit):
@@ -98,11 +102,11 @@ class Default:
 
         try:
             gas_estimate = target.estimate_gas()
-            test.log.info('Gas estimate, cost is %d WEI', gas_estimate)
-            test.log.info('Total potential cost is %d WEI', gas_estimate*web3.eth.gas_price)
+            if self.verbose: test.log.info('Gas estimate, cost is %d WEI', gas_estimate)
+            if self.verbose: test.log.info('Total potential cost is %d WEI', gas_estimate*web3.eth.gas_price)
             gas_estimate = gas_estimate * self.GAS_MULT
         except Exception as e:
-            test.log.warn('Gas estimate, %s' % e.args[0])
+            if self.verbose: test.log.warn('Gas estimate, %s' % e.args[0])
             gas_estimate = gas_limit
 
         build_tx = target.buildTransaction(
@@ -121,18 +125,18 @@ class Default:
         if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'SIGNED')
         return signed_tx
 
-    def send_transaction(self, test, web3, nonce, account, signed_tx, persist_nonce, log=True):
+    def send_transaction(self, test, web3, nonce, account, signed_tx, persist_nonce):
         """Send the signed transaction to the network. """
         tx_hash = None
         try:
             tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
             if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'SENT')
         except Exception as e:
-            test.log.error('Error sending raw transaction %s', e)
-            test.log.warn('Deleting nonce entries in the persistence for nonce %d', nonce)
+            if self.verbose: test.log.error('Error sending raw transaction %s', e)
+            if self.verbose: test.log.warn('Deleting nonce entries in the persistence for nonce %d', nonce)
             if persist_nonce: test.nonce_db.delete_entries(account.address, test.env, nonce)
             test.addOutcome(BLOCKED, abortOnError=True)
-        if log: test.log.info('Transaction sent with hash %s', tx_hash.hex())
+        if self.verbose: test.log.info('Transaction sent with hash %s', tx_hash.hex())
         return tx_hash
 
     def wait_for_transaction(self, test, web3, nonce, account, tx_hash, persist_nonce, timeout=30):
@@ -142,17 +146,17 @@ class Default:
             tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash, timeout=timeout)
 
             if tx_receipt.status == 1:
-                test.log.info('Transaction receipt block hash %s', tx_receipt.blockHash.hex())
+                if self.verbose: test.log.info('Transaction receipt block hash %s', tx_receipt.blockHash.hex())
                 if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'CONFIRMED')
             else:
-                test.log.error('Transaction receipt failed')
-                test.log.error('Full receipt: %s', tx_receipt)
+                if self.verbose: test.log.error('Transaction receipt failed')
+                if self.verbose: test.log.error('Full receipt: %s', tx_receipt)
                 if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'FAILED')
                 test.addOutcome(FAILED, abortOnError=True)
 
         except TimeExhausted as e:
-            test.log.error('Transaction timed out %s', e)
-            test.log.warn('Deleting nonce entries in the persistence for nonce %d', nonce)
+            if self.verbose: test.log.error('Transaction timed out %s', e)
+            if self.verbose: test.log.warn('Deleting nonce entries in the persistence for nonce %d', nonce)
             if persist_nonce: test.nonce_db.delete_entries(account.address, test.env, nonce)
             test.addOutcome(TIMEDOUT, abortOnError=True)
 

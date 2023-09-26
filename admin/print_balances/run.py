@@ -7,7 +7,7 @@ from obscuro.test.utils.properties import Properties
 class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
-        network = self.get_network_connection()
+        network = self.get_network_connection(verbose=False)
         for fn in Properties().accounts():
             self.log.info("")
             self.log.info("Checking funds for %s:", fn.__name__, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
