@@ -34,7 +34,7 @@ class PySysTest(ObscuroNetworkTest):
             if random.randint(0, 4) < 3:
                 additional_userid = additional_userid + 1
                 self.log.info('Registering client %d with new user id (current total %d)', i, additional_userid)
-                network_connection = self.get_network_connection(wallet=wallet, log=False)
+                network_connection = self.get_network_connection(wallet=wallet, verbose=False)
             else:
                 primary_userid = primary_userid + 1
                 self.log.info('Registering client %d with primary user id (current total %d)', i, primary_userid)
