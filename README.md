@@ -1,6 +1,5 @@
 <picture>
-  <source alt="obscuro logo" media="(prefers-color-scheme: light) "src=".assets/logo_fade.gif" width="720px"/>
-  <source alt="obscuro logo" media="(prefers-color-scheme: dark) "src=".assets/logo_fade_dark.gif" width="720px"/>
+  <img alt="obscuro logo" src=".assets/logo_fade.gif" width="720px"/>
 </picture>
 
 <h1 align="center">
