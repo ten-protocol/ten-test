@@ -18,6 +18,7 @@ class Properties:
         if os.path.exists(file1):
             self.user_config.read(filenames=file1)
         elif os.path.exists(file2):
+            # @TODO remove support for this in the future in preference to the user.properties
             self.user_config.read(filenames=file2)
 
     def get(self, section, option):
