@@ -131,7 +131,7 @@ class Obscuro(Default):
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)
         self.__register(account)
-        if self.verbose and log: test.log.info('Account %s connected to %s', account.address, self.__class__.__name__)
+        if self.verbose: test.log.info('Account %s connected to %s', account.address, self.__class__.__name__)
 
         if check_funds:
             balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')

@@ -106,7 +106,7 @@ class Default:
             if self.verbose: test.log.info('Total potential cost is %d WEI', gas_estimate*web3.eth.gas_price)
             gas_estimate = gas_estimate * self.GAS_MULT
         except Exception as e:
-            if self.verbose: test.log.warn('Gas estimate, %s' % e.args[0])
+            test.log.warn('Gas estimate, %s' % e.args[0])
             gas_estimate = gas_limit
 
         build_tx = target.buildTransaction(
@@ -132,8 +132,8 @@ class Default:
             tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
             if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'SENT')
         except Exception as e:
-            if self.verbose: test.log.error('Error sending raw transaction %s', e)
-            if self.verbose: test.log.warn('Deleting nonce entries in the persistence for nonce %d', nonce)
+            test.log.error('Error sending raw transaction %s', e)
+            test.log.warn('Deleting nonce entries in the persistence for nonce %d', nonce)
             if persist_nonce: test.nonce_db.delete_entries(account.address, test.env, nonce)
             test.addOutcome(BLOCKED, abortOnError=True)
         if self.verbose: test.log.info('Transaction sent with hash %s', tx_hash.hex())
@@ -155,8 +155,8 @@ class Default:
                 test.addOutcome(FAILED, abortOnError=True)
 
         except TimeExhausted as e:
-            if self.verbose: test.log.error('Transaction timed out %s', e)
-            if self.verbose: test.log.warn('Deleting nonce entries in the persistence for nonce %d', nonce)
+            test.log.error('Transaction timed out %s', e)
+            test.log.warn('Deleting nonce entries in the persistence for nonce %d', nonce)
             if persist_nonce: test.nonce_db.delete_entries(account.address, test.env, nonce)
             test.addOutcome(TIMEDOUT, abortOnError=True)
 

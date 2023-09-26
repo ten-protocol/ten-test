@@ -1,5 +1,5 @@
 import os, copy, sys, json
-import threading, requests, secrets
+import threading, requests
 from web3 import Web3
 from pathlib import Path
 from pysys.basetest import BaseTest
@@ -50,9 +50,10 @@ class GenericNetworkTest(BaseTest):
     def __test_cost(self):
         balance = 0
         for web3, account in self.accounts: balance = balance + web3.eth.get_balance(account.address)
-        delta = self.balance - balance
-        self.log.info("  %s: %d Wei", 'Test cost', delta, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
-        self.log.info("  %s: %.9f ETH", 'Test cost', Web3().fromWei(delta, 'ether'), extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+        delta = abs(self.balance - balance)
+        sign = '-' if (self.balance - balance) < 0 else ''
+        self.log.info("  %s: %s %d Wei", 'Test cost', sign, delta, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+        self.log.info("  %s: %s %.9f ETH", 'Test cost', sign, Web3().fromWei(delta, 'ether'), extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
 
     def close_db(self):
         """Close the connection to the nonce database on completion. """
@@ -196,13 +197,13 @@ class GenericNetworkTest(BaseTest):
 
         return Default(self, name, **kwargs)
 
-    def get_l1_network_connection(self, name='primary_l1_connection'):
+    def get_l1_network_connection(self, name='primary_l1_connection', **kwargs):
         """Get the layer 1 network connection used by a layer 2."""
         if self.is_obscuro() and self.env != 'obscuro.sepolia':
-            return ObscuroL1Geth(self, name)
+            return ObscuroL1Geth(self, name, **kwargs)
         elif self.is_obscuro() and self.env == 'obscuro.sepolia':
-            return ObscuroL1Sepolia(self, name)
-        return Default(self, name)
+            return ObscuroL1Sepolia(self, name, **kwargs)
+        return Default(self, name, **kwargs)
 
 
 class ObscuroNetworkTest(GenericNetworkTest):
