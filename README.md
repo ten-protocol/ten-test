@@ -1,6 +1,9 @@
-<h1 align="center">
+<picture>
   <img alt="obscuro logo" src=".assets/logo_fade.gif#gh-light-mode-only" width="720px"/>
   <img alt="obscuro logo" src=".assets/logo_fade_dark.gif#gh-dark-mode-only" width="720px"/>
+</picture>
+
+<h1 align="center">
   Obscuro Test Framework 
 </h1>
 
