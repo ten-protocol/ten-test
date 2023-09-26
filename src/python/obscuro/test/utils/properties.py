@@ -1,4 +1,5 @@
 import getpass, configparser
+from pathlib import Path
 from pysys.constants import *
 from pysys.exceptions import FileNotFoundException
 from obscuro.test.utils.threading import thread_num
@@ -12,9 +13,12 @@ class Properties:
         self.default_config.read(filenames=os.path.join(PROJECT.root, '.default.properties'))
 
         self.user_config = configparser.ConfigParser()
-        file = os.path.join(PROJECT.root, '.'+getpass.getuser()+'.properties')
-        if os.path.exists(file):
-            self.user_config.read(filenames=file)
+        file1 = os.path.join(Path.home(), '.obscurotest', 'user.properties')
+        file2 = os.path.join(PROJECT.root, '.'+getpass.getuser()+'.properties')
+        if os.path.exists(file1):
+            self.user_config.read(filenames=file1)
+        elif os.path.exists(file2):
+            self.user_config.read(filenames=file2)
 
     def get(self, section, option):
         if self.user_config.has_option(section, option):

@@ -1,5 +1,4 @@
 import os, shutil, sys, json, requests
-import time
 from collections import OrderedDict
 from web3 import Web3
 from pathlib import Path
