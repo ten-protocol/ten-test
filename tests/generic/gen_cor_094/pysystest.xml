@@ -5,6 +5,8 @@
         <title>Gas: release funds when deleting a contract</title>
         <purpose><![CDATA[
 Deleting a contract through SELFDESTRUCT should be worth 24,000 gas.
+
+Skipped due to https://github.com/obscuronet/obscuro-internal/issues/2199
 ]]>
         </purpose>
     </description>
@@ -12,6 +14,7 @@ Deleting a contract through SELFDESTRUCT should be worth 24,000 gas.
     <classification>
         <groups inherit="true">
             <group>gas</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro</mode>
