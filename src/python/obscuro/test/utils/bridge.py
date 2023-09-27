@@ -49,7 +49,7 @@ class L1BridgeDetails(BridgeDetails):
 
     def __init__(self, test, pk, name):
         """Instantiate an instance. """
-        network = test.get_l1_network_connection()
+        network = test.get_l1_network_connection(verbose=True)
         web3, account = network.connect(test, pk)
         bridge = ObscuroBridge(test, web3)
         bus = L1MessageBus(test, web3)
@@ -116,6 +116,20 @@ class L1BridgeDetails(BridgeDetails):
         logs = self.bus.contract.events.LogMessagePublished().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, self.get_cross_chain_message(logs[2])
 
+    def send_native(self, address, amount):
+        """Send native currency across the bridge."""
+        build_tx = self.bridge.contract.functions.sendNative(address).buildTransaction(
+            {
+                'gas': 4*21000,
+                'gasPrice': self.web3.eth.gas_price,
+                'value': amount
+            }
+        )
+        tx_receipt = self.network.tx(self.test, self.web3, build_tx, self.account, persist_nonce=False)
+
+        logs = self.bus.contract.events.LogMessagePublished().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
+        return tx_receipt, self.get_cross_chain_message(logs[0])
+
     def relay_message(self, xchain_msg):
         """Relay a cross chain message. """
         tx_receipt = self.network.transact(self.test, self.web3,
@@ -129,7 +143,7 @@ class L2BridgeDetails(BridgeDetails):
 
     def __init__(self, test, pk, name):
         """Instantiate an instance. """
-        network = test.get_network_connection(name=name)
+        network = test.get_network_connection(name=name, verbose=True)
         web3, account = network.connect(test, pk)
         bridge = EthereumBridge(test, web3)
         bus = L2MessageBus(test, web3)

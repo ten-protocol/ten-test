@@ -111,8 +111,8 @@ class ObscuroRunnerPlugin():
 
                 if balance < 200:
                     runner.log.info('Funded key balance below threshold ... making faucet call')
-                    self.fund_obx_from_faucet_server(runner)
-                    self.fund_obx_from_faucet_server(runner)
+                    self.fund_eth_from_faucet_server(runner)
+                    self.fund_eth_from_faucet_server(runner)
 
                 runner.log.info('')
                 runner.log.info('Accounts with non-zero funds;')
@@ -121,7 +121,7 @@ class ObscuroRunnerPlugin():
                     resp = self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
                     self.balances[fn.__name__] = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
                     if self.balances[fn.__name__] > 0:
-                        runner.log.info("  Funds for %s: %.18f OBX", fn.__name__, self.balances[fn.__name__],
+                        runner.log.info("  Funds for %s: %.18f ETH", fn.__name__, self.balances[fn.__name__],
                                         extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
                 runner.log.info('')
 
@@ -192,8 +192,8 @@ class ObscuroRunnerPlugin():
         """Return true if we are running against a local Obscuro network. """
         return self.env in ['obscuro.local']
 
-    def fund_obx_from_faucet_server(self, runner):
-        """Allocates native OBX to a users account from the faucet server. """
+    def fund_eth_from_faucet_server(self, runner):
+        """Allocates native ETH to a users account from the faucet server. """
         account = Web3().eth.account.privateKeyToAccount(Properties().fundacntpk())
         runner.log.info('Running request on %s', Properties().faucet_url(self.env))
         runner.log.info('Running for user address %s', account.address)
