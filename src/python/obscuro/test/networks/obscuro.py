@@ -81,9 +81,9 @@ class Obscuro(Default):
     can be registered. If a gateway instance is supplied in the constructor that instance will be used. If one is
     not supplied, if running against a local testnet an instance will be created; if running against a dev testnet,
     or testnet, then the hosted instance will be used. """
-    OBX_LIMIT = 0.5
-    OBX_ALLOC = 1
-    CURRENCY = 'OBX'
+    ETH_LIMIT = 0.5
+    ETH_ALLOC = 1
+    CURRENCY = 'ETH'
 
     def __init__(self, test, name=None, **kwargs):
         super().__init__(test, name, **kwargs)
@@ -116,8 +116,6 @@ class Obscuro(Default):
         self.ID = self.__join()
         if self.ID is None:
             test.addOutcome(BLOCKED, 'Error joining network for connection', abortOnError=True)
-        else:
-            if self.verbose: test.log.info('Wallet %s has user id %s', self.name, self.ID)
 
     def connection_url(self, web_socket=False):
         port = self.PORT if not web_socket else self.WS_PORT
@@ -135,10 +133,10 @@ class Obscuro(Default):
 
         if check_funds:
             balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
-            if balance < self.OBX_LIMIT:
-                if self.verbose: test.log.info('Account balance %.6f OBX below threshold %s', balance, self.OBX_LIMIT)
-                test.distribute_native(account, self.OBX_ALLOC)
-            if self.verbose: test.log.info('Account balance %.6f OBX', web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
+            if balance < self.ETH_LIMIT:
+                if self.verbose: test.log.info('Account balance %.6f ETH below threshold %s', balance, self.ETH_LIMIT)
+                test.distribute_native(account, self.ETH_ALLOC)
+            if self.verbose: test.log.info('Account balance %.6f ETH', web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
         return web3, account
 
     def __join(self):

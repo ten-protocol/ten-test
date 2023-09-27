@@ -35,6 +35,7 @@ class GenericNetworkTest(BaseTest):
         self.nonce_db = NoncePersistence(db_dir)
         self.contract_db = ContractPersistence(db_dir)
         self.addCleanupFunction(self.close_db)
+
         # every test has a connection for the funded account
         self.network_funding = self.get_network_connection(name='funding_connection', verbose=False)
         self.balance = 0
@@ -209,7 +210,7 @@ class GenericNetworkTest(BaseTest):
 class ObscuroNetworkTest(GenericNetworkTest):
     """The test used by all Obscuro specific network testcases.
 
-    Test class specific for the Obscuro Network. Provides utilities for funding OBX and ERC20 tokens in the layer1 and
+    Test class specific for the Obscuro Network. Provides utilities for funding native ETH and ERC20 tokens in the layer1 and
     layer2 of an Obscuro Network.
     """
 
