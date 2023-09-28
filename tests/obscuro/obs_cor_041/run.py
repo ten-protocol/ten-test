@@ -1,3 +1,4 @@
+import secrets
 from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.contracts.fibonacci import Fibonacci
 
@@ -6,22 +7,27 @@ class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
         network = self.get_network_connection()
-        web3, account = network.connect_account1(self)
+        web3_deploy, account_deploy = network.connect_account1(self)
 
-        contract = Fibonacci(self, web3)
-        contract.deploy(network, account)
+        contract = Fibonacci(self, web3_deploy)
+        contract.deploy(network, account_deploy)
 
-        nonce = None
-        tx_hash = None
-        for i in range(200,300,25):
+        pk = secrets.token_hex(32)
+        web3, account = network.connect(self, private_key=pk, check_funds=False)
+        self.distribute_native(account, 0.01)
+
+        nonce = 0
+        txs = []
+        for i in range(200, 300, 25):
             target = contract.contract.functions.calculateFibonacci(i)
-            #gas_estimate = target.estimate_gas()
-            #self.log.info('Gas estimate, cost is %d WEI', gas_estimate)
-            nonce = network.get_next_nonce(self, web3, account, True)
             tx = network.build_transaction(self, web3, target, nonce, contract.GAS_LIMIT)
             tx_sign = network.sign_transaction(self, tx, nonce, account, True)
+            txs.append((nonce, tx_sign))
+            nonce = nonce + 1
+
+        tx_hash = None
+        for nonce, tx_sign in txs:
             tx_hash = network.send_transaction(self, web3, nonce, account, tx_sign, True)
-            self.log.info('Transaction set with hash tx_hash %s', tx_hash.hex())
 
         tx_receipt = network.wait_for_transaction(self, web3, nonce, account, tx_hash, True)
         self.check(tx_receipt)
