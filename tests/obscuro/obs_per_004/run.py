@@ -2,11 +2,11 @@ import os, secrets, shutil
 from datetime import datetime
 from collections import OrderedDict
 from obscuro.test.contracts.storage import KeyStorage
-from obscuro.test.basetest import GenericNetworkTest
+from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.utils.gnuplot import GnuplotHelper
 
 
-class PySysTest(GenericNetworkTest):
+class PySysTest(ObscuroNetworkTest):
     ITERATIONS = 5000
     CLIENTS = 4
 

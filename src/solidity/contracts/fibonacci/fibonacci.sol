@@ -1,34 +1,29 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract FibonacciCalculator {
-    uint256 public result;
+contract FibonacciStorage {
+    uint256[] public fibonacciSeries;
 
     constructor() {
-        result = 0; // Initialize result to 0
+        fibonacciSeries.push(0); // Initialize the series with the first Fibonacci number, 0
+        fibonacciSeries.push(1); // Initialize the series with the second Fibonacci number, 1
     }
 
     function calculateFibonacci(uint256 n) external {
-        result = fib(n);
-    }
+        require(n >= fibonacciSeries.length, "Fibonacci number already calculated");
 
-    function getFibonacciResult() external view returns (uint256) {
-        return result;
-    }
-
-    function fib(uint256 n) internal pure returns (uint256) {
-        if (n <= 1) {
-            return n;
-        } else {
-            uint256 a = 0;
-            uint256 b = 1;
-            uint256 c;
-            for (uint256 i = 2; i <= n; i++) {
-                c = a + b;
-                a = b;
-                b = c;
-            }
-            return b;
+        for (uint256 i = fibonacciSeries.length; i <= n; i++) {
+            uint256 nextFib = fibonacciSeries[i - 1] + fibonacciSeries[i - 2];
+            fibonacciSeries.push(nextFib);
         }
+    }
+
+    function getFibonacci(uint256 n) external view returns (uint256) {
+        require(n < fibonacciSeries.length, "Fibonacci number not yet calculated");
+        return fibonacciSeries[n];
+    }
+
+    function getFibonacciSeries() external view returns (uint256[] memory) {
+        return fibonacciSeries;
     }
 }

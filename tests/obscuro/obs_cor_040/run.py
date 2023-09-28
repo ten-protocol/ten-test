@@ -1,9 +1,9 @@
-from obscuro.test.basetest import GenericNetworkTest
+from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.contracts.gas import GasConsumerAdd
 from obscuro.test.utils.properties import Properties
 
 
-class PySysTest(GenericNetworkTest):
+class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
         network = self.get_network_connection()

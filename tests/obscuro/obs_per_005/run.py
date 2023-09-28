@@ -5,11 +5,11 @@ from web3 import Web3
 from pysys.constants import FAILED
 from obscuro.test.utils.timers import timeit
 from obscuro.test.contracts.storage import Storage
-from obscuro.test.basetest import GenericNetworkTest
+from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.utils.gnuplot import GnuplotHelper
 
 
-class PySysTest(GenericNetworkTest):
+class PySysTest(ObscuroNetworkTest):
     ITERATIONS = 10
     CLIENTS = 5
     DURATION = 120
