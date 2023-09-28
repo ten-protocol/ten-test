@@ -132,16 +132,6 @@ jobs:
             ${{ github.workspace }}/go-obscuro/*.out
           retention-days: 1
 
-      - name: 'Upload performance output'
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: performance-artifact
-          path: |
-            ${{ github.workspace }}/obscuro-test/results_graphs.pdf
-          if-no-files-found: ignore
-          retention-days: 1
-
       - name: 'Docker clean containers and images after the test'
         if: always()
         run: |
