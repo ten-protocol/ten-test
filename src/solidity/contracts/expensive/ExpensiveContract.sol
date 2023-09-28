@@ -34,4 +34,13 @@ contract FibonacciStorage {
         }
         return result;
     }
+
+    function exponentialOperation(uint256 n) external view returns (uint256) {
+        uint256 result = 1;
+        for (uint256 i = 0; i < n; i++) {
+            result = result * 2;
+        }
+
+        return result;
+    }
 }
