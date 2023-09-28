@@ -26,4 +26,12 @@ contract FibonacciStorage {
     function getFibonacciSeries() external view returns (uint256[] memory) {
         return fibonacciSeries;
     }
+
+    function calculateFactorial(uint256 n) external pure returns (uint256) {
+        uint256 result = 1;
+        for (uint256 i = 2; i <= n; i++) {
+            result *= i;
+        }
+        return result;
+    }
 }

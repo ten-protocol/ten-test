@@ -1,6 +1,6 @@
 import secrets
 from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.contracts.fibonacci import Fibonacci
+from obscuro.test.contracts.expensive import ExpensiveContract
 
 
 class PySysTest(ObscuroNetworkTest):
@@ -9,7 +9,7 @@ class PySysTest(ObscuroNetworkTest):
         network = self.get_network_connection()
         web3_deploy, account_deploy = network.connect_account1(self)
 
-        contract = Fibonacci(self, web3_deploy)
+        contract = ExpensiveContract(self, web3_deploy)
         contract.deploy(network, account_deploy)
 
         pk = secrets.token_hex(32)
@@ -19,19 +19,18 @@ class PySysTest(ObscuroNetworkTest):
         estimate = 0
         nonce = 0
         txs = []
-        for i in range(100, 300, 25):
+        self.log.info('Calculating total gas estimate')
+        for i in range(350, 370, 2):
             target = contract.contract.functions.calculateFibonacci(i)
             estimate = estimate + target.estimate_gas()
             tx = network.build_transaction(self, web3, target, nonce, contract.GAS_LIMIT)
             tx_sign = network.sign_transaction(self, tx, nonce, account, True)
             txs.append((nonce, tx_sign))
             nonce = nonce + 1
-        self.log.info('Total gas estimate is %d', estimate)
+        self.log.info('Total gas estimate is %d WEI, %.9f ETH', estimate, web3.fromWei(estimate, 'ether'))
 
         tx_hash = None
-        for nonce, tx_sign in txs:
-            tx_hash = network.send_transaction(self, web3, nonce, account, tx_sign, True)
-
+        for nonce, tx_sign in txs: tx_hash = network.send_transaction(self, web3, nonce, account, tx_sign, True)
         tx_receipt = network.wait_for_transaction(self, web3, nonce, account, tx_hash, True)
         self.check(tx_receipt)
 
@@ -48,3 +47,4 @@ class PySysTest(ObscuroNetworkTest):
         if batch is not None:
             batch_txns = batch['TxHashes']
             self.log.info('Number of transactions in the batch are %d', len(batch_txns))
+            self.assertTrue(len(batch_txns) > 0)
