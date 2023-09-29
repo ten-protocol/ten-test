@@ -81,8 +81,8 @@ class Obscuro(Default):
     can be registered. If a gateway instance is supplied in the constructor that instance will be used. If one is
     not supplied, if running against a local testnet an instance will be created; if running against a dev testnet,
     or testnet, then the hosted instance will be used. """
-    ETH_LIMIT = 0.5
-    ETH_ALLOC = 1
+    ETH_LIMIT = 0.05
+    ETH_ALLOC = 0.1
     CURRENCY = 'ETH'
 
     def __init__(self, test, name=None, **kwargs):
