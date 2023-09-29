@@ -186,7 +186,7 @@ class ObscuroRunnerPlugin():
 
     def is_obscuro(self):
         """Return true if we are running against an Obscuro network. """
-        return self.env in ['obscuro', 'obscuro.dev', 'obscuro.local']
+        return self.env in ['obscuro', 'obscuro.sepolia', 'obscuro.dev', 'obscuro.local']
 
     def is_local_obscuro(self):
         """Return true if we are running against a local Obscuro network. """
