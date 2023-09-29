@@ -1,0 +1,70 @@
+# Run a set of sanity tests on testnet to ensure it is up and running. The workflow is run either manually from
+# a workflow dispatch, or every 30 mins.
+#
+name: Check testnet health
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+    inputs:
+      release:
+        type: choice
+        description: 'The release version of testnet'
+        required: true
+        default: main
+        options:
+          - main
+          - releases/v0.17
+          - releases/v0.16
+
+jobs:
+  run-check:
+    runs-on: [self-hosted, Linux, X64, SystemTestRunner2]
+    steps:
+      - name: Set the variables
+        env:
+          DEFAULT_VERSION: 'main'
+        run: echo "VERSION=${{ github.event.inputs.release || env.DEFAULT_VERSION }}" >> $GITHUB_ENV
+
+      - name: 'Check out obscuro-test'
+        uses: actions/checkout@v3
+        with:
+          path: ./obscuro-test
+          ref: ${{env.VERSION}}
+
+      - name: 'Check out go-obscuro code'
+        uses: actions/checkout@v3
+        with:
+          repository: obscuronet/go-obscuro
+          path: ./go-obscuro
+          ref: ${{env.VERSION}}
+
+      - name: 'Build required artifacts for running tests'
+        run: |
+          cd ${{ github.workspace }}/obscuro-test
+          ./get_artifacts.sh
+          ls -l ${{ github.workspace }}/obscuro-test/artifacts   
+
+      - name: 'Run sanity tests'
+        run: |
+          cd ${{ github.workspace }}/obscuro-test/tests
+          /usr/local/bin/pysys.py run -m obscuro -i health -XDURATION=0
+
+      - name: 'Upload testcase output'
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: test-artifact
+          path: |
+            ${{ github.workspace }}/obscuro-test/**/Output
+          retention-days: 1
+
+      - name: 'Discord notification on failure'
+        if: failure()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.TESTNET_HEALTH_WEBHOOK }}
+          title: "Testnet health check tests failed"
+          description: "Testnet sanity tests run on schedule"
+          content: "Please investigate <@814873419207409685> <@92361563276591104> <@494924753962926120> <@921049923414261821> <@1034771491436363797> <@639076633994592256>"
+          avatar_url: ${{ secrets.AVATAR_URL }}

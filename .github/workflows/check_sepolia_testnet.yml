@@ -1,7 +1,7 @@
-# Run a set of sanity tests on testnet to ensure it is up and running. The workflow is run either manually from
-# a workflow dispatch, or every two hours.
+# Run a set of sanity tests on sepolia-testnet to ensure it is up and running. The workflow is run either manually from
+# a workflow dispatch, or every 30 mins.
 #
-name: Run health check
+name: Check sepolia-testnet health
 on:
   schedule:
     - cron: '*/30 * * * *'
@@ -9,7 +9,7 @@ on:
     inputs:
       release:
         type: choice
-        description: 'The release version of testnet'
+        description: 'The release version of sepolia-testnet'
         required: true
         default: main
         options:
@@ -48,7 +48,7 @@ jobs:
       - name: 'Run sanity tests'
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -m obscuro -i health -XDURATION=0
+          /usr/local/bin/pysys.py run -m obscuro.sepolia -i health -XDURATION=0
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v3
@@ -58,18 +58,6 @@ jobs:
           path: |
             ${{ github.workspace }}/obscuro-test/**/Output
           retention-days: 1
-
-      # Remove for now as we can tell it's running from the
-      # github workflows
-      #
-      #- name: 'Discord notification on success'
-      #  if: success()
-      #  uses: sarisia/actions-status-discord@v1
-      #  with:
-      #    webhook: ${{ secrets.TESTNET_HEALTH_WEBHOOK }}
-      #    title: "Testnet health check tests passed"
-      #    description: "Testnet sanity tests run on schedule"
-      #    avatar_url: ${{ secrets.AVATAR_URL }}
 
       - name: 'Discord notification on failure'
         if: failure()
