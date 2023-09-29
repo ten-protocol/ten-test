@@ -8,7 +8,7 @@ class PySysTest(GenericNetworkTest):
     def execute(self):
         network = self.get_network_connection()
         web3_user, account_user = network.connect_account1(self)
-        web3_hold, account_hold = network.connect(self, Properties().l2_funds_account_pk(self.env), check_funds=False)
+        web3_hold, account_hold = network.connect(self, Properties().l2_gas_payment_account_pk(self.env), check_funds=False)
 
         contract = GasConsumerAdd(self, web3_user)
         contract.deploy(network, account_user)
