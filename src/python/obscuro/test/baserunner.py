@@ -109,7 +109,7 @@ class ObscuroRunnerPlugin():
                     nonce_db.delete_environment(self.env)
                     contracts_db.delete_environment(self.env)
 
-                if balance < 200:
+                if balance < 200 and not self.is_sepolia_obscuro():
                     runner.log.info('Funded key balance below threshold ... making faucet call')
                     self.fund_eth_from_faucet_server(runner)
                     self.fund_eth_from_faucet_server(runner)
@@ -191,6 +191,10 @@ class ObscuroRunnerPlugin():
     def is_local_obscuro(self):
         """Return true if we are running against a local Obscuro network. """
         return self.env in ['obscuro.local']
+
+    def is_sepolia_obscuro(self):
+        """Return true if we are running against a sepolia Obscuro network. """
+        return self.env in ['obscuro.sepolia']
 
     def fund_eth_from_faucet_server(self, runner):
         """Allocates native ETH to a users account from the faucet server. """
