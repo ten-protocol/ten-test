@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Bridge - send funds across the bridge using the message bus directly</title>
+        <purpose><![CDATA[
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>bridge</group>
+        </groups>
+        <modes inherit="true">
+            <mode>obscuro</mode>
+            <mode>obscuro.dev</mode>
+            <mode>obscuro.local</mode>
+            <mode>obscuro.sepolia</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

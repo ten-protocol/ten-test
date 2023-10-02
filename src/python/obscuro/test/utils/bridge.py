@@ -5,6 +5,7 @@ from obscuro.test.contracts.bridge import WrappedERC20
 from obscuro.test.contracts.bridge import ObscuroBridge, EthereumBridge
 from obscuro.test.contracts.bridge import L1MessageBus, L2MessageBus, L1CrossChainMessenger, L2CrossChainMessenger
 from obscuro.test.helpers.log_subscriber import AllEventsLogSubscriber
+from obscuro.test.utils.properties import Properties
 
 
 class BridgeDetails:
@@ -129,6 +130,19 @@ class L1BridgeDetails(BridgeDetails):
 
         logs = self.bus.contract.events.LogMessagePublished().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, self.get_cross_chain_message(logs[0])
+
+    def send_to_msg_bus(self, amount):
+        """Send native currency across the bridge."""
+        tx = {
+            'to': Properties().l1_message_bus_address(self.test.env),
+            'value': amount,
+            'gas': 4*21000,
+            'gasPrice': self.web3.eth.gas_price,
+        }
+        tx_receipt = self.network.tx(self.test, self.web3, tx, self.account, persist_nonce=False)
+
+        logs = self.bus.contract.events.ValueTransfer().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
+        return tx_receipt, logs
 
     def relay_message(self, xchain_msg):
         """Relay a cross chain message. """
