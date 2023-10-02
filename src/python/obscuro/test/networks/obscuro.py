@@ -24,6 +24,9 @@ class ObscuroL1Sepolia(Sepolia):
         self.WS_PORT = props.l1_port_ws(test.env)
         self.CHAIN_ID = props.chain_id(test.env)
 
+    def connection_url(self, web_socket=False):
+        return '%s/%s' % (self.HOST if not web_socket else self.WS_HOST, Properties().sepoliaAPIKey())
+
     def connect(self, test, private_key, web_socket=False, check_funds=True):
         url = self.connection_url(web_socket)
 
