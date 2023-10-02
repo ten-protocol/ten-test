@@ -18,7 +18,7 @@ class PySysTest(ObscuroNetworkTest):
         # deploy the ERC20 token, update l1 details of the wrapped token, distribute tokens
         self.log.info('Deploy the ERC20 token on the L1')
         token = MintedERC20Token(self, funded.l1.web3, self.NAME, self.SYMB, 10000)
-        token.deploy(funded.l1.network, funded.l1.account, persist_nonce=False)
+        token.get_or_deploy(funded.l1.network, funded.l1.account, persist_nonce=False, timeout=300)
         funded.l1.add_token_contract(token.address, self.NAME, self.SYMB)
         accnt1.l1.add_token_contract(token.address, self.NAME, self.SYMB)
         accnt1.l1.add_token_subscriber(self.SYMB)

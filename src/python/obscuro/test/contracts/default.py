@@ -39,23 +39,24 @@ class DefaultContract:
 
         self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor(*self.args)
 
-    def deploy(self, network, account, persist_nonce=True):
+    def deploy(self, network, account, persist_nonce=True, timeout=30):
         """Deploy using the given account."""
         self.test.log.info('Deploying the %s contract', self.CONTRACT, extra=BaseLogFormatter.tag(LOG_WARN, 0))
         self.account = account
-        tx_receipt = network.transact(self.test, self.web3, self.contract, account, self.GAS_LIMIT, persist_nonce)
+        tx_receipt = network.transact(self.test, self.web3, self.contract, account,
+                                      self.GAS_LIMIT, persist_nonce, timeout=timeout)
         self.address = tx_receipt.contractAddress
         self.contract = self.web3.eth.contract(address=self.address, abi=self.abi)
         return tx_receipt
 
-    def get_or_deploy(self, network, account, persist_nonce=True):
+    def get_or_deploy(self, network, account, persist_nonce=True, timeout=30):
         """Get the contract from persistence, or deploy if it is not there. """
         address, abi = self.test.contract_db.get_contract(self.CONTRACT, self.test.env)
         if address is not None:
             self.test.log.info('Using pre-deployed contract at address %s', address)
             if self.web3.eth.getCode(address) == b'':
                 self.test.log.warn('Contract address does not appear to be a deployed contract ... deploying')
-                self.deploy(network, account, persist_nonce=persist_nonce)
+                self.deploy(network, account, persist_nonce=persist_nonce, timeout=timeout)
                 self.test.contract_db.insert_contract(self.CONTRACT, self.test.env, self.address, json.dumps(self.abi))
             else:
                 self.address = address
