@@ -11,7 +11,7 @@ class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
         props = Properties()
-        timeout = self.TIMEOUT if not self.is_sepolia_obscuro() else 300
+        timeout = self.TIMEOUT if not self.is_sepolia_obscuro() else 600
 
         # create the users for the test
         funded = BridgeUser(self, props.l1_funded_account_pk(self.env), props.account2pk(), 'funded')
