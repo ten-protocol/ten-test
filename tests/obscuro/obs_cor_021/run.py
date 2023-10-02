@@ -7,9 +7,11 @@ from obscuro.test.utils.properties import Properties
 class PySysTest(ObscuroNetworkTest):
     NAME = 'HubbaBubbaBandit'
     SYMB = 'HBB'
+    TIMEOUT = 30
 
     def execute(self):
         props = Properties()
+        timeout = self.TIMEOUT if not self.is_sepolia_obscuro() else 300
 
         # create the users for the test
         funded = BridgeUser(self, props.l1_funded_account_pk(self.env), props.account2pk(), 'funded')
@@ -18,7 +20,7 @@ class PySysTest(ObscuroNetworkTest):
         # deploy the ERC20 token, update l1 details of the wrapped token, distribute tokens
         self.log.info('Deploy the ERC20 token on the L1')
         token = MintedERC20Token(self, funded.l1.web3, self.NAME, self.SYMB, 10000)
-        token.get_or_deploy(funded.l1.network, funded.l1.account, persist_nonce=False, timeout=300)
+        token.get_or_deploy(funded.l1.network, funded.l1.account, persist_nonce=False, timeout=timeout)
         funded.l1.add_token_contract(token.address, self.NAME, self.SYMB)
         accnt1.l1.add_token_contract(token.address, self.NAME, self.SYMB)
         accnt1.l1.add_token_subscriber(self.SYMB)
