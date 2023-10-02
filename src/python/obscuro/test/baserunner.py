@@ -217,10 +217,12 @@ class ObscuroRunnerPlugin():
                 balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
                 if fn.__name__ in self.balances:
                     delta = delta + (self.balances[fn.__name__] - balance)
+
+            sign = '-' if delta < 0 else ''
             runner.log.info(' ')
-            runner.log.info("  %s: %d Wei", 'Total cost', Web3().toWei(delta, 'ether'),
+            runner.log.info("  %s: %s%d Wei", 'Total cost', sign, Web3().toWei(abs(delta), 'ether'),
                             extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
-            runner.log.info("  %s: %.9f ETH", 'Total cost', delta, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+            runner.log.info("  %s: %s%.9f ETH", 'Total cost', sign, abs(delta), extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
         except Exception as e:
             pass
 

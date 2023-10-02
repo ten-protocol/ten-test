@@ -53,8 +53,8 @@ class GenericNetworkTest(BaseTest):
         for web3, account in self.accounts: balance = balance + web3.eth.get_balance(account.address)
         delta = abs(self.balance - balance)
         sign = '-' if (self.balance - balance) < 0 else ''
-        self.log.info("  %s: %s %d Wei", 'Test cost', sign, delta, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
-        self.log.info("  %s: %s %.9f ETH", 'Test cost', sign, Web3().fromWei(delta, 'ether'), extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+        self.log.info("  %s: %s%d Wei", 'Test cost', sign, delta, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+        self.log.info("  %s: %s%.9f ETH", 'Test cost', sign, Web3().fromWei(delta, 'ether'), extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
 
     def close_db(self):
         """Close the connection to the nonce database on completion. """
