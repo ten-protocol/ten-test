@@ -78,7 +78,7 @@ class Default:
         tx_recp = self.wait_for_transaction(test, web3, nonce, account, tx_hash, persist_nonce)
         return tx_recp
 
-    def transact(self, test, web3, target, account, gas_limit, persist_nonce=True, timeout=30):
+    def transact(self, test, web3, target, account, gas_limit, persist_nonce=True, timeout=60):
         """Transact using either a contract constructor or contract function as the target.
 
         This method expects the target to be a contract constructor or function, and will build this into the
