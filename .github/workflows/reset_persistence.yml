@@ -42,6 +42,12 @@ jobs:
           cd ${{ github.workspace }}/obscuro-test/admin
           /usr/local/bin/pysys.py run -m obscuro persistence_reset
 
+      - name: 'Persistence reset on sepolia-testnet'
+        if: ${{ github.event.inputs.environment == 'sepolia-testnet' }}
+        run: |
+          cd ${{ github.workspace }}/obscuro-test/admin
+          /usr/local/bin/pysys.py run -m obscuro.sepolia persistence_reset
+
       - name: 'Persistence reset on dev-testnet'
         if: ${{ github.event.inputs.environment == 'dev-testnet' }}
         run: |
