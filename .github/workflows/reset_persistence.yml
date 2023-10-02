@@ -12,6 +12,7 @@ on:
         default: testnet
         options:
           - testnet
+          - sepolia-testnet
           - dev-testnet
 
 jobs:
