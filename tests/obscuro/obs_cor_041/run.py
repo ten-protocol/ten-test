@@ -23,7 +23,7 @@ class PySysTest(ObscuroNetworkTest):
         for i in range(350, 370, 2):
             target = contract.contract.functions.calculateFibonacci(i)
             estimate = estimate + target.estimate_gas()
-            tx = network.build_transaction(self, web3, target, nonce, contract.GAS_LIMIT)
+            tx = network.build_transaction(self, web3, target, nonce, account, contract.GAS_LIMIT)
             tx_sign = network.sign_transaction(self, tx, nonce, account, True)
             txs.append((nonce, tx_sign))
             nonce = nonce + 1

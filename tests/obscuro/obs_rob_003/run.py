@@ -12,7 +12,7 @@ class PySysTest(ObscuroNetworkTest):
     def execute(self):
         # start a single wallet extension
         wallet = WalletExtension.start(self, name='shared')
-        network_connection_primary = self.get_network_connection(wallet=wallet)
+        network_connection_primary = self.get_network_connection(wallet=wallet, verbose=False)
         web3_1, account_1 = network_connection_primary.connect_account1(self)
 
         # deploy a contract that emits a lifecycle event on calling a specific method as a transaction
