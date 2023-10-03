@@ -24,6 +24,8 @@ class PySysTest(ObscuroNetworkTest):
         funded.l1.add_token_contract(token.address, self.NAME, self.SYMB)
         accnt1.l1.add_token_contract(token.address, self.NAME, self.SYMB)
         accnt1.l1.add_token_subscriber(self.SYMB)
+
+        self.log.info('Transfer and approve tokens on the L1')
         funded.l1.transfer_token(self.SYMB, accnt1.l1.account.address, 200, timeout=timeout)
         accnt1.l1.approve_token(self.SYMB, accnt1.l1.bridge.address, 100, timeout=timeout)
 
