@@ -20,7 +20,7 @@ class PySysTest(ObscuroNetworkTest):
         self.client_connections = []
 
     def execute(self):
-        network = self.get_network_connection()
+        network = self.get_network_connection(verbose=False)
         web3, account = network.connect_account1(self)
 
         # set up the wallets and deploy contracts

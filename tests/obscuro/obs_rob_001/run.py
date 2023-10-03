@@ -13,7 +13,7 @@ class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
         # connect to network
-        network = self.get_network_connection()
+        network = self.get_network_connection(verbose=False)
         web3, account = network.connect_account1(self)
 
         # deploy the contract

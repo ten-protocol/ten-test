@@ -16,7 +16,7 @@ class PySysTest(ObscuroNetworkTest):
 
     def execute_run(self):
         # connect to the network
-        network = self.get_network_connection()
+        network = self.get_network_connection(verbose=False)
         web3, account = network.connect_account1(self)
 
         # we need to perform a transaction on the account to ensure the nonce is greater than zero for the
