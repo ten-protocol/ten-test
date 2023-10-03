@@ -64,7 +64,7 @@ class Default:
         """Connect account 4 to the network. """
         return self.connect(test, Properties().account4pk(), web_socket, check_funds)
 
-    def tx(self, test, web3, tx, account, persist_nonce=True):
+    def tx(self, test, web3, tx, account, persist_nonce=True, timeout=60):
         """Transact using the supplied transaction dictionary.
 
         Note that the nonce and chainId will automatically be added into the transaction dictionary in this method
@@ -75,7 +75,7 @@ class Default:
         tx['chainId'] = web3.eth.chain_id
         tx_sign = self.sign_transaction(test, tx, nonce, account, persist_nonce)
         tx_hash = self.send_transaction(test, web3, nonce, account, tx_sign, persist_nonce)
-        tx_recp = self.wait_for_transaction(test, web3, nonce, account, tx_hash, persist_nonce)
+        tx_recp = self.wait_for_transaction(test, web3, nonce, account, tx_hash, persist_nonce, timeout=timeout)
         return tx_recp
 
     def transact(self, test, web3, target, account, gas_limit, persist_nonce=True, timeout=60):
