@@ -100,7 +100,7 @@ class Default:
     def build_transaction(self, test, web3, target, nonce, account, gas_limit):
         """Build the transaction dictionary from the contract constructor or function target. """
         params = {
-            'from': account.address,         # the account originating the transaction
+            'from': account.address,          # the account originating the transaction
             'nonce': nonce,                   # the nonce to use
             'chainId': web3.eth.chain_id,     # the chain id
             'gasPrice': web3.eth.gas_price,   # the price we are willing to pay per gas unit (dimension is gwei)
@@ -112,7 +112,7 @@ class Default:
             if self.verbose: test.log.info('Total potential cost is %d WEI', gas_estimate*web3.eth.gas_price)
             gas_estimate = gas_estimate * self.GAS_MULT
         except Exception as e:
-            test.log.warn('Gas estimate, %s' % e.args[0])
+            if self.verbose: test.log.warn('Gas estimate, %s' % e.args[0])
             gas_estimate = gas_limit
 
         params['gas'] = gas_estimate
