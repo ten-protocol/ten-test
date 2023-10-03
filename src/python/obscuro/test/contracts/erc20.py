@@ -19,7 +19,7 @@ class ERC20Token:
 
 
 class MintedERC20Token(DefaultContract):
-    GAS_LIMIT = 4*720000
+    GAS_LIMIT = 10*720000
 
     SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'erc20', 'MintedERC20.sol')
     CONTRACT = 'MintedERC20'
