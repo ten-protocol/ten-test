@@ -11,8 +11,7 @@ class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
         props = Properties()
-        timeout = self.TIMEOUT if not self.is_sepolia_obscuro() else 600
-
+        
         # create the users for the test
         funded = BridgeUser(self, props.l1_funded_account_pk(self.env), props.account2pk(), 'funded')
         accnt1 = BridgeUser(self, props.account1pk(), props.account1pk(), 'accnt1')
@@ -20,29 +19,29 @@ class PySysTest(ObscuroNetworkTest):
         # deploy the ERC20 token, update l1 details of the wrapped token, distribute tokens
         self.log.info('Deploy the ERC20 token on the L1')
         token = MintedERC20Token(self, funded.l1.web3, self.NAME, self.SYMB, 10000)
-        token.get_or_deploy(funded.l1.network, funded.l1.account, persist_nonce=False, timeout=timeout)
+        token.deploy(funded.l1.network, funded.l1.account, persist_nonce=False)
         funded.l1.add_token_contract(token.address, self.NAME, self.SYMB)
         accnt1.l1.add_token_contract(token.address, self.NAME, self.SYMB)
         accnt1.l1.add_token_subscriber(self.SYMB)
 
         self.log.info('Transfer and approve tokens on the L1')
-        funded.l1.transfer_token(self.SYMB, accnt1.l1.account.address, 200, timeout=timeout)
-        accnt1.l1.approve_token(self.SYMB, accnt1.l1.bridge.address, 100, timeout=timeout)
+        funded.l1.transfer_token(self.SYMB, accnt1.l1.account.address, 200)
+        accnt1.l1.approve_token(self.SYMB, accnt1.l1.bridge.address, 100)
 
         # whitelist, relay the token, update l2 details of the wrapped token
         self.log.info('Whitelist and relaying the token')
-        _, xchain_msg = funded.l1.white_list_token(self.SYMB, timeout=timeout)
-        accnt1.l2.wait_for_message(xchain_msg, timeout=timeout)
-        _, l2_token_address = accnt1.l2.relay_whitelist_message(xchain_msg, timeout=timeout)
+        _, xchain_msg = funded.l1.white_list_token(self.SYMB)
+        accnt1.l2.wait_for_message(xchain_msg)
+        _, l2_token_address = accnt1.l2.relay_whitelist_message(xchain_msg)
         funded.l2.set_token_contract(l2_token_address, self.NAME, self.SYMB)
         accnt1.l2.set_token_contract(l2_token_address, self.NAME, self.SYMB)
         accnt1.l2.add_token_subscriber(self.SYMB)
 
         # send tokens across the bridge, and wait for it to be verified as finalised on L2, and then relay
         self.log.info('Send tokens on the L1 to cross the bridge')
-        _, xchain_msg = accnt1.l1.send_erc20(self.SYMB, accnt1.l2.account.address, 10, timeout=timeout)
-        accnt1.l2.wait_for_message(xchain_msg, timeout=timeout)
-        _ = accnt1.l2.relay_message(xchain_msg, timeout=timeout)
+        _, xchain_msg = accnt1.l1.send_erc20(self.SYMB, accnt1.l2.account.address, 10)
+        accnt1.l2.wait_for_message(xchain_msg)
+        _ = accnt1.l2.relay_message(xchain_msg)
         self.log.info('Account1 ERC20 balance L1 = %d ', accnt1.l1.balance_for_token(self.SYMB))
         self.log.info('Account1 ERC20 balance L2 = %d ', accnt1.l2.balance_for_token(self.SYMB))
 
