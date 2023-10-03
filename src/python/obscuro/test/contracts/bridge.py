@@ -4,7 +4,7 @@ from obscuro.test.utils.properties import Properties
 
 
 class Management:
-    GAS_LIMIT = 7200000
+    GAS_LIMIT = 10*7200000
 
     def __init__(self, test, web3):
         self.test = test
@@ -18,7 +18,7 @@ class Management:
 
 
 class L1MessageBus:
-    GAS_LIMIT = 7200000
+    GAS_LIMIT = 10*7200000
 
     def __init__(self, test, web3):
         self.test = test
@@ -32,7 +32,7 @@ class L1MessageBus:
 
 
 class L2MessageBus:
-    GAS_LIMIT = 7200000
+    GAS_LIMIT = 10*7200000
 
     def __init__(self, test, web3):
         self.test = test
@@ -46,7 +46,7 @@ class L2MessageBus:
 
 
 class L1CrossChainMessenger:
-    GAS_LIMIT = 7200000
+    GAS_LIMIT = 10*7200000
 
     def __init__(self, test, web3):
         self.test = test
@@ -60,7 +60,7 @@ class L1CrossChainMessenger:
 
 
 class L2CrossChainMessenger:
-    GAS_LIMIT = 7200000
+    GAS_LIMIT = 10*7200000
 
     def __init__(self, test, web3):
         self.test = test
@@ -74,7 +74,7 @@ class L2CrossChainMessenger:
 
 
 class ObscuroBridge:
-    GAS_LIMIT = 7200000
+    GAS_LIMIT = 10*7200000
 
     def __init__(self, test, web3):
         self.test = test
@@ -88,7 +88,7 @@ class ObscuroBridge:
 
 
 class EthereumBridge:
-    GAS_LIMIT = 7200000
+    GAS_LIMIT = 10*7200000
 
     def __init__(self, test, web3):
         self.test = test
@@ -102,7 +102,7 @@ class EthereumBridge:
 
 
 class ObsERC20:
-    GAS_LIMIT = 7200000
+    GAS_LIMIT = 10*7200000
 
     def __init__(self, test, web3):
         self.test = test
@@ -115,7 +115,7 @@ class ObsERC20:
 
 
 class WrappedERC20:
-    GAS_LIMIT = 7200000
+    GAS_LIMIT = 10*7200000
 
     def __init__(self, test, web3, name, symbol, address):
         self.test = test
