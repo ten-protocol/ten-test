@@ -16,7 +16,8 @@ class PySysTest(ObscuroNetworkTest):
 
     @timeit
     def transact(self, network_connection, web3, storage, count, account):
-        network_connection.transact(self, web3, storage.contract.functions.store(count), account, storage.GAS_LIMIT)
+        network_connection.transact(self, web3, storage.contract.functions.store(count), account,
+                                    storage.GAS_LIMIT, estimate=False)
 
     def __init__(self, descriptor, outsubdir, runner):
         super().__init__(descriptor, outsubdir, runner)
