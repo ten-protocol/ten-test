@@ -108,7 +108,7 @@ class Default:
             'gas': gas_estimate               # max gas units prepared to pay (dimension is computational units)
         }
 
-        estimate = True if ('estimate' in kwargs and not kwargs['estimate']) else False
+        estimate = kwargs['estimate'] if 'estimate' in kwargs else True
         if estimate:
             try:
                 gas_estimate = target.estimateGas(params)
