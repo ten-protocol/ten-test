@@ -52,7 +52,7 @@ class FilterLogSubscriber:
         if filter_address: args.extend(['--filter_address', filter_address])
         if filter_topics: args.extend(['--filter_topics', " ".join(filter_topics)])
         if decode_as_stored_event: args.append('--decode_as_stored_event')
-        if pk_to_register: self.network.connect(self.test, private_key=pk_to_register)
+        if pk_to_register: self.network.connect(self.test, private_key=pk_to_register, check_funds=False)
         self.test.run_javascript(self.script, self.stdout, self.stderr, args)
         self.test.waitForGrep(file=self.stdout, expr='Subscriber listening for instructions', timeout=10)
 
