@@ -12,7 +12,7 @@
             <group></group>
         </groups>
         <modes inherit="true">
-            <mode>sepolia</mode>
+            <mode>obscuro.sepolia</mode>
         </modes>
     </classification>
 
