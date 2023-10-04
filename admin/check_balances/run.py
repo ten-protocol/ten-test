@@ -5,7 +5,8 @@ from obscuro.test.utils.properties import Properties
 
 
 class PySysTest(ObscuroNetworkTest):
-    THRESHOLD = 5
+    L1_THRESHOLD = 5
+    L2_THRESHOLD = 10
 
     def execute(self):
         network = self.get_l1_network_connection(self.env)
@@ -27,10 +28,14 @@ class PySysTest(ObscuroNetworkTest):
         faucet_balance = web3.fromWei(self.get_faucet_balance(), 'ether')
         self.log.info('Faucet balance %.6f %s', faucet_balance, network.CURRENCY)
 
-        self.assertTrue(sequencer_balance >= self.THRESHOLD, assertMessage='L1 Sequence balance is below threshold')
-        self.assertTrue(validator_balance >= self.THRESHOLD, assertMessage='L1 Validator balance is below threshold')
-        self.assertTrue(deployer_balance >= self.THRESHOLD, assertMessage='L1 Deployer balance is below threshold')
-        self.assertTrue(faucet_balance >= self.THRESHOLD, assertMessage='L2 Faucet balance is below threshold')
+        self.assertTrue(sequencer_balance >= self.L1_THRESHOLD,
+                        assertMessage='L1 Sequence balance is below threshold %s' % self.L1_THRESHOLD)
+        self.assertTrue(validator_balance >= self.L1_THRESHOLD,
+                        assertMessage='L1 Validator balance is below threshold %s' % self.L1_THRESHOLD)
+        self.assertTrue(deployer_balance >= self.L1_THRESHOLD, 
+                        assertMessage='L1 Deployer balance is below threshold %s' % self.L1_THRESHOLD)
+        self.assertTrue(faucet_balance >= self.L2_THRESHOLD,
+                        assertMessage='L2 Faucet balance is below threshold %s' % self.L2_THRESHOLD)
 
     def get_faucet_balance(self):
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
