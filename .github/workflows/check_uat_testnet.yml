@@ -1,7 +1,7 @@
-# Run a set of sanity tests on testnet to ensure it is up and running. The workflow is run either manually from
+# Run a set of sanity tests on uat-testnet to ensure it is up and running. The workflow is run either manually from
 # a workflow dispatch, or every 30 mins.
 #
-name: Check testnet health
+name: Check uat-testnet health
 on:
   schedule:
     - cron: '*/30 * * * *'
@@ -9,7 +9,7 @@ on:
     inputs:
       release:
         type: choice
-        description: 'The release version of testnet'
+        description: 'The release version of uat-testnet'
         required: true
         default: main
         options:
@@ -48,7 +48,7 @@ jobs:
       - name: 'Run health check tests'
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -m obscuro -i health -XDURATION=0
+          /usr/local/bin/pysys.py run -m obscuro.uat -i health -XDURATION=0
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v3

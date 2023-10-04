@@ -9,10 +9,10 @@ on:
         type: choice
         description: Environment
         required: true
-        default: testnet
+        default: dev-testnet
         options:
-          - testnet
           - sepolia-testnet
+          - uat-testnet
           - dev-testnet
 
 jobs:
@@ -36,17 +36,17 @@ jobs:
           go build -o ${{ github.workspace }}/obscuro-test/artifacts/wallet_extension/wallet_extension
           ls -l ${{ github.workspace }}/obscuro-test/artifacts
 
-      - name: 'Persistence reset on testnet'
-        if: ${{ github.event.inputs.environment == 'testnet' }}
-        run: |
-          cd ${{ github.workspace }}/obscuro-test/admin
-          /usr/local/bin/pysys.py run -m obscuro persistence_reset
-
       - name: 'Persistence reset on sepolia-testnet'
         if: ${{ github.event.inputs.environment == 'sepolia-testnet' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
           /usr/local/bin/pysys.py run -m obscuro.sepolia persistence_reset
+
+      - name: 'Persistence reset on uat-testnet'
+        if: ${{ github.event.inputs.environment == 'uat-testnet' }}
+        run: |
+          cd ${{ github.workspace }}/obscuro-test/admin
+          /usr/local/bin/pysys.py run -m obscuro.uat persistence_reset
 
       - name: 'Persistence reset on dev-testnet'
         if: ${{ github.event.inputs.environment == 'dev-testnet' }}

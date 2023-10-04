@@ -154,17 +154,17 @@ pysys.py print
 # print out full test details
 pysys.py print -f
 
-# run the tests against Obscuro testnet
-pysys.py run  -m obscuro
+# run the tests against Obscuro sepolia-testnet
+pysys.py run -m obscuro.sepolia
+
+# run the tests against Obscuro uat-testnet
+pysys.py run  -m obscuro.uat
 
 # run the tests against Obscuro dev-testnet
 pysys.py run -m obscuro.dev 
 
 # run the tests against Obscuro local testnet
 pysys.py run -m obscuro.local
-
-# run the tests against Obscuro sepolia testnet
-pysys.py run -m obscuro.sepolia
 
 # run the tests against a local ganache network 
 pysys.py run -m ganache
@@ -197,17 +197,17 @@ filter based on the user request e.g.
 
 ```bash
 # run a specific test
-pysys.py run -m obscuro gen_cor_001
+pysys.py run -m obscuro.sepolia gen_cor_001
 
 # run a range of tests (using python list slicing syntax)
-pysys.py run -m obscuro gen_cor_001:gen_cor_004
-pysys.py run -m obscuro gen_cor_003:
+pysys.py run -m obscuro.sepolia gen_cor_001:gen_cor_004
+pysys.py run -m obscuro.sepolia gen_cor_003:
 
 # run a test multiple times
-pysys.py run -m obscuro -c 5 gen_cor_003
+pysys.py run -m obscuro.sepolia -c 5 gen_cor_003
 
 # run a test with full verbosity logging
-pysys.py run -m obscuro -v DEBUG gen_cor_003
+pysys.py run -m obscuro.sepolia -v DEBUG gen_cor_003
 ```
 
 

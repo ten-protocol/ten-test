@@ -1,5 +1,5 @@
-# Run a set of E2E tests on a previously deployed obscuro network (dev-testnet or testnet). The workflow is triggered
-# either manually via a workflow dispatch, or on a schedule (dev-testnet only)
+# Run a set of E2E tests on a previously deployed obscuro network (dev-testnet, uat-testnet or sepolia-testnet). The
+# workflow is triggered either manually via a workflow dispatch, or on a schedule (dev-testnet only)
 #
 name: Run remote tests
 run-name: Run remote tests (${{ github.event_name }})
@@ -14,8 +14,8 @@ on:
         required: true
         default: dev-testnet
         options:
-          - testnet
           - sepolia-testnet
+          - uat-testnet
           - dev-testnet
       arguments:
         description: 'Arguments to the pysys run'
@@ -58,17 +58,17 @@ jobs:
           ./get_artifacts.sh
           ls -l ${{ github.workspace }}/obscuro-test/artifacts   
 
-      - name: 'Run tests on testnet on a workflow_dispatch'
-        if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.environment == 'testnet') }}
-        run: |
-          cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -m obscuro -r ${{ github.event.inputs.arguments }}
-
       - name: 'Run tests on sepolia-testnet on a workflow_dispatch'
         if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.environment == 'sepolia-testnet') }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
           /usr/local/bin/pysys.py run -m obscuro.sepolia -r ${{ github.event.inputs.arguments }}
+
+      - name: 'Run tests on uat-testnet on a workflow_dispatch'
+        if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.environment == 'uat-testnet') }}
+        run: |
+          cd ${{ github.workspace }}/obscuro-test/tests
+          /usr/local/bin/pysys.py run -m obscuro.uat -r ${{ github.event.inputs.arguments }}
 
       - name: 'Run tests on dev-testnet on a workflow_dispatch'
         if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.environment == 'dev-testnet') }}
