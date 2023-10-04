@@ -4,6 +4,8 @@
     <description>
         <title>Gas - fill the gas limit with an expensive contract call</title>
         <purpose><![CDATA[
+
+Skipped due to https://github.com/obscuronet/obscuro-internal/issues/2199.
 ]]>
         </purpose>
     </description>
@@ -11,6 +13,7 @@
     <classification>
         <groups inherit="true">
             <group>gas</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro</mode>
