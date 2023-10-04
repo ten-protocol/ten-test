@@ -15,10 +15,10 @@ single registered user. Once done we check some random accounts can trade throug
             <group>gateway</group>
         </groups>
         <modes inherit="true">
-            <mode>obscuro</mode>
+            <mode>obscuro.sepolia</mode>
+            <mode>obscuro.uat</mode>
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
-            <mode>obscuro.sepolia</mode>
         </modes>
     </classification>
 

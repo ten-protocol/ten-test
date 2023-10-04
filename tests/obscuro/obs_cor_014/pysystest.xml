@@ -15,10 +15,10 @@ faster finality.
         <groups inherit="true">
         </groups>
         <modes inherit="true">
-            <mode>obscuro</mode>
+            <mode>obscuro.sepolia</mode>
+            <mode>obscuro.uat</mode>
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
-            <mode>obscuro.sepolia</mode>
         </modes>
     </classification>
 

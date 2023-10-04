@@ -19,10 +19,10 @@ Skipped as a breaking change in ethers is messing up the test - will re-enable w
             <group>ethers</group>
         </groups>
         <modes inherit="true">
-            <mode>obscuro</mode>
+            <mode>obscuro.sepolia</mode>
+            <mode>obscuro.uat</mode>
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
-            <mode>obscuro.sepolia</mode>
             <mode>goerli</mode>
             <mode>ganache</mode>
             <mode>arbitrum</mode>

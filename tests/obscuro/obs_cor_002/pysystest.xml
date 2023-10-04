@@ -24,10 +24,10 @@ the subscription made on account 4 sees the event (as expected).
             <group>web3js</group>
         </groups>
         <modes inherit="true">
-            <mode>obscuro</mode>
+            <mode>obscuro.sepolia</mode>
+            <mode>obscuro.uat</mode>
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
-            <mode>obscuro.sepolia</mode>
         </modes>
     </classification>
 
