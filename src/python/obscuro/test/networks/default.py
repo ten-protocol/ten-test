@@ -116,6 +116,8 @@ class Default:
                 params['gas'] = gas_estimate * self.GAS_MULT
             except Exception as e:
                 test.log.warn('Gas estimate, %s' % e.args[0])
+        else:
+            if self.verbose: test.log.info('Skipping gas estimate and using supplied value')
 
         build_tx = target.buildTransaction(params)
         return build_tx

@@ -13,11 +13,12 @@ class PySysTest(ObscuroNetworkTest):
     ITERATIONS = 10
     CLIENTS = 5
     DURATION = 120
+    ESTIMATE = False
 
     @timeit
     def transact(self, network_connection, web3, storage, count, account):
         network_connection.transact(self, web3, storage.contract.functions.store(count), account,
-                                    storage.GAS_LIMIT, estimate=False)
+                                    storage.GAS_LIMIT, estimate=self.ESTIMATE)
 
     def __init__(self, descriptor, outsubdir, runner):
         super().__init__(descriptor, outsubdir, runner)
@@ -25,7 +26,7 @@ class PySysTest(ObscuroNetworkTest):
 
     def execute(self):
         # connect to the network
-        network = self.get_network_connection(verbose=True)
+        network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
         # deploy the contract
