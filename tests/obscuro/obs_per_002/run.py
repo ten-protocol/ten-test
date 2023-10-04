@@ -17,7 +17,7 @@ class PySysTest(ObscuroNetworkTest):
         clients = ['one', 'two'] # need to manually change the gnuplot.in file for more clients
 
         # connect to the network
-        network = self.get_network_connection(verbose=False)
+        network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
         # we need to perform a transaction on the account to ensure the nonce is greater than zero for the
