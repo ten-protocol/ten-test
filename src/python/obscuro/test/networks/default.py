@@ -108,7 +108,8 @@ class Default:
             'gas': gas_estimate               # max gas units prepared to pay (dimension is computational units)
         }
 
-        if 'estimate' in kwargs and kwargs['estimate']:
+        estimate = False if ('estimate' in kwargs and not kwargs['estimate']) else True
+        if estimate:
             try:
                 gas_estimate = target.estimateGas(params)
                 if self.verbose: test.log.info('Gas estimate, cost is %d WEI', gas_estimate)
