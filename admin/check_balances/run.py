@@ -1,14 +1,15 @@
+import requests, json
 from web3 import Web3
-from pysys.basetest import BaseTest
-from obscuro.test.networks.sepolia import Sepolia
+from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.utils.properties import Properties
 
 
-class PySysTest(BaseTest):
-    THRESHOLD = 5
+class PySysTest(ObscuroNetworkTest):
+    L1_THRESHOLD = 5
+    L2_THRESHOLD = 10
 
     def execute(self):
-        network = Sepolia(self)
+        network = self.get_l1_network_connection(self.env)
         url = network.connection_url()
         web3 = Web3(Web3.HTTPProvider(url))
 
@@ -24,6 +25,21 @@ class PySysTest(BaseTest):
         deployer_balance = web3.fromWei(web3.eth.get_balance(deployer_address), 'ether')
         self.log.info('Deployer account %s balance %.6f %s', deployer_address, deployer_balance, network.CURRENCY)
 
-        self.assertTrue(sequencer_balance >= self.THRESHOLD, assertMessage='Sequence balance is below threshold')
-        self.assertTrue(validator_balance >= self.THRESHOLD, assertMessage='Validator balance is below threshold')
-        self.assertTrue(deployer_balance >= self.THRESHOLD, assertMessage='Deployer balance is below threshold')
+        faucet_balance = web3.fromWei(self.get_faucet_balance(), 'ether')
+        self.log.info('Faucet balance %.6f %s', faucet_balance, network.CURRENCY)
+
+        self.assertTrue(sequencer_balance >= self.L1_THRESHOLD,
+                        assertMessage='L1 Sequence balance is below threshold %s' % self.L1_THRESHOLD)
+        self.assertTrue(validator_balance >= self.L1_THRESHOLD,
+                        assertMessage='L1 Validator balance is below threshold %s' % self.L1_THRESHOLD)
+        self.assertTrue(deployer_balance >= self.L1_THRESHOLD, 
+                        assertMessage='L1 Deployer balance is below threshold %s' % self.L1_THRESHOLD)
+        self.assertTrue(faucet_balance >= self.L2_THRESHOLD,
+                        assertMessage='L2 Faucet balance is below threshold %s' % self.L2_THRESHOLD)
+
+    def get_faucet_balance(self):
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
+        url = '%s/balance' % Properties().faucet_url(self.env)
+        response = requests.get(url, headers=headers)
+        response_data = json.loads(response.text)
+        return int(response_data.get('balance'))

@@ -200,11 +200,12 @@ class ObscuroRunnerPlugin():
     def fund_eth_from_faucet_server(self, runner):
         """Allocates native ETH to a users account from the faucet server. """
         account = Web3().eth.account.privateKeyToAccount(Properties().fundacntpk())
-        runner.log.info('Running request on %s', Properties().faucet_url(self.env))
+        url = '%s/fund/eth' % Properties().faucet_url(self.env)
+        runner.log.info('Running request on %s', url)
         runner.log.info('Running for user address %s', account.address)
         headers = {'Content-Type': 'application/json'}
         data = {"address": account.address}
-        requests.post(Properties().faucet_url(self.env), data=json.dumps(data), headers=headers)
+        requests.post(url, data=json.dumps(data), headers=headers)
 
     def __print_cost(self, runner, url, web3, user_id):
         """Print out balances. """
