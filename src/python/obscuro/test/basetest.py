@@ -118,7 +118,7 @@ class GenericNetworkTest(BaseTest):
         }
 
         balance_before = web3_pk.eth.get_balance(account_pk.address)
-        self.info.log('Sending %d WEI to account %s', web3_pk.toWei(amount, 'ether'), account.address)
+        self.log.info('Sending %d WEI to account %s', web3_pk.toWei(amount, 'ether'), account.address)
         self.network_funding.tx(self, web3_pk, tx, account_pk)
         balance_after = web3_pk.eth.get_balance(account_pk.address)
         self.transfer_costs.append((balance_before - web3_pk.toWei(amount, 'ether') - balance_after))
