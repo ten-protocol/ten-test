@@ -105,7 +105,6 @@ class Default:
             'nonce': nonce,                   # the nonce to use
             'chainId': web3.eth.chain_id,     # the chain id
             'gasPrice': web3.eth.gas_price,   # the price we are willing to pay per gas unit (dimension is gwei)
-            'gas': gas_estimate               # max gas units prepared to pay (dimension is computational units)
         }
 
         estimate = kwargs['estimate'] if 'estimate' in kwargs else True
@@ -120,6 +119,7 @@ class Default:
         else:
             if self.verbose: test.log.info('Skipping gas estimate and using supplied value')
 
+        params['gas'] = gas_estimate
         build_tx = target.buildTransaction(params)
         return build_tx
 
