@@ -1,9 +1,8 @@
-import secrets, os, math
+import secrets, os, math, time
 from datetime import datetime
 from collections import OrderedDict
 from web3 import Web3
 from pysys.constants import FAILED
-from obscuro.test.utils.timers import timeit
 from obscuro.test.contracts.storage import Storage
 from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.utils.gnuplot import GnuplotHelper
@@ -15,10 +14,14 @@ class PySysTest(ObscuroNetworkTest):
     DURATION = 120
     ESTIMATE = True
 
-    @timeit
-    def transact(self, network_connection, web3, storage, count, account):
-        network_connection.transact(self, web3, storage.contract.functions.store(count), account,
-                                    storage.GAS_LIMIT, estimate=self.ESTIMATE)
+    def transact(self, network_connection, web3, storage, count, account, gas_limit):
+        start_time = time.perf_counter()
+        tx_receipt = network_connection.transact(self, web3, storage.contract.functions.store(count), account,
+                                                 gas_limit, estimate=self.ESTIMATE)
+        end_time = time.perf_counter()
+        gas_used = tx_receipt['gasUsed']
+        self.log.info('Gas used for the transaction is %d', gas_used)
+        return gas_used, (end_time - start_time)
 
     def __init__(self, descriptor, outsubdir, runner):
         super().__init__(descriptor, outsubdir, runner)
@@ -35,8 +38,11 @@ class PySysTest(ObscuroNetworkTest):
 
         # do a sanity check and break hard if the network is slow
         times = []
+        gas_limit = storage.GAS_LIMIT
         for i in range(0, self.ITERATIONS):
-            times.append(self.transact(network, web3, storage, 0, account))
+            gas_used, time = self.transact(network, web3, storage, 0, account, gas_limit)
+            times.append(time)
+            gas_limit = gas_used
         avg = (sum(times) / len(times))
         self.log.info('Average latency is %.2f', avg)
         if avg > 10.0: self.addOutcome(FAILED, outcomeReason='Average latency %.2f is greater than 10 seconds' % avg)
