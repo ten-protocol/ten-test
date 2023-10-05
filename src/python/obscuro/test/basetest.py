@@ -37,7 +37,7 @@ class GenericNetworkTest(BaseTest):
         self.addCleanupFunction(self.close_db)
 
         # every test has a connection for the funded account
-        self.network_funding = self.get_network_connection(name='funding_connection', verbose=False)
+        self.network_funding = self.get_network_connection(name='funding_connection', verbose=True)
         self.balance = 0
         self.accounts = []
         self.transfer_costs = []
@@ -118,6 +118,7 @@ class GenericNetworkTest(BaseTest):
         }
 
         balance_before = web3_pk.eth.get_balance(account_pk.address)
+        self.info.log('Sending %d WEI to account %s', web3_pk.toWei(amount, 'ether'), account.address)
         self.network_funding.tx(self, web3_pk, tx, account_pk)
         balance_after = web3_pk.eth.get_balance(account_pk.address)
         self.transfer_costs.append((balance_before - web3_pk.toWei(amount, 'ether') - balance_after))
