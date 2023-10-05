@@ -49,6 +49,7 @@ class PySysTest(ObscuroNetworkTest):
 
         # run some concurrent clients, bin the latency and plot the results
         if self.DURATION > 0:
+            self.log.info('')
             self.log.info('Starting all concurrent clients')
             for i in range(0, self.CLIENTS): self.storage_client(storage.address, storage.abi_path, i, network)
             for i in range(0, self.CLIENTS): self.waitForGrep(file='client_%d.out' % i, expr='Client running', timeout=10)
