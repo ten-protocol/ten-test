@@ -44,7 +44,7 @@ class PySysTest(ObscuroNetworkTest):
             times.append(time)
             gas_limit = gas_used
         avg = (sum(times) / len(times))
-        self.log.info('Average latency is %.2f', avg)
+        self.log.info('Average latency for %d transactions is %.2f', self.ITERATIONS, avg)
         if avg > 10.0: self.addOutcome(FAILED, outcomeReason='Average latency %.2f is greater than 10 seconds' % avg)
 
         # run some concurrent clients, bin the latency and plot the results
