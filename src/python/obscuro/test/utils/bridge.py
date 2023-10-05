@@ -50,7 +50,7 @@ class L1BridgeDetails(BridgeDetails):
 
     def __init__(self, test, pk, name):
         """Instantiate an instance. """
-        network = test.get_l1_network_connection(verbose=True)
+        network = test.get_l1_network_connection()
         web3, account = network.connect(test, pk)
         bridge = ObscuroBridge(test, web3)
         bus = L1MessageBus(test, web3)
@@ -162,7 +162,7 @@ class L2BridgeDetails(BridgeDetails):
 
     def __init__(self, test, pk, name):
         """Instantiate an instance. """
-        network = test.get_network_connection(name=name, verbose=True)
+        network = test.get_network_connection(name=name)
         web3, account = network.connect(test, pk)
         bridge = EthereumBridge(test, web3)
         bus = L2MessageBus(test, web3)

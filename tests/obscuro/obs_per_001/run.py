@@ -41,7 +41,7 @@ class PySysTest(ObscuroNetworkTest):
         self.log.info('Bulk sending transactions to the network')
         receipts = []
         for tx in txs:
-            receipts.append((network.send_transaction(self, web3, tx[1], account, tx[0], False), tx[1]))
+            receipts.append((network.send_transaction(self, web3, tx[1], account, tx[0], False, verbose=False), tx[1]))
 
         self.log.info('Waiting for last transaction')
         network.wait_for_transaction(self, web3, receipts[-1][1], account, receipts[-1][0], False, timeout=600)

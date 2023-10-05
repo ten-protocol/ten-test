@@ -27,20 +27,20 @@ class ObscuroL1Sepolia(Sepolia):
     def connection_url(self, web_socket=False):
         return '%s/%s' % (self.HOST if not web_socket else self.WS_HOST, Properties().sepoliaAPIKey())
 
-    def connect(self, test, private_key, web_socket=False, check_funds=True):
+    def connect(self, test, private_key, web_socket=False, check_funds=True, verbose=True):
         url = self.connection_url(web_socket)
 
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)
-        if self.verbose: test.log.info('Account %s connected to %s', account.address, self.__class__.__name__)
+        if verbose: test.log.info('Account %s connected to %s', account.address, self.__class__.__name__)
 
         if check_funds:
             balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
             if balance < self.ETH_LIMIT:
-                if self.verbose: test.log.info('Account balance %.6f ETH below threshold %s', balance, self.ETH_LIMIT)
+                if verbose: test.log.info('Account balance %.6f ETH below threshold %s', balance, self.ETH_LIMIT)
                 test.fund_native(self, account, self.ETH_ALLOC, Properties().l1_funded_account_pk(test.env), persist_nonce=False)
-            if self.verbose: test.log.info('Account balance %.6f ETH', web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
+            if verbose: test.log.info('Account balance %.6f ETH', web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
         return web3, account
 
 
@@ -58,21 +58,21 @@ class ObscuroL1Geth(Geth):
         self.WS_PORT = props.l1_port_ws(test.env)
         self.CHAIN_ID = props.chain_id(test.env)
 
-    def connect(self, test, private_key, web_socket=False, check_funds=True):
+    def connect(self, test, private_key, web_socket=False, check_funds=True, verbose=True):
         url = self.connection_url(web_socket)
 
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         web3.middleware_onion.inject(geth_poa_middleware, layer=0)
         account = web3.eth.account.privateKeyToAccount(private_key)
-        if self.verbose: test.log.info('Account %s connected to %s', account.address, self.__class__.__name__)
+        if verbose: test.log.info('Account %s connected to %s', account.address, self.__class__.__name__)
 
         if check_funds:
             balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
             if balance < self.ETH_LIMIT:
-                if self.verbose: test.log.info('Account balance %.6f ETH below threshold %s', balance, self.ETH_LIMIT)
+                if verbose: test.log.info('Account balance %.6f ETH below threshold %s', balance, self.ETH_LIMIT)
                 test.fund_native(self, account, self.ETH_ALLOC, Properties().l1_funded_account_pk(test.env), persist_nonce=False)
-            if self.verbose: test.log.info('Account balance %.6f ETH', web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
+            if verbose: test.log.info('Account balance %.6f ETH', web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
         return web3, account
 
 
@@ -96,7 +96,6 @@ class Obscuro(Default):
         if 'wallet' in kwargs:
             wallet = kwargs['wallet']
             self.name = wallet.name
-            if self.verbose: test.log.info('Using supplied wallet for connection %s', name)
             self.HOST = 'http://127.0.0.1'
             self.WS_HOST = 'ws://127.0.0.1'
             self.PORT = wallet.port
@@ -125,21 +124,21 @@ class Obscuro(Default):
         host = self.HOST if not web_socket else self.WS_HOST
         return '%s:%d/v1/?u=%s' % (host, port, self.ID)
 
-    def connect(self, test, private_key, web_socket=False, check_funds=True):
+    def connect(self, test, private_key, web_socket=False, check_funds=True, verbose=True):
         url = self.connection_url(web_socket)
 
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)
         self.__register(account)
-        if self.verbose: test.log.info('Account %s connected to %s', account.address, self.__class__.__name__)
+        if verbose: test.log.info('Account %s connected to %s', account.address, self.__class__.__name__)
 
         if check_funds:
             balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
             if balance < self.ETH_LIMIT:
-                if self.verbose: test.log.info('Account balance %.6f ETH below threshold %s', balance, self.ETH_LIMIT)
+                if verbose: test.log.info('Account balance %.6f ETH below threshold %s', balance, self.ETH_LIMIT)
                 test.distribute_native(account, self.ETH_ALLOC)
-            if self.verbose: test.log.info('Account balance %.6f ETH', web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
+            if verbose: test.log.info('Account balance %.6f ETH', web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
         return web3, account
 
     def __join(self):
