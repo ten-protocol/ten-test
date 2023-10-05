@@ -13,7 +13,7 @@ class PySysTest(ObscuroNetworkTest):
     ITERATIONS = 10
     CLIENTS = 5
     DURATION = 120
-    ESTIMATE = False
+    ESTIMATE = True
 
     @timeit
     def transact(self, network_connection, web3, storage, count, account):
