@@ -83,6 +83,12 @@ jobs:
           cd ${{ github.workspace }}/obscuro-test/tests
           /usr/local/bin/pysys.py run -m obscuro.dev -e skip
 
+      - name: 'Run tests on sepolia on a workflow_dispatch'
+        if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.environment == 'sepolia') }}
+        run: |
+          cd ${{ github.workspace }}/obscuro-test/tests
+          /usr/local/bin/pysys.py run -m sepolia -r ${{ github.event.inputs.arguments }}
+
       - name: 'Collate pdf output'
         if: always()
         run: |
