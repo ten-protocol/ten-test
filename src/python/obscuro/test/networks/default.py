@@ -137,8 +137,9 @@ class Default:
             if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'SENT')
         except Exception as e:
             test.log.error('Error sending raw transaction %s', e)
-            test.log.warn('Deleting nonce entries in the persistence for nonce %d', nonce)
-            if persist_nonce: test.nonce_db.delete_entries(account.address, test.env, nonce)
+            if persist_nonce:
+                test.log.warn('Deleting nonce entries in the persistence for nonce %d', nonce)
+                test.nonce_db.delete_entries(account.address, test.env, nonce)
             test.addOutcome(BLOCKED, abortOnError=True)
         if verbose: test.log.info('Transaction sent with hash %s', tx_hash.hex())
         return tx_hash
@@ -160,8 +161,9 @@ class Default:
 
         except TimeExhausted as e:
             test.log.error('Transaction timed out %s', e)
-            test.log.warn('Deleting nonce entries in the persistence for nonce %d', nonce)
-            if persist_nonce: test.nonce_db.delete_entries(account.address, test.env, nonce)
+            if persist_nonce:
+                test.log.warn('Deleting nonce entries in the persistence for nonce %d', nonce)
+                test.nonce_db.delete_entries(account.address, test.env, nonce)
             test.addOutcome(TIMEDOUT, abortOnError=True)
 
         return tx_receipt
