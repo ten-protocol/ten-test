@@ -17,6 +17,7 @@ on:
           - sepolia-testnet
           - uat-testnet
           - dev-testnet
+          - sepolia
       arguments:
         description: 'Arguments to the pysys run'
         required: true
