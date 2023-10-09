@@ -104,10 +104,11 @@ class DefaultPostLondon:
 
         gas_estimate = gas_limit
         params = {
-            'from': account.address,          # the account originating the transaction
-            'nonce': nonce,                   # the nonce to use
-            'chainId': web3.eth.chain_id,     # the chain id
-            'gas': gas_limit                  # max gas prepared to pay
+            'from': account.address,                      # the account originating the transaction
+            'nonce': nonce,                               # the nonce to use
+            'chainId': web3.eth.chain_id,                 # the chain id
+            'gas': gas_limit,                             # max gas prepared to pay
+            'maxPriorityFeePerGas': web3.toWei(3, 'gwei') # tip to go to the miner
         }
         if estimate:
             try: gas_estimate = target.estimateGas(params)
