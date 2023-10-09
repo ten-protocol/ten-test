@@ -15,18 +15,18 @@ class PySysTest(ObscuroNetworkTest):
 
         sequencer_address = Properties().sequencer_address(key='obscuro.sepolia')
         sequencer_balance = web3.fromWei(web3.eth.get_balance(sequencer_address), 'ether')
-        self.log.info('Sequencer account %s balance %.6f %s', sequencer_address, sequencer_balance, network.CURRENCY)
+        self.log.info('Sequencer account %s balance %.6f ETH', sequencer_address, sequencer_balance)
 
         validator_address = Properties().validator_address(key='obscuro.sepolia')
         validator_balance = web3.fromWei(web3.eth.get_balance(validator_address), 'ether')
-        self.log.info('Validator account %s balance %.6f %s', validator_address, validator_balance, network.CURRENCY)
+        self.log.info('Validator account %s balance %.6f ETH', validator_address, validator_balance)
 
         deployer_address = Properties().l1_deployer_address(key='obscuro.sepolia')
         deployer_balance = web3.fromWei(web3.eth.get_balance(deployer_address), 'ether')
-        self.log.info('Deployer account %s balance %.6f %s', deployer_address, deployer_balance, network.CURRENCY)
+        self.log.info('Deployer account %s balance %.6f ETH', deployer_address, deployer_balance)
 
         faucet_balance = web3.fromWei(self.get_faucet_balance(), 'ether')
-        self.log.info('Faucet balance %.6f %s', faucet_balance, network.CURRENCY)
+        self.log.info('Faucet balance %.6f ETH', faucet_balance)
 
         self.assertTrue(sequencer_balance >= self.L1_THRESHOLD,
                         assertMessage='L1 Sequence balance is below threshold %s' % self.L1_THRESHOLD)

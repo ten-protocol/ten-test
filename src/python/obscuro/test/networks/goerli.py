@@ -1,8 +1,8 @@
 from obscuro.test.utils.properties import Properties
-from obscuro.test.networks.default import Default
+from obscuro.test.networks.default import DefaultPostLondon
 
 
-class Goerli(Default):
+class Goerli(DefaultPostLondon):
     """A Goerli connection giving access to the underlying network."""
 
     def __init__(self, test, name=None, **kwargs):

@@ -1,9 +1,11 @@
-from obscuro.test.networks.default import Default
+from obscuro.test.networks.default import DefaultPostLondon
 from obscuro.test.utils.properties import Properties
 
 
-class Ganache(Default):
+class Ganache(DefaultPostLondon):
     """A Ganache connection giving access to the underlying network."""
+    ETH_LIMIT = 0.005
+    ETH_ALLOC = 0.01
 
     def __init__(self, test, name=None, **kwargs):
         super().__init__(test, name, **kwargs)

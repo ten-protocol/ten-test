@@ -4,12 +4,13 @@ from pysys.constants import *
 from obscuro.test.utils.properties import Properties
 
 
-class Default:
-    """A default connection giving access to an underlying network."""
-    ETH_LIMIT = 0.0001
-    ETH_ALLOC = 0.0002
+class DefaultPostLondon:
+    """A default connection giving access to an underlying network.
+
+    Note that the default assumes post London fork with the EIP-1599 fee market change."""
+    ETH_LIMIT = 0.001
+    ETH_ALLOC = 0.005
     GAS_MULT = 2
-    CURRENCY = 'ETH'
 
     def __init__(self, test, name=None, **kwargs):
         props = Properties()
@@ -37,14 +38,15 @@ class Default:
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)
-        if verbose: test.log.info('Account %s connected to %s', account.address, self.__class__.__name__)
+        balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+        if verbose: self.log.info('Account %s connected to %s (%.6f ETH)', account.address, self.__class__.__name__, balance)
 
-        if check_funds:
-            balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
-            if balance < self.ETH_LIMIT:
-                if verbose: test.log.info('Account balance %.6f ETH below threshold %s', balance, self.ETH_LIMIT)
-                test.distribute_native(account, self.ETH_ALLOC)
-            if verbose: test.log.info('Account balance %.6f ETH', web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
+        if check_funds and balance < self.ETH_LIMIT:
+            if verbose: self.log.info('Account balance is below threshold %s ... need to distribute funds', self.ETH_LIMIT)
+            test.distribute_native(account, self.ETH_ALLOC)
+            if verbose:
+                balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+                self.log.info('Account %s balance is now %.6f ETH', account.address, balance)
         return web3, account
 
     def connect_account1(self, test, web_socket=False, check_funds=True, verbose=True):
@@ -105,21 +107,18 @@ class Default:
             'from': account.address,          # the account originating the transaction
             'nonce': nonce,                   # the nonce to use
             'chainId': web3.eth.chain_id,     # the chain id
-            'gasPrice': web3.eth.gas_price,   # the price we are willing to pay per gas unit (dimension is gwei)
-            'gas': gas_estimate               # max gas units prepared to pay (dimension is computational units)o
+            'gas': gas_limit                  # max gas prepared to pay
         }
         if estimate:
-            try:
-                gas_estimate = target.estimateGas(params)
-                if verbose: test.log.info('Gas estimate, cost is %d WEI', gas_estimate)
-                if verbose: test.log.info('Total potential cost is %d WEI', gas_estimate*web3.eth.gas_price)
-                params['gas'] = gas_estimate * self.GAS_MULT
-            except Exception as e:
-                test.log.warn('Gas estimate, %s' % e.args[0])
-        else:
-            if verbose: test.log.info('Skipping gas estimate and using supplied value')
+            try: gas_estimate = target.estimateGas(params)
+            except Exception as e: self.log.warn('Error estimating gas needed, %s' % e.args[0])
 
-        params['gas'] = gas_estimate
+        base_fee_per_gas = web3.eth.get_block('latest')['baseFeePerGas']
+        if verbose:
+            self.log.info('Gas estimate %d, base fee %d WEI, estimated cost %.6f ETH',
+                          gas_estimate, base_fee_per_gas, web3.fromWei(base_fee_per_gas*gas_estimate, 'ether'))
+
+        params['gas'] = gas_estimate * self.GAS_MULT
         build_tx = target.buildTransaction(params)
         return build_tx
 
@@ -136,12 +135,12 @@ class Default:
             tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
             if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'SENT')
         except Exception as e:
-            test.log.error('Error sending raw transaction %s', e)
+            self.log.error('Error sending raw transaction %s', e)
             if persist_nonce:
-                test.log.warn('Deleting nonce entries in the persistence for nonce %d', nonce)
+                self.log.warn('Deleting nonce entries in the persistence for nonce %d', nonce)
                 test.nonce_db.delete_entries(account.address, test.env, nonce)
             test.addOutcome(BLOCKED, abortOnError=True)
-        if verbose: test.log.info('Transaction sent with hash %s', tx_hash.hex())
+        if verbose: self.log.info('Transaction sent with hash %s', tx_hash.hex())
         return tx_hash
 
     def wait_for_transaction(self, test, web3, nonce, account, tx_hash, persist_nonce, verbose=True, timeout=30):
@@ -151,19 +150,50 @@ class Default:
             tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash, timeout=timeout)
 
             if tx_receipt.status == 1:
-                if verbose: test.log.info('Transaction receipt block hash %s', tx_receipt.blockHash.hex())
+                if verbose: self.log.info('Transaction receipt block hash %s', tx_receipt.blockHash.hex())
                 if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'CONFIRMED')
             else:
-                test.log.error('Transaction receipt failed')
-                test.log.error('Full receipt: %s', tx_receipt)
+                self.log.error('Transaction receipt failed')
+                self.log.error('Full receipt: %s', tx_receipt)
                 if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'FAILED')
                 test.addOutcome(FAILED, abortOnError=True)
 
         except TimeExhausted as e:
-            test.log.error('Transaction timed out %s', e)
+            self.log.error('Transaction timed out %s', e)
             if persist_nonce:
-                test.log.warn('Deleting nonce entries in the persistence for nonce %d', nonce)
+                self.log.warn('Deleting nonce entries in the persistence for nonce %d', nonce)
                 test.nonce_db.delete_entries(account.address, test.env, nonce)
             test.addOutcome(TIMEDOUT, abortOnError=True)
 
         return tx_receipt
+
+
+class DefaultPreLondon(DefaultPostLondon):
+
+    def __init__(self, test, name=None, **kwargs):
+        super().__init__(test, name, **kwargs)
+
+    def build_transaction(self, test, web3, target, nonce, account, gas_limit, verbose=True, **kwargs):
+        """Build the transaction dictionary from the contract constructor or function target. """
+        estimate = kwargs['estimate'] if 'estimate' in kwargs else True
+
+        gas_estimate = gas_limit
+        gas_price = web3.eth.gas_price
+        params = {
+            'from': account.address,          # the account originating the transaction
+            'nonce': nonce,                   # the nonce to use
+            'chainId': web3.eth.chain_id,     # the chain id
+            'gasPrice': gas_price,            # the price we are willing to pay per gas unit
+            'gas': gas_estimate               # max gas units prepared to pay 
+        }
+        if estimate:
+            try: gas_estimate = target.estimateGas(params)
+            except Exception as e: self.log.warn('Error estimating gas needed, %s' % e.args[0])
+
+        if verbose:
+            self.log.info('Gas estimate %d, gas price %d WEI, estimated cost %.6f ETH',
+                          gas_estimate, gas_price, web3.fromWei(gas_price*gas_estimate, 'ether'))
+
+        params['gas'] = gas_estimate * self.GAS_MULT
+        build_tx = target.buildTransaction(params)
+        return build_tx

@@ -1,8 +1,8 @@
 from obscuro.test.utils.properties import Properties
-from obscuro.test.networks.default import Default
+from obscuro.test.networks.default import DefaultPreLondon
 
 
-class Arbitrum(Default):
+class Arbitrum(DefaultPreLondon):
     """An Arbitrum connection giving access to the underlying network."""
 
     def __init__(self, test, name=None, **kwargs):

@@ -9,7 +9,7 @@ from pysys.utils.logutils import BaseLogFormatter
 from obscuro.test.persistence.nonce import NoncePersistence
 from obscuro.test.persistence.contract import ContractPersistence
 from obscuro.test.utils.properties import Properties
-from obscuro.test.networks.default import Default
+from obscuro.test.networks.default import DefaultPostLondon
 from obscuro.test.networks.ganache import Ganache
 from obscuro.test.networks.goerli import Goerli
 from obscuro.test.networks.arbitrum import Arbitrum
@@ -109,6 +109,7 @@ class GenericNetworkTest(BaseTest):
         needs to also connect, hence to avoid recursion we don't check funds on the call.
         """
         web3_pk, account_pk = self.network_funding.connect(self, Properties().fundacntpk(), check_funds=False)
+        balance_before = web3_pk.eth.get_balance(account_pk.address)
 
         tx = {
             'to': account.address,
@@ -116,16 +117,10 @@ class GenericNetworkTest(BaseTest):
             'gas': 4*21000,
             'gasPrice': web3_pk.eth.gas_price
         }
-
-        balance_before = web3_pk.eth.get_balance(account_pk.address)
-        self.log.info('Sending %d WEI to account %s', web3_pk.toWei(amount, 'ether'), account.address)
+        self.log.info('Sending %.6f ETH to account %s', amount, account.address)
         self.network_funding.tx(self, web3_pk, tx, account_pk)
         balance_after = web3_pk.eth.get_balance(account_pk.address)
         self.transfer_costs.append((balance_before - web3_pk.toWei(amount, 'ether') - balance_after))
-        average = (sum(self.transfer_costs) / len(self.transfer_costs))
-        self.log.info("Average cost for a transfer is %d", average)
-        self.log.info("Funds for %s: %.18f ETH", "fundacntpk ", Web3().fromWei(balance_after, 'ether'),
-                      extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
 
     def drain_native(self, web3, account, network):
         """A native transfer of all funds from and account to the funded account."""
@@ -201,7 +196,7 @@ class GenericNetworkTest(BaseTest):
         elif self.env == 'sepolia':
             return Sepolia(self, name, **kwargs)
 
-        return Default(self, name, **kwargs)
+        return DefaultPostLondon(self, name, **kwargs)
 
     def get_l1_network_connection(self, name='primary_l1_connection', **kwargs):
         """Get the layer 1 network connection used by a layer 2."""
@@ -209,7 +204,7 @@ class GenericNetworkTest(BaseTest):
             return ObscuroL1Geth(self, name, **kwargs)
         elif self.is_obscuro() and self.env == 'obscuro.sepolia':
             return ObscuroL1Sepolia(self, name, **kwargs)
-        return Default(self, name, **kwargs)
+        return DefaultPostLondon(self, name, **kwargs)
 
 
 class ObscuroNetworkTest(GenericNetworkTest):
