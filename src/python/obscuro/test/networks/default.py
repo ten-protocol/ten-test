@@ -102,7 +102,7 @@ class DefaultPostLondon:
         """Build the transaction dictionary from the contract constructor or function target. """
         estimate = kwargs['estimate'] if 'estimate' in kwargs else True
         base_fee_per_gas = web3.eth.get_block('latest').baseFeePerGas
-        max_priority_fee_per_gas = web3.to_wei(1, 'gwei')
+        max_priority_fee_per_gas = web3.toWei(1, 'gwei')
         max_fee_per_gas = (5 * base_fee_per_gas) + max_priority_fee_per_gas
 
         gas_estimate = gas_limit
@@ -122,7 +122,7 @@ class DefaultPostLondon:
             self.log.info('Gas estimate %d, base fee %d WEI, estimated cost %.6f ETH',
                           gas_estimate, base_fee_per_gas, web3.fromWei(base_fee_per_gas*gas_estimate, 'ether'))
 
-        params['gas'] = gas_estimate 
+        params['gas'] = gas_estimate
         build_tx = target.buildTransaction(params)
         return build_tx
 
