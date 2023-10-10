@@ -120,6 +120,7 @@ class DefaultPostLondon:
                           gas_estimate, base_fee_per_gas, web3.fromWei(base_fee_per_gas*gas_estimate, 'ether'))
 
         params['gas'] = gas_estimate * self.GAS_MULT
+        params['maxFeePerGas'] = params['gas'] + params['maxPriorityFeePerGas']
         build_tx = target.buildTransaction(params)
         return build_tx
 
