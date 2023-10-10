@@ -9,7 +9,7 @@ class PySysTest(GenericNetworkTest):
     def execute(self):
         # deployment of contract
         network = Sepolia(self)
-        web3_1, account1 = network.connect(self, private_key=Properties().fundacntpk(self.env), check_funds=False)
+        web3_1, account1 = network.connect(self, private_key=Properties().fundacntpk(), check_funds=False)
         web3_2, account2 = network.connect_account1(self)
 
         erc20 = MintedERC20Token(self, web3_1, 'OBXCoin', 'OBX', 1000000)
