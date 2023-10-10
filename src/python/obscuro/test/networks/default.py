@@ -101,7 +101,7 @@ class DefaultPostLondon:
     def build_transaction(self, test, web3, target, nonce, account, gas_limit, verbose=True, **kwargs):
         """Build the transaction dictionary from the contract constructor or function target. """
         estimate = kwargs['estimate'] if 'estimate' in kwargs else True
-        base_fee_per_gas = web3.toWei(web3.eth.get_block('latest')['baseFeePerGas'], 'gwei')
+        base_fee_per_gas = web3.eth.get_block('latest')['baseFeePerGas']
 
         gas_estimate = gas_limit
         params = {
