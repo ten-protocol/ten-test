@@ -13,7 +13,7 @@ class PySysTest(GenericNetworkTest):
         web3_2, account2 = network.connect_account1(self)
 
         erc20 = MintedERC20Token(self, web3_1, 'OBXCoin', 'OBX', 1000000)
-        erc20.get_or_deploy(network, account1)
+        erc20.get_or_deploy(network, account1, persist_nonce=False)
 
         contract_1 = erc20.contract
         contract_2 = web3_2.eth.contract(address=erc20.address, abi=erc20.abi)
@@ -27,7 +27,7 @@ class PySysTest(GenericNetworkTest):
 
         # transfer from account1 into account2
         network.transact(self, web3_1, erc20.contract.functions.transfer(account2.address, 1), account1,
-                         erc20.GAS_LIMIT)
+                         erc20.GAS_LIMIT, persist_nonce=False)
         balance1_after = contract_1.functions.balanceOf(account1.address).call()
         balance2_after = contract_2.functions.balanceOf(account2.address).call()
         self.log.info('Balances after transfer from account 1 to account 2')
