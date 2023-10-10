@@ -101,6 +101,7 @@ class DefaultPostLondon:
     def build_transaction(self, test, web3, target, nonce, account, gas_limit, verbose=True, **kwargs):
         """Build the transaction dictionary from the contract constructor or function target. """
         estimate = kwargs['estimate'] if 'estimate' in kwargs else True
+        base_fee_per_gas = web3.toWei(web3.eth.get_block('latest')['baseFeePerGas'], 'gwei')
 
         gas_estimate = gas_limit
         params = {
@@ -114,7 +115,6 @@ class DefaultPostLondon:
             try: gas_estimate = target.estimateGas(params)
             except Exception as e: self.log.warn('Error estimating gas needed, %s' % e.args[0])
 
-        base_fee_per_gas = web3.eth.get_block('latest')['baseFeePerGas']
         if verbose:
             self.log.info('Gas estimate %d, base fee %d WEI, estimated cost %.6f ETH',
                           gas_estimate, base_fee_per_gas, web3.fromWei(base_fee_per_gas*gas_estimate, 'ether'))
