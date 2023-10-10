@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Check the balances on sepolia-testnet</title>
+        <title>Check token transfer of sepolia l1</title>
         <purpose><![CDATA[
 ]]>
         </purpose>
@@ -12,7 +12,7 @@
             <group></group>
         </groups>
         <modes inherit="true">
-            <mode>obscuro.sepolia</mode>
+            <mode>sepolia</mode>
         </modes>
     </classification>
 

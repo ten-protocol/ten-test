@@ -1,9 +1,9 @@
 from web3 import Web3
 from web3.middleware import geth_poa_middleware
-from obscuro.test.networks.default import Default
+from obscuro.test.networks.default import DefaultPreLondon
 
 
-class Geth(Default):
+class Geth(DefaultPreLondon):
     """A Geth connection giving access to the underlying network."""
 
     def __init__(self, test, name=None, **kwargs):

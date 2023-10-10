@@ -1,7 +1,7 @@
 import requests, json
 from web3 import Web3
 from pysys.constants import BLOCKED
-from obscuro.test.networks.default import Default
+from obscuro.test.networks.default import DefaultPreLondon
 from obscuro.test.networks.geth import Geth
 from obscuro.test.networks.sepolia import Sepolia
 from obscuro.test.utils.properties import Properties
@@ -33,14 +33,15 @@ class ObscuroL1Sepolia(Sepolia):
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)
-        if verbose: test.log.info('Account %s connected to %s', account.address, self.__class__.__name__)
+        balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+        if verbose: test.log.info('Account %s connected to %s (%.6f ETH)', account.address, self.__class__.__name__, balance)
 
-        if check_funds:
-            balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
-            if balance < self.ETH_LIMIT:
-                if verbose: test.log.info('Account balance %.6f ETH below threshold %s', balance, self.ETH_LIMIT)
-                test.fund_native(self, account, self.ETH_ALLOC, Properties().l1_funded_account_pk(test.env), persist_nonce=False)
-            if verbose: test.log.info('Account balance %.6f ETH', web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
+        if check_funds and balance < self.ETH_LIMIT:
+            if verbose: test.log.info('Account balance is below threshold %s ... need to distribute funds', self.ETH_LIMIT)
+            test.fund_native(self, account, self.ETH_ALLOC, Properties().l1_funded_account_pk(test.env), persist_nonce=False)
+            if verbose:
+                balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+                test.log.info('Account balance %.6f ETH', web3.fromWei(balance, 'ether'))
         return web3, account
 
 
@@ -65,18 +66,19 @@ class ObscuroL1Geth(Geth):
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         web3.middleware_onion.inject(geth_poa_middleware, layer=0)
         account = web3.eth.account.privateKeyToAccount(private_key)
-        if verbose: test.log.info('Account %s connected to %s', account.address, self.__class__.__name__)
+        balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+        if verbose: test.log.info('Account %s connected to %s (%.6f ETH)', account.address, self.__class__.__name__, balance)
 
-        if check_funds:
-            balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
-            if balance < self.ETH_LIMIT:
-                if verbose: test.log.info('Account balance %.6f ETH below threshold %s', balance, self.ETH_LIMIT)
-                test.fund_native(self, account, self.ETH_ALLOC, Properties().l1_funded_account_pk(test.env), persist_nonce=False)
-            if verbose: test.log.info('Account balance %.6f ETH', web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
+        if check_funds and balance < self.ETH_LIMIT:
+            if verbose: test.log.info('Account balance is below threshold %s ... need to distribute funds', self.ETH_LIMIT)
+            test.fund_native(self, account, self.ETH_ALLOC, Properties().l1_funded_account_pk(test.env), persist_nonce=False)
+            if verbose:
+                balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+                test.log.info('Account balance %.6f ETH', web3.fromWei(balance, 'ether'))
         return web3, account
 
 
-class Obscuro(Default):
+class Obscuro(DefaultPreLondon):
     """The L2 connection for Obscuro.
 
     An obscuro network instance requires a wallet extension (gateway) to connect to the network. A gateway can
@@ -131,14 +133,15 @@ class Obscuro(Default):
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)
         self.__register(account)
-        if verbose: test.log.info('Account %s connected to %s', account.address, self.__class__.__name__)
+        balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+        if verbose: test.log.info('Account %s connected to %s (%.6f ETH)', account.address, self.__class__.__name__, balance)
 
-        if check_funds:
-            balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
-            if balance < self.ETH_LIMIT:
-                if verbose: test.log.info('Account balance %.6f ETH below threshold %s', balance, self.ETH_LIMIT)
-                test.distribute_native(account, self.ETH_ALLOC)
-            if verbose: test.log.info('Account balance %.6f ETH', web3.fromWei(web3.eth.get_balance(account.address), 'ether'))
+        if check_funds and balance < self.ETH_LIMIT:
+            if verbose: test.log.info('Account balance is below threshold %s ... need to distribute funds', self.ETH_LIMIT)
+            test.distribute_native(account, self.ETH_ALLOC)
+            if verbose:
+                balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+                test.log.info('Account balance %.6f ETH', web3.fromWei(balance, 'ether'))
         return web3, account
 
     def __join(self):
