@@ -116,6 +116,7 @@ class Obscuro(DefaultPreLondon):
                 self.WS_HOST = props.host_ws(test.env)
                 self.PORT = props.port_http(test.env)
                 self.WS_PORT = props.port_ws(test.env)
+                self.test.log.info('Using hosted wallet extension on port=%d, ws_port=%d', self.PORT, self.WS_PORT)
 
         self.ID = self.__join()
         if self.ID is None:
