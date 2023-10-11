@@ -20,11 +20,23 @@ class PySysTest(ObscuroNetworkTest):
             balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
             self.log.info('Account %s balance %.12f ETH', account.address, balance)
 
-
-
             self.log.info("")
             address = '0x9f7b0CDB121Af3923A98771c326b1aAC03A0D717'
-            self.log.info("Checking funds for %s:", "WORKER_ADDR", extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+            self.log.info("Checking funds for %s:", "WORKER_ADDR DEV", extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+            balance = web3.fromWei(web3.eth.get_balance(address), 'ether')
+            self.log.info('Account %s balance %.12f ETH', address, balance)
+            self.log.info("")
+
+            self.log.info("")
+            address = '0xB872Bf306929B59c29B0029B3cccd1200153A612'
+            self.log.info("Checking funds for %s:", "WORKER_ADDR UAT", extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+            balance = web3.fromWei(web3.eth.get_balance(address), 'ether')
+            self.log.info('Account %s balance %.12f ETH', address, balance)
+            self.log.info("")
+
+            self.log.info("")
+            address = '0x5555E184dDC7de1A1fD0FF237CcA77338cE7162D'
+            self.log.info("Checking funds for %s:", "WORKER_ADDR SEP", extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
             balance = web3.fromWei(web3.eth.get_balance(address), 'ether')
             self.log.info('Account %s balance %.12f ETH', address, balance)
             self.log.info("")
