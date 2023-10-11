@@ -10,7 +10,6 @@ class DefaultPostLondon:
     Note that the default assumes post London fork with the EIP-1599 fee market change."""
     ETH_LIMIT = 0.001
     ETH_ALLOC = 0.005
-    GAS_MULT = 2
 
     def __init__(self, test, name=None, **kwargs):
         props = Properties()
@@ -198,6 +197,6 @@ class DefaultPreLondon(DefaultPostLondon):
             self.log.info('Gas estimate %d, gas price %d WEI, estimated cost %.6f ETH',
                           gas_estimate, gas_price, web3.fromWei(gas_price*gas_estimate, 'ether'))
 
-        params['gas'] = gas_estimate * self.GAS_MULT
+        params['gas'] = gas_estimate
         build_tx = target.buildTransaction(params)
         return build_tx
