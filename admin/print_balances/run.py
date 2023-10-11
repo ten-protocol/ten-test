@@ -17,9 +17,10 @@ class PySysTest(ObscuroNetworkTest):
             self.log.info('Account %s balance %.12f ETH', account.address, balance)
 
             self.log.info("")
+            address = '0x9f7b0CDB121Af3923A98771c326b1aAC03A0D717'
             self.log.info("Checking funds for %s:", "WORKER_ADDR", extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
-            balance = web3.fromWei(web3.eth.get_balance('0x9f7b0CDB121Af3923A98771c326b1aAC03A0D717'), 'ether')
-            self.log.info('Account %s balance %.12f ETH', account.address, balance)
+            balance = web3.fromWei(web3.eth.get_balance(address), 'ether')
+            self.log.info('Account %s balance %.12f ETH', address, balance)
             self.log.info("")
 
         network = self.get_network_connection()
