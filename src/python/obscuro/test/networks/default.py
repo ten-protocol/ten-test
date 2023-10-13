@@ -192,7 +192,6 @@ class DefaultPreLondon(DefaultPostLondon):
             'nonce': nonce,                   # the nonce to use
             'chainId': web3.eth.chain_id,     # the chain id
             'gasPrice': gas_price,            # the price we are willing to pay per gas unit
-            'gas': gas_estimate               # max gas units prepared to pay 
         }
         if estimate:
             try: gas_estimate = target.estimateGas(params)

@@ -60,7 +60,7 @@ class L1CrossChainMessenger:
 
 
 class L2CrossChainMessenger:
-    GAS_LIMIT = 2*720000
+    GAS_LIMIT = 2*7200000
 
     def __init__(self, test, web3):
         self.test = test
@@ -88,7 +88,7 @@ class ObscuroBridge:
 
 
 class EthereumBridge:
-    GAS_LIMIT = 2*720000
+    GAS_LIMIT = 2*7200000
 
     def __init__(self, test, web3):
         self.test = test
