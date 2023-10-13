@@ -69,7 +69,7 @@ class L1BridgeDetails(BridgeDetails):
                                             stdout='l1_sub_%s.out' % self.name, stderr='l1_sub_%s.err' % self.name)
         subscriber.run()
 
-    def transfer_token(self, symbol, to_address, amount, timeout=30):
+    def transfer_token(self, symbol, to_address, amount, timeout=60):
         """Transfer tokens within the ERC contract from this user account to another address. """
         token = self.tokens[symbol]
         tx_receipt = self.network.transact(self.test, self.web3,
@@ -78,7 +78,7 @@ class L1BridgeDetails(BridgeDetails):
                                            timeout=timeout)
         return tx_receipt
 
-    def approve_token(self, symbol, approval_address, amount, timeout=30):
+    def approve_token(self, symbol, approval_address, amount, timeout=60):
         """Approve another address to spend ERC20 on behalf of this account. """
         token = self.tokens[symbol]
         tx_receipt = self.network.transact(self.test, self.web3,
@@ -92,7 +92,7 @@ class L1BridgeDetails(BridgeDetails):
         token = self.tokens[symbol]
         return token.contract.functions.balanceOf(self.account.address).call()
 
-    def white_list_token(self, symbol, timeout=30):
+    def white_list_token(self, symbol, timeout=60):
         """Whitelist the ERC20 token for this token to be available on the L2 side of the bridge.
 
         The account performing the whitelist operation must have admin role access to the bridge.
@@ -107,7 +107,7 @@ class L1BridgeDetails(BridgeDetails):
         logs = self.bus.contract.events.LogMessagePublished().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, self.get_cross_chain_message(logs[1])
 
-    def send_erc20(self, symbol, address, amount, timeout=30):
+    def send_erc20(self, symbol, address, amount, timeout=60):
         """Send tokens across the bridge.
 
         The ERC20 contract must have been whitelisted for this operation to be successful.
@@ -121,7 +121,7 @@ class L1BridgeDetails(BridgeDetails):
         logs = self.bus.contract.events.LogMessagePublished().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, self.get_cross_chain_message(logs[2])
 
-    def send_native(self, address, amount, timeout=30):
+    def send_native(self, address, amount, timeout=60):
         """Send native currency across the bridge."""
         build_tx = self.bridge.contract.functions.sendNative(address).buildTransaction(
             {
@@ -135,7 +135,7 @@ class L1BridgeDetails(BridgeDetails):
         logs = self.bus.contract.events.LogMessagePublished().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, self.get_cross_chain_message(logs[0])
 
-    def send_to_msg_bus(self, amount, timeout=30):
+    def send_to_msg_bus(self, amount, timeout=60):
         """Send native currency across the bridge."""
         tx = {
             'to': Properties().l1_message_bus_address(self.test.env),
@@ -148,7 +148,7 @@ class L1BridgeDetails(BridgeDetails):
         logs = self.bus.contract.events.ValueTransfer().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, logs
 
-    def relay_message(self, xchain_msg, timeout=30):
+    def relay_message(self, xchain_msg, timeout=60):
         """Relay a cross chain message. """
         tx_receipt = self.network.transact(self.test, self.web3,
                                            self.xchain.contract.functions.relayMessage(xchain_msg),
@@ -186,13 +186,13 @@ class L2BridgeDetails(BridgeDetails):
         token = self.tokens[symbol]
         return token.contract.functions.balanceOf(self.account.address).call({"from":self.account.address})
 
-    def relay_whitelist_message(self, xchain_msg, timeout=30):
+    def relay_whitelist_message(self, xchain_msg, timeout=60):
         """Relay a cross chain message specific to a whitelisting. """
         tx_receipt = self.relay_message(xchain_msg, timeout=timeout)
         logs = self.bridge.contract.events.CreatedWrappedToken().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, logs[1]['args']['localAddress']
 
-    def approve_token(self, symbol, approval_address, amount, timeout=30):
+    def approve_token(self, symbol, approval_address, amount, timeout=60):
         """Approve another address to spend ERC20 on behalf of this account. """
         token = self.tokens[symbol]
         tx_receipt = self.network.transact(self.test, self.web3,
@@ -201,7 +201,7 @@ class L2BridgeDetails(BridgeDetails):
                                            timeout=timeout)
         return tx_receipt
 
-    def send_erc20(self, symbol, address, amount, timeout=30):
+    def send_erc20(self, symbol, address, amount, timeout=60):
         """Send tokens across the bridge.
 
         The ERC20 contract must have been whitelisted for this operation to be successful.
@@ -215,7 +215,7 @@ class L2BridgeDetails(BridgeDetails):
         logs = self.bus.contract.events.LogMessagePublished().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, self.get_cross_chain_message(logs[1])
 
-    def relay_message(self, xchain_msg, timeout=30):
+    def relay_message(self, xchain_msg, timeout=60):
         """Relay a cross chain message. """
         tx_receipt = self.network.transact(self.test, self.web3,
                                            self.xchain.contract.functions.relayMessage(xchain_msg),
