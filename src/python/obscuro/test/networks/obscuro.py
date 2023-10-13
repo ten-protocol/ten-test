@@ -47,8 +47,8 @@ class ObscuroL1Sepolia(Sepolia):
 
 class ObscuroL1Geth(Geth):
     """The Obscuro L1 Geth implementation connection. """
-    ETH_LIMIT = 0.05
-    ETH_ALLOC = 0.02
+    ETH_LIMIT = 1
+    ETH_ALLOC = 0.5
 
     def __init__(self, test, name=None, **kwargs):
         super().__init__(test, name, **kwargs)
