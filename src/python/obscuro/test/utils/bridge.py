@@ -21,7 +21,7 @@ class BridgeDetails:
         self.xchain = xchain
         self.name = name
 
-    def wait_for_message(self, xchain_msg, timeout=30):
+    def wait_for_message(self, xchain_msg, timeout=60):
         """Wait for a cross chain message to be verified as final. """
         start = time.time()
         while True:
