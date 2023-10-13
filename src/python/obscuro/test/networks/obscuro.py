@@ -66,15 +66,15 @@ class ObscuroL1Geth(Geth):
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         web3.middleware_onion.inject(geth_poa_middleware, layer=0)
         account = web3.eth.account.privateKeyToAccount(private_key)
-        balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
-        if verbose: test.log.info('Account %s connected to %s (%.6f ETH)', account.address, self.__class__.__name__, balance)
+        balance_before = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+        if verbose: test.log.info('Account %s connected to %s (%.6f ETH)', account.address, self.__class__.__name__, balance_before)
 
-        if check_funds and balance < self.ETH_LIMIT:
+        if check_funds and balance_before < self.ETH_LIMIT:
             if verbose: test.log.info('Account %s balance is below threshold %s ... need to distribute funds', account.address, self.ETH_LIMIT)
             test.fund_native(self, account, self.ETH_ALLOC, Properties().l1_funded_account_pk(test.env), persist_nonce=False)
             if verbose:
-                balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
-                test.log.info('Account %s balance is now %.6f ETH', account.address, web3.fromWei(balance, 'ether'))
+                balance_after = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+                test.log.info('Account %s balance is now %.6f ETH', account.address, web3.fromWei(balance_after, 'ether'))
         return web3, account
 
 
