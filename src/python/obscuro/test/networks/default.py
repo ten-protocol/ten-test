@@ -41,7 +41,7 @@ class DefaultPostLondon:
         if verbose: self.log.info('Account %s connected to %s (%.6f ETH)', account.address, self.__class__.__name__, balance)
 
         if check_funds and balance < self.ETH_LIMIT:
-            if verbose: self.log.info('Account balance is below threshold %s ... need to distribute funds', self.ETH_LIMIT)
+            if verbose: self.log.info('Account %s balance is below threshold %s ... need to distribute funds', account.address, self.ETH_LIMIT)
             test.distribute_native(account, self.ETH_ALLOC)
             if verbose:
                 balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
@@ -70,6 +70,7 @@ class DefaultPostLondon:
         Note that the nonce and chainId will automatically be added into the transaction dictionary in this method
         and therefore do not need to be supplied by the caller.
         """
+        self.log.info('Account %s performing transaction', account.address)
         nonce = self.get_next_nonce(test, web3, account, persist_nonce, verbose)
         tx['nonce'] = nonce
         tx['chainId'] = web3.eth.chain_id
@@ -85,6 +86,7 @@ class DefaultPostLondon:
         transaction dictionary using buildTransaction on the target. The nonce will be automatically added during this
         process.
         """
+        self.log.info('Account %s performing transaction', account.address)
         nonce = self.get_next_nonce(test, web3, account, persist_nonce, verbose)
         tx = self.build_transaction(test, web3, target, nonce, account, gas_limit, verbose, **kwargs)
         tx_sign = self.sign_transaction(test, tx, nonce, account, persist_nonce)
@@ -103,6 +105,7 @@ class DefaultPostLondon:
         base_fee_per_gas = web3.eth.get_block('latest').baseFeePerGas
         max_priority_fee_per_gas = web3.toWei(1, 'gwei')
         max_fee_per_gas = (5 * base_fee_per_gas) + max_priority_fee_per_gas
+        balance = web3.eth.get_balance(account.address)
 
         gas_estimate = gas_limit
         params = {
@@ -118,8 +121,9 @@ class DefaultPostLondon:
             except Exception as e: self.log.warn('Error estimating gas needed, %s' % e.args[0])
 
         if verbose:
-            self.log.info('Gas estimate %d, base fee %d WEI, estimated cost %.6f ETH',
-                          gas_estimate, base_fee_per_gas, web3.fromWei(base_fee_per_gas*gas_estimate, 'ether'))
+            self.log.info('Gas %d, base fee %d WEI, cost %.6f ETH, balance %.6f ETH',
+                          gas_estimate, base_fee_per_gas, web3.fromWei(base_fee_per_gas*gas_estimate, 'ether'),
+                          web3.fromWei(balance, 'ether'))
 
         params['gas'] = gas_estimate
         build_tx = target.buildTransaction(params)
@@ -179,6 +183,7 @@ class DefaultPreLondon(DefaultPostLondon):
     def build_transaction(self, test, web3, target, nonce, account, gas_limit, verbose=True, **kwargs):
         """Build the transaction dictionary from the contract constructor or function target. """
         estimate = kwargs['estimate'] if 'estimate' in kwargs else True
+        balance = web3.eth.get_balance(account.address)
 
         gas_estimate = gas_limit
         gas_price = web3.eth.gas_price
@@ -194,8 +199,9 @@ class DefaultPreLondon(DefaultPostLondon):
             except Exception as e: self.log.warn('Error estimating gas needed, %s' % e.args[0])
 
         if verbose:
-            self.log.info('Gas estimate %d, gas price %d WEI, estimated cost %.6f ETH',
-                          gas_estimate, gas_price, web3.fromWei(gas_price*gas_estimate, 'ether'))
+            self.log.info('Gas %d, price %d WEI, cost %.6f ETH, balance %.6f ETH',
+                          gas_estimate, gas_price, web3.fromWei(gas_price*gas_estimate, 'ether'),
+                          web3.fromWei(balance, 'ether'))
 
         params['gas'] = gas_estimate
         build_tx = target.buildTransaction(params)
