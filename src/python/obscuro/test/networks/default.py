@@ -190,8 +190,7 @@ class DefaultPreLondon(DefaultPostLondon):
         params = {
             'from': account.address,          # the account originating the transaction
             'nonce': nonce,                   # the nonce to use
-            'chainId': web3.eth.chain_id,     # the chain id
-            'gasPrice': gas_price,            # the price we are willing to pay per gas unit
+            'chainId': web3.eth.chain_id      # the chain id
         }
         if estimate:
             try: gas_estimate = target.estimateGas(params)
@@ -203,5 +202,6 @@ class DefaultPreLondon(DefaultPostLondon):
                           web3.fromWei(balance, 'ether'))
 
         params['gas'] = gas_estimate
+        params['gasPrice'] = gas_price
         build_tx = target.buildTransaction(params)
         return build_tx
