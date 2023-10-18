@@ -14,8 +14,8 @@ on:
         default: main
         options:
           - main
+          - releases/v0.18
           - releases/v0.17
-          - releases/v0.16
 
 jobs:
   run-check:

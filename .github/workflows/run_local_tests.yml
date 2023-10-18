@@ -11,7 +11,7 @@ on:
       target_branch:
         description: 'Branch of go-obscuro to run against'
         required: true
-        default: 'main'
+        default: main
       arguments:
         description: 'Arguments to the pysys run'
         required: true

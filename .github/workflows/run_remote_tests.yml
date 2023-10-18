@@ -25,11 +25,11 @@ on:
         type: choice
         description: 'The release version of testnet'
         required: true
-        default: releases/v0.17
+        default: main
         options:
           - main
+          - releases/v0.18
           - releases/v0.17
-          - releases/v0.16
 
 jobs:
   test-run:
@@ -37,7 +37,7 @@ jobs:
     steps:
       - name: Set the variables
         env:
-          DEFAULT_VERSION: 'releases/v0.17'
+          DEFAULT_VERSION: 'main'
         run: echo "VERSION=${{ github.event.inputs.release || env.DEFAULT_VERSION }}" >> $GITHUB_ENV
 
       - name: 'Check out obscuro-test'
