@@ -65,8 +65,7 @@ class Properties:
             self.fundacntpk,
             self.account1_1pk, self.account2_1pk, self.account3_1pk, self.account4_1pk,
             self.account2_2pk, self.account2_2pk, self.account3_2pk, self.account4_2pk,
-            self.account1_3pk, self.account2_3pk, self.account3_3pk, self.account4_3pk,
-            self.gg_appdev_pk, self.gg_endusr_pk
+            self.account1_3pk, self.account2_3pk, self.account3_3pk, self.account4_3pk
         ]
 
     def fundacntpk(self): return self.get('env.all', 'FundAcntPK')
@@ -92,10 +91,6 @@ class Properties:
     def account2_3pk(self): return self.get('env.all', 'Account10PK')
     def account3_3pk(self): return self.get('env.all', 'Account11PK')
     def account4_3pk(self): return self.get('env.all', 'Account12PK')
-
-    # guessing game accounts
-    def gg_appdev_pk(self): return self.get('env.all', 'GGAppDevPK')
-    def gg_endusr_pk(self): return self.get('env.all', 'GGEndUsrPK')
 
     # node addresses
     def sequencer_address(self, key): return self.get('env.'+key, 'SequencerAddress')
