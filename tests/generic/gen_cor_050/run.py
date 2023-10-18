@@ -18,7 +18,7 @@ class PySysTest(GenericNetworkTest):
             error.contract.functions.force_require().call()
         except Exception as e:
             self.log.info('Exception type: %s', type(e).__name__)
-            self.log.info('Exception args: %s', e.args[0])
+            self.log.info('Exception args: %s', e.args)
             regex = re.compile('execution reverted:.*Forced require', re.M)
             self.assertTrue(regex.search(e.args[0]) is not None)
 
@@ -28,7 +28,7 @@ class PySysTest(GenericNetworkTest):
             error.contract.functions.force_revert().call()
         except Exception as e:
             self.log.info('Exception type: %s', type(e).__name__)
-            self.log.info('Exception args: %s', e.args[0])
+            self.log.info('Exception args: %s', e.args)
             regex = re.compile('execution reverted:.*Forced revert', re.M)
             self.assertTrue(regex.search(e.args[0]) is not None)
 
@@ -38,6 +38,6 @@ class PySysTest(GenericNetworkTest):
             error.contract.functions.force_assert().call()
         except Exception as e:
             self.log.info('Exception type: %s', type(e).__name__)
-            self.log.info('Exception args: %s', e.args[0])
+            self.log.info('Exception args: %s', e.args)
             regex = re.compile('execution reverted', re.M)
             self.assertTrue(regex.search(e.args[0]) is not None)
