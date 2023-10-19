@@ -1,4 +1,5 @@
 import json
+from copy import copy
 from solcx import compile_source
 from pysys.constants import *
 from pysys.constants import LOG_WARN
@@ -10,6 +11,14 @@ class DefaultContract:
     GAS_LIMIT = 720000     # used as the max gas units prepared to pay in contract transactions
     SOURCE = None          # full path to the solidity source file
     CONTRACT = None        # the contract name
+
+    @classmethod
+    def clone(cls, web3, account, contract):
+        clone = copy(contract)
+        clone.web3 = web3
+        clone.account = account
+        clone.contract = web3.eth.contract(address=contract.address, abi=contract.abi)
+        return clone
 
     def __init__(self, test, web3, *args):
         """Create an instance of the abstraction."""
