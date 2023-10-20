@@ -1,13 +1,22 @@
 import re
+from web3 import Web3
 from obscuro.test.basetest import GenericNetworkTest
 from obscuro.test.contracts.error import Error
+from obscuro.test.helpers.ws_proxy import WebServerProxy
 
 
 class PySysTest(GenericNetworkTest):
+    PROXY = False
 
     def execute(self):
         network = self.get_network_connection()
-        web3, account = network.connect_account1(self)
+        web3, account = network.connect_account1(self, web_socket=True)
+
+        # go through a proxy to log websocket communications (don;t think the proxy works on obscuro
+        # due to params in the url so need to investigate
+        if self.PROXY:
+            ws_url = WebServerProxy.create(self).run(network.connection_url(web_socket=True), 'proxy.logs')
+            web3 = Web3(Web3.WebsocketProvider(ws_url, websocket_timeout=120))
 
         error = Error(self, web3)
         error.deploy(network, account)
