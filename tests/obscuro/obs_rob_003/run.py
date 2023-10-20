@@ -20,7 +20,7 @@ class PySysTest(ObscuroNetworkTest):
         storage.deploy(network_connection_primary, account_1)
 
         # make a subscription for all events to the contract
-        subscriber_1 = AllEventsLogSubscriber(self, network_connection_primary, storage,
+        subscriber_1 = AllEventsLogSubscriber(self, network_connection_primary, storage.address, storage.abi_path,
                                               stdout='subscriber.out',
                                               stderr='subscriber.err')
         subscriber_1.run()

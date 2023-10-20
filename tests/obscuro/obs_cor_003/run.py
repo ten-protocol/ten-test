@@ -16,12 +16,15 @@ class PySysTest(ObscuroNetworkTest):
         web3_2, account2 = network.connect_account2(self)
         web3_3, account3 = network.connect_account3(self)
 
-        # deploy the storage contract as account 4
-        contract = Relevancy(self, web3_4)
-        contract.deploy(network, account4)
+        # deploy the storage contract as account 4 and get references to it for each account
+        contract_4 = Relevancy(self, web3_4)
+        contract_4.deploy(network, account4)
+        contract_1 = Relevancy.clone(web3_1, account1, contract_4)
+        contract_2 = Relevancy.clone(web3_2, account2, contract_4)
+        contract_3 = Relevancy.clone(web3_3, account3, contract_4)
 
         # run a background script to filter and collect events
-        subscriber = AllEventsLogSubscriber(self, network, contract,
+        subscriber = AllEventsLogSubscriber(self, network, contract_4.address, contract_4.abi_path,
                                             stdout='subscriber.out',
                                             stderr='subscriber.err')
         subscriber.run()
@@ -29,10 +32,10 @@ class PySysTest(ObscuroNetworkTest):
 
         # perform some transactions
         self.log.info('Performing transactions ... ')
-        network.transact(self, web3_4, contract.contract.functions.callerIndexedAddress(), account4, contract.GAS_LIMIT)
-        network.transact(self, web3_1, contract.contract.functions.callerIndexedAddress(), account1, contract.GAS_LIMIT)
-        network.transact(self, web3_2, contract.contract.functions.callerIndexedAddress(), account2, contract.GAS_LIMIT)
-        network.transact(self, web3_3, contract.contract.functions.callerIndexedAddress(), account3, contract.GAS_LIMIT)
+        network.transact(self, web3_4, contract_4.contract.functions.callerIndexedAddress(), account4, contract_4.GAS_LIMIT)
+        network.transact(self, web3_1, contract_1.contract.functions.callerIndexedAddress(), account1, contract_1.GAS_LIMIT)
+        network.transact(self, web3_2, contract_2.contract.functions.callerIndexedAddress(), account2, contract_2.GAS_LIMIT)
+        network.transact(self, web3_3, contract_3.contract.functions.callerIndexedAddress(), account3, contract_3.GAS_LIMIT)
         self.wait(float(self.block_time)*1.1)
 
         # wait and assert that account4 does see this event

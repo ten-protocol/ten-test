@@ -16,10 +16,10 @@ class PySysTest(ObscuroNetworkTest):
         contract.deploy(network, account)
 
         # run the javascript event log subscriber in the background for the other accounts
-        self.subscribe(network, None, 'account4', contract)
-        self.subscribe(network, Properties().account1pk(), 'account1', contract, new_wallet=True)
-        self.subscribe(network, Properties().account2pk(), 'account2', contract, new_wallet=True)
-        self.subscribe(network, Properties().account3pk(), 'account3', contract, new_wallet=True)
+        self.subscribe(network, None, 'account4', contract.address, contract.abi_path)
+        self.subscribe(network, Properties().account1pk(), 'account1', contract.address, contract.abi_path, new_wallet=True)
+        self.subscribe(network, Properties().account2pk(), 'account2', contract.address, contract.abi_path, new_wallet=True)
+        self.subscribe(network, Properties().account3pk(), 'account3', contract.address, contract.abi_path, new_wallet=True)
         self.wait(float(self.block_time) * 1.1)
 
         # perform some transactions
@@ -36,13 +36,13 @@ class PySysTest(ObscuroNetworkTest):
         self.assertGrep(file='subscriber_account2.out', expr='Received event: NonIndexedAddressAndNumber')
         self.assertGrep(file='subscriber_account3.out', expr='Received event: NonIndexedAddressAndNumber')
 
-    def subscribe(self, network, pk_to_register, name, contract, new_wallet=False):
+    def subscribe(self, network, pk_to_register, name, address, abi_path, new_wallet=False):
         if new_wallet:
             network = self.get_network_connection(name=name)
 
-        subscriber = AllEventsLogSubscriber(self, network, contract,
+        subscriber = AllEventsLogSubscriber(self, network, address, abi_path,
                                             stdout='subscriber_%s.out' % name,
                                             stderr='subscriber_%s.err' % name)
-        subscriber.run(pk_to_register, network.connection_url(web_socket=False), network.connection_url(web_socket=True))
+        subscriber.run(pk_to_register)
 
 

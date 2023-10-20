@@ -37,12 +37,12 @@ class PySysTest(ObscuroNetworkTest):
         # make a subscription for all events to the contract, one through each of the connections
         self.log.info('')
         self.log.info('Make a subscription through each of the user_id connections')
-        subscriber_1 = AllEventsLogSubscriber(self, network_connection_1, storage1,
+        subscriber_1 = AllEventsLogSubscriber(self, network_connection_1, storage1.address, storage1.abi_path,
                                               stdout='subscriber_1.out',
                                               stderr='subscriber_1.err')
         subscriber_1.run()
 
-        subscriber_2 = AllEventsLogSubscriber(self, network_connection_2, storage3,
+        subscriber_2 = AllEventsLogSubscriber(self, network_connection_2, storage3.address, storage3.abi_path,
                                               stdout='subscriber_2.out',
                                               stderr='subscriber_2.err')
         subscriber_2.run()
