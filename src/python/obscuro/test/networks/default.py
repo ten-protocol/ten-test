@@ -112,7 +112,7 @@ class DefaultPostLondon:
             'from': account.address,                          # the account originating the transaction
             'nonce': nonce,                                   # the nonce to use
             'chainId': web3.eth.chain_id,                     # the chain id
-            'gas': gas_limit,                                 # max gas prepared to pay
+            'gas': gas_estimate,                              # max gas prepared to pay
             'maxFeePerGas': max_fee_per_gas,                  # Maximum amount you’re willing to pay
             'maxPriorityFeePerGas': max_priority_fee_per_gas  # Priority fee to include the transaction in the block
         }
@@ -190,7 +190,9 @@ class DefaultPreLondon(DefaultPostLondon):
         params = {
             'from': account.address,          # the account originating the transaction
             'nonce': nonce,                   # the nonce to use
-            'chainId': web3.eth.chain_id      # the chain id
+            'chainId': web3.eth.chain_id,     # the chain id
+            'gas': gas_estimate,              # max gas prepared to pay
+            'gasPrice': gas_price             # the current gas price
         }
         if estimate:
             try: gas_estimate = target.estimateGas(params)
@@ -202,6 +204,5 @@ class DefaultPreLondon(DefaultPostLondon):
                           web3.fromWei(balance, 'ether'))
 
         params['gas'] = gas_estimate
-        params['gasPrice'] = gas_price
         build_tx = target.buildTransaction(params)
         return build_tx
