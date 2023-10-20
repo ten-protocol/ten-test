@@ -9,11 +9,12 @@ class PySysTest(ObscuroNetworkTest):
         network = self.get_network_connection()
         web3_deploy, account_deploy = network.connect_account1(self)
 
-        contract = ExpensiveContract(self, web3_deploy)
-        contract.deploy(network, account_deploy)
+        contract_deploy = ExpensiveContract(self, web3_deploy)
+        contract_deploy.deploy(network, account_deploy)
 
         pk = secrets.token_hex(32)
         web3, account = network.connect(self, private_key=pk, check_funds=False)
+        contract = ExpensiveContract.clone(web3, account, contract_deploy)
         self.distribute_native(account, 0.01)
 
         estimate = 0
@@ -23,7 +24,7 @@ class PySysTest(ObscuroNetworkTest):
         for i in range(350, 370, 2):
             target = contract.contract.functions.calculateFibonacci(i)
             estimate = estimate + target.estimate_gas()
-            tx = network.build_transaction(self, web3, target, nonce, account, contract.GAS_LIMIT)
+            tx = network.build_transaction(self, web3, target, nonce, account, contract.deploy.GAS_LIMIT)
             tx_sign = network.sign_transaction(self, tx, nonce, account, True)
             txs.append((nonce, tx_sign))
             nonce = nonce + 1

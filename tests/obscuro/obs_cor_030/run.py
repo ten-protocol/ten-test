@@ -28,21 +28,21 @@ class PySysTest(ObscuroNetworkTest):
         # each account needs its own reference to the contract
         self.log.info('')
         self.log.info('Deploy the storage account through the first user_id connection')
-        storage1 = Storage(self, web3_1, 100)
-        storage1.deploy(network_connection_1, account_1)
-        storage2 = Storage.clone(web3_2, account_2, storage1)
-        storage3 = Storage.clone(web3_3, account_3, storage1)
-        storage4 = Storage.clone(web3_4, account_4, storage1)
+        storage_1 = Storage(self, web3_1, 100)
+        storage_1.deploy(network_connection_1, account_1)
+        storage_2 = Storage.clone(web3_2, account_2, storage_1)
+        storage_3 = Storage.clone(web3_3, account_3, storage_1)
+        storage_4 = Storage.clone(web3_4, account_4, storage_1)
 
         # make a subscription for all events to the contract, one through each of the connections
         self.log.info('')
         self.log.info('Make a subscription through each of the user_id connections')
-        subscriber_1 = AllEventsLogSubscriber(self, network_connection_1, storage1.address, storage1.abi_path,
+        subscriber_1 = AllEventsLogSubscriber(self, network_connection_1, storage_1.address, storage_1.abi_path,
                                               stdout='subscriber_1.out',
                                               stderr='subscriber_1.err')
         subscriber_1.run()
 
-        subscriber_2 = AllEventsLogSubscriber(self, network_connection_2, storage3.address, storage3.abi_path,
+        subscriber_2 = AllEventsLogSubscriber(self, network_connection_2, storage_3.address, storage_3.abi_path,
                                               stdout='subscriber_2.out',
                                               stderr='subscriber_2.err')
         subscriber_2.run()
@@ -52,10 +52,10 @@ class PySysTest(ObscuroNetworkTest):
         self.log.info('')
         self.log.info('Each account performs a transaction through their connection')
         count = 0
-        for (name, storage, web3, account, network) in [('web3_1', storage1, web3_1, account_1, network_connection_1),
-                                         ('web3_2', storage2, web3_2, account_2, network_connection_1),
-                                         ('web3_3', storage3, web3_3, account_3, network_connection_2),
-                                         ('web3_4', storage4, web3_4, account_4, network_connection_2)]:
+        for (name, storage, web3, account, network) in [('web3_1', storage_1, web3_1, account_1, network_connection_1),
+                                         ('web3_2', storage_2, web3_2, account_2, network_connection_1),
+                                         ('web3_3', storage_3, web3_3, account_3, network_connection_2),
+                                         ('web3_4', storage_4, web3_4, account_4, network_connection_2)]:
             count = count + 1
             self.log.info('Transacting for %s', name)
             network.transact(self, web3, storage.contract.functions.store(count), account, storage.GAS_LIMIT)

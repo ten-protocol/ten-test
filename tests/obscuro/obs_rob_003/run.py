@@ -16,11 +16,11 @@ class PySysTest(ObscuroNetworkTest):
         web3_1, account_1 = network_connection_primary.connect_account1(self)
 
         # deploy a contract that emits a lifecycle event on calling a specific method as a transaction
-        storage = Storage(self, web3_1, 100)
-        storage.deploy(network_connection_primary, account_1)
+        storage_1 = Storage(self, web3_1, 100)
+        storage_1.deploy(network_connection_primary, account_1)
 
         # make a subscription for all events to the contract
-        subscriber_1 = AllEventsLogSubscriber(self, network_connection_primary, storage.address, storage.abi_path,
+        subscriber_1 = AllEventsLogSubscriber(self, network_connection_primary, storage_1.address, storage_1.abi_path,
                                               stdout='subscriber.out',
                                               stderr='subscriber.err')
         subscriber_1.run()
@@ -40,7 +40,8 @@ class PySysTest(ObscuroNetworkTest):
                 self.log.info('Registering client %d with primary user id (current total %d)', i, primary_userid)
                 network_connection = network_connection_primary
             web3, account = network_connection.connect(self, private_key=pk, check_funds=False)
-            connections.append((web3, account, network_connection))
+            storage = Storage.clone(web3, account, storage_1)
+            connections.append((web3, account, network_connection, storage))
             time.sleep(0.05)
 
         self.log.info('Number registrations on primary user id = %d', primary_userid)
@@ -50,7 +51,7 @@ class PySysTest(ObscuroNetworkTest):
         count = 0
         for i in range(0, self.TRANSACTIONS):
             count = count + 1
-            web3, account, network_connection = random.choice(connections)
+            web3, account, network_connection, storage = random.choice(connections)
             self.distribute_native(account, 0.01)
             network_connection.transact(self, web3, storage.contract.functions.store(count), account, storage.GAS_LIMIT)
 

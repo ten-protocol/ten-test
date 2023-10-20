@@ -10,16 +10,16 @@ class PySysTest(ObscuroNetworkTest):
         web3_user, account_user = network.connect_account1(self)
         web3_hold, account_hold = network.connect(self, Properties().l2_gas_payment_account_pk(self.env), check_funds=False)
 
-        contract = GasConsumerAdd(self, web3_user)
-        contract.deploy(network, account_user)
+        contract_user = GasConsumerAdd(self, web3_user)
+        contract_user.deploy(network, account_user)
 
         hold_balance_before = web3_hold.eth.get_balance(account_hold.address)
         user_balance_before = web3_user.eth.get_balance(account_user.address)
 
-        est = contract.contract.functions.add_once().estimate_gas()
+        est = contract_user.contract.functions.add_once().estimate_gas()
         self.log.info("Estimate add_once:   %d", est)
 
-        tx = network.transact(self, web3_user, contract.contract.functions.add_once(), account_user, contract.GAS_LIMIT)
+        tx = network.transact(self, web3_user, contract_user.contract.functions.add_once(), account_user, contract_user.GAS_LIMIT)
 
         user_balance_after = web3_user.eth.get_balance(account_user.address)
         hold_balance_after = web3_hold.eth.get_balance(account_hold.address)
