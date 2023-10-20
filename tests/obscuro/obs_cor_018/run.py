@@ -1,4 +1,3 @@
-import json
 from pysys.constants import FAILED, PASSED
 from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.contracts.storage import Storage
