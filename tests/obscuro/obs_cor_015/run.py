@@ -24,7 +24,6 @@ class PySysTest(ObscuroNetworkTest):
         self.log.info('First transaction block hash %s', tx_recp.blockHash.hex())
         self.log.info('First transaction tx hash %s', tx_recp.transactionHash.hex())
         response = self.get_debug_log_visibility(tx_recp.transactionHash.hex())
-        self.log.info(response)
 
         self.waitForSignal(file='subscriber.out', expr='Full log:', condition='==1', timeout=10)
         self.assertLineCount(file='subscriber.out', expr='Full log:', condition='==1')

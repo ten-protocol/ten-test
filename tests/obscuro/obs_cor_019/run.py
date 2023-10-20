@@ -1,4 +1,3 @@
-import json
 from pysys.constants import FAILED, PASSED
 from obscuro.test.basetest import ObscuroNetworkTest
 from obscuro.test.contracts.relevancy import Relevancy
@@ -13,20 +12,19 @@ class PySysTest(ObscuroNetworkTest):
         web3_1, account_1 = network_1.connect_account1(self)
         web3_2, account_2 = network_1.connect_account2(self)
 
-        relevancy = Relevancy(self, web3_1)
-        relevancy.deploy(network_1, account_1)
-        tx_receipt = network_1.transact(self, web3_1,
-                                        relevancy.contract.functions.indexedAddressAndNumber(account_1.address),
-                                        account_1, relevancy.GAS_LIMIT)
+        relevancy_1 = Relevancy(self, web3_1)
+        relevancy_1.deploy(network_1, account_1)
+        relevancy_2 = Relevancy.clone(web3_2, account_2, relevancy_1)
 
+        tx_receipt = network_1.transact(self, web3_1,
+                                        relevancy_1.contract.functions.indexedAddressAndNumber(account_1.address),
+                                        account_1, relevancy_1.GAS_LIMIT)
         tx_hash = tx_receipt.transactionHash
         block_number = tx_receipt.blockNumber
 
         self.log.info('Getting transaction for account 2 (through network connection 1)')
         tx_rec = web3_2.eth.get_transaction_receipt(tx_hash)
-        with open(relevancy.abi_path) as f:
-            contract = web3_2.eth.contract(address=relevancy.address, abi=json.load(f))
-        tx_log = contract.events.IndexedAddressAndNumber().processReceipt(tx_rec)[0]
+        tx_log = relevancy_2.contract.events.IndexedAddressAndNumber().processReceipt(tx_rec)[0]
         args_value = tx_log['args']['value']
         self.log.info('Transaction log shows value %d', args_value)
         self.assertTrue(args_value == 1)
@@ -35,6 +33,7 @@ class PySysTest(ObscuroNetworkTest):
         # but also just requests all event logs for the Stored event
         network_2 = self.get_network_connection(name='network_2')
         web3_3, account_3 = network_2.connect_account3(self)
+        relevancy_3 = Relevancy.clone(web3_3, account_3, relevancy_1)
 
         self.log.info('Getting transaction for account 3 (through network connection 2)')
         try:
@@ -45,8 +44,6 @@ class PySysTest(ObscuroNetworkTest):
             self.addOutcome(PASSED)
 
         self.log.info('Attempting to get the past events from the contract instance')
-        with open(relevancy.abi_path) as f:
-            contract = web3_3.eth.contract(address=relevancy.address, abi=json.load(f))
-        events = contract.events.IndexedAddressAndNumber().getLogs(fromBlock=block_number)
+        events = relevancy_3.contract.events.IndexedAddressAndNumber().getLogs(fromBlock=block_number)
         self.assertTrue(len(events) == 0)
 

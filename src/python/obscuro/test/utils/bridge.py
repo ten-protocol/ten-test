@@ -65,7 +65,7 @@ class L1BridgeDetails(BridgeDetails):
 
     def add_token_subscriber(self, symbol):
         token = self.tokens[symbol]
-        subscriber = AllEventsLogSubscriber(self.test, self.network, token,
+        subscriber = AllEventsLogSubscriber(self.test, self.network, token.address, token.abi_path,
                                             stdout='l1_sub_%s.out' % self.name, stderr='l1_sub_%s.err' % self.name)
         subscriber.run()
 
@@ -177,7 +177,7 @@ class L2BridgeDetails(BridgeDetails):
 
     def add_token_subscriber(self, symbol):
         token = self.tokens[symbol]
-        subscriber = AllEventsLogSubscriber(self.test, self.network, token,
+        subscriber = AllEventsLogSubscriber(self.test, self.network, token.address, token.abi_path,
                                             stdout='l2_sub_%s.out' % self.name, stderr='l2_sub_%s.err' % self.name)
         subscriber.run()
 

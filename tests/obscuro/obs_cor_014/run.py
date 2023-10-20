@@ -14,7 +14,5 @@ class PySysTest(ObscuroNetworkTest):
 
         # get the batch for transaction and from that the l1 proof
         batch = self.get_batch_for_transaction(tx_hash)
-        self.log.info(batch)
         l1_proof = batch['Header']['l1Proof']
-        self.log.info(l1_proof)
 

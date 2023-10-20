@@ -5,23 +5,22 @@ from pysys.constants import PROJECT
 class AllEventsLogSubscriber:
     """A wrapper over the JS all events log subscribing cli tool. """
 
-    def __init__(self, test, network, contract, stdout='subscriber.out', stderr='subscriber.err'):
+    def __init__(self, test, network, contract_address, contract_abi, stdout='subscriber.out', stderr='subscriber.err'):
         """Create an instance of the event log subscriber."""
         self.test = test
         self.network = network
-        self.contract = contract
+        self.contract_address = contract_address
+        self.contract_abi = contract_abi
         self.stdout = os.path.join(test.output, stdout)
         self.stderr = os.path.join(test.output, stderr)
         self.script = os.path.join(PROJECT.root, 'src', 'javascript', 'scripts', 'all_events_subscriber.js')
 
-    def run(self, pk_to_register=None, network_http=None, network_ws=None):
+    def run(self, pk_to_register=None):
         """Run the javascript client event log subscriber. """
         args = []
-        if network_http is None: network_http = self.network.connection_url(web_socket=False)
-        if network_ws is None: network_ws = self.network.connection_url(web_socket=True)
-        args.extend(['--network_ws', network_ws])
-        args.extend(['--contract_address', self.contract.address])
-        args.extend(['--contract_abi', self.contract.abi_path])
+        args.extend(['--network_ws', self.network.connection_url(web_socket=True)])
+        args.extend(['--contract_address', self.contract_address])
+        args.extend(['--contract_abi', self.contract_abi])
         if pk_to_register: self.network.connect(self.test, private_key=pk_to_register)
         self.test.run_javascript(self.script, self.stdout, self.stderr, args)
         self.test.waitForGrep(file=self.stdout, expr='Subscription confirmed with id:', timeout=30)

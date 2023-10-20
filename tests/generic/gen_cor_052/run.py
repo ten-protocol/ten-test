@@ -16,7 +16,7 @@ class PySysTest(ObscuroNetworkTest):
         contract.deploy(network, account)
 
         # run a background script to filter and collect events
-        subscriber = AllEventsLogSubscriber(self, network, contract)
+        subscriber = AllEventsLogSubscriber(self, network, contract.address, contract.abi_path)
         subscriber.run()
 
         # get balances and perform the transfer

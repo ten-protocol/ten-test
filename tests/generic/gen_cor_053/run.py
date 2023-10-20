@@ -19,10 +19,12 @@ class PySysTest(ObscuroNetworkTest):
         send_contract.deploy(network, account)
 
         # collect events
-        recv_sub = AllEventsLogSubscriber(self, network, recv_contract, stdout='recv_sub.out', stderr='recv_sub.err')
+        recv_sub = AllEventsLogSubscriber(self, network, recv_contract.address, recv_contract.abi_path,
+                                          stdout='recv_sub.out', stderr='recv_sub.err')
         recv_sub.run()
 
-        send_sub = AllEventsLogSubscriber(self, network, send_contract, stdout='send_sub.out', stderr='send_sub.err')
+        send_sub = AllEventsLogSubscriber(self, network, send_contract.address, send_contract.abi_path,
+                                          stdout='send_sub.out', stderr='send_sub.err')
         send_sub.run()
 
         # perform transfers
