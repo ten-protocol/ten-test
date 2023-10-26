@@ -42,5 +42,5 @@ sleep 30
 # connect using given SSH key
 echo "Transferring the install script ... "
 IP=`az vm show -d -g ${group}  -n ${name} --query publicIps -o tsv`
-scp -i ${ssh_key} install.sh obscuro@$IP:~
+scp -i ${ssh_key} -o StrictHostKeyChecking=no install.sh obscuro@$IP:~
 
