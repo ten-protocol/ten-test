@@ -37,7 +37,7 @@ fi
 # create the vm in the resources group
 echo "Creating virtual machine ..."
 az vm create --resource-group ${group} --name ${name} --image Canonical:0001-com-ubuntu-server-focal:20_04-lts-gen2:20.04.202206220  --size Standard_DC4s_v2 --admin-username obscuro --ssh-key-values ${ssh_key} --nic-delete-option delete --os-disk-delete-option delete
-sleep 10
+sleep 30
 
 # connect using given SSH key
 echo "Transferring the install script ... "
