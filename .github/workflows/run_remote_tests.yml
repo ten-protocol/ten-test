@@ -33,7 +33,7 @@ on:
 
 jobs:
   test-run:
-    runs-on: [self-hosted, Linux, X64, SystemTestRunner2]
+    runs-on: [self-hosted, Linux, X64, obscuro-test-gh-runner-02]
     steps:
       - name: Set the variables
         env:

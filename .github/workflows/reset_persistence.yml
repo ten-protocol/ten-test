@@ -19,7 +19,7 @@ on:
 
 jobs:
   reset-persistence:
-    runs-on: [self-hosted, Linux, X64, SystemTestRunner2]
+    runs-on: [self-hosted, Linux, X64, obscuro-test-gh-runner-02]
     steps:
       - name: 'Check out obscuro-test'
         uses: actions/checkout@v3
