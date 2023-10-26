@@ -5,13 +5,14 @@ help_and_exit() {
     echo "Usage: $(basename "${0}") --name=<name>"
     echo " "
     echo "where: "
-    echo "  name                *Optional* The name of the VM instance (default SystemTestRunner) "
+    echo "  name                *Optional* The name of the VM instance (default obscuro-test-gh-runner) "
     echo ""
     exit 1
 }
 
 ssh_key=~/.ssh/id_rsa
-name=SystemTestRunner
+name=obscuro-test-gh-runner
+group=obscuro-test-repo
 
 for argument in "$@"
 do
@@ -26,4 +27,4 @@ do
 done
 
 # delete the vm in the resources group
-az vm delete --resource-group SystemTestRunners --name ${name}
+az vm delete --resource-group ${group} --name ${name}

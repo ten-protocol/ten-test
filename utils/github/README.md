@@ -5,10 +5,10 @@ Run the utility scripts to create the VM and connect;
 
 ```bash
 # create the VM
- ./utils/github/create-runner.sh --name=SystemTestRunner1 
+ ./utils/github/create-runner.sh --name=obscuro-test-gh-runner-01 
  
 # connect to the VM
-./utils/github/connect-runner.sh --name=SystemTestRunner1 
+./utils/github/connect-runner.sh --name=obscuro-test-gh-runner-01  
 ```
 
 ## Install dependencies

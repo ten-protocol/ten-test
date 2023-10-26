@@ -6,13 +6,14 @@ help_and_exit() {
     echo " "
     echo "where: "
     echo "  ssh_key             *Optional* The name of the SSH private key to use (default ~/.ssh/id_rsa)"
-    echo "  name                *Optional* The name of the VM instance (default SystemTestRunner) "
+    echo "  name                *Optional* The name of the VM instance (default obscuro-test-gh-runner) "
     echo ""
     exit 1
 }
 
 ssh_key=~/.ssh/id_rsa
-name=SystemTestRunners
+name=obscuro-test-gh-runner
+group=obscuro-test-repo
 
 for argument in "$@"
 do
@@ -28,7 +29,7 @@ do
 done
 
 # get the IP
-IP=`az vm show -d -g SystemTestRunners  -n ${name} --query publicIps -o tsv`
+IP=`az vm show -d -g ${group}  -n ${name} --query publicIps -o tsv`
 
 # connect using given SSH key
 echo Connecting to obscuro@$IP
