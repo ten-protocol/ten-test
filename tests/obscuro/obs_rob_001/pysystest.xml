@@ -9,8 +9,6 @@ of the test. Another configurable number of subscribers are started, where they 
 unsubscribe once call back on successful subscription is confirmed. Once running a set number of transactions are
 performed where they are expected to be received by the permanent subscribers i.e. the concurrent subscribes and
 unsubscribes should not cause any disruption to event notification / call back.
-
-Skipped due to https://github.com/obscuronet/obscuro-internal/issues/1457
 ]]>
         </purpose>
     </description>
