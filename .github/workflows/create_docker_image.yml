@@ -20,6 +20,13 @@ jobs:
           repository: obscuronet/go-obscuro
           path: ./go-obscuro
 
+      - name: 'Login to Azure docker registry'
+        uses: azure/docker-login@v1
+        with:
+          login-server: testnetobscuronet.azurecr.io
+          username: testnetobscuronet
+          password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+
       - name: 'Build the docker container'
         run: |
           cd ${{ github.workspace }}/obscuro-test
