@@ -1,0 +1,42 @@
+# Build a docker image of the e2e tests and push it to the azure docker registry.
+#
+name: Create docker image
+run-name: Create docker image (${{ github.event_name }})
+on:
+  workflow_dispatch:
+
+jobs:
+  test-run:
+    runs-on: [self-hosted, Linux, X64, SystemTestRunner1]
+    steps:
+      - name: 'Check out obscuro-test'
+        uses: actions/checkout@v3
+        with:
+          path: ./obscuro-test
+
+      - name: 'Check out go-obscuro code'
+        uses: actions/checkout@v3
+        with:
+          repository: obscuronet/go-obscuro
+          path: ./go-obscuro
+
+      - name: 'Docker clean containers and images before the action'
+        if: always()
+        run: |
+          for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
+          docker system prune -af --volumes
+          for i in `docker volume ls --filter dangling=true -q`; do docker volume rm $i; done
+
+      - name: 'Build required artifacts for running tests'
+        run: |
+          cd ${{ github.workspace }}/obscuro-test
+          ./get_artifacts.sh
+          ls -l ${{ github.workspace }}/obscuro-test/artifacts   
+
+      - name: 'Docker clean containers and images after the action'
+        if: always()
+        run: |
+          for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
+          docker system prune -af --volumes
+          for i in `docker volume ls --filter dangling=true -q`; do docker volume rm $i; done
+
