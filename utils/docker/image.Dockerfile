@@ -24,11 +24,18 @@ RUN python3 -m pip install web3==5.31.3
 RUN python3 -m pip install pysys==1.6.1
 RUN python3 -m pip install py-solc-x
 
-RUN mkdir ~/.obscurotest
 RUN mkdir /home/obscuro-test
 RUN mkdir /home/go-obscuro
 COPY . /home/obscuro-test
-RUN /home/obscuro-test/utils/docker/user.props ~/.obscurotest/user.properties
+
+RUN mkdir ~/.obscurotest
+RUN echo "[binaries.linux]" > ~/.obscurotest/user.properties
+RUN echo "go = /usr/bin/go" >> ~/.obscurotest/user.properties
+RUN echo "solc = /usr/bin/solc" >> ~/.obscurotest/user.properties
+RUN echo "ganache = /usr/bin/ganache-cli" >> ~/.obscurotest/user.properties
+RUN echo "gnuplot = /usr/bin/gnuplot" >> ~/.obscurotest/user.properties
+RUN echo "node = /usr/bin/node" >> ~/.obscurotest/user.properties
+RUN echo "node_path = /usr/lib/node_modules:/usr/local/lib/node_modules" >> ~/.obscurotest/user.properties
 
 WORKDIR /home/obscuro-test/artifacts/wallet_extension
 RUN rm wallet_extension
