@@ -9,7 +9,6 @@ RUN apt update
 RUN apt install -y ethereum
 RUN apt install -y curl
 RUN apt install -y solc
-RUN apt install -y gnuplot
 
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
 RUN apt-get install -y nodejs
