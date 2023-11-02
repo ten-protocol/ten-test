@@ -1,14 +1,14 @@
 FROM --platform=linux/amd64 ubuntu:20.04
 
 RUN apt update
-RUN DEBIAN_FRONTEND=noninteractive
-RUN apt-get install -y tzdata
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
 RUN apt-get install -y software-properties-common
 RUN add-apt-repository ppa:ethereum/ethereum
 RUN apt update
 RUN apt install -y ethereum
 RUN apt install -y curl
 RUN apt install -y solc
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y gnuplot
 
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
 RUN apt-get install -y nodejs
