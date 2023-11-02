@@ -7,7 +7,7 @@ on:
 
 jobs:
   test-run:
-    runs-on: [self-hosted, Linux, X64, SystemTestRunner1]
+    runs-on: [self-hosted, Linux, X64, obscuro-test-gh-runner-01]
     steps:
       - name: 'Check out obscuro-test'
         uses: actions/checkout@v3
