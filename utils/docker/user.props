@@ -1,0 +1,7 @@
+[binaries.linux]
+go = /usr/bin/go
+solc = /usr/bin/solc
+ganache = /usr/bin/ganache-cli
+gnuplot = /usr/bin/gnuplot
+node = /usr/bin/node
+node_path = /usr/lib/node_modules:/usr/local/lib/node_modules
