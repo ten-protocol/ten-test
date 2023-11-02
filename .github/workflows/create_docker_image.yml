@@ -31,5 +31,5 @@ jobs:
         run: |
           cd ${{ github.workspace }}/obscuro-test
           ./get_artifacts.sh
-          docker build -t obscuronet/obscuro_test:latest -f ./utils/docker/image.Dockerfile .  
-          docker push obscuronet/obscuro_test:latest
+          docker build -t testnetobscuronet.azurecr.io/obscuronet/obscuro_test:latest -f ./utils/docker/image.Dockerfile .
+          docker push testnetobscuronet.azurecr.io/obscuronet/obscuro_test:latest
