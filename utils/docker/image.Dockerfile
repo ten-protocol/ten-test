@@ -26,7 +26,7 @@ RUN python3 -m pip install pysys==1.6.1
 RUN python3 -m pip install py-solc-x
 
 RUN mkdir ~/.obscurotest
-COPY ./utils/docker/local.properties ~/.obscurotest/user.properties
+COPY ./utils/docker/user.props ~/.obscurotest/user.properties
 
 RUN mkdir /home/obscuro-test
 RUN mkdir /home/go-obscuro
