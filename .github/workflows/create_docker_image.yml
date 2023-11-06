@@ -3,6 +3,8 @@
 name: Create docker image
 run-name: Create docker image (${{ github.event_name }})
 on:
+  pull_request:
+    types: [ closed ]
   workflow_dispatch:
     inputs:
       release:
@@ -24,13 +26,19 @@ jobs:
         run: |
           echo "VERSION=latest" >> $GITHUB_ENV
           echo "BRANCH=main" >> $GITHUB_ENV
-        if: ${{ github.event.inputs.release == 'latest' }}
+        if: ${{ github.event_name == 'pull_request' }}
+
+      - name: Sets env vars for latest
+        run: |
+          echo "VERSION=latest" >> $GITHUB_ENV
+          echo "BRANCH=main" >> $GITHUB_ENV
+        if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.release == 'latest') }}
 
       - name: Sets env vars for releases
         run: |
           echo "VERSION=${{ github.event.inputs.release }}" >> $GITHUB_ENV
           echo "BRANCH=releases/v${{ github.event.inputs.release }}" >> $GITHUB_ENV
-        if: ${{ github.event.inputs.release != 'latest' }}
+        if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.release != 'latest') }}
 
       - name: 'Check out obscuro-test'
         uses: actions/checkout@v3
