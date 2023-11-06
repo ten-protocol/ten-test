@@ -39,7 +39,7 @@ The top level structure of the project is as below;
 │    ├── generic         # Network agnostic tests 
 │    └── obscuro         # Obscuro specific tests 
 └── utils                # The project utils root for utilities used by the tests
-     ├── docker          # Docker configuration and build files
+     ├── docker          # Docker build and run files
      ├── github          # Azure VM github self hosted running build files
      ├── release         # Utilitiy scripts for making a new release of go-obscuro
      └── testnet         # Utilities for building and interacting with a local testnet
@@ -48,6 +48,23 @@ The top level structure of the project is as below;
 The [.default.properties](./.default.properties) file contains properties for running the tests that are common to any 
 user. User specific properties should be added into a `~/.obscurotest/user.properties` file.  Properties will first be 
 looked for in the `~/.obscurotest/user.properties` should it exist, and if not will fall back to the default properties. 
+
+
+Setup and run locally using docker
+----------------------------------
+Should you wish to run the tests locally on your host machine against a local testnet, the easiest approach is to use
+the docker image for the e2e tests. Prior to running, a local testnet should be built and run as described in the 
+`go-obscuro/README.md` file (see the section "Building and running a local testnet"). Once the local testnet is running, 
+the e2e docker image can be pulled down from the Azure container registry and run from the root of the `obscuro-test`
+repository using the below; 
+
+```bash
+./utils/docker/run_image.sh --version=<version>
+```
+
+where version should be `latest` if the latest build from main is required, or otherwise the released version of 
+`go-obscuro` and `obscuro-test` e.g. 0.19 , 0.18 etc. Note that this represents the head of the relevant releases 
+branch and therefore will be the latest patch release of that major.minor version. 
 
 
 Setup and run locally on host machine

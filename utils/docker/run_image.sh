@@ -1,5 +1,32 @@
 #!/usr/bin/env bash
 # Script to run the latest image of the VM for running obscuro test
 #
+help_and_exit() {
+    echo ""
+    echo "Usage: $(basename "${0}") --version=<version>"
+    echo " "
+    echo "where: "
+    echo "  version             *Optional* The name of the version to use (default latest)"
+    echo ""
+    exit 1
+}
 
-docker run -it -e DOCKER_TEST_ENV=true --network=node_network --name=e2e-tests testnetobscuronet.azurecr.io/obscuronet/obscuro_test:latest
+version=latest
+
+for argument in "$@"
+do
+    key=$(echo $argument | cut -f1 -d=)
+    value=$(echo $argument | cut -f2 -d=)
+
+    case "$key" in
+            --version)                  version=${value} ;;
+            --help)                     help_and_exit ;;
+            *)
+    esac
+done
+
+# remove a previously running container if it exists
+docker rm --volumes e2e-tests
+
+# run up the container
+docker run -it -e DOCKER_TEST_ENV=true --network=node_network --name=e2e-tests testnetobscuronet.azurecr.io/obscuronet/obscuro_test:${version}
