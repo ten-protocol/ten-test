@@ -4,21 +4,46 @@ name: Create docker image
 run-name: Create docker image (${{ github.event_name }})
 on:
   workflow_dispatch:
+    inputs:
+      release:
+        type: choice
+        description: 'The release version of testnet'
+        required: true
+        default: latest
+        options:
+          - latest
+          - 0.19
+          - 0.18
+          - 0.17
 
 jobs:
   test-run:
     runs-on: [self-hosted, Linux, X64, obscuro-test-gh-runner-01]
     steps:
+      - name: Sets env vars for latest
+        run: |
+          echo "VERSION=latest" >> $GITHUB_ENV
+          echo "BRANCH=main" >> $GITHUB_ENV
+        if: ${{ github.event.inputs.release == 'latest' }}
+
+      - name: Sets env vars for releases
+        run: |
+          echo "VERSION=${{ github.event.inputs.release }}" >> $GITHUB_ENV
+          echo "BRANCH=releases/v${{ github.event.inputs.release }}" >> $GITHUB_ENV
+        if: ${{ github.event.inputs.release != 'latest' }}
+
       - name: 'Check out obscuro-test'
         uses: actions/checkout@v3
         with:
           path: ./obscuro-test
+          ref: ${{env.BRANCH}}
 
       - name: 'Check out go-obscuro code'
         uses: actions/checkout@v3
         with:
           repository: obscuronet/go-obscuro
           path: ./go-obscuro
+          ref: ${{env.BRANCH}}
 
       - name: 'Login to Azure docker registry'
         uses: azure/docker-login@v1
@@ -31,5 +56,5 @@ jobs:
         run: |
           cd ${{ github.workspace }}/obscuro-test
           ./get_artifacts.sh
-          docker build -t testnetobscuronet.azurecr.io/obscuronet/obscuro_test:latest -f ./utils/docker/image.Dockerfile .
-          docker push testnetobscuronet.azurecr.io/obscuronet/obscuro_test:latest
+          docker build -t testnetobscuronet.azurecr.io/obscuronet/obscuro_test:${{ env.VERSION }} -f ./utils/docker/image.Dockerfile .
+          docker push testnetobscuronet.azurecr.io/obscuronet/obscuro_test:${{ env.VERSION }}
