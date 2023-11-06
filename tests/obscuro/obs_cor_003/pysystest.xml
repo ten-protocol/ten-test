@@ -18,7 +18,7 @@ and event emission;
 
 Under this sequence the subscription cannot be tied to a given account, so four subscriptions will be made, one for each
 account. As the returned events are not duplicates (as they contain the account address) the subscription should receive
-four events in total. 
+four events in total.
 ]]>
         </purpose>
     </description>
