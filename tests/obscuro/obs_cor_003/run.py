@@ -40,6 +40,6 @@ class PySysTest(ObscuroNetworkTest):
 
         # wait and assert that account4 does see this event
         self.waitForGrep(file='subscriber.out', expr='Received event: CallerIndexedAddress', timeout=90)
-        self.assertLineCount(file='subscriber.out', expr='Received event: CallerIndexedAddress', condition='==1')
+        self.assertLineCount(file='subscriber.out', expr='Received event: CallerIndexedAddress', condition='==4')
 
 
