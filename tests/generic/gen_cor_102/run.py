@@ -30,7 +30,7 @@ class PySysTest(ObscuroNetworkTest):
         stderr = os.path.join(self.output, 'client.err')
         script = os.path.join(self.input, 'client.js')
         args = []
-        args.extend(['--network_ws', network.connection_url(web_socket=True)])
+        args.extend(['--network', network.connection_url(web_socket=False)])
         args.extend(['--address', contract.address])
         args.extend(['--contract_abi', contract.abi_path])
         args.extend(['--private_key', private_key])
