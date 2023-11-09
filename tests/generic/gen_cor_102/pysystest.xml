@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Transact: ethers send a single transaction and wait for it to be mined</title>
+        <title>Transact: ethers client send a single transaction to a contract function</title>
         <purpose><![CDATA[
 ]]>
         </purpose>

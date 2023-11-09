@@ -6,12 +6,12 @@ require('console-stamp')(console, 'HH:MM:ss')
 
 async function sendTransaction() {
   const gasPrice = await provider.getGasPrice();
-  const estimatedGas = await contract.estimateGas.setItem('Key', 1);
+  const estimatedGas = await contract.estimateGas.setItem(options.key, options.value);
   console.log(`Wallet address: ${wallet.address}`)
   console.log(`Gas Price: ${gasPrice}`)
   console.log(`Estimated Gas: ${estimatedGas}`)
 
-  const tx = await contract.populateTransaction.setItem('Key', 1, {
+  const tx = await contract.populateTransaction.setItem(options.key, options.value, {
     from: wallet.address,
     gasPrice: gasPrice,
     gasLimit: estimatedGas,
@@ -32,6 +32,8 @@ commander
   .option('--address <value>', 'Contract address')
   .option('--contract_abi <value>', 'Contract ABI file')
   .option('--private_key <value>', 'The account private key')
+  .option('--key <value>', 'The key to store against')
+  .option('--value <value>', 'The value to store against the key')
   .parse(process.argv)
 
 const options = commander.opts()
