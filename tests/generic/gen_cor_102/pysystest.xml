@@ -18,6 +18,7 @@
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
             <mode>ganache</mode>
+            <mode>sepolia</mode>
             <mode>arbitrum</mode>
         </modes>
     </classification>

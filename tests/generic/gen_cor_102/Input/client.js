@@ -5,8 +5,17 @@ const commander = require('commander')
 require('console-stamp')(console, 'HH:MM:ss')
 
 async function sendTransaction() {
+  const gasPrice = await provider.getGasPrice();
   const estimatedGas = await contract.estimateGas.setItem('Key', 1);
-  const tx = await contract.populateTransaction.setItem('Key', 1, { gasLimit: estimatedGas } )
+  console.log(`Wallet address: ${wallet.address}`)
+  console.log(`Gas Price: ${gasPrice}`)
+  console.log(`Estimated Gas: ${estimatedGas}`)
+
+  const tx = await contract.populateTransaction.setItem('Key', 1, {
+    from: wallet.address,
+    gasPrice: gasPrice,
+    gasLimit: estimatedGas,
+  } )
   console.log('Transaction created')
 
   const txResponse = await wallet.sendTransaction(tx)

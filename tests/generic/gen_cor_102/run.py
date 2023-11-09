@@ -1,6 +1,6 @@
 import secrets, os
 from web3 import Web3
-from obscuro.test.utils.properties import Properties
+from obscuro.test.helpers.ws_proxy import WebServerProxy
 from obscuro.test.contracts.storage import KeyStorage
 from obscuro.test.basetest import ObscuroNetworkTest
 
@@ -30,7 +30,7 @@ class PySysTest(ObscuroNetworkTest):
         stderr = os.path.join(self.output, 'client.err')
         script = os.path.join(self.input, 'client.js')
         args = []
-        args.extend(['--network', network.connection_url(web_socket=False)])
+        args.extend(['--network', network.connection_url()])
         args.extend(['--address', contract.address])
         args.extend(['--contract_abi', contract.abi_path])
         args.extend(['--private_key', private_key])
