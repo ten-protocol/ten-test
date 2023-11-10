@@ -19,9 +19,9 @@ value from the transaction log, and call again.
             <mode>obscuro.uat</mode>
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
+            <mode>arbitrum.goerli</mode>
             <mode>goerli</mode>
             <mode>ganache</mode>
-            <mode>arbitrum</mode>
             <mode>sepolia</mode>
         </modes>
     </classification>

@@ -20,7 +20,7 @@ test repository against an existing installation, then reset the persisted nonce
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
             <mode>sepolia</mode>
-            <mode>arbitrum</mode>
+            <mode>arbitrum.goerli</mode>
         </modes>
     </classification>
 
