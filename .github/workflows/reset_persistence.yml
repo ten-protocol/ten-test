@@ -14,8 +14,6 @@ on:
           - sepolia-testnet
           - uat-testnet
           - dev-testnet
-          - sepolia
-          - arbitrum
 
 jobs:
   reset-persistence:
