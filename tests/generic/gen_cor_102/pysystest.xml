@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Transact: ethers client send a single transaction to a contract function</title>
+        <purpose><![CDATA[
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>performance</group>
+        </groups>
+        <modes inherit="true">
+            <mode>obscuro.sepolia</mode>
+            <mode>obscuro.uat</mode>
+            <mode>obscuro.dev</mode>
+            <mode>obscuro.local</mode>
+            <mode>arbitrum.sepolia</mode>
+            <mode>arbitrum.goerli</mode>
+            <mode>ganache</mode>
+            <mode>sepolia</mode>
+            <mode>arbitrum</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
