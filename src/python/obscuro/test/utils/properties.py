@@ -166,8 +166,11 @@ class Properties:
         return self.get('env.goerli', 'ProjectID')
 
     # arbitrum related
-    def abitrumAPIKey(self):
-        return self.get('env.arbitrum', 'APIKey')
+    def abritrumGoerliAPIKey(self):
+        return self.get('env.arbitrum.goerli', 'APIKey')
+
+    def arbitrumSepoliaAPIKey(self):
+        return self.get('env.arbitrum.sepolia', 'APIKey')
 
     # sepolia related
     def sepoliaAPIKey(self):

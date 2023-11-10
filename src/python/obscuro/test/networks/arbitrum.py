@@ -2,22 +2,37 @@ from obscuro.test.utils.properties import Properties
 from obscuro.test.networks.default import DefaultPreLondon
 
 
-class Arbitrum(DefaultPreLondon):
-    """An Arbitrum connection giving access to the underlying network."""
+class ArbitrumGoerli(DefaultPreLondon):
+    """An Arbitrum goerli connection giving access to the underlying network."""
     ETH_LIMIT = 0.0001
     ETH_ALLOC = 0.0005
 
     def __init__(self, test, name=None, **kwargs):
         super().__init__(test, name, **kwargs)
         props = Properties()
-        self.HOST = props.host_http('arbitrum')
-        self.WS_HOST = props.host_ws('arbitrum')
-        self.PORT = props.port_http('arbitrum')
-        self.WS_PORT = props.port_ws('arbitrum')
-        self.CHAIN_ID = props.chain_id('arbitrum')
+        self.HOST = props.host_http('arbitrum.goerli')
+        self.WS_HOST = props.host_ws('arbitrum.goerli')
+        self.PORT = props.port_http('arbitrum.goerli')
+        self.WS_PORT = props.port_ws('arbitrum.goerli')
+        self.CHAIN_ID = props.chain_id('arbitrum.goerli')
 
     def connection_url(self, web_socket=False):
-        return '%s/%s' % (self.HOST if not web_socket else self.WS_HOST, Properties().abitrumAPIKey())
+        return '%s/%s' % (self.HOST if not web_socket else self.WS_HOST, Properties().abritrumGoerliAPIKey())
 
 
+class ArbitrumSepolia(DefaultPreLondon):
+    """An Arbitrum sepolia connection giving access to the underlying network."""
+    ETH_LIMIT = 0.0001
+    ETH_ALLOC = 0.0005
 
+    def __init__(self, test, name=None, **kwargs):
+        super().__init__(test, name, **kwargs)
+        props = Properties()
+        self.HOST = props.host_http('arbitrum.sepolia')
+        self.WS_HOST = props.host_ws('arbitrum.sepolia')
+        self.PORT = props.port_http('arbitrum.sepolia')
+        self.WS_PORT = props.port_ws('arbitrum.sepolia')
+        self.CHAIN_ID = props.chain_id('arbitrum.sepolia')
+
+    def connection_url(self, web_socket=False):
+        return '%s/%s' % (self.HOST if not web_socket else self.WS_HOST, Properties().arbitrumSepoliaAPIKey())

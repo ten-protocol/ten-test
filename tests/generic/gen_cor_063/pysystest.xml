@@ -19,9 +19,9 @@ as a javascript script and checks that it can detect the updates to the balance.
             <mode>obscuro.uat</mode>
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
+            <mode>arbitrum.goerli</mode>
             <mode>goerli</mode>
             <mode>ganache</mode>
-            <mode>arbitrum</mode>
             <mode>sepolia</mode>
         </modes>
     </classification>
