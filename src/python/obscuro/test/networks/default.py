@@ -92,6 +92,9 @@ class DefaultPostLondon:
         tx_sign = self.sign_transaction(test, tx, nonce, account, persist_nonce)
         tx_hash = self.send_transaction(test, web3, nonce, account, tx_sign, persist_nonce, verbose)
         tx_recp = self.wait_for_transaction(test, web3, nonce, account, tx_hash, persist_nonce, verbose, timeout)
+        if tx_recp.status != 1:
+            self.replay_transaction(web3, tx, tx_recp)
+            test.addOutcome(FAILED, abortOnError=True)
         return tx_recp
 
     def get_next_nonce(self, test, web3, account, persist_nonce, verbose=True):
@@ -163,7 +166,6 @@ class DefaultPostLondon:
                 self.log.error('Transaction receipt failed')
                 self.log.error('Full receipt: %s', tx_receipt)
                 if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'FAILED')
-                test.addOutcome(FAILED, abortOnError=True)
 
         except TimeExhausted as e:
             self.log.error('Transaction timed out %s', e)
@@ -173,6 +175,12 @@ class DefaultPostLondon:
             test.addOutcome(TIMEDOUT, abortOnError=True)
 
         return tx_receipt
+
+    def replay_transaction(self, web3, tx, tx_recp):
+        try:
+            web3.eth.call(tx, block_identifier=tx_recp.blockNumber)
+        except Exception as e:
+            self.log.error('Replay call: %s', e)
 
 
 class DefaultPreLondon(DefaultPostLondon):
