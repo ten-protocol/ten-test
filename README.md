@@ -1,7 +1,4 @@
 <h1 align="center">
-  <picture>
-    <img alt="ten logo" src=".assets/ten_banner.png"/>
-  </picture> 
 Ten Protocol Test Framework
 </h1>
 
