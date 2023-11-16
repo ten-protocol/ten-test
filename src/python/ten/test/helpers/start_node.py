@@ -4,9 +4,9 @@ from ten.test.networks.ten import Obscuro
 
 
 class Node:
-    """A wrapper over starting and stopping an Obscuro node.
+    """A wrapper over starting and stopping a Ten node.
 
-    go run /home/obscuro/go-obscuro/go/node/cmd \
+    go run /home/obscuro/go-ten/go/node/cmd \
      -is_genesis="false" \
      -node_type=validator \
      -is_sgx_enabled="true" \

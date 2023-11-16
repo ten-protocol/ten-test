@@ -30,14 +30,14 @@ jobs:
       - name: 'Check out obscuro-test'
         uses: actions/checkout@v3
         with:
-          path: ./obscuro-test
+          path: ./ten-test
           ref: ${{env.VERSION}}
 
-      - name: 'Check out go-obscuro code'
+      - name: 'Check out go-ten code'
         uses: actions/checkout@v3
         with:
-          repository: obscuronet/go-obscuro
-          path: ./go-obscuro
+          repository: ten-protocol/go-ten
+          path: ./go-ten
           ref: ${{env.VERSION}}
 
       - name: 'Build required artifacts for running tests'

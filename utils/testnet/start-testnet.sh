@@ -8,8 +8,8 @@ cd ${root_path}/obscuro-test/utils/testnet
 docker compose -f docker-compose.local.yml build --parallel
 
 # start up testnet and the faucet
-cd ${root_path}/go-obscuro/
+cd ${root_path}/go-ten/
 go run ./testnet/launcher/cmd
 
-cd ${root_path}/go-obscuro/tools/faucet
+cd ${root_path}/go-ten/tools/faucet
 ./container_run.sh --image=testnetobscuronet.azurecr.io/obscuronet/faucet:latest

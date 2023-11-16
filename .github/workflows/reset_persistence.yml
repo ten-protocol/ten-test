@@ -27,7 +27,7 @@ jobs:
       - name: 'Check out go-ten code'
         uses: actions/checkout@v3
         with:
-          repository: obscuronet/go-ten
+          repository: ten-protocol/go-ten
           path: ./go-ten
 
       - name: 'Build artifacts'
