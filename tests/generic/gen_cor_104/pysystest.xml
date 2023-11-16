@@ -21,7 +21,6 @@
             <mode>arbitrum.goerli</mode>
             <mode>ganache</mode>
             <mode>sepolia</mode>
-            <mode>arbitrum</mode>
         </modes>
     </classification>
 
