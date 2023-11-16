@@ -86,7 +86,7 @@ jobs:
       - name: 'Collate pdf output'
         if: always()
         run: |
-          cd ${{ github.workspace }}/obscuro-test
+          cd ${{ github.workspace }}/ten-test
           pdftk $(find . -name \*.pdf | sort) cat output results_graphs.pdf || true
 
       - name: 'Upload testcase output'
@@ -95,7 +95,7 @@ jobs:
         with:
           name: test-artifact
           path: |
-            ${{ github.workspace }}/obscuro-test/**/Output
+            ${{ github.workspace }}/ten-test/**/Output
           retention-days: 1
 
       - name: 'Upload performance output'
@@ -104,7 +104,7 @@ jobs:
         with:
           name: performance-artifact
           path: |
-            ${{ github.workspace }}/obscuro-test/results_graphs.pdf
+            ${{ github.workspace }}/ten-test/results_graphs.pdf
           if-no-files-found: ignore
           retention-days: 1
 

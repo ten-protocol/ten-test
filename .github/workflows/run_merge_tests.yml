@@ -59,12 +59,12 @@ jobs:
 
       - name: 'Build docker containers'
         run: |
-          cd ${{ github.workspace }}/go-obscuro/testnet
+          cd ${{ github.workspace }}/go-ten/testnet
           ./testnet-local-build_images.sh  
 
       - name: 'Start up testnet'
         run: |
-          cd ${{ github.workspace }}/go-obscuro/
+          cd ${{ github.workspace }}/go-ten/
           go run ./testnet/launcher/cmd
           echo "Run docker container log background processes"
           docker logs -f `docker ps -aqf "name=validator-host"` > validator-host.out 2>&1 &
@@ -75,23 +75,23 @@ jobs:
 
       - name: 'Start up the faucet'
         run: |
-          cd ${{ github.workspace }}/go-obscuro/tools/faucet
+          cd ${{ github.workspace }}/go-ten/tools/faucet
           ./container_run.sh --image=testnetobscuronet.azurecr.io/obscuronet/faucet:latest
 
       - name: 'Build required artifacts for running tests'
         run: |
-          cd ${{ github.workspace }}/obscuro-test
+          cd ${{ github.workspace }}/ten-test
           ./get_artifacts.sh
-          ls -l ${{ github.workspace }}/obscuro-test/artifacts   
+          ls -l ${{ github.workspace }}/ten-test/artifacts   
 
       - name: 'Do a persistence reset for nonce and contracts'
         run: |
-          cd ${{ github.workspace }}/obscuro-test/admin
+          cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.local persistence_reset
 
       - name: 'Run tests'
         run: |
-          cd ${{ github.workspace }}/obscuro-test/tests
+          cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ten.local -r -e skip -e persistence -e performance
 
       - name: 'Discord notification'
@@ -119,7 +119,7 @@ jobs:
         with:
           name: test-artifact
           path: |
-            ${{ github.workspace }}/obscuro-test/**/Output
+            ${{ github.workspace }}/ten-test/**/Output
           retention-days: 1
 
       - name: 'Upload container logs'
@@ -129,7 +129,7 @@ jobs:
         with:
           name: container-artifact
           path: |
-            ${{ github.workspace }}/go-obscuro/*.out
+            ${{ github.workspace }}/go-ten/*.out
           retention-days: 1
 
       - name: 'Docker clean containers and images after the test'
