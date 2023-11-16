@@ -1,5 +1,8 @@
 <h1 align="center">
-Ten Protocol Test Framework
+  <picture>
+    <img alt="ten logo" src=".assets/ten_banner.png" width="720px"/>
+  </picture>
+  Ten Test Framework 
 </h1>
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
@@ -8,14 +11,13 @@ Ten Protocol Test Framework
 [![Run merge tests](https://github.com/ten-protocol/ten-test/actions/workflows/run_merge_tests.yml/badge.svg)](https://github.com/ten-protocol/ten-test/actions/workflows/run_merge_tests.yml)
 
 
-Project repo for running end to end system tests against a variety of networks, with [ten](https://obscu.ro/) being 
-the primary network under test. Other networks supported include [ganache](https://trufflesuite.com/ganache/), 
-[goerli via infura](https://infura.io/), [arbitrum](https://arbitrum.io/) and [sepolia](https://sepolia.dev/). The repo 
-uses the [pysys](https://pysys-test.github.io/pysys-test/) test framework to manage all tests and their execution. All 
-tests are fully system level using [web3.py](https://web3py.readthedocs.io/en/stable/) to interact with the networks 
-which are managed outside the scope of the tests (with the exception of ganache which can be started locally). Note the 
-project is currently under active development and further information on running the tests will be added to this readme
-over time. 
+Project repo for running end to end system tests against a variety of networks, with [Ten](https://obscu.ro/) being 
+the primary network under test. Other networks supported include [Ganache](https://trufflesuite.com/ganache/), 
+[Arbitrum](https://arbitrum.io/) and [Sepolia](https://sepolia.dev/). The repo uses the [pysys](https://pysys-test.github.io/pysys-test/) 
+test framework to manage all tests and their execution. All tests are fully system level using [web3.py](https://web3py.readthedocs.io/en/stable/) 
+to interact with the networks which are managed outside the scope of the tests (with the exception of ganache which can 
+be started locally). Note the project is currently under active development and further information on running the tests 
+will be added to this readme over time. 
 
 Repository Structure
 --------------------
@@ -127,11 +129,11 @@ python3 -m pip install py-solc-x
 ```
 
 Once installed it should be possible to run all tests from the pysys.py cli as described in the following sections. Note
-that depending on differences in your installation, and should you want to add in your own accounts on Goerli or Arbitrum, 
+that depending on differences in your installation, and should you want to add in your own accounts on Sepolia or Arbitrum, 
 you may need to override the `.default.properties` file by creating a user specific properties file in
 `~/.tentest/user.properties`. Common overrides will include the path to various binaries used when running the tests, 
 and account details. An example of an override properties file is as given below where binary locations and the project ID 
-for Goerli and Arbitrum are set as overrides, along with real accounts as set up within metamask;
+for Sepolia and Arbitrum are set as overrides, along with real accounts as set up within metamask;
 
 ```
 [binaries.darwin]
@@ -146,10 +148,10 @@ Account2PK=<private key of account 2>
 Account3PK=<private key of account 3>
 Account4PK=<private key of account 4>
 
-[env.goerli]
+[env.sepolia]
 ProjectID = <id>
 
-[env.arbitrum]
+[env.arbitrum.sepolia]
 APIKey = <api key>
 ```
 
@@ -159,7 +161,7 @@ Each test is a separate directory within `ten-test/tests` where the directory na
 test will contain a `run.py` file (the execution and validation steps) and a `pysystest.xml` file (metadata about the 
 test such as its title, purpose, supported modes it can be run in). Note that the tests can be run against a variety 
 of networks using the `-m mode` option. The E2E tests have specifically been designed such that any generic tests 
-can be run against Ten, Ganache, Arbitrum or Goerli. To print out information on the tests, or to run them 
+can be run against Ten, Ganache, Arbitrum or Sepolia. To print out information on the tests, or to run them 
 against a particular network, change directory to `ten-test/tests` and run as below;
 
 ```bash
@@ -185,10 +187,7 @@ pysys.py run -m ten.local
 pysys.py run -m ganache
 
 # run the tests against the Arbitrum network 
-pysys.py run -m arbitrum
-
-# run the tests against the Goerli network 
-pysys.py run -m goerli
+pysys.py run -m arbitrum.sepolia
 
 # run the tests against the Sepolia network 
 pysys.py run -m sepolia
@@ -198,7 +197,7 @@ Note that should you wish to run against a Ten local testnet, you will need to b
 yourself using the approach as described in the [go-ten readme](https://github.com/ten-protocol/go-ten#building-and-running-a-local-testnet). 
 Both the local testnet and the faucet will need to be started. To run against ganache the test framework will start the 
 local ganache network on your behalf, and tear it down when test execution is complete. To run the same tests against 
-Goerli or Arbitrum, the `~/.tentest/user.properties` should be created as described earlier. 
+Sepolia or Arbitrum, the `~/.tentest/user.properties` should be created as described earlier. 
 
 
 Running a specific test or range of tests
