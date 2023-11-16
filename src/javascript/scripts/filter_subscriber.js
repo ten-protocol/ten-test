@@ -1,5 +1,5 @@
 // Subscribe to specific events on the network. Note that it is assumed the client / account has been registered
-// outside the scope of this script e.g. for use against obscuro.
+// outside the scope of this script e.g. for use against Ten.
 //
 const Web3 = require('web3')
 const http = require('http')

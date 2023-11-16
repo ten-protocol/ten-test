@@ -8,7 +8,7 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
 
-        if self.is_obscuro():
+        if self.is_ten():
             self.log.info("")
             network = self.get_l1_network_connection()
             self.log.info("Checking L1 funds for %s:", "l1_funded_account_pk", extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))

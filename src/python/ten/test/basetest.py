@@ -61,16 +61,16 @@ class GenericNetworkTest(BaseTest):
         self.nonce_db.close()
         self.contract_db.close()
 
-    def is_obscuro(self):
+    def is_ten(self):
         """Return true if we are running against a Ten network. """
         return self.env in ['ten.sepolia', 'ten.uat', 'ten.dev', 'ten.local']
 
-    def is_local_obscuro(self):
+    def is_local_ten(self):
         """Return true if we are running against a local Ten network. """
         return self.env in ['ten.local']
 
-    def is_sepolia_obscuro(self):
-        """Return true if we are running against a sepolia Obscuro network. """
+    def is_sepolia_ten(self):
+        """Return true if we are running against a sepolia Ten network. """
         return self.env in ['ten.sepolia']
 
     def run_python(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
@@ -185,7 +185,7 @@ class GenericNetworkTest(BaseTest):
 
     def get_network_connection(self, name='primary_connection', **kwargs):
         """Get the network connection."""
-        if self.is_obscuro():
+        if self.is_ten():
             return Ten(self, name, **kwargs)
         elif self.env == 'goerli':
             return Goerli(self, name, **kwargs)
@@ -200,9 +200,9 @@ class GenericNetworkTest(BaseTest):
 
     def get_l1_network_connection(self, name='primary_l1_connection', **kwargs):
         """Get the layer 1 network connection used by a layer 2."""
-        if self.is_obscuro() and self.env != 'ten.sepolia':
+        if self.is_ten() and self.env != 'ten.sepolia':
             return TenL1Geth(self, name, **kwargs)
-        elif self.is_obscuro() and self.env == 'ten.sepolia':
+        elif self.is_ten() and self.env == 'ten.sepolia':
             return TenL1Sepolia(self, name, **kwargs)
         return DefaultPostLondon(self, name, **kwargs)
 

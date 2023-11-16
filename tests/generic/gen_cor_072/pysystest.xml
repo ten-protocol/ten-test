@@ -11,7 +11,7 @@ get_new_entries() on the filter to return new logs. As a polling implementation 
         </purpose>
     </description>
 
-    <skipped reason="https://github.com/obscuronet/obscuro-internal/issues/1461"/>
+    <skipped reason="https://github.com/ten-protocol/ten-internal/issues/1461"/>
 
     <classification>
         <groups inherit="true">

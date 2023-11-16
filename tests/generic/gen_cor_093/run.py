@@ -29,7 +29,7 @@ class PySysTest(GenericNetworkTest):
         signed_tx = account.sign_transaction(build_tx)
         try:
             tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
-            if not self.is_obscuro():
+            if not self.is_ten():
                 self.addOutcome(FAILED, 'Exception should be thrown')
             else:
                 self.log.info('Transaction sent with hash %s', tx_hash.hex())

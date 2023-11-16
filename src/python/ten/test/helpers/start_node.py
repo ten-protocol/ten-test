@@ -1,7 +1,3 @@
-from pysys.constants import PROJECT, BACKGROUND
-from ten.test.utils.properties import Properties
-from ten.test.networks.ten import Obscuro
-
 
 class Node:
     """A wrapper over starting and stopping a Ten node.

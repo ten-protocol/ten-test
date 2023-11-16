@@ -1,6 +1,6 @@
 # Utility script for a funded client to transfer funds to a set of recipients. Used when we want to
 # create some transactions running in the background for a given test. Note that it is assumed the
-# client / account has been registered outside the scope of this script (e.g. for use against obscuro)
+# client / account has been registered outside the scope of this script (e.g. for use against Ten)
 #
 from web3 import Web3
 import logging, random

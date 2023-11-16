@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "./IToken.sol";
 
 contract GuessToken is IToken {
-    string public constant name = "Obscuro Guessing Game";
+    string public constant name = "Ten Guessing Game";
     string public constant symbol = "OGG";
     uint8 public constant decimals = 0;
     mapping(address => uint256) balances;

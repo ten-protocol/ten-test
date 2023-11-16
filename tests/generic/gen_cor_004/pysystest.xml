@@ -7,7 +7,7 @@
 Deploy a block, get the block back using the number as a reference, and then check within that block the number is
 correct.
 
-Skipped - see https://github.com/obscuronet/obscuro-internal/issues/959
+Skipped - see https://github.com/ten-protocol/ten-internal/issues/959
 ]]>
         </purpose>
     </description>
