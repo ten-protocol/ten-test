@@ -16,10 +16,10 @@ time, and also the trend of the processing i.e. do we see synchronised pauses im
             <group>performance</group>
         </groups>
         <modes inherit="true">
-            <mode>obscuro.sepolia</mode>
-            <mode>obscuro.uat</mode>
-            <mode>obscuro.dev</mode>
-            <mode>obscuro.local</mode>
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
         </modes>
     </classification>
 

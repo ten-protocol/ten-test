@@ -19,8 +19,8 @@ count. It should be run after a new clone of the framework using;
 pysys.py run persistence_reset
 
 # to clear all persisted nonces for Obscuro dev-testnet 
-pysys.py run  -m obscuro.dev persistence_reset
+pysys.py run  -m ten.dev persistence_reset
 
 # to clear all persisted nonces for Obscuro local testnet 
-pysys.py run  -m obscuro.local persistence_reset
+pysys.py run  -m ten.local persistence_reset
 ```

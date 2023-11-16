@@ -18,7 +18,7 @@ jobs:
       - name: 'Run funds check'
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
-          /usr/local/bin/pysys.py run -m obscuro.sepolia check_balances
+          /usr/local/bin/pysys.py run -m ten.sepolia check_balances
 
       - name: 'Discord notification on failure'
         if: failure()

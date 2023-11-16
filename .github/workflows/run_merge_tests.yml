@@ -87,12 +87,12 @@ jobs:
       - name: 'Do a persistence reset for nonce and contracts'
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
-          /usr/local/bin/pysys.py run -m obscuro.local persistence_reset
+          /usr/local/bin/pysys.py run -m ten.local persistence_reset
 
       - name: 'Run tests'
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -m obscuro.local -r -e skip -e persistence -e performance
+          /usr/local/bin/pysys.py run -m ten.local -r -e skip -e persistence -e performance
 
       - name: 'Discord notification'
         if: success()

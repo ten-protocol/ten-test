@@ -40,19 +40,19 @@ jobs:
         if: ${{ github.event.inputs.environment == 'sepolia-testnet' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
-          /usr/local/bin/pysys.py run -m obscuro.sepolia persistence_reset
+          /usr/local/bin/pysys.py run -m ten.sepolia persistence_reset
 
       - name: 'Persistence reset on uat-testnet'
         if: ${{ github.event.inputs.environment == 'uat-testnet' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
-          /usr/local/bin/pysys.py run -m obscuro.uat persistence_reset
+          /usr/local/bin/pysys.py run -m ten.uat persistence_reset
 
       - name: 'Persistence reset on dev-testnet'
         if: ${{ github.event.inputs.environment == 'dev-testnet' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
-          /usr/local/bin/pysys.py run -m obscuro.dev persistence_reset
+          /usr/local/bin/pysys.py run -m ten.dev persistence_reset
 
       - name: 'Upload output'
         uses: actions/upload-artifact@v3

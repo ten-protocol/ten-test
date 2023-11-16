@@ -37,27 +37,27 @@ jobs:
         if: ${{ (github.event_name == 'repository_dispatch') && (github.event.action == 'sepolia_testnet_deployed') }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
-          /usr/local/bin/pysys.py run -m obscuro.sepolia persistence_reset
+          /usr/local/bin/pysys.py run -m ten.sepolia persistence_reset
 
       - name: 'Run tests on uat-testnet on a repository_dispatch trigger of a new deployment'
         if: ${{ (github.event_name == 'repository_dispatch') && (github.event.action == 'uat_testnet_deployed') }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
-          /usr/local/bin/pysys.py run -m obscuro.uat persistence_reset
+          /usr/local/bin/pysys.py run -m ten.uat persistence_reset
 
       - name: 'Run tests on dev-testnet on a repository_dispatch trigger of a new deployment'
         if: ${{ (github.event_name == 'repository_dispatch') && (github.event.action == 'dev_testnet_deployed') }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
-          /usr/local/bin/pysys.py run -m obscuro.dev persistence_reset
+          /usr/local/bin/pysys.py run -m ten.dev persistence_reset
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -m obscuro.dev -r -e skip
+          /usr/local/bin/pysys.py run -m ten.dev -r -e skip
 
       - name: 'Run tests on dev-testnet on a repository_dispatch trigger of an upgrade'
         if: ${{ (github.event_name == 'repository_dispatch') && (github.event.action == 'dev_testnet_upgraded') }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -m obscuro.dev -r -e skip
+          /usr/local/bin/pysys.py run -m ten.dev -r -e skip
 
       - name: 'Collate pdf output'
         if: always()

@@ -77,19 +77,19 @@ jobs:
       - name: 'Do a persistence reset'
         run: |
           cd ${{ github.workspace }}/obscuro-test/admin
-          /usr/local/bin/pysys.py run -m obscuro.local persistence_reset
+          /usr/local/bin/pysys.py run -m ten.local persistence_reset
 
       - name: 'Run tests on workflow dispatch'
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -m obscuro.local -r ${{ github.event.inputs.arguments }}
+          /usr/local/bin/pysys.py run -m ten.local -r ${{ github.event.inputs.arguments }}
 
       - name: 'Run tests on schedule'
         if: ${{ github.event_name == 'schedule' }}
         run: |
           cd ${{ github.workspace }}/obscuro-test/tests
-          /usr/local/bin/pysys.py run -m obscuro.local -r -e skip 
+          /usr/local/bin/pysys.py run -m ten.local -r -e skip 
 
       - name: 'Collate pdf output'
         if: always()

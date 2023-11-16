@@ -31,7 +31,7 @@ class GenericNetworkTest(BaseTest):
         self.log.info('Running test in thread %s', threading.currentThread().getName())
 
         # every test has its own connection to the nonce and contract db
-        db_dir = os.path.join(str(Path.home()), '.obscurotest')
+        db_dir = os.path.join(str(Path.home()), '.tentest')
         self.nonce_db = NoncePersistence(db_dir)
         self.contract_db = ContractPersistence(db_dir)
         self.addCleanupFunction(self.close_db)
@@ -63,15 +63,15 @@ class GenericNetworkTest(BaseTest):
 
     def is_obscuro(self):
         """Return true if we are running against an Obscuro network. """
-        return self.env in ['obscuro.sepolia', 'obscuro.uat', 'obscuro.dev', 'obscuro.local']
+        return self.env in ['ten.sepolia', 'ten.uat', 'ten.dev', 'ten.local']
 
     def is_local_obscuro(self):
         """Return true if we are running against a local Obscuro network. """
-        return self.env in ['obscuro.local']
+        return self.env in ['ten.local']
 
     def is_sepolia_obscuro(self):
         """Return true if we are running against a sepolia Obscuro network. """
-        return self.env in ['obscuro.sepolia']
+        return self.env in ['ten.sepolia']
 
     def run_python(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
         """Run a python process. """
@@ -200,9 +200,9 @@ class GenericNetworkTest(BaseTest):
 
     def get_l1_network_connection(self, name='primary_l1_connection', **kwargs):
         """Get the layer 1 network connection used by a layer 2."""
-        if self.is_obscuro() and self.env != 'obscuro.sepolia':
+        if self.is_obscuro() and self.env != 'ten.sepolia':
             return ObscuroL1Geth(self, name, **kwargs)
-        elif self.is_obscuro() and self.env == 'obscuro.sepolia':
+        elif self.is_obscuro() and self.env == 'ten.sepolia':
             return ObscuroL1Sepolia(self, name, **kwargs)
         return DefaultPostLondon(self, name, **kwargs)
 

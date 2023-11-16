@@ -12,7 +12,7 @@ from ten.test.persistence.contract import ContractPersistence
 from ten.test.utils.properties import Properties
 
 
-class ObscuroRunnerPlugin():
+class TenRunnerPlugin():
     """Runner class for running a set of tests against a given environment.
 
     The runner is responsible for starting any applications prior to running the requested tests. When running
@@ -32,10 +32,10 @@ class ObscuroRunnerPlugin():
         if runner.mode is None:
             runner.log.warn('A valid mode must be supplied')
             runner.log.info('Supported modes are; ')
-            runner.log.info('   obscuro           Obscuro testnet')
-            runner.log.info('   obscuro.dev       Obscuro dev testnet')
-            runner.log.info('   obscuro.local     Obscuro local testnet')
-            runner.log.info('   obscuro.sepolia   Obscuro sepolia testnet')
+            runner.log.info('   ten.sepolia   Ten sepolia testnet')
+            runner.log.info('   ten.uat       Ten uat testnet')
+            runner.log.info('   ten.dev       Ten dev testnet')
+            runner.log.info('   ten.local     Ten local testnet')
             runner.log.info('   goerli            Goerli Network')
             runner.log.info('   ganache           Ganache Network started by the framework')
             runner.log.info('   arbitrum          Arbitrum Network')
@@ -53,7 +53,7 @@ class ObscuroRunnerPlugin():
         os.makedirs(runner.output)
 
         # create the nonce db if it does not already exist, clean it out if using ganache
-        db_dir = os.path.join(str(Path.home()), '.obscurotest')
+        db_dir = os.path.join(str(Path.home()), '.tentest')
         if not os.path.exists(db_dir): os.makedirs(db_dir)
         nonce_db = NoncePersistence(db_dir)
         nonce_db.create()
@@ -184,15 +184,15 @@ class ObscuroRunnerPlugin():
 
     def is_obscuro(self):
         """Return true if we are running against an Obscuro network. """
-        return self.env in ['obscuro.sepolia', 'obscuro.uat', 'obscuro.dev', 'obscuro.local']
+        return self.env in ['ten.sepolia', 'ten.uat', 'ten.dev', 'ten.local']
 
     def is_local_obscuro(self):
         """Return true if we are running against a local Obscuro network. """
-        return self.env in ['obscuro.local']
+        return self.env in ['ten.local']
 
     def is_sepolia_obscuro(self):
         """Return true if we are running against a sepolia Obscuro network. """
-        return self.env in ['obscuro.sepolia']
+        return self.env in ['ten.sepolia']
 
     def fund_eth_from_faucet_server(self, runner):
         """Allocates native ETH to a users account from the faucet server. """
