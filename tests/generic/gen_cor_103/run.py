@@ -19,6 +19,7 @@ class PySysTest(ObscuroNetworkTest):
         balance_after = web3.eth.get_balance(account.address)
         self.log.info('Balance before: %d', balance_before)
         self.log.info('Balance after: %d', balance_after)
+        self.assertTrue(balance_after == (balance_before + 100))
 
     def client(self, network, to, amount):
         private_key = secrets.token_hex(32)
