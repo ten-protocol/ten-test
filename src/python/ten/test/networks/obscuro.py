@@ -1,13 +1,13 @@
 import requests, json
 from web3 import Web3
 from pysys.constants import BLOCKED
-from obscuro.test.networks.default import DefaultPreLondon
-from obscuro.test.networks.geth import Geth
-from obscuro.test.networks.sepolia import Sepolia
-from obscuro.test.utils.properties import Properties
+from ten.test.networks.default import DefaultPreLondon
+from ten.test.networks.geth import Geth
+from ten.test.networks.sepolia import Sepolia
+from ten.test.utils.properties import Properties
 from eth_account.messages import encode_defunct
 from web3.middleware import geth_poa_middleware
-from obscuro.test.helpers.wallet_extension import WalletExtension
+from ten.test.helpers.wallet_extension import WalletExtension
 
 
 class ObscuroL1Sepolia(Sepolia):

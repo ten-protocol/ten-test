@@ -1,6 +1,6 @@
 import random
 from pysys.constants import *
-from obscuro.test.contracts.default import DefaultContract
+from ten.test.contracts.default import DefaultContract
 
 
 class Guesser(DefaultContract):

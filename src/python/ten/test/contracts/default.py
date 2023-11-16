@@ -4,7 +4,7 @@ from solcx import compile_source
 from pysys.constants import *
 from pysys.constants import LOG_WARN
 from pysys.utils.logutils import BaseLogFormatter
-from obscuro.test.utils.properties import Properties
+from ten.test.utils.properties import Properties
 
 
 class DefaultContract:

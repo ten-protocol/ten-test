@@ -1,6 +1,6 @@
-from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.contracts.gas import GasConsumerAdd
-from obscuro.test.utils.properties import Properties
+from ten.test.basetest import ObscuroNetworkTest
+from ten.test.contracts.gas import GasConsumerAdd
+from ten.test.utils.properties import Properties
 
 
 class PySysTest(ObscuroNetworkTest):

@@ -1,7 +1,7 @@
 import requests, json
 from web3 import Web3
-from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.utils.properties import Properties
+from ten.test.basetest import ObscuroNetworkTest
+from ten.test.utils.properties import Properties
 
 
 class PySysTest(ObscuroNetworkTest):

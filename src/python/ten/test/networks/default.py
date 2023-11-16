@@ -1,7 +1,7 @@
 from web3 import Web3
 from web3.exceptions import TimeExhausted
 from pysys.constants import *
-from obscuro.test.utils.properties import Properties
+from ten.test.utils.properties import Properties
 
 
 class DefaultPostLondon:

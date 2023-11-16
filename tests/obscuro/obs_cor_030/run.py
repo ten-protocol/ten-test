@@ -1,7 +1,7 @@
-from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.contracts.storage import Storage
-from obscuro.test.helpers.wallet_extension import WalletExtension
-from obscuro.test.helpers.log_subscriber import AllEventsLogSubscriber
+from ten.test.basetest import ObscuroNetworkTest
+from ten.test.contracts.storage import Storage
+from ten.test.helpers.wallet_extension import WalletExtension
+from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
 class PySysTest(ObscuroNetworkTest):

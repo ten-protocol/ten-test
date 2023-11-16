@@ -1,7 +1,7 @@
-from obscuro.test.basetest import GenericNetworkTest
-from obscuro.test.networks.sepolia import Sepolia
-from obscuro.test.utils.properties import Properties
-from obscuro.test.contracts.erc20 import MintedERC20Token
+from ten.test.basetest import GenericNetworkTest
+from ten.test.networks.sepolia import Sepolia
+from ten.test.utils.properties import Properties
+from ten.test.contracts.erc20 import MintedERC20Token
 
 
 class PySysTest(GenericNetworkTest):

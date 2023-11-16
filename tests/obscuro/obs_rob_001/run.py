@@ -1,9 +1,9 @@
 from web3 import Web3
 import secrets, os
 from pysys.constants import PASSED
-from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.contracts.storage import Storage
-from obscuro.test.helpers.log_subscriber import FilterLogSubscriber
+from ten.test.basetest import ObscuroNetworkTest
+from ten.test.contracts.storage import Storage
+from ten.test.helpers.log_subscriber import FilterLogSubscriber
 
 
 class PySysTest(ObscuroNetworkTest):

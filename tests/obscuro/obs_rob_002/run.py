@@ -1,10 +1,10 @@
 import os, secrets
 from web3 import Web3
 from pysys.constants import PROJECT
-from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.contracts.guesser import Guesser
-from obscuro.test.contracts.storage import Storage
-from obscuro.test.contracts.error import Error
+from ten.test.basetest import ObscuroNetworkTest
+from ten.test.contracts.guesser import Guesser
+from ten.test.contracts.storage import Storage
+from ten.test.contracts.error import Error
 
 
 class PySysTest(ObscuroNetworkTest):

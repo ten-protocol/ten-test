@@ -1,6 +1,6 @@
 from web3 import Web3
 from web3.middleware import geth_poa_middleware
-from obscuro.test.networks.default import DefaultPreLondon
+from ten.test.networks.default import DefaultPreLondon
 
 
 class Geth(DefaultPreLondon):

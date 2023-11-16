@@ -2,9 +2,9 @@ import secrets, random, os, shutil
 from web3 import Web3
 from datetime import datetime
 from collections import OrderedDict
-from obscuro.test.contracts.error import Error
-from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.utils.gnuplot import GnuplotHelper
+from ten.test.contracts.error import Error
+from ten.test.basetest import ObscuroNetworkTest
+from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(ObscuroNetworkTest):

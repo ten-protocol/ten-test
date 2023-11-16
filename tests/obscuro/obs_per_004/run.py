@@ -1,9 +1,9 @@
 import os, secrets, shutil
 from datetime import datetime
 from collections import OrderedDict
-from obscuro.test.contracts.storage import KeyStorage
-from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.utils.gnuplot import GnuplotHelper
+from ten.test.contracts.storage import KeyStorage
+from ten.test.basetest import ObscuroNetworkTest
+from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(ObscuroNetworkTest):

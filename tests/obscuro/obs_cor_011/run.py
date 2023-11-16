@@ -1,5 +1,5 @@
 from pysys.constants import PASSED
-from obscuro.test.basetest import ObscuroNetworkTest
+from ten.test.basetest import ObscuroNetworkTest
 
 
 class PySysTest(ObscuroNetworkTest):

@@ -1,8 +1,8 @@
 import time
 from pysys.constants import TIMEDOUT
-from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.utils.bridge import BridgeUser
-from obscuro.test.utils.properties import Properties
+from ten.test.basetest import ObscuroNetworkTest
+from ten.test.utils.bridge import BridgeUser
+from ten.test.utils.properties import Properties
 
 
 class PySysTest(ObscuroNetworkTest):

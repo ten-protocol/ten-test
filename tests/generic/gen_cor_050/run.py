@@ -1,8 +1,8 @@
 import re
 from web3 import Web3
-from obscuro.test.basetest import GenericNetworkTest
-from obscuro.test.contracts.error import Error
-from obscuro.test.helpers.ws_proxy import WebServerProxy
+from ten.test.basetest import GenericNetworkTest
+from ten.test.contracts.error import Error
+from ten.test.helpers.ws_proxy import WebServerProxy
 
 
 class PySysTest(GenericNetworkTest):

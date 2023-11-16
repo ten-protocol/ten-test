@@ -1,6 +1,6 @@
-from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.contracts.relevancy import Relevancy
-from obscuro.test.helpers.log_subscriber import FilterLogSubscriber
+from ten.test.basetest import ObscuroNetworkTest
+from ten.test.contracts.relevancy import Relevancy
+from ten.test.helpers.log_subscriber import FilterLogSubscriber
 
 
 class PySysTest(ObscuroNetworkTest):

@@ -1,6 +1,6 @@
 from pysys.constants import FAILED, PASSED
-from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.contracts.storage import Storage
+from ten.test.basetest import ObscuroNetworkTest
+from ten.test.contracts.storage import Storage
 
 
 class PySysTest(ObscuroNetworkTest):

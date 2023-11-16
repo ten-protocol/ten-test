@@ -1,4 +1,4 @@
-from obscuro.test.basetest import GenericNetworkTest
+from ten.test.basetest import GenericNetworkTest
 
 
 class PySysTest(GenericNetworkTest):

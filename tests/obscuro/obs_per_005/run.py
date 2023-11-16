@@ -3,9 +3,9 @@ from datetime import datetime
 from collections import OrderedDict
 from web3 import Web3
 from pysys.constants import FAILED
-from obscuro.test.contracts.storage import Storage
-from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.utils.gnuplot import GnuplotHelper
+from ten.test.contracts.storage import Storage
+from ten.test.basetest import ObscuroNetworkTest
+from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(ObscuroNetworkTest):

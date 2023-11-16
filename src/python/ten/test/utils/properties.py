@@ -2,7 +2,7 @@ import getpass, configparser
 from pathlib import Path
 from pysys.constants import *
 from pysys.exceptions import FileNotFoundException
-from obscuro.test.utils.threading import thread_num
+from ten.test.utils.threading import thread_num
 
 
 class Properties:

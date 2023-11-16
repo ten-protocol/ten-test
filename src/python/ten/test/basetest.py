@@ -6,16 +6,16 @@ from pysys.basetest import BaseTest
 from pysys.constants import PROJECT, BACKGROUND
 from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
-from obscuro.test.persistence.nonce import NoncePersistence
-from obscuro.test.persistence.contract import ContractPersistence
-from obscuro.test.utils.properties import Properties
-from obscuro.test.networks.default import DefaultPostLondon
-from obscuro.test.networks.ganache import Ganache
-from obscuro.test.networks.goerli import Goerli
-from obscuro.test.networks.arbitrum import ArbitrumSepolia
-from obscuro.test.networks.sepolia import Sepolia
-from obscuro.test.networks.obscuro import Obscuro
-from obscuro.test.networks.obscuro import ObscuroL1Geth, ObscuroL1Sepolia
+from ten.test.persistence.nonce import NoncePersistence
+from ten.test.persistence.contract import ContractPersistence
+from ten.test.utils.properties import Properties
+from ten.test.networks.default import DefaultPostLondon
+from ten.test.networks.ganache import Ganache
+from ten.test.networks.goerli import Goerli
+from ten.test.networks.arbitrum import ArbitrumSepolia
+from ten.test.networks.sepolia import Sepolia
+from ten.test.networks.obscuro import Obscuro
+from ten.test.networks.obscuro import ObscuroL1Geth, ObscuroL1Sepolia
 
 
 class GenericNetworkTest(BaseTest):

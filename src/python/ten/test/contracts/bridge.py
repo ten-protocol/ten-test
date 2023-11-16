@@ -1,6 +1,6 @@
 import os.path, json
 from pysys.constants import *
-from obscuro.test.utils.properties import Properties
+from ten.test.utils.properties import Properties
 
 
 class Management:

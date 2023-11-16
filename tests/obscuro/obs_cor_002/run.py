@@ -1,7 +1,7 @@
-from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.utils.properties import Properties
-from obscuro.test.contracts.relevancy import Relevancy
-from obscuro.test.helpers.log_subscriber import AllEventsLogSubscriber
+from ten.test.basetest import ObscuroNetworkTest
+from ten.test.utils.properties import Properties
+from ten.test.contracts.relevancy import Relevancy
+from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
 class PySysTest(ObscuroNetworkTest):

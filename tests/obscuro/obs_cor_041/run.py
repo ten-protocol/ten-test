@@ -1,6 +1,6 @@
 import secrets
-from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.contracts.expensive import ExpensiveContract
+from ten.test.basetest import ObscuroNetworkTest
+from ten.test.contracts.expensive import ExpensiveContract
 
 
 class PySysTest(ObscuroNetworkTest):

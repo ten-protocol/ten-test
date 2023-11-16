@@ -1,5 +1,5 @@
-from obscuro.test.networks.default import DefaultPostLondon
-from obscuro.test.utils.properties import Properties
+from ten.test.networks.default import DefaultPostLondon
+from ten.test.utils.properties import Properties
 
 
 class Ganache(DefaultPostLondon):

@@ -1,6 +1,6 @@
 from pysys.constants import PROJECT, BACKGROUND
-from obscuro.test.utils.properties import Properties
-from obscuro.test.networks.obscuro import Obscuro
+from ten.test.utils.properties import Properties
+from ten.test.networks.obscuro import Obscuro
 
 
 class Node:

@@ -1,6 +1,6 @@
 import os
 from pysys.constants import PROJECT, BACKGROUND
-from obscuro.test.utils.properties import Properties
+from ten.test.utils.properties import Properties
 
 
 class WalletExtension:

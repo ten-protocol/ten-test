@@ -1,8 +1,8 @@
 import re
 from pysys.constants import FAILED, PASSED
 from web3.exceptions import TimeExhausted
-from obscuro.test.basetest import GenericNetworkTest
-from obscuro.test.contracts.gas import GasConsumerBalance
+from ten.test.basetest import GenericNetworkTest
+from ten.test.contracts.gas import GasConsumerBalance
 
 
 class PySysTest(GenericNetworkTest):

@@ -1,6 +1,6 @@
 from pysys.constants import *
 from collections import namedtuple
-from obscuro.test.utils.properties import Properties
+from ten.test.utils.properties import Properties
 BuildInfo = namedtuple('BuildInfo', 'branch hash date')
 
 

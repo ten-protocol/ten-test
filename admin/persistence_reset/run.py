@@ -1,7 +1,7 @@
 from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
-from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.utils.properties import Properties
+from ten.test.basetest import ObscuroNetworkTest
+from ten.test.utils.properties import Properties
 
 
 class PySysTest(ObscuroNetworkTest):
