@@ -1,23 +1,22 @@
 <h1 align="center">
   <picture>
-    <img alt="obscuro logo" src=".assets/logo_fade.gif" width="720px"/>
+    <img alt="ten logo" src=".assets/ten_banner_with_title.png" width="720px"/>
   </picture>
-  Obscuro Test Framework 
 </h1>
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 ![Python](https://img.shields.io/badge/python-3.9-blue.svg)
-[![Run local tests](https://github.com/obscuronet/obscuro-test/actions/workflows/run_local_tests.yml/badge.svg)](https://github.com/obscuronet/obscuro-test/actions/workflows/run_local_tests.yml)
-[![Run merge tests](https://github.com/obscuronet/obscuro-test/actions/workflows/run_merge_tests.yml/badge.svg)](https://github.com/obscuronet/obscuro-test/actions/workflows/run_merge_tests.yml)
+[![Run local tests](https://github.com/ten-protocol/ten-test/actions/workflows/run_local_tests.yml/badge.svg)](https://github.com/ten-protocol/ten-test/actions/workflows/run_local_tests.yml)
+[![Run merge tests](https://github.com/ten-protocol/ten-test/actions/workflows/run_merge_tests.yml/badge.svg)](https://github.com/ten-protocol/ten-test/actions/workflows/run_merge_tests.yml)
 
-Project repo for running end to end system tests against a variety of networks, with [obscuro](https://obscu.ro/) being 
-the primary network under test. Other networks supported include [ganache](https://trufflesuite.com/ganache/), 
-[goerli via infura](https://infura.io/), [arbitrum](https://arbitrum.io/) and [sepolia](https://sepolia.dev/). The repo 
-uses the [pysys](https://pysys-test.github.io/pysys-test/) test framework to manage all tests and their execution. All 
-tests are fully system level using [web3.py](https://web3py.readthedocs.io/en/stable/) to interact with the networks 
-which are managed outside the scope of the tests (with the exception of ganache which can be started locally). Note the 
-project is currently under active development and further information on running the tests will be added to this readme
-over time. 
+
+Project repo for running end to end system tests against a variety of networks, with [Ten](https://obscu.ro/) being 
+the primary network under test. Other networks supported include [Ganache](https://trufflesuite.com/ganache/), 
+[Arbitrum](https://arbitrum.io/) and [Sepolia](https://sepolia.dev/). The repo uses the [pysys](https://pysys-test.github.io/pysys-test/) 
+test framework to manage all tests and their execution. All tests are fully system level using [web3.py](https://web3py.readthedocs.io/en/stable/) 
+to interact with the networks which are managed outside the scope of the tests (with the exception of ganache which can 
+be started locally). Note the project is currently under active development and further information on running the tests 
+will be added to this readme over time. 
 
 Repository Structure
 --------------------
@@ -28,34 +27,34 @@ The top level structure of the project is as below;
 ├── .github              # Github configuration including workflows
 ├── .default.properties  # Default properties file detailing connection and keys required for running 
 ├── pysysproject.xml     # The pysys project file detailing configuration options
-├── get_artifacts.sh     # Build script to build artifacts from go-obscuro required for running Obscuro tests
-├── admin                # Used for administering Obscuro testnet 
-├── artifacts            # Directory to store artifacts for running Obscuro tests
+├── get_artifacts.sh     # Build script to build artifacts from go-ten required for running Ten protocol tests
+├── admin                # Used for administering the Ten testnet 
+├── artifacts            # Directory to store artifacts for running Ten tests
 ├── src                  # The source root for all test code
 │    ├── javascript      # A library of javascript client tooling
 │    ├── python          # The python source root for pysys extensions
 │    └── solidity        # A library of smart contracts 
 ├── tests                # The test root for all tests 
 │    ├── generic         # Network agnostic tests 
-│    └── obscuro         # Obscuro specific tests 
+│    └── ten             # Ten specific tests 
 └── utils                # The project utils root for utilities used by the tests
      ├── docker          # Docker build and run files
      ├── github          # Azure VM github self hosted running build files
-     ├── release         # Utilitiy scripts for making a new release of go-obscuro
+     ├── release         # Utilitiy scripts for making a new release of go-ten
      └── testnet         # Utilities for building and interacting with a local testnet
 ```
 
 The [.default.properties](./.default.properties) file contains properties for running the tests that are common to any 
-user. User specific properties should be added into a `~/.obscurotest/user.properties` file.  Properties will first be 
-looked for in the `~/.obscurotest/user.properties` should it exist, and if not will fall back to the default properties. 
+user. User specific properties should be added into a `~/.tentest/user.properties` file.  Properties will first be 
+looked for in the `~/.tentest/user.properties` should it exist, and if not will fall back to the default properties. 
 
 
 Setup and run locally using docker
 ----------------------------------
 Should you wish to run the tests locally on your host machine against a local testnet, the easiest approach is to use
 the docker image for the e2e tests. Prior to running, a local testnet should be built and run as described in the 
-`go-obscuro/README.md` file (see the section "Building and running a local testnet"). Once the local testnet is running, 
-the e2e docker image can be pulled down from the Azure container registry and run from the root of the `obscuro-test`
+`go-ten/README.md` file (see the section "Building and running a local testnet"). Once the local testnet is running, 
+the e2e docker image can be pulled down from the Azure container registry and run from the root of the `ten-test`
 repository using the below; 
 
 ```bash
@@ -63,15 +62,15 @@ repository using the below;
 ```
 
 where version should be `latest` if the latest build from main is required, or otherwise the released version of 
-`go-obscuro` and `obscuro-test` e.g. 0.19 , 0.18 etc. Note that this represents the head of the relevant releases 
+`go-ten` and `ten-test` e.g. 0.19 , 0.18 etc. Note that this represents the head of the relevant releases 
 branch and therefore will be the latest patch release of that major.minor version. 
 
 
 Setup and run locally on host machine
 -------------------------------------
-As stated earlier, running the tests requires the `obscuro-test` repository to be cloned in the same parent directory 
-as `go-obscuro`, and the dependent artifacts to be built (these are the wallet extension, and the ABIs for the bridge
-contracts). To build the artifacts run `./get_artifacts.sh` in the root of the `obscuro-test` checkout. To install all 
+As stated earlier, running the tests requires the `ten-test` repository to be cloned in the same parent directory 
+as `go-ten`, and the dependent artifacts to be built (these are the wallet extension, and the ABIs for the bridge
+contracts). To build the artifacts run `./get_artifacts.sh` in the root of the `ten-test` checkout. To install all 
 dependencies for running the tests use the following on OSX or Linux accordingly;
 
 ### OSX (Monterey 12.4)
@@ -129,11 +128,11 @@ python3 -m pip install py-solc-x
 ```
 
 Once installed it should be possible to run all tests from the pysys.py cli as described in the following sections. Note
-that depending on differences in your installation, and should you want to add in your own accounts on Goerli or Arbitrum, 
+that depending on differences in your installation, and should you want to add in your own accounts on Sepolia or Arbitrum, 
 you may need to override the `.default.properties` file by creating a user specific properties file in
-`~/.obscurotest/user.properties`. Common overrides will include the path to various binaries used when running the tests, 
+`~/.tentest/user.properties`. Common overrides will include the path to various binaries used when running the tests, 
 and account details. An example of an override properties file is as given below where binary locations and the project ID 
-for Goerli and Arbitrum are set as overrides, along with real accounts as set up within metamask;
+for Sepolia and Arbitrum are set as overrides, along with real accounts as set up within metamask;
 
 ```
 [binaries.darwin]
@@ -148,21 +147,21 @@ Account2PK=<private key of account 2>
 Account3PK=<private key of account 3>
 Account4PK=<private key of account 4>
 
-[env.goerli]
+[env.sepolia]
 ProjectID = <id>
 
-[env.arbitrum]
+[env.arbitrum.sepolia]
 APIKey = <api key>
 ```
 
 Print and run tests
 --------------------
-Each test is a separate directory within `obscuro-test/tests` where the directory name denotes the testcase id. Each 
+Each test is a separate directory within `ten-test/tests` where the directory name denotes the testcase id. Each 
 test will contain a `run.py` file (the execution and validation steps) and a `pysystest.xml` file (metadata about the 
 test such as its title, purpose, supported modes it can be run in). Note that the tests can be run against a variety 
 of networks using the `-m mode` option. The E2E tests have specifically been designed such that any generic tests 
-can be run against Obscuro, Ganache, Arbitrum or Goerli. To print out information on the tests, or to run them 
-against a particular network, change directory to `obscuro-test/tests` and run as below;
+can be run against Ten, Ganache, Arbitrum or Sepolia. To print out information on the tests, or to run them 
+against a particular network, change directory to `ten-test/tests` and run as below;
 
 ```bash
 # print out test titles
@@ -171,36 +170,33 @@ pysys.py print
 # print out full test details
 pysys.py print -f
 
-# run the tests against Obscuro sepolia-testnet
-pysys.py run -m obscuro.sepolia
+# run the tests against Ten sepolia-testnet
+pysys.py run -m ten.sepolia
 
-# run the tests against Obscuro uat-testnet
-pysys.py run  -m obscuro.uat
+# run the tests against Ten uat-testnet
+pysys.py run  -m ten.uat
 
-# run the tests against Obscuro dev-testnet
-pysys.py run -m obscuro.dev 
+# run the tests against Ten dev-testnet
+pysys.py run -m ten.dev 
 
-# run the tests against Obscuro local testnet
-pysys.py run -m obscuro.local
+# run the tests against Ten local testnet
+pysys.py run -m ten.local
 
 # run the tests against a local ganache network 
 pysys.py run -m ganache
 
 # run the tests against the Arbitrum network 
-pysys.py run -m arbitrum
-
-# run the tests against the Goerli network 
-pysys.py run -m goerli
+pysys.py run -m arbitrum.sepolia
 
 # run the tests against the Sepolia network 
 pysys.py run -m sepolia
 ```
 
-Note that should you wish to run against an Obscuro local testnet, you will need to build and run the local testnet 
-yourself using the approach as described in the [go-obscuro readme](https://github.com/obscuronet/go-obscuro#building-and-running-a-local-testnet). 
+Note that should you wish to run against a Ten local testnet, you will need to build and run the local testnet 
+yourself using the approach as described in the [go-ten readme](https://github.com/ten-protocol/go-ten#building-and-running-a-local-testnet). 
 Both the local testnet and the faucet will need to be started. To run against ganache the test framework will start the 
 local ganache network on your behalf, and tear it down when test execution is complete. To run the same tests against 
-Goerli or Arbitrum, the `~/.obscurotest/user.properties` should be created as described earlier. 
+Sepolia or Arbitrum, the `~/.tentest/user.properties` should be created as described earlier. 
 
 
 Running a specific test or range of tests
@@ -214,17 +210,17 @@ filter based on the user request e.g.
 
 ```bash
 # run a specific test
-pysys.py run -m obscuro.sepolia gen_cor_001
+pysys.py run -m ten.sepolia gen_cor_001
 
 # run a range of tests (using python list slicing syntax)
-pysys.py run -m obscuro.sepolia gen_cor_001:gen_cor_004
-pysys.py run -m obscuro.sepolia gen_cor_003:
+pysys.py run -m ten.sepolia gen_cor_001:gen_cor_004
+pysys.py run -m ten.sepolia gen_cor_003:
 
 # run a test multiple times
-pysys.py run -m obscuro.sepolia -c 5 gen_cor_003
+pysys.py run -m ten.sepolia -c 5 gen_cor_003
 
 # run a test with full verbosity logging
-pysys.py run -m obscuro.sepolia -v DEBUG gen_cor_003
+pysys.py run -m ten.sepolia -v DEBUG gen_cor_003
 ```
 
 
