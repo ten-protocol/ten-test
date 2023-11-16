@@ -25,7 +25,7 @@ class PySysTest(ObscuroNetworkTest):
 
     def client(self, network, contract, key, value):
         private_key = secrets.token_hex(32)
-        self.distribute_native(Web3().eth.account.privateKeyToAccount(private_key), 0.01)
+        self.distribute_native(Web3().eth.account.privateKeyToAccount(private_key), 0.001)
         network.connect(self, private_key=private_key, check_funds=False)
 
         # create the client
