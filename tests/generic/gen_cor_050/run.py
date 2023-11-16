@@ -12,7 +12,7 @@ class PySysTest(GenericNetworkTest):
         network = self.get_network_connection()
         web3, account = network.connect_account1(self, web_socket=True)
 
-        # go through a proxy to log websocket communications (don;t think the proxy works on obscuro
+        # go through a proxy to log websocket communications (don't think the proxy works on Ten
         # due to params in the url so need to investigate
         if self.PROXY:
             ws_url = WebServerProxy.create(self).run(network.connection_url(web_socket=True), 'proxy.logs')

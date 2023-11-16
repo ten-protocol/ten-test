@@ -5,7 +5,7 @@
         <title>Gas - fill the gas limit with an expensive contract call</title>
         <purpose><![CDATA[
 
-Skipped due to https://github.com/obscuronet/obscuro-internal/issues/2199.
+Skipped due to https://github.com/ten-protocol/ten-internal/issues/2199.
 ]]>
         </purpose>
     </description>

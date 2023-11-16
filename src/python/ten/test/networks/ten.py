@@ -103,7 +103,7 @@ class Ten(DefaultPreLondon):
             self.PORT = wallet.port
             self.WS_PORT = wallet.ws_port
         else:
-            if test.is_local_obscuro():
+            if test.is_local_ten():
                 wallet = WalletExtension.start(test, name=name)
                 self.name = name
                 self.HOST = props.host_http(test.env)

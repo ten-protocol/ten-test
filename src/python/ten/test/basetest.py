@@ -61,16 +61,16 @@ class GenericNetworkTest(BaseTest):
         self.nonce_db.close()
         self.contract_db.close()
 
-    def is_obscuro(self):
+    def is_ten(self):
         """Return true if we are running against a Ten network. """
         return self.env in ['ten.sepolia', 'ten.uat', 'ten.dev', 'ten.local']
 
-    def is_local_obscuro(self):
+    def is_local_ten(self):
         """Return true if we are running against a local Ten network. """
         return self.env in ['ten.local']
 
-    def is_sepolia_obscuro(self):
-        """Return true if we are running against a sepolia Obscuro network. """
+    def is_sepolia_ten(self):
+        """Return true if we are running against a sepolia Ten network. """
         return self.env in ['ten.sepolia']
 
     def run_python(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
@@ -185,7 +185,7 @@ class GenericNetworkTest(BaseTest):
 
     def get_network_connection(self, name='primary_connection', **kwargs):
         """Get the network connection."""
-        if self.is_obscuro():
+        if self.is_ten():
             return Ten(self, name, **kwargs)
         elif self.env == 'goerli':
             return Goerli(self, name, **kwargs)
@@ -200,22 +200,22 @@ class GenericNetworkTest(BaseTest):
 
     def get_l1_network_connection(self, name='primary_l1_connection', **kwargs):
         """Get the layer 1 network connection used by a layer 2."""
-        if self.is_obscuro() and self.env != 'ten.sepolia':
+        if self.is_ten() and self.env != 'ten.sepolia':
             return TenL1Geth(self, name, **kwargs)
-        elif self.is_obscuro() and self.env == 'ten.sepolia':
+        elif self.is_ten() and self.env == 'ten.sepolia':
             return TenL1Sepolia(self, name, **kwargs)
         return DefaultPostLondon(self, name, **kwargs)
 
 
 class TenNetworkTest(GenericNetworkTest):
-    """The test used by all Obscuro specific network testcases.
+    """The test used by all Ten specific network testcases.
 
-    Test class specific for the Obscuro Network. Provides utilities for funding native ETH and ERC20 tokens in the layer1 and
-    layer2 of an Obscuro Network.
+    Test class specific for the Ten Network. Provides utilities for funding native ETH and ERC20 tokens in the layer1 and
+    layer2 of an Ten Network.
     """
 
     def get_total_transactions(self):
-        """Return the total number of L2 transactions on Obscuro. """
+        """Return the total number of L2 transactions on Ten. """
         data = {"jsonrpc": "2.0", "method": "obscuroscan_getTotalTransactions", "params": [], "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return int(response.json()['result'])

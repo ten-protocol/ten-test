@@ -36,10 +36,9 @@ class TenRunnerPlugin():
             runner.log.info('   ten.uat       Ten uat testnet')
             runner.log.info('   ten.dev       Ten dev testnet')
             runner.log.info('   ten.local     Ten local testnet')
-            runner.log.info('   goerli            Goerli Network')
-            runner.log.info('   ganache           Ganache Network started by the framework')
-            runner.log.info('   arbitrum          Arbitrum Network')
-            runner.log.info('   sepolia           Sepolia Network')
+            runner.log.info('   arbitrum      Arbitrum Network')
+            runner.log.info('   ganache       Ganache Network started by the framework')
+            runner.log.info('   sepolia       Sepolia Network')
             sys.exit()
 
         self.env = runner.mode
@@ -75,7 +74,7 @@ class TenRunnerPlugin():
                 gateway_url = None
                 account = Web3().eth.account.privateKeyToAccount(Properties().fundacntpk())
 
-                if self.is_local_obscuro():
+                if self.is_local_ten():
                     hprocess, port = self.run_wallet(runner)
                     gateway_url = 'http://127.0.0.1:%d' % port
                     runner.log.info('Joining network using url %s', '%s/v1/join/' % gateway_url)
@@ -112,7 +111,7 @@ class TenRunnerPlugin():
                     nonce_db.delete_environment(self.env)
                     contracts_db.delete_environment(self.env)
 
-                if balance < 200 and not self.is_sepolia_obscuro():
+                if balance < 200 and not self.is_sepolia_ten():
                     runner.log.info('Funded key balance below threshold ... making faucet call')
                     self.fund_eth_from_faucet_server(runner)
                     self.fund_eth_from_faucet_server(runner)
@@ -188,12 +187,12 @@ class TenRunnerPlugin():
         """Return true if we are running against a Ten network. """
         return self.env in ['ten.sepolia', 'ten.uat', 'ten.dev', 'ten.local']
 
-    def is_local_obscuro(self):
+    def is_local_ten(self):
         """Return true if we are running against a local Ten network. """
         return self.env in ['ten.local']
 
-    def is_sepolia_obscuro(self):
-        """Return true if we are running against a sepolia Obscuro network. """
+    def is_sepolia_ten(self):
+        """Return true if we are running against a sepolia Ten network. """
         return self.env in ['ten.sepolia']
 
     def fund_eth_from_faucet_server(self, runner):

@@ -1,6 +1,6 @@
-Admin controls on Obscuro Testnet
+Admin controls on Ten Testnet
 =================================
-This directory contains utilities to perform admin operations on Obscuro testnet. Currently, this is to;
+This directory contains utilities to perform admin operations on Ten testnet. Currently, this is to;
 
 - reset all persisted nonce db entries for test users (`persistence_reset`)
 - print user balances on L2 (`print_balances`)
@@ -15,12 +15,12 @@ script will perform both functions; delete all entries for a given environment a
 count. It should be run after a new clone of the framework using;
 
 ```bash
-# to clear all persisted nonces for Obscuro testnet 
+# to clear all persisted nonces for Ten testnet 
 pysys.py run persistence_reset
 
-# to clear all persisted nonces for Obscuro dev-testnet 
+# to clear all persisted nonces for Ten dev-testnet 
 pysys.py run  -m ten.dev persistence_reset
 
-# to clear all persisted nonces for Obscuro local testnet 
+# to clear all persisted nonces for Ten local testnet 
 pysys.py run  -m ten.local persistence_reset
 ```

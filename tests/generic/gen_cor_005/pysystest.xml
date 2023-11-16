@@ -8,7 +8,7 @@ Checks you can get a block by it's hash number. A contract is deployed and the t
 block number. The parent block is returned using the hash from this, and it's block number checked to ensure it is
 one less than it's child block.
 
-Skipped - see https://github.com/obscuronet/obscuro-internal/issues/959
+Skipped - see https://github.com/ten-protocol/ten-internal/issues/959
 ]]>
         </purpose>
     </description>
@@ -24,7 +24,6 @@ Skipped - see https://github.com/obscuronet/obscuro-internal/issues/959
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
             <mode>arbitrum.sepolia</mode>
-            <mode>goerli</mode>
             <mode>ganache</mode>
             <mode>sepolia</mode>
         </modes>

@@ -106,7 +106,7 @@ class Properties:
     def port_ws(self, key): return int(self.get('env.'+key, 'PortWS'))
     def chain_id(self, key): return int(self.get('env.'+key, 'ChainID'))
 
-    # obscuro specific properties
+    # ten specific properties
     def node_host(self, key, node_host):
         if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'NodeHostDockerNetwork')
         if node_host is not None: return node_host

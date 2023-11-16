@@ -5,7 +5,7 @@
         <title>Payable: send funds to a contract address from another contract</title>
         <purpose><![CDATA[
 Uses the solidity by example Receive and Send Ether example to send funds from one contract to another, using the
-sendViaTransfer, sendViaSend, and sendViaCall function. Note that on Obscuro, no pk is used to register with the
+sendViaTransfer, sendViaSend, and sendViaCall function. Note that on Ten, no pk is used to register with the
 wallet extension for the event log subscription. The wallet extension has a viewing key already registered by account 1
 used for deploying and interacting with the contract. As the wallet extension has a single registered viewing key,
 this will be used for all relevancy checks when the subscription is made to the enclave.
@@ -23,7 +23,6 @@ this will be used for all relevancy checks when the subscription is made to the 
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
             <mode>arbitrum.sepolia</mode>
-            <mode>goerli</mode>
             <mode>ganache</mode>
             <mode>sepolia</mode>
         </modes>

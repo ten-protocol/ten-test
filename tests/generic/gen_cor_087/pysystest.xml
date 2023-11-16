@@ -22,7 +22,6 @@ and a string value of one of the parameters.
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
             <mode>arbitrum.sepolia</mode>
-            <mode>goerli</mode>
             <mode>ganache</mode>
             <mode>sepolia</mode>
         </modes>

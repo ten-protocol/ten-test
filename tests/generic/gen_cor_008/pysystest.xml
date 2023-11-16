@@ -7,7 +7,7 @@
 Checks that you can estimate gas for a contract deployment, and calls made to a contract (to store and retrieve a
 value). We assume it will cost more to deploy than store, and more to store than retrieve.
 
-Skipped due to https://github.com/obscuronet/obscuro-internal/issues/1459.
+Skipped due to https://github.com/ten-protocol/ten-internal/issues/1459.
 ]]>
         </purpose>
     </description>
@@ -23,7 +23,6 @@ Skipped due to https://github.com/obscuronet/obscuro-internal/issues/1459.
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
             <mode>arbitrum.sepolia</mode>
-            <mode>goerli</mode>
             <mode>ganache</mode>
             <mode>sepolia</mode>
         </modes>

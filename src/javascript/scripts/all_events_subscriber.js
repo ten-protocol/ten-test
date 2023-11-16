@@ -1,5 +1,5 @@
 // Subscribe to all events from a contract. Note that it is assumed the client / account has been registered
-// outside the scope of this script e.g. for use against obscuro.
+// outside the scope of this script e.g. for use against Ten.
 //
 const fs = require('fs')
 const Web3 = require('web3')
