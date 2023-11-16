@@ -1,10 +1,10 @@
 import requests, json
 from web3 import Web3
-from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.utils.properties import Properties
+from ten.test.basetest import TenNetworkTest
+from ten.test.utils.properties import Properties
 
 
-class PySysTest(ObscuroNetworkTest):
+class PySysTest(TenNetworkTest):
     L1_THRESHOLD = 5
     L2_THRESHOLD = 10
 
@@ -13,15 +13,15 @@ class PySysTest(ObscuroNetworkTest):
         url = network.connection_url()
         web3 = Web3(Web3.HTTPProvider(url))
 
-        sequencer_address = Properties().sequencer_address(key='obscuro.sepolia')
+        sequencer_address = Properties().sequencer_address(key='ten.sepolia')
         sequencer_balance = web3.fromWei(web3.eth.get_balance(sequencer_address), 'ether')
         self.log.info('Sequencer account %s balance %.6f ETH', sequencer_address, sequencer_balance)
 
-        validator_address = Properties().validator_address(key='obscuro.sepolia')
+        validator_address = Properties().validator_address(key='ten.sepolia')
         validator_balance = web3.fromWei(web3.eth.get_balance(validator_address), 'ether')
         self.log.info('Validator account %s balance %.6f ETH', validator_address, validator_balance)
 
-        deployer_address = Properties().l1_deployer_address(key='obscuro.sepolia')
+        deployer_address = Properties().l1_deployer_address(key='ten.sepolia')
         deployer_balance = web3.fromWei(web3.eth.get_balance(deployer_address), 'ether')
         self.log.info('Deployer account %s balance %.6f ETH', deployer_address, deployer_balance)
 

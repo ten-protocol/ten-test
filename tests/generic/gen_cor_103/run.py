@@ -1,11 +1,11 @@
 import secrets, os
 from web3 import Web3
-from obscuro.test.helpers.ws_proxy import WebServerProxy
-from obscuro.test.contracts.storage import KeyStorage
-from obscuro.test.basetest import ObscuroNetworkTest
+from ten.test.helpers.ws_proxy import WebServerProxy
+from ten.test.contracts.storage import KeyStorage
+from ten.test.basetest import TenNetworkTest
 
 
-class PySysTest(ObscuroNetworkTest):
+class PySysTest(TenNetworkTest):
     ITERATIONS = 10
     CLIENTS = 5
 

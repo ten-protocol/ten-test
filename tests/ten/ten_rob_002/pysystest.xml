@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Stress - multiple clients performing pure function calls, transactions, errors, fund transfers</title>
+        <purpose><![CDATA[
+In this test multiple clients are started to run concurrently against the storage, guesser and error contract, as well
+as perform fund transfers between set accounts. The intention being to perform long running interactions against the
+network and ensure that there is no outage.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>events</group>
+            <group>robustness</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

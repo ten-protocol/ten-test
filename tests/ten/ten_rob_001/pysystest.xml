@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Stress - multiple concurrent subscribers, additional clients subscribing and unsubscribing</title>
+        <purpose><![CDATA[
+A configurable number of subscribers are started to receive events from Obscuro, which stay subscribed for the duration
+of the test. Another configurable number of subscribers are started, where they continually subscribe and then
+unsubscribe once call back on successful subscription is confirmed. Once running a set number of transactions are
+performed where they are expected to be received by the permanent subscribers i.e. the concurrent subscribes and
+unsubscribes should not cause any disruption to event notification / call back.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>events</group>
+            <group>robustness</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

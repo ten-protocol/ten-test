@@ -1,9 +1,9 @@
-from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.contracts.payable import ReceiveEther, SendEther
-from obscuro.test.helpers.log_subscriber import AllEventsLogSubscriber
+from ten.test.basetest import TenNetworkTest
+from ten.test.contracts.payable import ReceiveEther, SendEther
+from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
-class PySysTest(ObscuroNetworkTest):
+class PySysTest(TenNetworkTest):
 
     def execute(self):
         network = self.get_network_connection()

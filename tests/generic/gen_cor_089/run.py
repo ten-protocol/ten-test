@@ -1,6 +1,6 @@
 import os
-from obscuro.test.basetest import GenericNetworkTest
-from obscuro.test.contracts.relevancy import Relevancy
+from ten.test.basetest import GenericNetworkTest
+from ten.test.contracts.relevancy import Relevancy
 
 
 class PySysTest(GenericNetworkTest):

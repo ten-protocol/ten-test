@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Event relevancy - four subscriptions through unique WE for each, event is relevant to only one</title>
+        <purpose><![CDATA[
+Account4 deploys the Relevancy contract, calls the method on the contract to emit the CallerIndexedAddress
+with addr = the useraccount address. The following accounts are used (in this order)
+
+  Account 4 - own wallet extension
+  Account 1 - own wallet extension
+  Account 2 - own wallet extension
+  Account 3 - own wallet extension
+
+where each account subscribes to all events on the contract using contract.events.allEvents. The result is that only
+the subscription made on account 4 sees the event (as expected).
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>events</group>
+            <group>web3js</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

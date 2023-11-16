@@ -1,7 +1,7 @@
-from obscuro.test.basetest import GenericNetworkTest
-from obscuro.test.contracts.storage import Storage
-from obscuro.test.contracts.storage import KeyStorage
-from obscuro.test.helpers.log_subscriber import FilterLogSubscriber
+from ten.test.basetest import GenericNetworkTest
+from ten.test.contracts.storage import Storage
+from ten.test.contracts.storage import KeyStorage
+from ten.test.helpers.log_subscriber import FilterLogSubscriber
 
 
 class PySysTest(GenericNetworkTest):

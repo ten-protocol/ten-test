@@ -1,5 +1,5 @@
-from obscuro.test.basetest import GenericNetworkTest
-from obscuro.test.contracts.error import Error
+from ten.test.basetest import GenericNetworkTest
+from ten.test.contracts.error import Error
 
 
 class PySysTest(GenericNetworkTest):

@@ -1,6 +1,6 @@
 import random
-from obscuro.test.basetest import GenericNetworkTest
-from obscuro.test.contracts.guesser import GuesserConstructor
+from ten.test.basetest import GenericNetworkTest
+from ten.test.contracts.guesser import GuesserConstructor
 
 
 class PySysTest(GenericNetworkTest):

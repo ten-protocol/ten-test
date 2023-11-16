@@ -1,6 +1,6 @@
 import os
-from obscuro.test.basetest import GenericNetworkTest
-from obscuro.test.contracts.storage import KeyStorage
+from ten.test.basetest import GenericNetworkTest
+from ten.test.contracts.storage import KeyStorage
 
 
 class PySysTest(GenericNetworkTest):

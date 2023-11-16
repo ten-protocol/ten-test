@@ -1,10 +1,10 @@
 from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
-from obscuro.test.basetest import ObscuroNetworkTest
-from obscuro.test.utils.properties import Properties
+from ten.test.basetest import TenNetworkTest
+from ten.test.utils.properties import Properties
 
 
-class PySysTest(ObscuroNetworkTest):
+class PySysTest(TenNetworkTest):
 
     def execute(self):
 

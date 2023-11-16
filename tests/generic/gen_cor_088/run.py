@@ -1,8 +1,8 @@
 import os
 from web3 import Web3
-from obscuro.test.basetest import GenericNetworkTest
-from obscuro.test.contracts.relevancy import Relevancy
-from obscuro.test.utils.properties import Properties
+from ten.test.basetest import GenericNetworkTest
+from ten.test.contracts.relevancy import Relevancy
+from ten.test.utils.properties import Properties
 
 
 class PySysTest(GenericNetworkTest):

@@ -1,5 +1,5 @@
-from obscuro.test.basetest import GenericNetworkTest
-from obscuro.test.contracts.erc20 import MintedERC20Token
+from ten.test.basetest import GenericNetworkTest
+from ten.test.contracts.erc20 import MintedERC20Token
 
 
 class PySysTest(GenericNetworkTest):
