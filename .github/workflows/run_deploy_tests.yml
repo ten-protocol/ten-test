@@ -12,22 +12,22 @@ jobs:
   test-run:
     runs-on: [self-hosted, Linux, X64, obscuro-test-gh-runner-02]
     steps:
-      - name: 'Check out obscuro-test'
+      - name: 'Check out ten-test'
         uses: actions/checkout@v3
         with:
-          path: ./obscuro-test
+          path: ./ten-test
 
-      - name: 'Check out go-obscuro code'
+      - name: 'Check out go-ten code'
         uses: actions/checkout@v3
         with:
-          repository: obscuronet/go-obscuro
-          path: ./go-obscuro
+          repository: ten-protocol/go-ten
+          path: ./go-ten
 
       - name: 'Build required artifacts for running tests'
         run: |
-          cd ${{ github.workspace }}/obscuro-test
+          cd ${{ github.workspace }}/ten-test
           ./get_artifacts.sh
-          ls -l ${{ github.workspace }}/obscuro-test/artifacts   
+          ls -l ${{ github.workspace }}/ten-test/artifacts   
 
       - name: 'Sleep to allow network to come up'
         run: |
@@ -36,33 +36,33 @@ jobs:
       - name: 'Run tests on sepolia-testnet on a repository_dispatch trigger of a new deployment'
         if: ${{ (github.event_name == 'repository_dispatch') && (github.event.action == 'sepolia_testnet_deployed') }}
         run: |
-          cd ${{ github.workspace }}/obscuro-test/admin
+          cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.sepolia persistence_reset
 
       - name: 'Run tests on uat-testnet on a repository_dispatch trigger of a new deployment'
         if: ${{ (github.event_name == 'repository_dispatch') && (github.event.action == 'uat_testnet_deployed') }}
         run: |
-          cd ${{ github.workspace }}/obscuro-test/admin
+          cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.uat persistence_reset
 
       - name: 'Run tests on dev-testnet on a repository_dispatch trigger of a new deployment'
         if: ${{ (github.event_name == 'repository_dispatch') && (github.event.action == 'dev_testnet_deployed') }}
         run: |
-          cd ${{ github.workspace }}/obscuro-test/admin
+          cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.dev persistence_reset
-          cd ${{ github.workspace }}/obscuro-test/tests
+          cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ten.dev -r -e skip
 
       - name: 'Run tests on dev-testnet on a repository_dispatch trigger of an upgrade'
         if: ${{ (github.event_name == 'repository_dispatch') && (github.event.action == 'dev_testnet_upgraded') }}
         run: |
-          cd ${{ github.workspace }}/obscuro-test/tests
+          cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ten.dev -r -e skip
 
       - name: 'Collate pdf output'
         if: always()
         run: |
-          cd ${{ github.workspace }}/obscuro-test
+          cd ${{ github.workspace }}/ten-test
           pdftk $(find . -name \*.pdf | sort) cat output results_graphs.pdf || true
 
       - name: 'Upload testcase output'

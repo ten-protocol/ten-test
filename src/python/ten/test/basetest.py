@@ -24,7 +24,7 @@ class GenericNetworkTest(BaseTest):
     NODE_HOST = None                # if not none overrides the node host from the properties file
 
     def __init__(self, descriptor, outsubdir, runner):
-        """Call the parent constructor but set the mode to obscuro if non is set. """
+        """Call the parent constructor but set the mode to ten if non is set. """
         super().__init__(descriptor, outsubdir, runner)
         self.env = self.mode
         self.block_time = Properties().block_time_secs(self.env)
@@ -62,11 +62,11 @@ class GenericNetworkTest(BaseTest):
         self.contract_db.close()
 
     def is_obscuro(self):
-        """Return true if we are running against an Obscuro network. """
+        """Return true if we are running against a Ten network. """
         return self.env in ['ten.sepolia', 'ten.uat', 'ten.dev', 'ten.local']
 
     def is_local_obscuro(self):
-        """Return true if we are running against a local Obscuro network. """
+        """Return true if we are running against a local Ten network. """
         return self.env in ['ten.local']
 
     def is_sepolia_obscuro(self):

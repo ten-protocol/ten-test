@@ -4,7 +4,7 @@ from ten.test.utils.properties import Properties
 
 
 class WalletExtension:
-    """A wrapper over the Obscuro wallet extension. """
+    """A wrapper over the Ten wallet extension. """
 
     @classmethod
     def start(cls, parent, port=None, ws_port=None, name=None, verbose=True):

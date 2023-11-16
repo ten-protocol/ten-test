@@ -1,5 +1,5 @@
 # Builds a local testnet and runs a set of E2E tests. Is run via a repository dispatch when a PR is merged down to
-# main in the go-obscuro repo
+# main in the go-ten repo
 #
 name: Run merge tests
 run-name: Run merge tests for PR ${{ github.event.client_payload.number }} by @${{ github.event.client_payload.owner }}
@@ -40,16 +40,16 @@ jobs:
               }
             }
 
-      - name: 'Check out obscuro-test'
+      - name: 'Check out ten-test'
         uses: actions/checkout@v3
         with:
-          path: ./obscuro-test
+          path: ./ten-test
 
-      - name: 'Check out go-obscuro code'
+      - name: 'Check out go-ten code'
         uses: actions/checkout@v3
         with:
-          repository: obscuronet/go-obscuro
-          path: ./go-obscuro
+          repository: ten-protocol/go-ten
+          path: ./go-ten
 
       - name: 'Docker clean containers and images before the test'
         run: |

@@ -19,39 +19,39 @@ jobs:
   reset-persistence:
     runs-on: [self-hosted, Linux, X64, obscuro-test-gh-runner-02]
     steps:
-      - name: 'Check out obscuro-test'
+      - name: 'Check out ten-test'
         uses: actions/checkout@v3
         with:
-          path: ./obscuro-test
+          path: ./ten-test
 
-      - name: 'Check out go-obscuro code'
+      - name: 'Check out go-ten code'
         uses: actions/checkout@v3
         with:
-          repository: obscuronet/go-obscuro
-          path: ./go-obscuro
+          repository: obscuronet/go-ten
+          path: ./go-ten
 
       - name: 'Build artifacts'
         run: |
-          cd ${{ github.workspace }}/go-obscuro/tools/walletextension/main
-          go build -o ${{ github.workspace }}/obscuro-test/artifacts/wallet_extension/wallet_extension
-          ls -l ${{ github.workspace }}/obscuro-test/artifacts
+          cd ${{ github.workspace }}/go-ten/tools/walletextension/main
+          go build -o ${{ github.workspace }}/ten-test/artifacts/wallet_extension/wallet_extension
+          ls -l ${{ github.workspace }}/ten-test/artifacts
 
       - name: 'Persistence reset on sepolia-testnet'
         if: ${{ github.event.inputs.environment == 'sepolia-testnet' }}
         run: |
-          cd ${{ github.workspace }}/obscuro-test/admin
+          cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.sepolia persistence_reset
 
       - name: 'Persistence reset on uat-testnet'
         if: ${{ github.event.inputs.environment == 'uat-testnet' }}
         run: |
-          cd ${{ github.workspace }}/obscuro-test/admin
+          cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.uat persistence_reset
 
       - name: 'Persistence reset on dev-testnet'
         if: ${{ github.event.inputs.environment == 'dev-testnet' }}
         run: |
-          cd ${{ github.workspace }}/obscuro-test/admin
+          cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.dev persistence_reset
 
       - name: 'Upload output'
@@ -60,5 +60,5 @@ jobs:
         with:
           name: test-artifact
           path: |
-            ${{ github.workspace }}/obscuro-test/**/Output
+            ${{ github.workspace }}/ten-test/**/Output
           retention-days: 1

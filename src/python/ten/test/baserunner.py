@@ -61,11 +61,13 @@ class TenRunnerPlugin():
         contracts_db.create()
 
         if self.is_obscuro() and runner.threads > 3:
-            raise Exception('Max threads against Obscuro cannot be greater than 3')
+            raise Exception('Max threads against Ten cannot be greater than 3')
+        elif self.env == 'arbitrum.sepolia' and runner.threads > 1:
+            raise Exception('Max threads against Arbitrum cannot be greater than 1')
         elif self.env == 'ganache' and runner.threads > 3:
             raise Exception('Max threads against Ganache cannot be greater than 3')
-        elif self.env == 'goerli' and runner.threads > 1:
-            raise Exception('Max threads against Goerli cannot be greater than 1')
+        elif self.env == 'sepolia' and runner.threads > 1:
+            raise Exception('Max threads against Sepolia cannot be greater than 1')
 
         try:
             if self.is_obscuro():
@@ -183,11 +185,11 @@ class TenRunnerPlugin():
         return hprocess, port
 
     def is_obscuro(self):
-        """Return true if we are running against an Obscuro network. """
+        """Return true if we are running against a Ten network. """
         return self.env in ['ten.sepolia', 'ten.uat', 'ten.dev', 'ten.local']
 
     def is_local_obscuro(self):
-        """Return true if we are running against a local Obscuro network. """
+        """Return true if we are running against a local Ten network. """
         return self.env in ['ten.local']
 
     def is_sepolia_obscuro(self):

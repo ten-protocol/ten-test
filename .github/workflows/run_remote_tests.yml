@@ -1,4 +1,4 @@
-# Run a set of E2E tests on a previously deployed obscuro network (dev-testnet, uat-testnet or sepolia-testnet). The
+# Run a set of E2E tests on a previously deployed ten network (dev-testnet, uat-testnet or sepolia-testnet). The
 # workflow is triggered either manually via a workflow dispatch, or on a schedule (dev-testnet only)
 #
 name: Run remote tests
@@ -41,46 +41,46 @@ jobs:
           DEFAULT_VERSION: 'main'
         run: echo "VERSION=${{ github.event.inputs.release || env.DEFAULT_VERSION }}" >> $GITHUB_ENV
 
-      - name: 'Check out obscuro-test'
+      - name: 'Check out ten-test'
         uses: actions/checkout@v3
         with:
-          path: ./obscuro-test
+          path: ./ten-test
 
-      - name: 'Check out go-obscuro code'
+      - name: 'Check out go-ten code'
         uses: actions/checkout@v3
         with:
-          repository: obscuronet/go-obscuro
-          path: ./go-obscuro
+          repository: ten-protocol/go-ten
+          path: ./go-ten
           ref: ${{env.VERSION}}
 
       - name: 'Build required artifacts for running tests'
         run: |
-          cd ${{ github.workspace }}/obscuro-test
+          cd ${{ github.workspace }}/ten-test
           ./get_artifacts.sh
-          ls -l ${{ github.workspace }}/obscuro-test/artifacts   
+          ls -l ${{ github.workspace }}/ten-test/artifacts   
 
       - name: 'Run tests on sepolia-testnet on a workflow_dispatch'
         if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.environment == 'sepolia-testnet') }}
         run: |
-          cd ${{ github.workspace }}/obscuro-test/tests
+          cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ten.sepolia -r ${{ github.event.inputs.arguments }}
 
       - name: 'Run tests on uat-testnet on a workflow_dispatch'
         if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.environment == 'uat-testnet') }}
         run: |
-          cd ${{ github.workspace }}/obscuro-test/tests
+          cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ten.uat -r ${{ github.event.inputs.arguments }}
 
       - name: 'Run tests on dev-testnet on a workflow_dispatch'
         if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.environment == 'dev-testnet') }}
         run: |
-          cd ${{ github.workspace }}/obscuro-test/tests
+          cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ten.dev -r ${{ github.event.inputs.arguments }}
 
       - name: 'Run tests on dev-testnet on a schedule'
         if: ${{ (github.event_name == 'schedule') }}
         run: |
-          cd ${{ github.workspace }}/obscuro-test/tests
+          cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ten.dev -e skip
 
       - name: 'Collate pdf output'

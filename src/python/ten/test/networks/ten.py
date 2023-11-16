@@ -11,7 +11,7 @@ from ten.test.helpers.wallet_extension import WalletExtension
 
 
 class TenL1Sepolia(Sepolia):
-    """The Obscuro L1 Sepolia implementation connection. """
+    """The Ten L1 Sepolia implementation connection. """
     ETH_LIMIT = 0.01
     ETH_ALLOC = 0.002
 
@@ -46,7 +46,7 @@ class TenL1Sepolia(Sepolia):
 
 
 class TenL1Geth(Geth):
-    """The Obscuro L1 Geth implementation connection. """
+    """The Ten L1 Geth implementation connection. """
     ETH_LIMIT = 1
     ETH_ALLOC = 0.5
 
@@ -79,9 +79,9 @@ class TenL1Geth(Geth):
 
 
 class Ten(DefaultPreLondon):
-    """The L2 connection for Obscuro.
+    """The L2 connection for Ten.
 
-    An obscuro network instance requires a wallet extension (gateway) to connect to the network. A gateway can
+    A ten network instance requires a wallet extension (gateway) to connect to the network. A gateway can
     support multiple connections through it through joining as a particular user_id, under which multiple accounts
     can be registered. If a gateway instance is supplied in the constructor that instance will be used. If one is
     not supplied, if running against a local testnet an instance will be created; if running against a dev testnet,

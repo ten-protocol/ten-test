@@ -10,14 +10,14 @@ jobs:
   run-check:
     runs-on: [self-hosted, Linux, X64, obscuro-test-gh-runner-02]
     steps:
-      - name: 'Check out obscuro-test'
+      - name: 'Check out ten-test'
         uses: actions/checkout@v3
         with:
-          path: ./obscuro-test
+          path: ./ten-test
 
       - name: 'Run funds check'
         run: |
-          cd ${{ github.workspace }}/obscuro-test/admin
+          cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.sepolia check_balances
 
       - name: 'Discord notification on failure'

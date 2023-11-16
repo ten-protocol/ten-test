@@ -42,17 +42,17 @@ jobs:
           echo "BRANCH=releases/v${{ github.event.inputs.release }}" >> $GITHUB_ENV
         if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.release != 'latest') }}
 
-      - name: 'Check out obscuro-test'
+      - name: 'Check out ten-test'
         uses: actions/checkout@v3
         with:
-          path: ./obscuro-test
+          path: ./ten-test
           ref: ${{env.BRANCH}}
 
-      - name: 'Check out go-obscuro code'
+      - name: 'Check out go-ten code'
         uses: actions/checkout@v3
         with:
-          repository: obscuronet/go-obscuro
-          path: ./go-obscuro
+          repository: obscuronet/go-ten
+          path: ./go-ten
           ref: ${{env.BRANCH}}
 
       - name: 'Login to Azure docker registry'
@@ -64,7 +64,7 @@ jobs:
 
       - name: 'Build the docker container'
         run: |
-          cd ${{ github.workspace }}/obscuro-test
+          cd ${{ github.workspace }}/ten-test
           ./get_artifacts.sh
           docker build -t testnetobscuronet.azurecr.io/obscuronet/obscuro_test:${{ env.VERSION }} -f ./utils/docker/image.Dockerfile .
           docker push testnetobscuronet.azurecr.io/obscuronet/obscuro_test:${{ env.VERSION }}

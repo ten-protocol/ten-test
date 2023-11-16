@@ -1,2 +1,2 @@
-"""Base package for the obscuro.test modules.
+"""Base package for the ten.test modules.
 """
