@@ -60,7 +60,7 @@ class TenRunnerPlugin():
         contracts_db = ContractPersistence(db_dir)
         contracts_db.create()
 
-        if self.is_obscuro() and runner.threads > 3:
+        if self.is_ten() and runner.threads > 3:
             raise Exception('Max threads against Ten cannot be greater than 3')
         elif self.env == 'arbitrum.sepolia' and runner.threads > 1:
             raise Exception('Max threads against Arbitrum cannot be greater than 1')
@@ -70,7 +70,7 @@ class TenRunnerPlugin():
             raise Exception('Max threads against Sepolia cannot be greater than 1')
 
         try:
-            if self.is_obscuro():
+            if self.is_ten():
                 props = Properties()
                 gateway_url = None
                 account = Web3().eth.account.privateKeyToAccount(Properties().fundacntpk())
@@ -184,7 +184,7 @@ class TenRunnerPlugin():
         runner.waitForSignal(stdout, expr='Wallet extension started', timeout=30)
         return hprocess, port
 
-    def is_obscuro(self):
+    def is_ten(self):
         """Return true if we are running against a Ten network. """
         return self.env in ['ten.sepolia', 'ten.uat', 'ten.dev', 'ten.local']
 

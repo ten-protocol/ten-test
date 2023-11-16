@@ -8,7 +8,7 @@ Uses the javascript ethers library to register a provider on block listener. Whe
 and the transactions in the block extracted to be logged. Validation is ensuring that for successful transactions
 both the notification and the correct txHashes are found as expected.
 
-Not yet supported on Obscuro - see https://github.com/obscuronet/obscuro-internal/issues/1626
+Not yet supported on Ten - see https://github.com/ten-protocol/ten-internal/issues/1626
 ]]>
         </purpose>
     </description>

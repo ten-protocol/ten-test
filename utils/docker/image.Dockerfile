@@ -24,9 +24,9 @@ RUN python3 -m pip install web3==5.31.3
 RUN python3 -m pip install pysys==1.6.1
 RUN python3 -m pip install py-solc-x
 
-RUN mkdir /home/obscuro-test
-RUN mkdir /home/go-obscuro
-COPY . /home/obscuro-test
+RUN mkdir /home/ten-test
+RUN mkdir /home/go-ten
+COPY . /home/ten-test
 
 RUN mkdir ~/.tentest
 RUN echo "[binaries.linux]" > ~/.tentest/user.properties
@@ -37,9 +37,9 @@ RUN echo "gnuplot = /usr/bin/gnuplot" >> ~/.tentest/user.properties
 RUN echo "node = /usr/bin/node" >> ~/.tentest/user.properties
 RUN echo "node_path = /usr/lib/node_modules:/usr/local/lib/node_modules" >> ~/.tentest/user.properties
 
-WORKDIR /home/obscuro-test/artifacts/wallet_extension
+WORKDIR /home/ten-test/artifacts/wallet_extension
 RUN rm wallet_extension
 RUN ln -s wallet_extension_linux_amd64 wallet_extension
 
-WORKDIR /home/obscuro-test
+WORKDIR /home/ten-test
 

@@ -20,14 +20,14 @@ on:
 
 jobs:
   run-check:
-    runs-on: [self-hosted, Linux, X64, obscuro-test-gh-runner-02]
+    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-02]
     steps:
       - name: Set the variables
         env:
           DEFAULT_VERSION: 'main'
         run: echo "VERSION=${{ github.event.inputs.release || env.DEFAULT_VERSION }}" >> $GITHUB_ENV
 
-      - name: 'Check out obscuro-test'
+      - name: 'Check out ten-test'
         uses: actions/checkout@v3
         with:
           path: ./ten-test
@@ -42,13 +42,13 @@ jobs:
 
       - name: 'Build required artifacts for running tests'
         run: |
-          cd ${{ github.workspace }}/obscuro-test
+          cd ${{ github.workspace }}/ten-test
           ./get_artifacts.sh
-          ls -l ${{ github.workspace }}/obscuro-test/artifacts   
+          ls -l ${{ github.workspace }}/ten-test/artifacts   
 
       - name: 'Run health check tests'
         run: |
-          cd ${{ github.workspace }}/obscuro-test/tests
+          cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ten.sepolia -i health -XDURATION=0
 
       - name: 'Upload testcase output'
@@ -57,7 +57,7 @@ jobs:
         with:
           name: test-artifact
           path: |
-            ${{ github.workspace }}/obscuro-test/**/Output
+            ${{ github.workspace }}/ten-test/**/Output
           retention-days: 1
 
       - name: 'Discord notification on failure'

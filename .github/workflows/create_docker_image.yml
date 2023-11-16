@@ -22,7 +22,7 @@ on:
 
 jobs:
   test-run:
-    runs-on: [self-hosted, Linux, X64, obscuro-test-gh-runner-01]
+    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-01]
     steps:
       - name: Sets env vars for latest
         run: |

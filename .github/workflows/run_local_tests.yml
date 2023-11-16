@@ -19,7 +19,7 @@ on:
 
 jobs:
   test-run:
-    runs-on: [self-hosted, Linux, X64, obscuro-test-gh-runner-01]
+    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-01]
     steps:
       - name: 'Check out ten-test'
         uses: actions/checkout@v3
@@ -49,12 +49,12 @@ jobs:
 
       - name: 'Build docker containers'
         run: |
-          cd ${{ github.workspace }}/go-obscuro/testnet
+          cd ${{ github.workspace }}/go-ten/testnet
           ./testnet-local-build_images.sh 
 
       - name: 'Start up testnet'
         run: |
-          cd ${{ github.workspace }}/go-obscuro/
+          cd ${{ github.workspace }}/go-ten/
           go run ./testnet/launcher/cmd
           echo "Run docker container log background processes"
           docker logs -f `docker ps -aqf "name=validator-host"` > validator-host.out 2>&1 &
@@ -65,36 +65,36 @@ jobs:
 
       - name: 'Start up the faucet'
         run: |
-          cd ${{ github.workspace }}/go-obscuro/tools/faucet
+          cd ${{ github.workspace }}/go-ten/tools/faucet
           ./container_run.sh --image=testnetobscuronet.azurecr.io/obscuronet/faucet:latest
 
       - name: 'Build required artifacts for running tests'
         run: |
-          cd ${{ github.workspace }}/obscuro-test
+          cd ${{ github.workspace }}/ten-test
           ./get_artifacts.sh
-          ls -l ${{ github.workspace }}/obscuro-test/artifacts   
+          ls -l ${{ github.workspace }}/ten-test/artifacts   
 
       - name: 'Do a persistence reset'
         run: |
-          cd ${{ github.workspace }}/obscuro-test/admin
+          cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.local persistence_reset
 
       - name: 'Run tests on workflow dispatch'
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
-          cd ${{ github.workspace }}/obscuro-test/tests
+          cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ten.local -r ${{ github.event.inputs.arguments }}
 
       - name: 'Run tests on schedule'
         if: ${{ github.event_name == 'schedule' }}
         run: |
-          cd ${{ github.workspace }}/obscuro-test/tests
+          cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ten.local -r -e skip 
 
       - name: 'Collate pdf output'
         if: always()
         run: |
-          cd ${{ github.workspace }}/obscuro-test
+          cd ${{ github.workspace }}/ten-test
           pdftk $(find . -name \*.pdf | sort) cat output results_graphs.pdf || true
 
       - name: 'Upload testcase output'
@@ -103,7 +103,7 @@ jobs:
         with:
           name: test-artifact
           path: |
-            ${{ github.workspace }}/obscuro-test/**/Output
+            ${{ github.workspace }}/ten-test/**/Output
           retention-days: 1
 
       - name: 'Upload container logs'
@@ -113,7 +113,7 @@ jobs:
         with:
           name: container-artifact
           path: |
-            ${{ github.workspace }}/go-obscuro/*.out
+            ${{ github.workspace }}/go-ten/*.out
           retention-days: 1
 
       - name: 'Upload performance output'
@@ -122,7 +122,7 @@ jobs:
         with:
           name: performance-artifact
           path: |
-            ${{ github.workspace }}/obscuro-test/results_graphs.pdf
+            ${{ github.workspace }}/ten-test/results_graphs.pdf
           if-no-files-found: ignore
           retention-days: 1
           

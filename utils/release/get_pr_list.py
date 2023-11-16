@@ -2,7 +2,7 @@
 # Extract a list of PRs from a given tag.
 #
 # The `git` and `gh` CLI tools should be installed, and the script should be run in a clone
-# of the go-obscuro repository.
+# of the go-ten repository.
 #
 import re, argparse
 from subprocess import Popen, PIPE
