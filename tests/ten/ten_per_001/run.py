@@ -3,11 +3,11 @@ from web3 import Web3
 from datetime import datetime
 from collections import OrderedDict
 from ten.test.contracts.error import Error
-from ten.test.basetest import ObscuroNetworkTest
+from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
 
 
-class PySysTest(ObscuroNetworkTest):
+class PySysTest(TenNetworkTest):
     ITERATIONS = 5000
 
     def execute(self):

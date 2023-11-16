@@ -4,11 +4,11 @@ from collections import OrderedDict
 from web3 import Web3
 from pysys.constants import FAILED
 from ten.test.contracts.storage import Storage
-from ten.test.basetest import ObscuroNetworkTest
+from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
 
 
-class PySysTest(ObscuroNetworkTest):
+class PySysTest(TenNetworkTest):
     ITERATIONS = 10
     CLIENTS = 5
     DURATION = 120

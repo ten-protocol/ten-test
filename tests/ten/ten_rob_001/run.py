@@ -1,12 +1,12 @@
 from web3 import Web3
 import secrets, os
 from pysys.constants import PASSED
-from ten.test.basetest import ObscuroNetworkTest
+from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.storage import Storage
 from ten.test.helpers.log_subscriber import FilterLogSubscriber
 
 
-class PySysTest(ObscuroNetworkTest):
+class PySysTest(TenNetworkTest):
     NUM_SUBSCRIBERS=4
     NUM_HAMMERS=5
     NUM_TRANSACTIONS=15

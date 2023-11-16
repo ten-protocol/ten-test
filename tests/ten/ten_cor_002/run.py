@@ -1,10 +1,10 @@
-from ten.test.basetest import ObscuroNetworkTest
+from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 from ten.test.contracts.relevancy import Relevancy
 from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
-class PySysTest(ObscuroNetworkTest):
+class PySysTest(TenNetworkTest):
 
     def execute(self):
 

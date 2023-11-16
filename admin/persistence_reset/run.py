@@ -1,10 +1,10 @@
 from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
-from ten.test.basetest import ObscuroNetworkTest
+from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 
 
-class PySysTest(ObscuroNetworkTest):
+class PySysTest(TenNetworkTest):
 
     def execute(self):
         self.log.info('Removing entries for environment %s', self.env)

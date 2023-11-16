@@ -1,10 +1,10 @@
-from ten.test.basetest import ObscuroNetworkTest
+from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.erc20 import MintedERC20Token
 from ten.test.utils.bridge import BridgeUser
 from ten.test.utils.properties import Properties
 
 
-class PySysTest(ObscuroNetworkTest):
+class PySysTest(TenNetworkTest):
     NAME = 'HubbaBubbaBandit'
     SYMB = 'HBB'
     TIMEOUT = 30

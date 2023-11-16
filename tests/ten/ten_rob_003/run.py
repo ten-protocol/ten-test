@@ -1,11 +1,11 @@
 import secrets, random, time
-from ten.test.basetest import ObscuroNetworkTest
+from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.storage import Storage
 from ten.test.helpers.wallet_extension import WalletExtension
 from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
-class PySysTest(ObscuroNetworkTest):
+class PySysTest(TenNetworkTest):
     CLIENTS = 500
     TRANSACTIONS = 10
 

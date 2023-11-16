@@ -1,8 +1,8 @@
-from ten.test.basetest import ObscuroNetworkTest
+from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.payable import ReceiveEther
 
 
-class PySysTest(ObscuroNetworkTest):
+class PySysTest(TenNetworkTest):
 
     def execute(self):
         # the deployer goes through the test wallet extension

@@ -1,8 +1,8 @@
-from ten.test.basetest import ObscuroNetworkTest
+from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.storage import Storage
 
 
-class PySysTest(ObscuroNetworkTest):
+class PySysTest(TenNetworkTest):
 
     def execute(self):
         network = self.get_network_connection()

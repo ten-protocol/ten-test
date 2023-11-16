@@ -10,7 +10,7 @@ from web3.middleware import geth_poa_middleware
 from ten.test.helpers.wallet_extension import WalletExtension
 
 
-class ObscuroL1Sepolia(Sepolia):
+class TenL1Sepolia(Sepolia):
     """The Obscuro L1 Sepolia implementation connection. """
     ETH_LIMIT = 0.01
     ETH_ALLOC = 0.002
@@ -45,7 +45,7 @@ class ObscuroL1Sepolia(Sepolia):
         return web3, account
 
 
-class ObscuroL1Geth(Geth):
+class TenL1Geth(Geth):
     """The Obscuro L1 Geth implementation connection. """
     ETH_LIMIT = 1
     ETH_ALLOC = 0.5
@@ -78,7 +78,7 @@ class ObscuroL1Geth(Geth):
         return web3, account
 
 
-class Obscuro(DefaultPreLondon):
+class Ten(DefaultPreLondon):
     """The L2 connection for Obscuro.
 
     An obscuro network instance requires a wallet extension (gateway) to connect to the network. A gateway can

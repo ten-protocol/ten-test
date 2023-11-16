@@ -1,9 +1,9 @@
 import os, secrets
 from web3 import Web3
-from ten.test.basetest import ObscuroNetworkTest
+from ten.test.basetest import TenNetworkTest
 
 
-class PySysTest(ObscuroNetworkTest):
+class PySysTest(TenNetworkTest):
     NUM_CLIENTS = 10
     NUM_ITERATIONS = 100
     ADDITIONAL_ACCOUNTS = 8

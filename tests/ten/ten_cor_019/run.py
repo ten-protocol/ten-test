@@ -1,9 +1,9 @@
 from pysys.constants import FAILED, PASSED
-from ten.test.basetest import ObscuroNetworkTest
+from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.relevancy import Relevancy
 
 
-class PySysTest(ObscuroNetworkTest):
+class PySysTest(TenNetworkTest):
 
     def execute(self):
         # first wallet extension, two accounts, account 1 transacts

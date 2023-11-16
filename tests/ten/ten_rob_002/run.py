@@ -1,13 +1,13 @@
 import os, secrets
 from web3 import Web3
 from pysys.constants import PROJECT
-from ten.test.basetest import ObscuroNetworkTest
+from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.guesser import Guesser
 from ten.test.contracts.storage import Storage
 from ten.test.contracts.error import Error
 
 
-class PySysTest(ObscuroNetworkTest):
+class PySysTest(TenNetworkTest):
     NUM_FUNDS = 5
     NUM_GUESSERS = 4
     NUM_STORAGE = 4

@@ -1,8 +1,8 @@
 from pysys.constants import PASSED
-from ten.test.basetest import ObscuroNetworkTest
+from ten.test.basetest import TenNetworkTest
 
 
-class PySysTest(ObscuroNetworkTest):
+class PySysTest(TenNetworkTest):
 
     def execute(self):
         txs = self.get_latest_transactions(1)

@@ -1,10 +1,10 @@
 import requests, json
 from web3 import Web3
-from ten.test.basetest import ObscuroNetworkTest
+from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 
 
-class PySysTest(ObscuroNetworkTest):
+class PySysTest(TenNetworkTest):
     L1_THRESHOLD = 5
     L2_THRESHOLD = 10
 

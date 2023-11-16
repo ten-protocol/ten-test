@@ -14,8 +14,8 @@ from ten.test.networks.ganache import Ganache
 from ten.test.networks.goerli import Goerli
 from ten.test.networks.arbitrum import ArbitrumSepolia
 from ten.test.networks.sepolia import Sepolia
-from ten.test.networks.obscuro import Obscuro
-from ten.test.networks.obscuro import ObscuroL1Geth, ObscuroL1Sepolia
+from ten.test.networks.ten import Ten
+from ten.test.networks.ten import TenL1Geth, TenL1Sepolia
 
 
 class GenericNetworkTest(BaseTest):
@@ -186,7 +186,7 @@ class GenericNetworkTest(BaseTest):
     def get_network_connection(self, name='primary_connection', **kwargs):
         """Get the network connection."""
         if self.is_obscuro():
-            return Obscuro(self, name, **kwargs)
+            return Ten(self, name, **kwargs)
         elif self.env == 'goerli':
             return Goerli(self, name, **kwargs)
         elif self.env == 'ganache':
@@ -201,13 +201,13 @@ class GenericNetworkTest(BaseTest):
     def get_l1_network_connection(self, name='primary_l1_connection', **kwargs):
         """Get the layer 1 network connection used by a layer 2."""
         if self.is_obscuro() and self.env != 'ten.sepolia':
-            return ObscuroL1Geth(self, name, **kwargs)
+            return TenL1Geth(self, name, **kwargs)
         elif self.is_obscuro() and self.env == 'ten.sepolia':
-            return ObscuroL1Sepolia(self, name, **kwargs)
+            return TenL1Sepolia(self, name, **kwargs)
         return DefaultPostLondon(self, name, **kwargs)
 
 
-class ObscuroNetworkTest(GenericNetworkTest):
+class TenNetworkTest(GenericNetworkTest):
     """The test used by all Obscuro specific network testcases.
 
     Test class specific for the Obscuro Network. Provides utilities for funding native ETH and ERC20 tokens in the layer1 and
