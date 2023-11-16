@@ -2,10 +2,9 @@
   <picture>
     <img alt="ten logo" src=".assets/ten_banner.png"/>
   </picture> 
+Ten Protocol Test Framework
 </h1>
 
-Ten Protocol Test Framework
----------------------------
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 ![Python](https://img.shields.io/badge/python-3.9-blue.svg)
 [![Run local tests](https://github.com/ten-protocol/ten-test/actions/workflows/run_local_tests.yml/badge.svg)](https://github.com/ten-protocol/ten-test/actions/workflows/run_local_tests.yml)
