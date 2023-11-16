@@ -1,6 +1,6 @@
 <h1 align="center">
   <picture>
-    <img alt="ten logo" src=".assets/ten_banner_title.png" width="720px"/>
+    <img alt="ten logo" src=".assets/ten_banner_with_title.png" width="720px"/>
   </picture>
 </h1>
 
