@@ -10,7 +10,6 @@
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>obscuro.sepolia</mode>
