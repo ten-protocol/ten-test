@@ -6,7 +6,7 @@
         <purpose><![CDATA[
 Deleting a contract through SELFDESTRUCT should be worth 24,000 gas.
 
-Skipped due to https://github.com/obscuronet/obscuro-internal/issues/2199
+Skipped due to https://github.com/obscurten-protocolonet/ten-internal/issues/2199
 ]]>
         </purpose>
     </description>

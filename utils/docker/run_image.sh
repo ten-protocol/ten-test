@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Script to run the latest image of the VM for running obscuro test
+# Script to run the latest image of the VM for running ten test
 #
 help_and_exit() {
     echo ""

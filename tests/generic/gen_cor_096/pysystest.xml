@@ -8,7 +8,7 @@ Uses the javascript ethers library to register a provider on pending transaction
 triggered another listener is created to wait for that txHash to be mined. Validation is ensuring that for both
 callbacks are received.
 
-Not yet supported on Obscuro - see https://github.com/obscuronet/obscuro-internal/issues/1627
+Not yet supported on Ten - see https://github.com/ten-protocol/ten-internal/issues/1627
 ]]>
         </purpose>
     </description>

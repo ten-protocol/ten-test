@@ -5,10 +5,10 @@ Run the utility scripts to create the VM and connect;
 
 ```bash
 # create the VM
- ./utils/github/create-runner.sh --name=obscuro-test-gh-runner-01 
+ ./utils/github/create-runner.sh --name=ten-test-gh-runner-01 
  
 # connect to the VM
-./utils/github/connect-runner.sh --name=obscuro-test-gh-runner-01  
+./utils/github/connect-runner.sh --name=ten-test-gh-runner-01  
 ```
 
 ## Install dependencies
@@ -25,12 +25,12 @@ export SOLC_VERSION=0.8.18
 
 # set permissions for docker
 sudo groupadd docker
-sudo usermod -aG docker obscuro
+sudo usermod -aG docker tenadmin
 newgrp docker
 ```
 
 ## Configure the runner
-Go to the [runners](https://github.com/obscuronet/obscuro-test/settings/actions/runners) section of the `obscuro-test`
+Go to the [runners](https://github.com/ten-protocol/ten-test/settings/actions/runners) section of the `ten-test`
 repo and click on new runner. Follow the commands there to install and run the new runner. 
 
 ## Known issues
