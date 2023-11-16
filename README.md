@@ -4,14 +4,14 @@
   </picture> 
 </h1>
 
+Ten Protocol Test Framework
+---------------------------
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 ![Python](https://img.shields.io/badge/python-3.9-blue.svg)
 [![Run local tests](https://github.com/ten-protocol/ten-test/actions/workflows/run_local_tests.yml/badge.svg)](https://github.com/ten-protocol/ten-test/actions/workflows/run_local_tests.yml)
 [![Run merge tests](https://github.com/ten-protocol/ten-test/actions/workflows/run_merge_tests.yml/badge.svg)](https://github.com/ten-protocol/ten-test/actions/workflows/run_merge_tests.yml)
 
 
-Ten Protocol Test Framework
----------------------------
 Project repo for running end to end system tests against a variety of networks, with [ten](https://obscu.ro/) being 
 the primary network under test. Other networks supported include [ganache](https://trufflesuite.com/ganache/), 
 [goerli via infura](https://infura.io/), [arbitrum](https://arbitrum.io/) and [sepolia](https://sepolia.dev/). The repo 
