@@ -1,4 +1,4 @@
-<h1 align="center">
+<h1>
   <picture>
     <img alt="ten logo" src=".assets/ten_banner.png" width="720px"/>
   </picture>
