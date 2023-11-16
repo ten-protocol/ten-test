@@ -22,7 +22,6 @@ a callback function to process the result and any potential errors.
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
             <mode>arbitrum.sepolia</mode>
-            <mode>goerli</mode>
             <mode>ganache</mode>
             <mode>sepolia</mode>
         </modes>

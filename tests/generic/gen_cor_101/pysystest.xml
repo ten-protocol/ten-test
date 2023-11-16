@@ -18,7 +18,6 @@
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
             <mode>arbitrum.sepolia</mode>
-            <mode>goerli</mode>
             <mode>sepolia</mode>
         </modes>
     </classification>

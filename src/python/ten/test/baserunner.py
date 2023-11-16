@@ -36,10 +36,9 @@ class TenRunnerPlugin():
             runner.log.info('   ten.uat       Ten uat testnet')
             runner.log.info('   ten.dev       Ten dev testnet')
             runner.log.info('   ten.local     Ten local testnet')
-            runner.log.info('   goerli            Goerli Network')
-            runner.log.info('   ganache           Ganache Network started by the framework')
-            runner.log.info('   arbitrum          Arbitrum Network')
-            runner.log.info('   sepolia           Sepolia Network')
+            runner.log.info('   arbitrum      Arbitrum Network')
+            runner.log.info('   ganache       Ganache Network started by the framework')
+            runner.log.info('   sepolia       Sepolia Network')
             sys.exit()
 
         self.env = runner.mode

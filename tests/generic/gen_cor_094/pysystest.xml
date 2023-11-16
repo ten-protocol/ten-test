@@ -22,7 +22,6 @@ Skipped due to https://github.com/obscurten-protocolonet/ten-internal/issues/219
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
             <mode>arbitrum.sepolia</mode>
-            <mode>goerli</mode>
             <mode>ganache</mode>
             <mode>sepolia</mode>
         </modes>
