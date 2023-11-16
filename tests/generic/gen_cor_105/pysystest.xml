@@ -18,7 +18,6 @@
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
             <mode>arbitrum.sepolia</mode>
-            <mode>arbitrum.goerli</mode>
             <mode>ganache</mode>
             <mode>sepolia</mode>
         </modes>

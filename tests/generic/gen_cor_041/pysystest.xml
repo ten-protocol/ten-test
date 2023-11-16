@@ -18,7 +18,7 @@ against Obscuro, Goerli or Ganache. There is a constructor and destructor in the
             <mode>obscuro.uat</mode>
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
-            <mode>arbitrum.goerli</mode>
+            <mode>arbitrum.sepolia</mode>
             <mode>goerli</mode>
             <mode>ganache</mode>
             <mode>sepolia</mode>

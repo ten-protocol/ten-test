@@ -19,7 +19,6 @@ test repository against an existing installation, then reset the persisted nonce
             <mode>obscuro.uat</mode>
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
-            <mode>arbitrum.goerli</mode>
             <mode>arbitrum.sepolia</mode>
             <mode>sepolia</mode>
         </modes>

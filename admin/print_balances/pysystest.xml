@@ -17,7 +17,6 @@
             <mode>obscuro.uat</mode>
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
-            <mode>arbitrum.goerli</mode>
             <mode>arbitrum.sepolia</mode>
             <mode>goerli</mode>
             <mode>sepolia</mode>

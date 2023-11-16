@@ -20,7 +20,7 @@ by a value of 3. In fact it doesn't and there is no correlation i.e. it is cheap
             <mode>obscuro.uat</mode>
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
-            <mode>arbitrum.goerli</mode>
+            <mode>arbitrum.sepolia</mode>
             <mode>goerli</mode>
             <mode>ganache</mode>
             <mode>sepolia</mode>

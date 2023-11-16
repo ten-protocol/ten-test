@@ -18,7 +18,7 @@ Checks the cost of requesting the balance of an account.
             <mode>obscuro.uat</mode>
             <mode>obscuro.dev</mode>
             <mode>obscuro.local</mode>
-            <mode>arbitrum.goerli</mode>
+            <mode>arbitrum.sepolia</mode>
             <mode>goerli</mode>
             <mode>ganache</mode>
             <mode>sepolia</mode>
