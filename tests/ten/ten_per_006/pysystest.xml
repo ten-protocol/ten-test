@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Latency - storage, tx receipt time</title>
+        <title>Latency - key storage, event log receipt time</title>
         <purpose><![CDATA[
 ]]>
         </purpose>
