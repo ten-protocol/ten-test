@@ -44,6 +44,7 @@ env GOOS=linux GOARCH=amd64 go build -o ${script_path}/artifacts/wallet_extensio
 # run the abigen to create the contract ABIs
 cd $src_path/contracts
 npm install
+npx hardhat compile
 npx hardhat generate-abi-bindings --output-dir generated
 
 cd $script_path
