@@ -18,27 +18,25 @@ class PySysTest(TenNetworkTest):
         contract = KeyStorage(self, web3)
         contract.deploy(network, account)
 
-        self.client(network, contract, 'meaning_of_life', 42)
-        value_after = contract.contract.functions.getItem('meaning_of_life').call()
-        self.log.info('The meaning of life is ... %d', value_after)
-        self.assertTrue(value_after == 42)
+        self.client(network, contract, 1)
 
-    def client(self, network, contract, key, value):
+    def client(self, network, contract,  num):
         private_key = secrets.token_hex(32)
         self.distribute_native(Web3().eth.account.privateKeyToAccount(private_key), 0.01)
         network.connect(self, private_key=private_key, check_funds=False)
 
         # create the client
-        stdout = os.path.join(self.output, 'client.out')
-        stderr = os.path.join(self.output, 'client.err')
+        stdout = os.path.join(self.output, 'client_%d.out' % num)
+        stderr = os.path.join(self.output, 'client_%d.err' % num)
         script = os.path.join(self.input, 'client.js')
         args = []
         args.extend(['--network', network.connection_url(web_socket=True)])
         args.extend(['--contract_address', contract.address])
         args.extend(['--contract_abi', contract.abi_path])
         args.extend(['--private_key', private_key])
-        args.extend(['--key', key])
-        args.extend(['--value', str(value)])
-        self.run_javascript(script, stdout, stderr, args)
+        args.extend(['--key', 'client_%s' % num])
+        args.extend(['--output_file', 'client_%s.log' % num])
+        hprocess = self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting transactions', timeout=10)
-        self.waitForGrep(file=stdout, expr='Completed transactions', timeout=40)
+        self.waitForGrep(file=stdout, expr='Completed transaction', condition='==10', timeout=40)
+        hprocess.stop()

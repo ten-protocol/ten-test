@@ -4,12 +4,12 @@ const commander = require('commander')
 
 require('console-stamp')(console, 'HH:MM:ss')
 
-async function sendTransaction() {
-  const functionCall = contract.methods.setItem(options.key, options.value)
-  const gasEstimate = await functionCall.estimateGas({ from: sender_address })
-  const gasPrice = await web3.eth.getGasPrice()
+async function sendTransaction(key, value) {
+  functionCall = contract.methods.setItem(key, value)
+  gasEstimate = await functionCall.estimateGas({ from: sender_address })
+  gasPrice = await web3.eth.getGasPrice()
 
-  const transactionParameters = {
+  transactionParameters = {
     from: sender_address,
     to: options.contract_address,
     gas: gasEstimate,
@@ -17,30 +17,32 @@ async function sendTransaction() {
     data: functionCall.encodeABI(),
     nonce: await web3.eth.getTransactionCount(sender_address),
   }
-  console.log('Transaction created')
+  signedTransaction = await web3.eth.accounts.signTransaction(transactionParameters, options.private_key)
 
-  const value_hex = web3.utils.toHex(options.value);
-  const value_padded_hex = web3.utils.padLeft(value_hex, 64);
+  value_hex = web3.utils.toHex(value)
+  value_padded_hex = web3.utils.padLeft(value_hex, 64)
+  startTime = process.hrtime()
 
   contract.once('ItemSet3', {
     fromBlock: 'latest',
     topics: [
        web3.utils.sha3('ItemSet3(string,uint256)'),
-       web3.utils.sha3(options.key),
+       web3.utils.sha3(key),
        value_padded_hex]
    },
     function(error, event){
        if (error) {
          console.log('Error returned is ', error)
        } else {
-         console.log(event)
-         console.log('Completed transactions')
+         endTime = process.hrtime(startTime)
+         elapsedTimeMilliseconds = (endTime[0] * 1000) + (endTime[1] / 1e6)
+         console.log(`Elapsed time: ${elapsedTimeMilliseconds} milliseconds`)
+         console.log('Completed transaction')
+         sendTransaction(key, value+1)
        }
   })
 
-  const signedTransaction = await web3.eth.accounts.signTransaction(transactionParameters, options.private_key);
-  const txReceipt = await web3.eth.sendSignedTransaction(signedTransaction.rawTransaction)
-  console.log(`Transaction status: ${txReceipt.status}`)
+  txReceipt = await web3.eth.sendSignedTransaction(signedTransaction.rawTransaction)
 }
 
 commander
@@ -51,7 +53,7 @@ commander
   .option('--contract_abi <value>', 'Contract ABI file')
   .option('--private_key <value>', 'The account private key')
   .option('--key <value>', 'The key to store against')
-  .option('--value <value>', 'The value to store against the key')
+  .option('--output_file <value>', 'File to log the results to')
   .parse(process.argv)
 
 const options = commander.opts()
@@ -63,5 +65,5 @@ const contract = new web3.eth.Contract(abi, options.contract_address)
 const sender_address = web3.eth.accounts.privateKeyToAccount(options.private_key).address
 
 console.log('Starting transactions')
-sendTransaction()
+sendTransaction(options.key, 0)
 
