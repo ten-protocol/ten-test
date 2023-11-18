@@ -19,10 +19,23 @@ async function sendTransaction() {
   }
   console.log('Transaction created')
 
-  contract.once('ItemSet1', { fromBlock: 'latest' },
+  const value_hex = web3.utils.toHex(options.value);
+  const value_padded_hex = web3.utils.padLeft(value_hex, 64);
+
+  contract.once('ItemSet3', {
+    fromBlock: 'latest',
+    topics: [
+       web3.utils.sha3('ItemSet3(string,uint256)'),
+       web3.utils.sha3(options.key),
+       value_padded_hex]
+   },
     function(error, event){
-       console.log(event)
-       console.log('Completed transactions')
+       if (error) {
+         console.log('Error returned is ', error)
+       } else {
+         console.log(event)
+         console.log('Completed transactions')
+       }
   })
 
   const signedTransaction = await web3.eth.accounts.signTransaction(transactionParameters, options.private_key);
