@@ -49,21 +49,20 @@ class PySysTest(TenNetworkTest):
         args.extend(['--contract_abi', contract.abi_path])
         args.extend(['--private_key', private_key])
         args.extend(['--key', key])
-        args.extend(['--event_log', 'events_%s.log' % num])
-        args.extend(['--receipt_log', 'receipts_%s.log' % num])
+        args.extend(['--output_file', 'client_%d.log' % num])
         self.clients.append(self.run_javascript(script, stdout, stderr, args))
 
     def graph(self):
         # load the latency values and sort
         l = []
         for i in range(0, self.CLIENTS):
-            with open(os.path.join(self.output, 'events_%d.log' % i), 'r') as fp:
+            with open(os.path.join(self.output, 'client_%d.log' % i), 'r') as fp:
                 for line in fp.readlines(): l.append(float(line.strip()))
         l.sort()
         self.log.info('Average latency = %.2f', (sum(l) / len(l)))
         self.log.info('Median latency = %.2f', l[int(len(l) / 2)])
 
-        # bin into 0.1s intervals and write to file
+        # bin into intervals and write to file
         bins = OrderedDict()
         bin_inc = 20  # 0.05 intervals
         bin = lambda x: int(math.floor(bin_inc*x))
