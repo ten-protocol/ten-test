@@ -1,6 +1,5 @@
-import secrets, os
+import secrets, os, time
 from web3 import Web3
-from ten.test.helpers.ws_proxy import WebServerProxy
 from ten.test.contracts.storage import KeyStorage
 from ten.test.basetest import TenNetworkTest
 
@@ -8,6 +7,11 @@ from ten.test.basetest import TenNetworkTest
 class PySysTest(TenNetworkTest):
     ITERATIONS = 10
     CLIENTS = 5
+    DURATION = 120
+
+    def __init__(self, descriptor, outsubdir, runner):
+        super().__init__(descriptor, outsubdir, runner)
+        self.clients = []
 
     def execute(self):
         # connect to the network
@@ -18,11 +22,17 @@ class PySysTest(TenNetworkTest):
         contract = KeyStorage(self, web3)
         contract.deploy(network, account)
 
-        self.client(network, contract, 1)
+        for i in range(0, self.CLIENTS): self.client(network, contract, i)
+        for i in range(0, self.CLIENTS): self.waitForGrep(file='client_%d.out' % i, expr='Starting transactions', timeout=10)
+        self.wait(self.DURATION)
+        for client in self.clients: client.stop()
 
-    def client(self, network, contract,  num):
+    def client(self, network, contract, num):
         private_key = secrets.token_hex(32)
-        self.distribute_native(Web3().eth.account.privateKeyToAccount(private_key), 0.01)
+        account = Web3().eth.account.privateKeyToAccount(private_key)
+        key = '%d_%d' % (int(time.time()), num)
+        self.log.info('Client %d has key %s', num, key)
+        self.distribute_native(account, 0.01)
         network.connect(self, private_key=private_key, check_funds=False)
 
         # create the client
@@ -34,9 +44,6 @@ class PySysTest(TenNetworkTest):
         args.extend(['--contract_address', contract.address])
         args.extend(['--contract_abi', contract.abi_path])
         args.extend(['--private_key', private_key])
-        args.extend(['--key', 'client_%s' % num])
+        args.extend(['--key', key])
         args.extend(['--output_file', 'client_%s.log' % num])
-        hprocess = self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting transactions', timeout=10)
-        self.waitForGrep(file=stdout, expr='Completed transaction', condition='==10', timeout=40)
-        hprocess.stop()
+        self.clients.append(self.run_javascript(script, stdout, stderr, args))
