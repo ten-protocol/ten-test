@@ -1,0 +1,19 @@
+# Performs any clean up or health checks on the VM runner 02
+#
+name: Perform VM clean actions on runner-02
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-check:
+    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-02]
+    steps:
+      - name: 'Clean the docker folder'
+        run: |
+          echo "Hasta la vista, baby"
+          sudo systemctl stop docker
+          sudo rm -rf /var/lib/docker/
+          sudo systemctl start docker
+
