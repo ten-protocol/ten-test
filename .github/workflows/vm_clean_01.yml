@@ -1,6 +1,6 @@
 # Performs any clean up or health checks on the VM runner 02
 #
-name: Perform VM clean actions on runner-02
+name: VM clean actions runner 01
 on:
   schedule:
     - cron: '0 0 * * *'
@@ -8,7 +8,7 @@ on:
 
 jobs:
   run-check:
-    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-02]
+    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-01]
     steps:
       - name: 'Clean the docker folder'
         run: |
