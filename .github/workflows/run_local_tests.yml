@@ -1,7 +1,7 @@
 # Builds a local testnet and runs a set of E2E tests. The workflow is run either manually from a workflow dispatch or
 # on a nightly basis via a schedule task.
 #
-name: '[Tests] Run tests against local testnet'
+name: '[Run] Local testnet tests'
 run-name: Run local tests (${{ github.event_name }})
 on:
   schedule:
