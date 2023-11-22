@@ -1,7 +1,7 @@
 # Run a set of sanity tests on uat-testnet to ensure it is up and running. The workflow is run either manually from
 # a workflow dispatch, or every 30 mins.
 #
-name: [Health] Check uat-testnet
+name: '[Health] Check uat-testnet'
 on:
   schedule:
     - cron: '*/30 * * * *'

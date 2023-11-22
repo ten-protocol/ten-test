@@ -1,7 +1,7 @@
 # Run a set of E2E tests on a previously deployed ten network (dev-testnet, uat-testnet or sepolia-testnet). The
 # workflow is triggered either manually via a workflow dispatch, or on a schedule (dev-testnet only)
 #
-name: [Tests]  Run tests against dev, uat or sepolia testnet
+name: '[Tests] Run tests against dev, uat or sepolia testnet'
 run-name: Run remote tests (${{ github.event_name }})
 on:
 #  schedule:
