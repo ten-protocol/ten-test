@@ -2,7 +2,7 @@
 # or when a PR is merged to main. You can specify the tag for the version required (e.g. 0.19 for the releases/v0.19
 # branch) or latest for main. When run on a merge to main latest is always used.  
 #
-name: Create docker image
+name: [System] Create docker image
 run-name: Create docker image (${{ github.event_name }})
 on:
   pull_request:

@@ -1,6 +1,6 @@
 # Performs any clean up or health checks on the VM runner 02
 #
-name: VM clean gh-runner-01
+name: [System] Docker clean gh-runner-01
 on:
   schedule:
     - cron: '0 0 * * *'

@@ -1,7 +1,7 @@
 # Builds a local testnet and runs a set of E2E tests. Is run via a repository dispatch when a PR is merged down to
 # main in the go-ten repo
 #
-name: Run merge tests
+name: [tests]  Run tests after go-ten PR merge
 run-name: Run merge tests for PR ${{ github.event.client_payload.number }} by @${{ github.event.client_payload.owner }}
 on:
   repository_dispatch:

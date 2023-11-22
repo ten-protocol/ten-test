@@ -1,7 +1,7 @@
 # Resets the nonce persistence and redeploys the set of persisted contracts that should persist on a
 # given network before being redeployed. The workflow is run manually from a workflow dispatch.
 #
-name: Reset persistence
+name: [System] Reset nonce persistence
 on:
   workflow_dispatch:
     inputs:
