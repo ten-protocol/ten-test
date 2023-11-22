@@ -1,6 +1,7 @@
 # Performs any clean up or health checks on the VM runner 02
 #
 name: '[System] Docker clean gh-runner-02'
+run-name: Cleaning runner 02 (${{ github.event_name }})
 on:
   schedule:
     - cron: '0 0 * * *'

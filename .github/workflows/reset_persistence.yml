@@ -2,6 +2,7 @@
 # given network before being redeployed. The workflow is run manually from a workflow dispatch.
 #
 name: '[System] Reset nonce persistence'
+run-name: Reset persistence
 on:
   workflow_dispatch:
     inputs:
