@@ -2,7 +2,7 @@
 # on a repository dispatch sent by the deployment of the faucet. For dev-testnet full tests will be run with a persistence
 # if a new deployment. For testnet only a persistence reset will be performed on a new deployment.
 #
-name: '[Execute] Tests triggerd by new deployment'
+name: '[Execute] Tests on network deployment'
 run-name: Run deploy tests (${{ github.event.action }})
 on:
   repository_dispatch:
