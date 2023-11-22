@@ -85,7 +85,7 @@ class PySysTest(TenNetworkTest):
         self.log.info('Average latency = %.2f', (sum(l) / len(l)))
         self.log.info('Median latency = %.2f', l[int(len(l) / 2)])
 
-        # bin into 0.1s intervals and write to file
+        # bin into intervals and write to file
         bins = OrderedDict()
         bin_inc = 20  # 0.05 intervals
         bin = lambda x: int(math.floor(bin_inc*x))

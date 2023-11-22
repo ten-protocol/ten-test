@@ -1,7 +1,10 @@
-import secrets, os, time
+import secrets, os, time, math
 from web3 import Web3
+from collections import OrderedDict
+from datetime import datetime
 from ten.test.contracts.storage import KeyStorage
 from ten.test.basetest import TenNetworkTest
+from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(TenNetworkTest):
@@ -26,6 +29,7 @@ class PySysTest(TenNetworkTest):
         for i in range(0, self.CLIENTS): self.waitForGrep(file='client_%d.out' % i, expr='Starting transactions', timeout=10)
         self.wait(self.DURATION)
         for client in self.clients: client.stop()
+        self.graph()
 
     def client(self, network, contract, num):
         private_key = secrets.token_hex(32)
@@ -45,5 +49,33 @@ class PySysTest(TenNetworkTest):
         args.extend(['--contract_abi', contract.abi_path])
         args.extend(['--private_key', private_key])
         args.extend(['--key', key])
-        args.extend(['--output_file', 'client_%s.log' % num])
+        args.extend(['--output_file', 'client_%d.log' % num])
         self.clients.append(self.run_javascript(script, stdout, stderr, args))
+
+    def graph(self):
+        # load the latency values and sort
+        l = []
+        for i in range(0, self.CLIENTS):
+            with open(os.path.join(self.output, 'client_%d.log' % i), 'r') as fp:
+                for line in fp.readlines(): l.append(float(line.strip()))
+        l.sort()
+        self.log.info('Average latency = %.2f', (sum(l) / len(l)))
+        self.log.info('Median latency = %.2f', l[int(len(l) / 2)])
+
+        # bin into intervals and write to file
+        bins = OrderedDict()
+        bin_inc = 20  # 0.05 intervals
+        bin = lambda x: int(math.floor(bin_inc*x))
+
+        for i in range(bin(l[0]), bin(l[len(l)-1])+1): bins[i] = 0
+        for v in l: bins[bin(v)] = bins[bin(v)] + 1
+        with open(os.path.join(self.output, 'bins.log'), 'w') as fp:
+            for k in bins.keys(): fp.write('%.2f %d\n' % (k/float(bin_inc), bins[k]))
+            fp.flush()
+
+        # plot out the results
+        branch = GnuplotHelper.buildInfo().branch
+        date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+        GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
+                            branch, date,
+                            str(self.mode), str(len(l)), str(self.DURATION), '%d' % self.CLIENTS)
