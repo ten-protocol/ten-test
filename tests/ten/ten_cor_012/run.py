@@ -29,11 +29,11 @@ class PySysTest(TenNetworkTest):
 
         batch = self.get_batch_for_transaction(tx_hash)
         if batch is not None:
-            batch_number = batch['Header']['number']
+            batch_number = int(batch['Header']['number'], 16)
             batch_txns = batch['TxHashes']
 
-            self.log.info('batch details;')
-            self.log.info('  batch Num:  %s ', batch_number)
+            self.log.info('Batch details;')
+            self.log.info('  Batch Num:  %s ', batch_number)
             self.log.info('  Tx in list: %s', tx_hash in batch_txns)
 
             self.assertTrue(batch_number==block_num)
