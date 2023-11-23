@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Transact: web4js client send a single transaction to a contract function</title>
+        <title>Transact: web3js client send a single transaction to a contract function</title>
         <purpose><![CDATA[
 ]]>
         </purpose>

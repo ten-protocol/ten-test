@@ -10,7 +10,7 @@
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
+            <group>ethers</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
