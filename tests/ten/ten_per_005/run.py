@@ -1,104 +1,99 @@
-import secrets, os, math, time
+import os, secrets, shutil
 from datetime import datetime
 from collections import OrderedDict
-from web3 import Web3
-from pysys.constants import FAILED
-from ten.test.contracts.storage import Storage
+from ten.test.contracts.storage import KeyStorage
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(TenNetworkTest):
-    ITERATIONS = 10
-    CLIENTS = 5
-    DURATION = 120
-    ESTIMATE = True
-
-    def transact(self, network_connection, web3, storage, count, account, gas_limit):
-        start_time = time.perf_counter()
-        tx_receipt = network_connection.transact(self, web3, storage.contract.functions.store(count), account,
-                                                 gas_limit, estimate=self.ESTIMATE)
-        end_time = time.perf_counter()
-        gas_used = tx_receipt['gasUsed']
-        self.log.info('Gas used for the transaction is %d', gas_used)
-        return gas_used, (end_time - start_time)
-
-    def __init__(self, descriptor, outsubdir, runner):
-        super().__init__(descriptor, outsubdir, runner)
-        self.clients = []
+    ITERATIONS = 5000
+    CLIENTS = 4
 
     def execute(self):
+        self.execute_run()
+
+    def execute_run(self):
         # connect to the network
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
         # deploy the contract
-        storage = Storage(self, web3, 0)
+        storage = KeyStorage(self, web3)
         storage.deploy(network, account)
 
-        # do a sanity check and break hard if the network is slow
-        times = []
-        gas_limit = storage.GAS_LIMIT
-        for i in range(0, self.ITERATIONS):
-            gas_used, time = self.transact(network, web3, storage, 0, account, gas_limit)
-            times.append(time)
-            gas_limit = gas_used
-        avg = (sum(times) / len(times))
-        self.log.info('Average latency for %d transactions is %.2f', self.ITERATIONS, avg)
-        if avg > 10.0: self.addOutcome(FAILED, outcomeReason='Average latency %.2f is greater than 10 seconds' % avg)
+        # run the clients
+        setup = [self.setup_client('client_%d' % i) for i in range(self.CLIENTS)]
+        for i in range(self.CLIENTS): self.run_client('client_%d' % i, storage, setup[i][0], setup[i][1])
+        for i in range(self.CLIENTS):
+            self.waitForGrep(file='client_%d.out' % i, expr='Client client_%d completed' % i, timeout=900)
 
-        # run some concurrent clients, bin the latency and plot the results
-        if self.DURATION > 0:
-            self.log.info('')
-            self.log.info('Starting all concurrent clients')
-            for i in range(0, self.CLIENTS): self.storage_client(storage.address, storage.abi_path, i, network)
-            for i in range(0, self.CLIENTS): self.waitForGrep(file='client_%d.out' % i, expr='Client running', timeout=10)
-            self.wait(self.DURATION)
-            self.log.info('Stopping all concurrent clients')
-            for client in self.clients: client.stop()
-            self.graph()
+        # process and graph the output
+        data = [self.load_data('client_%d.log' % i) for i in range(self.CLIENTS)]
+        first = int(data[0][0][1])
+        last = int(data[-1][-1][1])
 
-    def storage_client(self, address, abi_path, num, network):
-        pk = secrets.token_hex(32)
-        account = Web3().eth.account.privateKeyToAccount(pk)
-        self.distribute_native(account, 0.01)
-        network.connect(self, private_key=pk, check_funds=False)
+        data_binned = [self.bin_data(first, last, d, OrderedDict()) for d in data]
+        with open(os.path.join(self.output, 'clients_all.bin'), 'w') as fp:
+            for t in range(0, last + 1 - first):
+                fp.write('%d %s\n' % (t, ' '.join([str(d[t]) for d in data_binned])))
 
-        stdout = os.path.join(self.output, 'client_%d.out' % num)
-        stderr = os.path.join(self.output, 'client_%d.err' % num)
-        script = os.path.join(self.input, 'storage_client.py')
-        args = []
-        args.extend(['--network_http', '%s' % network.connection_url()])
-        args.extend(['--address', '%s' % address])
-        args.extend(['--contract_abi', '%s' % abi_path])
-        args.extend(['--pk_to_register', '%s' % pk])
-        args.extend(['--output_file', 'client_%s.log' % num])
-        self.clients.append(self.run_python(script, stdout, stderr, args))
-
-    def graph(self):
-        # load the latency values and sort
-        l = []
-        for i in range(0, self.CLIENTS):
-            with open(os.path.join(self.output, 'client_%d.log' % i), 'r') as fp:
-                for line in fp.readlines(): l.append(float(line.strip()))
-        l.sort()
-        self.log.info('Average latency = %.2f', (sum(l) / len(l)))
-        self.log.info('Median latency = %.2f', l[int(len(l) / 2)])
-
-        # bin into intervals and write to file
-        bins = OrderedDict()
-        bin_inc = 20  # 0.05 intervals
-        bin = lambda x: int(math.floor(bin_inc*x))
-
-        for i in range(bin(l[0]), bin(l[len(l)-1])+1): bins[i] = 0
-        for v in l: bins[bin(v)] = bins[bin(v)] + 1
-        with open(os.path.join(self.output, 'bins.log'), 'w') as fp:
-            for k in bins.keys(): fp.write('%.2f %d\n' % (k/float(bin_inc), bins[k]))
-            fp.flush()
+        with open(os.path.join(self.output, 'clients.bin'), 'w') as fp:
+            for t in range(0, last + 1 - first):
+                fp.write('%d %d\n' % (t, sum([d[t] for d in data_binned])))
 
         # plot out the results
         branch = GnuplotHelper.buildInfo().branch
+        duration = last - first
         date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
                             branch, date,
-                            str(self.mode), str(len(l)), str(self.DURATION), '%d' % self.CLIENTS)
+                            str(self.mode), str(self.CLIENTS * self.ITERATIONS), str(duration), '%d' % self.CLIENTS)
+
+    def setup_client(self, name):
+        pk = secrets.token_hex(32)
+        network = self.get_network_connection(name=name)
+        _, account = network.connect(self, private_key=pk, check_funds=False)
+        self.distribute_native(account, 0.01)
+        return pk, network
+
+    def run_client(self, name, contract, pk, network):
+        """Run a background load client. """
+        stdout = os.path.join(self.output, '%s.out' % name)
+        stderr = os.path.join(self.output, '%s.err' % name)
+        script = os.path.join(self.input, 'storage_client.py')
+        args = []
+        args.extend(['--network_http', network.connection_url()])
+        args.extend(['--chainId', '%s' % network.chain_id()])
+        args.extend(['--pk', pk])
+        args.extend(['--contract_address', '%s' % contract.address])
+        args.extend(['--contract_abi', '%s' % contract.abi_path])
+        args.extend(['--num_iterations', '%d' % self.ITERATIONS])
+        args.extend(['--client_name', name])
+        self.run_python(script, stdout, stderr, args)
+        self.wait(1.0)
+
+    def load_data(self, file):
+        """Load a client transaction log into memory. """
+        data = []
+        with open(os.path.join(self.output, file), 'r') as fp:
+            for line in fp.readlines():
+                nonce, timestamp = line.split()
+                data.append((nonce, int(timestamp)))
+        return data
+
+    def bin_data(self, first, last, data, binned_data):
+        """Bin a client transaction data and offset the time. """
+        b = OrderedDict()
+        for _, t in data: b[t] = 1 if t not in b else b[t] + 1
+        for t in range(first, last + 1): binned_data[t - first] = 0 if t not in b else b[t]
+        return binned_data
+
+    def execute_graph(self):
+        """Test method to develop graph creation. """
+        shutil.copy(os.path.join(self.input, 'clients_all.bin'), os.path.join(self.output, 'clients_all.bin'))
+        shutil.copy(os.path.join(self.input, 'clients.bin'), os.path.join(self.output, 'clients.bin'))
+        branch = GnuplotHelper.buildInfo().branch
+        date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+        GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
+                            branch, date, str(self.mode), str(2 * self.ITERATIONS), '49', '4')

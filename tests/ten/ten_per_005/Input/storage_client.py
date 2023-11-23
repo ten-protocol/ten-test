@@ -1,62 +1,72 @@
 from web3 import Web3
-import logging, random
-import argparse, json, sys, time
+import logging
+import argparse, json, sys
 
 logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
 
 
-def timeit(function):
-    """Decorator function to time a method call and return the time. """
-    def wrapper(*args, **kwargs):
-        start_time = time.perf_counter()
-        function(*args, **kwargs)
-        end_time = time.perf_counter()
-        return end_time - start_time
-
-    return wrapper
-
-
-@timeit
-def store_value(value, web3, account, contract):
-    build_tx = contract.functions.store(value).buildTransaction(
+def create_signed_tx(name, account, nonce, contract, gas_price, chainId):
+    build_tx = contract.functions.setItem(name, nonce).buildTransaction(
         {
-            'nonce': web3.eth.get_transaction_count(account.address),
-            'gasPrice': web3.eth.gas_price,
+            'nonce': nonce,
+            'gasPrice': gas_price,
             'gas': 720000,
-            'chainId': web3.eth.chain_id
+            'chainId': chainId
         }
     )
-    signed_tx = account.sign_transaction(build_tx)
-    tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
-    tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
+    return account.sign_transaction(build_tx)
 
-    if tx_receipt.status != 1:
-        logging.error('Error performing transaction\n')
-    else:
-        logging.info('Transaction complete - stored value %d', value)
+
+def run(name, chainId, web3, account, contract, num_iterations):
+    """Run a loop of bulk loading transactions into the mempool, draining, and collating results. """
+    logging.info('Creating and signing %d transactions', num_iterations)
+    gas_price = web3.eth.gas_price
+
+    txs = []
+    for i in range(0, num_iterations):
+        tx = create_signed_tx(name, account, i, contract, gas_price, chainId)
+        txs.append((tx, i))
+
+    logging.info('Bulk sending transactions to the network')
+    receipts = []
+    for tx in txs:
+        try:
+            receipts.append((web3.eth.send_raw_transaction(tx[0].rawTransaction), tx[1]))
+        except Exception as e:
+            logging.info('Error sending raw transaction, sent = %d', len(receipts))
+            logging.info('Exception is', e)
+
+    logging.info('Waiting for last transaction %s', receipts[-1][0].hex())
+    web3.eth.wait_for_transaction_receipt(receipts[-1][0], timeout=900)
+    logging.info('Retrieved value for %s is %d', name, contract.functions.getItem(name).call())
+
+    logging.info('Constructing binned data from the transaction receipts')
+    with open('%s.log' % name, 'w') as fp:
+        for receipt in receipts:
+            block_number_deploy = web3.eth.get_transaction(receipt[0]).blockNumber
+            timestamp = int(web3.eth.get_block(block_number_deploy).timestamp)
+            fp.write('%d %d\n' % (receipt[1], timestamp))
+
+    logging.info('Client %s completed', name)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='storage_client')
     parser.add_argument('-u', '--network_http', help='Connection URL')
-    parser.add_argument('-a', '--address', help='Address of the contract')
+    parser.add_argument('-c', '--chainId', help='The network chain Id')
+    parser.add_argument('-p', '--pk', help='The accounts private key')
+    parser.add_argument('-a', '--contract_address', help='Address of the contract')
     parser.add_argument('-b', '--contract_abi', help='Abi of the contract')
-    parser.add_argument('-p', '--pk_to_register', help='Private key of account')
-    parser.add_argument('-f', '--output_file', help='File to log the results to')
+    parser.add_argument('-i', '--num_iterations', help='Number of iterations')
+    parser.add_argument('-n', '--client_name', help='The logical name of the client')
     args = parser.parse_args()
 
     web3 = Web3(Web3.HTTPProvider(args.network_http))
     with open(args.contract_abi) as f:
-        contract = web3.eth.contract(address=args.address, abi=json.load(f))
+        contract = web3.eth.contract(address=args.contract_address, abi=json.load(f))
+    account = web3.eth.account.privateKeyToAccount(args.pk)
+    logging.info('Starting client %s', args.client_name)
 
-    logging.info('Client running')
-    account = web3.eth.account.privateKeyToAccount(args.pk_to_register)
-
-    with open(args.output_file, 'w') as fp:
-        while True:
-            fp.write('%.4f\n' % store_value(random.randint(0,100), web3, account, contract))
-            fp.flush()
-
-
+    run(args.client_name, int(args.chainId), web3, account, contract, int(args.num_iterations))
 
 

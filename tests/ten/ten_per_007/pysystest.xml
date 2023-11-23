@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Latency - key storage, event log receipt time</title>
+        <purpose><![CDATA[
+The test uses N web3.js clients to submit a transaction to set a key value pair in the KeyStorage contract, and set up
+an event subscriber which filters on that key pair. Once the event triggers the subscriber, the process is repeated
+using the same key but a monoticially increased value. The client signs the transaction locally and measured the time
+between sending the signed transaction to the network, and the receipt of the event log. Multiple clients are run
+concurrently using unique keys, and the overall latency profile is produced by binning the latency into increments
+and plotting as a distribution.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>performance</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+            <mode>ganache</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
