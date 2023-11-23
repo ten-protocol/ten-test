@@ -45,8 +45,10 @@ class PySysTest(GenericNetworkTest):
             expected.append('Your guess of %d' % i)
             allowance = token_player.functions.allowance(account_usr.address, game.address).call({"from":account_usr.address})
             balance = token_player.functions.balanceOf(account_usr.address).call({"from":account_usr.address})
-            self.log.info('Allowance is %.3f', Web3().fromWei(allowance, 'ether'))
-            self.log.info('Balance is %.3f', Web3().fromWei(balance, 'ether'))
+            self.log.info('Token Allowance is %.3f', Web3().fromWei(allowance, 'ether'))
+            self.log.info('Token Balance is %.3f', Web3().fromWei(balance, 'ether'))
+            self.log.info('Deployer Balance is %s', web3_dev.eth.get_balance(account_dev.address))
+            self.log.info('Player Balance is %s', web3_usr.eth.get_balance(account_usr.address))
             network_usr.transact(self, web3_usr, game_player.functions.attempt(i), account_usr, game.GAS_LIMIT)
             self.waitForSignal(file='subscriber.out', filedir=self.output, expr='Your guess of %d' % i, timeout=20)
 

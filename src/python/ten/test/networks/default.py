@@ -124,8 +124,8 @@ class DefaultPostLondon:
             except Exception as e: self.log.warn('Error estimating gas needed, %s' % e.args[0])
 
         if verbose:
-            self.log.info('Gas %d, base fee %d WEI, cost %.6f ETH, balance %.6f ETH',
-                          gas_estimate, base_fee_per_gas, web3.fromWei(base_fee_per_gas*gas_estimate, 'ether'),
+            self.log.info('Gas %d, base fee %d WEI, cost %d WEI, balance %.18f ETH',
+                          gas_estimate, base_fee_per_gas, web3.fromWei(base_fee_per_gas*gas_estimate, 'wei'),
                           web3.fromWei(balance, 'ether'))
 
         params['gas'] = gas_estimate
@@ -207,8 +207,8 @@ class DefaultPreLondon(DefaultPostLondon):
             except Exception as e: self.log.warn('Error estimating gas needed, %s' % e.args[0])
 
         if verbose:
-            self.log.info('Gas %d, price %d WEI, cost %.6f ETH, balance %.6f ETH',
-                          gas_estimate, gas_price, web3.fromWei(gas_price*gas_estimate, 'ether'),
+            self.log.info('Gas %d, price %d WEI, cost %d WEI, balance %.18F ETH',
+                          gas_estimate, gas_price, web3.fromWei(gas_price*gas_estimate, 'wei'),
                           web3.fromWei(balance, 'ether'))
 
         params['gas'] = gas_estimate
