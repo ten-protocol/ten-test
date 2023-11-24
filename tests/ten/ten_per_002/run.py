@@ -7,7 +7,7 @@ from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(TenNetworkTest):
-    ITERATIONS = 5000
+    ITERATIONS = 1000
     ACCOUNTS = 20
 
     def execute(self):

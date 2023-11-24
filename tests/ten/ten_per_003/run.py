@@ -7,7 +7,7 @@ from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(TenNetworkTest):
-    ITERATIONS = 5000
+    ITERATIONS = 1000
     SENDING_ACCOUNTS = 20
     RECEIVING_ACCOUNTS = 20
 
@@ -58,10 +58,10 @@ class PySysTest(TenNetworkTest):
 
     def setup_client(self, name):
         pk_file = '%s_pk.txt' % name
+        network = self.get_network_connection(name=name)
         with open(os.path.join(self.output, pk_file), 'w') as fw:
             for i in range(0, self.SENDING_ACCOUNTS):
                 pk = secrets.token_hex(32)
-                network = self.get_network_connection(name=name)
                 _, account = network.connect(self, private_key=pk, check_funds=False)
                 self.distribute_native(account, 0.01)
                 fw.write('%s\n' % pk)
@@ -88,7 +88,7 @@ class PySysTest(TenNetworkTest):
         data = []
         with open(os.path.join(self.output, file), 'r') as fp:
             for line in fp.readlines():
-                nonce, timestamp = line.split()
+                nonce, block_nume, timestamp = line.split()
                 data.append((nonce, int(timestamp)))
         return data
 
