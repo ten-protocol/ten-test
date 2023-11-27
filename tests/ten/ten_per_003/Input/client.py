@@ -1,5 +1,5 @@
 from web3 import Web3
-import secrets
+import secrets, time
 import logging, random, argparse, sys
 
 logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
@@ -27,13 +27,12 @@ def create_signed_tx(account, address, value, gas_price, chain_id):
 def run(name, chainId, web3, sending_accounts, num_accounts, num_iterations):
     """Run a loop of bulk loading transactions into the mempool, draining, and collating results. """
     accounts = []
-    for i in range(0, num_accounts): accounts.append(Web3().eth.account.privateKeyToAccount(secrets.token_hex(32)).address)
-    logging.info(accounts)
+    for i in range(0, num_accounts):
+        accounts.append(Web3().eth.account.privateKeyToAccount(secrets.token_hex(32)).address)
 
     logging.info('Creating and signing %d transactions', num_iterations)
     value = web3.toWei(0.0000000001, 'ether')
     gas_price = web3.eth.gas_price
-
     txs = []
     for i in range(0, num_iterations):
         tx = create_signed_tx(random.choice(sending_accounts), random.choice(accounts), value, gas_price, chainId)
@@ -41,11 +40,15 @@ def run(name, chainId, web3, sending_accounts, num_accounts, num_iterations):
 
     logging.info('Bulk sending transactions to the network')
     receipts = []
+    start_time = time.perf_counter()
     for tx in txs:
         try:
             receipts.append((web3.eth.send_raw_transaction(tx[0].rawTransaction), tx[1]))
         except:
             logging.info('Error sending raw transaction, sent = %d', len(receipts))
+    end_time = time.perf_counter()
+    duration = end_time - start_time
+    logging.info('Time to send all transactions was %.4f', duration)
 
     logging.info('Waiting for last transaction')
     web3.eth.wait_for_transaction_receipt(receipts[-1][0], timeout=600)
