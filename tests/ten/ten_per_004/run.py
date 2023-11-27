@@ -1,13 +1,14 @@
 import os, secrets, shutil
 from datetime import datetime
 from collections import OrderedDict
-from ten.test.contracts.storage import KeyStorage
+from ten.test.contracts.error import Error
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(TenNetworkTest):
     ITERATIONS = 5000
+    ACCOUNTS = 20
     CLIENTS = 4
 
     def execute(self):
@@ -18,13 +19,14 @@ class PySysTest(TenNetworkTest):
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
-        # deploy the contract
-        storage = KeyStorage(self, web3)
-        storage.deploy(network, account)
+        # we need to perform a transaction on the account to ensure the nonce is greater than zero for the
+        # following bulk loading (a hack to avoid count=0 being considered a new deployment and clearing the db)
+        error = Error(self, web3)
+        error.deploy(network, account)
 
         # run the clients
         setup = [self.setup_client('client_%d' % i) for i in range(self.CLIENTS)]
-        for i in range(self.CLIENTS): self.run_client('client_%d' % i, storage, setup[i][0], setup[i][1])
+        for i in range(self.CLIENTS): self.run_client('client_%d' % i, setup[i][0], setup[i][1])
         for i in range(self.CLIENTS):
             self.waitForGrep(file='client_%d.out' % i, expr='Client client_%d completed' % i, timeout=900)
 
@@ -48,7 +50,7 @@ class PySysTest(TenNetworkTest):
         date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
                             branch, date,
-                            str(self.mode), str(self.CLIENTS * self.ITERATIONS), str(duration), '%d' % self.CLIENTS)
+                            str(self.mode), str(self.CLIENTS*self.ITERATIONS), str(duration), '%d' % self.CLIENTS)
 
     def setup_client(self, name):
         pk = secrets.token_hex(32)
@@ -57,17 +59,16 @@ class PySysTest(TenNetworkTest):
         self.distribute_native(account, 0.01)
         return pk, network
 
-    def run_client(self, name, contract, pk, network):
+    def run_client(self, name, pk, network):
         """Run a background load client. """
         stdout = os.path.join(self.output, '%s.out' % name)
         stderr = os.path.join(self.output, '%s.err' % name)
-        script = os.path.join(self.input, 'storage_client.py')
+        script = os.path.join(self.input, 'client.py')
         args = []
         args.extend(['--network_http', network.connection_url()])
         args.extend(['--chainId', '%s' % network.chain_id()])
         args.extend(['--pk', pk])
-        args.extend(['--contract_address', '%s' % contract.address])
-        args.extend(['--contract_abi', '%s' % contract.abi_path])
+        args.extend(['--num_accounts', '%d' % self.ACCOUNTS])
         args.extend(['--num_iterations', '%d' % self.ITERATIONS])
         args.extend(['--client_name', name])
         self.run_python(script, stdout, stderr, args)
