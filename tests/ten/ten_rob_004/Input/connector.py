@@ -1,5 +1,7 @@
+import logging, requests, time
+import os, secrets, argparse, json, sys
 from web3 import Web3
-import logging, requests, time, os, secrets, argparse, json, sys
+from eth_account import Account
 from eth_account.messages import encode_structured_data
 
 logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
@@ -27,7 +29,7 @@ def register(chainId, account, host, port, user_id):
     typed_data = {'types': types, 'domain': domain, 'primaryType': 'Authentication',  'message': message}
 
     signable_msg_from_dict = encode_structured_data(typed_data)
-    signed_msg_from_dict = account.sign_message(signable_msg_from_dict, account.key)
+    signed_msg_from_dict = Account.sign_message(signable_msg_from_dict, account.key)
 
     headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
     data = {"signature": signed_msg_from_dict.signature.hex(), "address": account.address}

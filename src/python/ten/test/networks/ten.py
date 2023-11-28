@@ -1,12 +1,13 @@
 import requests, json
 from web3 import Web3
+from eth_account import Account
+from eth_account.messages import encode_structured_data
+from web3.middleware import geth_poa_middleware
 from pysys.constants import BLOCKED
 from ten.test.networks.default import DefaultPreLondon
 from ten.test.networks.geth import Geth
 from ten.test.networks.sepolia import Sepolia
 from ten.test.utils.properties import Properties
-from eth_account.messages import encode_structured_data
-from web3.middleware import geth_poa_middleware
 from ten.test.helpers.wallet_extension import WalletExtension
 
 
@@ -167,7 +168,7 @@ class Ten(DefaultPreLondon):
         typed_data = {'types': types, 'domain': domain, 'primaryType': 'Authentication',  'message': message}
 
         signable_msg_from_dict = encode_structured_data(typed_data)
-        signed_msg_from_dict = account.sign_message(signable_msg_from_dict, account.key)
+        signed_msg_from_dict = Account.sign_message(signable_msg_from_dict, account.key)
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         data = {"signature": signed_msg_from_dict.signature.hex(), "address": account.address}
