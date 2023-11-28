@@ -1,6 +1,7 @@
 import os, secrets
 from web3 import Web3
 from ten.test.basetest import TenNetworkTest
+from ten.test.utils.properties import Properties
 
 
 class PySysTest(TenNetworkTest):
@@ -46,4 +47,5 @@ class PySysTest(TenNetworkTest):
         args.extend(['--trigger', trigger])
         args.extend(['--iterations', '%s' % self.NUM_ITERATIONS])
         args.extend(['--additional_accounts', '%s' % self.ADDITIONAL_ACCOUNTS])
+        args.extend(['--chain_id', '%s' % Properties().chain_id(self.env)])
         self.run_python(script, stdout, stderr, args)
