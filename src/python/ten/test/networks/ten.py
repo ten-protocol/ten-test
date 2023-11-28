@@ -5,7 +5,7 @@ from ten.test.networks.default import DefaultPreLondon
 from ten.test.networks.geth import Geth
 from ten.test.networks.sepolia import Sepolia
 from ten.test.utils.properties import Properties
-from eth_account.messages import encode_defunct
+from eth_account.messages import encode_structured_data
 from web3.middleware import geth_poa_middleware
 from ten.test.helpers.wallet_extension import WalletExtension
 
@@ -133,7 +133,7 @@ class Ten(DefaultPreLondon):
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         account = web3.eth.account.privateKeyToAccount(private_key)
-        self.__register(account)
+        self.__register(test, account)
         balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
         if verbose: self.log.info('Account %s connected to %s (%.6f ETH)', account.address, self.__class__.__name__, balance)
 
@@ -151,14 +151,26 @@ class Ten(DefaultPreLondon):
         if response.ok: return response.text.strip()
         return None
 
-    def __register(self, account):
-        text_to_sign = "Register " + self.ID + " for " + str(account.address).lower()
-        eth_message = f"{text_to_sign}"
-        encoded_message = encode_defunct(text=eth_message)
-        signature = account.sign_message(encoded_message)
+    def __register(self, test, account):
+        domain = {'name': 'Ten', 'version': '1.0', 'chainId': Properties().chain_id(test.env)}
+        message = {'EncryptionToken': "0x"+self.ID}
+        types = {
+            'EIP712Domain': [
+                {'name': 'name', 'type': 'string'},
+                {'name': 'version', 'type': 'string'},
+                {'name': 'chainId', 'type': 'uint256'},
+            ],
+            'Authentication': [
+                {'name': 'EncryptionToken', 'type': 'address'},
+            ],
+        }
+        typed_data = {'types': types, 'domain': domain, 'primaryType': 'Authentication',  'message': message}
+
+        signable_msg_from_dict = encode_structured_data(typed_data)
+        signed_msg_from_dict = account.sign_message(signable_msg_from_dict, account.key)
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
-        data = {"signature": signature['signature'].hex(), "message": text_to_sign}
+        data = {"signature": signed_msg_from_dict.signature.hex(), "address": account.address}
         requests.post('%s:%d/v1/authenticate/?u=%s' % (self.HOST, self.PORT, self.ID),
                       data=json.dumps(data), headers=headers)
 

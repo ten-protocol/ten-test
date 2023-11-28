@@ -2,7 +2,7 @@ import os, shutil, sys, json, requests
 from collections import OrderedDict
 from web3 import Web3
 from pathlib import Path
-from eth_account.messages import encode_defunct
+from eth_account.messages import encode_structured_data
 from pysys.constants import PROJECT, BACKGROUND
 from pysys.exceptions import AbortExecution
 from pysys.constants import LOG_TRACEBACK
@@ -230,20 +230,30 @@ class TenRunnerPlugin():
         """Stop a process started by this runner plugin. """
         hprocess.stop()
 
-    @staticmethod
-    def __join(url):
+    def __join(self, url):
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         response = requests.get(url,  headers=headers)
         return response.text
 
-    @staticmethod
-    def __register(account, url, user_id):
-        text_to_sign = "Register " + user_id + " for " + str(account.address).lower()
-        eth_message = f"{text_to_sign}"
-        encoded_message = encode_defunct(text=eth_message)
-        signature = account.sign_message(encoded_message)
+    def __register(self, account, url, user_id):
+        domain = {'name': 'Ten', 'version': '1.0', 'chainId': Properties().chain_id(self.env)}
+        message = {'EncryptionToken': "0x"+user_id}
+        types = {
+            'EIP712Domain': [
+                {'name': 'name', 'type': 'string'},
+                {'name': 'version', 'type': 'string'},
+                {'name': 'chainId', 'type': 'uint256'},
+            ],
+            'Authentication': [
+                {'name': 'EncryptionToken', 'type': 'address'},
+            ],
+        }
+        typed_data = {'types': types, 'domain': domain, 'primaryType': 'Authentication',  'message': message}
+
+        signable_msg_from_dict = encode_structured_data(typed_data)
+        signed_msg_from_dict = account.sign_message(signable_msg_from_dict, account.key)
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
-        data = {"signature": signature['signature'].hex(), "message": text_to_sign}
+        data = {"signature": signed_msg_from_dict.signature.hex(), "address": account.address}
         response = requests.post(url, data=json.dumps(data), headers=headers)
         return response
