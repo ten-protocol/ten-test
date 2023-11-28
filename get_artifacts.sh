@@ -1,7 +1,7 @@
 # script to build artifacts required for running tests 
 
 script_path="$(cd "$(dirname "${0}")" && pwd)"
-src_path="${script_path}/../go-obscuro"
+src_path="${script_path}/../go-ten"
 
 # extract branch and commit hash
 cd $src_path
