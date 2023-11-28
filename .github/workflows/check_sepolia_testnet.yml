@@ -12,12 +12,12 @@ on:
         type: choice
         description: 'The release version of sepolia-testnet'
         required: true
-        default: releases/v0.19
+        default: 'releases/v0.19'
         options:
-          - main
-          - releases/v0.19
-          - releases/v0.18
-          - releases/v0.17
+          - 'main'
+          - 'releases/v0.19'
+          - 'releases/v0.18'
+          - 'releases/v0.17'
 
 jobs:
   run-check:
