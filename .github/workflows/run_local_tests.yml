@@ -15,7 +15,7 @@ on:
       arguments:
         description: 'Arguments to the pysys run'
         required: true
-        default: '-e skip -e persistence'
+        default: '-e skip -e persistence -e performance'
 
 jobs:
   test-run:
