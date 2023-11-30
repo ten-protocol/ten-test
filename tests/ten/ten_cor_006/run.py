@@ -1,5 +1,4 @@
 from ten.test.basetest import TenNetworkTest
-from ten.test.utils.properties import Properties
 from ten.test.contracts.relevancy import Relevancy
 from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 
@@ -9,40 +8,33 @@ class PySysTest(TenNetworkTest):
     def execute(self):
         # connect to network
         network = self.get_network_connection()
-        web3, account = network.connect_account4(self)
 
-        # deploy the storage contract
-        contract = Relevancy(self, web3)
-        contract.deploy(network, account)
+        # connect via the primary wallet extension used by the test in the order of
+        # account4, account1, account2, account3
+        web3_4, account4 = network.connect_account4(self)
+        network.connect_account1(self)
+        network.connect_account2(self)
+        network.connect_account3(self)
 
-        # run the javascript event log subscriber in the background for the other accounts
-        self.subscribe(network, None, 'account4', contract.address, contract.abi_path)
-        self.subscribe(network, Properties().account1pk(), 'account1', contract.address, contract.abi_path)
-        self.subscribe(network, Properties().account2pk(), 'account2', contract.address, contract.abi_path)
-        self.subscribe(network, Properties().account3pk(), 'account3', contract.address, contract.abi_path)
-        self.wait(float(self.block_time) * 1.1)
+        # deploy the storage contract as account 4 and get references to it for each account
+        contract_4 = Relevancy(self, web3_4)
+        contract_4.deploy(network, account4)
 
-        # perform some transactions
+        # run a background script to filter and collect events (called by account 4)
+        subscriber = AllEventsLogSubscriber(self, network, contract_4.address, contract_4.abi_path,
+                                            stdout='subscriber.out',
+                                            stderr='subscriber.err')
+        subscriber.run()
+        self.wait(float(self.block_time)*1.1)
+
+        # perform a transaction
         self.log.info('Performing transactions ... ')
-        network.transact(self, web3, contract.contract.functions.nonIndexedAddressAndNumber(account.address), account, contract.GAS_LIMIT)
-        self.wait(float(self.block_time) * 1.1)
+        network.transact(self, web3_4, contract_4.contract.functions.nonIndexedAddressAndNumber(account4.address),
+                         account4, contract_4.GAS_LIMIT)
+        self.wait(float(self.block_time)*1.1)
 
-        # wait and assert that account4 does see this event
-        self.waitForGrep(file='subscriber_account4.out', expr='Received event: NonIndexedAddressAndNumber', timeout=20)
-        self.assertGrep(file='subscriber_account4.out', expr='Received event: NonIndexedAddressAndNumber')
-
-        # ensure that the other users see it also
-        self.assertGrep(file='subscriber_account1.out', expr='Received event: NonIndexedAddressAndNumber')
-        self.assertGrep(file='subscriber_account2.out', expr='Received event: NonIndexedAddressAndNumber')
-        self.assertGrep(file='subscriber_account3.out', expr='Received event: NonIndexedAddressAndNumber')
-
-    def subscribe(self, network, pk_to_register, name, address, abi_path, new_wallet=False):
-        if new_wallet:
-            network = self.get_network_connection(name=name)
-
-        subscriber = AllEventsLogSubscriber(self, network, address, abi_path,
-                                            stdout='subscriber_%s.out' % name,
-                                            stderr='subscriber_%s.err' % name)
-        subscriber.run(pk_to_register)
+        # wait and assert that all accounts receive their own events
+        self.waitForGrep(file='subscriber.out', expr='Received event: NonIndexedAddressAndNumber', timeout=90)
+        self.assertLineCount(file='subscriber.out', expr='Received event: NonIndexedAddressAndNumber', condition='==1')
 
 

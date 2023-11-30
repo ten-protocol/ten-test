@@ -1,32 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <pysystest type="auto">
-  
-  <description> 
-	<title></title>    
-	<purpose><![CDATA[
+
+    <description>
+        <title>Event relevancy - 4 accounts single WE, 1 account subscribes, 1 lifecycle events, 4 received</title>
+        <purpose><![CDATA[
+We have 4 accounts registered and connected to the network through a single wallet extension. Account4 deploys the
+relevancy contract and subscribes to all events from the contract. As the subscription to all events gives no
+indication of the originator of the subscription, the wallet extension subscribes to all events for each of the accounts
+registered (there are thus 4 subscriptions). Account4 transacts against the contract to produce a single
+NonIndexedAddressAndNumber. This should fire against all 4 subscriptions, but only one event should be returned to the
+subscriber as the events should be de-duplicated.
 ]]>
-	</purpose>
-  </description>
+        </purpose>
+    </description>
 
-  <!-- uncomment this to skip the test:  
-  <skipped reason=""/> 
-  -->
-  
-  <classification>
-	<groups inherit="true">
-	  <group></group>
-	</groups>
-	<modes inherit="true">
-	</modes>
-  </classification>
+    <classification>
+        <groups inherit="true">
+            <group>events</group>
+            <group>web3js</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+        </modes>
+    </classification>
 
-  <data>
-	<class name="PySysTest" module="run"/>
-  </data>
-  
-  <traceability>
-	<requirements>
-	  <requirement id=""/>     
-	</requirements>
-  </traceability>
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
 </pysystest>
