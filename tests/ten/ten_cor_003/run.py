@@ -23,7 +23,7 @@ class PySysTest(TenNetworkTest):
         contract_2 = Relevancy.clone(web3_2, account2, contract_4)
         contract_3 = Relevancy.clone(web3_3, account3, contract_4)
 
-        # run a background script to filter and collect events
+        # run a background script to filter and collect events (called by account 4)
         subscriber = AllEventsLogSubscriber(self, network, contract_4.address, contract_4.abi_path,
                                             stdout='subscriber.out',
                                             stderr='subscriber.err')
@@ -38,7 +38,7 @@ class PySysTest(TenNetworkTest):
         network.transact(self, web3_3, contract_3.contract.functions.callerIndexedAddress(), account3, contract_3.GAS_LIMIT)
         self.wait(float(self.block_time)*1.1)
 
-        # wait and assert that account4 does see this event
+        # wait and assert that all accounts receive their own events
         self.waitForGrep(file='subscriber.out', expr='Received event: CallerIndexedAddress', timeout=90)
         self.assertLineCount(file='subscriber.out', expr='Received event: CallerIndexedAddress', condition='==4')
 
