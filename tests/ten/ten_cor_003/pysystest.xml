@@ -2,23 +2,14 @@
 <pysystest type="auto">
 
     <description>
-        <title>Event relevancy - four subscriptions through single WE, event is relevant to account registered first</title>
+        <title>Event relevancy - 4 accounts single WE, 1 account subscribes, 4 unique relevant events, 4 received</title>
         <purpose><![CDATA[
-Account4 deploys the Relevancy contract, calls the method on the contract to emit the CallerIndexedAddress
-with addr = the user account address. The following accounts are used to register (in this order) + the subscription
-and event emission;
-
-  Account 4 - shared wallet extension
-  Account 1 - shared wallet extension
-  Account 2 - shared wallet extension
-  Account 3 - shared wallet extension
-
-  Subscribe for the CallerIndexedAddress event which contains a single indexed address field (all)
-  Event is emitted containing address of user account4, account3, account2, account1.
-
-Under this sequence the subscription cannot be tied to a given account, so four subscriptions will be made, one for each
-account. As the returned events are not duplicates (as they contain the account address) the subscription should receive
-four events in total.
+We have 4 accounts registered and connected to the network through a single wallet extension. Account4 deploys the
+relevancy contract and subscribes to all events from the contract. As the subscription to all events gives no
+indication of the originator of the subscription, the wallet extension subscribes to all events for each of the accounts
+registered (there are thus 4 subscriptions). Each account transacts against the contract to produce a CallerIndexedAddress
+event that contains their calling address. As such, each subscription should receive back the event log relevant to them
+i.e. there should be 4 events logged.
 ]]>
         </purpose>
     </description>

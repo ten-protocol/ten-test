@@ -31,7 +31,7 @@ class PySysTest(TenNetworkTest):
         self.waitForGrep(file='subscriber_account4.out', expr='Received event: NonIndexedAddressAndNumber', timeout=20)
         self.assertGrep(file='subscriber_account4.out', expr='Received event: NonIndexedAddressAndNumber')
 
-        # ensure that the other users don't see it
+        # ensure that the other users see it also
         self.assertGrep(file='subscriber_account1.out', expr='Received event: NonIndexedAddressAndNumber')
         self.assertGrep(file='subscriber_account2.out', expr='Received event: NonIndexedAddressAndNumber')
         self.assertGrep(file='subscriber_account3.out', expr='Received event: NonIndexedAddressAndNumber')
