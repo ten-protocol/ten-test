@@ -302,33 +302,48 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def scan_get_public_transaction_data(self):
+    def scan_get_public_transaction_data(self, offset=0, size=10):
         """Get the public transaction data as part of the scan_ api."""
-        data = {"jsonrpc": "2.0", "method": "scan_getPublicTransactionData", "params": [], "id": self.MSG_ID }
+        pagination = {"offset": offset, "size": size}
+        data = {"jsonrpc": "2.0", "method": "scan_getPublicTransactionData", "params": [pagination], "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return response.json()['result']
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def scan_get_batch_listing(self):
+    def scan_get_batch_listing(self, offset=0, size=10):
         """Get the batch listing as part of the scan_ api."""
-        data = {"jsonrpc": "2.0", "method": "scan_getBatchListing", "params": [], "id": self.MSG_ID }
+        pagination = {"offset": offset, "size": size}
+        data = {"jsonrpc": "2.0", "method": "scan_getBatchListing", "params": [pagination], "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return response.json()['result']
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def scan_get_block_listing(self):
+    def scan_get_block_listing(self, offset=0, size=10):
         """Get the block listing as part of the scan_ api."""
-        data = {"jsonrpc": "2.0", "method": "scan_getBlockListing", "params": [], "id": self.MSG_ID }
+        pagination = {"offset": offset, "size": size}
+        data = {"jsonrpc": "2.0", "method": "scan_getBlockListing", "params": [pagination], "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return response.json()['result']
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def scan_get_batch_by_hash(self):
+    def scan_get_batch_by_hash(self, hash):
         """Get block by hash as part of the scan_ api."""
-        data = {"jsonrpc": "2.0", "method": "scan_getBatchByHash", "params": [], "id": self.MSG_ID }
+        data = {"jsonrpc": "2.0", "method": "scan_getBatchByHash", "params": [hash], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    def list_personal_transactions(self, address, offset=0, size=10):
+        """List personal transactions using ."""
+        payload = {
+            "address": address,
+            "pagination": {"offset": offset, "size": size},
+        }
+        data = {"jsonrpc": "2.0", "method": "eth_getStorageAt", "params": ["listPersonalTransactions", payload], "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return response.json()['result']
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
