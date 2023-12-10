@@ -337,13 +337,13 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def list_personal_transactions(self, address, offset=0, size=10):
+    def scan_list_personal_transactions(self, address, offset=0, size=10):
         """List personal transactions using ."""
         payload = {
             "address": address,
             "pagination": {"offset": offset, "size": size},
         }
-        data = {"jsonrpc": "2.0", "method": "eth_getStorageAt", "params": ["listPersonalTransactions", payload], "id": self.MSG_ID }
+        data = {"jsonrpc": "2.0", "method": "eth_getStorageAt", "params": ["listPersonalTransactions", payload, None], "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return response.json()['result']
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
