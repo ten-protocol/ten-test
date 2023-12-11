@@ -14,6 +14,7 @@ are registered through that particular user_id
         <groups inherit="true">
             <group>skip</group>
             <group>gateway</group>
+            <group>robustness</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

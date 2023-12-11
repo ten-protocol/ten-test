@@ -5,10 +5,10 @@ from ten.test.basetest import TenNetworkTest
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        txs = self.get_latest_transactions(1)
+        txs = self.obscuroscan_get_latest_transactions(1)
         self.log.info('Last transactions are %s', txs)
         if len(txs) >= 1:
-            batch = self.get_batch_for_transaction(txs[0])
+            batch = self.obscuroscan_get_batch_for_transaction(txs[0])
             parent_hash = batch['Header']['parentHash']
             number = int(batch['Header']['number'], 16)
             num_tx = len(batch['TxHashes'])
@@ -17,7 +17,7 @@ class PySysTest(TenNetworkTest):
             count = 100
             while count > 0:
                 self.log.info('Calling to get batch for parent %s', parent_hash)
-                batch = self.get_batch(parent_hash)
+                batch = self.obscuroscan_get_batch(parent_hash)
                 if number == 0:
                     self.log.info('Reached the genesis block so exiting')
                     self.log.info(batch)
@@ -33,7 +33,7 @@ class PySysTest(TenNetworkTest):
             # in case we didn't reach the genesis block give it a go
             parent_hash = '0x0000000000000000000000000000000000000000000000000000000000000000'
             self.log.info('Calling to get batch for parent %s', parent_hash)
-            batch = self.get_batch(parent_hash)
+            batch = self.obscuroscan_get_batch(parent_hash)
             self.log.info('Genesis batch is %s', batch)
 
             # if we get this far we've passed

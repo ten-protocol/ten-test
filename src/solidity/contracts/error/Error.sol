@@ -12,11 +12,16 @@ contract Error {
         require(false, "Forced require");
     }
 
+    function force_require_non_view(string memory newKey) public {
+        require(bytes(newKey).length == 0, "Forced require on key length not zero");
+        key = newKey;
+    }
+
     function force_revert() public view {
         revert("Forced revert");
     }
 
-    function force_assert() public view{
+    function force_assert() public view {
         assert(false);
     }
 
