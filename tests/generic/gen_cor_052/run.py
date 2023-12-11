@@ -14,6 +14,8 @@ class PySysTest(GenericNetworkTest):
         error.deploy(network, account)
         self.client(network, error, 'ethers')
         self.client(network, error, 'web3')
+        self.assertGrep(file='client_ethers.out', expr='Error: transaction failed')
+        self.assertGrep(file='client_web3.out', expr='Error: Transaction has been reverted by the EVM')
 
     def client(self, network, contract, type):
         private_key = secrets.token_hex(32)
