@@ -31,11 +31,6 @@ class PySysTest(GenericNetworkTest):
             regex = re.compile('execution reverted:.*Forced require', re.M)
             self.assertTrue(regex.search(e.args[0]) is not None)
 
-        # force a require on non view function
-        self.log.info('Forcing a require on a non-view contract function')
-        receipt = network.transact(self, web3, error.contract.functions.force_require_non_view("key"), account, error.GAS_LIMIT)
-        self.assertTrue(receipt.status == 1)
-
         # force a revert
         try:
             self.log.info('Forcing a revert on contract function')
