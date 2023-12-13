@@ -5,20 +5,20 @@ const commander = require('commander')
 require('console-stamp')(console, 'HH:MM:ss')
 
 async function sendTransaction() {
-  const gasPrice = await provider.getGasPrice();
-  const estimatedGas = await contract.estimateGas.force_require_non_view('');
-  console.log(`Wallet address: ${wallet.address}`)
-  console.log(`Gas Price: ${gasPrice}`)
-  console.log(`Estimated Gas: ${estimatedGas}`)
-
-  const tx = await contract.populateTransaction.force_require_non_view('key', {
-    from: wallet.address,
-    gasPrice: gasPrice,
-    gasLimit: estimatedGas,
-  } )
-  console.log('Transaction created')
-
   try {
+    const gasPrice = await provider.getGasPrice();
+    const estimatedGas = await contract.estimateGas.force_require_non_view('key')
+    console.log(`Wallet address: ${wallet.address}`)
+    console.log(`Gas Price: ${gasPrice}`)
+    console.log(`Estimated Gas: ${estimatedGas}`)
+
+    const tx = await contract.populateTransaction.force_require_non_view('key', {
+      from: wallet.address,
+      gasPrice: gasPrice,
+      gasLimit: estimatedGas,
+    } )
+    console.log('Transaction created')
+
     const txResponse = await wallet.sendTransaction(tx)
     console.log(`Transaction sent: ${txResponse.hash}`)
 

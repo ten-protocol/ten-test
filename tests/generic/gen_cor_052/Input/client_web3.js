@@ -5,21 +5,21 @@ const commander = require('commander')
 require('console-stamp')(console, 'HH:MM:ss')
 
 async function sendTransaction() {
-  const functionCall = contract.methods.force_require_non_view('key')
-  const gasEstimate = await contract.methods.force_require_non_view('').estimateGas({ from: sender_address })
-  const gasPrice = await web3.eth.getGasPrice()
-
-  const transactionParameters = {
-    from: sender_address,
-    to: options.address,
-    gas: gasEstimate,
-    gasPrice: gasPrice,
-    data: functionCall.encodeABI(),
-    nonce: await web3.eth.getTransactionCount(sender_address),
-  }
-  console.log('Transaction created')
-
   try {
+    const functionCall = contract.methods.force_require_non_view('key')
+    const gasEstimate = await contract.methods.force_require_non_view('key').estimateGas({ from: sender_address })
+    const gasPrice = await web3.eth.getGasPrice()
+
+    const transactionParameters = {
+      from: sender_address,
+      to: options.address,
+      gas: gasEstimate,
+      gasPrice: gasPrice,
+      data: functionCall.encodeABI(),
+      nonce: await web3.eth.getTransactionCount(sender_address),
+    }
+    console.log('Transaction created')
+
     const signedTransaction = await web3.eth.accounts.signTransaction(transactionParameters, options.private_key);
     const txReceipt = await web3.eth.sendSignedTransaction(signedTransaction.rawTransaction)
     console.log(`Transaction status: ${txReceipt.status}`)
