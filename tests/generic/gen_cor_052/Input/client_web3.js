@@ -7,7 +7,7 @@ require('console-stamp')(console, 'HH:MM:ss')
 async function sendTransaction() {
   try {
     const functionCall = contract.methods.force_require_non_view('key')
-    const gasEstimate = await contract.methods.force_require_non_view('key').estimateGas({ from: sender_address })
+    const gasEstimate = await contract.methods.force_require_non_view('').estimateGas({ from: sender_address })
     const gasPrice = await web3.eth.getGasPrice()
 
     const transactionParameters = {

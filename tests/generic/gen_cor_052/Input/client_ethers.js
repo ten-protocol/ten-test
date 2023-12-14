@@ -7,7 +7,7 @@ require('console-stamp')(console, 'HH:MM:ss')
 async function sendTransaction() {
   try {
     const gasPrice = await provider.getGasPrice();
-    const estimatedGas = await contract.estimateGas.force_require_non_view('key')
+    const estimatedGas = await contract.estimateGas.force_require_non_view('')
     console.log(`Wallet address: ${wallet.address}`)
     console.log(`Gas Price: ${gasPrice}`)
     console.log(`Estimated Gas: ${estimatedGas}`)
