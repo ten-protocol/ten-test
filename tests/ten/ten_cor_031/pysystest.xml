@@ -15,7 +15,6 @@ event logs from the network, we expect a single call back for our subscriber (de
     <classification>
         <groups inherit="true">
             <group>gateway</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
