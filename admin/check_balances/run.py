@@ -6,7 +6,7 @@ from ten.test.utils.properties import Properties
 
 class PySysTest(TenNetworkTest):
     L1_THRESHOLD = 5
-    L2_THRESHOLD = 10
+    L2_THRESHOLD = 25
 
     def execute(self):
         network = self.get_l1_network_connection(self.env)
