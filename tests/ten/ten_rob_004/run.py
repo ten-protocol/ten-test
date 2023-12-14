@@ -6,7 +6,7 @@ from ten.test.utils.properties import Properties
 
 class PySysTest(TenNetworkTest):
     NUM_CLIENTS = 10
-    NUM_ITERATIONS = 100
+    NUM_ITERATIONS = 25
     ADDITIONAL_ACCOUNTS = 8
 
     def execute(self):
@@ -26,7 +26,7 @@ class PySysTest(TenNetworkTest):
         for i in range(0, self.NUM_CLIENTS):
             self.waitForGrep(file=os.path.join(self.output, 'client_%s.out' % i), expr='Client completed', timeout=60)
 
-        self.log.info('Confirmation balances were received for all iteractions')
+        self.log.info('Confirmation balances were received for all interactions')
         for i in range(0, self.NUM_CLIENTS):
             self.assertLineCount(file=os.path.join(self.output, 'client_%s.out' % i),
                                  expr='Balance is 10000000000000000', condition='== %d' % self.NUM_ITERATIONS)

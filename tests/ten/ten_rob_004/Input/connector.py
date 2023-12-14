@@ -69,13 +69,13 @@ if __name__ == "__main__":
         user_id = join(args.host, int(args.port))
 
         logging.info('Registering account %s with the network on user id %s', account.address, user_id)
-        response = register(args.chain_id, account, args.host, int(args.port), user_id)
+        response = register(int(args.chain_id), account, args.host, int(args.port), user_id)
         logging.info('Registration success was %s', response.ok)
         web3 = Web3(Web3.HTTPProvider('%s:%s/v1/?u=%s' % (args.host, args.port, user_id)))
 
         for j in range(0, int(args.additional_accounts)):
             _account = Web3().eth.account.privateKeyToAccount(secrets.token_hex(32))
-            response = register(args.chain_id, _account, args.host, int(args.port), user_id)
+            response = register(int(args.chain_id), _account, args.host, int(args.port), user_id)
             logging.info('Additional clients, registration for %s success was %s', _account.address, response.ok)
 
         balance = web3.eth.get_balance(account.address)
