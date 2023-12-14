@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Check token transfer of sepolia l1</title>
+        <title>Check the batch production rate on sepolia-testnet</title>
         <purpose><![CDATA[
 ]]>
         </purpose>
@@ -12,7 +12,7 @@
             <group></group>
         </groups>
         <modes inherit="true">
-            <mode>sepolia</mode>
+            <mode>ten.sepolia</mode>
         </modes>
     </classification>
 
