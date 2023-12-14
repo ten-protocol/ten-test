@@ -12,6 +12,7 @@ final call to retrieve it. Just checks that we are able to walk backwards with n
 
     <classification>
         <groups inherit="true">
+            <group>tenscan</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

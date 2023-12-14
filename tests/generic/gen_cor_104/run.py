@@ -1,11 +1,10 @@
 import secrets, os
 from web3 import Web3
-from ten.test.helpers.ws_proxy import WebServerProxy
 from ten.test.contracts.storage import KeyStorage
-from ten.test.basetest import TenNetworkTest
+from ten.test.basetest import GenericNetworkTest
 
 
-class PySysTest(TenNetworkTest):
+class PySysTest(GenericNetworkTest):
     ITERATIONS = 10
     CLIENTS = 5
 

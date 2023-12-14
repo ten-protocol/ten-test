@@ -14,6 +14,7 @@ the transaction of interest.
 
     <classification>
         <groups inherit="true">
+            <group>tenscan</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

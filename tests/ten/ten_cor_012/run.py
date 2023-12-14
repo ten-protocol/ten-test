@@ -27,7 +27,7 @@ class PySysTest(TenNetworkTest):
         self.log.info('  Block Hash: %s ', block_hash)
         self.log.info('  TX Hash:    %s ', tx_hash)
 
-        batch = self.get_batch_for_transaction(tx_hash)
+        batch = self.obscuroscan_get_batch_for_transaction(tx_hash)
         if batch is not None:
             batch_number = int(batch['Header']['number'], 16)
             batch_txns = batch['TxHashes']

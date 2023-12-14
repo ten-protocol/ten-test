@@ -214,7 +214,7 @@ class TenNetworkTest(GenericNetworkTest):
     layer2 of an Ten Network.
     """
 
-    def get_total_transactions(self):
+    def obscuroscan_get_total_transactions(self):
         """Return the total number of L2 transactions on Ten. """
         data = {"jsonrpc": "2.0", "method": "obscuroscan_getTotalTransactions", "params": [], "id": self.MSG_ID }
         response = self.post(data)
@@ -222,7 +222,7 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def get_latest_transactions(self, num):
+    def obscuroscan_get_latest_transactions(self, num):
         """Return the last x number of L2 transactions. """
         data = {"jsonrpc": "2.0", "method": "obscuroscan_getLatestTransactions", "params": [num], "id": self.MSG_ID }
         response = self.post(data)
@@ -230,7 +230,7 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def get_head_rollup_header(self):
+    def obscuroscan_get_head_rollup_header(self):
         """Get the rollup header of the head rollup. """
         data = {"jsonrpc": "2.0", "method": "obscuroscan_getHeadRollupHeader", "params": [], "id": self.MSG_ID }
         response = self.post(data)
@@ -238,7 +238,7 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def get_batch(self, hash):
+    def obscuroscan_get_batch(self, hash):
         """Get the rollup by its hash. """
         data = {"jsonrpc": "2.0", "method": "obscuroscan_getBatch", "params": [hash], "id": self.MSG_ID }
         response = self.post(data)
@@ -246,7 +246,7 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def get_batch_for_transaction(self, tx_hash):
+    def obscuroscan_get_batch_for_transaction(self, tx_hash):
         """Get the rollup for a given L2 transaction. """
         data = {"jsonrpc": "2.0", "method": "obscuroscan_getBatchForTx", "params": [tx_hash], "id": self.MSG_ID }
         response = self.post(data)
@@ -254,7 +254,7 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def get_l1_block(self, block_hash):
+    def obscuroscan_get_l1_block(self, block_hash):
         """Get the block that contains a given rollup (given by the L1Proof value in the header). """
         data = {"jsonrpc": "2.0", "method": "obscuroscan_getBlockHeaderByHash", "params": [block_hash], "id": self.MSG_ID }
         response = self.post(data)
@@ -262,7 +262,7 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def get_node_attestation(self):
+    def obscuroscan_get_node_attestation(self):
         """Get the node attestation report. """
         data = {"jsonrpc": "2.0", "method": "obscuroscan_attestation", "params": [], "id": self.MSG_ID }
         response = self.post(data)
@@ -270,7 +270,7 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def get_debug_log_visibility(self, tx_hash):
+    def get_debug_event_log_relevancy(self, tx_hash):
         """Get the debug_LogVisibility. """
         data = {"jsonrpc": "2.0", "method": "debug_eventLogRelevancy", "params": [tx_hash], "id": self.MSG_ID }
         response = self.post(data)
@@ -278,7 +278,78 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def get_health(self):
+    def scan_get_latest_rollup_header(self):
+        """Get the latest rollup header as part of the scan_ api."""
+        data = {"jsonrpc": "2.0", "method": "scan_getLatestRollupHeader", "params": [], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    def scan_get_total_transaction_count(self):
+        """Get the ltotal transaction count as part of the scan_ api."""
+        data = {"jsonrpc": "2.0", "method": "scan_getTotalTransactionCount", "params": [], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    def scan_get_total_contract_count(self):
+        """Get the total contract count as part of the scan_ api."""
+        data = {"jsonrpc": "2.0", "method": "scan_getTotalContractCount", "params": [], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    def scan_get_public_transaction_data(self, offset=0, size=10):
+        """Get the public transaction data as part of the scan_ api."""
+        pagination = {"offset": offset, "size": size}
+        data = {"jsonrpc": "2.0", "method": "scan_getPublicTransactionData", "params": [pagination], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    def scan_get_batch_listing(self, offset=0, size=10):
+        """Get the batch listing as part of the scan_ api."""
+        pagination = {"offset": offset, "size": size}
+        data = {"jsonrpc": "2.0", "method": "scan_getBatchListing", "params": [pagination], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    def scan_get_block_listing(self, offset=0, size=10):
+        """Get the block listing as part of the scan_ api."""
+        pagination = {"offset": offset, "size": size}
+        data = {"jsonrpc": "2.0", "method": "scan_getBlockListing", "params": [pagination], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    def scan_get_batch_by_hash(self, hash):
+        """Get block by hash as part of the scan_ api."""
+        data = {"jsonrpc": "2.0", "method": "scan_getBatchByHash", "params": [hash], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    def scan_list_personal_transactions(self, address, offset=0, size=10):
+        """List personal transactions using ."""
+        payload = {
+            "address": address,
+            "pagination": {"offset": offset, "size": size},
+        }
+        data = {"jsonrpc": "2.0", "method": "eth_getStorageAt", "params": ["listPersonalTransactions", payload, None], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    def obscuro_health(self):
         """Get the debug_LogVisibility. """
         data = {"jsonrpc": "2.0", "method": "obscuro_health", "id": self.MSG_ID }
         response = self.post(data)
@@ -286,7 +357,7 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def get_config(self):
+    def obscuro_config(self):
         """Get the debug_LogVisibility. """
         data = {"jsonrpc": "2.0", "method": "obscuro_config", "id": self.MSG_ID }
         response = self.post(data)

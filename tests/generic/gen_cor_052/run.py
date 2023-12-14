@@ -1,43 +1,37 @@
-from ten.test.basetest import TenNetworkTest
-from ten.test.contracts.payable import ReceiveEther
-from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
+import secrets, os
+from web3 import Web3
+from ten.test.contracts.error import Error
+from ten.test.basetest import GenericNetworkTest
 
 
-class PySysTest(TenNetworkTest):
+class PySysTest(GenericNetworkTest):
 
     def execute(self):
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
-        balance = web3.eth.get_balance(account.address)
-        self.log.info('Balance account %.6f ETH (%d Wei)', web3.fromWei(balance, 'ether'), balance)
 
-        # deploy the contract and send eth to it
-        contract = ReceiveEther(self, web3)
-        contract.deploy(network, account)
+        error = Error(self, web3)
+        error.deploy(network, account)
+        self.client(network, error, 'ethers')
+        self.client(network, error, 'web3')
+        self.assertGrep(file='client_ethers.out', expr='Error: transaction failed')
+        self.assertGrep(file='client_web3.out', expr='Error: Transaction has been reverted by the EVM')
 
-        # run a background script to filter and collect events
-        subscriber = AllEventsLogSubscriber(self, network, contract.address, contract.abi_path)
-        subscriber.run()
+    def client(self, network, contract, type):
+        private_key = secrets.token_hex(32)
+        self.distribute_native(Web3().eth.account.privateKeyToAccount(private_key), 0.001)
+        network.connect(self, private_key=private_key, check_funds=False)
 
-        # get balances and perform the transfer
-        balance1 = web3.eth.get_balance(contract.address)
-        self.log.info('Balance account before %.6f ETH (%d Wei)', web3.fromWei(balance1, 'ether'), balance1)
+        # create the client
+        stdout = os.path.join(self.output, 'client_%s.out' % type)
+        stderr = os.path.join(self.output, 'client_%s.err' % type)
+        script = os.path.join(self.input, 'client_%s.js' % type)
+        args = []
+        args.extend(['--network', network.connection_url()])
+        args.extend(['--address', contract.address])
+        args.extend(['--contract_abi', contract.abi_path])
+        args.extend(['--private_key', private_key])
+        self.run_javascript(script, stdout, stderr, args)
+        self.waitForGrep(file=stdout, expr='Starting transactions', timeout=10)
+        self.waitForGrep(file=stdout, expr='Completed transactions', timeout=40)
 
-        tx_receipt = self.send(network, web3, account, contract.address, 10)
-        self.log.info('Gas used = %d Wei', tx_receipt.gasUsed)
-        balance2 = web3.eth.get_balance(contract.address)
-        self.log.info('Balance account after %.6f ETH (%d Wei)', web3.fromWei(balance2, 'ether'), balance2)
-
-        # assert funds have gone to the contract
-        self.assertTrue(balance2 == 10)
-
-    def send(self, network, web3, account, address, amount):
-        gpv = (4*72000*web3.eth.gas_price) + amount
-        self.log.info('Gas * price + value == %0.6f', web3.fromWei(gpv, 'ether'))
-        tx = {
-            'to': address,
-            'value': amount,
-            'gas': 72000,
-            'gasPrice': web3.eth.gas_price
-        }
-        return network.tx(self, web3, tx, account)

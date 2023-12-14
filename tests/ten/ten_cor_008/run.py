@@ -23,7 +23,7 @@ class PySysTest(TenNetworkTest):
         tx_recp = network.transact(self, web3, storage.contract.functions.store(1), account, storage.GAS_LIMIT)
         self.log.info('First transaction block hash %s', tx_recp.blockHash.hex())
         self.log.info('First transaction tx hash %s', tx_recp.transactionHash.hex())
-        response = self.get_debug_log_visibility(tx_recp.transactionHash.hex())
+        response = self.get_debug_event_log_relevancy(tx_recp.transactionHash.hex())
 
         self.waitForSignal(file='subscriber.out', expr='Full log:', condition='==1', timeout=10)
         self.assertLineCount(file='subscriber.out', expr='Full log:', condition='==1')
