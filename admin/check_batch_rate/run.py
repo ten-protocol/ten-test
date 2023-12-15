@@ -1,11 +1,24 @@
-import pysys
-from pysys.constants import *
-from pysys.basetest import BaseTest
+import time
+from ten.test.basetest import TenNetworkTest
 
-class PySysTest(BaseTest):
-	def execute(self):
-		pass
 
-	def validate(self):
-		pass
-	
+class PySysTest(TenNetworkTest):
+    DURATION = 150
+    INTERVAL = 5
+    THRESHOLD = 140
+
+    def execute(self):
+        start = time.time()
+        start_txs = int(self.scan_get_total_transaction_count())
+        start_bts = int(self.scan_get_batch_listing(size=2)['Total'])
+
+        while True:
+            txs = int(self.scan_get_total_transaction_count())
+            bts = int(self.scan_get_batch_listing(size=2)['Total'])
+            elapsed = (time.time() - start)
+            self.log.info('Elapsed %.2f, txs=%d, batches=%d', elapsed, txs, bts)
+            if elapsed > self.DURATION: break
+            time.sleep(self.INTERVAL)
+
+        self.assertTrue((bts-start_bts) < self.THRESHOLD,
+                        assertMessage='Batch change %d is above threshold %s' % ((bts-start_bts), self.THRESHOLD))

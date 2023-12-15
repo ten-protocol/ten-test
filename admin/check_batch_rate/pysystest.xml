@@ -4,6 +4,8 @@
     <description>
         <title>Check the batch production rate on sepolia-testnet</title>
         <purpose><![CDATA[
+Logs out the transaction and batch count every X interval seconds, and after an elapsed duration checks that the
+increase is not greater than a threshold value.
 ]]>
         </purpose>
     </description>
@@ -13,6 +15,9 @@
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
         </modes>
     </classification>
 
