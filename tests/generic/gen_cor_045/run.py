@@ -8,13 +8,13 @@ class PySysTest(GenericNetworkTest):
     def execute(self):
         # deployment of contract
         network_dev = self.get_network_connection(name='dev_connection')
-        web3_dev, account_dev = network_dev.connect_account2(self)
+        web3_dev, account_dev = network_dev.connect_account2(self, web_socket=True)
         game = Game(self, web3_dev)
         game.deploy(network_dev, account_dev)
 
         # end usr playing the game
         network_usr = self.get_network_connection(name='usr_connection')
-        web3_usr, account_usr = network_usr.connect_account1(self)
+        web3_usr, account_usr = network_usr.connect_account1(self, web_socket=True)
 
         stdout = os.path.join(self.output, 'subscriber.out')
         stderr = os.path.join(self.output, 'subscriber.err')
