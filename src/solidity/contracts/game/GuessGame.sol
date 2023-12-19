@@ -1,75 +1,47 @@
-//SPDX-License-Identifier: Unlicense
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./IToken.sol";
-
 contract GuessGame {
-    address payable owner;
-    uint8 private _target;
-    address[] private _attemptAddresses;
-    mapping(address => uint8) private _prevMisses;
-    uint8 public guessRange;
-    IToken public token;
+    uint256 private secretNumber;
+    address private owner;
+    uint256 public totalGuesses;
 
-    event Correct(address indexed player, uint8 guess, uint prize, uint allowance);
-    event Incorrect(address indexed player, uint8 guess, uint prize, uint allowance);
-    event Same(address indexed player, uint8 guess, uint prize, uint allowance);
-    event Warmer(address indexed player, uint8 guess, uint prize, uint allowance);
-    event Colder(address indexed player, uint8 guess, uint prize, uint allowance);
+    // constants
+    uint256 public constant MAX_GUESS = 10;
 
-    constructor(uint8 range, address tokenAddress) {
-        owner = payable(msg.sender);
-        guessRange = range;
-        token = IToken(tokenAddress);
-        _setNewTarget();
+    event Guessed(address indexed user, uint256 guessedNumber, bool success);
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, 'Only the owner can call this function');
+        _;
     }
 
-    function attempt(uint8 guess) public payable {
-        require(token.allowance(msg.sender, address(this)) >= 1 ether, "Check the token allowance.");
+    constructor() {
+        owner = msg.sender;
+        _resetSecretNumber();
+    }
 
-        _attemptAddresses.push(msg.sender);
-        token.transferFrom(msg.sender, address(this), 1 ether);
-        if (guess == _target) {
-            emit Correct(msg.sender, guess, prizePool(), token.allowance(msg.sender, address(this)));
-            token.transfer(msg.sender, prizePool());
-            _setNewTarget();
+    function guess(uint256 _number) external payable {
+        require(_number > 0 && _number <= MAX_GUESS, 'Secret number should be between 1 and 1000');
+        totalGuesses += 1;
+
+        if (_number == secretNumber) {
+            // If the guess is correct, transfer all the contract balance to the user
+            payable(msg.sender).transfer(address(this).balance);
+            emit Guessed(msg.sender, _number, true);
+            _resetSecretNumber();
+            totalGuesses = 0;
         } else {
-            uint8 previous = _prevMisses[msg.sender];
-            uint8 miss = guess > _target ? guess - _target : _target - guess;
-            _prevMisses[msg.sender] = miss;
-            if (previous == 0) {
-                emit Incorrect(msg.sender, guess, prizePool(), token.allowance(msg.sender, address(this)));
-            } else if (miss < previous) {
-                emit Warmer(msg.sender, guess, prizePool(), token.allowance(msg.sender, address(this)));
-            } else if (miss > previous) {
-                emit Colder(msg.sender, guess, prizePool(), token.allowance(msg.sender, address(this)));
-            } else {
-                emit Same(msg.sender, guess, prizePool(), token.allowance(msg.sender, address(this)));
-            }
+            emit Guessed(msg.sender, _number, false);
         }
     }
 
-    function close() public payable {
-        require(msg.sender == owner, "Only owner can call this function.");
-
-        selfdestruct(payable(owner));
+    function _resetSecretNumber() private {
+        uint256 randomNumber = block.difficulty;
+        secretNumber = (randomNumber % MAX_GUESS) + 1;
     }
 
-    function prizePool() public view returns (uint256) {
-        return token.balanceOf(address(this));
-    }
-
-    function _setNewTarget() private {
-        require(token.balanceOf(address(this)) == 0, "Balance must be zero to set a new target.");
-
-        for (uint16 i = 0; i < _attemptAddresses.length; i++) {
-            _prevMisses[_attemptAddresses[i]] = 0;
-        }
-        delete _attemptAddresses;
-        _target = uint8(
-            uint256(
-                keccak256(abi.encodePacked(block.timestamp, block.difficulty))
-            ) % guessRange
-        );
+    function getContractBalance() external view returns (uint256) {
+        return address(this).balance;
     }
 }
