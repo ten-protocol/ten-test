@@ -8,7 +8,7 @@ from ten.test.utils.properties import Properties
 
 
 class DefaultContract:
-    GAS_LIMIT = 720000     # used as the max gas units prepared to pay in contract transactions
+    GAS_LIMIT = 3_000_000     # used as the max gas units prepared to pay in contract transactions
     SOURCE = None          # full path to the solidity source file
     CONTRACT = None        # the contract name
 

@@ -4,7 +4,7 @@ from ten.test.contracts.default import DefaultContract
 
 
 class ERC20Token:
-    GAS_LIMIT = 25*720000
+    GAS_LIMIT = 3_000_000
 
     def __init__(self, test, web3, name, symbol, address):
         self.test = test
@@ -19,7 +19,7 @@ class ERC20Token:
 
 
 class MintedERC20Token(DefaultContract):
-    GAS_LIMIT = 25*720000
+    GAS_LIMIT = 3_000_000
 
     SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'erc20', 'MintedERC20.sol')
     CONTRACT = 'MintedERC20'
