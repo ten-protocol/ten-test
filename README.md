@@ -78,7 +78,11 @@ dependencies for running the tests use the following on OSX or Linux accordingly
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew update
 brew upgrade
-brew install node
+
+brew remove node --force
+brew install node@18   
+brew link --overwrite node@18
+
 brew tap ethereum/ethereum
 brew install ethereum
 brew install solidity
@@ -87,16 +91,16 @@ brew install gnuplot
 
 npm install solc@0.8.15 --global
 npm install console-stamp@3.1.2 --global
-npm install ganache@7.9.2 --global
+npm install ganache@7.9.1 --global
 npm install ganache-cli@6.12.2 --global
-npm install web3@4.3.0 --global
-npm install ethers@6.9.1 --global
+npm install web3@1.9.0 --global
+npm install ethers@5.7.2 --global
 npm install commander@11.1.0 --global
 
-pip3 install web3==6.13.0
+pip3 install web3==5.31.3 
 pip3 install pysys==1.6.1
-pip3 install solc-select
-pip3 install py-solc-x
+pip3 install solc-select=1.0.4 
+pip3 install py-solc-x=2.0.2
 ```
 
 ### Linux (Ubuntu 20.04)
