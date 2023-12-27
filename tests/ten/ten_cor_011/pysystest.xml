@@ -4,7 +4,7 @@
     <description>
         <title>Tenscan RPC - walk the chain backwards via the parent hash link </title>
         <purpose><![CDATA[
-Uses the obscuroscan_getRollup to walk the chain backwards 100 times. If we don't get to the genesis block than do a
+Uses the tenscan_getRollup to walk the chain backwards 100 times. If we don't get to the genesis block than do a
 final call to retrieve it. Just checks that we are able to walk backwards with no exceptions thrown.
 ]]>
         </purpose>
