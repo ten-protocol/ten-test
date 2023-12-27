@@ -87,7 +87,7 @@ class TenRunnerPlugin():
                     web3 = Web3(Web3.HTTPProvider('%s/v1/?u=%s' % (gateway_url, user_id)))
                     runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
                     runner.addCleanupFunction(lambda: self.__print_cost(runner,
-                                                                        '%s/v1/?u=%s' % (gateway_url, user_id),
+                                                                        '%s/v1/authenticate?u=%s' % (gateway_url, user_id),
                                                                         web3, user_id))
 
                 else:
@@ -101,7 +101,7 @@ class TenRunnerPlugin():
                     runner.log.info('Registration success was %s', response.ok)
                     web3 = Web3(Web3.HTTPProvider('%s/v1/?u=%s' % (gateway_url, user_id)))
                     runner.addCleanupFunction(lambda: self.__print_cost(runner,
-                                                                        '%s/v1/?u=%s' % (gateway_url, user_id),
+                                                                        '%s/v1/authenticate?u=%s' % (gateway_url, user_id),
                                                                         web3, user_id))
 
                 tx_count = web3.eth.get_transaction_count(account.address)
