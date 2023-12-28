@@ -129,7 +129,7 @@ jobs:
       - name: 'Docker clean containers and images after the test'
         if: always()
         run: |
-          for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
+          docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q) && docker volume rm $(docker volume ls -q)
           docker system prune -af --volumes
           for i in `docker volume ls --filter dangling=true -q`; do docker volume rm $i; done
 
