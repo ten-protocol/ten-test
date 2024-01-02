@@ -131,5 +131,5 @@ jobs:
         run: |
           docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q) && docker volume rm $(docker volume ls -q)
           docker system prune -af --volumes
-          for i in `docker volume ls --filter dangling=true -q`; do docker volume rm $i; done
+          docker volume rm $(docker volume ls --filter dangling=true -q)
 
