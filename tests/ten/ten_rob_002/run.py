@@ -41,7 +41,7 @@ class PySysTest(TenNetworkTest):
 
         # create the clients
         for i in range(0, len(funders)):
-            recipients = [Web3().eth.account.privateKeyToAccount(x).address for x in funders if x != funders[i]]
+            recipients = [Web3().eth.account.from_key(x).address for x in funders if x != funders[i]]
             self.funds_client(funders[i], recipients, i, funders_connection)
 
         for i in range(0, self.NUM_GUESSERS):

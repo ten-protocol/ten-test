@@ -33,7 +33,7 @@ class PySysTest(TenNetworkTest):
 
     def _client(self, name, network, trigger):
         pk = secrets.token_hex(32)
-        account = Web3().eth.account.privateKeyToAccount(pk)
+        account = Web3().eth.account.from_key(pk)
         self.distribute_native(account, 0.01)
 
         stdout = os.path.join(self.output, '%s.out' % name)

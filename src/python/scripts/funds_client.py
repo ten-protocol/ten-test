@@ -35,7 +35,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     web3 = Web3(Web3.HTTPProvider(args.network_http))
-    account = web3.eth.account.privateKeyToAccount(args.pk_to_register)
+    account = web3.eth.account.from_key(args.pk_to_register)
     recipients = args.recipients.split(',')
 
     logging.info('Client running')

@@ -11,7 +11,7 @@ class PySysTest(TenNetworkTest):
         # connect to network
         network = self.get_network_connection()
         web3, account = network.connect_account4(self)
-        account1 = Web3().eth.account.privateKeyToAccount(Properties().account1pk())
+        account1 = Web3().eth.account.from_key(Properties().account1pk())
 
         # deploy the storage contract
         contract = Relevancy(self, web3)

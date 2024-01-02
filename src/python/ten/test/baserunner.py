@@ -73,7 +73,7 @@ class TenRunnerPlugin():
             if self.is_ten():
                 props = Properties()
                 gateway_url = None
-                account = Web3().eth.account.privateKeyToAccount(Properties().fundacntpk())
+                account = Web3().eth.account.from_key(Properties().fundacntpk())
 
                 if self.is_local_ten():
                     hprocess, port = self.run_wallet(runner)
@@ -120,7 +120,7 @@ class TenRunnerPlugin():
                 runner.log.info('')
                 runner.log.info('Accounts with non-zero funds;')
                 for fn in Properties().accounts():
-                    account = web3.eth.account.privateKeyToAccount(fn())
+                    account = web3.eth.account.from_key(fn())
                     resp = self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
                     self.balances[fn.__name__] = web3.from_wei(web3.eth.get_balance(account.address), 'ether')
                     if self.balances[fn.__name__] > 0:
@@ -198,7 +198,7 @@ class TenRunnerPlugin():
 
     def fund_eth_from_faucet_server(self, runner):
         """Allocates native ETH to a users account from the faucet server. """
-        account = Web3().eth.account.privateKeyToAccount(Properties().fundacntpk())
+        account = Web3().eth.account.from_key(Properties().fundacntpk())
         url = '%s/fund/eth' % Properties().faucet_url(self.env)
         runner.log.info('Running request on %s', url)
         runner.log.info('Running for user address %s', account.address)
@@ -211,7 +211,7 @@ class TenRunnerPlugin():
         try:
             delta = 0
             for fn in Properties().accounts():
-                account = web3.eth.account.privateKeyToAccount(fn())
+                account = web3.eth.account.from_key(fn())
                 self.__register(account, url, user_id)
 
                 balance = web3.from_wei(web3.eth.get_balance(account.address), 'ether')

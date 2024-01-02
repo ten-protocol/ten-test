@@ -24,7 +24,7 @@ class PySysTest(TenNetworkTest):
 
         self.log.info('Getting transaction for account 2 (through network connection 1)')
         tx_rec = web3_2.eth.get_transaction_receipt(tx_hash)
-        tx_log = relevancy_2.contract.events.IndexedAddressAndNumber().processReceipt(tx_rec)[0]
+        tx_log = relevancy_2.contract.events.IndexedAddressAndNumber().process_receipt(tx_rec)[0]
         args_value = tx_log['args']['value']
         self.log.info('Transaction log shows value %d', args_value)
         self.assertTrue(args_value == 1)

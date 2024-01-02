@@ -25,7 +25,7 @@ class PySysTest(TenNetworkTest):
 
         # use an ephemeral accounts so we don't need to manage nonce through persistence
         web3, account = network.connect(self, private_key=secrets.token_hex())
-        accounts = [Web3().eth.account.privateKeyToAccount(x).address for x in [secrets.token_hex()]*25]
+        accounts = [Web3().eth.account.from_key(x).address for x in [secrets.token_hex()]*25]
 
         # bulk load transactions to the accounts, and wait for the last
         self.log.info('Creating and signing %d transactions', self.ITERATIONS)

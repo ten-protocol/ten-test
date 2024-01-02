@@ -18,7 +18,7 @@ class PySysTest(GenericNetworkTest):
         self.log.info("Estimate get_balance:    %d", est_1)
 
         nonce = self.nonce_db.get_next_nonce(self, web3, account.address, self.env, persist_nonce=False)
-        build_tx = contract.contract.functions.get_balance().buildTransaction(
+        build_tx = contract.contract.functions.get_balance().build_transaction(
             {
                 'nonce': nonce,
                 'gasPrice': web3.eth.gas_price, # the price we are willing to pay per gas unit (dimension is gwei)

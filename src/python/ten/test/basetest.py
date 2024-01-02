@@ -129,7 +129,7 @@ class GenericNetworkTest(BaseTest):
         amount = web3.eth.get_balance(account.address) - 10*average_cost
         self.log.info("Drain account %s of %d (current balance %d)", account.address, amount, balance)
 
-        address = Web3().eth.account.privateKeyToAccount(Properties().fundacntpk()).address
+        address = Web3().eth.account.from_key(Properties().fundacntpk()).address
         self.log.info('Send to address is %s', address)
         tx = {
             'to':  address,

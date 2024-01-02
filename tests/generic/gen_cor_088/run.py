@@ -12,7 +12,7 @@ class PySysTest(GenericNetworkTest):
         network = self.get_network_connection()
         web3, account1 = network.connect_account1(self)
 
-        account2 = Web3().eth.account.privateKeyToAccount(Properties().account2pk())
+        account2 = Web3().eth.account.from_key(Properties().account2pk())
 
         # deploy the storage contracts
         contract = Relevancy(self, web3)

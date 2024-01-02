@@ -120,7 +120,7 @@ class DefaultPostLondon:
             'maxPriorityFeePerGas': max_priority_fee_per_gas  # Priority fee to include the transaction in the block
         }
         if estimate:
-            try: gas_estimate = target.estimateGas(params)
+            try: gas_estimate = target.estimate_gas(params)
             except Exception as e: self.log.warn('Error estimating gas needed, %s' % e.args[0])
 
         if verbose:
@@ -203,7 +203,7 @@ class DefaultPreLondon(DefaultPostLondon):
             'gasPrice': gas_price             # the current gas price
         }
         if estimate:
-            try: gas_estimate = target.estimateGas(params)
+            try: gas_estimate = target.estimate_gas(params)
             except Exception as e: self.log.warn('Error estimating gas needed, %s' % e.args[0])
 
         if verbose:
@@ -212,5 +212,5 @@ class DefaultPreLondon(DefaultPostLondon):
                           web3.from_wei(balance, 'ether'))
 
         params['gas'] = gas_estimate
-        build_tx = target.buildTransaction(params)
+        build_tx = target.build_transaction(params)
         return build_tx

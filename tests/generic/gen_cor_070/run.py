@@ -19,7 +19,7 @@ class PySysTest(GenericNetworkTest):
         tx_receipt = network.transact(self, web3, storage.contract.functions.store(200), account, storage.GAS_LIMIT)
         self.log.info('Call shows value %d', storage.contract.functions.retrieve().call())
 
-        tx_log = storage.contract.events.Stored().processReceipt(tx_receipt)[0]
+        tx_log = storage.contract.events.Stored().process_receipt(tx_receipt)[0]
         args_value = tx_log['args']['value']
         self.log.info('Transaction log shows value %d', args_value)
         self.assertTrue(args_value == 200)

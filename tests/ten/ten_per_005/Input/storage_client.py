@@ -64,7 +64,7 @@ if __name__ == "__main__":
     web3 = Web3(Web3.HTTPProvider(args.network_http))
     with open(args.contract_abi) as f:
         contract = web3.eth.contract(address=args.contract_address, abi=json.load(f))
-    account = web3.eth.account.privateKeyToAccount(args.pk)
+    account = web3.eth.account.from_key(args.pk)
     logging.info('Starting client %s', args.client_name)
 
     run(args.client_name, int(args.chainId), web3, account, contract, int(args.num_iterations))
