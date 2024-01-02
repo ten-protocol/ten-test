@@ -31,7 +31,7 @@ def run(name, chainId, web3, sending_accounts, num_accounts, num_iterations):
         accounts.append(Web3().eth.account.privateKeyToAccount(secrets.token_hex(32)).address)
 
     logging.info('Creating and signing %d transactions', num_iterations)
-    value = web3.toWei(0.0000000001, 'ether')
+    value = web3.to_wei(0.0000000001, 'ether')
     gas_price = web3.eth.gas_price
     txs = []
     for i in range(0, num_iterations):

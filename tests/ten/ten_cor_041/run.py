@@ -28,7 +28,7 @@ class PySysTest(TenNetworkTest):
             tx_sign = network.sign_transaction(self, tx, nonce, account, True)
             txs.append((nonce, tx_sign))
             nonce = nonce + 1
-        self.log.info('Total gas estimate is %d WEI, %.9f ETH', estimate, web3.fromWei(estimate, 'ether'))
+        self.log.info('Total gas estimate is %d WEI, %.9f ETH', estimate, web3.from_wei(estimate, 'ether'))
 
         tx_hash = None
         for nonce, tx_sign in txs: tx_hash = network.send_transaction(self, web3, nonce, account, tx_sign, True)

@@ -36,15 +36,15 @@ class DefaultPostLondon:
 
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
-        account = web3.eth.account.privateKeyToAccount(private_key)
-        balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+        account = web3.eth.account.from_key(private_key)
+        balance = web3.from_wei(web3.eth.get_balance(account.address), 'ether')
         if verbose: self.log.info('Account %s connected to %s (%.6f ETH), wss=%s', account.address, self.__class__.__name__, balance, web_socket)
 
         if check_funds and balance < self.ETH_LIMIT:
             if verbose: self.log.info('Account %s balance is below threshold %s ... need to distribute funds', account.address, self.ETH_LIMIT)
             test.distribute_native(account, self.ETH_ALLOC)
             if verbose:
-                balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+                balance = web3.from_wei(web3.eth.get_balance(account.address), 'ether')
                 self.log.info('Account %s balance is now %.6f ETH', account.address, balance)
         return web3, account
 
@@ -106,7 +106,7 @@ class DefaultPostLondon:
         """Build the transaction dictionary from the contract constructor or function target. """
         estimate = kwargs['estimate'] if 'estimate' in kwargs else True
         base_fee_per_gas = web3.eth.get_block('latest').baseFeePerGas
-        max_priority_fee_per_gas = web3.toWei(1, 'gwei')
+        max_priority_fee_per_gas = web3.to_wei(1, 'gwei')
         max_fee_per_gas = (5 * base_fee_per_gas) + max_priority_fee_per_gas
         balance = web3.eth.get_balance(account.address)
 
@@ -125,8 +125,8 @@ class DefaultPostLondon:
 
         if verbose:
             self.log.info('Gas %d, base fee %d WEI, cost %d WEI, balance %.18f ETH',
-                          gas_estimate, base_fee_per_gas, web3.fromWei(base_fee_per_gas*gas_estimate, 'wei'),
-                          web3.fromWei(balance, 'ether'))
+                          gas_estimate, base_fee_per_gas, web3.from_wei(base_fee_per_gas*gas_estimate, 'wei'),
+                          web3.from_wei(balance, 'ether'))
 
         params['gas'] = gas_estimate
         build_tx = target.buildTransaction(params)
@@ -208,8 +208,8 @@ class DefaultPreLondon(DefaultPostLondon):
 
         if verbose:
             self.log.info('Gas %d, price %d WEI, cost %d WEI, balance %.18F ETH',
-                          gas_estimate, gas_price, web3.fromWei(gas_price*gas_estimate, 'wei'),
-                          web3.fromWei(balance, 'ether'))
+                          gas_estimate, gas_price, web3.from_wei(gas_price*gas_estimate, 'wei'),
+                          web3.from_wei(balance, 'ether'))
 
         params['gas'] = gas_estimate
         build_tx = target.buildTransaction(params)

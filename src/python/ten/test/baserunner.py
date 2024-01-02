@@ -105,7 +105,7 @@ class TenRunnerPlugin():
                                                                         web3, user_id))
 
                 tx_count = web3.eth.get_transaction_count(account.address)
-                balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+                balance = web3.from_wei(web3.eth.get_balance(account.address), 'ether')
 
                 if tx_count == 0:
                     runner.log.info('Funded key tx count is zero ... clearing persistence')
@@ -122,7 +122,7 @@ class TenRunnerPlugin():
                 for fn in Properties().accounts():
                     account = web3.eth.account.privateKeyToAccount(fn())
                     resp = self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
-                    self.balances[fn.__name__] = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+                    self.balances[fn.__name__] = web3.from_wei(web3.eth.get_balance(account.address), 'ether')
                     if self.balances[fn.__name__] > 0:
                         runner.log.info("  Funds for %s: %.18f ETH", fn.__name__, self.balances[fn.__name__],
                                         extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
@@ -214,13 +214,13 @@ class TenRunnerPlugin():
                 account = web3.eth.account.privateKeyToAccount(fn())
                 self.__register(account, url, user_id)
 
-                balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+                balance = web3.from_wei(web3.eth.get_balance(account.address), 'ether')
                 if fn.__name__ in self.balances:
                     delta = delta + (self.balances[fn.__name__] - balance)
 
             sign = '-' if delta < 0 else ''
             runner.log.info(' ')
-            runner.log.info("  %s: %s%d Wei", 'Total cost', sign, Web3().toWei(abs(delta), 'ether'),
+            runner.log.info("  %s: %s%d Wei", 'Total cost', sign, Web3().to_wei(abs(delta), 'ether'),
                             extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
             runner.log.info("  %s: %s%.9f ETH", 'Total cost', sign, abs(delta), extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
         except Exception as e:

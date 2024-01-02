@@ -29,7 +29,7 @@ class PySysTest(TenNetworkTest):
 
         # bulk load transactions to the accounts, and wait for the last
         self.log.info('Creating and signing %d transactions', self.ITERATIONS)
-        value = web3.toWei(0.0000000001, 'ether')
+        value = web3.to_wei(0.0000000001, 'ether')
         gas_price = web3.eth.gas_price
         chain_id = network.chain_id()
 

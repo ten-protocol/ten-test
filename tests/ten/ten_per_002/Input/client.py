@@ -22,7 +22,7 @@ def run(name, chainId, web3, account, num_accounts, num_iterations):
     accounts = [Web3().eth.account.privateKeyToAccount(x).address for x in [secrets.token_hex()]*num_accounts]
 
     logging.info('Creating and signing %d transactions', num_iterations)
-    value = web3.toWei(0.0000000001, 'ether')
+    value = web3.to_wei(0.0000000001, 'ether')
     gas_price = web3.eth.gas_price
 
     txs = []

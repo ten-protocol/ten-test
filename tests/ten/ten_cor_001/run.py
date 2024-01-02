@@ -25,20 +25,20 @@ class PySysTest(TenNetworkTest):
         raised = False
         try:
             balance = web3_user.eth.get_balance(contract_user.address)
-            self.log.info('Contract balance is %.3f', web3_user.fromWei(balance, 'ether'))
+            self.log.info('Contract balance is %.3f', web3_user.from_wei(balance, 'ether'))
         except Exception as e:
             raised = True
         self.assertTrue(raised)
 
         # the deployer should still be able to read their balance
         balance = web3_deploy.eth.get_balance(contract_deploy.address)
-        self.log.info('Contract balance is %.3f', web3_deploy.fromWei(balance, 'ether'))
-        self.assertTrue(balance == web3_deploy.toWei(0.00001, 'ether'))
+        self.log.info('Contract balance is %.3f', web3_deploy.from_wei(balance, 'ether'))
+        self.assertTrue(balance == web3_deploy.to_wei(0.00001, 'ether'))
 
     def send(self, network, web3, account, contract, amount):
         tx = {
             'to': contract.address,
-            'value': web3.toWei(amount, 'ether'),
+            'value': web3.to_wei(amount, 'ether'),
             'gas': contract.GAS_LIMIT,
             'gasPrice': web3.eth.gas_price
         }

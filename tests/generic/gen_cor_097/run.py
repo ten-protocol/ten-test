@@ -20,15 +20,15 @@ class PySysTest(TenNetworkTest):
         try:
             for i in range(30, 40):
                 estimate = contract.contract.functions.exponentialOperation(i).estimate_gas()
-                self.log.info('Exponential %d, gas estimate is %d WEI, %.9f ETH', i, estimate, web3.fromWei(estimate, 'ether'))
+                self.log.info('Exponential %d, gas estimate is %d WEI, %.9f ETH', i, estimate, web3.from_wei(estimate, 'ether'))
 
             for i in range(30, 40):
                 estimate = contract.contract.functions.calculateFactorial(i).estimate_gas()
-                self.log.info('Factorial %d, gas estimate is %d WEI, %.9f ETH', i, estimate, web3.fromWei(estimate, 'ether'))
+                self.log.info('Factorial %d, gas estimate is %d WEI, %.9f ETH', i, estimate, web3.from_wei(estimate, 'ether'))
 
             for i in range(350, 370, 2):
                 estimate = contract.contract.functions.calculateFibonacci(i).estimate_gas()
-                self.log.info('Fibonacci %d, gas estimate is %d WEI, %.9f ETH', i, estimate, web3.fromWei(estimate, 'ether'))
+                self.log.info('Fibonacci %d, gas estimate is %d WEI, %.9f ETH', i, estimate, web3.from_wei(estimate, 'ether'))
 
             self.addOutcome(PASSED)
         except Exception as e:

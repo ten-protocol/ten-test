@@ -14,18 +14,18 @@ class PySysTest(TenNetworkTest):
         web3 = Web3(Web3.HTTPProvider(url))
 
         sequencer_address = Properties().sequencer_address(key='ten.sepolia')
-        sequencer_balance = web3.fromWei(web3.eth.get_balance(sequencer_address), 'ether')
+        sequencer_balance = web3.from_wei(web3.eth.get_balance(sequencer_address), 'ether')
         self.log.info('Sequencer account %s balance %.6f ETH', sequencer_address, sequencer_balance)
 
         validator_address = Properties().validator_address(key='ten.sepolia')
-        validator_balance = web3.fromWei(web3.eth.get_balance(validator_address), 'ether')
+        validator_balance = web3.from_wei(web3.eth.get_balance(validator_address), 'ether')
         self.log.info('Validator account %s balance %.6f ETH', validator_address, validator_balance)
 
         deployer_address = Properties().l1_deployer_address(key='ten.sepolia')
-        deployer_balance = web3.fromWei(web3.eth.get_balance(deployer_address), 'ether')
+        deployer_balance = web3.from_wei(web3.eth.get_balance(deployer_address), 'ether')
         self.log.info('Deployer account %s balance %.6f ETH', deployer_address, deployer_balance)
 
-        faucet_balance = web3.fromWei(self.get_faucet_balance(), 'ether')
+        faucet_balance = web3.from_wei(self.get_faucet_balance(), 'ether')
         self.log.info('Faucet balance %.6f ETH', faucet_balance)
 
         self.assertTrue(sequencer_balance >= self.L1_THRESHOLD,
