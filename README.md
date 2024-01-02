@@ -101,6 +101,9 @@ pip3 install web3==6.13.0
 pip3 install pysys==1.6.1
 pip3 install solc-select==1.0.4 
 pip3 install py-solc-x==2.0.2
+
+solc-select install 0.8.15
+solc-select use 0.8.15
 ```
 
 ### Linux (Ubuntu 20.04)
