@@ -34,7 +34,8 @@ class PySysTest(GenericNetworkTest):
             else:
                 self.log.info('Transaction sent with hash %s', tx_hash.hex())
                 try:
-                    web3.eth.wait_for_transaction_receipt(tx_hash.hex(), timeout=30)
+                    tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash.hex(), timeout=30)
+                    self.log.info(tx_receipt)
                 except TimeExhausted as e:
                     self.log.warn("'Transaction timed out as expected")
                     self.addOutcome(PASSED, 'Exception should be thrown')
