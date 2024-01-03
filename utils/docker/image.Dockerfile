@@ -20,7 +20,7 @@ RUN npm install commander --global
 
 RUN apt install -y vim
 RUN apt install -y python3-pip
-RUN python3 -m pip install web3==5.31.3
+RUN python3 -m pip install web3==6.13.0
 RUN python3 -m pip install pysys==1.6.1
 RUN python3 -m pip install py-solc-x
 
