@@ -64,7 +64,7 @@ class DefaultContract:
         address, abi = self.test.contract_db.get_contract(self.CONTRACT, self.test.env)
         if address is not None:
             self.test.log.info('Using pre-deployed contract at address %s', address)
-            if self.web3.eth.getCode(address) == b'':
+            if self.web3.eth.get_code(address) == b'':
                 self.test.log.warn('Contract address does not appear to be a deployed contract ... deploying')
                 self.deploy(network, account, persist_nonce=persist_nonce, timeout=timeout)
                 self.test.contract_db.insert_contract(self.CONTRACT, self.test.env, self.address, json.dumps(self.abi))

@@ -48,5 +48,5 @@ class PySysTest(GenericNetworkTest):
         except Exception as e:
             self.log.info('Exception type: %s', type(e).__name__)
             self.log.info('Exception args: %s', e.args)
-            regex = re.compile('execution reverted', re.M)
+            regex = re.compile('Assert evaluates to false', re.M)
             self.assertTrue(regex.search(e.args[0]) is not None)

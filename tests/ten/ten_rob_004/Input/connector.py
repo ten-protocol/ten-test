@@ -59,7 +59,7 @@ if __name__ == "__main__":
     parser.add_argument('-c', '--chain_id', help='The network chain ID')
     args = parser.parse_args()
 
-    account = Web3().eth.account.privateKeyToAccount(args.pk)
+    account = Web3().eth.account.from_key(args.pk)
     logging.info('Client running ... waiting for trigger file')
     wait(args.trigger)
     logging.info('Client starting ... trigger file seen')
@@ -74,7 +74,7 @@ if __name__ == "__main__":
         web3 = Web3(Web3.HTTPProvider('%s:%s/v1/?u=%s' % (args.host, args.port, user_id)))
 
         for j in range(0, int(args.additional_accounts)):
-            _account = Web3().eth.account.privateKeyToAccount(secrets.token_hex(32))
+            _account = Web3().eth.account.from_key(secrets.token_hex(32))
             response = register(int(args.chain_id), _account, args.host, int(args.port), user_id)
             logging.info('Additional clients, registration for %s success was %s', _account.address, response.ok)
 

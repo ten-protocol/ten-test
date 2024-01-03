@@ -13,7 +13,7 @@ def transfer_value(web3, account, amount, recipient):
     tx = {
         'nonce': web3.eth.get_transaction_count(account.address),
         'to': recipient,
-        'value': web3.toWei(amount, 'ether'),
+        'value': web3.to_wei(amount, 'ether'),
         'gas': 4 * 720000,
         'gasPrice': web3.eth.gas_price
     }
@@ -35,12 +35,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     web3 = Web3(Web3.HTTPProvider(args.network_http))
-    account = web3.eth.account.privateKeyToAccount(args.pk_to_register)
+    account = web3.eth.account.from_key(args.pk_to_register)
     recipients = args.recipients.split(',')
 
     logging.info('Client running')
     while True:
-        balance = web3.fromWei(web3.eth.get_balance(account.address), 'ether')
+        balance = web3.from_wei(web3.eth.get_balance(account.address), 'ether')
         logging.info('Account balance is %.9f', balance)
         transfer_value(web3, account, 0.0001, random.choice(recipients))
 

@@ -18,7 +18,7 @@ class PySysTest(GenericNetworkTest):
         self.log.info("Estimate get_balance:    %d", est_1)
 
         nonce = self.nonce_db.get_next_nonce(self, web3, account.address, self.env, persist_nonce=False)
-        build_tx = contract.contract.functions.get_balance().buildTransaction(
+        build_tx = contract.contract.functions.get_balance().build_transaction(
             {
                 'nonce': nonce,
                 'gasPrice': web3.eth.gas_price, # the price we are willing to pay per gas unit (dimension is gwei)
@@ -34,7 +34,8 @@ class PySysTest(GenericNetworkTest):
             else:
                 self.log.info('Transaction sent with hash %s', tx_hash.hex())
                 try:
-                    web3.eth.wait_for_transaction_receipt(tx_hash.hex(), timeout=30)
+                    tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash.hex(), timeout=30)
+                    self.log.info(tx_receipt)
                 except TimeExhausted as e:
                     self.log.warn("'Transaction timed out as expected")
                     self.addOutcome(PASSED, 'Exception should be thrown')

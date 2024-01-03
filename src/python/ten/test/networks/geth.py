@@ -16,5 +16,5 @@ class Geth(DefaultPreLondon):
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         web3.middleware_onion.inject(geth_poa_middleware, layer=0)
-        account = web3.eth.account.privateKeyToAccount(private_key)
+        account = web3.eth.account.from_key(private_key)
         return web3, account

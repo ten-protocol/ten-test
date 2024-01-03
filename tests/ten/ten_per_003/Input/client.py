@@ -28,10 +28,10 @@ def run(name, chainId, web3, sending_accounts, num_accounts, num_iterations):
     """Run a loop of bulk loading transactions into the mempool, draining, and collating results. """
     accounts = []
     for i in range(0, num_accounts):
-        accounts.append(Web3().eth.account.privateKeyToAccount(secrets.token_hex(32)).address)
+        accounts.append(Web3().eth.account.from_key(secrets.token_hex(32)).address)
 
     logging.info('Creating and signing %d transactions', num_iterations)
-    value = web3.toWei(0.0000000001, 'ether')
+    value = web3.to_wei(0.0000000001, 'ether')
     gas_price = web3.eth.gas_price
     txs = []
     for i in range(0, num_iterations):
@@ -80,5 +80,5 @@ if __name__ == "__main__":
     sending_accounts = []
     with open(args.pk_file, 'r') as fp:
         for line in fp.readlines():
-            sending_accounts.append(web3.eth.account.privateKeyToAccount(line.strip()))
+            sending_accounts.append(web3.eth.account.from_key(line.strip()))
     run(name, int(args.chainId), web3, sending_accounts, int(args.num_accounts), int(args.num_iterations))

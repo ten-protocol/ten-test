@@ -19,10 +19,10 @@ def create_signed_tx(account, nonce, address, value, gas_price, chain_id):
 
 def run(name, chainId, web3, account, num_accounts, num_iterations):
     """Run a loop of bulk loading transactions into the mempool, draining, and collating results. """
-    accounts = [Web3().eth.account.privateKeyToAccount(x).address for x in [secrets.token_hex()]*num_accounts]
+    accounts = [Web3().eth.account.from_key(x).address for x in [secrets.token_hex()]*num_accounts]
 
     logging.info('Creating and signing %d transactions', num_iterations)
-    value = web3.toWei(0.0000000001, 'ether')
+    value = web3.to_wei(0.0000000001, 'ether')
     gas_price = web3.eth.gas_price
 
     txs = []
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     web3 = Web3(Web3.HTTPProvider(args.network_http))
-    account = web3.eth.account.privateKeyToAccount(args.pk)
+    account = web3.eth.account.from_key(args.pk)
     name = args.client_name
     logging.info('Starting client %s', name)
 

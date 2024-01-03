@@ -18,7 +18,7 @@ def timeit(function):
 
 @timeit
 def store_value(value, web3, account, contract):
-    build_tx = contract.functions.store(value).buildTransaction(
+    build_tx = contract.functions.store(value).build_transaction(
         {
             'nonce': web3.eth.get_transaction_count(account.address),
             'gasPrice': web3.eth.gas_price,
@@ -50,7 +50,7 @@ if __name__ == "__main__":
         contract = web3.eth.contract(address=args.address, abi=json.load(f))
 
     logging.info('Client running')
-    account = web3.eth.account.privateKeyToAccount(args.pk_to_register)
+    account = web3.eth.account.from_key(args.pk_to_register)
 
     with open(args.output_file, 'w') as fp:
         while True:

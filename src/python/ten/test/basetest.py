@@ -54,7 +54,7 @@ class GenericNetworkTest(BaseTest):
         delta = abs(self.balance - balance)
         sign = '-' if (self.balance - balance) < 0 else ''
         self.log.info("  %s: %s%d Wei", 'Test cost', sign, delta, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
-        self.log.info("  %s: %s%.9f ETH", 'Test cost', sign, Web3().fromWei(delta, 'ether'), extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+        self.log.info("  %s: %s%.9f ETH", 'Test cost', sign, Web3().from_wei(delta, 'ether'), extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
 
     def close_db(self):
         """Close the connection to the nonce database on completion. """
@@ -113,14 +113,14 @@ class GenericNetworkTest(BaseTest):
 
         tx = {
             'to': account.address,
-            'value': web3_pk.toWei(amount, 'ether'),
+            'value': web3_pk.to_wei(amount, 'ether'),
             'gas': 4*21000,
             'gasPrice': web3_pk.eth.gas_price
         }
         self.log.info('Sending %.6f ETH to account %s', amount, account.address)
         self.network_funding.tx(self, web3_pk, tx, account_pk)
         balance_after = web3_pk.eth.get_balance(account_pk.address)
-        self.transfer_costs.append((balance_before - web3_pk.toWei(amount, 'ether') - balance_after))
+        self.transfer_costs.append((balance_before - web3_pk.to_wei(amount, 'ether') - balance_after))
 
     def drain_native(self, web3, account, network):
         """A native transfer of all funds from and account to the funded account."""
@@ -129,7 +129,7 @@ class GenericNetworkTest(BaseTest):
         amount = web3.eth.get_balance(account.address) - 10*average_cost
         self.log.info("Drain account %s of %d (current balance %d)", account.address, amount, balance)
 
-        address = Web3().eth.account.privateKeyToAccount(Properties().fundacntpk()).address
+        address = Web3().eth.account.from_key(Properties().fundacntpk()).address
         self.log.info('Send to address is %s', address)
         tx = {
             'to':  address,
@@ -148,7 +148,7 @@ class GenericNetworkTest(BaseTest):
         web3_pk, account_pk = network.connect(self, pk, check_funds=False)
         tx = {
             'to': account.address,
-            'value': web3_pk.toWei(amount, 'ether'),
+            'value': web3_pk.to_wei(amount, 'ether'),
             'gas': 4*21000,
             'gasPrice': web3_pk.eth.gas_price
         }

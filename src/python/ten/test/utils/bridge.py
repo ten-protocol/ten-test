@@ -104,7 +104,7 @@ class L1BridgeDetails(BridgeDetails):
                                                                                          token.symbol),
                                            self.account, gas_limit=self.bridge.GAS_LIMIT, persist_nonce=False,
                                            timeout=timeout)
-        logs = self.bus.contract.events.LogMessagePublished().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
+        logs = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, self.get_cross_chain_message(logs[1])
 
     def send_erc20(self, symbol, address, amount, timeout=60):
@@ -118,12 +118,12 @@ class L1BridgeDetails(BridgeDetails):
                                                                                     amount, address),
                                            self.account, gas_limit=self.bridge.GAS_LIMIT, persist_nonce=False,
                                            timeout=timeout)
-        logs = self.bus.contract.events.LogMessagePublished().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
+        logs = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, self.get_cross_chain_message(logs[2])
 
     def send_native(self, address, amount, timeout=60):
         """Send native currency across the bridge."""
-        build_tx = self.bridge.contract.functions.sendNative(address).buildTransaction(
+        build_tx = self.bridge.contract.functions.sendNative(address).build_transaction(
             {
                 'gas': 4*21000,
                 'gasPrice': self.web3.eth.gas_price,
@@ -132,7 +132,7 @@ class L1BridgeDetails(BridgeDetails):
         )
         tx_receipt = self.network.tx(self.test, self.web3, build_tx, self.account, persist_nonce=False, timeout=timeout)
 
-        logs = self.bus.contract.events.LogMessagePublished().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
+        logs = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, self.get_cross_chain_message(logs[0])
 
     def send_to_msg_bus(self, amount, timeout=60):
@@ -145,7 +145,7 @@ class L1BridgeDetails(BridgeDetails):
         }
         tx_receipt = self.network.tx(self.test, self.web3, tx, self.account, persist_nonce=False, timeout=timeout)
 
-        logs = self.bus.contract.events.ValueTransfer().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
+        logs = self.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, logs
 
     def relay_message(self, xchain_msg, timeout=60):
@@ -189,7 +189,7 @@ class L2BridgeDetails(BridgeDetails):
     def relay_whitelist_message(self, xchain_msg, timeout=60):
         """Relay a cross chain message specific to a whitelisting. """
         tx_receipt = self.relay_message(xchain_msg, timeout=timeout)
-        logs = self.bridge.contract.events.CreatedWrappedToken().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
+        logs = self.bridge.contract.events.CreatedWrappedToken().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, logs[1]['args']['localAddress']
 
     def approve_token(self, symbol, approval_address, amount, timeout=60):
@@ -212,7 +212,7 @@ class L2BridgeDetails(BridgeDetails):
                                                                                     amount, address),
                                            self.account, gas_limit=self.bridge.GAS_LIMIT,
                                            timeout=timeout)
-        logs = self.bus.contract.events.LogMessagePublished().processReceipt(tx_receipt, EventLogErrorFlags.Ignore)
+        logs = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, self.get_cross_chain_message(logs[1])
 
     def relay_message(self, xchain_msg, timeout=60):

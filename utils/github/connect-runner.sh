@@ -6,13 +6,13 @@ help_and_exit() {
     echo " "
     echo "where: "
     echo "  ssh_key             *Optional* The name of the SSH private key to use (default ~/.ssh/id_rsa)"
-    echo "  name                *Optional* The name of the VM instance (default ten-test-gh-runner) "
+    echo "  name                *Optional* The name of the VM instance (default ten-test-gh-runner-01) "
     echo ""
     exit 1
 }
 
 ssh_key=~/.ssh/id_rsa
-name=ten-test-gh-runner
+name=ten-test-gh-runner-01
 group=ten-test-repo
 
 for argument in "$@"
