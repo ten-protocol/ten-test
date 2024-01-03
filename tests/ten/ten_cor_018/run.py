@@ -42,6 +42,6 @@ class PySysTest(TenNetworkTest):
             self.addOutcome(PASSED)
 
         self.log.info('Attempting to get the past events from the contract instance')
-        events = storage_3.contract.events.Stored().getLogs(fromBlock=block_number)
+        events = storage_3.contract.events.Stored().get_logs(fromBlock=block_number)
         self.assertTrue(len(events) == 1)
         self.assertTrue(events[0]['args']['value'] == 128)

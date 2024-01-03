@@ -18,7 +18,7 @@ def timeit(function):
 
 @timeit
 def store_value(value, web3, account, contract):
-    build_tx = contract.functions.store(value).buildTransaction(
+    build_tx = contract.functions.store(value).build_transaction(
         {
             'nonce': web3.eth.get_transaction_count(account.address),
             'gasPrice': web3.eth.gas_price,

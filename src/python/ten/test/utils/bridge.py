@@ -123,7 +123,7 @@ class L1BridgeDetails(BridgeDetails):
 
     def send_native(self, address, amount, timeout=60):
         """Send native currency across the bridge."""
-        build_tx = self.bridge.contract.functions.sendNative(address).buildTransaction(
+        build_tx = self.bridge.contract.functions.sendNative(address).build_transaction(
             {
                 'gas': 4*21000,
                 'gasPrice': self.web3.eth.gas_price,

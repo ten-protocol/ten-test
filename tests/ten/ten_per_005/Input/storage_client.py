@@ -6,7 +6,7 @@ logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=l
 
 
 def create_signed_tx(name, account, nonce, contract, gas_price, chainId):
-    build_tx = contract.functions.setItem(name, nonce).buildTransaction(
+    build_tx = contract.functions.setItem(name, nonce).build_transaction(
         {
             'nonce': nonce,
             'gasPrice': gas_price,

@@ -44,6 +44,6 @@ class PySysTest(TenNetworkTest):
             self.addOutcome(PASSED)
 
         self.log.info('Attempting to get the past events from the contract instance')
-        events = relevancy_3.contract.events.IndexedAddressAndNumber().getLogs(fromBlock=block_number)
+        events = relevancy_3.contract.events.IndexedAddressAndNumber().get_logs(fromBlock=block_number)
         self.assertTrue(len(events) == 0)
 
