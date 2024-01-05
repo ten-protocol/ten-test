@@ -30,4 +30,5 @@ artifacts/*.log
 **/node_modules
 **/cache
 **/artifacts
+**/.env
 
