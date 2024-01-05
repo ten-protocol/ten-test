@@ -26,3 +26,9 @@ artifacts/contracts
 artifacts/build.info
 artifacts/*.log
 
+# ignore any hardhat files
+**/node_modules
+**/cache
+**/artifacts
+**/.env
+
