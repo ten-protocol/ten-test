@@ -1,4 +1,3 @@
-
 const hre = require("hardhat");
 
 async function main() {
@@ -15,11 +14,9 @@ async function main() {
 
   const testMaths = await TestMaths.deploy();
   TestMaths_ADDRESS = testMaths.target;
-  console.log("TestUtils deployed at", TestMaths_ADDRESS);
+  console.log("TestMaths deployed at", TestMaths_ADDRESS);
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
 main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
