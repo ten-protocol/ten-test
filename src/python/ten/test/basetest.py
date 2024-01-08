@@ -3,7 +3,7 @@ import threading, requests
 from web3 import Web3
 from pathlib import Path
 from pysys.basetest import BaseTest
-from pysys.constants import PROJECT, BACKGROUND
+from pysys.constants import PROJECT, BACKGROUND, FOREGROUND
 from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
 from ten.test.persistence.nonce import NoncePersistence
@@ -101,6 +101,29 @@ class GenericNetworkTest(BaseTest):
                                      arguments=arguments, environs=environ, stdout=stdout, stderr=stderr,
                                      state=state, timeout=timeout)
         return hprocess
+
+    def run_npm(self, stdout, stderr, args, working_dir, timeout=120):
+        self.log.info('Running npm with args "%s"', ' '.join(args))
+        arguments = []
+        if args is not None: arguments.extend(args)
+
+        stdout = os.path.join(self.output, stdout)
+        stderr = os.path.join(self.output, stderr)
+        environ = copy.deepcopy(os.environ)
+        self.startProcess(command=Properties().npm_binary(), displayName='npm', workingDir=working_dir,
+                          arguments=arguments, environs=environ, stdout=stdout, stderr=stderr,
+                          timeout=timeout)
+
+    def run_npx(self, stdout, stderr, args, environ, working_dir, timeout=120):
+        self.log.info('Running npx with args "%s"', ' '.join(args))
+        arguments = []
+        if args is not None: arguments.extend(args)
+
+        stdout = os.path.join(self.output, stdout)
+        stderr = os.path.join(self.output, stderr)
+        self.startProcess(command=Properties().npx_binary(), displayName='npm', workingDir=working_dir,
+                          arguments=arguments, environs=environ, stdout=stdout, stderr=stderr,
+                          timeout=timeout)
 
     def distribute_native(self, account, amount):
         """A native transfer of funds from the funded account to another.
