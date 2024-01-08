@@ -20,14 +20,14 @@ TEN_TOKEN=<token from the gateway>
 ```
 
 The config is setup to allow deployment to a live network as described [here](https://hardhat.org/tutorial/deploying-to-a-live-network)
-meaning you can run the below to start up and deploy either to hardhat, or to deploy to a local TEN testnet once started.
+meaning you can run the below to start up and deploy either to hardhat, or to deploy to TEN testnet once started.
 
 ```shell
 # start a hardhat network and deploy 
 npx hardhat node
 npx hardhat run scripts/deploy.js
 
-# deploy to ten local testnet 
+# deploy to ten testnet 
 npx hardhat run --network ten scripts/deploy.js
 ```
 
