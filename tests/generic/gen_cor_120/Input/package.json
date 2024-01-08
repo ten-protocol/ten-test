@@ -1,8 +1,7 @@
 {
   "name": "contract-library",
   "version": "1.0.0",
-  "main": "index.js",
-  "author": "",
+  "author": "Moray Grieve",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.3.1",
