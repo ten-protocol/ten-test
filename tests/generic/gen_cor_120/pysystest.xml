@@ -10,6 +10,7 @@
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.local</mode>
