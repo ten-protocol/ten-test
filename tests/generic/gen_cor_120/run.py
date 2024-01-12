@@ -27,6 +27,7 @@ class PySysTest(GenericNetworkTest):
         environ['HOST'] = network.HOST
         environ['PORT'] = str(network.PORT)
         environ['TOKEN'] = network.ID if self.is_ten() else ''
+        environ['API_KEY'] = Properties().sepoliaAPIKey() if self.mode == 'sepolia' else ''
         self.run_npx(args=['hardhat', 'run', '--network', self.get_network(), 'scripts/deploy.js'],
                      working_dir=project, environ=environ, stdout='npx_deploy.out', stderr='npx_deploy.err')
 
