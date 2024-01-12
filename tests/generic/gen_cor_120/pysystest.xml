@@ -14,7 +14,6 @@
         </groups>
         <modes inherit="true">
             <mode>ten.local</mode>
-            <mode>sepolia</mode>
             <mode>ganache</mode>
         </modes>
     </classification>

@@ -13,13 +13,6 @@ module.exports = {
       gasPrice: 2000000000,
       accounts: [ `0x${PK}` ]
     },
-    sepolia: {
-      deploy: [ "scripts/" ],
-      chainId: 11155111,
-      url: `${HOST}/${API_KEY}`,
-      gasPrice: 34254316565,
-      accounts: [ `0x${PK}` ]
-    },
     ganache: {
       deploy: [ "scripts/" ],
       chainId: 1337,

@@ -1,20 +1,20 @@
 const hre = require("hardhat");
 
 async function main() {
-  const MathUtils = await hre.ethers.getContractFactory("MathUtils");
-  const mathUtils = await MathUtils.deploy();
-  MathUtils_ADDRESS = mathUtils.target;
-  console.log("Library MathUtils deployed at", MathUtils_ADDRESS);
+  const utilsFactory = await hre.ethers.getContractFactory("MathUtils");
+  const utilsInstance = await utilsFactory.deploy();
+  await utilsInstance.waitForDeployment();
+  console.log("Library MathUtils deployed at", utilsInstance.target);
 
-  const TestMaths = await hre.ethers.getContractFactory("TestMath", {
+  const mathsFactory = await hre.ethers.getContractFactory("TestMath", {
     libraries: {
-      MathUtils: MathUtils_ADDRESS,
+      MathUtils: utilsInstance.target,
     },
   });
 
-  const testMaths = await TestMaths.deploy();
-  TestMaths_ADDRESS = testMaths.target;
-  console.log("TestMaths deployed at", TestMaths_ADDRESS);
+  const mathsInstance = await mathsFactory.deploy();
+  await mathsInstance.waitForDeployment();
+  console.log("TestMaths deployed at", mathsInstance.target);
 }
 
 main().catch((error) => {
