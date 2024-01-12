@@ -17,7 +17,7 @@ module.exports = {
       deploy: [ "scripts/" ],
       chainId: 11155111,
       url: `${HOST}/${API_KEY}`,
-      gasPrice: 200000000000,
+      gasPrice: 34254316565,
       accounts: [ `0x${PK}` ]
     },
     ganache: {
