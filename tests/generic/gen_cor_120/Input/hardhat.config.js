@@ -4,7 +4,7 @@ const { PK, HOST, PORT, TOKEN } = process.env;
 
 module.exports = {
   solidity:  "0.8.7",
-  defaultNetwork: "hardhat",
+  defaultNetwork: "ganache",
   networks: {
     ten: {
       deploy: [ "scripts/" ],
