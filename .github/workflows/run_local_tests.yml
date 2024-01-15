@@ -63,11 +63,6 @@ jobs:
           docker logs -f `docker ps -aqf "name=sequencer-enclave"` > sequencer-enclave.out 2>&1 &
           docker logs -f `docker ps -aqf "name=eth2network"` > eth2network.out 2>&1 &
 
-      - name: 'Start up the faucet'
-        run: |
-          cd ${{ github.workspace }}/go-ten/tools/faucet
-          ./container_run.sh --image=testnetobscuronet.azurecr.io/obscuronet/faucet:latest
-
       - name: 'Build required artifacts for running tests'
         run: |
           cd ${{ github.workspace }}/ten-test
