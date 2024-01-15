@@ -55,6 +55,18 @@ class Properties:
     def node_path(self):
         return self.get('binaries.%s' % PLATFORM, 'node_path')
 
+    def npm_binary(self):
+        path = self.get('binaries.%s' % PLATFORM, 'npm')
+        if not os.path.exists(path):
+            raise FileNotFoundException('npm binary not found at default location %s' % path)
+        return path
+
+    def npx_binary(self):
+        path = self.get('binaries.%s' % PLATFORM, 'npx')
+        if not os.path.exists(path):
+            raise FileNotFoundException('npx binary not found at default location %s' % path)
+        return path
+
     # common to all environments
     def block_time_secs(self, key):
         return self.get('env.'+key, 'BlockTimeSecs')

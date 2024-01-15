@@ -2,10 +2,11 @@
 <pysystest type="auto">
 
     <description>
-        <title>Hardhat: deploy a single contract</title>
+        <title>Hardhat: deploy a contract using a library</title>
         <purpose><![CDATA[
-Deploys a contract using deployContract and waitForDeployment via hardhat, then uses web3.py to interact with the
-contract via it's ABI and contract address.
+Deploys a library contract using getContractFactory, the deploys another contract that links to the library at deploy
+time. Once done uses web3.py to interact with the contract via it's ABI and contract address checking both contracts
+were correctly deployed.
 ]]>
         </purpose>
     </description>
