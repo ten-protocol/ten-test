@@ -4,13 +4,15 @@
     <description>
         <title>Hardhat: deploy a contract using a library</title>
         <purpose><![CDATA[
+Deploys a library contract using getContractFactory, the deploys another contract that links to the library at deploy
+time. Once done uses web3.py to interact with the contract via it's ABI and contract address checking both contracts
+were correctly deployed.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.local</mode>

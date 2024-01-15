@@ -4,13 +4,14 @@
     <description>
         <title>Hardhat: deploy a single contract</title>
         <purpose><![CDATA[
+Deploys a contract using deployContract and waitForDeployment via hardhat, then uses web3.py to interact with the
+contract via it's ABI and contract address.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.local</mode>
