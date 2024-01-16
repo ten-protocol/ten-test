@@ -2,7 +2,6 @@ import re, json, secrets
 import os, shutil, copy
 from web3 import Web3
 from ten.test.basetest import GenericNetworkTest
-from ten.test.utils.properties import Properties
 
 
 class PySysTest(GenericNetworkTest):
