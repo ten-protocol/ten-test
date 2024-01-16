@@ -17,6 +17,10 @@ async function sendTransaction() {
   }
   console.log('Transaction created')
 
+  const estimateGas = await provider.estimateGas(tx)
+  console.log(`Gas estimate: ${estimateGas}`)
+  tx.gasLimit = estimateGas
+
   const txResponse = await wallet.sendTransaction(tx)
   console.log(`Transaction sent: ${txResponse.hash}`)
 

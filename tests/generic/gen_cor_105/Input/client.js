@@ -16,6 +16,10 @@ async function sendTransaction() {
   }
   console.log('Transaction created')
 
+  const estimateGas = await web3.eth.estimateGas(transactionParameters)
+  console.log(`Gas estimate: ${estimateGas}`)
+  transactionParameters.gasLimit = estimateGas
+
   const signedTransaction = await web3.eth.accounts.signTransaction(transactionParameters, options.private_key);
   const txReceipt = await web3.eth.sendSignedTransaction(signedTransaction.rawTransaction)
   console.log(`Transaction status: ${txReceipt.status}`)
