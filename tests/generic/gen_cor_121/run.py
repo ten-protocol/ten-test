@@ -1,5 +1,6 @@
-import re, json
+import re, json, secrets
 import os, shutil, copy
+from web3 import Web3
 from ten.test.basetest import GenericNetworkTest
 from ten.test.utils.properties import Properties
 
@@ -11,10 +12,12 @@ class PySysTest(GenericNetworkTest):
 
     def execute(self):
         project = os.path.join(self.output, 'project')
+        private_key = secrets.token_hex(32)
 
         # connect to the network
         network = self.get_network_connection()
-        web3, account = network.connect_account1(self)
+        self.distribute_native(Web3().eth.account.from_key(private_key), 0.01)
+        web3, account = network.connect(self, private_key=private_key, check_funds=False)
 
         # copy over and initialise the project
         shutil.copytree(self.input, project)
