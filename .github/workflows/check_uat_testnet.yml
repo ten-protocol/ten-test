@@ -62,7 +62,7 @@ jobs:
           retention-days: 1
 
       - name: 'Discord notification on failure'
-        if: success()
+        if: failure()
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.UAT_TESTNET_HEALTH_WEBHOOK }}
