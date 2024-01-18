@@ -50,7 +50,7 @@ jobs:
       - name: 'Run health check tests'
         run: |
           cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ten.uatly -i health -XDURATION=0
+          /usr/local/bin/pysys.py run -m ten.uat -i health -XDURATION=0
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v3
