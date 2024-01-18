@@ -61,12 +61,12 @@ jobs:
             ${{ github.workspace }}/ten-test/**/Output
           retention-days: 1
 
-#      - name: 'Discord notification on failure'
-#        if: failure()
-#        uses: sarisia/actions-status-discord@v1
-#        with:
-#          webhook: ${{ secrets.TESTNET_HEALTH_WEBHOOK }}
-#          title: "UAT-testnet health check tests failed"
-#          description: "UAT-testnet health check"
-#          content: "Please investigate <@814873419207409685> <@92361563276591104> <@494924753962926120> <@921049923414261821> <@1034771491436363797> <@639076633994592256>"
-#          avatar_url: ${{ secrets.AVATAR_URL }}
+      - name: 'Discord notification on failure'
+        if: failure()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.UAT_TESTNET_HEALTH_WEBHOOK }}
+          title: "UAT-testnet health check tests failed"
+          description: "UAT-testnet health check"
+          content: "Please investigate <@814873419207409685> <@92361563276591104> <@494924753962926120> <@921049923414261821> <@1034771491436363797> <@639076633994592256>"
+          avatar_url: ${{ secrets.AVATAR_URL }}
