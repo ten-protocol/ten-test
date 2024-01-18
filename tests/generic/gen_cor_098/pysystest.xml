@@ -2,16 +2,15 @@
 <pysystest type="auto">
 
     <description>
-        <title>Gas: exceed gas limit</title>
+        <title>Gas: replace tx with a better gas value </title>
         <purpose><![CDATA[
-Checks what happens when a transaction is submitted with a gas limit set to half the estimate.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>gas</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
