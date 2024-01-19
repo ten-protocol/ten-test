@@ -21,9 +21,7 @@ using the same nonce, but the expected gas.
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
-            <mode>arbitrum.sepolia</mode>
             <mode>ganache</mode>
-            <mode>sepolia</mode>
         </modes>
     </classification>
 
