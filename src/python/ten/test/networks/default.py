@@ -83,7 +83,7 @@ class DefaultPostLondon:
         """Transact using either a contract constructor or contract function as the target.
 
         This method expects the target to be a contract constructor or function, and will build this into the
-        transaction dictionary using buildTransaction on the target. The nonce will be automatically added during this
+        transaction dictionary using build_transaction on the target. The nonce will be automatically added during this
         process.
         """
         self.log.info('Account %s performing transaction', account.address)
@@ -129,7 +129,7 @@ class DefaultPostLondon:
                           web3.from_wei(balance, 'ether'))
 
         params['gas'] = gas_estimate
-        build_tx = target.buildTransaction(params)
+        build_tx = target.build_transaction(params)
         return build_tx
 
     def sign_transaction(self, test, tx, nonce, account, persist_nonce):
