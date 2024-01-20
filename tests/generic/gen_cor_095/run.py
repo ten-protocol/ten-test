@@ -1,36 +1,40 @@
-import os
-from ten.test.basetest import GenericNetworkTest
-from ten.test.contracts.storage import KeyStorage
+import secrets
+from pysys.constants import PASSED, FAILED
+from ten.test.basetest import TenNetworkTest
+from ten.test.contracts.expensive import ExpensiveContract
 
 
-class PySysTest(GenericNetworkTest):
+class PySysTest(TenNetworkTest):
 
     def execute(self):
-        # connect to network
         network = self.get_network_connection()
-        web3, account = network.connect_account1(self)
+        web3_deploy, account_deploy = network.connect_account1(self)
 
-        # deploy the contract
-        storage = KeyStorage(self, web3)
-        storage.deploy(network, account)
+        contract = ExpensiveContract(self, web3_deploy)
+        contract.deploy(network, account_deploy)
 
-        # run a background script to filter and collect events
-        stdout = os.path.join(self.output, 'block_notifier.out')
-        stderr = os.path.join(self.output, 'block_notifier.err')
-        script = os.path.join(self.input, 'block_notifier.js')
-        args = []
-        args.extend(['--network_ws', network.connection_url(web_socket=True)])
-        self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
+        pk = secrets.token_hex(32)
+        web3, account = network.connect(self, private_key=pk, check_funds=False)
+        self.distribute_native(account, 0.01)
 
-        # perform some transactions with a sleep in between
-        receipt1 = network.transact(self, web3, storage.contract.functions.setItem('key1', 1), account, storage.GAS_LIMIT)
-        receipt2 = network.transact(self, web3, storage.contract.functions.setItem('key1', 2), account, storage.GAS_LIMIT)
-        self.wait(float(self.block_time) * 1.1)
+        try:
+            for i in range(30, 40):
+                estimate = contract.contract.functions.exponentialOperation(i).estimate_gas()
+                self.log.info('Exponential %d, gas estimate is %d WEI, %.9f ETH', i, estimate, web3.from_wei(estimate, 'ether'))
 
-        # wait and validate
-        self.waitForGrep(file='block_notifier.out', expr='Block =', condition='==2')
-        exprList = []
-        exprList.append('Block = [0-9]+ , Transaction = %s' % receipt1.transactionHash.hex())
-        exprList.append('Block = [0-9]+ , Transaction = %s' % receipt2.transactionHash.hex())
-        self.assertOrderedGrep(file='block_notifier.out', exprList=exprList)
+            for i in range(30, 40):
+                estimate = contract.contract.functions.calculateFactorial(i).estimate_gas()
+                self.log.info('Factorial %d, gas estimate is %d WEI, %.9f ETH', i, estimate, web3.from_wei(estimate, 'ether'))
+
+            for i in range(350, 370, 2):
+                estimate = contract.contract.functions.calculateFibonacci(i).estimate_gas()
+                self.log.info('Fibonacci %d, gas estimate is %d WEI, %.9f ETH', i, estimate, web3.from_wei(estimate, 'ether'))
+
+            self.addOutcome(PASSED)
+        except Exception as e:
+            self.log.warn('Exception thrown %s', e)
+            self.addOutcome(FAILED)
+
+        self.drain_native(web3, account, network)
+
+

@@ -2,9 +2,13 @@
 <pysystest type="auto">
 
     <description>
-        <title>Gas: call estimate_gas on so called expensive solidity method calls
-        </title>
+        <title>Callback: ethers client using provider on block (newHeads)</title>
         <purpose><![CDATA[
+Uses the javascript ethers library to register a provider on block listener. When triggered the block is retrieved
+and the transactions in the block extracted to be logged. Validation is ensuring that for successful transactions
+both the notification and the correct txHashes are found as expected.
+
+Not yet supported on Ten - see https://github.com/ten-protocol/ten-internal/issues/1626
 ]]>
         </purpose>
     </description>

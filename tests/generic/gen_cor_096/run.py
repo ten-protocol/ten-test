@@ -1,38 +1,82 @@
-import os
+from hexbytes import HexBytes
+from web3.exceptions import TimeExhausted
 from ten.test.basetest import GenericNetworkTest
-from ten.test.contracts.storage import KeyStorage
+from ten.test.contracts.storage import Storage
 
+class TransactionFailed(Exception):
+    pass
 
 class PySysTest(GenericNetworkTest):
 
     def execute(self):
-        # connect to network
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
+        contract = Storage(self, web3, 0)
+        contract.deploy(network, account)
 
-        # deploy the contract
-        storage = KeyStorage(self, web3)
-        storage.deploy(network, account)
+        # estimate gas required to call the add_once contract function
+        estimate_gas = contract.contract.functions.store(1).estimate_gas()
+        self.log.info("Estimate gas:    %d", estimate_gas)
 
-        # run a background script to filter and collect events
-        stdout = os.path.join(self.output, 'hash_notifier.out')
-        stderr = os.path.join(self.output, 'hash_notifier.err')
-        script = os.path.join(self.input, 'hash_notifier.js')
-        args = []
-        args.extend(['--network_ws', network.connection_url(web_socket=True)])
-        self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
+        # submit at the estimate and then from the transaction work out the intrinsic gas
+        nonce = self.nonce_db.get_next_nonce(self, web3, account.address, self.env)
+        tx_receipt = self.submit(account, contract, web3, nonce, estimate_gas)
+        intrinsic_gas = self.calculate_intrinsic_gas(web3, tx_receipt.transactionHash)
 
-        # perform some transactions with a sleep in between
-        receipt1 = network.transact(self, web3, storage.contract.functions.setItem('key1', 1), account, storage.GAS_LIMIT)
-        receipt2 = network.transact(self, web3, storage.contract.functions.setItem('key1', 2), account, storage.GAS_LIMIT)
-        self.wait(float(self.block_time) * 1.1)
+        # submit at the intrinsic gas
+        nonce = self.nonce_db.get_next_nonce(self, web3, account.address, self.env)
+        self.submit(account, contract, web3, nonce, intrinsic_gas)
 
-        # wait and validate
-        self.waitForGrep(file='hash_notifier.out', expr='Mined', condition='==2')
-        exprList = []
-        exprList.append('Pending %s' % receipt1.transactionHash.hex())
-        exprList.append('Mined %s' % receipt1.transactionHash.hex())
-        exprList.append('Pending %s' % receipt2.transactionHash.hex())
-        exprList.append('Mined %s' % receipt2.transactionHash.hex())
-        self.assertOrderedGrep(file='hash_notifier.out', exprList=exprList)
+    def submit(self, account, contract, web3, nonce, gas_limit):
+        tx_receipt = None
+        build_tx = contract.contract.functions.store(1).build_transaction(
+            {
+                'nonce': nonce,
+                'gasPrice': web3.eth.gas_price,
+                'gas': gas_limit,
+                'chainId': web3.eth.chain_id
+            })
+        signed_tx = account.sign_transaction(build_tx)
+
+        # send and wait for the transaction result (mined, timed out or rejected)
+        try:
+            tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+            tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash.hex(), timeout=10)
+
+            # was mined and was either successful or failed
+            if tx_receipt.status == 1:
+                self.log.info('Transaction successful')
+                self.nonce_db.update(account.address, self.env, nonce, 'CONFIRMED')
+            else:
+                self.log.info('Transaction failed')
+                try:
+                    web3.eth.call(build_tx, block_identifier=tx_receipt.blockNumber)
+                except Exception as e:
+                    self.log.error('Replay call: %s', e)
+
+        # was not mined and likely still in the mempool waiting
+        except TimeExhausted as e:
+            self.log.error(e)
+
+        # was not mined and was reject from the mempool
+        except ValueError as e:
+            self.log.error(e)
+
+        finally:
+            return tx_receipt
+
+    def calculate_intrinsic_gas(self, web3, tx_hash):
+        tx = web3.eth.get_transaction(tx_hash)
+
+        hex_data = HexBytes(tx['input'])
+        self.log.info('Input hex data is %s', hex_data.hex())
+        zero_count = sum(1 for byte in hex_data if byte == 0)
+        non_zero_count = sum(1 for byte in hex_data if byte != 0)
+
+        self.log.info('Data size is %d', len(hex_data))
+        self.log.info('Non zero count is %d', non_zero_count)
+        self.log.info('Zero count is %d', zero_count)
+
+        intrinsic_gas = 21000 + (16*non_zero_count) + (4*zero_count)
+        self.log.info('Intrinsic gas is %d', intrinsic_gas)
+        return intrinsic_gas
