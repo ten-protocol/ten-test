@@ -14,6 +14,7 @@ though this is not seen?
     <classification>
         <groups inherit="true">
             <group>gas</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
