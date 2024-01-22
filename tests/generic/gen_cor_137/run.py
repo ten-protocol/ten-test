@@ -43,7 +43,7 @@ class PySysTest(GenericNetworkTest):
             tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
             tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash.hex(), timeout=10)
 
-            # was mined and was either successful or failed
+            # 1 - was mined and was either successful or failed
             if tx_receipt.status == 1:
                 self.log.info('Transaction successful')
                 self.nonce_db.update(account.address, self.env, nonce, 'CONFIRMED')
@@ -54,11 +54,11 @@ class PySysTest(GenericNetworkTest):
                 except Exception as e:
                     self.log.error('Replay call: %s', e)
 
-        # was not mined and likely still in the mempool waiting
+        # 2- was not mined and likely still in the mempool waiting
         except TimeExhausted as e:
             self.log.error(e)
 
-        # was not mined and was reject from the mempool
+        # 3 - was not mined and was reject from the mempool
         except ValueError as e:
             self.log.error(e)
 
