@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Error: nonce too low</title>
+        <purpose><![CDATA[
+From my understanding the following should be the behaviour of nonces;
+
+- Transactions with too low a nonce get immediately rejected.
+- Transactions with too high a nonce get placed in the transaction pool queue.
+- If transactions with nonces that fill the gap between the last valid nonce and
+  the too high nonce are sent and the nonce sequence is complete, all the transactions in the sequence
+  will get processed and mined.
+
+This tests at the moment only checks when a tx is submitted with a nonce that is too low. It is currently not run on
+TEN due to https://github.com/ten-protocol/ten-internal/issues/2786.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>skip</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+            <mode>arbitrum.sepolia</mode>
+            <mode>sepolia</mode>
+            <mode>ganache</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
