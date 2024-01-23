@@ -4,7 +4,6 @@ async function main() {
   const utilsFactory = await hre.ethers.getContractFactory("MathUtils");
   const utilsInstance = await utilsFactory.deploy();
   await utilsInstance.waitForDeployment();
-  console.log(utilsInstance)
   console.log("Library MathUtils deployed at", utilsInstance.target);
 
   const mathsFactory = await hre.ethers.getContractFactory("TestMath", {

@@ -1,5 +1,4 @@
 import secrets, random, os, shutil
-from time import sleep
 from web3 import Web3
 from datetime import datetime
 from collections import OrderedDict
@@ -9,7 +8,7 @@ from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(TenNetworkTest):
-    ITERATIONS = 256      # don't exceed bulk loading more than 1024 (single client used)
+    ITERATIONS = 1024      # don't exceed bulk loading more than 1024 (single client used)
 
     def execute(self):
         self.execute_run()
