@@ -6,8 +6,10 @@ from ten.test.contracts.storage import Storage
 
 Item = namedtuple("Item", "gas value nonce expect")
 
+
 class TransactionFailed(Exception):
     pass
+
 
 class Stack:
     def __init__(self): self.items = []
@@ -16,6 +18,7 @@ class Stack:
     def insert(self, item): return self.items.insert(0, item)
     def pop(self): return self.items.pop(0)
     def size(self): return len(self.items)
+
 
 class PySysTest(GenericNetworkTest):
 
