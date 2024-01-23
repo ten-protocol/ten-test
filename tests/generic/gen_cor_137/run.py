@@ -3,8 +3,10 @@ from web3.exceptions import TimeExhausted
 from ten.test.basetest import GenericNetworkTest
 from ten.test.contracts.storage import Storage
 
+
 class TransactionFailed(Exception):
     pass
+
 
 class PySysTest(GenericNetworkTest):
 
