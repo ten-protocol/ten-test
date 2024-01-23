@@ -8,7 +8,7 @@ from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(TenNetworkTest):
-    ITERATIONS = 5000
+    ITERATIONS = 1024      # don't exceed bulk loading more than 1024 (single client used)
 
     def execute(self):
         self.execute_run()
@@ -23,7 +23,7 @@ class PySysTest(TenNetworkTest):
         error = Error(self, web3_deploy)
         error.deploy(network, account_deploy)
 
-        # use an ephemeral accounts so we don't need to manage nonce through persistence
+        # use an ephemeral account so we don't need to manage nonce through persistence
         web3, account = network.connect(self, private_key=secrets.token_hex())
         accounts = [Web3().eth.account.from_key(x).address for x in [secrets.token_hex()]*25]
 
@@ -34,9 +34,9 @@ class PySysTest(TenNetworkTest):
         chain_id = network.chain_id()
 
         txs = []
-        for i in range(0, self.ITERATIONS):
-            tx = self.create_signed_tx(network, account, i, random.choice(accounts), value, gas_price, chain_id)
-            txs.append((tx, i))
+        for nonce in range(0, self.ITERATIONS):
+            tx = self.create_signed_tx(network, account, nonce, random.choice(accounts), value, gas_price, chain_id)
+            txs.append((tx, nonce))
 
         self.log.info('Bulk sending transactions to the network')
         receipts = []
