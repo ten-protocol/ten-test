@@ -134,12 +134,10 @@ class GenericNetworkTest(BaseTest):
         web3_pk, account_pk = self.network_funding.connect(self, Properties().fundacntpk(), check_funds=False)
         balance_before = web3_pk.eth.get_balance(account_pk.address)
 
-        tx = {
-            'to': account.address,
-            'value': web3_pk.to_wei(amount, 'ether'),
-            'gas': 4*21000,
-            'gasPrice': web3_pk.eth.gas_price
-        }
+        tx = {'to': account.address, 'value': web3_pk.to_wei(amount, 'ether'), 'gasPrice': web3_pk.eth.gas_price}
+        tx['gas'] = web3_pk.eth.estimate_gas(tx)
+        self.log.info('Gas estimate for distribute native is %d', tx['gas'])
+
         self.log.info('Sending %.6f ETH to account %s', amount, account.address)
         self.network_funding.tx(self, web3_pk, tx, account_pk)
         balance_after = web3_pk.eth.get_balance(account_pk.address)
@@ -154,12 +152,10 @@ class GenericNetworkTest(BaseTest):
 
         address = Web3().eth.account.from_key(Properties().fundacntpk()).address
         self.log.info('Send to address is %s', address)
-        tx = {
-            'to':  address,
-            'value': amount,
-            'gas': 4*21000,
-            'gasPrice': web3.eth.gas_price
-        }
+
+        tx = {'to':  address, 'value': amount, 'gasPrice': web3.eth.gas_price}
+        tx['gas'] = web3.eth.estimate_gas(tx)
+        self.log.info('Gas estimate for drain native is %d', tx['gas'])
         network.tx(self, web3, tx, account, persist_nonce=False)
 
     def fund_native(self, network, account, amount, pk, persist_nonce=True):
@@ -169,12 +165,10 @@ class GenericNetworkTest(BaseTest):
         needs to also connect, hence to avoid recursion we don't check funds on the call.
         """
         web3_pk, account_pk = network.connect(self, pk, check_funds=False)
-        tx = {
-            'to': account.address,
-            'value': web3_pk.to_wei(amount, 'ether'),
-            'gas': 4*21000,
-            'gasPrice': web3_pk.eth.gas_price
-        }
+
+        tx = {'to': account.address, 'value': web3_pk.to_wei(amount, 'ether'), 'gasPrice': web3_pk.eth.gas_price}
+        tx['gas'] = web3_pk.eth.estimate_gas(tx)
+        self.log.info('Gas estimate for fund native is %d', tx['gas'])
         network.tx(self, web3_pk, tx, account_pk, persist_nonce=persist_nonce)
 
     def transfer_token(self, network, token_name, token_address, web3_from, account_from, address,

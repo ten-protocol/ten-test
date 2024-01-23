@@ -23,11 +23,12 @@ class PySysTest(GenericNetworkTest):
         tx_receipt = self.submit(account, contract, web3, nonce, estimate_gas)
         intrinsic_gas = self.calculate_intrinsic_gas(web3, tx_receipt.transactionHash)
 
-        # submit at the intrinsic gas
+        # submit at lower than the intrinsic gas
         nonce = self.nonce_db.get_next_nonce(self, web3, account.address, self.env)
-        self.submit(account, contract, web3, nonce, intrinsic_gas)
+        self.submit(account, contract, web3, nonce, int(0.9*intrinsic_gas))
 
     def submit(self, account, contract, web3, nonce, gas_limit):
+        self.log.info('Submitting transaction with gas_limit of %d', gas_limit)
         tx_receipt = None
         build_tx = contract.contract.functions.store(1).build_transaction(
             {
@@ -49,16 +50,17 @@ class PySysTest(GenericNetworkTest):
                 self.nonce_db.update(account.address, self.env, nonce, 'CONFIRMED')
             else:
                 self.log.info('Transaction failed')
+                self.nonce_db.update(account.address, self.env, nonce, 'FAILED')
                 try:
                     web3.eth.call(build_tx, block_identifier=tx_receipt.blockNumber)
                 except Exception as e:
                     self.log.error('Replay call: %s', e)
 
-        # 2- was not mined and likely still in the mempool waiting
+        # 2 - was not mined and likely still in the mem pool waiting
         except TimeExhausted as e:
             self.log.error(e)
 
-        # 3 - was not mined and was reject from the mempool
+        # 3 - was not mined and was rejected from the mem pool
         except ValueError as e:
             self.log.error(e)
 
