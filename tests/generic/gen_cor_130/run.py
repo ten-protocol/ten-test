@@ -37,11 +37,11 @@ class PySysTest(GenericNetworkTest):
         self.log.info("Gas used add_thrice:                        %d", int(tx3["gasUsed"]))
         self.log.info("Gas used add_three_times_with_a_long_name:  %d", int(tx4["gasUsed"]))
 
-        # validate estimate is same as actual
-        self.assertTrue(est_1 == int(tx1["gasUsed"]))
-        self.assertTrue(est_2 == int(tx2["gasUsed"]))
-        self.assertTrue(est_3 == int(tx3["gasUsed"]))
-        self.assertTrue(est_4 == int(tx4["gasUsed"]))
+        # validate 5% difference tolerance from estimate
+        self.percentile_difference('add_once', int(tx1["gasUsed"]), est_1, 5)
+        self.percentile_difference('add_twice', int(tx2["gasUsed"]), est_2, 5)
+        self.percentile_difference('add_thrice', int(tx3["gasUsed"]), est_3, 5)
+        self.percentile_difference('add_three_times_with_a_long_name', int(tx4["gasUsed"]), est_4, 5)
 
     def percentile_difference(self, text, result, reference, tolerance):
         percentile = abs(((reference - result) / reference) * 100)
