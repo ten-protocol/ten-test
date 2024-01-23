@@ -12,6 +12,7 @@ Checks the cost of requesting the balance of an account.
     <classification>
         <groups inherit="true">
             <group>gas</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

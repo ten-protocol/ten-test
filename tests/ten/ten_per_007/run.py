@@ -8,7 +8,6 @@ from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(TenNetworkTest):
-    ITERATIONS = 10
     CLIENTS = 5
     DURATION = 120
 
