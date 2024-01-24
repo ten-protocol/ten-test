@@ -4,8 +4,8 @@ from ten.test.networks.default import DefaultPreLondon
 
 class ArbitrumSepolia(DefaultPreLondon):
     """An Arbitrum sepolia connection giving access to the underlying network."""
-    ETH_LIMIT = 0.001
-    ETH_ALLOC = 0.005
+    ETH_LIMIT = 0.5
+    ETH_ALLOC = 0.1
     ETH_ALLOC_EPHEMERAL = 0.001
 
     def __init__(self, test, name=None, **kwargs):
