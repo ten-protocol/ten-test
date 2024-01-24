@@ -42,7 +42,7 @@ class PySysTest(TenNetworkTest):
         # create the clients
         for i in range(0, len(funders)):
             recipients = [Web3().eth.account.from_key(x).address for x in funders if x != funders[i]]
-            self.funds_client(funders[i], recipients, i, funders_connection)
+            self.funds_client(network, funders[i], recipients, i, funders_connection)
 
         for i in range(0, self.NUM_GUESSERS):
             self.guesser_client(guesser.address, guesser.abi_path, i, guesser_connection)
@@ -65,9 +65,9 @@ class PySysTest(TenNetworkTest):
         self.log.info('Call shows value %d', storage.contract.functions.retrieve().call())
         self.assertTrue(value == 1812)
 
-    def funds_client(self, pk, recipients, num, funders_connection):
+    def funds_client(self, network, pk, recipients, num, funders_connection):
         web3, account = funders_connection.connect(self, private_key=pk, check_funds=False)
-        self.distribute_native(account, 0.01)
+        self.distribute_native(account, network.ETH_ALLOC_EPHEMERAL)
 
         stdout = os.path.join(self.output, 'funds_%d.out' % num)
         stderr = os.path.join(self.output, 'funds_%d.err' % num)
@@ -92,7 +92,7 @@ class PySysTest(TenNetworkTest):
         pk = secrets.token_hex(32)
         web3, account = network.connect(self, private_key=pk, check_funds=False)
         if fund:
-            self.distribute_native(account, 0.01)
+            self.distribute_native(account, network.ETH_ALLOC_EPHEMERAL)
             self.client_connections.append((web3, account, network))
 
         stdout = os.path.join(self.output, '%s_%d.out' % (name, num))

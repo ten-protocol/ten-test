@@ -8,8 +8,9 @@ class DefaultPostLondon:
     """A default connection giving access to an underlying network.
 
     Note that the default assumes post London fork with the EIP-1599 fee market change."""
-    ETH_LIMIT = 0.001
-    ETH_ALLOC = 0.005
+    ETH_LIMIT = 0.001                   # lower than this then allocate more native
+    ETH_ALLOC = 0.005                   # the allocation amount (for configured accounts)
+    ETH_ALLOC_EPHEMERAL = 0.001         # the allocation amount (for ephemeral accounts)
 
     def __init__(self, test, name=None, **kwargs):
         props = Properties()

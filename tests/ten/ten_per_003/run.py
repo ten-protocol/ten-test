@@ -63,7 +63,7 @@ class PySysTest(TenNetworkTest):
             for i in range(0, self.SENDING_ACCOUNTS):
                 pk = secrets.token_hex(32)
                 _, account = network.connect(self, private_key=pk, check_funds=False)
-                self.distribute_native(account, 0.01)
+                self.distribute_native(account, network.ETH_ALLOC_EPHEMERAL)
                 fw.write('%s\n' % pk)
                 fw.flush()
         return pk_file, network

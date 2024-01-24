@@ -15,7 +15,7 @@ class PySysTest(GenericNetworkTest):
 
         # connect to the network
         network = self.get_network_connection()
-        self.distribute_native(Web3().eth.account.from_key(private_key), 0.01)
+        self.distribute_native(Web3().eth.account.from_key(private_key), network.ETH_ALLOC_EPHEMERAL)
         web3, account = network.connect(self, private_key=private_key, check_funds=False)
 
         # copy over and initialise the project

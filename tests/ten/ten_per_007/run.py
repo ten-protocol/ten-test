@@ -35,7 +35,7 @@ class PySysTest(TenNetworkTest):
         account = Web3().eth.account.from_key(private_key)
         key = '%d_%d' % (int(time.time()), num)
         self.log.info('Client %d has key %s', num, key)
-        self.distribute_native(account, 0.01)
+        self.distribute_native(account, network.ETH_ALLOC_EPHEMERAL)
         network.connect(self, private_key=private_key, check_funds=False)
 
         # create the client

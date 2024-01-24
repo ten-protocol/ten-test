@@ -15,7 +15,7 @@ class PySysTest(TenNetworkTest):
         pk = secrets.token_hex(32)
         web3, account = network.connect(self, private_key=pk, check_funds=False)
         contract = ExpensiveContract.clone(web3, account, contract_deploy)
-        self.distribute_native(account, 0.01)
+        self.distribute_native(account, network.ETH_ALLOC_EPHEMERAL)
 
         estimate = 0
         nonce = 0

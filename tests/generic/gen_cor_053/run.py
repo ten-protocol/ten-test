@@ -16,7 +16,7 @@ class PySysTest(GenericNetworkTest):
         # connect to the network using an ephemeral account in-case anything gets messed up
         network = self.get_network_connection()
         private_key = secrets.token_hex(32)
-        self.distribute_native(Web3().eth.account.from_key(private_key), 0.001)
+        self.distribute_native(Web3().eth.account.from_key(private_key), network.ETH_ALLOC_EPHEMERAL)
         web3, account = network.connect(self, private_key=private_key, check_funds=False)
 
         contract = Storage(self, web3, 0)
