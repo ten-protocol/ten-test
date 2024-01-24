@@ -41,7 +41,7 @@ class PySysTest(GenericNetworkTest):
             regex = re.compile('execution reverted:.*Forced revert', re.M)
             self.assertTrue(regex.search(e.args[0]) is not None)
 
-        # force assert
+        # force assert (note this fails on ganache)
         try:
             self.log.info('Forcing an assert on contract function')
             error.contract.functions.force_assert().call()
