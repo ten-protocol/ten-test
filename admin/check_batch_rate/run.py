@@ -5,7 +5,7 @@ from ten.test.basetest import TenNetworkTest
 class PySysTest(TenNetworkTest):
     DURATION = 150
     INTERVAL = 5
-    THRESHOLD = 140
+    THRESHOLD = 175
 
     def execute(self):
         start = time.time()
