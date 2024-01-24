@@ -167,7 +167,7 @@ class GenericNetworkTest(BaseTest):
         web3_pk, account_pk = network.connect(self, pk, check_funds=False)
 
         tx = {'to': account.address, 'value': web3_pk.to_wei(amount, 'ether'), 'gasPrice': web3_pk.eth.gas_price}
-        if gas_limit: tx['gas'] = gas_limit
+        if gas_limit is not None: tx['gas'] = gas_limit
         else: tx['gas'] = web3_pk.eth.estimate_gas(tx)
         self.log.info('Gas estimate for fund native is %d', tx['gas'])
         network.tx(self, web3_pk, tx, account_pk, persist_nonce=persist_nonce)

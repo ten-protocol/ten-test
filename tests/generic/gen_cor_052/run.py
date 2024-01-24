@@ -7,11 +7,15 @@ from ten.test.basetest import GenericNetworkTest
 class PySysTest(GenericNetworkTest):
 
     def execute(self):
+        # deploy using a standard test account
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
         error = Error(self, web3)
         error.deploy(network, account)
+
+        # the two clients use an ephemeral test account that will leak funds but means
+        # we don't need to manage the nonce
         self.client(network, error, 'ethers')
         self.client(network, error, 'web3')
         self.assertGrep(file='client_ethers.out', expr='Error: transaction failed')
@@ -19,7 +23,7 @@ class PySysTest(GenericNetworkTest):
 
     def client(self, network, contract, type):
         private_key = secrets.token_hex(32)
-        self.distribute_native(Web3().eth.account.from_key(private_key), 0.001)
+        self.distribute_native(Web3().eth.account.from_key(private_key), 0.0001)
         network.connect(self, private_key=private_key, check_funds=False)
 
         # create the client
