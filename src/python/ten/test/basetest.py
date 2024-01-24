@@ -158,7 +158,7 @@ class GenericNetworkTest(BaseTest):
         self.log.info('Gas estimate for drain native is %d', tx['gas'])
         network.tx(self, web3, tx, account, persist_nonce=False)
 
-    def fund_native(self, network, account, amount, pk, persist_nonce=True):
+    def fund_native(self, network, account, amount, pk, persist_nonce=True, gas_limit=None):
         """A native transfer of funds from one address to another.
 
         Note that these methods are called from connect to perform a transfer. The account performing the transfer
@@ -167,7 +167,8 @@ class GenericNetworkTest(BaseTest):
         web3_pk, account_pk = network.connect(self, pk, check_funds=False)
 
         tx = {'to': account.address, 'value': web3_pk.to_wei(amount, 'ether'), 'gasPrice': web3_pk.eth.gas_price}
-        tx['gas'] = web3_pk.eth.estimate_gas(tx)
+        if gas_limit: tx['gas'] = gas_limit
+        else: tx['gas'] = web3_pk.eth.estimate_gas(tx)
         self.log.info('Gas estimate for fund native is %d', tx['gas'])
         network.tx(self, web3_pk, tx, account_pk, persist_nonce=persist_nonce)
 
