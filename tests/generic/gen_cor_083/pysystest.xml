@@ -13,7 +13,6 @@ Skipped due to https://github.com/ten-protocol/ten-internal/issues/1076
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>events</group>
             <group>web3js</group>
         </groups>
