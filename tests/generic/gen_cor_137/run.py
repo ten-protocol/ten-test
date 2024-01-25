@@ -44,7 +44,10 @@ class PySysTest(GenericNetworkTest):
         # send and wait for the transaction result (mined, timed out or rejected)
         try:
             tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+            self.nonce_db.update(account.address, self.env, nonce, 'SIGNED')
+
             tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash.hex(), timeout=10)
+            self.nonce_db.update(account.address, self.env, nonce, 'SENT')
 
             # 1 - was mined and was either successful or failed
             if tx_receipt.status == 1:

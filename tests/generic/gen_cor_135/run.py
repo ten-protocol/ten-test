@@ -31,6 +31,7 @@ class PySysTest(TenNetworkTest):
                 self.log.info('Fibonacci %d, gas estimate is %d WEI, %.9f ETH', i, estimate, web3.from_wei(estimate, 'ether'))
 
             self.addOutcome(PASSED)
+
         except Exception as e:
             self.log.warn('Exception thrown %s', e)
             self.addOutcome(FAILED)
