@@ -61,7 +61,7 @@ class PySysTest(TenNetworkTest):
     def storage_client(self, address, abi_path, num, network):
         pk = secrets.token_hex(32)
         account = Web3().eth.account.from_key(pk)
-        self.distribute_native(account, 0.01)
+        self.distribute_native(account, network.ETH_ALLOC_EPHEMERAL)
         network.connect(self, private_key=pk, check_funds=False)
 
         stdout = os.path.join(self.output, 'client_%d.out' % num)

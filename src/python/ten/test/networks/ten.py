@@ -13,8 +13,9 @@ from ten.test.helpers.wallet_extension import WalletExtension
 
 class TenL1Sepolia(Sepolia):
     """The Ten L1 Sepolia implementation connection. """
-    ETH_LIMIT = 0.01
-    ETH_ALLOC = 0.002
+    ETH_LIMIT = 0.05
+    ETH_ALLOC = 0.02
+    ETH_ALLOC_EPHEMERAL = 0.005
 
     def __init__(self, test, name=None, **kwargs):
         super().__init__(test, name, **kwargs)
@@ -50,6 +51,7 @@ class TenL1Geth(Geth):
     """The Ten L1 Geth implementation connection. """
     ETH_LIMIT = 1
     ETH_ALLOC = 0.5
+    ETH_ALLOC_EPHEMERAL = 0.01
 
     def __init__(self, test, name=None, **kwargs):
         super().__init__(test, name, **kwargs)
@@ -88,9 +90,8 @@ class Ten(DefaultPreLondon):
     can be registered. If a gateway instance is supplied in the constructor that instance will be used. If one is
     not supplied, if running against a local testnet an instance will be created; if running against a dev testnet,
     or testnet, then the hosted instance will be used. """
-    ETH_LIMIT = 0.05
+    ETH_LIMIT = 0.5
     ETH_ALLOC = 0.1
-    CURRENCY = 'ETH'
 
     def __init__(self, test, name=None, **kwargs):
         super().__init__(test, name, **kwargs)

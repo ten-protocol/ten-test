@@ -4,6 +4,8 @@ from ten.test.networks.default import DefaultPostLondon
 
 class Sepolia(DefaultPostLondon):
     """A Sepolia connection giving access to the underlying network."""
+    ETH_LIMIT = 0.5
+    ETH_ALLOC = 0.1
 
     def __init__(self, test, name=None, **kwargs):
         super().__init__(test, name, **kwargs)

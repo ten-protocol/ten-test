@@ -15,7 +15,7 @@ class PySysTest(TenNetworkTest):
 
         pk = secrets.token_hex(32)
         web3, account = network.connect(self, private_key=pk, check_funds=False)
-        self.distribute_native(account, 0.01)
+        self.distribute_native(account, network.ETH_ALLOC_EPHEMERAL)
 
         try:
             for i in range(30, 40):
@@ -31,6 +31,7 @@ class PySysTest(TenNetworkTest):
                 self.log.info('Fibonacci %d, gas estimate is %d WEI, %.9f ETH', i, estimate, web3.from_wei(estimate, 'ether'))
 
             self.addOutcome(PASSED)
+
         except Exception as e:
             self.log.warn('Exception thrown %s', e)
             self.addOutcome(FAILED)

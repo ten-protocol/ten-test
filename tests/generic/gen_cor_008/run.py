@@ -13,15 +13,11 @@ class PySysTest(GenericNetworkTest):
         # create the storage contract but don't deploy yet
         storage = Storage(self, web3, 100)
 
-        # estimate the deployment cost
-        build_tx = storage.contract.buildTransaction(
-            {
+        # estimate the deployment cost (this is for estimate only so don't persist the nonce)
+        build_tx = storage.contract.build_transaction({
                 'nonce': self.nonce_db.get_next_nonce(self, web3, account.address, self.env, False),
                 'gasPrice': web3.eth.gas_price,
-                'gas': 720000,
-                'chainId': web3.eth.chain_id
-            }
-        )
+                'chainId': web3.eth.chain_id})
         deploy_gas = web3.eth.estimate_gas(build_tx)
         self.log.info('Deployment gas estimate is %d', deploy_gas)
 

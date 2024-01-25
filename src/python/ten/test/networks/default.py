@@ -8,8 +8,9 @@ class DefaultPostLondon:
     """A default connection giving access to an underlying network.
 
     Note that the default assumes post London fork with the EIP-1599 fee market change."""
-    ETH_LIMIT = 0.001
-    ETH_ALLOC = 0.005
+    ETH_LIMIT = 0.001                   # lower than this then allocate more native
+    ETH_ALLOC = 0.005                   # the allocation amount (for configured accounts)
+    ETH_ALLOC_EPHEMERAL = 0.001         # the allocation amount (for ephemeral accounts)
 
     def __init__(self, test, name=None, **kwargs):
         props = Properties()
@@ -115,7 +116,6 @@ class DefaultPostLondon:
             'from': account.address,                          # the account originating the transaction
             'nonce': nonce,                                   # the nonce to use
             'chainId': web3.eth.chain_id,                     # the chain id
-            'gas': gas_estimate,                              # max gas prepared to pay
             'maxFeePerGas': max_fee_per_gas,                  # Maximum amount you’re willing to pay
             'maxPriorityFeePerGas': max_priority_fee_per_gas  # Priority fee to include the transaction in the block
         }
@@ -199,7 +199,6 @@ class DefaultPreLondon(DefaultPostLondon):
             'from': account.address,          # the account originating the transaction
             'nonce': nonce,                   # the nonce to use
             'chainId': web3.eth.chain_id,     # the chain id
-            'gas': gas_estimate,              # max gas prepared to pay
             'gasPrice': gas_price             # the current gas price
         }
         if estimate:

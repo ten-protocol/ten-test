@@ -35,7 +35,7 @@ class PySysTest(TenNetworkTest):
 
     def hammer(self, network, private_key, num):
         # register out-side of the script
-        self.distribute_native(Web3().eth.account.from_key(private_key), 0.01)
+        self.distribute_native(Web3().eth.account.from_key(private_key), network.ETH_ALLOC_EPHEMERAL)
         network.connect(self, private_key=private_key, check_funds=False)
 
         # create the client

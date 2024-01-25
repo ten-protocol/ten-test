@@ -52,7 +52,7 @@ class PySysTest(TenNetworkTest):
         for i in range(0, self.TRANSACTIONS):
             count = count + 1
             web3, account, network_connection, storage = random.choice(connections)
-            self.distribute_native(account, 0.01)
+            self.distribute_native(account, network_connection.ETH_ALLOC_EPHEMERAL)
             network_connection.transact(self, web3, storage.contract.functions.store(count), account, storage.GAS_LIMIT)
 
         self.waitForSignal(file='subscriber.out', expr='Received event: Stored', condition='==%d' % self.TRANSACTIONS, timeout=10)

@@ -5,15 +5,12 @@
         <title>Error: require on transaction</title>
         <purpose><![CDATA[
 Deploy a contract and check for error reporting on failure of a transaction.
-
-Skipped - see https://github.com/ten-protocol/ten-internal/issues/971
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

@@ -6,15 +6,12 @@
         <purpose><![CDATA[
 Checks that you can estimate gas for a contract deployment, and calls made to a contract (to store and retrieve a
 value). We assume it will cost more to deploy than store, and more to store than retrieve.
-
-Skipped due to https://github.com/ten-protocol/ten-internal/issues/1459.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>rpc</group>
         </groups>
         <modes inherit="true">
