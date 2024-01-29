@@ -15,6 +15,7 @@ contract via it's ABI and contract address.
         </groups>
         <modes inherit="true">
             <mode>ten.local</mode>
+            <mode>ten.uat</mode>
             <mode>ganache</mode>
         </modes>
     </classification>
