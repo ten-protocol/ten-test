@@ -62,4 +62,5 @@ jobs:
           name: test-artifact
           path: |
             ${{ github.workspace }}/ten-test/**/Output
+            !${{ github.workspace }}/go-ten/**/node_modules
           retention-days: 1
