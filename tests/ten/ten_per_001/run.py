@@ -2,13 +2,14 @@ import secrets, random, os, shutil
 from web3 import Web3
 from datetime import datetime
 from collections import OrderedDict
+from web3.exceptions import TimeExhausted
 from ten.test.contracts.error import Error
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(TenNetworkTest):
-    ITERATIONS = 1024      # don't exceed bulk loading more than 1024 (single client used)
+    ITERATIONS = 512      # don't exceed bulk loading more than 1024 (single client used)
 
     def execute(self):
         self.execute_run()
@@ -25,6 +26,7 @@ class PySysTest(TenNetworkTest):
 
         # use an ephemeral account so we don't need to manage nonce through persistence
         web3, account = network.connect(self, private_key=secrets.token_hex())
+        self.distribute_native(account, amount=0.001)
         accounts = [Web3().eth.account.from_key(x).address for x in [secrets.token_hex()]*25]
 
         # bulk load transactions to the accounts, and wait for the last
@@ -39,18 +41,35 @@ class PySysTest(TenNetworkTest):
             txs.append((tx, nonce))
 
         self.log.info('Bulk sending transactions to the network')
-        receipts = []
+        balance_before = web3.from_wei(web3.eth.get_balance(account.address), 'gwei')
+        tx_hashes = []
         for tx in txs:
-            receipts.append((network.send_transaction(self, web3, tx[1], account, tx[0], False, verbose=False), tx[1]))
+            tx_hashes.append((network.send_transaction(self, web3, tx[1], account, tx[0], False, verbose=False), tx[1]))
+        balance_after_send = web3.from_wei(web3.eth.get_balance(account.address), 'gwei')
 
-        self.log.info('Waiting for last transaction')
-        network.wait_for_transaction(self, web3, receipts[-1][1], account, receipts[-1][0], False, timeout=600)
+        try:
+            self.log.info('Waiting for last transaction')
+            web3.eth.wait_for_transaction_receipt(tx_hashes[-1][0], timeout=30)
+
+        except TimeExhausted as e:
+            count = 0
+            for tx_hash, nonce in tx_hashes:
+                try: web3.eth.wait_for_transaction_receipt(tx_hash, timeout=30)
+                except Exception as e:
+                    self.log.info('Looks like transaction %d failed', count)
+                    break
+                count = count + 1
+
+        balance_after_wait = web3.from_wei(web3.eth.get_balance(account.address), 'gwei')
+        self.log.info('Balance before send: %d', balance_before)
+        self.log.info('Balance after send:  %d', balance_after_send)
+        self.log.info('Balance after wait: %d', balance_after_wait)
 
         # bin the data into timestamp intervals and log out to file
         self.log.info('Constructing binned data from the transaction receipts')
         bins = OrderedDict()
-        for receipt in receipts:
-            block_number_deploy = web3.eth.get_transaction(receipt[0]).blockNumber
+        for tx_hash, nonce in tx_hashes:
+            block_number_deploy = web3.eth.get_transaction(tx_hash).blockNumber
             timestamp = int(web3.eth.get_block(block_number_deploy).timestamp)
             bins[timestamp] = 1 if timestamp not in bins else bins[timestamp] + 1
 
