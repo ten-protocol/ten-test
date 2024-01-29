@@ -14,6 +14,9 @@ contract via it's ABI and contract address.
         <groups inherit="true">
         </groups>
         <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
             <mode>ten.local</mode>
             <mode>ganache</mode>
         </modes>

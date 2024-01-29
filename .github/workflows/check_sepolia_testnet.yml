@@ -44,6 +44,7 @@ jobs:
           name: test-artifact
           path: |
             ${{ github.workspace }}/ten-test/**/Output
+            !${{ github.workspace }}/ten-test/**/node_modules
           retention-days: 1
 
       - name: 'Discord notification on failure'
@@ -53,5 +54,5 @@ jobs:
           webhook: ${{ secrets.TESTNET_HEALTH_WEBHOOK }}
           title: "Sepolia-testnet health check tests failed"
           description: "Sepolia-testnet health check"
-          content: "Please investigate <@814873419207409685> <@92361563276591104> <@494924753962926120> <@921049923414261821> <@1034771491436363797> <@639076633994592256> <@398020680966471680> <@216439743947341824>"
+          content: "Please investigate <@643461415532756992> <@814873419207409685> <@92361563276591104> <@494924753962926120> <@921049923414261821> <@1034771491436363797> <@639076633994592256> <@398020680966471680> <@216439743947341824>"
           avatar_url: ${{ secrets.AVATAR_URL }}

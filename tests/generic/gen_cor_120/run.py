@@ -48,3 +48,4 @@ class PySysTest(GenericNetworkTest):
         ret = int(contract.functions.doIt(2).call())
         self.log.info('Returned value is %d', ret)
         self.assertTrue(ret == 4)
+        

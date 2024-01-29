@@ -38,6 +38,9 @@ jobs:
               "jennie_von": {
                 "discord_id": "902910727948492840"
               },
+              "anixon604": {
+                "discord_id": "643461415532756992"
+              },
               ".*": {
                 "discord_id": "814873419207409685"
               }
@@ -118,6 +121,7 @@ jobs:
           name: test-artifact
           path: |
             ${{ github.workspace }}/ten-test/**/Output
+            !${{ github.workspace }}/ten-test/**/node_modules
           retention-days: 1
 
       - name: 'Upload container logs'
