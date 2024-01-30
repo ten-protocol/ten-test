@@ -2,6 +2,7 @@ import secrets, os
 from datetime import datetime
 from collections import OrderedDict
 from web3.exceptions import TimeExhausted
+from pysys.constants import FAILED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
 
@@ -65,7 +66,7 @@ class PySysTest(TenNetworkTest):
                 try: web3_send.eth.wait_for_transaction_receipt(tx_hash, timeout=30)
                 except Exception as e:
                     self.log.info('Transaction %d failed', count)
-                    break
+                    self.addOutcome(FAILED)
                 count = count + 1
         balance_after_wait = web3_send.eth.get_balance(account_send.address)
         balance_receiver = web3_send.eth.get_balance(account_recv.address)
