@@ -9,42 +9,56 @@ from ten.test.utils.gnuplot import GnuplotHelper
 class PySysTest(TenNetworkTest):
     ITERATIONS = 1024      # don't exceed bulk loading more than 1024 (single client used)
 
+    def __init__(self, descriptor, outsubdir, runner):
+        super().__init__(descriptor, outsubdir, runner)
+        self.gas_price = 0
+        self.gas_limit = 0
+        self.chain_id = 0
+        self.value = 100
+
     def execute(self):
-        # use an ephemeral account so we don't need to manage nonce through persistence
+        network = self.get_network_connection()
+        web3, _ = network.connect_account1(self)
+
+        # use an ephemeral account, so we don't need to manage nonce through persistence
         self.log.info('')
         self.log.info('Creating ephemeral account to distribute funds from')
-        network = self.get_network_connection()
         web3_send, account_send = network.connect(self, private_key=secrets.token_hex(), check_funds=False)
-        self.distribute_native(account_send, amount=0.001)
 
         # connect a bunch of recipient clients to receive funds
         self.log.info('')
         self.log.info('Creating ephemeral account to receive funds')
-        web3_receive, account_receive = network.connect(self, private_key=secrets.token_hex(), check_funds=False)
+        web3_recv, account_recv = network.connect(self, private_key=secrets.token_hex(), check_funds=False)
 
-        # bulk load transactions to the accounts, and wait for the last
+        # determine constants and funds required to run the test
+        self.log.info('')
+        self.log.info('Determine constants and funds required to run the test')
+        self.chain_id = network.chain_id()
+        self.gas_price = web3_send.eth.gas_price
+        self.gas_limit = web3.eth.estimate_gas({'to': account_recv.address, 'value': self.value, 'gasPrice': self.gas_price})
+        funds_needed = 1.1 * self.ITERATIONS * (self.gas_price*self.gas_limit + self.value)
+        self.log.info('Gas price:    %d', self.gas_price)
+        self.log.info('Gas estimate: %d', self.gas_limit)
+        self.log.info('Funds needed: %d', funds_needed)
+        self.distribute_native(account_send, amount=web3_send.from_wei(funds_needed, 'ether'))
+
+        # bulk load transactions, and wait for the last
         self.log.info('')
         self.log.info('Creating and signing %d transactions', self.ITERATIONS)
-        value = web3_send.to_wei(0.0000000001, 'ether')
-        gas_price = web3_send.eth.gas_price
-        chain_id = network.chain_id()
-
         txs = []
         for nonce in range(0, self.ITERATIONS):
-            tx = self.create_signed_tx(network, account_send, nonce, account_receive.address, value, gas_price, chain_id)
-            txs.append((tx, nonce))
+            txs.append((self.create_signed_tx(network, account_send, nonce, account_recv.address), nonce))
 
         self.log.info('Bulk sending transactions to the network')
-        balance_before = web3_send.from_wei(web3_send.eth.get_balance(account_send.address), 'gwei')
+        balance_before = web3_send.eth.get_balance(account_send.address)
         tx_hashes = []
         for tx in txs:
             tx_hashes.append((network.send_transaction(self, web3_send, tx[1], account_send, tx[0], False, verbose=False), tx[1]))
-        balance_after_send = web3_send.from_wei(web3_send.eth.get_balance(account_send.address), 'gwei')
+        balance_after_send = web3_send.eth.get_balance(account_send.address)
 
+        self.log.info('Waiting for last transaction to be mined')
         try:
-            self.log.info('Waiting for last transaction')
             web3_send.eth.wait_for_transaction_receipt(tx_hashes[-1][0], timeout=30)
-
         except TimeExhausted as e:
             count = 0
             for tx_hash, nonce in tx_hashes:
@@ -53,16 +67,17 @@ class PySysTest(TenNetworkTest):
                     self.log.info('Transaction %d failed', count)
                     break
                 count = count + 1
+        balance_after_wait = web3_send.eth.get_balance(account_send.address)
+        balance_receiver = web3_send.eth.get_balance(account_recv.address)
 
         # print out balances for information
         self.log.info('')
         self.log.info('Printing out balance information')
-        balance_after_wait = web3_send.from_wei(web3_send.eth.get_balance(account_send.address), 'gwei')
-        self.log.info('Sender balance before send: %d gwei', balance_before)
-        self.log.info('Sender balance after send:  %d gwei', balance_after_send)
-        self.log.info('Sender balance after wait: %d gwei', balance_after_wait)
-        balance_receiver = web3_receive.from_wei(web3_send.eth.get_balance(account_receive.address), 'gwei')
-        self.log.info('Receiver balance after wait: %d gwei', balance_receiver)
+        self.log.info('Sender balance before send:  %d wei', balance_before)
+        self.log.info('Sender balance after send:   %d wei', balance_after_send)
+        self.log.info('Sender balance after wait:   %d wei', balance_after_wait)
+        self.log.info('Sender balance delta:        %d wei', (balance_before - balance_after_wait))
+        self.log.info('Receiver balance after wait: %d wei', balance_receiver)
 
         # bin the data into timestamp intervals and log out to file
         self.log.info('')
@@ -88,13 +103,13 @@ class PySysTest(TenNetworkTest):
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'), branch, date,
                             str(self.mode), str(self.ITERATIONS), str(duration), '%.3f'%average)
 
-    def create_signed_tx(self, network, account, nonce, address, value, gas_price, chain_id):
+    def create_signed_tx(self, network, account, nonce, address):
         """Creates a signed transaction ready for the sending of funds to an account. """
         tx = {'nonce': nonce,
               'to': address,
-              'value': value,
-              'gas': 4 * 720000,
-              'gasPrice': gas_price,
-              'chainId': chain_id
+              'value': self.value,
+              'gas': self.gas_limit,
+              'gasPrice': self.gas_price,
+              'chainId': self.chain_id
               }
-        return network.sign_transaction(self, tx, nonce, account, False)
+        return network.sign_transaction(self, tx, nonce, account, persist_nonce=False)
