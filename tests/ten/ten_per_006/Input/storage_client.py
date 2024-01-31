@@ -17,12 +17,12 @@ def timeit(function):
 
 
 @timeit
-def store_value(value, web3, account, contract):
+def store_value(value, web3, account, contract, gas_limit):
     build_tx = contract.functions.store(value).build_transaction(
         {
             'nonce': web3.eth.get_transaction_count(account.address),
             'gasPrice': web3.eth.gas_price,
-            'gas': 720000,
+            'gas': gas_limit,
             'chainId': web3.eth.chain_id
         }
     )
@@ -41,8 +41,10 @@ if __name__ == "__main__":
     parser.add_argument('-u', '--network_http', help='Connection URL')
     parser.add_argument('-a', '--address', help='Address of the contract')
     parser.add_argument('-b', '--contract_abi', help='Abi of the contract')
+    parser.add_argument('-i', '--num_iterations', help='Number of iterations')
     parser.add_argument('-p', '--pk_to_register', help='Private key of account')
     parser.add_argument('-f', '--output_file', help='File to log the results to')
+    parser.add_argument('-y', '--gas_limit', help='The gas limit to use')
     args = parser.parse_args()
 
     web3 = Web3(Web3.HTTPProvider(args.network_http))
@@ -53,10 +55,10 @@ if __name__ == "__main__":
     account = web3.eth.account.from_key(args.pk_to_register)
 
     with open(args.output_file, 'w') as fp:
-        while True:
-            fp.write('%.4f\n' % store_value(random.randint(0,100), web3, account, contract))
+        for i in range(0, int(args.num_iterations)):
+            fp.write('%.4f\n' % store_value(random.randint(0,100), web3, account, contract, int(args.gas_limit)))
             fp.flush()
-
+    logging.info('Client completed')
 
 
 

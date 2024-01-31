@@ -9,59 +9,57 @@ from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(TenNetworkTest):
-    ITERATIONS = 10
-    CLIENTS = 5
-    DURATION = 120
-    ESTIMATE = True
+    ITERATIONS_SANITY = 10      # initial set of checks on the latency before the concurrent clients
+    ITERATIONS_FULL = 128       # total number of iterations per concurrent client
+    CLIENTS = 5                 # the number of concurrent clients
 
     def transact(self, network_connection, web3, storage, count, account, gas_limit):
         start_time = time.perf_counter()
-        tx_receipt = network_connection.transact(self, web3, storage.contract.functions.store(count), account,
-                                                 gas_limit, estimate=self.ESTIMATE)
+        network_connection.transact(self, web3, storage.contract.functions.store(count), account, gas_limit)
         end_time = time.perf_counter()
-        gas_used = tx_receipt['gasUsed']
-        self.log.info('Gas used for the transaction is %d', gas_used)
-        return gas_used, (end_time - start_time)
+        return end_time - start_time
 
     def __init__(self, descriptor, outsubdir, runner):
         super().__init__(descriptor, outsubdir, runner)
-        self.clients = []
+        self.gas_price = 0
+        self.gas_limit = 0
+        self.chain_id = 0
 
     def execute(self):
-        # connect to the network
+        # connect to the network and deploy the contract
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
-
-        # deploy the contract
         storage = Storage(self, web3, 0)
         storage.deploy(network, account)
 
+        self.chain_id = network.chain_id()
+        self.gas_price = web3.eth.gas_price
+        params = {'from': account.address, 'chainId': web3.eth.chain_id, 'gasPrice': self.gas_price}
+        self.gas_limit = storage.contract.functions.store(1).estimate_gas(params)
+        funds_needed = 1.1 * self.ITERATIONS_FULL * (self.gas_price*self.gas_limit)
+
         # do a sanity check and break hard if the network is slow
         times = []
-        gas_limit = storage.GAS_LIMIT
-        for i in range(0, self.ITERATIONS):
-            gas_used, time = self.transact(network, web3, storage, 0, account, gas_limit)
-            times.append(time)
-            gas_limit = gas_used
+        for i in range(0, self.ITERATIONS_SANITY):
+            times.append(self.transact(network, web3, storage, 0, account, self.gas_limit))
         avg = (sum(times) / len(times))
-        self.log.info('Average latency for %d transactions is %.2f', self.ITERATIONS, avg)
+        self.log.info('Average latency for %d transactions is %.2f', self.ITERATIONS_SANITY, avg)
         if avg > 10.0: self.addOutcome(FAILED, outcomeReason='Average latency %.2f is greater than 10 seconds' % avg)
 
         # run some concurrent clients, bin the latency and plot the results
-        if self.DURATION > 0:
+        if self.ITERATIONS_FULL > 0:
             self.log.info('')
             self.log.info('Starting all concurrent clients')
-            for i in range(0, self.CLIENTS): self.storage_client(storage.address, storage.abi_path, i, network)
-            for i in range(0, self.CLIENTS): self.waitForGrep(file='client_%d.out' % i, expr='Client running', timeout=10)
-            self.wait(self.DURATION)
-            self.log.info('Stopping all concurrent clients')
-            for client in self.clients: client.stop()
+            for i in range(0, self.CLIENTS):
+                self.storage_client(storage.address, storage.abi_path, i, network, funds_needed)
+            for i in range(0, self.CLIENTS):
+                self.waitForGrep(file='client_%d.out' % i, expr='Client completed', timeout=300)
             self.graph()
 
-    def storage_client(self, address, abi_path, num, network):
+    def storage_client(self, address, abi_path, num, network, funds_needed):
         pk = secrets.token_hex(32)
         account = Web3().eth.account.from_key(pk)
-        self.distribute_native(account, network.ETH_ALLOC_EPHEMERAL)
+        self.distribute_native(account, Web3().from_wei(funds_needed, 'ether'))
         network.connect(self, private_key=pk, check_funds=False)
 
         stdout = os.path.join(self.output, 'client_%d.out' % num)
@@ -73,7 +71,9 @@ class PySysTest(TenNetworkTest):
         args.extend(['--contract_abi', '%s' % abi_path])
         args.extend(['--pk_to_register', '%s' % pk])
         args.extend(['--output_file', 'client_%s.log' % num])
-        self.clients.append(self.run_python(script, stdout, stderr, args))
+        args.extend(['--gas_limit', '%d' % self.gas_limit])
+        args.extend(['--num_iterations', '%d' % self.ITERATIONS_FULL])
+        self.run_python(script, stdout, stderr, args)
 
     def graph(self):
         # load the latency values and sort
@@ -101,4 +101,4 @@ class PySysTest(TenNetworkTest):
         date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
                             branch, date,
-                            str(self.mode), str(len(l)), str(self.DURATION), '%d' % self.CLIENTS)
+                            str(self.mode), str(len(l)), '%d' % self.CLIENTS, '%.2f' % (sum(l) / len(l)))
