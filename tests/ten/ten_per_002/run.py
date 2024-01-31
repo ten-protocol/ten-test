@@ -18,12 +18,10 @@ class PySysTest(TenNetworkTest):
         self.clients = ['one', 'two']
 
     def execute(self):
-        # connect to the network
+        # connect to the network and determine constants and funds required to run the test
         network = self.get_network_connection()
         web3, _ = network.connect_account1(self)
         account = web3.eth.account.from_key(secrets.token_hex(32))
-
-        # determine constants and funds required to run the test
         self.chain_id = network.chain_id()
         self.gas_price = web3.eth.gas_price
         self.gas_limit = web3.eth.estimate_gas({'to': account.address, 'value': self.value, 'gasPrice': self.gas_price})
