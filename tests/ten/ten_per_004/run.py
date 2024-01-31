@@ -50,7 +50,6 @@ class PySysTest(TenNetworkTest):
         # plot out the results
         branch = GnuplotHelper.buildInfo().branch
         duration = last - first
-        average = float(self.CLIENTS*self.ITERATIONS) / float(duration) if duration != 0 else 0
         date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
                             branch, date,

@@ -1,4 +1,4 @@
-import os, secrets, shutil
+import os, secrets
 from datetime import datetime
 from collections import OrderedDict
 from ten.test.contracts.storage import KeyStorage
@@ -7,23 +7,30 @@ from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(TenNetworkTest):
-    ITERATIONS = 256      # don't exceed bulk loading more than 1024
-    CLIENTS = 4
+    ITERATIONS = 256       # iterations per client, don't exceed bulk loading more than 1024
+    CLIENTS = 4            # the number of concurrent clients
+
+    def __init__(self, descriptor, outsubdir, runner):
+        super().__init__(descriptor, outsubdir, runner)
+        self.gas_price = 0
+        self.gas_limit = 0
+        self.chain_id = 0
 
     def execute(self):
-        self.execute_run()
-
-    def execute_run(self):
-        # connect to the network
+        # connect to the network, deploy contract, determine constants
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
-
-        # deploy the contract
         storage = KeyStorage(self, web3)
         storage.deploy(network, account)
 
+        self.chain_id = network.chain_id()
+        self.gas_price = web3.eth.gas_price
+        params = {'from': account.address, 'chainId': web3.eth.chain_id, 'gasPrice': self.gas_price}
+        self.gas_limit = storage.contract.functions.setItem('test', 1).estimate_gas(params)
+        funds_needed = 1.1 * self.ITERATIONS * (self.gas_price*self.gas_limit)
+
         # run the clients
-        setup = [self.setup_client('client_%d' % i) for i in range(self.CLIENTS)]
+        setup = [self.setup_client('client_%d' % i, funds_needed) for i in range(self.CLIENTS)]
         for i in range(self.CLIENTS): self.run_client('client_%d' % i, storage, setup[i][0], setup[i][1])
         for i in range(self.CLIENTS):
             self.waitForGrep(file='client_%d.out' % i, expr='Client client_%d completed' % i, timeout=900)
@@ -50,11 +57,11 @@ class PySysTest(TenNetworkTest):
                             branch, date,
                             str(self.mode), str(self.CLIENTS * self.ITERATIONS), str(duration), '%d' % self.CLIENTS)
 
-    def setup_client(self, name):
+    def setup_client(self, name, funds_needed):
         pk = secrets.token_hex(32)
         network = self.get_network_connection(name=name)
-        _, account = network.connect(self, private_key=pk, check_funds=False)
-        self.distribute_native(account, network.ETH_ALLOC_EPHEMERAL)
+        web3, account = network.connect(self, private_key=pk, check_funds=False)
+        self.distribute_native(account, web3.from_wei(funds_needed, 'ether'))
         return pk, network
 
     def run_client(self, name, contract, pk, network):
@@ -70,8 +77,9 @@ class PySysTest(TenNetworkTest):
         args.extend(['--contract_abi', '%s' % contract.abi_path])
         args.extend(['--num_iterations', '%d' % self.ITERATIONS])
         args.extend(['--client_name', name])
+        args.extend(['--gas_limit', '%d' % self.gas_limit])
         self.run_python(script, stdout, stderr, args)
-        self.wait(1.0)
+        self.waitForSignal(file=stdout, expr='Starting client %s' % name)
 
     def load_data(self, file):
         """Load a client transaction log into memory. """
@@ -88,12 +96,3 @@ class PySysTest(TenNetworkTest):
         for _, t in data: b[t] = 1 if t not in b else b[t] + 1
         for t in range(first, last + 1): binned_data[t - first] = 0 if t not in b else b[t]
         return binned_data
-
-    def execute_graph(self):
-        """Test method to develop graph creation. """
-        shutil.copy(os.path.join(self.input, 'clients_all.bin'), os.path.join(self.output, 'clients_all.bin'))
-        shutil.copy(os.path.join(self.input, 'clients.bin'), os.path.join(self.output, 'clients.bin'))
-        branch = GnuplotHelper.buildInfo().branch
-        date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
-        GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
-                            branch, date, str(self.mode), str(2 * self.ITERATIONS), '49', '4')
