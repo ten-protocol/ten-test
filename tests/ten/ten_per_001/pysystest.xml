@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>TPS - funds transfer, single client in process to the test framework</title>
+        <title>TPS - funds transfer, single client in process (1 sending, 1 receiving account)</title>
         <purpose><![CDATA[
 In this test, a bulk amount of native transfer transactions are created and signed (1 transfer account, to 1
 recipient account). Each transaction has a monotonically increasing nonce. Once created all transactions are sent
