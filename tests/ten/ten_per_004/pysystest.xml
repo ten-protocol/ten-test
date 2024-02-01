@@ -5,7 +5,7 @@
         <title>TPS - funds transfer, configurable number of external concurrent clients</title>
         <purpose><![CDATA[
 The test uses N clients to perform the bulk loading of transactions into the network concurrently, as per
-obs_per_002. The test looks to see if the TPS can be increased using multiple clients feeding transactions at the same
+ten_per_002. The test looks to see if the TPS can be increased using multiple clients feeding transactions at the same
 time, and also the trend of the processing i.e. do we see synchronised pauses implying that the network is at issue.
 ]]>
         </purpose>

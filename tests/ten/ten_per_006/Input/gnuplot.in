@@ -12,8 +12,8 @@ set label "{/Courier:Bold=13 Branch}: ".ARG3 left at screen 0.59, screen 0.925
 set label "{/Courier:Bold=13 Date}: ".ARG4 left at screen 0.59, screen 0.900
 set label "{/Courier:Bold=13 Environment}: ".ARG5 left at screen 0.59, screen 0.875
 set label "{/Courier:Bold=13 Transactions}: ".ARG6 left at screen 0.59, screen 0.850
-set label "{/Courier:Bold=13 Duration}: ".ARG7 left at screen 0.59, screen 0.825
-set label "{/Courier:Bold=13 Clients}: ".ARG8 left at screen 0.59, screen 0.800
+set label "{/Courier:Bold=13 Clients}: ".ARG7 left at screen 0.59, screen 0.825
+set label "{/Courier:Bold=13 Latency}: ".ARG8 left at screen 0.59, screen 0.800
 stats "clients.bin" using 1:2 nooutput
 
 #plot 1

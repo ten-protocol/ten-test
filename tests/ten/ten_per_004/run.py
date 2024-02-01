@@ -1,31 +1,34 @@
-import os, secrets, shutil
+import os, secrets
 from datetime import datetime
 from collections import OrderedDict
-from ten.test.contracts.error import Error
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(TenNetworkTest):
-    ITERATIONS = 256       # don't exceed bulk loading more than 1024
-    CLIENTS = 4
-    ACCOUNTS = 20
+    ITERATIONS = 256       # iterations per client, don't exceed bulk loading more than 1024
+    CLIENTS = 4            # the number of concurrent clients
+    ACCOUNTS = 8           # number of different accounts that receive the funds per client
+
+    def __init__(self, descriptor, outsubdir, runner):
+        super().__init__(descriptor, outsubdir, runner)
+        self.gas_price = 0
+        self.gas_limit = 0
+        self.chain_id = 0
+        self.value = 100
 
     def execute(self):
-        self.execute_run()
-
-    def execute_run(self):
-        # connect to the network
+        # connect to the network and determine constants and funds required to run the test
         network = self.get_network_connection()
-        web3, account = network.connect_account1(self)
-
-        # we need to perform a transaction on the account to ensure the nonce is greater than zero for the
-        # following bulk loading (a hack to avoid count=0 being considered a new deployment and clearing the db)
-        error = Error(self, web3)
-        error.deploy(network, account)
+        web3, _ = network.connect_account1(self)
+        account = web3.eth.account.from_key(secrets.token_hex(32))
+        self.chain_id = network.chain_id()
+        self.gas_price = web3.eth.gas_price
+        self.gas_limit = web3.eth.estimate_gas({'to': account.address, 'value': self.value, 'gasPrice': self.gas_price})
+        funds_needed = 1.1 * self.ITERATIONS * (self.gas_price*self.gas_limit + self.value)
 
         # run the clients
-        setup = [self.setup_client('client_%d' % i) for i in range(self.CLIENTS)]
+        setup = [self.setup_client('client_%d' % i, funds_needed) for i in range(self.CLIENTS)]
         for i in range(self.CLIENTS): self.run_client('client_%d' % i, setup[i][0], setup[i][1])
         for i in range(self.CLIENTS):
             self.waitForGrep(file='client_%d.out' % i, expr='Client client_%d completed' % i, timeout=900)
@@ -52,11 +55,11 @@ class PySysTest(TenNetworkTest):
                             branch, date,
                             str(self.mode), str(self.CLIENTS*self.ITERATIONS), str(duration), '%d' % self.CLIENTS)
 
-    def setup_client(self, name):
+    def setup_client(self, name, funds_needed):
         pk = secrets.token_hex(32)
         network = self.get_network_connection(name=name)
-        _, account = network.connect(self, private_key=pk, check_funds=False)
-        self.distribute_native(account, network.ETH_ALLOC_EPHEMERAL)
+        web3, account = network.connect(self, private_key=pk, check_funds=False)
+        self.distribute_native(account, web3.from_wei(funds_needed, 'ether'))
         return pk, network
 
     def run_client(self, name, pk, network):
@@ -71,8 +74,10 @@ class PySysTest(TenNetworkTest):
         args.extend(['--num_accounts', '%d' % self.ACCOUNTS])
         args.extend(['--num_iterations', '%d' % self.ITERATIONS])
         args.extend(['--client_name', name])
+        args.extend(['--amount', '%d' % self.value])
+        args.extend(['--gas_limit', '%d' % self.gas_limit])
         self.run_python(script, stdout, stderr, args)
-        self.wait(1.0)
+        self.waitForSignal(file=stdout, expr='Starting client %s' % name)
 
     def load_data(self, file):
         """Load a client transaction log into memory. """
@@ -89,12 +94,3 @@ class PySysTest(TenNetworkTest):
         for _, t in data: b[t] = 1 if t not in b else b[t] + 1
         for t in range(first, last + 1): binned_data[t - first] = 0 if t not in b else b[t]
         return binned_data
-
-    def execute_graph(self):
-        """Test method to develop graph creation. """
-        shutil.copy(os.path.join(self.input, 'clients_all.bin'), os.path.join(self.output, 'clients_all.bin'))
-        shutil.copy(os.path.join(self.input, 'clients.bin'), os.path.join(self.output, 'clients.bin'))
-        branch = GnuplotHelper.buildInfo().branch
-        date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
-        GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
-                            branch, date, str(self.mode), str(2 * self.ITERATIONS), '49', '4')
