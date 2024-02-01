@@ -44,7 +44,12 @@ async function sendTransaction(key, value) {
        } else {
          log_time = Number(process.hrtime.bigint() - start_time) / 1e9
          fs.appendFile(options.output_file, log_time.toString() + os.EOL, function (err) { if (err) throw err })
-         sendTransaction(key, value+1)
+         if (value <= iterations) {
+            sendTransaction(key, value+1)
+         }
+         else {
+            console.log('Completed transactions')
+         }
        }
   })
 
@@ -62,6 +67,7 @@ commander
   .option('--private_key <value>', 'The account private key')
   .option('--key <value>', 'The key to store against')
   .option('--output_file <value>', 'File to log the results to')
+  .option('--num_iterations <value>', 'The number of iterations')
   .parse(process.argv)
 
 const options = commander.opts()
@@ -71,6 +77,7 @@ const abi = JSON.parse(json)
 const web3 = new Web3(`${options.network}`)
 const contract = new web3.eth.Contract(abi, options.contract_address)
 const sender_address = web3.eth.accounts.privateKeyToAccount(options.private_key).address
+const iterations = parseInt(options.num_iterations)
 
 console.log('Starting transactions')
 sendTransaction(options.key, 0)

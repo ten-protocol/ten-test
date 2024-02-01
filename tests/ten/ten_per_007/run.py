@@ -8,34 +8,41 @@ from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(TenNetworkTest):
-    CLIENTS = 5
-    DURATION = 120
+    ITERATIONS = 128          # total number of iterations per concurrent client
+    CLIENTS = 5               # the number of concurrent clients
 
     def __init__(self, descriptor, outsubdir, runner):
         super().__init__(descriptor, outsubdir, runner)
-        self.clients = []
+        self.gas_price = 0
+        self.gas_limit = 0
+        self.chain_id = 0
 
     def execute(self):
-        # connect to the network
+        # connect to the network and deploy the contract
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
+        storage = KeyStorage(self, web3)
+        storage.deploy(network, account)
 
-        # deploy the contract
-        contract = KeyStorage(self, web3)
-        contract.deploy(network, account)
+        self.chain_id = network.chain_id()
+        self.gas_price = web3.eth.gas_price
+        params = {'from': account.address, 'chainId': web3.eth.chain_id, 'gasPrice': self.gas_price}
+        self.gas_limit = storage.contract.functions.setItem("one", 1).estimate_gas(params)
+        funds_needed = 1.1 * self.ITERATIONS * (self.gas_price*self.gas_limit)
 
-        for i in range(0, self.CLIENTS): self.client(network, contract, i)
-        for i in range(0, self.CLIENTS): self.waitForGrep(file='client_%d.out' % i, expr='Starting transactions', timeout=10)
-        self.wait(self.DURATION)
-        for client in self.clients: client.stop()
+        for i in range(0, self.CLIENTS):
+            self.client(network, storage, i, funds_needed)
+        for i in range(0, self.CLIENTS):
+            self.waitForGrep(file='client_%d.out' % i, expr='Completed transactions', timeout=300)
+
         self.graph()
 
-    def client(self, network, contract, num):
+    def client(self, network, contract, num, funds_needed):
         private_key = secrets.token_hex(32)
         account = Web3().eth.account.from_key(private_key)
         key = '%d_%d' % (int(time.time()), num)
         self.log.info('Client %d has key %s', num, key)
-        self.distribute_native(account, network.ETH_ALLOC_EPHEMERAL)
+        self.distribute_native(account, Web3().from_wei(funds_needed, 'ether'))
         network.connect(self, private_key=private_key, check_funds=False)
 
         # create the client
@@ -49,7 +56,8 @@ class PySysTest(TenNetworkTest):
         args.extend(['--private_key', private_key])
         args.extend(['--key', key])
         args.extend(['--output_file', 'client_%d.log' % num])
-        self.clients.append(self.run_javascript(script, stdout, stderr, args))
+        args.extend(['--num_iterations', '%d' % self.ITERATIONS])
+        self.run_javascript(script, stdout, stderr, args)
 
     def graph(self):
         # load the latency values and sort
@@ -77,4 +85,5 @@ class PySysTest(TenNetworkTest):
         date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
                             branch, date,
-                            str(self.mode), str(len(l)), str(self.DURATION), '%d' % self.CLIENTS)
+                            str(self.mode), str(len(l)), '%d' % self.CLIENTS, '%.2f' % (sum(l) / len(l)))
+
