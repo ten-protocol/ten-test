@@ -5,9 +5,10 @@ from ten.test.utils.properties import Properties
 
 
 class PySysTest(TenNetworkTest):
-    NUM_CLIENTS = 10
-    NUM_ITERATIONS = 25
-    ADDITIONAL_ACCOUNTS = 8
+    NUM_CLIENTS = 10           # the number of concurrent clients
+    NUM_ITERATIONS = 50        # the number of times to loop through joining and registering
+    ADDITIONAL_ACCOUNTS = 8    # how many additional accounts to do for each iteration
+    FUNDS = 10                 # the funds amount to give them (can be low so in wei)
 
     def execute(self):
         network = self.get_network_connection()
@@ -26,15 +27,15 @@ class PySysTest(TenNetworkTest):
         for i in range(0, self.NUM_CLIENTS):
             self.waitForGrep(file=os.path.join(self.output, 'client_%s.out' % i), expr='Client completed', timeout=60)
 
-        self.log.info('Confirmation balances were received for all interactions')
+        self.log.info('Confirm balances were received for all interactions')
         for i in range(0, self.NUM_CLIENTS):
             self.assertLineCount(file=os.path.join(self.output, 'client_%s.out' % i),
-                                 expr='Balance is 10000000000000000', condition='== %d' % self.NUM_ITERATIONS)
+                                 expr='Balance is %d' % self.FUNDS, condition='== %d' % self.NUM_ITERATIONS)
 
     def _client(self, name, network, trigger):
         pk = secrets.token_hex(32)
         account = Web3().eth.account.from_key(pk)
-        self.distribute_native(account, network.ETH_ALLOC_EPHEMERAL)
+        self.distribute_native(account, Web3().from_wei(self.FUNDS, 'ether'))
 
         stdout = os.path.join(self.output, '%s.out' % name)
         stderr = os.path.join(self.output, '%s.err' % name)
