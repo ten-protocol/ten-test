@@ -2,7 +2,7 @@ import secrets, os
 from datetime import datetime
 from collections import OrderedDict
 from web3.exceptions import TimeExhausted
-from pysys.constants import FAILED
+from pysys.constants import FAILED, PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
 
@@ -103,6 +103,9 @@ class PySysTest(TenNetworkTest):
         average = float(self.ITERATIONS) / float(duration) if duration != 0 else 0
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'), branch, date,
                             str(self.mode), str(self.ITERATIONS), str(duration), '%.3f'%average)
+
+        # passed if no failures (though pdf output should be reviewed manually)
+        self.addOutcome(PASSED)
 
     def create_signed_tx(self, network, account, nonce, address):
         """Creates a signed transaction ready for the sending of funds to an account. """

@@ -1,27 +1,28 @@
 from web3 import Web3
 import secrets, os
-from pysys.constants import PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.storage import Storage
 from ten.test.helpers.log_subscriber import FilterLogSubscriber
 
 
 class PySysTest(TenNetworkTest):
-    NUM_SUBSCRIBERS=4
-    NUM_HAMMERS=5
-    NUM_TRANSACTIONS=15
+    NUM_SUBSCRIBERS = 4     # the number of permanent subscribers
+    NUM_HAMMERS = 5         # the number of clients which subscribe and then unsubscribe
+    NUM_TRANSACTIONS = 15   # how many transactions to perform to test the subscriptions
+
+    def __init__(self, descriptor, outsubdir, runner):
+        super().__init__(descriptor, outsubdir, runner)
+        self.subscribers = []
 
     def execute(self):
-        # connect to network
+        # connect to network and deploy contract
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
-
-        # deploy the contract
         storage = Storage(self, web3, 100)
         storage.deploy(network, account)
 
-        # the subscribers
-        for i in range(0, self.NUM_SUBSCRIBERS):  self.subscriber(web3, network, secrets.token_hex(32), i)
+        # the subscribers (permanent for the duration of the test)
+        for i in range(0, self.NUM_SUBSCRIBERS): self.subscriber(web3, network, secrets.token_hex(32), i)
 
         # the hammers (brute force subscribe and unsubscribe)
         for i in range(0, self.NUM_HAMMERS): self.hammer(network, secrets.token_hex(32), i)
@@ -30,8 +31,11 @@ class PySysTest(TenNetworkTest):
         for i in range(0, self.NUM_TRANSACTIONS):
             network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS_LIMIT)
 
-        # if we get this far we've passed
-        self.addOutcome(PASSED)
+        # all permanent subscribers should see all events - note waitForGrep does not apply a PASSED result if
+        # successful (will apply FAILED if timedout), so explicitly do this so the test is verified with a result
+        for subscriber in self.subscribers:
+            self.waitForGrep(file=subscriber.stdout, expr='Stored value', condition='==%d' % self.NUM_TRANSACTIONS)
+            self.assertLineCount(file=subscriber.stdout, expr='Stored value', condition='==%d' % self.NUM_TRANSACTIONS)
 
     def hammer(self, network, private_key, num):
         # register out-side of the script
@@ -55,6 +59,7 @@ class PySysTest(TenNetworkTest):
             filter_topics=[web3.keccak(text='Stored(uint256)').hex()]
         )
         subscriber.subscribe()
+        self.subscribers.append(subscriber)
 
 
 
