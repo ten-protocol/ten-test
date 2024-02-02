@@ -1,7 +1,7 @@
 import requests, json
 from web3 import Web3
 from eth_account import Account
-from eth_account.messages import encode_structured_data
+from eth_account.messages import encode_typed_data
 from web3.middleware import geth_poa_middleware
 from pysys.constants import BLOCKED
 from ten.test.networks.default import DefaultPreLondon
@@ -156,20 +156,14 @@ class Ten(DefaultPreLondon):
 
     def __register(self, test, account):
         domain = {'name': 'Ten', 'version': '1.0', 'chainId': Properties().chain_id(test.env)}
-        message = {'EncryptionToken': "0x"+self.ID}
         types = {
-            'EIP712Domain': [
-                {'name': 'name', 'type': 'string'},
-                {'name': 'version', 'type': 'string'},
-                {'name': 'chainId', 'type': 'uint256'},
-            ],
             'Authentication': [
-                {'name': 'EncryptionToken', 'type': 'address'},
+                {'name': 'Encryption Token', 'type': 'address'},
             ],
         }
-        typed_data = {'types': types, 'domain': domain, 'primaryType': 'Authentication',  'message': message}
+        message = {'Encryption Token': "0x"+self.ID}
 
-        signable_msg_from_dict = encode_structured_data(typed_data)
+        signable_msg_from_dict = encode_typed_data(domain, types, message)
         signed_msg_from_dict = Account.sign_message(signable_msg_from_dict, account.key)
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}

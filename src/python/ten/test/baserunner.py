@@ -3,7 +3,7 @@ from collections import OrderedDict
 from web3 import Web3
 from pathlib import Path
 from eth_account import Account
-from eth_account.messages import encode_structured_data
+from eth_account.messages import encode_typed_data
 from pysys.constants import PROJECT, BACKGROUND
 from pysys.exceptions import AbortExecution
 from pysys.constants import LOG_TRACEBACK
@@ -238,20 +238,14 @@ class TenRunnerPlugin():
 
     def __register(self, account, url, user_id):
         domain = {'name': 'Ten', 'version': '1.0', 'chainId': Properties().chain_id(self.env)}
-        message = {'EncryptionToken': "0x"+user_id}
         types = {
-            'EIP712Domain': [
-                {'name': 'name', 'type': 'string'},
-                {'name': 'version', 'type': 'string'},
-                {'name': 'chainId', 'type': 'uint256'},
-            ],
             'Authentication': [
-                {'name': 'EncryptionToken', 'type': 'address'},
+                {'name': 'Encryption Token', 'type': 'address'},
             ],
         }
-        typed_data = {'types': types, 'domain': domain, 'primaryType': 'Authentication',  'message': message}
+        message = {'Encryption Token': "0x"+user_id}
 
-        signable_msg_from_dict = encode_structured_data(typed_data)
+        signable_msg_from_dict = encode_typed_data(domain, types, message)
         signed_msg_from_dict = Account.sign_message(signable_msg_from_dict, account.key)
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
