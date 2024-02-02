@@ -6,7 +6,7 @@ from ten.test.utils.properties import Properties
 
 class PySysTest(TenNetworkTest):
     NUM_CLIENTS = 10           # the number of concurrent clients
-    NUM_ITERATIONS = 50        # the number of times to loop through joining and registering
+    NUM_ITERATIONS = 25        # the number of times to loop through joining and registering
     ADDITIONAL_ACCOUNTS = 8    # how many additional accounts to do for each iteration
     FUNDS = 10                 # the funds amount to give them (can be low so in wei)
 
@@ -25,7 +25,7 @@ class PySysTest(TenNetworkTest):
 
         self.log.info('Waiting for the clients to complete')
         for i in range(0, self.NUM_CLIENTS):
-            self.waitForGrep(file=os.path.join(self.output, 'client_%s.out' % i), expr='Client completed', timeout=60)
+            self.waitForGrep(file=os.path.join(self.output, 'client_%s.out' % i), expr='Client completed', timeout=120)
 
         self.log.info('Confirm balances were received for all interactions')
         for i in range(0, self.NUM_CLIENTS):

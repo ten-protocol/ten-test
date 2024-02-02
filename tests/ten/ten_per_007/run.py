@@ -2,6 +2,7 @@ import secrets, os, time, math
 from web3 import Web3
 from collections import OrderedDict
 from datetime import datetime
+from pysys.constants import PASSED
 from ten.test.contracts.storage import KeyStorage
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
@@ -24,6 +25,7 @@ class PySysTest(TenNetworkTest):
         storage = KeyStorage(self, web3)
         storage.deploy(network, account)
 
+        # estimate funds and start the clients
         self.chain_id = network.chain_id()
         self.gas_price = web3.eth.gas_price
         params = {'from': account.address, 'chainId': web3.eth.chain_id, 'gasPrice': self.gas_price}
@@ -32,10 +34,15 @@ class PySysTest(TenNetworkTest):
 
         for i in range(0, self.CLIENTS):
             self.client(network, storage, i, funds_needed)
+
         for i in range(0, self.CLIENTS):
             self.waitForGrep(file='client_%d.out' % i, expr='Completed transactions', timeout=300)
 
+        # graph the output
         self.graph()
+
+        # passed if no failures (though pdf output should be reviewed manually)
+        self.addOutcome(PASSED)
 
     def client(self, network, contract, num, funds_needed):
         private_key = secrets.token_hex(32)

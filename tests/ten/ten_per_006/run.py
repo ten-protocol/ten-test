@@ -2,7 +2,7 @@ import secrets, os, math, time
 from datetime import datetime
 from collections import OrderedDict
 from web3 import Web3
-from pysys.constants import FAILED
+from pysys.constants import FAILED, PASSED
 from ten.test.contracts.storage import Storage
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
@@ -55,6 +55,9 @@ class PySysTest(TenNetworkTest):
             for i in range(0, self.CLIENTS):
                 self.waitForGrep(file='client_%d.out' % i, expr='Client completed', timeout=300)
             self.graph()
+
+        # passed if no failures (though pdf output should be reviewed manually)
+        self.addOutcome(PASSED)
 
     def storage_client(self, address, abi_path, num, network, funds_needed):
         pk = secrets.token_hex(32)

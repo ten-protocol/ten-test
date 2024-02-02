@@ -1,6 +1,7 @@
 import os, secrets
 from datetime import datetime
 from collections import OrderedDict
+from pysys.constants import PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
 
@@ -56,6 +57,9 @@ class PySysTest(TenNetworkTest):
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
                             branch, date,
                             str(self.mode), str(len(self.clients)*self.ITERATIONS), str(duration), '%.3f' % average)
+
+        # passed if no failures (though pdf output should be reviewed manually)
+        self.addOutcome(PASSED)
 
     def setup_client(self, name, funds_needed):
         pk = secrets.token_hex(32)
