@@ -25,15 +25,16 @@ class PySysTest(GenericNetworkTest):
         self.distribute_native(account_send, web3_send.from_wei(1+transfer_cost, 'ether'), verbose=False)
         self.log.info('Sender balance:   %d', web3_send.eth.get_balance(account_send.address))
 
-        while True:
-            tx_receipt = self.submit(web3_send, account_send, account_recv.address, 1, gas_price, gas_estimate)
-            if tx_receipt is None:
-                self.log.info('Transaction timed out sending more funds')
-                self.distribute_native(account_send, web3_send.from_wei(transfer_cost, 'ether'), verbose=False)
-                self.log.info('Sender balance:   %d', web3_send.eth.get_balance(account_send.address))
-            else:
-                self.log.info('Transaction successful')
-                break
+        tx_hash, tx_receipt = self.submit(web3_send, account_send, account_recv.address, 1, gas_price, gas_estimate)
+        if tx_receipt is None:
+            self.log.info('Transaction timed out sending more funds')
+            self.log.info('Before balance:   %d', web3_send.eth.get_balance(account_send.address))
+            self.distribute_native(account_send, web3_send.from_wei(transfer_cost, 'ether'), verbose=False)
+            self.log.info('After balance:   %d', web3_send.eth.get_balance(account_send.address))
+            self.log.info('Waiting on the transaction receipt again')
+            web3_send.eth.wait_for_transaction_receipt(tx_hash.hex(), timeout=30)
+        else:
+            self.log.info('Transaction successful')
 
         self.log.info(' ')
         self.log.info('Sender balance: %d', web3_send.eth.get_balance(account_send.address))
@@ -55,5 +56,5 @@ class PySysTest(GenericNetworkTest):
         except ValueError as e:
             self.log.error(e)
         finally:
-            return tx_receipt
+            return (tx_hash, tx_receipt)
 
