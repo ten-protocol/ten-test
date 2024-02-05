@@ -8,7 +8,7 @@ class Guesser(DefaultContract):
     CONTRACT = 'Guesser'
 
     def guess(self, ilower, iupper, max_guesses=100):
-        """Perform a guessing game to get the secret number."""
+        """Perform a game to get the secret number."""
         lower = ilower
         upper = iupper
         nguess = 0

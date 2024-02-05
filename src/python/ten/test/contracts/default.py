@@ -8,12 +8,13 @@ from ten.test.utils.properties import Properties
 
 
 class DefaultContract:
-    GAS_LIMIT = 3_000_000  # used as the max gas units prepared to pay in contract transactions
+    GAS_LIMIT = 3_000_000  # used as the max gas units prepared to pay in contract transactions (when estimate fails)
     SOURCE = None          # full path to the solidity source file
     CONTRACT = None        # the contract name
 
     @classmethod
     def clone(cls, web3, account, contract):
+        """Clone this instance."""
         clone = copy(contract)
         clone.web3 = web3
         clone.account = account
@@ -60,7 +61,7 @@ class DefaultContract:
         return tx_receipt
 
     def get_or_deploy(self, network, account, persist_nonce=True, timeout=30):
-        """Get the contract from persistence, or deploy if it is not there. """
+        """Get the contract from persistence, or deploy if it is not there."""
         address, abi = self.test.contract_db.get_contract(self.CONTRACT, self.test.env)
         if address is not None:
             self.test.log.info('Using pre-deployed contract at address %s', address)
@@ -77,10 +78,10 @@ class DefaultContract:
             self.test.contract_db.insert_contract(self.CONTRACT, self.test.env, self.address, json.dumps(self.abi))
 
     def set_persisted_param(self, key, value):
-        """Persist a parameter value for this contract. """
+        """Persist a parameter value for this contract."""
         self.test.contract_db.insert_param(self.address, self.test.env, key, value)
 
     def get_persisted_param(self, key, default):
-        """Get a persisted parameter for this contract, or return the default if it does not exist. """
+        """Get a persisted parameter for this contract, or return the default if it does not exist."""
         value = self.test.contract_db.get_param(self.address, self.test.env, key)
         return default if value is None else value
