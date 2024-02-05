@@ -1,10 +1,10 @@
 import secrets
+from web3.exceptions import TimeExhausted
 from ten.test.basetest import GenericNetworkTest
 from ten.test.utils.properties import Properties
 
 
 class PySysTest(GenericNetworkTest):
-    SEND_AMOUNT = 1
 
     def execute(self):
         network = self.get_network_connection()
@@ -19,16 +19,41 @@ class PySysTest(GenericNetworkTest):
         transfer_cost = gas_estimate * gas_price
         self.log.info('Transfer cost:    %d', transfer_cost)
 
-        # fund the receiving account with this much money plus one extra wei
-        tx = {'to': account_send.address, 'value': 1+transfer_cost, 'gasPrice': gas_price, 'gas':gas_estimate}
-        network.tx(self, web3_fund, tx, account_fund, timeout=10)
+        # fund the receiving account with this much money plus one extra wei, and send one wei to the receiver
+        # should the transaction time out, resend on the same nonce but increase the funds of the sender
+        self.log.info('Distribute funds to the sender account')
+        self.distribute_native(account_send, web3_send.from_wei(1+transfer_cost, 'ether'), verbose=False)
         self.log.info('Sender balance:   %d', web3_send.eth.get_balance(account_send.address))
 
-        # send one wei to the receiver which should drain the account
-        tx = {'to': account_recv.address, 'value': 1, 'gasPrice': gas_price, 'gas':gas_estimate}
-        network.tx(self, web3_send, tx, account_send, timeout=10)
+        while True:
+            tx_receipt = self.submit(web3_send, account_send, account_recv.address, 1, gas_price, gas_estimate)
+            if tx_receipt is None:
+                self.log.info('Transaction timed out sending more funds')
+                self.distribute_native(account_send, web3_send.from_wei(transfer_cost, 'ether'), verbose=False)
+                self.log.info('Sender balance:   %d', web3_send.eth.get_balance(account_send.address))
+            else:
+                self.log.info('Transaction successful')
+                break
+
+        self.log.info(' ')
         self.log.info('Sender balance: %d', web3_send.eth.get_balance(account_send.address))
         self.log.info('Receiver balance: %d', web3_recv.eth.get_balance(account_recv.address))
 
-    def validate(self):
-        pass
+    def submit(self, web3, account, to_address, value, gas_price, gas_estimate):
+        tx = {'to': to_address, 'value': value, 'gasPrice': gas_price, 'gas':gas_estimate}
+        nonce = web3.eth.get_transaction_count(account.address)
+        self.log.info('Sender nonce:     %d', nonce)
+        tx['nonce'] = nonce
+        tx['chainId'] = web3.eth.chain_id
+        signed_tx = account.sign_transaction(tx)
+        tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+        tx_receipt = None
+        try:
+            tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash.hex(), timeout=10)
+        except TimeExhausted as e:
+            self.log.error(e)
+        except ValueError as e:
+            self.log.error(e)
+        finally:
+            return tx_receipt
+
