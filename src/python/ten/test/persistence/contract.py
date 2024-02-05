@@ -20,22 +20,22 @@ class ContractPersistence:
                      "ORDER BY address DESC LIMIT 1"
 
     def __init__(self, db_dir):
-        """Instantiate an instance. """
+        """Instantiate an instance."""
         self.db = os.path.join(db_dir, 'contracts.db')
         self.connection = sqlite3.connect(self.db)
         self.cursor = self.connection.cursor()
 
     def create(self):
-        """Create the cursor to the underlying persistence. """
+        """Create the cursor to the underlying persistence."""
         self.cursor.execute(self.SQL_CREATE)
         self.cursor.execute(self.SQL_CRT_PARAMS)
 
     def close(self):
-        """Close the connection to the underlying persistence. """
+        """Close the connection to the underlying persistence."""
         self.connection.close()
 
     def delete_environment(self, environment):
-        """Delete all stored contract details for a particular environment. """
+        """Delete all stored contract details for a particular environment."""
         self.cursor.execute(self.SQL_DELETE, (environment, ))
         self.cursor.execute(self.SQL_DEL_PARAMS, (environment, ))
         self.connection.commit()

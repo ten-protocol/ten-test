@@ -10,7 +10,7 @@ module.exports = {
     ten: {
       deploy: [ "scripts/" ],
       chainId: 443,
-      url: `https://testnet.obscu.ro/v1/${TEN_TOKEN}`,
+      url: `https://testnet.ten.xyz/v1/${TEN_TOKEN}`,
       gasPrice: 2000000000,
       accounts: [ `0x${APP_DEV_PK}` ]
     },

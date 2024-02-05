@@ -8,11 +8,12 @@ class DefaultPostLondon:
     """A default connection giving access to an underlying network.
 
     Note that the default assumes post London fork with the EIP-1599 fee market change."""
-    ETH_LIMIT = 0.001                   # lower than this then allocate more native
+    ETH_LIMIT = 0.001                   # lower than this then allocate more funds
     ETH_ALLOC = 0.005                   # the allocation amount (for configured accounts)
     ETH_ALLOC_EPHEMERAL = 0.001         # the allocation amount (for ephemeral accounts)
 
     def __init__(self, test, name=None, **kwargs):
+        """Construct and instance of the network connection abstraction."""
         props = Properties()
         self.test = test
         self.name = name
@@ -23,16 +24,18 @@ class DefaultPostLondon:
         self.WS_PORT = props.port_ws('default')
         self.CHAIN_ID = props.chain_id('default')
 
-    def chain_id(self): return self.CHAIN_ID
+    def chain_id(self):
+        """Return the network chain id."""
+        return self.CHAIN_ID
 
     def connection_url(self, web_socket=False):
-        """Return the connection URL to the network. """
+        """Return the connection URL to the network."""
         port = self.PORT if not web_socket else self.WS_PORT
         host = self.HOST if not web_socket else self.WS_HOST
         return '%s:%d' % (host, port)
 
     def connect(self, test, private_key, web_socket=False, check_funds=True, verbose=True):
-        """Connect to the network using a given private key. """
+        """Connect to the network using a given private key."""
         url = self.connection_url(web_socket)
 
         if not web_socket: web3 = Web3(Web3.HTTPProvider(url))
@@ -50,26 +53,26 @@ class DefaultPostLondon:
         return web3, account
 
     def connect_account1(self, test, web_socket=False, check_funds=True, verbose=True):
-        """Connect account 1 to the network. """
+        """Connect account 1 to the network."""
         return self.connect(test, Properties().account1pk(), web_socket, check_funds, verbose)
 
     def connect_account2(self, test, web_socket=False, check_funds=True, verbose=True):
-        """Connect account 2 to the network. """
+        """Connect account 2 to the network."""
         return self.connect(test, Properties().account2pk(), web_socket, check_funds, verbose)
 
     def connect_account3(self, test, web_socket=False, check_funds=True, verbose=True):
-        """Connect account 3 to the network. """
+        """Connect account 3 to the network."""
         return self.connect(test, Properties().account3pk(), web_socket, check_funds, verbose)
 
     def connect_account4(self, test, web_socket=False, check_funds=True, verbose=True):
-        """Connect account 4 to the network. """
+        """Connect account 4 to the network."""
         return self.connect(test, Properties().account4pk(), web_socket, check_funds, verbose)
 
     def tx(self, test, web3, tx, account, persist_nonce=True, verbose=True, timeout=30):
         """Transact using the supplied transaction dictionary.
 
         Note that the nonce and chainId will automatically be added into the transaction dictionary in this method
-        and therefore do not need to be supplied by the caller.
+        and therefore do not need to be supplied by the caller. If they are supplied, they will be overwritten.
         """
         self.log.info('Account %s performing transaction', account.address)
         nonce = self.get_next_nonce(test, web3, account, persist_nonce, verbose)
@@ -84,7 +87,7 @@ class DefaultPostLondon:
         """Transact using either a contract constructor or contract function as the target.
 
         This method expects the target to be a contract constructor or function, and will build this into the
-        transaction dictionary using build_transaction on the target. The nonce will be automatically added during this
+        transaction dictionary using build_transaction on the target. The nonce will automatically be added during this
         process.
         """
         self.log.info('Account %s performing transaction', account.address)
@@ -99,12 +102,12 @@ class DefaultPostLondon:
         return tx_recp
 
     def get_next_nonce(self, test, web3, account, persist_nonce, verbose=True):
-        """Get the next nonce, either from persistence or from the transaction count. """
+        """Get the next nonce, either from persistence or from the transaction count."""
         nonce = test.nonce_db.get_next_nonce(test, web3, account.address, test.env, persist_nonce, verbose)
         return nonce
 
     def build_transaction(self, test, web3, target, nonce, account, gas_limit, verbose=True, **kwargs):
-        """Build the transaction dictionary from the contract constructor or function target. """
+        """Build the transaction dictionary from the contract constructor or function target."""
         estimate = kwargs['estimate'] if 'estimate' in kwargs else True
         base_fee_per_gas = web3.eth.get_block('latest').baseFeePerGas
         max_priority_fee_per_gas = web3.to_wei(1, 'gwei')
@@ -133,13 +136,13 @@ class DefaultPostLondon:
         return build_tx
 
     def sign_transaction(self, test, tx, nonce, account, persist_nonce):
-        """Sign a transaction. """
+        """Sign a transaction."""
         signed_tx = account.sign_transaction(tx)
         if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'SIGNED')
         return signed_tx
 
     def send_transaction(self, test, web3, nonce, account, signed_tx, persist_nonce, verbose=True):
-        """Send the signed transaction to the network. """
+        """Send the signed transaction to the network."""
         tx_hash = None
         try:
             tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
@@ -154,7 +157,7 @@ class DefaultPostLondon:
         return tx_hash
 
     def wait_for_transaction(self, test, web3, nonce, account, tx_hash, persist_nonce, verbose=True, timeout=30):
-        """Wait for the transaction from the network to be acknowledged. """
+        """Wait for the transaction from the network to be acknowledged."""
         tx_receipt = None
         try:
             tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash, timeout=timeout)
@@ -177,6 +180,7 @@ class DefaultPostLondon:
         return tx_receipt
 
     def replay_transaction(self, web3, tx, tx_recp):
+        """Replay a transaction to get a failure reason."""
         try:
             web3.eth.call(tx, block_identifier=tx_recp.blockNumber)
         except Exception as e:
@@ -184,6 +188,7 @@ class DefaultPostLondon:
 
 
 class DefaultPreLondon(DefaultPostLondon):
+    """Default connection pre the london fork."""
 
     def __init__(self, test, name=None, **kwargs):
         super().__init__(test, name, **kwargs)

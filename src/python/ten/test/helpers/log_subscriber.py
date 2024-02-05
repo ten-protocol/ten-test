@@ -3,7 +3,7 @@ from pysys.constants import PROJECT
 
 
 class AllEventsLogSubscriber:
-    """A wrapper over the JS all events log subscribing cli tool. """
+    """A wrapper over the JS all events log subscribing cli tool."""
 
     def __init__(self, test, network, contract_address, contract_abi, stdout='subscriber.out', stderr='subscriber.err'):
         """Create an instance of the event log subscriber."""
@@ -16,7 +16,7 @@ class AllEventsLogSubscriber:
         self.script = os.path.join(PROJECT.root, 'src', 'javascript', 'scripts', 'all_events_subscriber.js')
 
     def run(self, pk_to_register=None):
-        """Run the javascript client event log subscriber. """
+        """Run the javascript client event log subscriber."""
         args = []
         args.extend(['--network_ws', self.network.connection_url(web_socket=True)])
         args.extend(['--contract_address', self.contract_address])
@@ -27,7 +27,7 @@ class AllEventsLogSubscriber:
 
 
 class FilterLogSubscriber:
-    """A wrapper over the JS filter log subscribing cli tool. """
+    """A wrapper over the JS filter log subscribing cli tool."""
 
     def __init__(self, test, network, stdout='subscriber.out', stderr='subscriber.err'):
         """Create an instance of the event log subscriber."""
@@ -40,7 +40,7 @@ class FilterLogSubscriber:
 
     def run(self, filter_address=None, filter_from_block=None, filter_topics=None, pk_to_register=None,
             network_ws=None, decode_as_stored_event=False):
-        """Run the javascript client event log subscriber. """
+        """Run the javascript client event log subscriber."""
         if network_ws is None:
             network_ws = self.network.connection_url(web_socket=True)
 
@@ -56,11 +56,11 @@ class FilterLogSubscriber:
         self.test.waitForGrep(file=self.stdout, expr='Subscriber listening for instructions', timeout=10)
 
     def subscribe(self):
-        """Request the subscriber to subscribe for logs. """
+        """Request the subscriber to subscribe for logs."""
         requests.post('http://127.0.0.1:%d' % self.port, data='SUBSCRIBE', headers={'Content-Type': 'text/plain'})
         self.test.waitForGrep(file=self.stdout, expr='Subscribed for event logs', timeout=10)
 
     def unsubscribe(self):
-        """Request the subscriber to unsubscribe for logs. """
+        """Request the subscriber to unsubscribe for logs."""
         requests.post('http://127.0.0.1:%d' % self.port, data='UNSUBSCRIBE', headers={'Content-Type': 'text/plain'})
         self.test.waitForGrep(file=self.stdout, expr='Unsubscribed for event logs', timeout=10)

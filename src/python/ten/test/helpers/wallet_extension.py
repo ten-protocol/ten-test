@@ -4,17 +4,18 @@ from ten.test.utils.properties import Properties
 
 
 class WalletExtension:
-    """A wrapper over the Ten wallet extension. """
+    """A wrapper over the Ten wallet extension."""
 
     @classmethod
     def start(cls, parent, port=None, ws_port=None, name=None, verbose=True):
+        """Class method to create and run the wallet extension."""
         extension = WalletExtension(parent, port, ws_port, name, verbose)
         extension.run()
         return extension
 
     def __init__(self, test, port=None, ws_port=None, name=None, verbose=True,
                  node_host=None, node_port_http=None, node_port_ws=None):
-        """Create an instance of the wrapper. """
+        """Create an instance of the wrapper."""
         self.test = test
         self.port = port if port is not None else test.getNextAvailableTCPPort()
         self.ws_port = ws_port if ws_port is not None else test.getNextAvailableTCPPort()
@@ -38,7 +39,7 @@ class WalletExtension:
             os.remove(self.databasePath)
 
     def run(self):
-        """Run an instance of the wallet extension. """
+        """Run an instance of the wallet extension."""
         self.test.log.info('Starting %s wallet extension on port=%d, ws_port=%d', self.name, self.port, self.ws_port)
 
         arguments = []

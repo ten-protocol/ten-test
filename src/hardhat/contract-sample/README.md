@@ -1,6 +1,6 @@
 # Hardhat project to deploy a sample (single) contract
 
-Created as described [here](https://hardhat.org/tutorial/creating-a-new-hardhat-project) i.e. the project was initialy 
+Created as described [here](https://hardhat.org/tutorial/creating-a-new-hardhat-project) i.e. the project was initially 
 created using the below commands;
 
 ```shell

@@ -88,8 +88,8 @@ class Ten(DefaultPreLondon):
     A ten network instance requires a wallet extension (gateway) to connect to the network. A gateway can
     support multiple connections through it through joining as a particular user_id, under which multiple accounts
     can be registered. If a gateway instance is supplied in the constructor that instance will be used. If one is
-    not supplied, if running against a local testnet an instance will be created; if running against a dev testnet,
-    or testnet, then the hosted instance will be used. """
+    not supplied, if running against a local testnet an instance will be created; if running against dev, uat or
+    sepolia testnet, then the hosted instance will be used. """
     ETH_LIMIT = 0.1
     ETH_ALLOC = 0.5
 
