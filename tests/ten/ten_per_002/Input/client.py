@@ -51,7 +51,6 @@ def run(name, chainId, web3, account, num_accounts, num_iterations, amount, gas_
 
 
 if __name__ == "__main__":
-    print('HERE')
     parser = argparse.ArgumentParser(prog='event_listener')
     parser.add_argument('-u', '--network_http', help='Connection URL')
     parser.add_argument('-c', '--chainId', help='The network chain Id')
