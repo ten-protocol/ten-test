@@ -76,20 +76,4 @@ class PySysTest(TenNetworkTest):
         finally:
             return (tx_hash, tx_receipt)
 
-    def run_client(self, network, funds_needed, txs=1024, receiving_accounts=4):
-        """Run a background load client. """
-        pk = secrets.token_hex(32)
-        web3, account = network.connect(self, private_key=pk, check_funds=False)
-        self.distribute_native(account, network.ETH_ALLOC)
-
-        stdout = os.path.join(self.output, 'bulk_loader.out')
-        stderr = os.path.join(self.output, 'bulk_loader.err')
-        script = os.path.join(self.input, 'bulk_loader.py')
-        args = []
-        args.extend(['--network_http', network.connection_url()])
-        args.extend(['--pk', pk])
-        args.extend(['--num_accounts', '%d' % receiving_accounts])
-        args.extend(['--num_transactions', '%d' % txs])
-        self.run_python(script, stdout, stderr, args)
-        self.waitForSignal(file=stdout, expr='Starting bulk loader')
 
