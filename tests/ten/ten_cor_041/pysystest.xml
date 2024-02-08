@@ -2,10 +2,11 @@
 <pysystest type="auto">
 
     <description>
-        <title>Gas - fill the gas limit with an expensive contract call</title>
+        <title>Gas - fire increasingly costly transactions attempting into a single batch</title>
         <purpose><![CDATA[
-
-Skipped due to https://github.com/ten-protocol/ten-internal/issues/2199.
+The test pre-builds and signs a set of increasingly expensive contract calls, then bulk loads them into the mem pool,
+waits for the last tx receipt, then checks all txs went into the same batch (this may not always be the case based on
+timing of the test). 
 ]]>
         </purpose>
     </description>
@@ -13,7 +14,6 @@ Skipped due to https://github.com/ten-protocol/ten-internal/issues/2199.
     <classification>
         <groups inherit="true">
             <group>gas</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

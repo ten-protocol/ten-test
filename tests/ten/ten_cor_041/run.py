@@ -6,34 +6,54 @@ from ten.test.contracts.expensive import ExpensiveContract
 class PySysTest(TenNetworkTest):
 
     def execute(self):
+        steps = range(350, 370, 2)
+
+        # get the network, deploy the contract as account1, calculate total cost estimate
         network = self.get_network_connection()
-        web3_deploy, account_deploy = network.connect_account1(self)
+        web3, account = network.connect_account1(self)
+        contract = ExpensiveContract(self, web3)
+        contract.deploy(network, account)
+        gas_price = web3.eth.gas_price
+        gas_estimate = sum([contract.contract.functions.calculateFibonacci(x).estimate_gas() for x in steps])
+        cost_estimate = gas_estimate*gas_price
+        self.log.info('Total gas cost is %.9f ETH', web3.from_wei(cost_estimate, 'ether'))
 
-        contract_deploy = ExpensiveContract(self, web3_deploy)
-        contract_deploy.deploy(network, account_deploy)
+        # create an ephemeral account and get their own reference to the contract
+        web3, account = network.connect(self, private_key=secrets.token_hex(32), check_funds=False)
+        contract = ExpensiveContract.clone(web3, account, contract)
+        target = contract.contract.functions.calculateFibonacci
+        self.distribute_native(account, web3.from_wei(1.2*cost_estimate, 'ether'))
+        balance_before = web3.eth.get_balance(account.address)
 
-        pk = secrets.token_hex(32)
-        web3, account = network.connect(self, private_key=pk, check_funds=False)
-        contract = ExpensiveContract.clone(web3, account, contract_deploy)
-        self.distribute_native(account, network.ETH_ALLOC_EPHEMERAL)
-
-        estimate = 0
-        nonce = 0
+        # build up pre-signed transactions with expected increasing gas costs
+        self.log.info('Building and signing the transactions')
         txs = []
-        self.log.info('Calculating total gas estimate')
-        for i in range(350, 370, 2):
-            target = contract.contract.functions.calculateFibonacci(i)
-            estimate = estimate + target.estimate_gas()
-            tx = network.build_transaction(self, web3, target, nonce, account, contract.deploy.GAS_LIMIT)
-            tx_sign = network.sign_transaction(self, tx, nonce, account, True)
+        nonce = 0
+        for i in steps:
+            tx = network.build_transaction(self, web3, target(i), nonce, account, contract.GAS_LIMIT, verbose=False)
+            tx_sign = network.sign_transaction(self, tx, nonce, account, persist_nonce=False)
             txs.append((nonce, tx_sign))
             nonce = nonce + 1
-        self.log.info('Total gas estimate is %d WEI, %.9f ETH', estimate, web3.from_wei(estimate, 'ether'))
 
-        tx_hash = None
-        for nonce, tx_sign in txs: tx_hash = network.send_transaction(self, web3, nonce, account, tx_sign, True)
-        tx_receipt = network.wait_for_transaction(self, web3, nonce, account, tx_hash, True)
-        self.check(tx_receipt)
+        self.log.info('Sending  the transactions')
+        tx_hashes = [network.send_transaction(self, web3, nonce, account, tx, persist_nonce=False) for nonce, tx in txs]
+
+        tx_receipts = []
+        for tx_hash in tx_hashes:
+            tx_receipt = network.wait_for_transaction(self, web3, nonce, account, tx_hash, persist_nonce=False)
+            self.assertTrue(tx_receipt.status == 1)
+            tx_receipts.append(tx_receipt)
+
+        # how much did it cost
+        balance_after = web3.eth.get_balance(account.address)
+        spent = (balance_before - balance_after)
+        self.log.info('Total gas spent is %.9f ETH', web3.from_wei(spent, 'ether'))
+
+        bn_first = tx_receipts[0]['blockNumber']
+        bn_second = tx_receipts[-1]['blockNumber']
+        self.log.info('Block number of first and last, %d %d', bn_first, bn_second)
+        self.assertTrue(bn_second >= bn_first)
+        if bn_first == bn_second: self.check(tx_receipts[-1])
 
     def check(self, tx_receipt):
         self.log.info('Transaction details;')
@@ -48,4 +68,4 @@ class PySysTest(TenNetworkTest):
         if batch is not None:
             batch_txns = batch['TxHashes']
             self.log.info('Number of transactions in the batch are %d', len(batch_txns))
-            self.assertTrue(len(batch_txns) > 0)
+            self.assertTrue(len(batch_txns) == 10)
