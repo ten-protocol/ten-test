@@ -51,7 +51,7 @@ class PySysTest(TenNetworkTest):
         self.log.info('Send tokens to cross the bridge on the L2')
         tx_receipt, xchain_msg = accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 2)
         self.log.info('Wait for the message on the L1 and relay it')
-        accnt1.l1.wait_for_message(xchain_msg)
+        accnt1.l1.wait_for_message(xchain_msg, timeout=120)
         _ = accnt1.l1.relay_message(xchain_msg)
 
         # print out the balances and perform test validation
