@@ -15,6 +15,7 @@ class PySysTest(TenNetworkTest):
 
         hold_balance_before = web3_hold.eth.get_balance(account_hold.address)
         user_balance_before = web3_user.eth.get_balance(account_user.address)
+        gas_price = web3_user.eth.gas_price
 
         est = contract_user.contract.functions.add_once().estimate_gas()
         self.log.info("Estimate add_once:   %d", est)
@@ -28,10 +29,12 @@ class PySysTest(TenNetworkTest):
         self.log.info("User balance before:     %d", user_balance_before)
         self.log.info("User balance after:      %d", user_balance_after)
         self.log.info("User paid:               %d", (user_balance_before-user_balance_after))
-        self.log.info("L2 fees:                 %d", int(tx["gasUsed"]))
-        self.log.info("L1 fees:                 %d", (user_balance_before-user_balance_after)-int(tx["gasUsed"]))
+        self.log.info("L2 fees:                 %d", int(tx["gasUsed"]*gas_price))
+        self.log.info("L1 fees:                 %d", (user_balance_before-user_balance_after)-int(tx["gasUsed"])*gas_price)
 
         self.log.info("Hold account %s", account_hold.address)
         self.log.info("Hold balance before:     %d", hold_balance_before)
         self.log.info("Hold balance after:      %d", hold_balance_after)
         self.log.info("Hold balance difference: %d", (hold_balance_after-hold_balance_before))
+
+        self.assertTrue((user_balance_before-user_balance_after) == (hold_balance_after-hold_balance_before))

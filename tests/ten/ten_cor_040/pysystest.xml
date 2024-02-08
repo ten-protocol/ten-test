@@ -5,6 +5,8 @@
         <title>Gas - check payment is taken on a transaction and goes to the holding account
         </title>
         <purpose><![CDATA[
+A user makes a transaction against a contract and we determine the reduction in their balance as the cost of performing
+the transaction. The gas holding account is then checked to ensure the spent gas has all been sent to it.
 ]]>
         </purpose>
     </description>
@@ -12,7 +14,6 @@
     <classification>
         <groups inherit="true">
             <group>gas</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
