@@ -46,9 +46,11 @@ class PySysTest(TenNetworkTest):
         self.log.info('Account1 ERC20 balance L2 = %d ', accnt1.l2.balance_for_token(self.SYMB))
 
         # send tokens back over the bridge
-        self.log.info('Send tokens on the L2 to cross the bridge')
+        self.log.info('Approve the bridge to spend tokens on the L2')
         accnt1.l2.approve_token(self.SYMB, accnt1.l2.bridge.address, 10)
+        self.log.info('Send tokens to cross the bridge on the L2')
         tx_receipt, xchain_msg = accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 2)
+        self.log.info('Wait for the message on the L1 and relay it')
         accnt1.l1.wait_for_message(xchain_msg)
         _ = accnt1.l1.relay_message(xchain_msg)
 
