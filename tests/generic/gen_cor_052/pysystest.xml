@@ -13,6 +13,7 @@ therefore that it is the developers responsibility to get it.
 
     <classification>
         <groups inherit="true">
+            <group>error</group>
             <group>ethers</group>
             <group>web3js</group>
         </groups>

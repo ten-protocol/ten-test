@@ -2,15 +2,19 @@
 <pysystest type="auto">
 
     <description>
-        <title>Gas: send value marginally above the funds amount</title>
+        <title>Error: group txs in a batch with one causing a revert</title>
         <purpose><![CDATA[
+The idea of the test is to have four transactions waiting to be processed pre-loaded into the mempool, where one of
+them will be reverted. This is done by feeding in the txs with decreasing nonces, so that when the lowest nonce is
+finally sent, all the txs should then get processed. We want to make sure all txs are mined correctly with no issue
+in the network.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
+            <group>error</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

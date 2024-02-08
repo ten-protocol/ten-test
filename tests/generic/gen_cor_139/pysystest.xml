@@ -16,7 +16,7 @@ rejected, as is currently the case on Sepolia and Arbitrum.
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
+            <group>gas</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

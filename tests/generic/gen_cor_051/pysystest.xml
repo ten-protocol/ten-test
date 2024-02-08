@@ -11,6 +11,7 @@ Deploy a contract and check for error reporting on failure of a transaction.
 
     <classification>
         <groups inherit="true">
+            <group>error</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
