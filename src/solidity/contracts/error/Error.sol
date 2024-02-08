@@ -30,6 +30,13 @@ contract Error {
         key = newKey;
     }
 
+    function set_key_with_revert(string memory newKey) public {
+        if (bytes(newKey).length == 0){
+            revert("New key cannot be empty");
+        }
+        key = newKey;
+    }
+
     function get_key() public view returns (string memory) {
         return key;
     }

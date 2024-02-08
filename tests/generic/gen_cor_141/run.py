@@ -1,79 +1,56 @@
-import secrets, os
-from web3.exceptions import TimeExhausted
-from ten.test.basetest import TenNetworkTest
-from ten.test.utils.properties import Properties
+import secrets
+from ten.test.basetest import GenericNetworkTest
+from ten.test.contracts.error import Error
 
 
-class PySysTest(TenNetworkTest):
+class PySysTest(GenericNetworkTest):
 
     def execute(self):
-        # get the network and two ephemeral accounts to send and receive funds at the threshold
-        # note we only need the funding web3 connection to estimate gas for the transfer
+        # get the network, connect account1, deploy the error contract and then estimate gas for the test
         network = self.get_network_connection()
-        web3, _ = self.network_funding.connect(self, Properties().fundacntpk(), check_funds=False)
+        web3, account = network.connect_account1(self)
+        error = Error(self, web3)
+        error.deploy(network, account)
 
-        ps_sender = secrets.token_hex(32)
-        pk_receiver = secrets.token_hex(32)
-        web3_send, account_send = network.connect(self, private_key=ps_sender, check_funds=False)
-        web3_recv, account_recv = network.connect(self, private_key=pk_receiver, check_funds=False)
-
-        # how much will it cost in wei to transfer some funds regardless of the amount
+        chain_id = web3.eth.chain_id
         gas_price = web3.eth.gas_price
-        tx = {'to': account_recv.address, 'value': 1, 'gasPrice': gas_price}
-        gas_estimate = web3.eth.estimate_gas(tx)
-        transfer_cost = gas_estimate * gas_price
-        target_funds = 1 + transfer_cost
-        self.log.info('Transfer cost:    %d', transfer_cost)
+        target_fn = error.contract.functions.set_key_with_revert
+        params = {'nonce': 0, 'gasPrice': gas_price, 'chainId': chain_id}
+        gas_estimate = target_fn("one").estimate_gas(params)
 
-        # kick off a bulk loader in the background to ensure the mempool is full and batches have more than one tx
-        funds_needed = 5 * (64 * transfer_cost)
-        self.run_client(network, funds_needed, txs=16)
+        # use an ephemeral account and give it funds
+        funds_needed = 10*(gas_estimate * gas_price)
+        web3, account = network.connect(self, private_key=secrets.token_hex(32), check_funds=False)
+        self.distribute_native(account, web3.from_wei(funds_needed, 'ether'))
 
-        # top up with the target funds amount, which is 1 wei more than the cost of the transfer, and then
-        # try and send the funds. If it fails, top up some more and then wait
-        for i in range(0, 10):
-            self.log.info(' ')
-            self.log.info('Running an iteration to send with marginal amounts')
-            balance = web3_send.eth.get_balance(account_send.address)
-            if balance < target_funds:
-                self.log.info('Topping up senders account with %d', target_funds - balance)
-                self.distribute_native(account_send, web3_send.from_wei(target_funds - balance, 'ether'), verbose=False)
-                self.log.info('Sender balance:   %d', web3_send.eth.get_balance(account_send.address))
+        # pre-sign, bulk send, and then wait for the tx with the highest nonce
+        self.log.info('Creating signed transactions')
+        signed_txs = []
+        signed_txs.append(self.submit(account, target_fn('thr'), 3, gas_price, gas_estimate, chain_id))
+        signed_txs.append(self.submit(account, target_fn('two'), 2, gas_price, gas_estimate, chain_id))
+        signed_txs.append(self.submit(account, target_fn('zer'), 1, gas_price, gas_estimate, chain_id))
+        signed_txs.append(self.submit(account, target_fn(''), 0, gas_price, gas_estimate, chain_id))
 
-            tx_hash, tx_receipt = self.submit(web3_send, account_send, account_recv.address, 1, gas_price, gas_estimate)
-            if tx_receipt is None:
-                self.log.info('Transaction timed out sending more funds')
-                self.log.info('Before balance:   %d', web3_send.eth.get_balance(account_send.address))
-                self.distribute_native(account_send, web3_send.from_wei(transfer_cost, 'ether'), verbose=False)
-                self.log.info('After balance:   %d', web3_send.eth.get_balance(account_send.address))
-                self.log.info('Waiting on the transaction receipt again')
-                web3_send.eth.wait_for_transaction_receipt(tx_hash.hex(), timeout=30)
-                self.log.info('Transaction successful')
-                self.log.info('Transaction count is %d', self.scan_get_total_transaction_count())
-            else:
-                self.log.info('Transaction successful')
+        self.log.info('Bulk sending signed transactions')
+        tx_hashes = [web3.eth.send_raw_transaction(x.rawTransaction) for x in signed_txs]
 
-        self.log.info(' ')
-        self.log.info('Sender balance: %d', web3_send.eth.get_balance(account_send.address))
-        self.log.info('Receiver balance: %d', web3_recv.eth.get_balance(account_recv.address))
-        self.assertTrue(web3_recv.eth.get_balance(account_recv.address) == 10)
+        self.log.info('Waiting for the tx receipt for the highest nonce')
+        for tx_hash in tx_hashes:
+            try:
+                tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash.hex(), timeout=30)
+                self.log.info(tx_receipt)
+            except:
+                self.log.warn('Exception raised')
 
-    def submit(self, web3, account, to_address, value, gas_price, gas_estimate):
-        tx = {'to': to_address, 'value': value, 'gasPrice': gas_price, 'gas': gas_estimate}
-        nonce = web3.eth.get_transaction_count(account.address)
-        self.log.info('Sender nonce:     %d', nonce)
-        tx['nonce'] = nonce
-        tx['chainId'] = web3.eth.chain_id
-        signed_tx = account.sign_transaction(tx)
-        tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
-        tx_receipt = None
-        try:
-            tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash.hex(), timeout=10)
-        except TimeExhausted as e:
-            self.log.error(e)
-        except ValueError as e:
-            self.log.error(e)
-        finally:
-            return (tx_hash, tx_receipt)
+        self.assertTrue(error.contract.functions.get_key().call() == 'thr')
+
+    def submit(self, account, target, nonce, gas_price, gas_limit, chain_id):
+        build_tx = target.build_transaction({
+            'nonce': nonce,
+            'gasPrice': gas_price,
+            'gas': gas_limit,
+            'chainId': chain_id
+        })
+        return account.sign_transaction(build_tx)
 
 
