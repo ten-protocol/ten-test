@@ -3,7 +3,7 @@ import threading, requests
 from web3 import Web3
 from pathlib import Path
 from pysys.basetest import BaseTest
-from pysys.constants import PROJECT, BACKGROUND, FOREGROUND
+from pysys.constants import PROJECT, BACKGROUND
 from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
 from ten.test.persistence.nonce import NoncePersistence
@@ -125,21 +125,21 @@ class GenericNetworkTest(BaseTest):
                           arguments=arguments, environs=environ, stdout=stdout, stderr=stderr,
                           timeout=timeout)
 
-    def distribute_native(self, account, amount):
+    def distribute_native(self, account, amount, verbose=True):
         """A native transfer of funds from the funded account to another.
 
         Note that these methods are called from connect to perform a transfer. The account performing the transfer
         needs to also connect, hence to avoid recursion we don't check funds on the call.
         """
-        web3_pk, account_pk = self.network_funding.connect(self, Properties().fundacntpk(), check_funds=False)
+        web3_pk, account_pk = self.network_funding.connect(self, Properties().fundacntpk(), check_funds=False, verbose=verbose)
         balance_before = web3_pk.eth.get_balance(account_pk.address)
 
         tx = {'to': account.address, 'value': web3_pk.to_wei(amount, 'ether'), 'gasPrice': web3_pk.eth.gas_price}
         tx['gas'] = web3_pk.eth.estimate_gas(tx)
-        self.log.info('Gas estimate for distribute native is %d', tx['gas'])
+        if verbose: self.log.info('Gas estimate for distribute native is %d', tx['gas'])
 
-        self.log.info('Sending %.6f ETH to account %s', amount, account.address)
-        self.network_funding.tx(self, web3_pk, tx, account_pk)
+        if verbose: self.log.info('Sending %.6f ETH to account %s', amount, account.address)
+        self.network_funding.tx(self, web3_pk, tx, account_pk, verbose=verbose)
         balance_after = web3_pk.eth.get_balance(account_pk.address)
         self.transfer_costs.append((balance_before - web3_pk.to_wei(amount, 'ether') - balance_after))
 

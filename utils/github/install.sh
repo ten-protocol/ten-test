@@ -23,3 +23,4 @@ python3 -m pip install py-solc-x
 snap install go --classic
 curl -fsSL https://get.docker.com -o get-docker.sh
 sh ./get-docker.sh
+ulimit -n 4096

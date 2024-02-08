@@ -2,9 +2,12 @@
 <pysystest type="auto">
 
     <description>
-        <title>Error: require on transaction</title>
+        <title>Error: group txs in a batch with one causing a revert</title>
         <purpose><![CDATA[
-Deploy a contract and check for error reporting on failure of a transaction.
+The idea of the test is to have four transactions waiting to be processed pre-loaded into the mempool, where one of
+them will be reverted. This is done by feeding in the txs with decreasing nonces, so that when the lowest nonce is
+finally sent, all the txs should then get processed. We want to make sure all txs are mined correctly with no issue
+in the network.
 ]]>
         </purpose>
     </description>
@@ -18,9 +21,9 @@ Deploy a contract and check for error reporting on failure of a transaction.
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
-            <mode>arbitrum.sepolia</mode>
             <mode>ganache</mode>
             <mode>sepolia</mode>
+            <mode>arbitrum.sepolia</mode>
         </modes>
     </classification>
 

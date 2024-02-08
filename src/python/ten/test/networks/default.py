@@ -74,7 +74,7 @@ class DefaultPostLondon:
         Note that the nonce and chainId will automatically be added into the transaction dictionary in this method
         and therefore do not need to be supplied by the caller. If they are supplied, they will be overwritten.
         """
-        self.log.info('Account %s performing transaction', account.address)
+        if verbose: self.log.info('Account %s performing transaction', account.address)
         nonce = self.get_next_nonce(test, web3, account, persist_nonce, verbose)
         tx['nonce'] = nonce
         tx['chainId'] = web3.eth.chain_id

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Gas: send value with funds only covering the gas cost</title>
+        <purpose><![CDATA[
+This currently tests incorrect behaviour in ten, in that if an account is given funds just equal to the gas cost,
+and then it tries to transfer value to another account, the tx will not be immediately rejected. Instead, the tx
+will be accepted and will sit in the mempool. If the funds in the sending account are increased, we do not expect
+the tx to be automatically retried and successful. Rather we expect to have to resend the tx on the same nonce for
+it to then be picked up. This is the same behaviour as on ganache. However, we expect in the future the tx to be
+rejected, as is currently the case on Sepolia and Arbitrum.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>gas</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+            <mode>ganache</mode>
+            <mode>sepolia</mode>
+            <mode>arbitrum.sepolia</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

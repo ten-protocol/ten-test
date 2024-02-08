@@ -9,12 +9,12 @@ import argparse, sys
 logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
 
 
-def transfer_value(web3, account, amount, recipient):
+def transfer_value(web3, account, gas_estimate, recipient):
     tx = {
         'nonce': web3.eth.get_transaction_count(account.address),
         'to': recipient,
-        'value': web3.to_wei(amount, 'ether'),
-        'gas': 4 * 720000,
+        'value': 1,
+        'gas': gas_estimate,
         'gasPrice': web3.eth.gas_price
     }
     signed_tx = account.sign_transaction(tx)
@@ -24,7 +24,7 @@ def transfer_value(web3, account, amount, recipient):
     if tx_receipt.status != 1:
         logging.error('Error performing transaction')
     else:
-        logging.info('Transaction complete ... transferred %d to %s', amount, recipient)
+        logging.info('Transaction complete ... transferred 1 wei to %s', recipient)
 
 
 if __name__ == "__main__":
@@ -39,8 +39,16 @@ if __name__ == "__main__":
     recipients = args.recipients.split(',')
 
     logging.info('Client running')
+
+    gas_price = web3.eth.gas_price
+    tx = {'to': random.choice(recipients), 'value': 1, 'gasPrice': gas_price}
+    gas_estimate = web3.eth.estimate_gas(tx)
+    logging.info('Gas estimate is %d', gas_estimate)
+
     while True:
-        balance = web3.from_wei(web3.eth.get_balance(account.address), 'ether')
-        logging.info('Account balance is %.9f', balance)
-        transfer_value(web3, account, 0.0001, random.choice(recipients))
+        balance = web3.eth.get_balance(account.address)
+        logging.info('Account balance is %d', balance)
+        transfer_value(web3, account, gas_estimate, random.choice(recipients))
+
+
 
