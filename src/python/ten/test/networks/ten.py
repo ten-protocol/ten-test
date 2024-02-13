@@ -128,7 +128,7 @@ class Ten(DefaultPreLondon):
     def connection_url(self, web_socket=False):
         port = self.PORT if not web_socket else self.WS_PORT
         host = self.HOST if not web_socket else self.WS_HOST
-        return '%s:%d/v1/?u=%s' % (host, port, self.ID)
+        return '%s:%d/v1/?token=%s' % (host, port, self.ID)
 
     def connect(self, test, private_key, web_socket=False, check_funds=True, verbose=True):
         url = self.connection_url(web_socket)
@@ -168,7 +168,7 @@ class Ten(DefaultPreLondon):
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         data = {"signature": signed_msg_from_dict.signature.hex(), "address": account.address}
-        requests.post('%s:%d/v1/authenticate/?u=%s' % (self.HOST, self.PORT, self.ID),
+        requests.post('%s:%d/v1/authenticate/?token=%s' % (self.HOST, self.PORT, self.ID),
                       data=json.dumps(data), headers=headers)
 
 

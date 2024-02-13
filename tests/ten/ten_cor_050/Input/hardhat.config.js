@@ -1,6 +1,7 @@
 require("@nomicfoundation/hardhat-toolbox");
+require("ten-hardhat-plugin")
 
-const { PK, HOST, PORT, TOKEN, API_KEY } = process.env;
+const { PK, HOST, PORT } = process.env;
 
 module.exports = {
   solidity:  "0.8.7",
@@ -9,14 +10,9 @@ module.exports = {
     ten: {
       deploy: [ "scripts/" ],
       chainId: 443,
-      url: `${HOST}:${PORT}/v1/${TOKEN}`,
+      url: `${HOST}:${PORT}/v1/`,
+      useGateway: true,
       gasPrice: 2000000000,
-      accounts: [ `0x${PK}` ]
-    },
-    ganache: {
-      deploy: [ "scripts/" ],
-      chainId: 1337,
-      url: `${HOST}:${PORT}`,
       accounts: [ `0x${PK}` ]
     }
   }

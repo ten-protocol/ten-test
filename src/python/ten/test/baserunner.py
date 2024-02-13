@@ -82,12 +82,12 @@ class TenRunnerPlugin():
                     user_id = self.__join('%s/v1/join/' % gateway_url)
 
                     runner.log.info('Registering account %s with the network', account.address)
-                    response = self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
+                    response = self.__register(account, '%s/v1/authenticate/?token=%s' % (gateway_url, user_id), user_id)
                     runner.log.info('Registration success was %s', response.ok)
-                    web3 = Web3(Web3.HTTPProvider('%s/v1/?u=%s' % (gateway_url, user_id)))
+                    web3 = Web3(Web3.HTTPProvider('%s/v1/?token=%s' % (gateway_url, user_id)))
                     runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
                     runner.addCleanupFunction(lambda: self.__print_cost(runner,
-                                                                        '%s/v1/authenticate?u=%s' % (gateway_url, user_id),
+                                                                        '%s/v1/?token=%s' % (gateway_url, user_id),
                                                                         web3, user_id))
 
                 else:
@@ -97,11 +97,11 @@ class TenRunnerPlugin():
                     runner.log.info('User id is %s', user_id)
 
                     runner.log.info('Registering account %s with the network', account.address)
-                    response = self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
+                    response = self.__register(account, '%s/v1/authenticate/?token=%s' % (gateway_url, user_id), user_id)
                     runner.log.info('Registration success was %s', response.ok)
                     web3 = Web3(Web3.HTTPProvider('%s/v1/?u=%s' % (gateway_url, user_id)))
                     runner.addCleanupFunction(lambda: self.__print_cost(runner,
-                                                                        '%s/v1/authenticate?u=%s' % (gateway_url, user_id),
+                                                                        '%s/v1/?token=%s' % (gateway_url, user_id),
                                                                         web3, user_id))
 
                 tx_count = web3.eth.get_transaction_count(account.address)
@@ -121,7 +121,7 @@ class TenRunnerPlugin():
                 runner.log.info('Accounts with non-zero funds;')
                 for fn in Properties().accounts():
                     account = web3.eth.account.from_key(fn())
-                    resp = self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
+                    resp = self.__register(account, '%s/v1/authenticate/?token=%s' % (gateway_url, user_id), user_id)
                     self.balances[fn.__name__] = web3.from_wei(web3.eth.get_balance(account.address), 'ether')
                     if self.balances[fn.__name__] > 0:
                         runner.log.info("  Funds for %s: %.18f ETH", fn.__name__, self.balances[fn.__name__],
