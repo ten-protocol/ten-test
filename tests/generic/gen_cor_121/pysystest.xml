@@ -13,6 +13,7 @@ were correctly deployed.
 
     <classification>
         <groups inherit="true">
+            <group>hardhat</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

@@ -123,7 +123,7 @@ class GenericNetworkTest(BaseTest):
         stderr = os.path.join(self.output, stderr)
         self.startProcess(command=Properties().npx_binary(), displayName='npm', workingDir=working_dir,
                           arguments=arguments, environs=environ, stdout=stdout, stderr=stderr,
-                          timeout=timeout, background=True)
+                          timeout=timeout)
 
     def distribute_native(self, account, amount, verbose=True):
         """A native transfer of funds from the funded account to another.
