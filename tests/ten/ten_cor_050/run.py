@@ -20,7 +20,6 @@ class PySysTest(GenericNetworkTest):
         # copy over and initialise the project
         shutil.copytree(self.input, project)
         self.run_npm(args=['install', 'hardhat', '--yes'], stdout='npm1.out', stderr='npm1_err', working_dir=project)
-        self.run_npm(args=['install', 'dotenv', '--yes'], stdout='npm2.out', stderr='npm2_err', working_dir=project)
         self.run_npm(args=['install', 'ten-hardhat-plugin', '--yes'], stdout='npm3.out', stderr='npm3_err', working_dir=project)
 
         # deploy and get the address from the hardhat output
@@ -30,7 +29,7 @@ class PySysTest(GenericNetworkTest):
         environ['PORT'] = str(network.PORT)
         self.run_npx(args=['hardhat', 'run', '--network', self.get_network(), 'scripts/deploy.js'],
                      working_dir=project, environ=environ, stdout='npx_deploy.out', stderr='npx_deploy.err')
-
+        self.wait(10.0)
         address = 'undefined'
         regex = re.compile('Contract deployed at (?P<address>.*)$', re.M)
         with open(os.path.join(self.output, 'npx_deploy.out'), 'r') as fp:

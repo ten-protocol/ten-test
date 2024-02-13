@@ -4,8 +4,8 @@ require("ten-hardhat-plugin")
 const { PK, HOST, PORT } = process.env;
 
 module.exports = {
-  solidity:  "0.8.7",
-  defaultNetwork: "ganache",
+  solidity:  "0.8.19",
+  defaultNetwork: "ten",
   networks: {
     ten: {
       deploy: [ "scripts/" ],

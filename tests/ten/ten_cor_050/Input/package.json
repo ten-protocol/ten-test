@@ -1,10 +1,9 @@
 {
-  "name": "contract-library",
+  "name": "ten-hh-plugin",
   "version": "1.0.0",
   "author": "Moray Grieve",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^16.3.1",
     "hardhat": "^2.18.2",
     "ten-hardhat-plugin": "*"
   },
