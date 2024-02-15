@@ -18,7 +18,7 @@ class PySysTest(TenNetworkTest):
 
         self.log.info('Send to the message bus to perform a transfer')
         tx_receipt, logs = accnt1.l1.send_to_msg_bus(transfer)
-        self.assertTrue(logs[0]['args']['sender'] == props.l1_message_bus_address(self.env))
+        self.assertTrue(logs[0]['args']['sender'] == props.l1_message_bus_address())
         self.assertTrue(logs[0]['args']['receiver'] == accnt1.l1.account.address)
         self.assertTrue(logs[0]['args']['amount'] == transfer)
 

@@ -7,6 +7,13 @@ from ten.test.utils.threading import thread_num
 
 class Properties:
     """Used as a holding class for properties."""
+    L1ManagementAddress = None
+    L1BridgeAddress = None
+    L1MessageBusAddress = None
+    L1CrossChainMessengerAddress = None
+    L2BridgeAddress = None
+    L2MessageBusAddress = None
+    L2CrossChainMessengerAddress = None
 
     def __init__(self):
         self.default_config = configparser.ConfigParser()
@@ -150,26 +157,26 @@ class Properties:
     def l1_funded_account_pk(self, key):
         return self.get('env.'+key, 'L1FundedAccountPK')
 
-    def l1_management_address(self, key):
-        return self.get('env.'+key, 'L1ManagementAddress')
+    def l1_management_address(self):
+        return self.L1ManagementAddress
 
-    def l1_bridge_address(self, key):
-        return self.get('env.'+key, 'L1BridgeAddress')
+    def l1_bridge_address(self):
+        return self.L1BridgeAddress
 
-    def l1_message_bus_address(self, key):
-        return self.get('env.'+key, 'L1MessageBusAddress')
+    def l1_message_bus_address(self):
+        return self.L1MessageBusAddress
 
-    def l1_cross_chain_messenger_address(self, key):
-        return self.get('env.'+key, 'L1CrossChainMessengerAddress')
+    def l1_cross_chain_messenger_address(self):
+        return self.L1CrossChainMessengerAddress
 
-    def l2_bridge_address(self, key):
-        return self.get('env.'+key, 'L2BridgeAddress')
+    def l2_bridge_address(self):
+        return self.L2BridgeAddress
 
-    def l2_message_bus_address(self, key):
-        return self.get('env.'+key, 'L2MessageBusAddress')
+    def l2_message_bus_address(self):
+        return self.L2MessageBusAddress
 
-    def l2_cross_chain_messenger_address(self, key):
-        return self.get('env.'+key, 'L2CrossChainMessengerAddress')
+    def l2_cross_chain_messenger_address(self):
+        return self.L2CrossChainMessengerAddress
 
     def l2_gas_payment_account_pk(self, key):
         return self.get('env.'+key, 'L2GasPaymentAccountPK')

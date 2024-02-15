@@ -138,7 +138,7 @@ class L1BridgeDetails(BridgeDetails):
     def send_to_msg_bus(self, amount, timeout=60):
         """Send native currency across the bridge."""
         tx = {
-            'to': Properties().l1_message_bus_address(self.test.env),
+            'to': Properties().l1_message_bus_address(),
             'value': amount,
             'gas': 4*21000,
             'gasPrice': self.web3.eth.gas_price,
