@@ -23,7 +23,7 @@ class PySysTest(TenNetworkTest):
 
         validator2_address = Properties().validator2_address(key='ten.sepolia')
         validator2_balance = web3.from_wei(web3.eth.get_balance(validator2_address), 'ether')
-        self.log.info('Validator 1 account %s balance %.6f ETH', validator2_address, validator2_balance)
+        self.log.info('Validator 2 account %s balance %.6f ETH', validator2_address, validator2_balance)
 
         deployer_address = Properties().l1_deployer_address(key='ten.sepolia')
         deployer_balance = web3.from_wei(web3.eth.get_balance(deployer_address), 'ether')
