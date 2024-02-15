@@ -106,7 +106,8 @@ class Properties:
 
     # node addresses
     def sequencer_address(self, key): return self.get('env.'+key, 'SequencerAddress')
-    def validator_address(self, key): return self.get('env.'+key, 'ValidatorAddress')
+    def validator1_address(self, key): return self.get('env.' + key, 'Validator1Address')
+    def validator2_address(self, key): return self.get('env.' + key, 'Validator2Address')
 
     # L1 deployment address
     def l1_deployer_address(self, key): return self.get('env.'+key, 'L1DeployerAddress')
