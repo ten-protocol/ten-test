@@ -175,7 +175,7 @@ class Properties:
     def l2_message_bus_address(self):
         return self.L2MessageBusAddress
 
-    def l2_cross_chain_messenger_address(self, key):
+    def l2_cross_chain_messenger_address(self):
         return self.L2CrossChainMessengerAddress
 
     def l2_gas_payment_account_pk(self, key):

@@ -9,7 +9,7 @@ class Management:
     def __init__(self, test, web3):
         self.test = test
         self.web3 = web3
-        self.address = Properties().l1_bridge_address(test.env)
+        self.address = Properties().l1_bridge_address()
         self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'management', 'ManagementContract.sol',
                                      'ManagementContract.json')
         with open(self.abi_path, 'r') as fp:
@@ -23,7 +23,7 @@ class L1MessageBus:
     def __init__(self, test, web3):
         self.test = test
         self.web3 = web3
-        self.address = Properties().l1_message_bus_address(test.env)
+        self.address = Properties().l1_message_bus_address()
         self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'messaging', 'MessageBus.sol',
                                      'MessageBus.json')
         with open(self.abi_path, 'r') as fp:
@@ -37,7 +37,7 @@ class L2MessageBus:
     def __init__(self, test, web3):
         self.test = test
         self.web3 = web3
-        self.address = Properties().l2_message_bus_address(test.env)
+        self.address = Properties().l2_message_bus_address()
         self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'messaging', 'MessageBus.sol',
                                      'MessageBus.json')
         with open(self.abi_path, 'r') as fp:
@@ -51,7 +51,7 @@ class L1CrossChainMessenger:
     def __init__(self, test, web3):
         self.test = test
         self.web3 = web3
-        self.address = Properties().l1_cross_chain_messenger_address(test.env)
+        self.address = Properties().l1_cross_chain_messenger_address()
         self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'messaging', 'messenger',
                                      'CrossChainMessenger.sol', 'CrossChainMessenger.json')
         with open(self.abi_path, 'r') as fp:
@@ -65,7 +65,7 @@ class L2CrossChainMessenger:
     def __init__(self, test, web3):
         self.test = test
         self.web3 = web3
-        self.address = Properties().l2_cross_chain_messenger_address(test.env)
+        self.address = Properties().l2_cross_chain_messenger_address()
         self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'messaging', 'messenger',
                                      'CrossChainMessenger.sol', 'CrossChainMessenger.json')
         with open(self.abi_path, 'r') as fp:
@@ -79,7 +79,7 @@ class ObscuroBridge:
     def __init__(self, test, web3):
         self.test = test
         self.web3 = web3
-        self.address = Properties().l1_bridge_address(test.env)
+        self.address = Properties().l1_bridge_address()
         self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'bridge', 'L1', 'ObscuroBridge.sol',
                                      'ObscuroBridge.json')
         with open(self.abi_path, 'r') as fp:
@@ -93,7 +93,7 @@ class EthereumBridge:
     def __init__(self, test, web3):
         self.test = test
         self.web3 = web3
-        self.address = Properties().l2_bridge_address(test.env)
+        self.address = Properties().l2_bridge_address()
         self.abi_path =os.path.join(PROJECT.root, 'artifacts', 'contracts', 'bridge', 'L2', 'EthereumBridge.sol',
                                     'EthereumBridge.json')
         with open(self.abi_path, 'r') as fp:
@@ -107,7 +107,7 @@ class ObsERC20:
     def __init__(self, test, web3):
         self.test = test
         self.web3 = web3
-        self.address = Properties().l2_bridge_address(test.env)
+        self.address = Properties().l2_bridge_address()
         self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'common', 'ObsERC20.sol', 'ObsERC20.json')
         with open(self.abi_path, 'r') as fp:
             self.abi = json.load(fp)
