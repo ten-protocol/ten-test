@@ -263,16 +263,17 @@ class TenRunnerPlugin():
         """Get the contract addresses and set into the properties. """
         data = {"jsonrpc": "2.0", "method": "obscuro_config", "id": self.MSG_ID}
         response = self.post(data)
-
-        if 'result' in response.json()['result']:
-            Properties.L1ManagementAddress = response["ManagementContractAddress"]
-            Properties.L1MessageBusAddress = response["MessageBusAddress"]
-            Properties.L1BridgeAddress = response["ImportantContracts"]["L1Bridge"]
-            Properties.L1CrossChainMessengerAddress = response["ImportantContracts"]["L1CrossChainMessenger"]
-            Properties.L2MessageBusAddress = response["L2MessageBusAddress"]
-            Properties.L2BridgeAddress = response["ImportantContracts"]["L2Bridge"]
-            Properties.L2CrossChainMessengerAddress = response["ImportantContracts"]["L2CrossChainMessenger"]
-        elif 'error' in response.json(): runner.log.error(response.json()['error']['message'])
+        if 'result' in response.json():
+            config = response.json()['result']
+            Properties.L1ManagementAddress = config["ManagementContractAddress"]
+            Properties.L1MessageBusAddress = config["MessageBusAddress"]
+            Properties.L1BridgeAddress = config["ImportantContracts"]["L1Bridge"]
+            Properties.L1CrossChainMessengerAddress = config["ImportantContracts"]["L1CrossChainMessenger"]
+            Properties.L2MessageBusAddress = config["L2MessageBusAddress"]
+            Properties.L2BridgeAddress = config["ImportantContracts"]["L2Bridge"]
+            Properties.L2CrossChainMessengerAddress = config["ImportantContracts"]["L2CrossChainMessenger"]
+        elif 'error' in response.json():
+            runner.log.error(response.json()['error']['message'])
 
     def post(self, data):
         self.MSG_ID += 1
