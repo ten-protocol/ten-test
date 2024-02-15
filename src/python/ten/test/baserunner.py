@@ -21,6 +21,7 @@ class TenRunnerPlugin():
     when the tests are complete. Note the runner should remain independent to the BaseTest, i.e. is stand alone as
     much as possible. This is because most of the framework is written to be test centric.
     """
+    MSG_ID = 1                      # global used for http message requests numbers
 
     def __init__(self):
         """Constructor. """
@@ -71,6 +72,9 @@ class TenRunnerPlugin():
 
         try:
             if self.is_ten():
+                runner.log.info('Getting and setting the Ten contract addresses')
+                self.__set_contract_addresses(runner)
+
                 props = Properties()
                 gateway_url = None
                 account = Web3().eth.account.from_key(Properties().fundacntpk())
@@ -232,11 +236,13 @@ class TenRunnerPlugin():
         hprocess.stop()
 
     def __join(self, url):
+        """Join the ten network to get a token."""
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         response = requests.get(url,  headers=headers)
         return response.text
 
     def __register(self, account, url, user_id):
+        """Authenticate a user agains the token. """
         domain = {'name': 'Ten', 'version': '1.0', 'chainId': Properties().chain_id(self.env)}
         types = {
             'Authentication': [
@@ -252,3 +258,23 @@ class TenRunnerPlugin():
         data = {"signature": signed_msg_from_dict.signature.hex(), "address": account.address}
         response = requests.post(url, data=json.dumps(data), headers=headers)
         return response
+
+    def __set_contract_addresses(self, runner):
+        """Get the contract addresses and set into the properties. """
+        data = {"jsonrpc": "2.0", "method": "obscuro_config", "id": self.MSG_ID}
+        response = self.post(data)
+
+        if 'result' in response.json()['result']:
+            Properties.L1ManagementAddress = response["ManagementContractAddress"]
+            Properties.L1MessageBusAddress = response["MessageBusAddress"]
+            Properties.L1BridgeAddress = response["ImportantContracts"]["L1Bridge"]
+            Properties.L1CrossChainMessengerAddress = response["ImportantContracts"]["L1CrossChainMessenger"]
+            Properties.L2MessageBusAddress = response["L2MessageBusAddress"]
+            Properties.L2BridgeAddress = response["ImportantContracts"]["L2Bridge"]
+            Properties.L2CrossChainMessengerAddress = response["ImportantContracts"]["L2CrossChainMessenger"]
+        elif 'error' in response.json(): runner.log.error(response.json()['error']['message'])
+
+    def post(self, data):
+        self.MSG_ID += 1
+        server = 'http://%s:%s' % (Properties().node_host(self.env, self.NODE_HOST), Properties().node_port_http(self.env))
+        return requests.post(server, json=data)

@@ -376,7 +376,7 @@ class TenNetworkTest(GenericNetworkTest):
         return None
 
     def obscuro_config(self):
-        """Get the debug_LogVisibility. """
+        """Get the obscuro_config. """
         data = {"jsonrpc": "2.0", "method": "obscuro_config", "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return response.json()['result']
