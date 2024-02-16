@@ -21,18 +21,13 @@ class PySysTest(GenericNetworkTest):
 
         contract = Storage(self, web3, 0)
         contract.deploy(network, account, persist_nonce=False)
-        
-        self.wait(2.0) # temporary wait after the contract is deployed
 
         # estimate gas required to call the add_once contract function
         estimate_gas = contract.contract.functions.store(1).estimate_gas()
-        self.log.info("Estimate gas:    %d", estimate_gas)
 
         # submit at the estimate with a nonce lower than it should be (should fail without being mined)
-        nonce = self.nonce_db.get_next_nonce(self, web3, account.address, self.env, persist_nonce=False)
-        use_nonce = nonce - 1
-        self.log.info('Next nonce is %d, so using %d', nonce, use_nonce)
-        self.submit(account, contract, web3, use_nonce, estimate_gas)
+        self.log.info('Submitting a transaction with a nonce that is too low')
+        self.submit(account, contract, web3, 0, estimate_gas)
 
     def submit(self, account, contract, web3, nonce, gas_limit):
         build_tx = contract.contract.functions.store(1).build_transaction({
