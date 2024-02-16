@@ -21,6 +21,8 @@ class PySysTest(GenericNetworkTest):
 
         contract = Storage(self, web3, 0)
         contract.deploy(network, account, persist_nonce=False)
+        
+        self.wait(2.0) # temporary wait after the contract is deployed
 
         # estimate gas required to call the add_once contract function
         estimate_gas = contract.contract.functions.store(1).estimate_gas()
