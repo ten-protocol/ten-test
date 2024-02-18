@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Gas: send value with funds only covering the gas cost</title>
+        <title>Mempool: send value with funds only covering the gas cost</title>
         <purpose><![CDATA[
 This currently tests incorrect behaviour in ten, in that if an account is given funds just equal to the gas cost,
 and then it tries to transfer value to another account, the tx will not be immediately rejected. Instead, the tx
@@ -16,7 +16,7 @@ rejected, as is currently the case on Sepolia and Arbitrum.
 
     <classification>
         <groups inherit="true">
-            <group>gas</group>
+            <group>mempool</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

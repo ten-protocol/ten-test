@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Gas: submit at or below the intrinsic gas limit</title>
+        <title>Mempool: submit at or below the intrinsic gas limit</title>
         <purpose><![CDATA[
 The test uses an ephemeral account to deploy the storage contract and then transact against it to store a number.
 From the transaction the intrinsic gas of the operation is calculated. The test then attempts another transaction
@@ -14,6 +14,7 @@ the mempool.
 
     <classification>
         <groups inherit="true">
+            <group>mempool</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
