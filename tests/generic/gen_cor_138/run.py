@@ -1,101 +1,61 @@
-from pysys.constants import PASSED, FAILED
-from collections import namedtuple
+import secrets
+from web3 import Web3
 from web3.exceptions import TimeExhausted
+from pysys.constants import FAILED, PASSED
+from ten.test.utils.exceptions import *
 from ten.test.basetest import GenericNetworkTest
 from ten.test.contracts.storage import Storage
-
-Item = namedtuple("Item", "gas value nonce expect")
-
-
-class TransactionFailed(Exception):
-    pass
-
-
-class Stack:
-    def __init__(self): self.items = []
-    def isEmpty(self): return self.items == []
-    def append(self, item): self.items.append(item)
-    def insert(self, item): return self.items.insert(0, item)
-    def pop(self): return self.items.pop(0)
-    def size(self): return len(self.items)
 
 
 class PySysTest(GenericNetworkTest):
 
     def execute(self):
+        # connect to the network using an ephemeral account in-case anything gets messed up
         network = self.get_network_connection()
-        web3, account = network.connect_account1(self)
+        private_key = secrets.token_hex(32)
+        self.distribute_native(Web3().eth.account.from_key(private_key), network.ETH_ALLOC_EPHEMERAL)
+        web3, account = network.connect(self, private_key=private_key, check_funds=False)
+
         contract = Storage(self, web3, 0)
-        contract.deploy(network, account)
+        contract.deploy(network, account, persist_nonce=False)
 
         # estimate gas required to call the add_once contract function
-        estimate_gas = contract.contract.functions.store(1).estimate_gas()
-        self.log.info("Estimate gas:    %d", estimate_gas)
+        target = contract.contract.functions.store(1)
+        estimate_gas = target.estimate_gas()
 
-        # these are the transactions to work through and their expectation on being mined or not
-        stack = Stack()
-        stack.append(Item(int(0.9 * estimate_gas), 1, None, 'fail'))
-        stack.append(Item(int(0.8 * estimate_gas), 2, None, 'fail'))
-        stack.append(Item(int(0.6 * estimate_gas), 3, None, 'fail'))
-        stack.append(Item(int(0.4 * estimate_gas), 4, None, 'timeout'))
-        stack.append(Item(int(0.1 * estimate_gas), 5, None, 'timeout'))
+        # submit at the estimate with a nonce lower than it should be (should fail without being mined)
+        self.log.info('Submitting a transaction with a nonce that is too low')
+        try:
+            self.submit(account, target, web3, 0, estimate_gas)
+            self.addOutcome(FAILED, 'Transaction error was not received as expected')
+        except TransactionError:
+            self.addOutcome(PASSED, 'Transaction error received as expected')
 
-        # process the stack of transactions
-        last_value = -1
-        while not stack.isEmpty():
-            item = stack.pop()
-            if last_value != item.value: self.log.info("")
-            if item.nonce is None: item = Item(item.gas, item.value, self.nonce(web3, account), item.expect)
-
-            self.log.info('Running for item: %s', item)
-            try:
-                self.log.info('Submitting the transaction value %d, gas %d, nonce %d', item.value, item.gas, item.nonce)
-                self.submit(account, contract, web3, item)
-                self.check(item, 'success')
-                self.log.info('Transaction was mined successfully')
-
-            except TimeExhausted as e:
-                self.log.error(e)
-                self.check(item, 'timeout')
-                self.log.info('Inserting transaction to use same nonce but increase gas')
-                stack.insert(Item(estimate_gas, item.value, item.nonce, 'success'))
-
-            except TransactionFailed as e:
-                self.log.error(e)
-                self.check(item, 'fail')
-
-            last_value = item.value
-
-    def check(self, item, result):
-        if result == item.expect:
-            self.log.info('Expected result was seen, expect = %s, result = %s', item.expect, result)
-            self.addOutcome(PASSED)
-        else:
-            self.log.error('Unexpected result was seen, expect = %s, result = %s', item.expect, result)
-            self.addOutcome(FAILED)
-
-    def nonce(self, web3, account):
-        return self.nonce_db.get_next_nonce(self, web3, account.address, self.env)
-
-    def submit(self, account, contract, web3, item):
-        build_tx = contract.contract.functions.store(1).build_transaction(
-            {
-                'nonce': item.nonce,
+    def submit(self, account, target, web3, nonce, gas_limit):
+        build_tx = target.build_transaction({
+                'nonce': nonce,
                 'gasPrice': web3.eth.gas_price,
-                'gas': item.gas,
-                'chainId': web3.eth.chain_id
-        })
+                'gas': gas_limit,
+                'chainId': web3.eth.chain_id })
         signed_tx = account.sign_transaction(build_tx)
-        tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
-        tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash.hex(), timeout=10)
-        if tx_receipt.status == 1:
-            self.nonce_db.update(account.address, self.env, item.nonce, 'CONFIRMED')
-        else:
-            try:
-                web3.eth.call(build_tx, block_identifier=tx_receipt.blockNumber)
-            except Exception as e:
-                raise TransactionFailed(e)
-            raise TransactionFailed('Failure processing transaction')
+        try:
+            tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+            tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash.hex(), timeout=30)
+            if tx_receipt.status == 1: return tx_receipt
+            else:
+                try: web3.eth.call(build_tx, block_identifier=tx_receipt.blockNumber)
+                except Exception as e: self.log.error('Replay call: %s', e)
+                raise TransactionFailed('Transaction status shows failure')
+
+        except ValueError as e:
+            self.log.error(e.args[0]['message'])
+            raise TransactionError('Transaction rejected by the mem pool')
+
+        except TimeExhausted as e:
+            self.log.error(e.args[0]['message'])
+            raise TransactionTimeOut('Transaction timed out waiting for receipt')
+
+
 
 
 
