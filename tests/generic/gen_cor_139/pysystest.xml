@@ -4,12 +4,10 @@
     <description>
         <title>Mempool: send value with funds only covering the gas cost</title>
         <purpose><![CDATA[
-This currently tests incorrect behaviour in ten, in that if an account is given funds just equal to the gas cost,
-and then it tries to transfer value to another account, the tx will not be immediately rejected. Instead, the tx
-will be accepted and will sit in the mempool. If the funds in the sending account are increased, we do not expect
-the tx to be automatically retried and successful. Rather we expect to have to resend the tx on the same nonce for
-it to then be picked up. This is the same behaviour as on ganache. However, we expect in the future the tx to be
-rejected, as is currently the case on Sepolia and Arbitrum.
+In the test an account is given funds just equal to the gas cost, and then tries to transfer value to another account.
+The tx should be immediately rejected with insufficient funds. The funds in the sending account are increased to cover
+the cost being sent and the transaction sent with the same nonce. In this case we expect the transaction to be
+correctly processed and the funds sent.
 ]]>
         </purpose>
     </description>

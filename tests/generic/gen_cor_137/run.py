@@ -56,11 +56,11 @@ class PySysTest(GenericNetworkTest):
                 raise TransactionFailed('Transaction status shows failure')
 
         except ValueError as e:
-            self.log.error(e)
+            self.log.error(e.args[0]['message'])
             raise TransactionError('Transaction rejected by the mem pool')
 
         except TimeExhausted as e:
-            self.log.error(e)
+            self.log.error(e.args[0]['message'])
             raise TransactionTimeOut('Transaction timed out waiting for receipt')
 
     def calculate_intrinsic_gas(self, web3, tx_hash):
