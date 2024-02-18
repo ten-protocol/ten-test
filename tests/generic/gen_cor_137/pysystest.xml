@@ -4,6 +4,10 @@
     <description>
         <title>Gas: submit at or below the intrinsic gas limit</title>
         <purpose><![CDATA[
+The test uses an ephemeral account to deploy the storage contract and then transact against it to store a number.
+From the transaction the intrinsic gas of the operation is calculated. The test then attempts another transaction
+but this time with the gas limit below the intrinsic gas - the transaction is expected to be rejected from entering
+the mempool.
 ]]>
         </purpose>
     </description>
@@ -19,7 +23,6 @@
             <mode>arbitrum.sepolia</mode>
             <mode>ganache</mode>
             <mode>sepolia</mode>
-
         </modes>
     </classification>
 
