@@ -6,10 +6,6 @@ from ten.test.basetest import GenericNetworkTest
 from ten.test.contracts.storage import Storage
 
 
-class TransactionFailed(Exception):
-    pass
-
-
 class PySysTest(GenericNetworkTest):
 
     def execute(self):
