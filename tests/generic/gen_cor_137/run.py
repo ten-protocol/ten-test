@@ -22,28 +22,30 @@ class PySysTest(GenericNetworkTest):
         contract.deploy(network, account, persist_nonce=False)
 
         # estimate gas required to call the store contract function
-        estimate_gas = contract.contract.functions.store(1).estimate_gas()
+        target = contract.contract.functions.store(1)
+        estimate_gas = target.estimate_gas()
 
         # submit at the estimate and then from the transaction work out the intrinsic gas
-        tx_receipt = self.submit(account, contract, web3, 1, estimate_gas)
+        self.log.info('Submitting transaction with gas_limit of %d', estimate_gas)
+        tx_receipt = self.submit(account, target, web3, 1, estimate_gas)
         intrinsic_gas = self.calculate_intrinsic_gas(web3, tx_receipt.transactionHash)
 
         # submit at lower than the intrinsic gas - expect this to error
+        gas_limit = int(0.9*intrinsic_gas)
+        self.log.info('Submitting transaction with gas_limit of %d', gas_limit)
         try:
-            self.submit(account, contract, web3, 2, int(0.9*intrinsic_gas))
+            self.submit(account, target, web3, 2, gas_limit)
             self.addOutcome(FAILED, 'Transaction error was not received as expected')
         except TransactionError:
             self.addOutcome(PASSED, 'Transaction error received as expected')
 
-    def submit(self, account, contract, web3, nonce, gas_limit):
-        self.log.info('Submitting transaction with gas_limit of %d', gas_limit)
-        build_tx = contract.contract.functions.store(1).build_transaction({
+    def submit(self, account, target, web3, nonce, gas_limit):
+        build_tx = target.build_transaction({
                 'nonce': nonce,
                 'gasPrice': web3.eth.gas_price,
                 'gas': gas_limit,
                 'chainId': web3.eth.chain_id })
         signed_tx = account.sign_transaction(build_tx)
-
         try:
             tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
             tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash.hex(), timeout=30)
