@@ -2,18 +2,18 @@ import sqlite3, os
 
 
 class FundsPersistence:
-    """Abstracts the persistence of contract addresses into a local database. """
+    """Abstracts the persistence of funds across accounts into a local database. """
 
     SQL_CREATE = "CREATE TABLE IF NOT EXISTS funds " \
                  "(name TEXT, address INTEGER, time INTEGER, balance INTEGER, " \
                  "PRIMARY KEY name)"
     SQL_INSERT = "INSERT OR REPLACE INTO funds VALUES (?, ?, ?, ?)"
-    SQL_DELETE = "DELETE from funds WHERE name=? and address=?"
-    SQL_SELECT = "SELECT time, balance FROM funds WHERE name=? and address=? ORDER BY time DESC"
+    SQL_DELETE = "DELETE from funds WHERE name=?"
+    SQL_SELECT = "SELECT time, balance FROM funds WHERE name=? ORDER BY time DESC"
 
     def __init__(self, db_dir):
         """Instantiate an instance."""
-        self.db = os.path.join(db_dir, 'contracts.db')
+        self.db = os.path.join(db_dir, 'funds.db')
         self.connection = sqlite3.connect(self.db)
         self.cursor = self.connection.cursor()
 
@@ -26,18 +26,17 @@ class FundsPersistence:
         self.connection.close()
 
     def delete_name(self, name):
-        """Delete all stored contract details for a particular environment."""
+        """Delete all stored fund details for a particular logical account."""
         self.cursor.execute(self.SQL_DELETE, (name, ))
         self.connection.commit()
 
-    def insert_balance(self, name, address, time, balance):
-        """Insert a new contract into the persistence. """
+    def insert_funds(self, name, address, time, balance):
+        """Insert a new funds entry for a particular logical account."""
         self.cursor.execute(self.SQL_INSERT, (name, address, time, balance))
         self.connection.commit()
 
-    def get_balance(self, name, environment):
-        """Return the address and abi for a particular deployed contract. """
-        self.cursor.execute(self.SQL_SELECT, (name, environment))
-        cursor = self.cursor.fetchall()
-        if len(cursor) > 0: return cursor[0][0], cursor[0][1]
-        return None, None
+    def get_funds(self, name):
+        """Return the funds with time for a particular logical account."""
+        self.cursor.execute(self.SQL_SELECT, (name, ))
+        return self.cursor.fetchall()
+
