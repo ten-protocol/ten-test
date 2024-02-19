@@ -5,11 +5,11 @@ class FundsPersistence:
     """Abstracts the persistence of funds across accounts into a local database. """
 
     SQL_CREATE = "CREATE TABLE IF NOT EXISTS funds " \
-                 "(name TEXT, address INTEGER, time INTEGER, balance INTEGER, " \
-                 "PRIMARY KEY name)"
-    SQL_INSERT = "INSERT OR REPLACE INTO funds VALUES (?, ?, ?, ?)"
-    SQL_DELETE = "DELETE from funds WHERE name=?"
-    SQL_SELECT = "SELECT time, balance FROM funds WHERE name=? ORDER BY time DESC"
+                 "(name TEXT, address INTEGER, environment TEXT, time INTEGER, balance INTEGER, " \
+                 "PRIMARY KEY (name, environment))"
+    SQL_INSERT = "INSERT INTO funds VALUES (?, ?, ?, ?, ?)"
+    SQL_DELETE = "DELETE from funds WHERE environment=?"
+    SQL_SELECT = "SELECT time, balance FROM funds WHERE name=? and environment=? ORDER BY time DESC"
 
     def __init__(self, db_dir):
         """Instantiate an instance."""
@@ -25,18 +25,18 @@ class FundsPersistence:
         """Close the connection to the underlying persistence."""
         self.connection.close()
 
-    def delete_name(self, name):
-        """Delete all stored fund details for a particular logical account."""
-        self.cursor.execute(self.SQL_DELETE, (name, ))
+    def delete_environment(self, environment):
+        """Delete all stored contract details for a particular environment."""
+        self.cursor.execute(self.SQL_DELETE, (environment, ))
         self.connection.commit()
 
-    def insert_funds(self, name, address, time, balance):
+    def insert_funds(self, name, address, environment, time, balance):
         """Insert a new funds entry for a particular logical account."""
-        self.cursor.execute(self.SQL_INSERT, (name, address, time, balance))
+        self.cursor.execute(self.SQL_INSERT, (name, address, environment, time, balance))
         self.connection.commit()
 
-    def get_funds(self, name):
+    def get_funds(self, name, environment):
         """Return the funds with time for a particular logical account."""
-        self.cursor.execute(self.SQL_SELECT, (name, ))
+        self.cursor.execute(self.SQL_SELECT, (name, environment))
         return self.cursor.fetchall()
 
