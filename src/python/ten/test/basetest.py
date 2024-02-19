@@ -7,6 +7,7 @@ from pysys.constants import PROJECT, BACKGROUND
 from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
 from ten.test.persistence.nonce import NoncePersistence
+from ten.test.persistence.funds import FundsPersistence
 from ten.test.persistence.contract import ContractPersistence
 from ten.test.utils.properties import Properties
 from ten.test.networks.default import DefaultPostLondon
@@ -34,6 +35,7 @@ class GenericNetworkTest(BaseTest):
         db_dir = os.path.join(str(Path.home()), '.tentest')
         self.nonce_db = NoncePersistence(db_dir)
         self.contract_db = ContractPersistence(db_dir)
+        self.funds_db = FundsPersistence(db_dir)
         self.addCleanupFunction(self.close_db)
 
         # every test has a connection for the funded account
