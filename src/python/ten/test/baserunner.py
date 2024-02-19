@@ -9,6 +9,7 @@ from pysys.exceptions import AbortExecution
 from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
 from ten.test.persistence.nonce import NoncePersistence
+from ten.test.persistence.funds import FundsPersistence
 from ten.test.persistence.contract import ContractPersistence
 from ten.test.utils.properties import Properties
 
@@ -60,6 +61,8 @@ class TenRunnerPlugin():
         nonce_db.create()
         contracts_db = ContractPersistence(db_dir)
         contracts_db.create()
+        funds_db = FundsPersistence(db_dir)
+        funds_db.create()
 
         if self.is_ten() and runner.threads > 3:
             raise Exception('Max threads against Ten cannot be greater than 3')
@@ -146,6 +149,7 @@ class TenRunnerPlugin():
 
         nonce_db.close()
         contracts_db.close()
+        funds_db.close()
 
     def run_ganache(self, runner):
         """Run ganache for use by the tests. """
