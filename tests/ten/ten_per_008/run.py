@@ -1,4 +1,5 @@
-import os, math, time
+import os, math, time, secrets
+from web3 import Web3
 from datetime import datetime
 from collections import OrderedDict
 from pysys.constants import PASSED
@@ -7,8 +8,8 @@ from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(TenNetworkTest):
-    ITERATIONS = 512  # iterations per client, don't exceed bulk loading more than 1024
-    CLIENTS = ['one', 'two']
+    ITERATIONS = 1024  # iterations per client, don't exceed bulk loading more than 1024
+    CLIENTS = ['one', 'two', 'three', 'four']
 
     def execute(self):
         # connect to the network and determine constants and funds required to run the test
@@ -19,9 +20,13 @@ class PySysTest(TenNetworkTest):
         for i in self.CLIENTS: self.run_client('client_%s' % i, network, self.ITERATIONS)
         for i in self.CLIENTS:
             self.waitForGrep(file='client_%s.out' % i, expr='Client client_%s completed' % i,
-                             timeout=900, poll=0.01)
+                             timeout=900)
         end = time.perf_counter()
-        self.log.info('Duration of RPC request sending %d' % (end-start))
+
+        duration = (end-start)
+        total_sent = len(self.CLIENTS) * self.ITERATIONS
+        self.log.info('Duration of RPC request sending %.4f' % duration)
+        self.log.info('Bulk rate calculation %d' % (total_sent / duration))
 
         # graph the output
         self.graph()
@@ -29,8 +34,13 @@ class PySysTest(TenNetworkTest):
         # passed if no failures (though pdf output should be reviewed manually)
         self.addOutcome(PASSED)
 
-    def run_client(self, name, network, num_iterations=1000):
+    def run_client(self, name, network, num_iterations):
         """Run a background load client. """
+        pk = secrets.token_hex(32)
+        account = Web3().eth.account.from_key(pk)
+        self.distribute_native(account, Web3().from_wei(1, 'ether'))
+        network.connect(self, private_key=pk, check_funds=False)
+
         stdout = os.path.join(self.output, '%s.out' % name)
         stderr = os.path.join(self.output, '%s.err' % name)
         script = os.path.join(self.input, 'client.py')
@@ -38,28 +48,23 @@ class PySysTest(TenNetworkTest):
         args.extend(['--network_http', network.connection_url()])
         args.extend(['--num_iterations', '%d' % num_iterations])
         args.extend(['--client_name', name])
+        args.extend(['--pk', pk])
         self.run_python(script, stdout, stderr, args)
         self.waitForSignal(file=stdout, expr='Client %s started' % name)
 
     def graph(self):
         # load the durations and sort
-        l = []
+        data = []
         for i in self.CLIENTS:
             with open(os.path.join(self.output, 'client_%s.log' % i), 'r') as fp:
-                for line in fp.readlines(): l.append(int(line.strip()))
-        l.sort()
-        self.log.info('Average duration = %.2f', (sum(l) / len(l)))
-        self.log.info('Median duration = %.2f', l[int(len(l) / 2)])
+                for line in fp.readlines(): data.append(float(line.strip()))
+        data.sort()
+        self.log.info('Average duration = %f', (sum(data) / len(data)))
+        self.log.info('Median duration = %f', data[int(len(data) / 2)])
 
-        # bin into intervals and write to file
-        bins = OrderedDict()
-        bin_inc = 20
-        bin = lambda x: int(math.floor(bin_inc*x))
-
-        for i in range(bin(l[0]), bin(l[len(l)-1])+1): bins[i] = 0
-        for v in l: bins[bin(v)] = bins[bin(v)] + 1
+        bins = self.bin_array(data)
         with open(os.path.join(self.output, 'bins.log'), 'w') as fp:
-            for k in bins.keys(): fp.write('%.2f %d\n' % (k/float(bin_inc), bins[k]))
+            for b,v in bins: fp.write('%.2f %d\n' % (b, v))
             fp.flush()
 
         # plot out the results
@@ -67,5 +72,21 @@ class PySysTest(TenNetworkTest):
         date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
                             branch, date,
-                            str(self.mode), str(len(l)), '%d' % len(self.CLIENTS), '%.2f' % (sum(l) / len(l)))
+                            str(self.mode), str(len(data)), '%d' % len(self.CLIENTS), '%.2f' % (sum(data) / len(data)))
 
+    def bin_array(self, data, num_bins=40):
+        min_val = min(data)
+        max_val = max(data)
+        bin_width = (max_val - min_val) / num_bins
+        bin_counts = [0] * num_bins
+
+        for val in data:
+            bin_index = min(int((val - min_val) / bin_width), num_bins - 1)
+            bin_counts[bin_index] += 1
+
+        bins = []
+        for i in range(num_bins):
+            bin_start = min_val + i * bin_width
+            bins.append((bin_start, bin_counts[i]))
+
+        return bins
