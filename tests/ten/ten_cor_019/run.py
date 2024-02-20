@@ -37,8 +37,8 @@ class PySysTest(TenNetworkTest):
 
         self.log.info('Getting transaction for account 3 (through network connection 2)')
         try:
-            web3_3.eth.get_transaction_receipt(tx_hash)
-            self.addOutcome(FAILED)
+            tx_receipt = web3_3.eth.get_transaction_receipt(tx_hash)
+            self.addOutcome(FAILED, 'We dont expect to be able to get the transaction')
         except:
             self.log.warn('It is not possible to get someone else transaction receipt')
             self.addOutcome(PASSED)
