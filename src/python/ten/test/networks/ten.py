@@ -89,7 +89,9 @@ class Ten(DefaultPreLondon):
     support multiple connections through it through joining as a particular user_id, under which multiple accounts
     can be registered. If a gateway instance is supplied in the constructor that instance will be used. If one is
     not supplied, if running against a local testnet an instance will be created; if running against dev, uat or
-    sepolia testnet, then the hosted instance will be used. """
+    sepolia testnet, then the hosted instance will be used. Note that this is slightly different usage in that on
+    any call to get a network connection on a local testnet a new wallet extension is started, whereas on remote
+    environments it will always go through the hosted connection. """
     ETH_LIMIT = 0.1
     ETH_ALLOC = 0.5
 

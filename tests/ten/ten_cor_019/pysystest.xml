@@ -10,7 +10,6 @@
 
     <classification>
         <groups inherit="true">
-            <group>persistence</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

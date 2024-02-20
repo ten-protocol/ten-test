@@ -14,7 +14,6 @@ number the event log was added into, and then can finally see the logs.
 
     <classification>
         <groups inherit="true">
-            <group>persistence</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
