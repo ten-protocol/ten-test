@@ -7,14 +7,11 @@ from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        # start a single wallet extension
-        wallet = WalletExtension.start(self, name='shared')
-
-        # create two connections, each with their own user id (via a join call)
+        # create two connections through a single gateway, each with their own user id (via a join call)
         self.log.info('')
         self.log.info('Create two user_id connections through a single wallet extension')
-        network_connection_1 = self.get_network_connection(wallet=wallet)
-        network_connection_2 = self.get_network_connection(wallet=wallet)
+        network_connection_1 = self.get_network_connection()
+        network_connection_2 = self.get_network_connection()
 
         # each user id has two registered accounts made against it
         self.log.info('')

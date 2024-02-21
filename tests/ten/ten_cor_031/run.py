@@ -14,7 +14,7 @@ class PySysTest(TenNetworkTest):
         storage.deploy(network, account)
 
         # create two connections, each with their own user id (via a join call)
-        network_shared = self.get_network_connection(name='shared')
+        network_shared = self.get_network_connection()
         network_shared.connect_account2(self)
         network_shared.connect_account3(self)
 

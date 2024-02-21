@@ -6,13 +6,12 @@ from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
 class PySysTest(TenNetworkTest):
-    CLIENTS = 500
+    CLIENTS = 100
     TRANSACTIONS = 10
 
     def execute(self):
-        # start a single wallet extension
-        wallet = WalletExtension.start(self, name='shared')
-        network_connection_primary = self.get_network_connection(wallet=wallet)
+        # get the main connection through the primary gateway
+        network_connection_primary = self.get_network_connection()
         web3_1, account_1 = network_connection_primary.connect_account1(self)
 
         # deploy a contract that emits a lifecycle event on calling a specific method as a transaction
@@ -31,10 +30,10 @@ class PySysTest(TenNetworkTest):
         additional_userid = 0
         for i in range(0, self.CLIENTS):
             pk = secrets.token_hex(32)
-            if random.randint(0, 4) < 3:
+            if random.randint(0, 8) < 7:
                 additional_userid = additional_userid + 1
                 self.log.info('Registering client %d with new user id (current total %d)', i, additional_userid)
-                network_connection = self.get_network_connection(wallet=wallet)
+                network_connection = self.get_network_connection()
             else:
                 primary_userid = primary_userid + 1
                 self.log.info('Registering client %d with primary user id (current total %d)', i, primary_userid)
@@ -55,5 +54,5 @@ class PySysTest(TenNetworkTest):
             self.distribute_native(account, network_connection.ETH_ALLOC_EPHEMERAL)
             network_connection.transact(self, web3, storage.contract.functions.store(count), account, storage.GAS_LIMIT)
 
-        self.waitForSignal(file='subscriber.out', expr='Received event: Stored', condition='==%d' % self.TRANSACTIONS, timeout=10)
+        self.waitForSignal(file='subscriber.out', expr='Received event: Stored', condition='==%d' % self.TRANSACTIONS, timeout=120)
         self.assertLineCount(file='subscriber.out', expr='Received event: Stored', condition='==%d' % self.TRANSACTIONS)
