@@ -15,8 +15,7 @@ from ten.test.networks.ganache import Ganache
 from ten.test.networks.goerli import Goerli
 from ten.test.networks.arbitrum import ArbitrumSepolia
 from ten.test.networks.sepolia import Sepolia
-from ten.test.networks.ten import Ten
-from ten.test.networks.ten import TenL1Geth, TenL1Sepolia
+from ten.test.networks.ten import Ten, TenL1Geth, TenL1Sepolia
 
 
 class GenericNetworkTest(BaseTest):
