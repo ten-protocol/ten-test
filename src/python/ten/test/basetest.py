@@ -39,7 +39,8 @@ class GenericNetworkTest(BaseTest):
         self.addCleanupFunction(self.close_db)
 
         # every test has a connection for the funded account
-        self.network_funding = self.get_network_connection(name='funding_connection')
+        self.connections = {}
+        self.network_funding = self.get_network_connection(name='funding')
         self.balance = 0
         self.accounts = []
         self.transfer_costs = []
@@ -203,7 +204,7 @@ class GenericNetworkTest(BaseTest):
             token = web3.eth.contract(address=token_address, abi=json.load(f))
         return token.functions.balanceOf(account.address).call()
 
-    def get_network_connection(self, name='primary_connection', **kwargs):
+    def get_network_connection(self, name='primary', **kwargs):
         """Get the network connection."""
         if self.is_ten():
             return Ten(self, name, **kwargs)

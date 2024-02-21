@@ -10,9 +10,8 @@ class PySysTest(TenNetworkTest):
     TRANSACTIONS = 10
 
     def execute(self):
-        # start a single wallet extension
-        wallet = WalletExtension.start(self, name='shared')
-        network_connection_primary = self.get_network_connection(wallet=wallet)
+        # get the main connection through the primary gateway
+        network_connection_primary = self.get_network_connection()
         web3_1, account_1 = network_connection_primary.connect_account1(self)
 
         # deploy a contract that emits a lifecycle event on calling a specific method as a transaction
@@ -34,7 +33,7 @@ class PySysTest(TenNetworkTest):
             if random.randint(0, 4) < 3:
                 additional_userid = additional_userid + 1
                 self.log.info('Registering client %d with new user id (current total %d)', i, additional_userid)
-                network_connection = self.get_network_connection(wallet=wallet)
+                network_connection = self.get_network_connection()
             else:
                 primary_userid = primary_userid + 1
                 self.log.info('Registering client %d with primary user id (current total %d)', i, primary_userid)

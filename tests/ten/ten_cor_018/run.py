@@ -6,9 +6,9 @@ from ten.test.contracts.storage import Storage
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        # first wallet extension, two accounts, account 1 transacts
+        # first user_id connection, two accounts, account 1 transacts
         # deploy contract, transact as account 1, account 2 gets the transaction
-        network_1 = self.get_network_connection(name='network_1')
+        network_1 = self.get_network_connection()
         web3_1, account_1 = network_1.connect_account1(self)
         web3_2, account_2 = network_1.connect_account2(self)
 
@@ -29,13 +29,13 @@ class PySysTest(TenNetworkTest):
 
         # second wallet extension, account 3 tries to get the transaction receipt
         # but also just requests all event logs for the Stored event
-        network_2 = self.get_network_connection(name='network_2')
+        network_2 = self.get_network_connection()
         web3_3, account_3 = network_2.connect_account3(self)
         storage_3 = Storage.clone(web3_3, account_3, storage_1)
 
         self.log.info('Getting transaction for account 3 (through network connection 2)')
         try:
-            tx_receipt = web3_3.eth.get_transaction_receipt(tx_hash)
+            web3_3.eth.get_transaction_receipt(tx_hash)
             self.addOutcome(FAILED, 'We dont expect to be able to get the transaction')
         except:
             self.log.warn('It is not possible to get someone else transaction receipt')

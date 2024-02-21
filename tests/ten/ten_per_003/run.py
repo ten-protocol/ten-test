@@ -64,7 +64,7 @@ class PySysTest(TenNetworkTest):
 
     def setup_client(self, name, funds_needed):
         pk_file = '%s_pk.txt' % name
-        network = self.get_network_connection(name=name)
+        network = self.get_network_connection()
         with open(os.path.join(self.output, pk_file), 'w') as fw:
             for i in range(0, self.SENDING_ACCOUNTS):
                 pk = secrets.token_hex(32)

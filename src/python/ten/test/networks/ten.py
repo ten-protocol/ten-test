@@ -85,43 +85,52 @@ class TenL1Geth(Geth):
 class Ten(DefaultPreLondon):
     """The L2 connection for Ten.
 
-    A ten network instance requires a wallet extension (gateway) to connect to the network. A gateway can
-    support multiple connections through it through joining as a particular user_id, under which multiple accounts
-    can be registered. If a gateway instance is supplied in the constructor that instance will be used. If one is
-    not supplied, if running against a local testnet an instance will be created; if running against dev, uat or
-    sepolia testnet, then the hosted instance will be used. Note that this is slightly different usage in that on
-    any call to get a network connection on a local testnet a new wallet extension is started, whereas on remote
-    environments it will always go through the hosted connection. """
+    A ten network instance requires a wallet extension (gateway) to connect to the network. A gateway can support
+    multiple connections through joining as a particular user_id, under which multiple accounts can be registered.
+    When creating an instance of the connection, the name indicates the gateway instance to use. Tests have the
+    notion of a primary gateway, which on a local testnet is locally started, and on a remote network (dev|uat|sepolia)
+    is the hosted gateway on that environment. If the name 'primary' is supplied in the connection creation then this
+    instance is used (and locally started for a local testnet). If any other name is supplied then a local gateway
+    instance is started. If the name supplied already exists, the pre-existing instance of that gateway will be used.
+    """
     ETH_LIMIT = 0.1
     ETH_ALLOC = 0.5
 
-    def __init__(self, test, name=None, **kwargs):
+    def __init__(self, test, name='primary', **kwargs):
         super().__init__(test, name, **kwargs)
         props = Properties()
         self.CHAIN_ID = props.chain_id(test.env)
 
-        if 'wallet' in kwargs:
-            wallet = kwargs['wallet']
-            self.name = wallet.name
-            self.HOST = 'http://127.0.0.1'
-            self.WS_HOST = 'ws://127.0.0.1'
-            self.PORT = wallet.port
-            self.WS_PORT = wallet.ws_port
+        if name in test.connections:
+            self.HOST = test.connections[name][0]
+            self.WS_HOST = test.connections[name][1]
+            self.PORT = test.connections[name][2]
+            self.WS_PORT = test.connections[name][3]
+            self.log.info('Using existing gateway as %s on port=%d, ws_port=%d', name, self.PORT, self.WS_PORT)
+
         else:
-            if test.is_local_ten():
+            if name == 'primary':
+                self.HOST = props.host_http(test.env)
+                self.WS_HOST = props.host_ws(test.env)
+
+                if test.is_local_ten():
+                    wallet = WalletExtension.start(test, name=name)
+                    self.PORT = wallet.port
+                    self.WS_PORT = wallet.ws_port
+                    self.log.info('Using local gateway as primary on port=%d, ws_port=%d', self.PORT, self.WS_PORT)
+                else:
+                    self.PORT = props.port_http(test.env)
+                    self.WS_PORT = props.port_ws(test.env)
+                    self.log.info('Using hosted gateway as primary on port=%d, ws_port=%d', self.PORT, self.WS_PORT)
+            else:
                 wallet = WalletExtension.start(test, name=name)
-                self.name = name
                 self.HOST = props.host_http(test.env)
                 self.WS_HOST = props.host_ws(test.env)
                 self.PORT = wallet.port
                 self.WS_PORT = wallet.ws_port
-            else:
-                self.name = 'hosted'
-                self.HOST = props.host_http(test.env)
-                self.WS_HOST = props.host_ws(test.env)
-                self.PORT = props.port_http(test.env)
-                self.WS_PORT = props.port_ws(test.env)
-                self.log.info('Using hosted wallet extension on port=%d, ws_port=%d', self.PORT, self.WS_PORT)
+                self.log.info('Using local gateway as %s on port=%d, ws_port=%d', name, self.PORT, self.WS_PORT)
+
+            test.connections[name] = (self.HOST, self.WS_HOST, self.PORT, self.WS_PORT)
 
         self.ID = self.__join()
         if self.ID is None:
