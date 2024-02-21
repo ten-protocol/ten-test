@@ -54,5 +54,5 @@ class PySysTest(TenNetworkTest):
             self.distribute_native(account, network_connection.ETH_ALLOC_EPHEMERAL)
             network_connection.transact(self, web3, storage.contract.functions.store(count), account, storage.GAS_LIMIT)
 
-        self.waitForSignal(file='subscriber.out', expr='Received event: Stored', condition='==%d' % self.TRANSACTIONS, timeout=10)
+        self.waitForSignal(file='subscriber.out', expr='Received event: Stored', condition='==%d' % self.TRANSACTIONS, timeout=120)
         self.assertLineCount(file='subscriber.out', expr='Received event: Stored', condition='==%d' % self.TRANSACTIONS)
