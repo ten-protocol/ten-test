@@ -124,8 +124,8 @@ class Ten(DefaultPreLondon):
                     self.log.info('Using hosted gateway as primary on port=%d, ws_port=%d', self.PORT, self.WS_PORT)
             else:
                 wallet = WalletExtension.start(test, name=name)
-                self.HOST = props.host_http(test.env)
-                self.WS_HOST = props.host_ws(test.env)
+                self.PORT = props.port_http('ten.local')
+                self.WS_PORT = props.port_ws('ten.local')
                 self.PORT = wallet.port
                 self.WS_PORT = wallet.ws_port
                 self.log.info('Using local gateway as %s on port=%d, ws_port=%d', name, self.PORT, self.WS_PORT)
