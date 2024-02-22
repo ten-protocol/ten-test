@@ -2,12 +2,12 @@
 <pysystest type="auto">
 
     <description>
-        <title>Event relevancy - 4 accounts own WE, 4 accounts subscribe, 1 relevant event two addresses, 2 received</title>
+        <title>Event relevancy - 4 accounts own gateway, 4 accounts subscribe, 1 relevant event two addresses, 2 received</title>
         <purpose><![CDATA[
-We have 4 accounts registered and connected to the network through their own wallet extensions. All accounts subscribe
-to all events from the relevancy contract. Account4 transacts resulting in a TwoIndexedAddresses event being emitted
-containing address fields for Account4, and Account1. As such Account4 and Account1 should see the event log returned in
-their subscriptions as the event is relevant to them, whereas Account2 and Account3 should not.
+We have 4 accounts registered and connected to the network through their own gateways. All accounts subscribe to all
+events from the relevancy contract. Account4 transacts resulting in a TwoIndexedAddresses event being emitted containing
+address fields for Account4, and Account1. As such Account4 and Account1 should see the event log returned in their
+subscriptions as the event is relevant to them, whereas Account2 and Account3 should not.
 ]]>
         </purpose>
     </description>

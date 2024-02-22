@@ -3,8 +3,8 @@
 
     <description>
         <title>Debug APIs - request debug_logVisibility, single lifecycle event</title>
-        <purpose><![CDATA[Makes a call to debug log visibility for a single lifecycle event emitted from the storage
-contract.
+        <purpose><![CDATA[
+Makes a call to debug log visibility for a single lifecycle event emitted from the storage contract.
 ]]>
         </purpose>
     </description>

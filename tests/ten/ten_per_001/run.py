@@ -18,6 +18,7 @@ class PySysTest(TenNetworkTest):
         self.value = 100
 
     def execute(self):
+        # connect to the network on the primary connection
         network = self.get_network_connection()
         web3, _ = network.connect_account1(self)
 
@@ -26,7 +27,7 @@ class PySysTest(TenNetworkTest):
         self.log.info('Creating ephemeral account to distribute funds from')
         web3_send, account_send = network.connect(self, private_key=secrets.token_hex(), check_funds=False)
 
-        # connect a bunch of recipient clients to receive funds
+        # use an ephemeral account to receive funds
         self.log.info('')
         self.log.info('Creating ephemeral account to receive funds')
         web3_recv, account_recv = network.connect(self, private_key=secrets.token_hex(), check_funds=False)

@@ -6,6 +6,7 @@ from ten.test.utils.properties import Properties
 class PySysTest(TenNetworkTest):
 
     def execute(self):
+        # connect to the network on the primary gateway
         network = self.get_network_connection()
         web3_user, account_user = network.connect_account1(self)
         web3_hold, account_hold = network.connect(self, Properties().l2_gas_payment_account_pk(self.env), check_funds=False)

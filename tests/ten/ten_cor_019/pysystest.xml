@@ -4,6 +4,7 @@
     <description>
         <title>Account going through separate connection can't get receipt or logs (non-lifecycle)</title>
         <purpose><![CDATA[
+Similar to the previous test, but this time a non life-cycle event is used.
 ]]>
         </purpose>
     </description>

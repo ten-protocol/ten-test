@@ -6,11 +6,11 @@ from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        # connect to network
+        # connect to network on the primary gateway
         network = self.get_network_connection()
 
-        # connect via the primary wallet extension used by the test in the order of
-        # account4, account1, account2, account3
+        # connect via the primary gateway used by the test in the order of
+        # account4, account1, account2, account3 (all use the same token)
         web3_4, account4 = network.connect_account4(self)
         web3_1, account1 = network.connect_account1(self)
         web3_2, account2 = network.connect_account2(self)

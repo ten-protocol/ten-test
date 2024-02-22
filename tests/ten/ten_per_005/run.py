@@ -18,7 +18,7 @@ class PySysTest(TenNetworkTest):
         self.chain_id = 0
 
     def execute(self):
-        # connect to the network, deploy contract, determine constants
+        # connect to the network on the primary gateway and deploy the contract
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
         storage = KeyStorage(self, web3)
