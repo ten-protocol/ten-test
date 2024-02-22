@@ -5,10 +5,9 @@ from ten.test.contracts.storage import Storage
 class PySysTest(GenericNetworkTest):
 
     def execute(self):
-        # connect to the network
+        # connect to the network and deploy the contract
         network = self.get_network_connection()
         web3, account = network.connect_account4(self)
-        self.log.info('Using account with address %s', account.address)
 
         storage = Storage(self, web3, 100)
         tx_receipt = storage.deploy(network, account)

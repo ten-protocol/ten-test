@@ -4,8 +4,7 @@
     <description>
         <title>Guesser: state changing, deploy contract and guess the value</title>
         <purpose><![CDATA[
-A simple smart contract which hard codes a value which it is necessary to guess. Test is setup to run
-against Ten, Sepolia or Ganache. There is a constructor and destructor in the contract.
+A simple smart contract which hard codes a value which it is necessary to guess.
 ]]>
         </purpose>
     </description>
