@@ -183,6 +183,7 @@ class DefaultPostLondon:
         """Replay a transaction to get a failure reason."""
         try:
             web3.eth.call(tx, block_identifier=tx_recp.blockNumber)
+            self.log.warn('Replaying the transaction did not throw an error')
         except Exception as e:
             self.log.error('Replay call: %s', e)
 
