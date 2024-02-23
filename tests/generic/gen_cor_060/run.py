@@ -17,8 +17,8 @@ class PySysTest(GenericNetworkTest):
         erc20.deploy(network, account1)
 
         contract_1 = erc20.contract
-        contract_2 = erc20.contract(address=erc20.address, abi=erc20.abi)
-        contract_3 = web3_3.eth.contract(address=erc20.address, abi=erc20.abi)
+        contract_2 = MintedERC20Token.clone(web3_2, account2, erc20).contract
+        contract_3 = MintedERC20Token.clone(web3_3, account3, erc20).contract
 
         # check initial allocations
         self.log.info('Balances at initial allocation')

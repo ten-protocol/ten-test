@@ -8,7 +8,7 @@ In the test we calculate the expected amount of gas for a transaction against a 
 funds to an ephemeral account to be able to perform the transaction. We try to transact but set our max gas price
 to twice the actual gas price, meaning should it go through at that price we would not have enough funds to cover the
 total cost - we expect the mempool to reject the transaction. We then do it again with the gas price set at the actual
-network gas price and expect the mempool to accept and execute the transaction. 
+network gas price and expect the mempool to accept and execute the transaction.
 ]]>
         </purpose>
     </description>

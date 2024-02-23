@@ -37,9 +37,9 @@ class GenericNetworkTest(BaseTest):
         self.funds_db = FundsPersistence(db_dir)
         self.addCleanupFunction(self.close_db)
 
-        # every test has a connection for the funded account
+        # every test has a unique connection for the funded account
         self.connections = {}
-        self.network_funding = self.get_network_connection(name='funding')
+        self.network_funding = self.get_network_connection()
         self.balance = 0
         self.accounts = []
         self.transfer_costs = []

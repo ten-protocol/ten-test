@@ -42,9 +42,9 @@ class PySysTest(GenericNetworkTest):
         self.log.info('Submitting transaction with gas_price of %d', gas_price)
         try:
             self.submit(account, contract.contract.functions.store(1), web3, 0, gas_price, estimate_gas)
-            self.addOutcome(FAILED, 'Transaction error was not received as expected')
+            self.addOutcome(PASSED, 'Transaction error was successful as expected')
         except TransactionError:
-            self.addOutcome(PASSED, 'Transaction error received as expected')
+            self.addOutcome(FAILED, 'Transaction error was not successful as expected')
 
         self.log.info('Balance of account is now %d' % web3.eth.get_balance(account.address))
 

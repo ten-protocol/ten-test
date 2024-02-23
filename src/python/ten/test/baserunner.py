@@ -79,37 +79,19 @@ class TenRunnerPlugin():
                 self.__set_contract_addresses(runner)
 
                 props = Properties()
-                gateway_url = None
-                account = Web3().eth.account.from_key(Properties().fundacntpk())
+                account = Web3().eth.account.from_key(props.fundacntpk())
+                gateway_url = '%s:%d' % (props.host_http(self.env), props.port_http(self.env))
+                runner.log.info('Joining network using url %s', '%s/v1/join/' % gateway_url)
+                user_id = self.__join('%s/v1/join/' % gateway_url)
+                runner.log.info('User id is %s', user_id)
 
-                if self.is_local_ten():
-                    hprocess, port = self.run_wallet(runner)
-                    gateway_url = 'http://127.0.0.1:%d' % port
-                    runner.log.info('Joining network using url %s', '%s/v1/join/' % gateway_url)
-                    user_id = self.__join('%s/v1/join/' % gateway_url)
-
-                    runner.log.info('Registering account %s with the network', account.address)
-                    response = self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
-                    runner.log.info('Registration success was %s', response.ok)
-                    web3 = Web3(Web3.HTTPProvider('%s/v1/?u=%s' % (gateway_url, user_id)))
-                    runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
-                    runner.addCleanupFunction(lambda: self.__print_cost(runner,
-                                                                        '%s/v1/authenticate/?u=%s' % (gateway_url, user_id),
-                                                                        web3, user_id))
-
-                else:
-                    gateway_url = '%s:%d' % (props.host_http(self.env), props.port_http(self.env))
-                    runner.log.info('Joining network using url %s', '%s/v1/join/' % gateway_url)
-                    user_id = self.__join('%s/v1/join/' % gateway_url)
-                    runner.log.info('User id is %s', user_id)
-
-                    runner.log.info('Registering account %s with the network', account.address)
-                    response = self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
-                    runner.log.info('Registration success was %s', response.ok)
-                    web3 = Web3(Web3.HTTPProvider('%s/v1/?u=%s' % (gateway_url, user_id)))
-                    runner.addCleanupFunction(lambda: self.__print_cost(runner,
-                                                                        '%s/v1/authenticate/?u=%s' % (gateway_url, user_id),
-                                                                        web3, user_id))
+                runner.log.info('Registering account %s with the network', account.address)
+                response = self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
+                runner.log.info('Registration success was %s', response.ok)
+                web3 = Web3(Web3.HTTPProvider('%s/v1/?u=%s' % (gateway_url, user_id)))
+                runner.addCleanupFunction(lambda: self.__print_cost(runner,
+                                                                    '%s/v1/authenticate/?u=%s' % (gateway_url, user_id),
+                                                                    web3, user_id))
 
                 tx_count = web3.eth.get_transaction_count(account.address)
                 balance = web3.from_wei(web3.eth.get_balance(account.address), 'ether')
