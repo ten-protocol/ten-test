@@ -18,6 +18,7 @@ class PySysTest(GenericNetworkTest):
         query_id = 0
         request_data = "Calculate some randon stuff"
         response_result = "thisistherandomstuff"
+        contract_2 = StoreAndRetrieve.clone(web3_2, account_2, contract_1)
         for i in range(100, 500, 50):
             self.log.info('Storing query using account 1 with multiplier %d', i)
             query_id = query_id + 1
@@ -25,6 +26,5 @@ class PySysTest(GenericNetworkTest):
             network_1.transact(self, web3_1, target, account_1, contract_1.GAS_LIMIT)
 
             self.log.info('Retrieving query using account 2')
-            contract_2 = StoreAndRetrieve.clone(web3_2, account_2, contract_1)
             response = contract_2.contract.functions.retrieveQuery(query_id).call()
             self.assertTrue(response[1][1] == i*response_result)
