@@ -16,7 +16,7 @@ class PySysTest(GenericNetworkTest):
         web3_1, account_1 = network.connect_account1(self)
 
         contract_1 = Storage(self, web3_1, 0)
-        contract_1.deploy(network, account_1, persist_nonce=False)
+        contract_1.deploy(network, account_1)
         estimate_gas = contract_1.contract.functions.store(1).estimate_gas()
 
         # connect an ephemeral account, grab a reference to the contract with it's details and give it
