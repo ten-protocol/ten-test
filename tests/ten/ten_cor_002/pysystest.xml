@@ -2,12 +2,12 @@
 <pysystest type="auto">
 
     <description>
-        <title>Event relevancy - 4 accounts own WE, 4 accounts subscribe, 1 relevant event, 1 received</title>
+        <title>Event relevancy - 4 accounts own gateway, 4 accounts subscribe, 1 relevant event, 1 received</title>
         <purpose><![CDATA[
-We have 4 accounts registered and connected to the network through their own wallet extensions. Account4 deploys the
-relevancy contract and all accounts subscribe to all events from the contract. Account 4 transacts against the contract
-to produce a CallerIndexedAddress event that contains their calling address. As such, only Account4's subscription should
-receive back an event i.e. the other accounts should receive nothing.
+We have 4 accounts registered and connected to the network through their own gateways. Account4 is connected through the
+primary gateway, and deploys the relevancy contract; all accounts then subscribe to all events from the contract.
+Account4 transacts against the contract to produce a CallerIndexedAddress event that contains their calling address.
+As such, only Account4's subscription should receive back an event i.e. the other accounts should receive nothing.
 ]]>
         </purpose>
     </description>

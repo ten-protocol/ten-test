@@ -1,19 +1,18 @@
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.storage import Storage
-from ten.test.helpers.wallet_extension import WalletExtension
 from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        # create two connections through a single gateway, each with their own user id (via a join call)
+        # create two connections through the primary gateway
         self.log.info('')
         self.log.info('Create two user_id connections through a single wallet extension')
         network_connection_1 = self.get_network_connection()
         network_connection_2 = self.get_network_connection()
 
-        # each user id has two registered accounts made against it
+        # each connection has two registered accounts made against it
         self.log.info('')
         self.log.info('Register two accounts with each of the user_id connections')
         web3_1, account_1 = network_connection_1.connect_account1(self)

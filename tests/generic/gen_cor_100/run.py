@@ -26,6 +26,7 @@ class PySysTest(GenericNetworkTest):
         if tx_receipt.status == 1: storage.set_persisted_param('value', actual+1)
         else: self.log.warn('Transaction receipt showed error')
 
+        self.wait(float(self.block_time) * 2.0)
         actual_after = storage.contract.functions.retrieve().call()
         self.log.info('Current retrieved value is %d', actual_after)
         self.assertTrue(actual_after == actual+1)

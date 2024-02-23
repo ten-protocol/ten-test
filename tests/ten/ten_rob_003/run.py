@@ -30,7 +30,7 @@ class PySysTest(TenNetworkTest):
         additional_userid = 0
         for i in range(0, self.CLIENTS):
             pk = secrets.token_hex(32)
-            if random.randint(0, 8) < 7:
+            if random.randint(0, 8) < 4:
                 additional_userid = additional_userid + 1
                 self.log.info('Registering client %d with new user id (current total %d)', i, additional_userid)
                 network_connection = self.get_network_connection()

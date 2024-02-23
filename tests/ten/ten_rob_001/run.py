@@ -15,7 +15,7 @@ class PySysTest(TenNetworkTest):
         self.subscribers = []
 
     def execute(self):
-        # connect to network and deploy contract
+        # connect to network on the primary gateway  and deploy contract
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
         storage = Storage(self, web3, 100)

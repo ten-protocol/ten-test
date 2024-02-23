@@ -6,7 +6,7 @@ from ten.test.contracts.error import Error
 class PySysTest(GenericNetworkTest):
 
     def execute(self):
-        # get the network, connect account1, deploy the error contract and then estimate gas for the test
+        # connect to the network, deploy the error contract and then estimate gas for the test
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
         error = Error(self, web3)

@@ -6,6 +6,7 @@ from ten.test.helpers.log_subscriber import FilterLogSubscriber
 class PySysTest(TenNetworkTest):
 
     def execute(self):
+        # connect to the network via the primary gateway
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 

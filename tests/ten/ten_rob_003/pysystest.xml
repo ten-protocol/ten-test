@@ -3,9 +3,10 @@
 
     <description>
         <title>Gateway - create large number of connections (shared and unique)</title>
-        <purpose><![CDATA[ The test opens around 500 connections through a single wallet extension / gateway. Approx
-half of those connections go through a single user id, whilst the other half create their own unique user id with the
-single registered user. Once done we check some random accounts can trade through the wallet extension successfully.
+        <purpose><![CDATA[
+The test opens around 100 connections through a single gateway. Approx half of those connections go through a single
+user id, whilst the other half create their own unique user id with the single registered user. Once done we check some
+random accounts can trade through the wallet extension successfully.
 ]]>
         </purpose>
     </description>

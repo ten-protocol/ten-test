@@ -106,29 +106,22 @@ class Ten(DefaultPreLondon):
             self.WS_HOST = test.connections[name][1]
             self.PORT = test.connections[name][2]
             self.WS_PORT = test.connections[name][3]
-            self.log.info('Using existing gateway as %s on port=%d, ws_port=%d', name, self.PORT, self.WS_PORT)
+            self.log.info('Using existing gateway %s on host=%s, port=%d', name, self.HOST, self.PORT)
 
         else:
             if name == 'primary':
                 self.HOST = props.host_http(test.env)
                 self.WS_HOST = props.host_ws(test.env)
-
-                if test.is_local_ten():
-                    wallet = WalletExtension.start(test, name=name)
-                    self.PORT = wallet.port
-                    self.WS_PORT = wallet.ws_port
-                    self.log.info('Using local gateway as primary on port=%d, ws_port=%d', self.PORT, self.WS_PORT)
-                else:
-                    self.PORT = props.port_http(test.env)
-                    self.WS_PORT = props.port_ws(test.env)
-                    self.log.info('Using hosted gateway as primary on port=%d, ws_port=%d', self.PORT, self.WS_PORT)
+                self.PORT = props.port_http(test.env)
+                self.WS_PORT = props.port_ws(test.env)
+                self.log.info('Using primary gateway on host=%s, port=%d', self.HOST, self.PORT)
             else:
                 wallet = WalletExtension.start(test, name=name)
                 self.PORT = props.port_http('ten.local')
                 self.WS_PORT = props.port_ws('ten.local')
                 self.PORT = wallet.port
                 self.WS_PORT = wallet.ws_port
-                self.log.info('Using local gateway as %s on port=%d, ws_port=%d', name, self.PORT, self.WS_PORT)
+                self.log.info('Using local gateway %s on host=%s, port=%d', name, self.HOST, self.PORT)
 
             test.connections[name] = (self.HOST, self.WS_HOST, self.PORT, self.WS_PORT)
 

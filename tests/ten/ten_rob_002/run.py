@@ -20,10 +20,11 @@ class PySysTest(TenNetworkTest):
         self.client_connections = []
 
     def execute(self):
+        # connect to the network on the primary gateway
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
-        # set up the wallets and deploy contracts
+        # deploy the contracts and create a new connection on the primary gateway for each client
         funders = [secrets.token_hex() for _ in range(0, self.NUM_FUNDS)]
         funders_connection = self.get_network_connection()
 
@@ -39,7 +40,7 @@ class PySysTest(TenNetworkTest):
         error.deploy(network, account)
         error_connection = self.get_network_connection()
 
-        # create the clients
+        # create the clients and get them running concurrently
         for i in range(0, len(funders)):
             recipients = [Web3().eth.account.from_key(x).address for x in funders if x != funders[i]]
             self.funds_client(network, funders[i], recipients, i, funders_connection)

@@ -6,13 +6,15 @@ from ten.test.contracts.expensive import ExpensiveContract
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        steps = range(350, 370, 2)
-
-        # get the network, deploy the contract as account1, calculate total cost estimate
+        # connect to the network on the primary gateway and deploy the contract
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
+
         contract = ExpensiveContract(self, web3)
         contract.deploy(network, account)
+
+        # estimate the gas costs with increasing input
+        steps = range(350, 370, 2)
         gas_price = web3.eth.gas_price
         gas_estimate = sum([contract.contract.functions.calculateFibonacci(x).estimate_gas() for x in steps])
         cost_estimate = gas_estimate*gas_price

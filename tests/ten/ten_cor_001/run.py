@@ -5,11 +5,11 @@ from ten.test.contracts.payable import ReceiveEther
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        # the deployer goes through the test wallet extension
+        # the deployer goes through the primary gateway
         network_deploy = self.get_network_connection()
         web3_deploy, account_deploy = network_deploy.connect_account1(self)
 
-        # the user goes through their own instance of the wallet extension
+        # the user goes through their own instance of a gateway
         network_user = self.get_network_connection(name='user')
         web3_user, account_user = network_user.connect_account2(self)
 

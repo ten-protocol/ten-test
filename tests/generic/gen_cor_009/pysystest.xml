@@ -4,6 +4,7 @@
     <description>
         <title>RPC API: check get_transaction_count</title>
         <purpose><![CDATA[]]>
+Checks the calls to get_transactionCount increase as you deploy a contract and interact with it.
         </purpose>
     </description>
 
