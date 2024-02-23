@@ -3,10 +3,9 @@ from ten.test.contracts.nested import StoreAndRetrieve
 
 
 class PySysTest(GenericNetworkTest):
-    MULT = 100
 
     def execute(self):
-        # connect to the network and deploy the game
+        # connect to the network and deploy the contract
         network_1 = self.get_network_connection()
         network_2 = self.get_network_connection()
         web3_1, account_1 = network_1.connect_account1(self)
@@ -15,7 +14,7 @@ class PySysTest(GenericNetworkTest):
         contract_1 = StoreAndRetrieve(self, web3_1)
         contract_1.deploy(network_1, account_1)
 
-        # Store query
+        # Store in a loop with increasing response size and retrieve the response
         query_id = 0
         request_data = "Calculate some randon stuff"
         response_result = "thisistherandomstuff"
