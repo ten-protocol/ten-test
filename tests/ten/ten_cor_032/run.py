@@ -13,12 +13,12 @@ class PySysTest(GenericNetworkTest):
 
         contract_1 = StoreAndRetrieve(self, web3_1)
         contract_1.deploy(network_1, account_1)
+        contract_2 = StoreAndRetrieve.clone(web3_2, account_2, contract_1)
 
         # Store in a loop with increasing response size and retrieve the response
         query_id = 0
         request_data = "Calculate some randon stuff"
         response_result = "thisistherandomstuff"
-        contract_2 = StoreAndRetrieve.clone(web3_2, account_2, contract_1)
         for i in range(100, 500, 50):
             self.log.info('Storing query using account 1 with multiplier %d', i)
             query_id = query_id + 1
