@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Nested: store and retrieve from a nested structure</title>
+        <purpose><![CDATA[]]>
+Two accounts are used, connected to the same primary gateway but with different tokens. The first is used to store
+data in a contract with increasing result size, and the second is used to retrieve that stored value and validate
+that it is correct.
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
