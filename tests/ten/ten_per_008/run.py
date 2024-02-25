@@ -1,7 +1,6 @@
-import os, math, time, secrets
+import os, time, secrets
 from web3 import Web3
 from datetime import datetime
-from collections import OrderedDict
 from pysys.constants import PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
@@ -9,7 +8,7 @@ from ten.test.utils.gnuplot import GnuplotHelper
 
 class PySysTest(TenNetworkTest):
     ITERATIONS = 1024  # iterations per client, don't exceed bulk loading more than 1024
-    CLIENTS = ['one', 'two', 'three', 'four']
+    CLIENTS = 4
 
     def execute(self):
         # connect to the network and determine constants and funds required to run the test
@@ -17,14 +16,15 @@ class PySysTest(TenNetworkTest):
 
         # run the clients and wait for their completion
         start = time.perf_counter()
-        for i in self.CLIENTS: self.run_client('client_%s' % i, network, self.ITERATIONS)
-        for i in self.CLIENTS:
+        for i in range(0, self.CLIENTS):
+            self.run_client('client_%s' % i, network, self.ITERATIONS)
+        for i in range(0, self.CLIENTS):
             self.waitForGrep(file='client_%s.out' % i, expr='Client client_%s completed' % i,
                              timeout=900)
         end = time.perf_counter()
 
         duration = (end-start)
-        total_sent = len(self.CLIENTS) * self.ITERATIONS
+        total_sent = self.CLIENTS * self.ITERATIONS
         self.log.info('Duration of RPC request sending %.4f' % duration)
         self.log.info('Bulk rate calculation %d' % (total_sent / duration))
 
@@ -55,8 +55,8 @@ class PySysTest(TenNetworkTest):
     def graph(self):
         # load the durations and sort
         data = []
-        for i in self.CLIENTS:
-            with open(os.path.join(self.output, 'client_%s.log' % i), 'r') as fp:
+        for i in range(0, self.CLIENTS):
+            with open(os.path.join(self.output, 'client_%s_latency.log' % i), 'r') as fp:
                 for line in fp.readlines(): data.append(float(line.strip()))
         data.sort()
         self.log.info('Average duration = %f', (sum(data) / len(data)))
@@ -72,7 +72,7 @@ class PySysTest(TenNetworkTest):
         date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
                             branch, date,
-                            str(self.mode), str(len(data)), '%d' % len(self.CLIENTS), '%.2f' % (sum(data) / len(data)))
+                            str(self.mode), str(len(data)), '%d' % self.CLIENTS, '%.2f' % (sum(data) / len(data)))
 
     def bin_array(self, data, num_bins=40):
         min_val = min(data)

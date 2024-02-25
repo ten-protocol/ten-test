@@ -21,6 +21,18 @@ set size 0.5, 0.45
 set origin 0.0, 0.50
 set style fill solid 0.5
 set title "{/Arial:Bold=13 Binned Latency}"
-set xlabel "Duration"  font "Courier,12"
+set xlabel "Duration (ms)"  font "Courier,12"
 set ylabel "Number" font "Courier,12" offset 1,0
 plot "bins.log" using 1:2 with boxes title "Binned latency"
+
+#plot 1
+set size 0.5, 0.45
+set origin 0.0, 0.05
+set style fill solid 0.5
+set title "{/Arial:Bold=13 Throughput}"
+set xlabel "Time (s)"  font "Courier,12"
+set ylabel "Total" font "Courier,12" offset 1,0
+plot "client_1_throughput.log" using 1:2 with lines title "Client 1", \
+     "client_2_throughput.log" using 1:2 with lines title "Client 2", \
+     "client_3_throughput.log" using 1:2 with lines title "Client 3", \
+     "client_4_throughput.log" using 1:2 with lines title "Client 4", \
