@@ -60,8 +60,8 @@ class PySysTest(TenNetworkTest):
             with open(os.path.join(self.output, 'client_%s_latency.log' % i), 'r') as fp:
                 for line in fp.readlines(): data.append(float(line.strip()))
         data.sort()
-        self.log.info('Average latency = %f', (sum(data) / len(data)))
-        self.log.info('Median latency = %f', data[int(len(data) / 2)])
+        self.log.info('Average latency per client %f (ms)', (sum(data) / len(data)))
+        self.log.info('Median latency per client %f (ms)', data[int(len(data) / 2)])
 
         bins = self.bin_array(data)
         with open(os.path.join(self.output, 'bins.log'), 'w') as fp:
