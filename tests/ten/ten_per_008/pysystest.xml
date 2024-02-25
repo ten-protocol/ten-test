@@ -4,6 +4,8 @@
     <description>
         <title>RPC - rates for handling balance requests</title>
         <purpose><![CDATA[
+Spawns a set number of clients querying for their balance, and measures the latency in the response, the client
+throughput and the bulk throughput across all clients. 
 ]]>
         </purpose>
     </description>
