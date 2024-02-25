@@ -16,8 +16,9 @@ class PySysTest(TenNetworkTest):
 
         # run the clients and wait for their completion
         start = time.perf_counter()
+        start_ns = time.perf_counter_ns()
         for i in range(0, self.CLIENTS):
-            self.run_client('client_%s' % i, network, self.ITERATIONS)
+            self.run_client('client_%s' % i, network, self.ITERATIONS, start_ns)
         for i in range(0, self.CLIENTS):
             self.waitForGrep(file='client_%s.out' % i, expr='Client client_%s completed' % i,
                              timeout=900)
@@ -26,7 +27,7 @@ class PySysTest(TenNetworkTest):
         duration = (end-start)
         total_sent = self.CLIENTS * self.ITERATIONS
         self.log.info('Duration of RPC request sending %.4f' % duration)
-        self.log.info('Bulk rate calculation %d' % (total_sent / duration))
+        self.log.info('Bulk rate throughput %d (requests/sec)' % (total_sent / duration))
 
         # graph the output
         self.graph()
@@ -34,7 +35,7 @@ class PySysTest(TenNetworkTest):
         # passed if no failures (though pdf output should be reviewed manually)
         self.addOutcome(PASSED)
 
-    def run_client(self, name, network, num_iterations):
+    def run_client(self, name, network, num_iterations, start):
         """Run a background load client. """
         pk = secrets.token_hex(32)
         account = Web3().eth.account.from_key(pk)
@@ -49,8 +50,8 @@ class PySysTest(TenNetworkTest):
         args.extend(['--num_iterations', '%d' % num_iterations])
         args.extend(['--client_name', name])
         args.extend(['--pk', pk])
+        args.extend(['--start', '%d' % start])
         self.run_python(script, stdout, stderr, args)
-        self.waitForSignal(file=stdout, expr='Client %s started' % name)
 
     def graph(self):
         # load the durations and sort
@@ -59,8 +60,8 @@ class PySysTest(TenNetworkTest):
             with open(os.path.join(self.output, 'client_%s_latency.log' % i), 'r') as fp:
                 for line in fp.readlines(): data.append(float(line.strip()))
         data.sort()
-        self.log.info('Average duration = %f', (sum(data) / len(data)))
-        self.log.info('Median duration = %f', data[int(len(data) / 2)])
+        self.log.info('Average latency = %f', (sum(data) / len(data)))
+        self.log.info('Median latency = %f', data[int(len(data) / 2)])
 
         bins = self.bin_array(data)
         with open(os.path.join(self.output, 'bins.log'), 'w') as fp:

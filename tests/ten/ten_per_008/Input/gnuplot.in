@@ -32,7 +32,7 @@ set style fill solid 0.5
 set title "{/Arial:Bold=13 Throughput}"
 set xlabel "Time (s)"  font "Courier,12"
 set ylabel "Total" font "Courier,12" offset 1,0
-plot "client_1_throughput.log" using 1:2 with lines title "Client 1", \
-     "client_2_throughput.log" using 1:2 with lines title "Client 2", \
-     "client_3_throughput.log" using 1:2 with lines title "Client 3", \
-     "client_4_throughput.log" using 1:2 with lines title "Client 4", \
+plot "client_0_throughput.log" using 1:2 with lines title "Client 1", \
+     "client_1_throughput.log" using 1:2 with lines title "Client 2", \
+     "client_2_throughput.log" using 1:2 with lines title "Client 3", \
+     "client_3_throughput.log" using 1:2 with lines title "Client 4", \
