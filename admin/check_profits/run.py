@@ -24,7 +24,7 @@ class PySysTest(TenNetworkTest):
         self.log.info('Gas holding balance %.6f ETH', web3_sequencer.from_wei(gas_payment_balance, 'ether'))
         # self.funds_db.insert_funds('GasPayment', gas_payment_address, self.env, current_time, gas_payment_balance)
 
-        with open(os.path.join(self.output, 'sequencer_funds.log'), 'r') as fp:
+        with open(os.path.join(self.output, 'sequencer_funds.log'), 'w') as fp:
             for entry in reversed(self.funds_db.get_funds(name='Sequencer', environment=self.env)):
                 fp.write('%d %d\n' % (entry[0], entry[1]))
 
