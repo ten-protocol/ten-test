@@ -75,23 +75,25 @@ class GenericNetworkTest(BaseTest):
         """Return true if we are running against a sepolia Ten network. """
         return self.env in ['ten.sepolia']
 
-    def run_python(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
+    def run_python(self, script, stdout, stderr, args=None, workingDir=None, state=BACKGROUND, timeout=120):
         """Run a python process. """
         self.log.info('Running python script %s', os.path.basename(script))
         arguments = [script]
         if args is not None: arguments.extend(args)
+        if workingDir is None: workingDir = self.output
 
         environ = copy.deepcopy(os.environ)
-        hprocess = self.startProcess(command=sys.executable, displayName='python', workingDir=self.output,
+        hprocess = self.startProcess(command=sys.executable, displayName='python', workingDir=workingDir,
                                      arguments=arguments, environs=environ, stdout=stdout, stderr=stderr,
                                      state=state, timeout=timeout)
         return hprocess
 
-    def run_javascript(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
+    def run_javascript(self, script, stdout, stderr, args=None, workingDir=None, state=BACKGROUND, timeout=120):
         """Run a javascript process. """
         self.log.info('Running javascript %s', os.path.basename(script))
         arguments = [script]
         if args is not None: arguments.extend(args)
+        if workingDir is None: workingDir = self.output
 
         environ = copy.deepcopy(os.environ)
         node_path = '%s:%s' % (Properties().node_path(), os.path.join(PROJECT.root, 'src', 'javascript', 'modules'))
@@ -99,7 +101,7 @@ class GenericNetworkTest(BaseTest):
             environ["NODE_PATH"] = node_path + ":" + environ["NODE_PATH"]
         else:
             environ["NODE_PATH"] = node_path
-        hprocess = self.startProcess(command=Properties().node_binary(), displayName='node', workingDir=self.output,
+        hprocess = self.startProcess(command=Properties().node_binary(), displayName='node', workingDir=workingDir,
                                      arguments=arguments, environs=environ, stdout=stdout, stderr=stderr,
                                      state=state, timeout=timeout)
         return hprocess

@@ -14,22 +14,31 @@ class PySysTest(TenNetworkTest):
         network = self.get_network_connection()
 
         # run the clients and wait for their completion
-        for clients in [2, 4, 6]:
-            self.log.info(' ')
-            self.log.info('Running for %d clients' % clients)
-            out_dir = os.path.join(self.output, 'clients_%d' % clients)
-            start_ns = time.perf_counter_ns()
-            for i in range(0, clients):
-                self.run_client('client_%s' % i, network, self.ITERATIONS, start_ns, out_dir)
-            for i in range(0, clients):
-                self.waitForGrep(file=os.path.join(out_dir, 'client_%s.out' % i),
-                                 expr='Client client_%s completed' % i, timeout=900)
-            end_ns = time.perf_counter_ns()
-            throughput = float(clients * self.ITERATIONS) / float((end_ns-start_ns)/1e9)
-            self.log.info('Bulk rate throughput %.2f (requests/sec)' % throughput)
+        results_file = os.path.join(self.output, 'results.log')
+        with open(results_file, 'w') as fp:
+            for clients in [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]:
+                self.log.info(' ')
+                self.log.info('Running for %d clients' % clients)
+                out_dir = os.path.join(self.output, 'clients_%d' % clients)
+                start_ns = time.perf_counter_ns()
+                for i in range(0, clients):
+                    self.run_client('client_%s' % i, network, self.ITERATIONS, start_ns, out_dir)
+                for i in range(0, clients):
+                    self.waitForGrep(file=os.path.join(out_dir, 'client_%s.out' % i),
+                                     expr='Client client_%s completed' % i, timeout=900)
+                end_ns = time.perf_counter_ns()
+                throughput = float(clients * self.ITERATIONS) / float((end_ns-start_ns)/1e9)
+                avg_latency, mode_latency = self.process_run(clients, out_dir)
+                self.log.info('Bulk rate throughput %.2f (requests/sec)' % throughput)
+                self.log.info('Average latency %.2f (ms)' % avg_latency)
+                self.log.info('Modal latency %.2f (ms)' % mode_latency)
+                fp.write('%d %.2f %.2f %.2f\n' % (clients, throughput, avg_latency, mode_latency))
 
-            # graph the output for the single run of 4 clients
-            if clients == 4: self.graph_single_run(num_clients=4, out_dir=out_dir, throughput=throughput)
+                # graph the output for the single run of 4 clients
+                if clients == 4: self.graph_four_clients(throughput, avg_latency, mode_latency)
+
+        # plot the summary graph
+        self.graph_all_clients()
 
         # passed if no failures (though pdf output should be reviewed manually)
         self.addOutcome(PASSED)
@@ -52,7 +61,7 @@ class PySysTest(TenNetworkTest):
         args.extend(['--start', '%d' % start])
         self.run_python(script, stdout, stderr, args, workingDir=out_dir)
 
-    def graph_single_run(self, num_clients, out_dir, throughput):
+    def process_run(self, num_clients, out_dir):
         data = []
         for i in range(0, num_clients):
             with open(os.path.join(out_dir, 'client_%s_latency.log' % i), 'r') as fp:
@@ -70,12 +79,18 @@ class PySysTest(TenNetworkTest):
                     mode_latency = b
                 fp.write('%.2f %d\n' % (b, v))
             fp.flush()
+        return avg_latency, mode_latency
 
-        # plot out the results
+    def graph_four_clients(self, throughput, avg_latency, mode_latency):
         branch = GnuplotHelper.buildInfo().branch
         date = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-        GnuplotHelper.graph(self, os.path.join(self.input, 'single_run.in'), branch, date, str(self.mode),
+        GnuplotHelper.graph(self, os.path.join(self.input, 'four_clients.in'), branch, date, str(self.mode),
                             '%.2f' % throughput, '%.2f' % avg_latency, '%.2f' % mode_latency)
+
+    def graph_all_clients(self):
+        branch = GnuplotHelper.buildInfo().branch
+        date = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+        GnuplotHelper.graph(self, os.path.join(self.input, 'all_clients.in'), branch, date, str(self.mode))
 
     def bin_array(self, data, num_bins=40):
         min_val = min(data)
