@@ -1,5 +1,5 @@
 set terminal pdf enhanced size 18cm, 18cm
-set output ARG2."_four_clients.pdf"
+set output "profits.pdf"
 set multiplot layout 2,2 rowsfirst title ARG2.": ".ARG1 noenhanced scale 0.95,0.95
 set grid
 set lmargin 10
