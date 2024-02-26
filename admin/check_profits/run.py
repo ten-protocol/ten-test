@@ -28,6 +28,10 @@ class PySysTest(TenNetworkTest):
             for entry in reversed(self.funds_db.get_funds(name='Sequencer', environment=self.env)):
                 fp.write('%s %s\n' % (entry[0], entry[1]))
 
+        with open(os.path.join(self.output, 'gas_payment.log'), 'w') as fp:
+            for entry in reversed(self.funds_db.get_funds(name='GasPayment', environment=self.env)):
+                fp.write('%s %s\n' % (entry[0], entry[1]))
+
         self.graph()
 
     def graph(self):
