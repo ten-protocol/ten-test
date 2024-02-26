@@ -1,13 +1,17 @@
-import time, os
+import time, os, shutil
 from web3 import Web3
 from datetime import datetime
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 from ten.test.utils.gnuplot import GnuplotHelper
 
+
 class PySysTest(TenNetworkTest):
 
     def execute(self):
+        self.execute_graph()
+
+    def execute_run(self):
         current_time = int(time.time())
 
         l1_network = self.get_l1_network_connection(self.env)
@@ -32,6 +36,11 @@ class PySysTest(TenNetworkTest):
             for entry in reversed(self.funds_db.get_funds(name='GasPayment', environment=self.env)):
                 fp.write('%s %s\n' % (entry[0], entry[1]))
 
+        self.graph()
+
+    def execute_graph(self):
+        shutil.copy(os.path.join(self.input, 'gas_payment.log'), os.path.join(self.output, 'gas_payment.log'))
+        shutil.copy(os.path.join(self.input, 'sequencer_funds.log'), os.path.join(self.output, 'sequencer_funds.log'))
         self.graph()
 
     def graph(self):
