@@ -25,7 +25,7 @@ class PySysTest(TenNetworkTest):
                     self.run_client('client_%s' % i, network, self.ITERATIONS, start_ns, out_dir)
                 for i in range(0, clients):
                     self.waitForGrep(file=os.path.join(out_dir, 'client_%s.out' % i),
-                                     expr='Client client_%s completed' % i, timeout=900)
+                                     expr='Client client_%s completed' % i, timeout=300)
                 end_ns = time.perf_counter_ns()
                 throughput = float(clients * self.ITERATIONS) / float((end_ns-start_ns)/1e9)
                 avg_latency, mode_latency = self.process_run(clients, out_dir)
