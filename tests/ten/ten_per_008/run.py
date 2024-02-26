@@ -8,42 +8,50 @@ from ten.test.utils.gnuplot import GnuplotHelper
 
 class PySysTest(TenNetworkTest):
     ITERATIONS = 1024  # iterations per client, don't exceed bulk loading more than 1024
-    CLIENTS = 4
 
     def execute(self):
         # connect to the network and determine constants and funds required to run the test
         network = self.get_network_connection()
 
         # run the clients and wait for their completion
-        start = time.perf_counter()
-        start_ns = time.perf_counter_ns()
-        for i in range(0, self.CLIENTS):
-            self.run_client('client_%s' % i, network, self.ITERATIONS, start_ns)
-        for i in range(0, self.CLIENTS):
-            self.waitForGrep(file='client_%s.out' % i, expr='Client client_%s completed' % i,
-                             timeout=900)
-        end = time.perf_counter()
+        results_file = os.path.join(self.output, 'results.log')
+        with open(results_file, 'w') as fp:
+            for clients in [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]:
+                self.log.info(' ')
+                self.log.info('Running for %d clients' % clients)
+                out_dir = os.path.join(self.output, 'clients_%d' % clients)
+                start_ns = time.perf_counter_ns()
+                for i in range(0, clients):
+                    self.run_client('client_%s' % i, network, self.ITERATIONS, start_ns, out_dir)
+                for i in range(0, clients):
+                    self.waitForGrep(file=os.path.join(out_dir, 'client_%s.out' % i),
+                                     expr='Client client_%s completed' % i, timeout=900)
+                end_ns = time.perf_counter_ns()
+                throughput = float(clients * self.ITERATIONS) / float((end_ns-start_ns)/1e9)
+                avg_latency, mode_latency = self.process_run(clients, out_dir)
+                self.log.info('Bulk rate throughput %.2f (requests/sec)' % throughput)
+                self.log.info('Average latency %.2f (ms)' % avg_latency)
+                self.log.info('Modal latency %.2f (ms)' % mode_latency)
+                fp.write('%d %.2f %.2f %.2f\n' % (clients, throughput, avg_latency, mode_latency))
 
-        duration = (end-start)
-        total_sent = self.CLIENTS * self.ITERATIONS
-        self.log.info('Duration of RPC request sending %.4f' % duration)
-        self.log.info('Bulk rate throughput %d (requests/sec)' % (total_sent / duration))
+                # graph the output for the single run of 4 clients
+                if clients == 4: self.graph_four_clients(throughput, avg_latency, mode_latency)
 
-        # graph the output
-        self.graph()
+        # plot the summary graph
+        self.graph_all_clients()
 
         # passed if no failures (though pdf output should be reviewed manually)
         self.addOutcome(PASSED)
 
-    def run_client(self, name, network, num_iterations, start):
-        """Run a background load client. """
+    def run_client(self, name, network, num_iterations, start, out_dir):
         pk = secrets.token_hex(32)
         account = Web3().eth.account.from_key(pk)
         self.distribute_native(account, Web3().from_wei(1, 'ether'))
         network.connect(self, private_key=pk, check_funds=False)
 
-        stdout = os.path.join(self.output, '%s.out' % name)
-        stderr = os.path.join(self.output, '%s.err' % name)
+        if not os.path.exists(out_dir): os.mkdir(out_dir)
+        stdout = os.path.join(out_dir, '%s.out' % name)
+        stderr = os.path.join(out_dir, '%s.err' % name)
         script = os.path.join(self.input, 'client.py')
         args = []
         args.extend(['--network_http', network.connection_url()])
@@ -51,29 +59,38 @@ class PySysTest(TenNetworkTest):
         args.extend(['--client_name', name])
         args.extend(['--pk', pk])
         args.extend(['--start', '%d' % start])
-        self.run_python(script, stdout, stderr, args)
+        self.run_python(script, stdout, stderr, args, workingDir=out_dir)
 
-    def graph(self):
-        # load the durations and sort
+    def process_run(self, num_clients, out_dir):
         data = []
-        for i in range(0, self.CLIENTS):
-            with open(os.path.join(self.output, 'client_%s_latency.log' % i), 'r') as fp:
+        for i in range(0, num_clients):
+            with open(os.path.join(out_dir, 'client_%s_latency.log' % i), 'r') as fp:
                 for line in fp.readlines(): data.append(float(line.strip()))
         data.sort()
-        self.log.info('Average latency per client %f (ms)', (sum(data) / len(data)))
-        self.log.info('Median latency per client %f (ms)', data[int(len(data) / 2)])
+        avg_latency = (sum(data) / len(data))
 
         bins = self.bin_array(data)
-        with open(os.path.join(self.output, 'bins.log'), 'w') as fp:
-            for b,v in bins: fp.write('%.2f %d\n' % (b, v))
+        max_value = 0
+        mode_latency = 0
+        with open(os.path.join(out_dir, 'bins.log'), 'w') as fp:
+            for b,v in bins:
+                if v > max_value:
+                    max_value = v
+                    mode_latency = b
+                fp.write('%.2f %d\n' % (b, v))
             fp.flush()
+        return avg_latency, mode_latency
 
-        # plot out the results
+    def graph_four_clients(self, throughput, avg_latency, mode_latency):
         branch = GnuplotHelper.buildInfo().branch
-        date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
-        GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
-                            branch, date,
-                            str(self.mode), str(len(data)), '%d' % self.CLIENTS, '%.2f' % (sum(data) / len(data)))
+        date = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+        GnuplotHelper.graph(self, os.path.join(self.input, 'four_clients.in'), branch, date, str(self.mode),
+                            '%.2f' % throughput, '%.2f' % avg_latency, '%.2f' % mode_latency)
+
+    def graph_all_clients(self):
+        branch = GnuplotHelper.buildInfo().branch
+        date = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+        GnuplotHelper.graph(self, os.path.join(self.input, 'all_clients.in'), branch, date, str(self.mode))
 
     def bin_array(self, data, num_bins=40):
         min_val = min(data)
