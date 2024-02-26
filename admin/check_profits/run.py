@@ -1,8 +1,9 @@
-import time
+import time, os
 from web3 import Web3
+from datetime import datetime
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
-
+from ten.test.utils.gnuplot import GnuplotHelper
 
 class PySysTest(TenNetworkTest):
 
@@ -23,6 +24,13 @@ class PySysTest(TenNetworkTest):
         self.log.info('Gas holding balance %.6f ETH', web3_sequencer.from_wei(gas_payment_balance, 'ether'))
         # self.funds_db.insert_funds('GasPayment', gas_payment_address, self.env, current_time, gas_payment_balance)
 
-        for entry in self.funds_db.get_funds(name='Sequencer', environment=self.env):
-            self.log.info(entry)
-            
+        with open(os.path.join(self.output, 'sequencer_funds.log'), 'r') as fp:
+            for entry in reversed(self.funds_db.get_funds(name='Sequencer', environment=self.env)):
+                fp.write('%d %d\n' % (entry[0], entry[1]))
+
+        self.graph()
+
+    def graph(self):
+        branch = GnuplotHelper.buildInfo().branch
+        date = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+        GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'), branch, date, str(self.mode))
