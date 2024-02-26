@@ -26,7 +26,7 @@ class PySysTest(TenNetworkTest):
 
         with open(os.path.join(self.output, 'sequencer_funds.log'), 'w') as fp:
             for entry in reversed(self.funds_db.get_funds(name='Sequencer', environment=self.env)):
-                fp.write('%d %d\n' % (entry[0], entry[1]))
+                fp.write('%s %s\n' % (entry[0], entry[1]))
 
         self.graph()
 
