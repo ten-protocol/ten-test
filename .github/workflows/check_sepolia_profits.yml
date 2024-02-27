@@ -33,3 +33,13 @@ jobs:
         run: |
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.sepolia check_profits
+
+      - name: 'Upload performance output'
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: profits-artifact
+          path: |
+            ${{ github.workspace }}/ten-test/admin/check_profits/Output/linux/profits.pdf
+          if-no-files-found: ignore
+          retention-days: 1
