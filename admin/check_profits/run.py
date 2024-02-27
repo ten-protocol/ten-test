@@ -29,16 +29,12 @@ class PySysTest(TenNetworkTest):
         self.log.info('Gas holding balance %.6f ETH', web3_sequencer.from_wei(gas_payment_balance, 'ether'))
         self.funds_db.insert_funds('GasPayment', gas_payment_address, self.env, current_time, gas_payment_balance)
 
-        dict = OrderedDict()
         with open(os.path.join(self.output, 'sequencer_funds.log'), 'w') as fp:
             for entry in reversed(self.funds_db.get_funds(name='Sequencer', environment=self.env)):
-                if not entry[0] in dict: dict[entry[0]] = (entry[1],None)
                 fp.write('%s %s\n' % (entry[0], entry[1]))
 
         with open(os.path.join(self.output, 'gas_payment.log'), 'w') as fp:
             for entry in reversed(self.funds_db.get_funds(name='GasPayment', environment=self.env)):
-                if not entry[0] in dict: dict[entry[0]] = (None, entry[1])
-                else: dict[entry[0]][1] = entry[1]
                 fp.write('%s %s\n' % (entry[0], entry[1]))
 
         self.graph()
