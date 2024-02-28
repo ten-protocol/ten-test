@@ -5,7 +5,7 @@ from ten.test.contracts.guesser import Guesser
 class PySysTest(GenericNetworkTest):
 
     def execute(self):
-        # deployment of contract
+        # connect to the network and deploy the contract
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 

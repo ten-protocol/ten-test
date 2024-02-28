@@ -4,6 +4,7 @@
     <description>
         <title>RPC API: check get_transaction_by_hash</title>
         <purpose><![CDATA[]]>
+Checks that getting the transaction from the transaction receipt and that the details agree.
         </purpose>
     </description>
 

@@ -2,27 +2,33 @@
 <pysystest type="auto">
 
     <description>
-        <title>Gas: replace tx with a better gas value</title>
+        <title>Mempool: submit a tx with a nonce too low</title>
         <purpose><![CDATA[
-The test submits a sequence of transactions against the storage contract with reducing gas compared to the estimate e.g.
-90,80,60,40 and 10%. Based on a reference of ganache, we expect the first three to be mined but failed with out of
-gas, and the latter two to time out as they remain in the mempool. For the transactions that time out, we replace them
-using the same nonce, but the expected gas.
+From my understanding the following should be the behaviour of nonces;
+
+- Transactions with too low a nonce get immediately rejected.
+- Transactions with too high a nonce get placed in the transaction pool queue.
+- If transactions with nonces that fill the gap between the last valid nonce and
+  the too high nonce are sent and the nonce sequence is complete, all the transactions in the sequence
+  will get processed and mined.
+
+This tests at the moment only checks when a tx is submitted with a nonce that is too low. It is currently not run on
+TEN due to https://github.com/ten-protocol/ten-internal/issues/2786.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
+            <group>mempool</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
-            <mode>ganache</mode>
             <mode>sepolia</mode>
+            <mode>ganache</mode>
             <mode>arbitrum.sepolia</mode>
         </modes>
     </classification>

@@ -16,6 +16,19 @@ jobs:
         with:
           path: ./ten-test
 
+      - name: 'Check out go-ten code'
+        uses: actions/checkout@v3
+        with:
+          repository: ten-protocol/go-ten
+          path: ./go-ten
+          ref: 'releases/v0.22'
+
+      - name: 'Build required artifacts for running tests'
+        run: |
+          cd ${{ github.workspace }}/ten-test
+          ./get_artifacts.sh
+          ls -l ${{ github.workspace }}/ten-test/artifacts  
+
       - name: 'Run funds check'
         run: |
           cd ${{ github.workspace }}/ten-test/admin

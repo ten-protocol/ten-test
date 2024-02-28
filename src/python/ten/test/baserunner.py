@@ -9,6 +9,7 @@ from pysys.exceptions import AbortExecution
 from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
 from ten.test.persistence.nonce import NoncePersistence
+from ten.test.persistence.funds import FundsPersistence
 from ten.test.persistence.contract import ContractPersistence
 from ten.test.utils.properties import Properties
 
@@ -21,6 +22,7 @@ class TenRunnerPlugin():
     when the tests are complete. Note the runner should remain independent to the BaseTest, i.e. is stand alone as
     much as possible. This is because most of the framework is written to be test centric.
     """
+    MSG_ID = 1                      # global used for http message requests numbers
 
     def __init__(self):
         """Constructor. """
@@ -59,6 +61,8 @@ class TenRunnerPlugin():
         nonce_db.create()
         contracts_db = ContractPersistence(db_dir)
         contracts_db.create()
+        funds_db = FundsPersistence(db_dir)
+        funds_db.create()
 
         if self.is_ten() and runner.threads > 3:
             raise Exception('Max threads against Ten cannot be greater than 3')
@@ -71,38 +75,23 @@ class TenRunnerPlugin():
 
         try:
             if self.is_ten():
+                runner.log.info('Getting and setting the Ten contract addresses')
+                self.__set_contract_addresses(runner)
+
                 props = Properties()
-                gateway_url = None
-                account = Web3().eth.account.from_key(Properties().fundacntpk())
+                account = Web3().eth.account.from_key(props.fundacntpk())
+                gateway_url = '%s:%d' % (props.host_http(self.env), props.port_http(self.env))
+                runner.log.info('Joining network using url %s', '%s/v1/join/' % gateway_url)
+                user_id = self.__join('%s/v1/join/' % gateway_url)
+                runner.log.info('User id is %s', user_id)
 
-                if self.is_local_ten():
-                    hprocess, port = self.run_wallet(runner)
-                    gateway_url = 'http://127.0.0.1:%d' % port
-                    runner.log.info('Joining network using url %s', '%s/v1/join/' % gateway_url)
-                    user_id = self.__join('%s/v1/join/' % gateway_url)
-
-                    runner.log.info('Registering account %s with the network', account.address)
-                    response = self.__register(account, '%s/v1/authenticate/?token=%s' % (gateway_url, user_id), user_id)
-                    runner.log.info('Registration success was %s', response.ok)
-                    web3 = Web3(Web3.HTTPProvider('%s/v1/?token=%s' % (gateway_url, user_id)))
-                    runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
-                    runner.addCleanupFunction(lambda: self.__print_cost(runner,
-                                                                        '%s/v1/?token=%s' % (gateway_url, user_id),
-                                                                        web3, user_id))
-
-                else:
-                    gateway_url = '%s:%d' % (props.host_http(self.env), props.port_http(self.env))
-                    runner.log.info('Joining network using url %s', '%s/v1/join/' % gateway_url)
-                    user_id = self.__join('%s/v1/join/' % gateway_url)
-                    runner.log.info('User id is %s', user_id)
-
-                    runner.log.info('Registering account %s with the network', account.address)
-                    response = self.__register(account, '%s/v1/authenticate/?token=%s' % (gateway_url, user_id), user_id)
-                    runner.log.info('Registration success was %s', response.ok)
-                    web3 = Web3(Web3.HTTPProvider('%s/v1/?u=%s' % (gateway_url, user_id)))
-                    runner.addCleanupFunction(lambda: self.__print_cost(runner,
-                                                                        '%s/v1/?token=%s' % (gateway_url, user_id),
-                                                                        web3, user_id))
+                runner.log.info('Registering account %s with the network', account.address)
+                response = self.__register(account, '%s/v1/authenticate/?u=%s' % (gateway_url, user_id), user_id)
+                runner.log.info('Registration success was %s', response.ok)
+                web3 = Web3(Web3.HTTPProvider('%s/v1/?u=%s' % (gateway_url, user_id)))
+                runner.addCleanupFunction(lambda: self.__print_cost(runner,
+                                                                    '%s/v1/authenticate/?u=%s' % (gateway_url, user_id),
+                                                                    web3, user_id))
 
                 tx_count = web3.eth.get_transaction_count(account.address)
                 balance = web3.from_wei(web3.eth.get_balance(account.address), 'ether')
@@ -142,6 +131,7 @@ class TenRunnerPlugin():
 
         nonce_db.close()
         contracts_db.close()
+        funds_db.close()
 
     def run_ganache(self, runner):
         """Run ganache for use by the tests. """
@@ -232,11 +222,13 @@ class TenRunnerPlugin():
         hprocess.stop()
 
     def __join(self, url):
+        """Join the ten network to get a token."""
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         response = requests.get(url,  headers=headers)
         return response.text
 
     def __register(self, account, url, user_id):
+        """Authenticate a user against the token. """
         domain = {'name': 'Ten', 'version': '1.0', 'chainId': Properties().chain_id(self.env)}
         types = {
             'Authentication': [
@@ -252,3 +244,24 @@ class TenRunnerPlugin():
         data = {"signature": signed_msg_from_dict.signature.hex(), "address": account.address}
         response = requests.post(url, data=json.dumps(data), headers=headers)
         return response
+
+    def __set_contract_addresses(self, runner):
+        """Get the contract addresses and set into the properties. """
+        data = {"jsonrpc": "2.0", "method": "obscuro_config", "id": self.MSG_ID}
+        response = self.post(data)
+        if 'result' in response.json():
+            config = response.json()['result']
+            Properties.L1ManagementAddress = config["ManagementContractAddress"]
+            Properties.L1MessageBusAddress = config["MessageBusAddress"]
+            Properties.L1BridgeAddress = config["ImportantContracts"]["L1Bridge"]
+            Properties.L1CrossChainMessengerAddress = config["ImportantContracts"]["L1CrossChainMessenger"]
+            Properties.L2MessageBusAddress = config["L2MessageBusAddress"]
+            Properties.L2BridgeAddress = config["ImportantContracts"]["L2Bridge"]
+            Properties.L2CrossChainMessengerAddress = config["ImportantContracts"]["L2CrossChainMessenger"]
+        elif 'error' in response.json():
+            runner.log.error(response.json()['error']['message'])
+
+    def post(self, data):
+        self.MSG_ID += 1
+        server = 'http://%s:%s' % (Properties().node_host(self.env, self.NODE_HOST), Properties().node_port_http(self.env))
+        return requests.post(server, json=data)

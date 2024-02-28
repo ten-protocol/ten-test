@@ -4,6 +4,7 @@
     <description>
         <title>Game: play a sample guessing game, deploy and transact over web-sockets</title>
         <purpose><![CDATA[]]>
+A slightly more complex contract which resembles more closely that used as the Ten sample guessing game.
         </purpose>
     </description>
 

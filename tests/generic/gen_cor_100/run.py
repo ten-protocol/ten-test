@@ -24,7 +24,9 @@ class PySysTest(GenericNetworkTest):
         self.log.info('Incrementing the current value by 1')
         tx_receipt = network.transact(self, web3, storage.contract.functions.store(actual+1), account, Storage.GAS_LIMIT)
         if tx_receipt.status == 1: storage.set_persisted_param('value', actual+1)
+        else: self.log.warn('Transaction receipt showed error')
 
+        self.wait(float(self.block_time) * 2.0)
         actual_after = storage.contract.functions.retrieve().call()
         self.log.info('Current retrieved value is %d', actual_after)
         self.assertTrue(actual_after == actual+1)

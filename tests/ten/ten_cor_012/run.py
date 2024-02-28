@@ -5,14 +5,17 @@ from ten.test.contracts.storage import Storage
 class PySysTest(TenNetworkTest):
 
     def execute(self):
+        # connect to the network via the primary gateway
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
+        # deploy the storage contract
         storage = Storage(self, web3, 0)
         tx_receipt = storage.deploy(network, account)
         self.wait(float(self.block_time)*1.1)
         self.check(tx_receipt)
 
+        # perform transactions
         for i in range(0,4):
             tx_receipt = network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS_LIMIT)
             self.wait(float(self.block_time)*1.1)

@@ -6,6 +6,7 @@ from ten.test.contracts.storage import Storage
 class PySysTest(TenNetworkTest):
 
     def execute(self):
+        # connect to the network through the primary gateway
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
@@ -13,12 +14,12 @@ class PySysTest(TenNetworkTest):
         storage = Storage(self, web3, 100)
         storage.deploy(network, account)
 
-        # create two connections, each with their own user id (via a join call)
-        network_shared = self.get_network_connection(name='shared')
+        # create another connection, with two accounts registered through it
+        network_shared = self.get_network_connection()
         network_shared.connect_account2(self)
         network_shared.connect_account3(self)
 
-        # make a subscription for all event logs, one through each of the connections
+        # make a subscription for all event logs on this connection
         self.subscribe(network_shared)
 
         # perform some transactions

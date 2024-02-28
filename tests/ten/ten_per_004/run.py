@@ -19,7 +19,7 @@ class PySysTest(TenNetworkTest):
         self.value = 100
 
     def execute(self):
-        # connect to the network and determine constants and funds required to run the test
+        # connect to the network on the primary gateway and calculate funds needs
         network = self.get_network_connection()
         web3, _ = network.connect_account1(self)
         account = web3.eth.account.from_key(secrets.token_hex(32))
@@ -61,7 +61,7 @@ class PySysTest(TenNetworkTest):
 
     def setup_client(self, name, funds_needed):
         pk = secrets.token_hex(32)
-        network = self.get_network_connection(name=name)
+        network = self.get_network_connection()
         web3, account = network.connect(self, private_key=pk, check_funds=False)
         self.distribute_native(account, web3.from_wei(funds_needed, 'ether'))
         return pk, network

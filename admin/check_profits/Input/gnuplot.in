@@ -1,0 +1,40 @@
+set terminal pdf enhanced size 18cm, 18cm
+set output "profits.pdf"
+set multiplot layout 2,2 rowsfirst title ARG2.": ".ARG1 noenhanced scale 0.95,0.95
+set grid
+set lmargin 10
+set bmargin 3
+set key font 'Courier,10'
+set key right top
+set xtics font "Courier,11"
+set ytics font "Courier,11"
+
+#plot 1
+set xdata time
+set timefmt "%s"
+set format x "%j"
+set xtics rotate by 90 right
+set size 0.475, 0.4
+set origin 0.0, 0.50
+set title "{/Arial:Bold=13 Sequencer funds}"
+set xlabel "Day of year"  font "Courier,12"
+set ylabel "Funds (eth)" font "Courier,12" offset 1,0
+plot "sequencer_funds.log" using 1:($2/1e18) with lines lw 2 lc 1 title "Sequencer funds"
+
+#plot 2
+set size 0.475, 0.4
+set origin 0.475, 0.50
+set title "{/Arial:Bold=13 Gas payment account funds}"
+set xlabel "Day of year"  font "Courier,12"
+set ylabel "Funds (eth)" font "Courier,12" offset 1,0
+plot "gas_payment.log" using 1:($2/1e18) with lines lw 2 lc 2 title "Gas Payment funds"
+
+#plot 3
+set size 0.475, 0.4
+set origin 0.0, 0.05
+set title "{/Arial:Bold=13 Delta funds / Profit and Loss}"
+set xlabel "Day of year"  font "Courier,12"
+set ylabel "Funds (eth)" font "Courier,12" offset 1,0
+plot "profits.log" using 1:($2/1e18) with lines lw 2 lc 1 title "Sequencer", \
+     "profits.log" using 1:($3/1e18) with lines lw 2 lc 2 title "Gas Payment", \
+     "profits.log" using 1:($4/1e18) with lines lw 4 lc 7 title "Profit and Loss", \

@@ -7,39 +7,21 @@ on:
   schedule:
     - cron: '*/30 * * * *'
   workflow_dispatch:
-    inputs:
-      release:
-        type: choice
-        description: 'The release version of uat-testnet'
-        required: true
-        default: main
-        options:
-          - main
-          - releases/v0.20
-          - releases/v0.19
-          - releases/v0.18
 
 jobs:
   run-check:
     runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-02]
     steps:
-      - name: Set the variables
-        env:
-          DEFAULT_VERSION: 'main'
-        run: echo "VERSION=${{ github.event.inputs.release || env.DEFAULT_VERSION }}" >> $GITHUB_ENV
-
       - name: 'Check out ten-test'
         uses: actions/checkout@v3
         with:
           path: ./ten-test
-          ref: ${{env.VERSION}}
 
       - name: 'Check out go-ten code'
         uses: actions/checkout@v3
         with:
           repository: ten-protocol/go-ten
           path: ./go-ten
-          ref: ${{env.VERSION}}
 
       - name: 'Build required artifacts for running tests'
         run: |

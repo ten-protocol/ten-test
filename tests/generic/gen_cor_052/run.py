@@ -7,7 +7,7 @@ from ten.test.basetest import GenericNetworkTest
 class PySysTest(GenericNetworkTest):
 
     def execute(self):
-        # deploy using a standard test account
+        # connect to the network and deploy the contract
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 

@@ -17,9 +17,13 @@ class PySysTest(TenNetworkTest):
         sequencer_balance = web3.from_wei(web3.eth.get_balance(sequencer_address), 'ether')
         self.log.info('Sequencer account %s balance %.6f ETH', sequencer_address, sequencer_balance)
 
-        validator_address = Properties().validator_address(key='ten.sepolia')
-        validator_balance = web3.from_wei(web3.eth.get_balance(validator_address), 'ether')
-        self.log.info('Validator account %s balance %.6f ETH', validator_address, validator_balance)
+        validator1_address = Properties().validator1_address(key='ten.sepolia')
+        validator1_balance = web3.from_wei(web3.eth.get_balance(validator1_address), 'ether')
+        self.log.info('Validator 1 account %s balance %.6f ETH', validator1_address, validator1_balance)
+
+        validator2_address = Properties().validator2_address(key='ten.sepolia')
+        validator2_balance = web3.from_wei(web3.eth.get_balance(validator2_address), 'ether')
+        self.log.info('Validator 2 account %s balance %.6f ETH', validator2_address, validator2_balance)
 
         deployer_address = Properties().l1_deployer_address(key='ten.sepolia')
         deployer_balance = web3.from_wei(web3.eth.get_balance(deployer_address), 'ether')
@@ -29,9 +33,11 @@ class PySysTest(TenNetworkTest):
         self.log.info('Faucet balance %.6f ETH', faucet_balance)
 
         self.assertTrue(sequencer_balance >= self.L1_THRESHOLD,
-                        assertMessage='L1 Sequence balance is below threshold %s' % self.L1_THRESHOLD)
-        self.assertTrue(validator_balance >= self.L1_THRESHOLD,
-                        assertMessage='L1 Validator balance is below threshold %s' % self.L1_THRESHOLD)
+                        assertMessage='L1 Sequencer balance is below threshold %s' % self.L1_THRESHOLD)
+        self.assertTrue(validator1_balance >= self.L1_THRESHOLD,
+                        assertMessage='L1 Validator1 balance is below threshold %s' % self.L1_THRESHOLD)
+        self.assertTrue(validator2_balance >= self.L1_THRESHOLD,
+                        assertMessage='L1 Validator2 balance is below threshold %s' % self.L1_THRESHOLD)
         self.assertTrue(deployer_balance >= self.L1_THRESHOLD, 
                         assertMessage='L1 Deployer balance is below threshold %s' % self.L1_THRESHOLD)
         self.assertTrue(faucet_balance >= self.L2_THRESHOLD,

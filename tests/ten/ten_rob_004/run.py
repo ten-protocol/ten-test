@@ -11,6 +11,7 @@ class PySysTest(TenNetworkTest):
     FUNDS = 10                 # the funds amount to give them (can be low so in wei)
 
     def execute(self):
+        # connect to the network on the primary gateway
         network = self.get_network_connection()
         trigger = os.path.join(self.output, '.trigger')
 

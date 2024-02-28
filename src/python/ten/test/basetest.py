@@ -7,6 +7,7 @@ from pysys.constants import PROJECT, BACKGROUND
 from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
 from ten.test.persistence.nonce import NoncePersistence
+from ten.test.persistence.funds import FundsPersistence
 from ten.test.persistence.contract import ContractPersistence
 from ten.test.utils.properties import Properties
 from ten.test.networks.default import DefaultPostLondon
@@ -14,8 +15,7 @@ from ten.test.networks.ganache import Ganache
 from ten.test.networks.goerli import Goerli
 from ten.test.networks.arbitrum import ArbitrumSepolia
 from ten.test.networks.sepolia import Sepolia
-from ten.test.networks.ten import Ten
-from ten.test.networks.ten import TenL1Geth, TenL1Sepolia
+from ten.test.networks.ten import Ten, TenL1Geth, TenL1Sepolia
 
 
 class GenericNetworkTest(BaseTest):
@@ -34,10 +34,12 @@ class GenericNetworkTest(BaseTest):
         db_dir = os.path.join(str(Path.home()), '.tentest')
         self.nonce_db = NoncePersistence(db_dir)
         self.contract_db = ContractPersistence(db_dir)
+        self.funds_db = FundsPersistence(db_dir)
         self.addCleanupFunction(self.close_db)
 
-        # every test has a connection for the funded account
-        self.network_funding = self.get_network_connection(name='funding_connection')
+        # every test has a unique connection for the funded account
+        self.connections = {}
+        self.network_funding = self.get_network_connection()
         self.balance = 0
         self.accounts = []
         self.transfer_costs = []
@@ -73,23 +75,25 @@ class GenericNetworkTest(BaseTest):
         """Return true if we are running against a sepolia Ten network. """
         return self.env in ['ten.sepolia']
 
-    def run_python(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
+    def run_python(self, script, stdout, stderr, args=None, workingDir=None, state=BACKGROUND, timeout=120):
         """Run a python process. """
         self.log.info('Running python script %s', os.path.basename(script))
         arguments = [script]
         if args is not None: arguments.extend(args)
+        if workingDir is None: workingDir = self.output
 
         environ = copy.deepcopy(os.environ)
-        hprocess = self.startProcess(command=sys.executable, displayName='python', workingDir=self.output,
+        hprocess = self.startProcess(command=sys.executable, displayName='python', workingDir=workingDir,
                                      arguments=arguments, environs=environ, stdout=stdout, stderr=stderr,
                                      state=state, timeout=timeout)
         return hprocess
 
-    def run_javascript(self, script, stdout, stderr, args=None, state=BACKGROUND, timeout=120):
+    def run_javascript(self, script, stdout, stderr, args=None, workingDir=None, state=BACKGROUND, timeout=120):
         """Run a javascript process. """
         self.log.info('Running javascript %s', os.path.basename(script))
         arguments = [script]
         if args is not None: arguments.extend(args)
+        if workingDir is None: workingDir = self.output
 
         environ = copy.deepcopy(os.environ)
         node_path = '%s:%s' % (Properties().node_path(), os.path.join(PROJECT.root, 'src', 'javascript', 'modules'))
@@ -97,7 +101,7 @@ class GenericNetworkTest(BaseTest):
             environ["NODE_PATH"] = node_path + ":" + environ["NODE_PATH"]
         else:
             environ["NODE_PATH"] = node_path
-        hprocess = self.startProcess(command=Properties().node_binary(), displayName='node', workingDir=self.output,
+        hprocess = self.startProcess(command=Properties().node_binary(), displayName='node', workingDir=workingDir,
                                      arguments=arguments, environs=environ, stdout=stdout, stderr=stderr,
                                      state=state, timeout=timeout)
         return hprocess
@@ -201,7 +205,7 @@ class GenericNetworkTest(BaseTest):
             token = web3.eth.contract(address=token_address, abi=json.load(f))
         return token.functions.balanceOf(account.address).call()
 
-    def get_network_connection(self, name='primary_connection', **kwargs):
+    def get_network_connection(self, name='primary', **kwargs):
         """Get the network connection."""
         if self.is_ten():
             return Ten(self, name, **kwargs)
@@ -376,7 +380,7 @@ class TenNetworkTest(GenericNetworkTest):
         return None
 
     def obscuro_config(self):
-        """Get the debug_LogVisibility. """
+        """Get the obscuro_config. """
         data = {"jsonrpc": "2.0", "method": "obscuro_config", "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return response.json()['result']

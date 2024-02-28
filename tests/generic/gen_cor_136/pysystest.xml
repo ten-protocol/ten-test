@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Mempool: submit with gas price leading to insufficient funds</title>
+        <purpose><![CDATA[
+In the test we calculate the expected amount of gas for a transaction against a contract and supply just enough
+funds to an ephemeral account to be able to perform the transaction. We try to transact but set our max gas price
+to twice the actual gas price, meaning should it go through at that price we would not have enough funds to cover the
+total cost - we expect the mempool to reject the transaction. We then do it again with the gas price set at the actual
+network gas price and expect the mempool to accept and execute the transaction.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>mempool</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+            <mode>arbitrum.sepolia</mode>
+            <mode>ganache</mode>
+            <mode>sepolia</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

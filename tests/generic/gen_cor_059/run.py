@@ -6,12 +6,12 @@ from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 class PySysTest(TenNetworkTest):
 
     def execute(self):
+        # connect to the network and deploy the contracts
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
         balance = web3.eth.get_balance(account.address)
         self.log.info('Balance account %.6f ETH (%d Wei)', web3.from_wei(balance, 'ether'), balance)
 
-        # deploy the contract and send eth to it
         recv_contract = ReceiveEther(self, web3)
         recv_contract.deploy(network, account)
 

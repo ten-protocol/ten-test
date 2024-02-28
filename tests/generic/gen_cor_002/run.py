@@ -13,7 +13,7 @@ class PySysTest(GenericNetworkTest):
         gas_price = web3.eth.gas_price
         self.log.info('Gas price is %d', gas_price)
 
-        # get the block number
+        # get the block number and deploy contract
         block_number_initial = web3.eth.get_block_number()
         self.log.info('Block number is %d', block_number_initial)
         self.assertTrue(block_number_initial >= 0)

@@ -1,0 +1,37 @@
+set terminal pdf enhanced size 18cm, 18cm
+set output ARG2."_four_clients.pdf"
+set multiplot layout 2,2 rowsfirst title ARG2.": ".ARG1." (4 clients)" noenhanced scale 0.95,0.95
+set grid
+set lmargin 10
+set bmargin 3
+set key font 'Courier,10'
+set key right top
+set xtics font "Courier,11"
+set ytics font "Courier,11"
+set label "{/Courier:Bold=13 Branch}: ".ARG3 left at screen 0.59, screen 0.925
+set label "{/Courier:Bold=13 Date}: ".ARG4 left at screen 0.59, screen 0.900
+set label "{/Courier:Bold=13 Environment}: ".ARG5 left at screen 0.59, screen 0.875
+set label "{/Courier:Bold=13 Throughput}: ".ARG6." request/s" left at screen 0.59, screen 0.850
+set label "{/Courier:Bold=13 Avg Latency}: ".ARG7." ms" left at screen 0.59, screen 0.825
+set label "{/Courier:Bold=13 Mode Latency}: ".ARG8." ms" left at screen 0.59, screen 0.800
+
+#plot 1
+set size 0.5, 0.45
+set origin 0.0, 0.50
+set style fill solid 0.5
+set title "{/Arial:Bold=13 Binned Latency}"
+set xlabel "Duration (ms)"  font "Courier,12"
+set ylabel "Number" font "Courier,12" offset 1,0
+plot "clients_4/bins.log" using 1:2 with boxes title "Binned latency"
+
+#plot 2
+set size 0.5, 0.45
+set origin 0.0, 0.05
+set style fill solid 0.5
+set title "{/Arial:Bold=13 Throughput}"
+set xlabel "Time (s)"  font "Courier,12"
+set ylabel "Total" font "Courier,12" offset 1,0
+plot "clients_4/client_0_throughput.log" using 1:2 with lines title "Client 1", \
+     "clients_4/client_1_throughput.log" using 1:2 with lines title "Client 2", \
+     "clients_4/client_2_throughput.log" using 1:2 with lines title "Client 3", \
+     "clients_4/client_3_throughput.log" using 1:2 with lines title "Client 4"
