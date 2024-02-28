@@ -1,0 +1,16 @@
+{
+  "name": "ten-hh-plugin",
+  "version": "1.0.0",
+  "author": "Moray Grieve",
+  "license": "ISC",
+  "dependencies": {
+    "hardhat": "^2.18.2",
+    "console-stamp": "3.1.2",
+    "ten-hardhat-plugin": "*"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0"
+  },
+  "keywords": [],
+  "description": ""
+}

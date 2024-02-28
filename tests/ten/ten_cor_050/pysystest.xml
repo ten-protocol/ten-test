@@ -2,25 +2,20 @@
 <pysystest type="auto">
 
     <description>
-        <title>Hardhat: deploy a contract using a library</title>
+        <title>Hardhat: deploy a single contract using the ten plugin</title>
         <purpose><![CDATA[
-Deploys a library contract using getContractFactory, the deploys another contract that links to the library at deploy
-time. Once done uses web3.py to interact with the contract via it's ABI and contract address checking both contracts
-were correctly deployed.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>hardhat</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
-            <mode>ganache</mode>
         </modes>
     </classification>
 

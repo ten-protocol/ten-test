@@ -65,7 +65,7 @@ if __name__ == "__main__":
         logging.info('Registering account %s with the network on user id %s', account.address, user_id)
         response = register(int(args.chain_id), account, args.host, int(args.port), user_id)
         logging.info('Registration success was %s', response.ok)
-        web3 = Web3(Web3.HTTPProvider('%s:%s/v1/?u=%s' % (args.host, args.port, user_id)))
+        web3 = Web3(Web3.HTTPProvider('%s:%s/v1/?token=%s' % (args.host, args.port, user_id)))
 
         for j in range(0, int(args.additional_accounts)):
             _account = Web3().eth.account.from_key(secrets.token_hex(32))
