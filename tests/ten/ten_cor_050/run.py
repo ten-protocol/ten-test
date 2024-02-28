@@ -36,7 +36,7 @@ class PySysTest(GenericNetworkTest):
             for line in fp.readlines():
                 result = regex.search(line)
                 if result is not None: address = result.group('address')
-        self.log.info('TestMaths contract deployed at address %s', address)
+        self.log.info('Contract deployed at address %s', address)
 
         # construct an instance of the contract from the address and abi
         web3, account = network.connect_account1(self)
