@@ -6,9 +6,6 @@ from ten.test.basetest import GenericNetworkTest
 
 class PySysTest(GenericNetworkTest):
 
-    def get_network(self):
-        return 'ten' if self.is_ten() else self.mode
-
     def execute(self):
         project = os.path.join(self.output, 'project')
         private_key = secrets.token_hex(32)
@@ -27,7 +24,7 @@ class PySysTest(GenericNetworkTest):
         environ['PK'] = private_key
         environ['HOST'] = network.HOST
         environ['PORT'] = str(network.PORT)
-        self.run_npx(args=['hardhat', 'run', '--network', self.get_network(), 'scripts/deploy.js'],
+        self.run_npx(args=['hardhat', 'run', '--network', 'ten', 'scripts/deploy.js'],
                      working_dir=project, environ=environ, stdout='npx_deploy.out', stderr='npx_deploy.err')
 
         address = 'undefined'
