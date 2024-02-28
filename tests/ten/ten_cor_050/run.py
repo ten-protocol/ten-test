@@ -29,7 +29,7 @@ class PySysTest(GenericNetworkTest):
         environ['PORT'] = str(network.PORT)
         self.run_npx(args=['hardhat', 'run', '--network', self.get_network(), 'scripts/deploy.js'],
                      working_dir=project, environ=environ, stdout='npx_deploy.out', stderr='npx_deploy.err')
-        self.wait(10.0)
+
         address = 'undefined'
         regex = re.compile('Contract deployed at (?P<address>.*)$', re.M)
         with open(os.path.join(self.output, 'npx_deploy.out'), 'r') as fp:
@@ -39,6 +39,7 @@ class PySysTest(GenericNetworkTest):
         self.log.info('TestMaths contract deployed at address %s', address)
 
         # construct an instance of the contract from the address and abi
+        web3, account = network.connect_account1(self)
         with open(os.path.join(self.output, 'project', 'artifacts', 'contracts', 'Double.sol', 'Double.json')) as f:
             contract = web3.eth.contract(address=address, abi=json.load(f)['abi'])
 

@@ -12,7 +12,6 @@ module.exports = {
       chainId: 443,
       url: `${HOST}:${PORT}/v1/`,
       useGateway: true,
-      gasPrice: 2000000000,
       accounts: [ `0x${PK}` ]
     }
   }
