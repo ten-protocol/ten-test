@@ -7,7 +7,7 @@ from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(TenNetworkTest):
-    ITERATIONS = 512          # don't exceed bulk loading more than 1024 (2 clients used)
+    ITERATIONS = 2*1024       # number of iterations per client
     SENDING_ACCOUNTS = 20     # the number of sending accounts used by each client
     RECEIVING_ACCOUNTS = 20   # the number of recipient accounts receiving the funds
 

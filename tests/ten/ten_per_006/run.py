@@ -10,7 +10,7 @@ from ten.test.utils.gnuplot import GnuplotHelper
 
 class PySysTest(TenNetworkTest):
     ITERATIONS_SANITY = 10      # initial set of checks on the latency before the concurrent clients
-    ITERATIONS_FULL = 128       # total number of iterations per concurrent client
+    ITERATIONS_FULL = 2*1024    # total number of iterations per concurrent client
     CLIENTS = 5                 # the number of concurrent clients
 
     def transact(self, network_connection, web3, storage, count, account, gas_limit):
