@@ -7,7 +7,7 @@ from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(TenNetworkTest):
-    ITERATIONS = 1024      # iterations per client
+    ITERATIONS = 5000      # iterations per client
     CLIENTS = 4            # the number of concurrent clients
     ACCOUNTS = 8           # number of different accounts that receive the funds per client
 
