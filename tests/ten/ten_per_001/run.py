@@ -8,7 +8,7 @@ from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(TenNetworkTest):
-    ITERATIONS = 1024      # don't exceed bulk loading more than 1024 (single client used)
+    ITERATIONS = 5000       # number of iterations per client
 
     def __init__(self, descriptor, outsubdir, runner):
         super().__init__(descriptor, outsubdir, runner)

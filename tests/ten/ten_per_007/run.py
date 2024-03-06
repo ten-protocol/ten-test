@@ -9,7 +9,7 @@ from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(TenNetworkTest):
-    ITERATIONS = 128          # total number of iterations per concurrent client
+    ITERATIONS = 256          # total number of iterations per concurrent client
     CLIENTS = 5               # the number of concurrent clients
 
     def __init__(self, descriptor, outsubdir, runner):
@@ -36,7 +36,7 @@ class PySysTest(TenNetworkTest):
             self.client(network, storage, i, funds_needed)
 
         for i in range(0, self.CLIENTS):
-            self.waitForGrep(file='client_%d.out' % i, expr='Completed transactions', timeout=300)
+            self.waitForGrep(file='client_%d.out' % i, expr='Completed transactions', timeout=450)
 
         # graph the output
         self.graph()

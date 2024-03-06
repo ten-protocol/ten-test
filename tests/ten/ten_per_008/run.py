@@ -1,13 +1,14 @@
-import os, time, secrets
+import os, time, secrets, math
 from web3 import Web3
 from datetime import datetime
+from collections import OrderedDict
 from pysys.constants import PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(TenNetworkTest):
-    ITERATIONS = 1024  # iterations per client, don't exceed bulk loading more than 1024
+    ITERATIONS = 2*1024  # iterations per client
 
     def execute(self):
         # connect to the network and determine constants and funds required to run the test
@@ -28,7 +29,8 @@ class PySysTest(TenNetworkTest):
                                      expr='Client client_%s completed' % i, timeout=300)
                 end_ns = time.perf_counter_ns()
                 throughput = float(clients * self.ITERATIONS) / float((end_ns-start_ns)/1e9)
-                avg_latency, mode_latency = self.process_run(clients, out_dir)
+                avg_latency, mode_latency = self.process_latency(clients, out_dir)
+                self.process_throughput(clients, out_dir, start_ns, end_ns)
                 self.log.info('Bulk rate throughput %.2f (requests/sec)' % throughput)
                 self.log.info('Average latency %.2f (ms)' % avg_latency)
                 self.log.info('Modal latency %.2f (ms)' % mode_latency)
@@ -61,7 +63,7 @@ class PySysTest(TenNetworkTest):
         args.extend(['--start', '%d' % start])
         self.run_python(script, stdout, stderr, args, workingDir=out_dir)
 
-    def process_run(self, num_clients, out_dir):
+    def process_latency(self, num_clients, out_dir):
         data = []
         for i in range(0, num_clients):
             with open(os.path.join(out_dir, 'client_%s_latency.log' % i), 'r') as fp:
@@ -80,6 +82,20 @@ class PySysTest(TenNetworkTest):
                 fp.write('%.2f %d\n' % (b, v))
             fp.flush()
         return avg_latency, mode_latency
+
+    def process_throughput(self, num_clients, out_dir, start, end):
+        throughput = 0
+        bins = OrderedDict()
+        for x in range(0, int((end-start)/1e9) + 1): bins[x] = 0
+        for i in range(0, num_clients):
+            with open(os.path.join(out_dir, 'client_%s_throughput.log' % i), 'r') as fp:
+                for line in fp.readlines():
+                    time = math.floor(float(line.strip().split()[0]))
+                    bins[time] = bins[time]+1
+        with open(os.path.join(out_dir, 'binned_throughput.log'), 'w') as fp:
+            for t in bins.keys():
+                fp.write('%d %d\n' % (t, bins[t]))
+        return throughput
 
     def graph_four_clients(self, throughput, avg_latency, mode_latency):
         branch = GnuplotHelper.buildInfo().branch
