@@ -101,6 +101,7 @@ pip3 install web3==6.13.0
 pip3 install pysys==1.6.1
 pip3 install solc-select==1.0.4 
 pip3 install py-solc-x==2.0.2
+pip3 install numpy==1.26.4
 
 solc-select install 0.8.15
 solc-select use 0.8.15
@@ -132,7 +133,7 @@ python3 -m pip install web3==5.31.3
 python3 -m pip install pysys==1.6.1
 python3 -m pip install solc-select
 python3 -m pip install py-solc-x
-python3 -m pip install numpy==1.26.4
+python3 -m pip install numpy==1.24.4
 ```
 
 Once installed it should be possible to run all tests from the pysys.py cli as described in the following sections. Note
