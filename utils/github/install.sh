@@ -20,6 +20,7 @@ python3 -m pip install web3==5.31.3
 python3 -m pip install pysys==1.6.1
 python3 -m pip install solc-select
 python3 -m pip install py-solc-x
+python3 -m pip install numpy==1.24.4
 snap install go --classic
 curl -fsSL https://get.docker.com -o get-docker.sh
 sh ./get-docker.sh
