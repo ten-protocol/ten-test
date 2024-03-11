@@ -1,4 +1,5 @@
 require("@nomicfoundation/hardhat-toolbox");
+require("@openzeppelin/hardhat-upgrades");
 require("ten-hardhat-plugin")
 
 const { PK, HOST, PORT } = process.env;

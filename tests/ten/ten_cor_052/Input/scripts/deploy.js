@@ -2,11 +2,10 @@ const hre = require("hardhat");
 require('console-stamp')(console, 'HH:MM:ss')
 
 async function main() {
-
-  // deployment without using a factory
-  const instance = await hre.ethers.deployContract("Double");
-  await instance.waitForDeployment();
-  console.log("Contract deployed at", instance.target);
+  const Incrementer = await ethers.getContractFactory("IncrementerV1");
+  const incrementer = await upgrades.deployProxy(Incrementer);
+  await incrementer.waitForDeployment();
+  console.log("Incrementer proxy deployed to:", await incrementer.getAddress());
 }
 
 main().catch((error) => {
