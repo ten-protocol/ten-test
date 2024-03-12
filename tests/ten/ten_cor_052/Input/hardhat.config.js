@@ -1,6 +1,7 @@
 require("@nomicfoundation/hardhat-toolbox");
 require("@openzeppelin/hardhat-upgrades");
 require("ten-hardhat-plugin")
+require('console-stamp')(console, 'HH:MM:ss')
 
 const { PK, HOST, PORT } = process.env;
 
