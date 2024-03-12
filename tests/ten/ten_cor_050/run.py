@@ -16,8 +16,7 @@ class PySysTest(GenericNetworkTest):
 
         # copy over and initialise the project
         shutil.copytree(self.input, project)
-        self.run_npm(args=['install', 'hardhat', '--yes'], stdout='npm1.out', stderr='npm1_err', working_dir=project)
-        self.run_npm(args=['install', 'ten-hardhat-plugin', '--yes'], stdout='npm3.out', stderr='npm3_err', working_dir=project)
+        self.run_npm(args=['install', '--yes'], stdout='npm1.out', stderr='npm1.err', working_dir=project)
 
         # deploy and get the address from the hardhat output
         environ = copy.deepcopy(os.environ)
