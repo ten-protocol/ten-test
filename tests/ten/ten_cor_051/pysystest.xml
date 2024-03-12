@@ -12,6 +12,7 @@ deploys a contract using each of the accounts, which therefore must be authentic
 
     <classification>
         <groups inherit="true">
+            <group>hardhat</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
