@@ -34,3 +34,14 @@ class PySysTest(GenericNetworkTest):
                 if result is not None: address = result.group('address')
         self.log.info('Incrementer proxy deployed to address %s', address)
 
+        # construct an instance of the contract from the address and abi
+        web3, account = network.connect_account1(self)
+        with open(os.path.join(self.output, 'project', 'artifacts', 'contracts', 'IncrementerV1.sol', 'IncrementerV1.json')) as f:
+            contract = web3.eth.contract(address=address, abi=json.load(f)['abi'])
+
+        # make a call and assert we get the correct returned result
+        network.transact(self, web3, contract.functions.initialValue(2), account, 3_000_000)
+        network.transact(self, web3, contract.functions.increase(), account, 3_000_000)
+        ret = int(contract.functions.retrieve().call())
+        self.log.info('Returned value is %d', ret)
+        self.assertTrue(ret == 3)

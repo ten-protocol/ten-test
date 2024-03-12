@@ -11,4 +11,8 @@ contract IncrementerV1 {
     function increase() external {
         number += 1;
     }
+
+    function retrieve() public view returns (uint){
+        return number;
+    }
 }
