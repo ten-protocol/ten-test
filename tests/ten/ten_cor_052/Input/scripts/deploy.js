@@ -1,8 +1,8 @@
 async function main() {
-  const Incrementer = await ethers.getContractFactory("IncrementerV1");
-  const incrementer = await upgrades.deployProxy(Incrementer);
-  await incrementer.waitForDeployment();
-  console.log("Incrementer proxy deployed to:", await incrementer.getAddress());
+  const IncrementerV1 = await ethers.getContractFactory("IncrementerV1");
+  const incrementerV1 = await upgrades.deployProxy(IncrementerV1);
+  await incrementerV1.waitForDeployment();
+  console.log("Incrementer proxy deployed to:", await incrementerV1.getAddress());
 }
 
 main().catch((error) => {
