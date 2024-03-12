@@ -27,7 +27,7 @@ class PySysTest(GenericNetworkTest):
                      working_dir=project, environ=environ, stdout='npx_deploy.out', stderr='npx_deploy.err')
 
         address = 'undefined'
-        regex = re.compile('Incrementer proxy deployed to (?P<address>.*)$', re.M)
+        regex = re.compile('Incrementer proxy deployed to: (?P<address>.*)$', re.M)
         with open(os.path.join(self.output, 'npx_deploy.out'), 'r') as fp:
             for line in fp.readlines():
                 result = regex.search(line)
