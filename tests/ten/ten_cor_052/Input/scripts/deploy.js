@@ -1,4 +1,4 @@
-const hre = require("hardhat");
+const { ethers, upgrades } = require("hardhat");
 require('console-stamp')(console, 'HH:MM:ss')
 
 async function main() {

@@ -1,9 +1,6 @@
-require('dotenv').config();
-import { HardhatUserConfig } from "hardhat/config";
-import "@nomicfoundation/hardhat-toolbox";
-import 'hardhat-deploy';
-import 'hardhat-ignore-warnings';
-import 'ten-hardhat-plugin'
+require("@nomicfoundation/hardhat-toolbox");
+require("ten-hardhat-plugin");
+require("hardhat-deploy");
 
 const { PK1, PK2, HOST, PORT } = process.env;
 
