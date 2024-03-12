@@ -1,6 +1,8 @@
 {
-  "name": "test",
+  "name": "test-project",
   "version": "1.0.0",
+  "author": "Moray Grieve",
+  "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.3",
     "hardhat-ignore-warnings": "^0.2.6",

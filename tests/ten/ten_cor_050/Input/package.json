@@ -1,6 +1,8 @@
 {
-  "name": "test",
+  "name": "test-project",
   "version": "1.0.0",
+  "author": "Moray Grieve",
+  "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.3",
     "console-stamp": "3.1.2",
