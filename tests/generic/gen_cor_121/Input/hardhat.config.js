@@ -1,7 +1,7 @@
 require("@nomicfoundation/hardhat-toolbox");
 require('console-stamp')(console, 'HH:MM:ss')
 
-const { PK, HOST, PORT, TOKEN, API_KEY } = process.env;
+const { PK, HOST, PORT, TOKEN } = process.env;
 
 module.exports = {
   solidity:  "0.8.7",
