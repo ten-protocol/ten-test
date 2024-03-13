@@ -6,4 +6,5 @@ contract DoubleV1 {
     function doIt(uint x) public pure returns (uint) {
         return 2*x;
     }
+
 }

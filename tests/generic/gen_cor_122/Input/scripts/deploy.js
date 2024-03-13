@@ -9,8 +9,7 @@ async function main() {
 
   const DoubleV2 = await ethers.getContractFactory("DoubleV2");
   const doublev2 = await upgrades.upgradeProxy(address, DoubleV2);
-  await doublev2.waitForDeployment();
-  console.log("Incrementer V2 deployed to:", await doublev2.getAddress());
+  console.log("DoubleV2 deployed to:", await doublev2.getAddress());
 
 }
 
