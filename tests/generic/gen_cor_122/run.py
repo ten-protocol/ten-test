@@ -32,12 +32,12 @@ class PySysTest(GenericNetworkTest):
                      working_dir=project, environ=environ, stdout='npx_deploy.out', stderr='npx_deploy.err')
 
         address = 'undefined'
-        regex = re.compile('Contract deployed at (?P<address>.*)$', re.M)
+        regex = re.compile('Proxy deployed at (?P<address>.*)$', re.M)
         with open(os.path.join(self.output, 'npx_deploy.out'), 'r') as fp:
             for line in fp.readlines():
                 result = regex.search(line)
                 if result is not None: address = result.group('address')
-        self.log.info('Double proxy deployed at address %s', address)
+        self.log.info('Proxy deployed at address %s', address)
 
         # construct an instance of the contract from the address and abi
         with open(os.path.join(self.output,'project','artifacts','contracts','DoubleV2.sol', 'DoubleV2.json')) as f:
