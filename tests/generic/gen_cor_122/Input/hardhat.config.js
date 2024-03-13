@@ -10,10 +10,14 @@ module.exports = {
   defaultNetwork: "ten",
   networks: {
     ten: {
-      deploy: [ "scripts/" ],
       chainId: 443,
-      url: `${HOST}:${PORT}/v1/`,
-      useGateway: true,
+      url: `${HOST}:${PORT}/v1/${TOKEN}`,
+      gasPrice: 2000000000,
+      accounts: [ `0x${PK}` ]
+     },
+     ganache: {
+      chainId: 1337,
+      url: `${HOST}:${PORT}`,
       accounts: [ `0x${PK}` ]
     }
   }

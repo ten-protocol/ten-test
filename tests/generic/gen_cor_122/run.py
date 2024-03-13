@@ -11,7 +11,7 @@ class PySysTest(GenericNetworkTest):
         private_key = secrets.token_hex(32)
 
         # connect to the network
-        network = self.get_network_connection()
+        network = self.get_network_connection(name='local')
         self.distribute_native(Web3().eth.account.from_key(private_key), network.ETH_ALLOC_EPHEMERAL)
 
         # copy over and initialise the project
@@ -27,12 +27,12 @@ class PySysTest(GenericNetworkTest):
                      working_dir=project, environ=environ, stdout='npx_deploy.out', stderr='npx_deploy.err')
 
         address = 'undefined'
-        regex = re.compile('Incrementer proxy deployed to: (?P<address>.*)$', re.M)
+        regex = re.compile('Incrementer V1 deployed to: (?P<address>.*)$', re.M)
         with open(os.path.join(self.output, 'npx_deploy.out'), 'r') as fp:
             for line in fp.readlines():
                 result = regex.search(line)
                 if result is not None: address = result.group('address')
-        self.log.info('Incrementer proxy deployed to address %s', address)
+        self.log.info('Incrementer V1 deployed to address %s', address)
 
         # construct an instance of the contract from the address and abi
         web3, account = network.connect_account1(self)
@@ -45,3 +45,8 @@ class PySysTest(GenericNetworkTest):
         ret = int(contract.functions.retrieve().call())
         self.log.info('Returned value is %d', ret)
         self.assertTrue(ret == 3)
+
+        # upgrade the contract with one that adds in the decrease method
+        #environ['PROXY'] = address
+        #self.run_npx(args=['hardhat', 'run', '--network', 'ten', 'scripts/upgrade.js'],
+        #             working_dir=project, environ=environ, stdout='npx_upgrade.out', stderr='npx_upgrade.err')

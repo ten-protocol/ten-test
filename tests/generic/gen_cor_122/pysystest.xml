@@ -17,6 +17,7 @@
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
+            <mode>ganache</mode>
         </modes>
     </classification>
 

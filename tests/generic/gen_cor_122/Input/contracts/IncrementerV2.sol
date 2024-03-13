@@ -15,4 +15,8 @@ contract IncrementerV2 {
     function decrease() external {
         number -= 1;
     }
+
+    function retrieve() public view returns (uint){
+        return number;
+    }
 }
