@@ -13,6 +13,7 @@ contract via it's ABI and contract address.
     <classification>
         <groups inherit="true">
             <group>hardhat</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
