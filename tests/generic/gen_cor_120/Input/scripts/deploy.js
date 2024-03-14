@@ -1,10 +1,7 @@
-const hre = require("hardhat");
-require('console-stamp')(console, 'HH:MM:ss')
+const { ethers } = require("hardhat");
 
 async function main() {
-
-  // deployment without using a factory
-  const instance = await hre.ethers.deployContract("Double");
+  const instance = await ethers.deployContract("Double");
   await instance.waitForDeployment();
   console.log("Contract deployed at", instance.target);
 }

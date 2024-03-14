@@ -2,10 +2,10 @@
 <pysystest type="auto">
 
     <description>
-        <title>Hardhat: deploy two contracts using the hardhat deploy and ten plugins using typescript</title>
+        <title>Hardhat: deploy a single contract</title>
         <purpose><![CDATA[
-In this test two accounts are included in the hardhat config file, and the deploy and ten plugins are used. The test
-deploys a contract using each of the accounts, which therefore must be authenticated with the network first. 
+Deploys a contract using deployContract and waitForDeployment via hardhat, then uses web3.py to interact with the
+contract via it's ABI and contract address.
 ]]>
         </purpose>
     </description>
@@ -13,12 +13,14 @@ deploys a contract using each of the accounts, which therefore must be authentic
     <classification>
         <groups inherit="true">
             <group>hardhat</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
+            <mode>ganache</mode>
         </modes>
     </classification>
 

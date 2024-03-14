@@ -14,8 +14,10 @@ set label "{/Courier:Bold=13 Environment}: ".ARG5 left at screen 0.59, screen 0.
 set label "{/Courier:Bold=13 Throughput}: ".ARG6." txs/sec" left at screen 0.59, screen 0.850
 stats "clients_4/binned_throughput_all.log" using 1:2 nooutput name "A"
 stats "clients_5/binned_throughput_all.log" using 1:2 nooutput name "B"
+stats "results.log" using 1:2 nooutput name "C"
 
 #plot 1
+set yr [0:1.3*(C_max_y)]
 set size 0.5, 0.45
 set origin 0.0, 0.50
 set style fill solid 0.5

@@ -34,7 +34,6 @@ def run(name, chainId, web3, account, num_accounts, num_iterations, amount, gas_
     for tx in txs:
         try:
             receipt = web3.eth.send_raw_transaction(tx[0].rawTransaction)
-            time.sleep(0.001)
             receipts.append((receipt, tx[1]))
         except:
             logging.info('Error sending raw transaction, sent = %d', len(receipts))
@@ -70,7 +69,7 @@ if __name__ == "__main__":
     name = args.client_name
 
     logging.info('Starting client %s', name)
-    while not os.path.exists(args.signal_file): time.sleep(0.1)
+    #while not os.path.exists(args.signal_file): time.sleep(0.1)
     logging.info('Signal seen ... running client %s', name)
     run(name, int(args.chainId), web3, account, int(args.num_accounts), int(args.num_iterations), int(args.amount), int(args.gas_limit))
 

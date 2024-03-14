@@ -110,7 +110,8 @@ class PySysTest(TenNetworkTest):
                 bins[timestamp] = bins[timestamp] + client_bins[timestamp]
 
         # reduce to the overlap and find best zero gradient fit
-        included = self.find_overlap(list_client_times)
+        min, max = self.find_overlap(list_client_times)
+        included = [i for i in range(min, max+1, 1)]
         if len(included) > 0:
             bins_steady = {key: value for key, value in bins.items() if key in included}
             bins_ramp = {key: value for key, value in bins.items() if key not in included}
@@ -138,5 +139,5 @@ class PySysTest(TenNetworkTest):
         if len(lists) == 0: return []
         overlap = np.array(lists[0])
         for l in lists[1:]: overlap = np.intersect1d(overlap, np.array(l))
-        return overlap.tolist()[1:-1]
+        return overlap.tolist()[0], overlap.tolist()[-1]
 

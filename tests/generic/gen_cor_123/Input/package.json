@@ -1,0 +1,17 @@
+{
+  "name": "test-project",
+  "version": "1.0.0",
+  "author": "Moray Grieve",
+  "license": "ISC",
+  "dependencies": {
+    "hardhat-ignore-warnings": "^0.2.6",
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@nomicfoundation/hardhat-ethers": "^3.0.5",
+    "@openzeppelin/hardhat-upgrades": "^3.0.5",
+    "ethers": "^6.11.1",
+    "hardhat": "^2.21.0",
+    "console-stamp": "3.1.2"
+  },
+  "keywords": [],
+  "description": ""
+}

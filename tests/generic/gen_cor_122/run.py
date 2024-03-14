@@ -13,9 +13,9 @@ class PySysTest(GenericNetworkTest):
         project = os.path.join(self.output, 'project')
         private_key = secrets.token_hex(32)
 
-        # connect to the network
-        network = self.get_network_connection()
-        self.distribute_native(Web3().eth.account.from_key(private_key), network.ETH_ALLOC_EPHEMERAL)
+        # connect to the network, allocate 5* the normal ephemeral amount
+        network = self.get_network_connection(name='local')
+        self.distribute_native(Web3().eth.account.from_key(private_key), network.ETH_ALLOC)
         web3, account = network.connect(self, private_key=private_key, check_funds=False)
 
         # copy over and initialise the project
@@ -32,19 +32,20 @@ class PySysTest(GenericNetworkTest):
                      working_dir=project, environ=environ, stdout='npx_deploy.out', stderr='npx_deploy.err')
 
         address = 'undefined'
-        regex = re.compile('Contract deployed at (?P<address>.*)$', re.M)
+        regex = re.compile('Proxy deployed at (?P<address>.*)$', re.M)
         with open(os.path.join(self.output, 'npx_deploy.out'), 'r') as fp:
             for line in fp.readlines():
                 result = regex.search(line)
                 if result is not None: address = result.group('address')
-        self.log.info('TestMaths contract deployed at address %s', address)
+        self.log.info('Proxy deployed at address %s', address)
+        self.wait(4*float(self.block_time))
 
         # construct an instance of the contract from the address and abi
-        with open(os.path.join(self.output,'project','artifacts','contracts','Double.sol','Double.json')) as f:
+        with open(os.path.join(self.output,'project','artifacts','contracts','DoubleV2.sol', 'DoubleV2.json')) as f:
             contract = web3.eth.contract(address=address, abi=json.load(f)['abi'])
 
         # make a call and assert we get the correct returned result
-        ret = int(contract.functions.doIt(2).call())
+        ret = int(contract.functions.doItTwice(2).call())
         self.log.info('Returned value is %d', ret)
-        self.assertTrue(ret == 4)
+        self.assertTrue(ret == 8)
         
