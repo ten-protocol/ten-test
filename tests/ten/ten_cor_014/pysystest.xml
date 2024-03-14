@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Hardhat: deploy an upgradable contract through a proxy</title>
+        <title>Tx receipt - check the contents of a transaction receipt against ten</title>
         <purpose><![CDATA[
 ]]>
         </purpose>
@@ -10,7 +10,7 @@
 
     <classification>
         <groups inherit="true">
-            <group>hardhat</group>
+            <group>tenscan</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
@@ -18,6 +18,8 @@
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
             <mode>ganache</mode>
+            <mode>sepolia</mode>
+            <mode>arbitrum.sepolia</mode>
         </modes>
     </classification>
 
