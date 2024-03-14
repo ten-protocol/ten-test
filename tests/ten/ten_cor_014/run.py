@@ -13,7 +13,10 @@ class PySysTest(GenericNetworkTest):
         storage = Storage(self, web3, 100)
         storage.deploy(network, account)
 
+        # get the receipt sort the fields
         tx_receipt = network.transact(self, web3, storage.contract.functions.store(1), account, storage.GAS_LIMIT)
         entries = list(tx_receipt.keys())
         entries.sort()
+
+        # log out the receipt entries
         self.log.info(entries)
