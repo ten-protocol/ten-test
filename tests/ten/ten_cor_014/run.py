@@ -1,3 +1,4 @@
+import os
 from ten.test.basetest import GenericNetworkTest
 from ten.test.contracts.storage import Storage
 
@@ -15,8 +16,10 @@ class PySysTest(GenericNetworkTest):
 
         # get the receipt sort the fields
         tx_receipt = network.transact(self, web3, storage.contract.functions.store(1), account, storage.GAS_LIMIT)
-        entries = list(tx_receipt.keys())
-        entries.sort()
+        keys = list(tx_receipt.keys())
+        keys.sort()
 
         # log out the receipt entries
-        self.log.info(entries)
+        with open(os.path.join(self.output, '%s.log' % self.mode), 'w') as fp:
+            for key in keys:
+                fp.write('%s: %s\n' % (key, tx_receipt[key]))
