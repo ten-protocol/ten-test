@@ -26,12 +26,12 @@ class PySysTest(TenNetworkTest):
         self.chain_id = network.chain_id()
         self.gas_price = web3.eth.gas_price
         self.gas_limit = web3.eth.estimate_gas({'to': account.address, 'value': self.value, 'gasPrice': self.gas_price})
-        funds_needed = 1.1 * self.ITERATIONS * (self.gas_price*self.gas_limit + self.value)
+        funds_needed = 1.2 * self.ITERATIONS * (self.gas_price*self.gas_limit + self.value)
 
         # run the clients and wait for their completion
         results_file = os.path.join(self.output, 'results.log')
         with open(results_file, 'w') as fp:
-            for clients in [2,3,4,5]:
+            for clients in [1,2,3,4]:
                 self.log.info(' ')
                 self.log.info('Running for %d clients' % clients)
 
