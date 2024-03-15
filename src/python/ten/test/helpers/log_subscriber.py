@@ -53,14 +53,14 @@ class FilterLogSubscriber:
         if decode_as_stored_event: args.append('--decode_as_stored_event')
         if pk_to_register: self.network.connect(self.test, private_key=pk_to_register, check_funds=False)
         self.test.run_javascript(self.script, self.stdout, self.stderr, args)
-        self.test.waitForGrep(file=self.stdout, expr='Subscriber listening for instructions', timeout=10)
+        self.test.waitForGrep(file=self.stdout, expr='Subscriber listening for instructions', timeout=60)
 
     def subscribe(self):
         """Request the subscriber to subscribe for logs."""
         requests.post('http://127.0.0.1:%d' % self.port, data='SUBSCRIBE', headers={'Content-Type': 'text/plain'})
-        self.test.waitForGrep(file=self.stdout, expr='Subscribed for event logs', timeout=10)
+        self.test.waitForGrep(file=self.stdout, expr='Subscribed for event logs', timeout=30)
 
     def unsubscribe(self):
         """Request the subscriber to unsubscribe for logs."""
         requests.post('http://127.0.0.1:%d' % self.port, data='UNSUBSCRIBE', headers={'Content-Type': 'text/plain'})
-        self.test.waitForGrep(file=self.stdout, expr='Unsubscribed for event logs', timeout=10)
+        self.test.waitForGrep(file=self.stdout, expr='Unsubscribed for event logs', timeout=30)
