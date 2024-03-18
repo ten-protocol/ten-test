@@ -42,7 +42,10 @@ def run(name, chainId, web3, account, num_accounts, num_iterations, amount, gas_
             logging.info('Error sending raw transaction, sent = %d', len(receipts))
 
     logging.info('Waiting for last transaction')
-    web3.eth.wait_for_transaction_receipt(receipts[-1][0], timeout=600)
+
+    for receipt in receipts:
+        web3.eth.wait_for_transaction_receipt(receipt[0], timeout=600)
+        logging.info('Received tx receipt for %d' % receipt[1])
 
     logging.info('Logging the timestamps of each transaction')
     with open('%s_throughput.log' % name, 'w') as fp:
