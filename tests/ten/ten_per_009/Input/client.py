@@ -25,9 +25,12 @@ def run(name, chainId, web3, account, num_accounts, num_iterations, amount, gas_
     gas_price = web3.eth.gas_price
 
     txs = []
+    scale = 1
+    increment = float(2.0 / num_iterations)
     for i in range(0, num_iterations):
-        tx = create_signed_tx(account, i, random.choice(accounts), amount, gas_price, gas_limit, chainId)
+        tx = create_signed_tx(account, i, random.choice(accounts), amount, int(scale*gas_price), gas_limit, chainId)
         txs.append((tx, i))
+        scale = scale + increment
 
     logging.info('Bulk sending transactions to the network')
     receipts = []
