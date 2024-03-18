@@ -26,7 +26,14 @@ class PySysTest(TenNetworkTest):
         self.chain_id = network.chain_id()
         self.gas_price = web3.eth.gas_price
         self.gas_limit = web3.eth.estimate_gas({'to': account.address, 'value': self.value, 'gasPrice': self.gas_price})
-        funds_needed = 1.2 * self.ITERATIONS * (self.gas_price*self.gas_limit + self.value)
+
+        # gradually increase the gas prices for each subsequent transaction
+        scale = 1
+        funds_needed = 0
+        increment = float(2.0 / self.ITERATIONS)
+        for i in range(0, self.ITERATIONS):
+            funds_needed = funds_needed + (self.gas_price*(int(scale*self.gas_limit)) + self.value)
+            scale = scale + increment
 
         # run the clients and wait for their completion
         results_file = os.path.join(self.output, 'results.log')
@@ -38,7 +45,7 @@ class PySysTest(TenNetworkTest):
                 out_dir = os.path.join(self.output, 'clients_%d' % clients)
                 signal = os.path.join(out_dir, '.signal')
                 for i in range(0, clients):
-                    self.run_client('client_%s' % i, funds_needed, out_dir, signal)
+                    self.run_client('client_%s' % i, 1.1*funds_needed, out_dir, signal)
 
                 start_ns = time.perf_counter_ns()
                 with open(signal, 'w') as sig: sig.write('go')
