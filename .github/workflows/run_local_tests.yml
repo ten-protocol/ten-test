@@ -63,7 +63,6 @@ jobs:
           docker logs -f `docker ps -aqf "name=sequencer-enclave"` > sequencer-enclave.out 2>&1 &
           docker logs -f `docker ps -aqf "name=eth2network"` > eth2network.out 2>&1 &
           docker logs -f `docker ps -aqf "name=gateway"` > gateway.out 2>&1 &
-          docker container cp `docker ps -aqf "name=gateway"`:/home/obscuro/go-obscuro/tools/walletextension/bin/gateway_logs.log gateway_logs.out
 
       - name: 'Build required artifacts for running tests'
         run: |
@@ -88,6 +87,7 @@ jobs:
           cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ten.local -r -e skip -e persistence -e performance 
 
+
       - name: 'Collate pdf output'
         if: always()
         run: |
@@ -103,6 +103,12 @@ jobs:
             ${{ github.workspace }}/ten-test/**/Output
             !${{ github.workspace }}/ten-test/**/node_modules
           retention-days: 1
+
+      - name: 'Get the gateway logs'
+        if: failure()
+        run: |
+          cd ${{ github.workspace }}/go-ten/
+          docker container cp `docker ps -aqf "name=gateway"`:/home/obscuro/go-obscuro/tools/walletextension/bin/gateway_logs.log gateway_logs.out
 
       - name: 'Upload container logs'
         uses: actions/upload-artifact@v3
