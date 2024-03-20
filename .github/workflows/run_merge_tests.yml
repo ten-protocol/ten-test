@@ -78,6 +78,7 @@ jobs:
           docker logs -f `docker ps -aqf "name=sequencer-host"` > sequencer-host.out 2>&1 &
           docker logs -f `docker ps -aqf "name=sequencer-enclave"` > sequencer-enclave.out 2>&1 &
           docker logs -f `docker ps -aqf "name=eth2network"` > eth2network.out 2>&1 &
+          docker logs -f `docker ps -aqf "name=gateway"` > gateway.out 2>&1 &
 
       - name: 'Build required artifacts for running tests'
         run: |
