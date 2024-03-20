@@ -30,7 +30,7 @@ jobs:
       - name: 'Run tests'
         run: |
           cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ganache -r ${{ github.event.inputs.arguments }}
+          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.mode }} -r ${{ github.event.inputs.arguments }}
 
       - name: 'Collate pdf output'
         if: always()
