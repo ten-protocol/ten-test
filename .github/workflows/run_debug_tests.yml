@@ -1,10 +1,18 @@
 # Runs the tests through ganache to aid in debugging.
 #
-name: '[Execute] Tests against ganache'
+name: '[Debug] Tests for debugging'
 run-name: Run debug tests (${{ github.event_name }})
 on:
   workflow_dispatch:
     inputs:
+      mode:
+        type: choice
+        description: 'Mode to run the tests in'
+        required: true
+        default: ganache
+        options:
+          - ganache
+          - sepolia
       arguments:
         description: 'Arguments to the pysys run'
         required: true
