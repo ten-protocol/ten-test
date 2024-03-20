@@ -124,7 +124,7 @@ jobs:
             ${{ github.workspace }}/ten-test/**/Output
             !${{ github.workspace }}/ten-test/**/node_modules
           retention-days: 1
-          
+
       - name: 'Get the gateway logs'
         if: failure()
         run: |
