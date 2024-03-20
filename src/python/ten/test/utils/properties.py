@@ -120,8 +120,14 @@ class Properties:
     def l1_deployer_address(self, key): return self.get('env.'+key, 'L1DeployerAddress')
 
     # network connection properties
-    def host_http(self, key): return self.get('env.'+key, 'HostHTTP')
-    def host_ws(self, key): return self.get('env.'+key, 'HostWS')
+    def host_http(self, key):
+        if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'HostHTTPDockerNetwork')
+        return self.get('env.'+key, 'HostHTTP')
+
+    def host_ws(self, key):
+        if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'HostWSDockerNetwork')
+        return self.get('env.'+key, 'HostWS')
+
     def port_http(self, key): return int(self.get('env.'+key, 'PortHTTP'))
     def port_ws(self, key): return int(self.get('env.'+key, 'PortWS'))
     def chain_id(self, key): return int(self.get('env.'+key, 'ChainID'))
