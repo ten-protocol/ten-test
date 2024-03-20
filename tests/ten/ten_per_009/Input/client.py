@@ -38,18 +38,19 @@ def run(name, chainId, web3, account, num_accounts, num_iterations, amount, gas_
         try:
             receipt = web3.eth.send_raw_transaction(tx[0].rawTransaction)
             receipts.append((receipt, tx[1]))
-        except:
+        except Exception as e:
             logging.info('Error sending raw transaction, sent = %d', len(receipts))
+            logging.error('Exception thrown: ', e)
 
-    logging.info('Waiting for last transaction')
-
+    logging.info('Waiting for transactions')
     for receipt in receipts:
         try:
             web3.eth.wait_for_transaction_receipt(receipt[0], timeout=30)
             logging.info('Received tx receipt for %d' % receipt[1])
-        except:
+        except Exception as e:
             logging.info('Timedout waiting for %d' % receipt[1])
-
+            logging.error('Exception thrown: ', e)
+            
     logging.info('Logging the timestamps of each transaction')
     with open('%s_throughput.log' % name, 'w') as fp:
         for receipt in receipts:
