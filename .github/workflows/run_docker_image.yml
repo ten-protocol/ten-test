@@ -33,7 +33,7 @@ jobs:
       - name: 'Run tests on workflow dispatch'
         run: |
           cd ${{ github.workspace }}/ten-test
-          docker run -it -e DOCKER_TEST_ENV=true --network=node_network --name=e2e-tests testnetobscuronet.azurecr.io/obscuronet/obscuro_test:latest pysys.py run -m ten.local -i sanity 
+          docker run -e DOCKER_TEST_ENV=true --network=node_network --name=e2e-tests testnetobscuronet.azurecr.io/obscuronet/obscuro_test:latest /usr/local/bin/pysys.py run -m ten.local -i sanity
 
       - name: 'Docker clean containers and images after the test'
         if: always()
