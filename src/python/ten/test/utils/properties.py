@@ -31,8 +31,10 @@ class Properties:
     def get(self, section, option):
         if self.user_config.has_option(section, option):
             return self.user_config.get(section, option)
-        else:
+        elif self.default_config.has_option(section, option):
             return self.default_config.get(section, option)
+        else:
+            return None
 
     # binaries
     def solc_binary(self):
