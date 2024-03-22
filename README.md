@@ -126,7 +126,7 @@ npm install ganache --global
 npm install ganache-cli --global
 npm install web3@1.9.0 --global
 npm install ethers@5.7.2 --global
-npm install commander --global
+npm install commander@11.1.0 --global
 
 apt install -y python3-pip
 python3 -m pip install web3==5.31.3
