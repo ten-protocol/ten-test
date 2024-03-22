@@ -11,6 +11,7 @@ A simple smart contract which hard codes a value which it is necessary to guess.
 
     <classification>
         <groups inherit="true">
+            <group>sanity</group>
             <group>health</group>
         </groups>
         <modes inherit="true">

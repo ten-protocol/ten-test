@@ -11,6 +11,7 @@ Deploy a contract and check for error reporting on revert, require and assert.
 
     <classification>
         <groups inherit="true">
+            <group>sanity</group>
             <group>error</group>
         </groups>
         <modes inherit="true">

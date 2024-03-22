@@ -10,6 +10,7 @@
 
     <classification>
         <groups inherit="true">
+            <group>sanity</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

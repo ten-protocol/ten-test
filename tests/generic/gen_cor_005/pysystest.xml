@@ -13,6 +13,7 @@ one less than its child block.
 
     <classification>
         <groups inherit="true">
+            <group>sanity</group>
             <group>rpc</group>
         </groups>
         <modes inherit="true">

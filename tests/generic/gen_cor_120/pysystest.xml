@@ -12,6 +12,7 @@ contract via it's ABI and contract address.
 
     <classification>
         <groups inherit="true">
+            <group>sanity</group>
             <group>hardhat</group>
         </groups>
         <modes inherit="true">
