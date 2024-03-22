@@ -1,0 +1,44 @@
+# Builds a local testnet and checks you can run tests from the e2e docker container.
+#
+name: '[System] Tests the e2e docker container is functional'
+run-name: Check docker image (${{ github.event_name }})
+on:
+  schedule:
+    - cron: '10 4 * * *'
+  workflow_dispatch:
+
+jobs:
+  test-run:
+    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-01]
+    steps:
+      - name: 'Check out go-ten code'
+        uses: actions/checkout@v3
+        with:
+          repository: ten-protocol/go-ten
+          path: ./go-ten
+
+      - name: 'Docker clean containers and images before the test'
+        run: |
+          for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
+          docker system prune -af --volumes
+          for i in `docker volume ls --filter dangling=true -q`; do docker volume rm $i; done
+
+      - name: 'Build and start up testnet'
+        run: |
+          cd ${{ github.workspace }}/go-ten/testnet
+          ./testnet-local-build_images.sh 
+          cd ${{ github.workspace }}/go-ten/
+          go run ./testnet/launcher/cmd
+
+      - name: 'Run tests on workflow dispatch'
+        run: |
+          cd ${{ github.workspace }}/ten-test
+          docker run -it -e DOCKER_TEST_ENV=true --network=node_network --name=e2e-tests testnetobscuronet.azurecr.io/obscuronet/obscuro_test:latest pysys.py run -m ten.local -i sanity 
+
+      - name: 'Docker clean containers and images after the test'
+        if: always()
+        run: |
+          for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
+          docker system prune -af --volumes
+          for i in `docker volume ls --filter dangling=true -q`; do docker volume rm $i; done
+

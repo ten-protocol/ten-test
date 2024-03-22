@@ -20,6 +20,7 @@ TEN due to https://github.com/ten-protocol/ten-internal/issues/2786.
 
     <classification>
         <groups inherit="true">
+            <group>sanity</group>
             <group>mempool</group>
         </groups>
         <modes inherit="true">

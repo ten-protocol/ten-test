@@ -8,14 +8,14 @@ class PySysTest(GenericNetworkTest):
     def execute(self):
         # connect to the network and deploy the game
         network_dev = self.get_network_connection()
-        web3_dev, account_dev = network_dev.connect_account2(self, web_socket=True)
+        web3_dev, account_dev = network_dev.connect_account2(self)
 
         game = Game(self, web3_dev)
         game.deploy(network_dev, account_dev)
 
         # connect a user to the network for them to play the game
         network_usr = self.get_network_connection()
-        web3_usr, account_usr = network_usr.connect_account1(self, web_socket=True)
+        web3_usr, account_usr = network_usr.connect_account1(self)
 
         stdout = os.path.join(self.output, 'subscriber.out')
         stderr = os.path.join(self.output, 'subscriber.err')
