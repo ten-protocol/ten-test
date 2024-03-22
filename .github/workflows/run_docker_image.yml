@@ -1,8 +1,7 @@
-# Builds a local testnet and runs a set of E2E tests. The workflow is run either manually from a workflow dispatch or
-# on a nightly basis via a schedule task.
+# Builds a local testnet and checks you can run tests from the e2e docker container.
 #
-name: '[Execute] Tests against local network'
-run-name: Run local tests (${{ github.event_name }})
+name: '[System] Tests the e2e docker container is functional'
+run-name: Check docker image (${{ github.event_name }})
 on:
   schedule:
     - cron: '10 4 * * *'
