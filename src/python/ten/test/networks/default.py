@@ -131,7 +131,7 @@ class DefaultPostLondon:
                           gas_estimate, base_fee_per_gas, web3.from_wei(base_fee_per_gas*gas_estimate, 'wei'),
                           web3.from_wei(balance, 'ether'))
 
-        params['gas'] = gas_estimate
+        params['gas'] = int(1.1*gas_estimate)
         build_tx = target.build_transaction(params)
         return build_tx
 
@@ -216,6 +216,6 @@ class DefaultPreLondon(DefaultPostLondon):
                           gas_estimate, gas_price, web3.from_wei(gas_price*gas_estimate, 'wei'),
                           web3.from_wei(balance, 'ether'))
 
-        params['gas'] = gas_estimate
+        params['gas'] = int(1.1*gas_estimate)
         build_tx = target.build_transaction(params)
         return build_tx

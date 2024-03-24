@@ -9,39 +9,28 @@ contract GuessGame {
     // constants
     uint256 public constant MAX_GUESS = 10;
 
-    event Guessed(address indexed user, uint256 guessedNumber, bool success);
-
-    modifier onlyOwner() {
-        require(msg.sender == owner, 'Only the owner can call this function');
-        _;
-    }
+    event Guessed(address indexed user, uint256 guessedNumber, bool success, uint256 secretNumber);
 
     constructor() {
         owner = msg.sender;
         _resetSecretNumber();
     }
 
-    function guess(uint256 _number) external payable {
+    function guess(uint256 _number) public {
         require(_number > 0 && _number <= MAX_GUESS, 'Secret number should be between 1 and 1000');
         totalGuesses += 1;
 
         if (_number == secretNumber) {
-            // If the guess is correct, transfer all the contract balance to the user
-            payable(msg.sender).transfer(address(this).balance);
-            emit Guessed(msg.sender, _number, true);
+            emit Guessed(msg.sender, _number, true, secretNumber);
             _resetSecretNumber();
             totalGuesses = 0;
         } else {
-            emit Guessed(msg.sender, _number, false);
+            emit Guessed(msg.sender, _number, false, secretNumber);
         }
     }
 
     function _resetSecretNumber() private {
-        uint256 randomNumber = block.difficulty;
-        secretNumber = (randomNumber % MAX_GUESS) + 1;
-    }
-
-    function getContractBalance() external view returns (uint256) {
-        return address(this).balance;
+        uint256 randomNumber = uint256(keccak256(abi.encodePacked(block.difficulty, block.timestamp)));
+        secretNumber = (randomNumber % 10) + 1;
     }
 }

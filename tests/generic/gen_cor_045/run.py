@@ -21,7 +21,6 @@ class PySysTest(GenericNetworkTest):
         stderr = os.path.join(self.output, 'subscriber.err')
         script = os.path.join(self.input, 'listener.js')
         args = []
-        args.extend(['--network_http', '%s' % network_usr.connection_url(web_socket=False)])
         args.extend(['--network_ws', '%s' % network_usr.connection_url(web_socket=True)])
         args.extend(['--game_address', '%s' % game.address])
         args.extend(['--game_abi', '%s' % game.abi_path])
