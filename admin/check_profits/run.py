@@ -33,9 +33,15 @@ class PySysTest(TenNetworkTest):
             for entry in reversed(self.funds_db.get_funds(name='Sequencer', environment=self.env)):
                 fp.write('%s %s\n' % (entry[0], entry[1]))
 
+        # add differentials to get around L2 restarts and the gas payment balance going to zero
+        last_balance = 0
+        running_balance = 0
         with open(os.path.join(self.output, 'gas_payment.log'), 'w') as fp:
             for entry in reversed(self.funds_db.get_funds(name='GasPayment', environment=self.env)):
-                fp.write('%s %s\n' % (entry[0], entry[1]))
+                current_balance = int(entry[1])
+                if current_balance > last_balance: running_balance = running_balance + (current_balance - last_balance)
+                fp.write('%s %s\n' % (entry[0], running_balance))
+                last_balance = current_balance
 
         self.graph()
 
