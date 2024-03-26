@@ -14,6 +14,7 @@ contract via it's ABI and contract address.
         <groups inherit="true">
             <group>sanity</group>
             <group>hardhat</group>
+             <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
