@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Check the balances on sepolia-testnet</title>
+        <title>Check the tx count for the sequencer on sepolia-testnet</title>
         <purpose><![CDATA[
 ]]>
         </purpose>
