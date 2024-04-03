@@ -22,4 +22,4 @@ class PySysTest(TenNetworkTest):
         entries = self.counts_db.get_last_hour('Sequencer', self.env, current_time - 3600)
         self.log.info('Last hour counts;')
         for entry in entries: self.log.info('  %s %s', entry[0], entry[1])
-        self.assertTrue(int(entries[0][1]) > int(entries[-1][1]), assertMessage='No increase in the tx count seen')
+        self.assertTrue(int(entries[0][1]) > int(entries[-1][1]), assertMessage='Check increase in the tx count seen')
