@@ -20,9 +20,6 @@ jobs:
               "StefanIliev545": {
                 "discord_id": "1034771491436363797"
               },
-              "otherview": {
-                "discord_id": "494924753962926120"
-              },
               "BedrockSquirrel": {
                 "discord_id": "92361563276591104"
               },
@@ -35,11 +32,14 @@ jobs:
               "zkokelj": {
                 "discord_id": "639076633994592256"
               },
-              "jennie_von": {
-                "discord_id": "902910727948492840"
-              },
               "anixon604": {
                 "discord_id": "643461415532756992"
+              },
+              "badgersrus": {
+                "discord_id": "920586981581393983"
+              },
+              "Jennievon": {
+                "discord_id": "902910727948492840"
               },
               ".*": {
                 "discord_id": "814873419207409685"
