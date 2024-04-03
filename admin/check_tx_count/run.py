@@ -21,4 +21,4 @@ class PySysTest(TenNetworkTest):
 
         entries = self.counts_db.get_last_three_counts('Sequencer', self.env)
         self.log.info('Last three counts;')
-        for entry in entries: self.log.info('%s %s', (entry[0], entry[1]))
+        for entry in entries: self.log.info('%s %s', entry[0], entry[1])
