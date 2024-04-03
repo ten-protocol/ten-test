@@ -19,5 +19,6 @@ class PySysTest(TenNetworkTest):
         self.log.info('Sequencer tx count %d', sequencer_count)
         self.counts_db.insert_count('Sequencer', sequencer_address, self.env, current_time, sequencer_count)
 
-
-
+        entries = self.counts_db.get_last_three_counts('Sequencer', self.env)
+        self.log.info('Last three counts;')
+        for entry in entries: self.log.info('%s %s', (entry[0], entry[1]))

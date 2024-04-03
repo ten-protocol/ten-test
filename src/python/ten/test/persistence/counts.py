@@ -9,7 +9,7 @@ class CountsPersistence:
                  "PRIMARY KEY (name, environment, time))"
     SQL_INSERT = "INSERT INTO counts VALUES (?, ?, ?, ?, ?)"
     SQL_DELETE = "DELETE from counts WHERE environment=?"
-    SQL_SELECT = "SELECT time, count FROM counts WHERE name=? and environment=? ORDER BY time DESC"
+    SQL_SELECT = "SELECT time, count FROM counts WHERE name=? and environment=? ORDER BY time DESC LIMIT 3"
 
     def __init__(self, db_dir):
         """Instantiate an instance."""
@@ -35,7 +35,7 @@ class CountsPersistence:
         self.cursor.execute(self.SQL_INSERT, (name, address, environment, time, str(count)))
         self.connection.commit()
 
-    def get_count(self, name, environment):
+    def get_last_three_counts(self, name, environment):
         """Return the transaction count with time for a particular logical account."""
         self.cursor.execute(self.SQL_SELECT, (name, environment))
         return self.cursor.fetchall()
