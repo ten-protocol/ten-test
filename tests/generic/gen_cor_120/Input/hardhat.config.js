@@ -9,7 +9,7 @@ module.exports = {
   networks: {
     ten: {
       chainId: 443,
-      url: `${HOST}:${PORT}/v1/${TOKEN}`,
+      url: `${HOST}:${PORT}/v1/?token=${TOKEN}`,
       gasPrice: 2000000000,
       accounts: [ `0x${PK}` ]
     },
