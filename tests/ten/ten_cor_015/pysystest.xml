@@ -2,25 +2,24 @@
 <pysystest type="auto">
 
     <description>
-        <title>Game: play a sample guessing game, deploy and transact over web-sockets</title>
+        <title>Error: response when calling getStorageAt</title>
         <purpose><![CDATA[
-A slightly more complex contract which resembles more closely that used as the Ten sample guessing game.
+Deploys a game contract with a secret number, then attempts to get the secret number using a call to
+get_storage_at. On other chains this allows the user to cheat, whereas on ten we expect an illegal access exception
+to be thrown.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
-            <mode>arbitrum.sepolia</mode>
             <mode>ganache</mode>
-            <mode>sepolia</mode>
         </modes>
     </classification>
 

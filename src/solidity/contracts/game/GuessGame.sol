@@ -2,8 +2,8 @@
 pragma solidity ^0.8.0;
 
 contract GuessGame {
-    uint256 private secretNumber;
     address private owner;
+    uint256 private secretNumber;
     uint256 public totalGuesses;
 
     // constants
