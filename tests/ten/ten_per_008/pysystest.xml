@@ -13,7 +13,6 @@ throughput and the bulk throughput across all clients.
     <classification>
         <groups inherit="true">
             <group>performance</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
