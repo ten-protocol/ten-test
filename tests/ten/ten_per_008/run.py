@@ -23,11 +23,15 @@ class PySysTest(TenNetworkTest):
                 self.log.info('Running for %d clients' % clients)
                 out_dir = os.path.join(self.output, 'clients_%d' % clients)
                 start_ns = time.perf_counter_ns()
+                signal = os.path.join(out_dir, '.signal')
                 for i in range(0, clients):
-                    self.run_client('client_%s' % i, network, self.ITERATIONS, start_ns, out_dir)
+                    self.run_client('client_%s' % i, network, self.ITERATIONS, start_ns, out_dir, signal)
+
+                with open(signal, 'w') as sig: sig.write('go')
                 for i in range(0, clients):
                     self.waitForGrep(file=os.path.join(out_dir, 'client_%s.out' % i),
                                      expr='Client client_%s completed' % i, timeout=300)
+
                 end_ns = time.perf_counter_ns()
                 bulk_throughput = float(clients * self.ITERATIONS) / float((end_ns-start_ns)/1e9)
                 avg_latency, mode_latency = self.process_latency(clients, out_dir)
@@ -47,7 +51,7 @@ class PySysTest(TenNetworkTest):
         # passed if no failures (though pdf output should be reviewed manually)
         self.addOutcome(PASSED)
 
-    def run_client(self, name, network, num_iterations, start, out_dir):
+    def run_client(self, name, network, num_iterations, start, out_dir, signal_file):
         pk = secrets.token_hex(32)
         account = Web3().eth.account.from_key(pk)
         self.distribute_native(account, Web3().from_wei(1, 'ether'))
@@ -63,7 +67,9 @@ class PySysTest(TenNetworkTest):
         args.extend(['--client_name', name])
         args.extend(['--pk', pk])
         args.extend(['--start', '%d' % start])
+        args.extend(['--signal_file', signal_file])
         self.run_python(script, stdout, stderr, args, workingDir=out_dir)
+        self.waitForSignal(file=stdout, expr='Starting client %s' % name)
 
     def process_latency(self, num_clients, out_dir):
         data = []
