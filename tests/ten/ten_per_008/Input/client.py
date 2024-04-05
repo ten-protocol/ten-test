@@ -1,11 +1,10 @@
-import logging, argparse, sys, time
+import logging, argparse, sys, time, os
 from web3 import Web3
 
 logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
 
 
 def run(name, web3, num_iterations, start):
-    logging.info('Client %s started', name)
     address = Web3().eth.account.from_key(args.pk).address
 
     latency = []
@@ -37,9 +36,12 @@ if __name__ == "__main__":
     parser.add_argument('-i', '--num_iterations', help='The number of iterations')
     parser.add_argument('-p', '--pk', help='Private key used to request balance')
     parser.add_argument('-s', '--start', help='Starting time')
+    parser.add_argument('-f', '--signal_file', help='Poll for this file to initiate sending')
     args = parser.parse_args()
 
     web3 = Web3(Web3.HTTPProvider(args.network_http))
+    logging.info('Starting client %s', args.client_name)
+    while not os.path.exists(args.signal_file): time.sleep(0.1)
     run(args.client_name, web3, int(args.num_iterations), int(args.start))
 
 
