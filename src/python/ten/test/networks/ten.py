@@ -158,7 +158,7 @@ class Ten(DefaultPreLondon):
         if response.ok: return response.text.strip()
         return None
 
-    def __register(self, test, account):
+    def __register_old(self, test, account):
         domain = {'name': 'Ten', 'version': '1.0', 'chainId': Properties().chain_id(test.env)}
         types = {
             'Authentication': [
@@ -175,5 +175,28 @@ class Ten(DefaultPreLondon):
         requests.post('%s:%d/v1/authenticate/?token=%s' % (self.HOST, self.PORT, self.ID),
                       data=json.dumps(data), headers=headers)
 
+    def __register(self, test, account):
+        url = '%s:%d/v1/getmessage/' % (self.HOST, self.PORT)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
+        data = {"encryptionToken": self.ID, "formats": ["EIP712"]}
+        response = requests.get(url, headers=headers, json=data).text
+        response = response.replace("\\", "")
+        response = response.replace("\"{", "{")
+        response = response.replace("}\"", "}")
+        message = json.loads(response)["message"]
 
+        domain = message["domain"]
+        del domain["verifyingContract"]
+        del domain["salt"]
+
+        types = message["types"]
+        del types["EIP712Domain"]
+
+        signable_msg_from_dict = encode_typed_data(domain, types, message["message"])
+        signed_msg_from_dict = Account.sign_message(signable_msg_from_dict, account.key)
+
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
+        data = {"signature": signed_msg_from_dict.signature.hex(), "address": account.address}
+        requests.post('%s:%d/v1/authenticate/?token=%s' % (self.HOST, self.PORT, self.ID),
+                      data=json.dumps(data), headers=headers)
 
