@@ -389,6 +389,21 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
+    def gateway_get_token(self):
+        props = Properties()
+        url = '%s:%d/v1/join/' % (props.host_http(self.env), props.port_http(self.env))
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
+        response = requests.get(url, headers=headers)
+        return response.text
+
+    def gateway_get_message(self, token, formats=None):
+        props = Properties()
+        url = '%s:%d/v1/getmessage/' % (props.host_http(self.env), props.port_http(self.env))
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
+        data = {"encryptionToken": token, "formats": ["EIP712", "Personal"] if formats is None else formats}
+        response = requests.get(url, headers=headers, json=data)
+        return response.text
+
     def post(self, data):
         self.MSG_ID += 1
         server = 'http://%s:%s' % (Properties().node_host(self.env, self.NODE_HOST), Properties().node_port_http(self.env))
