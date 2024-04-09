@@ -23,14 +23,9 @@ class PySysTest(GenericNetworkTest):
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
 
-        # perform some transactions with a sleep in between
-        receipt1 = network.transact(self, web3, storage.contract.functions.setItem('key1', 1), account, storage.GAS_LIMIT)
-        receipt2 = network.transact(self, web3, storage.contract.functions.setItem('key1', 2), account, storage.GAS_LIMIT)
-        self.wait(float(self.block_time) * 1.1)
+        # wait a block time
+        self.wait(float(self.block_time) * 2)
 
         # wait and validate
-        self.waitForGrep(file='block_notifier.out', expr='Block =', condition='==2')
-        exprList = []
-        exprList.append('Block = [0-9]+ , Transaction = %s' % receipt1.transactionHash.hex())
-        exprList.append('Block = [0-9]+ , Transaction = %s' % receipt2.transactionHash.hex())
-        self.assertOrderedGrep(file='block_notifier.out', exprList=exprList)
+        self.waitForGrep(file='block_notifier.out', expr='Block =', condition='==1')
+

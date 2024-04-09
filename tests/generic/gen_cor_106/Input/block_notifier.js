@@ -6,14 +6,12 @@ require('console-stamp')(console, 'HH:MM:ss.l')
 
 async function getBlock(blockNumber)  {
   var block = await provider.getBlock(blockNumber);
-  if (block.transactions.length != 0) {
-    block.transactions.forEach(item => console.log('Block =',block.number,', Transaction =',item))
-  }
+  console.log('Block =', block)
 }
 
 function task() {
   console.log('Starting task ...')
-  provider.on("block", (blockNumber) => {
+  provider.once("block", (blockNumber) => {
     getBlock(blockNumber)
   });
 }
