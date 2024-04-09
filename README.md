@@ -52,8 +52,8 @@ looked for in the `~/.tentest/user.properties` should it exist, and if not will 
 Setup and run locally using docker
 ----------------------------------
 Should you wish to run the tests locally on your host machine against a local testnet, the easiest approach is to use
-the docker image for the e2e tests. Prior to running, a local testnet should be built and run as described in the 
-`go-ten/README.md` file (see the section "Building and running a local testnet"). Once the local testnet is running, 
+the docker image for the e2e tests. Prior to running, a local testnet should be built and run as described in the section "Building and running a local testnet" of the
+[go-ten/README.md](https://github.com/ten-protocol/go-ten?tab=readme-ov-file#building-and-running-a-local-testnet) file. Once the local testnet is running, 
 the e2e docker image can be pulled down from the Azure container registry and run from the root of the `ten-test`
 repository using the below; 
 
