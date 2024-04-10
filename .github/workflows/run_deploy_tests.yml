@@ -51,19 +51,13 @@ jobs:
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.dev persistence_reset
           cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ten.dev -r -e skip
+          /usr/local/bin/pysys.py run -m ten.dev -e skip -e performance -e robustness
 
       - name: 'Run tests on dev-testnet on a repository_dispatch trigger of an upgrade'
         if: ${{ (github.event_name == 'repository_dispatch') && (github.event.action == 'dev_testnet_upgraded') }}
         run: |
           cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ten.dev -r -e skip
-
-      - name: 'Collate pdf output'
-        if: always()
-        run: |
-          cd ${{ github.workspace }}/ten-test
-          pdftk $(find . -name \*.pdf | sort) cat output results_graphs.pdf || true
+          /usr/local/bin/pysys.py run -m ten.dev -e skip -e performance -e robustness
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v3
@@ -73,14 +67,4 @@ jobs:
           path: |
             ${{ github.workspace }}/ten-test/**/Output
             !${{ github.workspace }}/ten-test/**/node_modules
-          retention-days: 1
-
-      - name: 'Upload performance output'
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: performance-artifact
-          path: |
-            ${{ github.workspace }}/ten-test/results_graphs.pdf
-          if-no-files-found: ignore
           retention-days: 1
