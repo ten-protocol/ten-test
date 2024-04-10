@@ -41,5 +41,6 @@ jobs:
           name: profits-artifact
           path: |
             ${{ github.workspace }}/ten-test/admin/check_profits/Output/linux/profits.pdf
+            ${{ github.workspace }}/ten-test/admin/check_profits/Output/linux/profits.log
           if-no-files-found: ignore
           retention-days: 1
