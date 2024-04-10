@@ -1,35 +1,19 @@
 {
+    "domain": {
+        "chainId": "0x1bb",
+        "name": "Ten",
+        "version": "1.0"
+    },
+    "message": {
+        "Encryption Token": "<token>"
+    },
+    "primaryType": "Authentication",
     "types": {
         "Authentication": [
             {
                 "name": "Encryption Token",
                 "type": "address"
             }
-        ],
-        "EIP712Domain": [
-            {
-                "name": "name",
-                "type": "string"
-            },
-            {
-                "name": "version",
-                "type": "string"
-            },
-            {
-                "name": "chainId",
-                "type": "uint256"
-            }
         ]
-    },
-    "primaryType": "Authentication",
-    "domain": {
-        "name": "Ten",
-        "version": "1.0",
-        "chainId": "0x1bb",
-        "verifyingContract": "",
-        "salt": ""
-    },
-    "message": {
-        "Encryption Token": "<token>"
     }
 }

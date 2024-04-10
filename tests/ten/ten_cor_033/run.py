@@ -12,7 +12,7 @@ class PySysTest(TenNetworkTest):
         self.log.info('Running for EIP712')
         message = json.loads(self.gateway_get_message(token=token, formats=["EIP712"]))["message"]
         with open(os.path.join(self.output, 'msg_eip712.json'), 'w') as f:
-            json.dump(json.JSONDecoder().decode(message), f, indent=4)
+            json.dump(message, f, indent=4)
 
         self.log.info('Running for Personal')
         message = json.loads(self.gateway_get_message(token=token, formats=["Personal"]))["message"]
@@ -22,7 +22,7 @@ class PySysTest(TenNetworkTest):
         self.log.info('Running for both')
         message = json.loads(self.gateway_get_message(token=token, formats=["EIP712","Personal"]))["message"]
         with open(os.path.join(self.output, 'msg_both.json'), 'w') as f:
-            json.dump(json.JSONDecoder().decode(message), f, indent=4)
+            json.dump(message, f, indent=4)
 
         self.log.info('Asserting diff against reference files')
         self.assertDiff(file1='msg_eip712.json', file2='msg_eip712.json', replace=[('<token>', token)])
