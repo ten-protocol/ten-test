@@ -13,6 +13,7 @@ do a final call to retrieve it. Just checks that we are able to walk backwards w
     <classification>
         <groups inherit="true">
             <group>tenscan</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
