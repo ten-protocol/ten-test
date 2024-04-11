@@ -15,6 +15,7 @@ Not yet supported on Ten - see https://github.com/ten-protocol/ten-internal/issu
 
     <classification>
         <groups inherit="true">
+            <group>ethers</group>
             <group>skip</group>
         </groups>
         <modes inherit="true">

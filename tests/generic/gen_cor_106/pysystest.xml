@@ -11,6 +11,7 @@ Uses the javascript ethers library to register a provider on block listener for 
 
     <classification>
         <groups inherit="true">
+            <group>ethers</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
