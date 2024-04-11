@@ -159,21 +159,17 @@ class Ten(DefaultPreLondon):
         return None
 
     def __register(self, test, account):
-        domain = {'name': 'Ten', 'version': '1.0', 'chainId': Properties().chain_id(test.env)}
-        types = {
-            'Authentication': [
-                {'name': 'Encryption Token', 'type': 'address'},
-            ],
-        }
-        message = {'Encryption Token': "0x"+self.ID}
+        url = '%s:%d/v1/getmessage/' % (self.HOST, self.PORT)
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
+        data = {"encryptionToken": self.ID, "formats": ["EIP712"]}
+        response = requests.get(url, headers=headers, json=data).text
+        message = json.loads(response)["message"]
 
-        signable_msg_from_dict = encode_typed_data(domain, types, message)
+        signable_msg_from_dict = encode_typed_data(message["domain"], message["types"], message["message"])
         signed_msg_from_dict = Account.sign_message(signable_msg_from_dict, account.key)
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         data = {"signature": signed_msg_from_dict.signature.hex(), "address": account.address}
         requests.post('%s:%d/v1/authenticate/?token=%s' % (self.HOST, self.PORT, self.ID),
                       data=json.dumps(data), headers=headers)
-
-
 

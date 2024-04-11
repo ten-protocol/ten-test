@@ -1,0 +1,19 @@
+{
+    "domain": {
+        "chainId": "0x1bb",
+        "name": "Ten",
+        "version": "1.0"
+    },
+    "message": {
+        "Encryption Token": "<token>"
+    },
+    "primaryType": "Authentication",
+    "types": {
+        "Authentication": [
+            {
+                "name": "Encryption Token",
+                "type": "address"
+            }
+        ]
+    }
+}
