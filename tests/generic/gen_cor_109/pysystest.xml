@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Callback: web3js client using eth.subscribe and clear subscriptions (newHeads)</title>
+        <title>Callback: web3js client using eth.subscribe (newHeads)</title>
         <purpose><![CDATA[
 ]]>
         </purpose>
