@@ -2,13 +2,10 @@
 <pysystest type="auto">
 
     <description>
-        <title>Callback: ethers client using provider on pending (newPendingTransactions) and then once on txHash</title>
+        <title>Callback: ethers client using provider on "block" and then off (newHeads)</title>
         <purpose><![CDATA[
-Uses the javascript ethers library to register a provider on pending transactions (i.e. added to the mempool). When
-triggered another listener is created to wait for that txHash to be mined. Validation is ensuring that for both
-callbacks are received.
-
-Not yet supported on Ten - see https://github.com/ten-protocol/ten-internal/issues/1627
+Checks that we can use ethers provider once to receive newHeads, and then remove the subscription once a certain number
+of blocks are received.
 ]]>
         </purpose>
     </description>
@@ -16,7 +13,6 @@ Not yet supported on Ten - see https://github.com/ten-protocol/ten-internal/issu
     <classification>
         <groups inherit="true">
             <group>ethers</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

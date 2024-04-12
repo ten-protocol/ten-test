@@ -17,9 +17,7 @@ class PySysTest(GenericNetworkTest):
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
 
-        # wait two block times
-        self.wait(float(self.block_time) * 2)
-
-        # wait and validate we only see one block
-        self.waitForGrep(file='block_notifier.out', expr='Block =', condition='==1')
-
+        # wait and validate
+        timeout = float(self.block_time) * 6
+        self.waitForGrep(file='block_notifier.out', expr='Block =', condition='==4', timeout=timeout)
+        self.assertLineCount(file='block_notifier.out', expr='Block =', condition='==4')
