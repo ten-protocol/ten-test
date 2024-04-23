@@ -4,8 +4,8 @@
 name: '[Monitor] Check uat-testnet health'
 run-name: Check uat-testnet health
 on:
-  schedule:
-    - cron: '*/30 * * * *'
+  #  schedule:
+  #    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 jobs:
