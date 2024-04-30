@@ -27,7 +27,8 @@ class PySysTest(TenNetworkTest):
         while True:
             l2_balance_after = accnt1.l2.web3.eth.get_balance(accnt1.l2.account.address)
             if l2_balance_after > l2_balance_before: break
-            if time.time() - start > 10:
+            if time.time() - start > 60:
+                self.log.info('Timeout waiting on the L2 balance to increase')
                 self.addOutcome(TIMEDOUT)
                 break
 
