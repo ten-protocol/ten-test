@@ -12,6 +12,7 @@ async function getBlock(blockNumber)  {
 function task() {
   console.log('Starting task ...')
   provider.once("block", (blockNumber) => {
+    console.log('Received block notification ... retrieving')
     getBlock(blockNumber)
   });
 }
