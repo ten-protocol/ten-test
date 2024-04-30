@@ -22,7 +22,8 @@ class PySysTest(GenericNetworkTest):
         self.log.info('Initial block number after starting task is %d', block_number_initial)
 
         # wait and validate we only see one block
-        self.waitForGrep(file='block_notifier.out', expr='Block =', condition='==1')
+        self.waitForGrep(file='block_notifier.out', expr='Block =', abortOnError=False)
+        self.assertLineCount(file='block_notifier.out', expr='Block =', condition='==1')
 
         block_number_final = web3.eth.get_block_number()
         self.log.info('Final block number after running test is %d', block_number_final)
