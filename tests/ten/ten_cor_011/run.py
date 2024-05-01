@@ -1,40 +1,39 @@
-from pysys.constants import PASSED
+from ten.test.contracts.storage import Storage
 from ten.test.basetest import TenNetworkTest
 
 
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        txs = self.tenscan_get_latest_transactions(1)
-        self.log.info('Last transactions are %s', txs)
-        if len(txs) >= 1:
-            batch = self.tenscan_get_batch_for_transaction(txs[0])
-            parent_hash = batch['Header']['parentHash']
-            number = int(batch['Header']['number'], 16)
-            num_tx = len(batch['TxHashes'])
-            self.log.info('Parent hash: %s, Number: %d, Ntx: %d', parent_hash, number, num_tx)
+        page_num = 0
+        page_sze = 100
 
-            count = 100
-            while count > 0:
-                self.log.info('Calling to get batch for parent %s', parent_hash)
-                batch = self.tenscan_get_batch(parent_hash)
-                if number == 0:
-                    self.log.info('Reached the genesis block so exiting')
-                    self.log.info(batch)
-                    break
-                else:
-                    parent_hash = batch['Header']['parentHash']
-                    number = int(batch['Header']['number'], 16)
-                    num_tx = len(batch['TxHashes'])
-                    self.log.info('Parent hash: %s, Number: %d, Ntx: %d', parent_hash, number, num_tx)
+        # connect to network
+        network = self.get_network_connection()
+        web3, account = network.connect_account1(self)
 
-                count = count - 1
+        # get some public transaction data
+        tx_data = self.scan_get_public_transaction_data(page_num, page_sze)
+        tot_start = tx_data['Total']
+        txs_start = tx_data['TransactionsData']
+        self.log.info('TXData[\'total\']:  %d', tot_start)
+        self.log.info('Length TXData[\'TransactionsData\']:  %d', len(txs_start))
 
-            # in case we didn't reach the genesis block give it a go
-            parent_hash = '0x0000000000000000000000000000000000000000000000000000000000000000'
-            self.log.info('Calling to get batch for parent %s', parent_hash)
-            batch = self.tenscan_get_batch(parent_hash)
-            self.log.info('Genesis batch is %s', batch)
+        # deploy the contract make some transactions
+        storage = Storage(self, web3, 100)
+        storage.deploy(network, account)
+        network.transact(self, web3, storage.contract.functions.store(0), account, storage.GAS_LIMIT)
+        network.transact(self, web3, storage.contract.functions.store(1), account, storage.GAS_LIMIT)
+        network.transact(self, web3, storage.contract.functions.store(2), account, storage.GAS_LIMIT)
+        self.wait(float(self.block_time) * 2)
 
-            # if we get this far we've passed
-            self.addOutcome(PASSED)
+        # get some public transaction data
+        tx_data = self.scan_get_public_transaction_data(0, 100)
+        tot_end = tx_data['Total']
+        txs_end = tx_data['TransactionsData']
+        self.log.info('TXData[\'total\']:  %d', tot_end)
+        self.log.info('Length TXData[\'TransactionsData\']:  %d', len(txs_end))
+
+        self.assertTrue(tot_end == tot_start+4)
+        self.assertTrue(len(txs_end) <= page_sze)
+        self.assertTrue(len(txs_end) < tot_end)
