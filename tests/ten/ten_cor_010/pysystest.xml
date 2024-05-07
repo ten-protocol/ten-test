@@ -7,7 +7,7 @@
 Calls scan_getPublicTransactionData to get transaction data, and to also compare the apparent total in the return
 value with the value returned from scan_getTotalTransactionCount. The test also performs some transactions and then
 checks that the transactions are included in subsequent calls to scan_getPublicTransactionData, that the page is
-correctly ordered in both the batch heights and timestamps. 
+correctly ordered in both the batch heights and timestamps.
 ]]>
         </purpose>
     </description>
