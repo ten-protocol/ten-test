@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Tenscan RPC - get last page of public transaction data</title>
+        <title>Tenscan RPC - read all pages and check total and last page residual</title>
         <purpose><![CDATA[
 ]]>
         </purpose>
