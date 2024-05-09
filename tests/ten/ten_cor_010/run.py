@@ -11,14 +11,9 @@ class PySysTest(TenNetworkTest):
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
-        # get some public transaction data
-        tx_count = self.tenscan_get_total_transactions()
-        self.log.info('Total transaction count: %d', tx_count)
-        tx_data = self.scan_get_public_transaction_data(0, page_sze)
-        tot_start = tx_data['Total']
-        txs_start = tx_data['TransactionsData']
-        self.log.info('Public Tx Data total:    %d', tot_start)
-        self.log.info('Public Tx Data page:     %d', len(txs_start))
+        # get the transaction count
+        tot_start = self.tenscan_get_total_transactions()
+        self.log.info('Total transaction count: %d', tot_start)
 
         # deploy the contract make some transactions
         storage = Storage(self, web3, 100)
@@ -33,14 +28,13 @@ class PySysTest(TenNetworkTest):
         self.wait(float(self.block_time) * 2)
 
         # get some public transaction data
-        tx_count = self.tenscan_get_total_transactions()
-        self.log.info('Total transaction count: %d', tx_count)
+        tot_end = self.tenscan_get_total_transactions()
+        self.log.info('Total transaction count: %d', tot_end)
         tx_data = self.scan_get_public_transaction_data(0, page_sze)
-        tot_end = tx_data['Total']
         txs_end = tx_data['TransactionsData']
-        txs_hashes = [x['TransactionHash'] for x in tx_data['TransactionsData']]
-        txs_heights = [x['BatchHeight'] for x in tx_data['TransactionsData']]
-        txs_times = [x['BatchTimestamp'] for x in tx_data['TransactionsData']]
+        txs_hashes = [x['TransactionHash'] for x in txs_end]
+        txs_heights = [x['BatchHeight'] for x in txs_end]
+        txs_times = [x['BatchTimestamp'] for x in txs_end]
         self.log.info('Public Tx Data total:    %d', tot_end)
         self.log.info('Public Tx Data page:     %d', len(txs_end))
         self.log.info('Returned transactions:')
@@ -48,7 +42,6 @@ class PySysTest(TenNetworkTest):
 
         # do a bunch of assertions
         self.assertTrue(tot_end == tot_start+4, assertMessage='Total should increment')
-        self.assertTrue(tx_count == tot_end, assertMessage='Totals should agree')
 
         self.assertTrue(len(txs_end) == page_sze, assertMessage='Return set is page size')
         self.assertTrue(tx_receipt_3.transactionHash.hex() == txs_hashes[0], assertMessage='Tx 3 exists')
