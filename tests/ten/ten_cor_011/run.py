@@ -1,40 +1,45 @@
-from pysys.constants import PASSED
+import math
 from ten.test.basetest import TenNetworkTest
 
 
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        txs = self.tenscan_get_latest_transactions(1)
-        self.log.info('Last transactions are %s', txs)
-        if len(txs) >= 1:
-            batch = self.tenscan_get_batch_for_transaction(txs[0])
-            parent_hash = batch['Header']['parentHash']
-            number = int(batch['Header']['number'], 16)
-            num_tx = len(batch['TxHashes'])
-            self.log.info('Parent hash: %s, Number: %d, Ntx: %d', parent_hash, number, num_tx)
+        page_sze = 3
 
-            count = 100
-            while count > 0:
-                self.log.info('Calling to get batch for parent %s', parent_hash)
-                batch = self.tenscan_get_batch(parent_hash)
-                if number == 0:
-                    self.log.info('Reached the genesis block so exiting')
-                    self.log.info(batch)
-                    break
-                else:
-                    parent_hash = batch['Header']['parentHash']
-                    number = int(batch['Header']['number'], 16)
-                    num_tx = len(batch['TxHashes'])
-                    self.log.info('Parent hash: %s, Number: %d, Ntx: %d', parent_hash, number, num_tx)
+        # get some public transaction data
+        tx_count = self.tenscan_get_total_transactions()         # independent check on num tx transactions
+        pages = self.split_into_segments(tx_count, page_sze)[-2:]
+        self.log.info('Total transaction count:            %d', tx_count)
+        self.log.info('Page size being used:               %d', page_sze)
+        self.log.info('Total number of pages:              %d', len(pages))
+        self.log.info('Last (Offset, sizes) requested:     %s', pages)
 
-                count = count - 1
+        # get the pages
+        total = 0
+        expected = 0
+        for page in pages:
+            tx_data = self.scan_get_public_transaction_data(page[0], page[1])
+            total = total + len(tx_data['TransactionsData'])
+            expected = expected + page[1]
+            self.log.info('Processed offset %d, number returned %d', page[0], len(tx_data['TransactionsData']))
 
-            # in case we didn't reach the genesis block give it a go
-            parent_hash = '0x0000000000000000000000000000000000000000000000000000000000000000'
-            self.log.info('Calling to get batch for parent %s', parent_hash)
-            batch = self.tenscan_get_batch(parent_hash)
-            self.log.info('Genesis batch is %s', batch)
+        # assert we get the expected amount over the last pages
+        self.assertTrue(total == expected)
 
-            # if we get this far we've passed
-            self.addOutcome(PASSED)
+        # assert no overflow in calling for the transactions
+        tx_data = self.scan_get_public_transaction_data(tx_count, page_sze)
+        self.assertTrue(tx_data['TransactionsData'] is None)
+
+    def split_into_segments(self, number, increment):
+        result = []
+        start = 0
+        while number > 0:
+            if number >= increment:
+                result.append((start, increment))
+                number -= increment
+                start += increment
+            else:
+                result.append((start, number))
+                break
+        return result
