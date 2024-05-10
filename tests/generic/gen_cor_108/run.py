@@ -23,19 +23,19 @@ class PySysTest(GenericNetworkTest):
         self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
 
         network.transact(self, web3, storage.contract.functions.store(0), account, storage.GAS_LIMIT)
-        self.wait(self.block_time)
+        self.wait(float(self.block_time))
         network.transact(self, web3, storage.contract.functions.store(1), account, storage.GAS_LIMIT)
-        self.wait(self.block_time)
+        self.wait(float(self.block_time))
         network.transact(self, web3, storage.contract.functions.store(2), account, storage.GAS_LIMIT)
-        self.wait(self.block_time)
+        self.wait(float(self.block_time))
         network.transact(self, web3, storage.contract.functions.store(3), account, storage.GAS_LIMIT)
-        self.wait(self.block_time)
+        self.wait(float(self.block_time))
 
         # wait and validate
         self.waitForGrep(file='block_notifier.out', expr='Block =', condition='==4', timeout=120)
 
         network.transact(self, web3, storage.contract.functions.store(4), account, storage.GAS_LIMIT)
-        self.wait(self.block_time)
+        self.wait(float(self.block_time))
 
         # wait two block times and verify we only see 4
         self.wait(float(self.block_time) * 2)
