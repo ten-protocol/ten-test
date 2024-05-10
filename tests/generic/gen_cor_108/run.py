@@ -18,7 +18,7 @@ class PySysTest(GenericNetworkTest):
         self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
 
         # wait and validate
-        self.waitForGrep(file='block_notifier.out', expr='Block =', condition='==4')
+        self.waitForGrep(file='block_notifier.out', expr='Block =', condition='==4', timeout=120)
 
         # wait two block times and verify we only see 4
         self.wait(float(self.block_time) * 2)

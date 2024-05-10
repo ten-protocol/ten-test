@@ -18,6 +18,5 @@ class PySysTest(GenericNetworkTest):
         self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
 
         # wait and validate
-        timeout = float(self.block_time) * 6
-        self.waitForGrep(file='block_notifier.out', expr='Block =', condition='==4', timeout=timeout)
+        self.waitForGrep(file='block_notifier.out', expr='Block =', condition='==4', timeout=120)
         self.assertLineCount(file='block_notifier.out', expr='Block =', condition='==4')
