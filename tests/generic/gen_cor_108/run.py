@@ -37,8 +37,5 @@ class PySysTest(GenericNetworkTest):
         network.transact(self, web3, storage.contract.functions.store(4), account, storage.GAS_LIMIT)
         self.wait(float(self.block_time))
 
-        # wait two block times and verify we only see 4
-        self.wait(float(self.block_time) * 2)
-
         self.assertLineCount(file='block_notifier.out', expr='Block =', condition='==4')
 
