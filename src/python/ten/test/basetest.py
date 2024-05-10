@@ -344,7 +344,7 @@ class TenNetworkTest(GenericNetworkTest):
         if 'result' in response.json(): return response.json()['result']
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
-    
+
     def scan_get_transaction(self):
         """Get TX by hash /items/transaction/:hash"""
         pass

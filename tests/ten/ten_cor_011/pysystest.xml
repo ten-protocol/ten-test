@@ -4,6 +4,10 @@
     <description>
         <title>Tenscan RPC - read last 2 pages and check total and last page amounts</title>
         <purpose><![CDATA[
+From the total transaction count the test works out the number of calls of a set page size to get all the transactions.
+It read retrieves the last two pages to retrieve the expected data, and tries to overrun the last page to ensure no
+consequences. Note the tx store is a LIFO and right shifted as new transactions are performed. Thus the test could fail
+if other clients are writing transactions whilst this test is running.
 ]]>
         </purpose>
     </description>
