@@ -344,6 +344,38 @@ class TenNetworkTest(GenericNetworkTest):
         if 'result' in response.json(): return response.json()['result']
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
+    
+    def scan_get_transaction(self):
+        """Get TX by hash /items/transaction/:hash"""
+        pass
+
+    def scan_getRollupListing(self):
+        """Get rollup listing /items/rollups/"""
+        pass
+
+    def scan_get_batch_listing_new(self):
+        """Get batch listing v2 /items/v2/batches/"""
+        pass
+
+    def scan_get_rollup_by_hash(self):
+        """Get rollup by hash/items/rollup/:hash"""
+        pass
+
+    def scan_get_rollup_batches(self):
+        """Get batches in rollup /items/rollup/:hash/batches/"""
+        pass
+
+    def scan_get_rollup_by_seqno(self):
+        """Get rollup by batch sequence /items/rollup/batch/:seq"""
+        pass
+
+    def scan_get_batch_transactions(self):
+        """Get transactions in batch /items/batch/:fullHash/transactions/"""
+        pass
+
+    def scan_get_batch_by_height(self):
+        """Get batch by height /items/batch/height/:height"""
+        pass
 
     def obscuro_health(self):
         """Get the debug_LogVisibility. """
