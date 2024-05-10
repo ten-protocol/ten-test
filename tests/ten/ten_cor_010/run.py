@@ -48,6 +48,7 @@ class PySysTest(TenNetworkTest):
         self.assertTrue(tx_receipt_3.transactionHash.hex() in txs_hashes, assertMessage='Tx 3 exists')
         self.assertTrue(tx_receipt_2.transactionHash.hex() in txs_hashes, assertMessage='Tx 2 exists')
         self.assertTrue(tx_receipt_1.transactionHash.hex() in txs_hashes, assertMessage='Tx 1 exists')
+
         self.assertTrue(self.is_descending(txs_heights), assertMessage='Tx batch heights are descending')
         self.assertTrue(self.is_descending(txs_times), assertMessage='Tx timestamps are descending')
 
