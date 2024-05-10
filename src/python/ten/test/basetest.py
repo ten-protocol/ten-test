@@ -247,7 +247,7 @@ class TenNetworkTest(GenericNetworkTest):
         return None
 
     def tenscan_get_latest_transactions(self, num):
-        """Return the last x number of L2 transactions. """
+        """Return the last x number of L2 transactions. @todo """
         data = {"jsonrpc": "2.0", "method": "scan_getLatestTransactions", "params": [num], "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return response.json()['result']
@@ -255,7 +255,7 @@ class TenNetworkTest(GenericNetworkTest):
         return None
 
     def tenscan_get_head_rollup_header(self):
-        """Get the rollup header of the head rollup. """
+        """Get the rollup header of the head rollup. @todo """
         data = {"jsonrpc": "2.0", "method": "scan_getLatestRollupHeader", "params": [], "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return response.json()['result']
@@ -263,7 +263,7 @@ class TenNetworkTest(GenericNetworkTest):
         return None
 
     def tenscan_get_batch(self, hash):
-        """Get the rollup by its hash. """
+        """Get the rollup by its hash. @todo """
         data = {"jsonrpc": "2.0", "method": "scan_getBatch", "params": [hash], "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return response.json()['result']
@@ -292,7 +292,7 @@ class TenNetworkTest(GenericNetworkTest):
         return None
 
     def scan_get_latest_rollup_header(self):
-        """Get the latest rollup header as part of the scan_ api."""
+        """Get the latest rollup header as part of the scan_ api. @todo """
         data = {"jsonrpc": "2.0", "method": "scan_getLatestRollupHeader", "params": [], "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return response.json()['result']
@@ -325,7 +325,7 @@ class TenNetworkTest(GenericNetworkTest):
         return None
 
     def scan_get_block_listing(self, offset=0, size=10):
-        """Get the block listing as part of the scan_ api."""
+        """Get the block listing as part of the scan_ api. @todo """
         pagination = {"offset": offset, "size": size}
         data = {"jsonrpc": "2.0", "method": "scan_getBlockListing", "params": [pagination], "id": self.MSG_ID }
         response = self.post(data)
@@ -334,11 +334,8 @@ class TenNetworkTest(GenericNetworkTest):
         return None
 
     def scan_list_personal_transactions(self, address, offset=0, size=10):
-        """List personal transactions using ."""
-        payload = {
-            "address": address,
-            "pagination": {"offset": offset, "size": size},
-        }
+        """List personal transactions using. @todo """
+        payload = { "address": address, "pagination": {"offset": offset, "size": size}, }
         data = {"jsonrpc": "2.0", "method": "eth_getStorageAt", "params": ["listPersonalTransactions", payload, None], "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return response.json()['result']
@@ -346,35 +343,35 @@ class TenNetworkTest(GenericNetworkTest):
         return None
 
     def scan_get_transaction(self):
-        """Get TX by hash /items/transaction/:hash"""
+        """Get TX by hash. @todo """
         pass
 
     def scan_getRollupListing(self):
-        """Get rollup listing /items/rollups/"""
+        """Get rollup listing. @todo """
         pass
 
     def scan_get_batch_listing_new(self):
-        """Get batch listing v2 /items/v2/batches/"""
+        """Get batch listing. @todo """
         pass
 
     def scan_get_rollup_by_hash(self):
-        """Get rollup by hash/items/rollup/:hash"""
+        """Get rollup by hash. @todo """
         pass
 
     def scan_get_rollup_batches(self):
-        """Get batches in rollup /items/rollup/:hash/batches/"""
+        """Get batches in rollup. @todo """
         pass
 
     def scan_get_rollup_by_seqno(self):
-        """Get rollup by batch sequence /items/rollup/batch/:seq"""
+        """Get rollup by batch sequence. @todo """
         pass
 
     def scan_get_batch_transactions(self):
-        """Get transactions in batch /items/batch/:fullHash/transactions/"""
+        """Get transactions in batch. @todo """
         pass
 
     def scan_get_batch_by_height(self):
-        """Get batch by height /items/batch/height/:height"""
+        """Get batch by height. @todo """
         pass
 
     def obscuro_health(self):
