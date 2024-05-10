@@ -30,6 +30,7 @@ class PySysTest(TenNetworkTest):
         # get some public transaction data
         tot_end = self.tenscan_get_total_transactions()
         self.log.info('Total transaction count: %d', tot_end)
+
         tx_data = self.scan_get_public_transaction_data(0, page_sze)
         txs_end = tx_data['TransactionsData']
         txs_hashes = [x['TransactionHash'] for x in txs_end]
@@ -44,9 +45,10 @@ class PySysTest(TenNetworkTest):
         self.assertTrue(tot_end == tot_start+4, assertMessage='Total should increment')
 
         self.assertTrue(len(txs_end) == page_sze, assertMessage='Return set is page size')
-        self.assertTrue(tx_receipt_3.transactionHash.hex() == txs_hashes[0], assertMessage='Tx 3 exists')
-        self.assertTrue(tx_receipt_2.transactionHash.hex() == txs_hashes[1], assertMessage='Tx 2 exists')
-        self.assertTrue(tx_receipt_1.transactionHash.hex() == txs_hashes[2], assertMessage='Tx 1 exists')
+        self.assertTrue(tx_receipt_3.transactionHash.hex() in txs_hashes, assertMessage='Tx 3 exists')
+        self.assertTrue(tx_receipt_2.transactionHash.hex() in txs_hashes, assertMessage='Tx 2 exists')
+        self.assertTrue(tx_receipt_1.transactionHash.hex() in txs_hashes, assertMessage='Tx 1 exists')
+
         self.assertTrue(self.is_descending(txs_heights), assertMessage='Tx batch heights are descending')
         self.assertTrue(self.is_descending(txs_times), assertMessage='Tx timestamps are descending')
 

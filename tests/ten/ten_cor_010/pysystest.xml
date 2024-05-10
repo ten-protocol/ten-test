@@ -4,6 +4,9 @@
     <description>
         <title>Tenscan RPC - get public transaction data after performing some transactions</title>
         <purpose><![CDATA[
+Calls scan_getTotalTransactionCount before and after performing some transactions, then retries the first page of
+public transaction data via scan_getPublicTransactionData. As the txs are stored in a LIFO calls to get the first page
+should return a set of transactions that contain them. Test also validates on correct descending order in the txs.
 ]]>
         </purpose>
     </description>
