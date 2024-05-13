@@ -2,7 +2,7 @@
 # workflow is triggered either manually via a workflow dispatch, or on a schedule (dev-testnet only)
 #
 name: '[Execute] Tests against remote network'
-run-name: Run remote tests (${{ github.event_name }})
+run-name: Run remote tests (${{ github.event_name }} ${{ github.event.inputs.environment }} )
 on:
 #  schedule:
 #    - cron: '10 */6 * * *'
