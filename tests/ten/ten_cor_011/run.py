@@ -29,6 +29,7 @@ class PySysTest(TenNetworkTest):
 
         # assert no overflow in calling for the transactions
         tx_data = self.scan_get_public_transaction_data(tx_count, page_sze)
+        self.log.info('Calling overflow from offset %d', tx_count)
         self.log.info('TX Data overflow: %s', tx_data['TransactionsData'])
         self.assertTrue(tx_data['TransactionsData'] is None)
 
