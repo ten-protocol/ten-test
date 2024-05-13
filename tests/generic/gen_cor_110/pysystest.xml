@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Transact: ethers throws CALL_EXCEPTION on using wrong contract address</title>
+        <purpose><![CDATA[
+In the test we deploy two different contracts, but call a function on contract A using it's ABI but using the address
+of contract B. As the contract reverts, the exception raised should be a call exception, and the test validates on this.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>ethers</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+            <mode>arbitrum.sepolia</mode>
+            <mode>ganache</mode>
+            <mode>sepolia</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
