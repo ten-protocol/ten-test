@@ -33,15 +33,9 @@ class PySysTest(TenNetworkTest):
             for entry in reversed(self.funds_db.get_funds(name='Sequencer', environment=self.env)):
                 fp.write('%s %s\n' % (entry[0], entry[1]))
 
-        # add differentials to get around L2 restarts and the gas payment balance going to zero
-        last_balance = 0
-        running_balance = 0
         with open(os.path.join(self.output, 'gas_payment.log'), 'w') as fp:
             for entry in reversed(self.funds_db.get_funds(name='GasPayment', environment=self.env)):
-                current_balance = int(entry[1])
-                if current_balance > last_balance: running_balance = running_balance + (current_balance - last_balance)
-                fp.write('%s %s\n' % (entry[0], running_balance))
-                last_balance = current_balance
+                fp.write('%s %s\n' % (entry[0],  entry[1]))
 
         self.graph()
 
@@ -52,18 +46,29 @@ class PySysTest(TenNetworkTest):
 
     def graph(self):
         dict = OrderedDict()
+
+        last_value = 0
+        running_total = 0
         with open(os.path.join(self.output, 'sequencer_funds.log'), 'r') as fp:
             for line in fp.readlines():
                 time = int(line.split()[0])
                 value = int(line.split()[1])
-                if not time in dict: dict[time] = (value,None)
+                if value > last_value: last_value = value
+                running_total = running_total + (value - last_value)
+                if not time in dict: dict[time] = (running_total, None)
+                last_value = value
 
+        last_value = 0
+        running_total = 0
         with open(os.path.join(self.output, 'gas_payment.log'), 'r') as fp:
             for line in fp.readlines():
                 time = int(line.split()[0])
                 value = int(line.split()[1])
-                if not time in dict: dict[time] = (None, value)
-                else: dict[time] = (dict[time][0], value)
+                if value < last_value: last_value = value
+                running_total = running_total + (value - last_value)
+                if not time in dict: dict[time] = (None, running_total)
+                else: dict[time] = (dict[time][0], running_total)
+                last_value = value
 
         times = [t for t in dict.keys() if (dict[time][0] is not None) and (dict[time][1] is not None)]
         sequencer_start = dict[times[0]][0]
