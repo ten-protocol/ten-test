@@ -35,6 +35,7 @@ set ylabel "Funds (eth)" font "Courier,12" offset 1,0
 plot "gas_payment.log" using 1:($2/1e18) with lines lw 2 lc 2 title "Gas Payment funds"
 
 #plot 3
+unset yr
 set size 0.475, 0.4
 set origin 0.0, 0.05
 set title "{/Arial:Bold=13 Delta funds / Profit and Loss}"
