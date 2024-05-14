@@ -33,15 +33,9 @@ class PySysTest(TenNetworkTest):
             for entry in reversed(self.funds_db.get_funds(name='Sequencer', environment=self.env)):
                 fp.write('%s %s\n' % (entry[0], entry[1]))
 
-        # add differentials to get around L2 restarts and the gas payment balance going to zero
-        last_balance = 0
-        running_balance = 0
         with open(os.path.join(self.output, 'gas_payment.log'), 'w') as fp:
             for entry in reversed(self.funds_db.get_funds(name='GasPayment', environment=self.env)):
-                current_balance = int(entry[1])
-                if current_balance > last_balance: running_balance = running_balance + (current_balance - last_balance)
-                fp.write('%s %s\n' % (entry[0], running_balance))
-                last_balance = current_balance
+                fp.write('%s %s\n' % (entry[0],  entry[1]))
 
         self.graph()
 
@@ -52,18 +46,31 @@ class PySysTest(TenNetworkTest):
 
     def graph(self):
         dict = OrderedDict()
+
+        # sequencer funds can go up when they are topped up, so we try and find a starting baseline and add
+        # increments since then
+        base_line = None
+        last_value = 0
         with open(os.path.join(self.output, 'sequencer_funds.log'), 'r') as fp:
             for line in fp.readlines():
                 time = int(line.split()[0])
                 value = int(line.split()[1])
-                if not time in dict: dict[time] = (value,None)
+                if base_line is None or (value > last_value): base_line = value
+                if not time in dict: dict[time] = (value - base_line, None)
+                last_value = value
 
+        # gas payment can drop to zero when L2 restarted, or when funds are taken out, so we try to find
+        # baseline points and write the delta since then, unless we see a sudden drop and then reset the baseline
+        base_line = None
+        last_value = 0
         with open(os.path.join(self.output, 'gas_payment.log'), 'r') as fp:
             for line in fp.readlines():
                 time = int(line.split()[0])
                 value = int(line.split()[1])
-                if not time in dict: dict[time] = (None, value)
-                else: dict[time] = (dict[time][0], value)
+                if base_line is None or (value < last_value): base_line = value
+                if not time in dict: dict[time] = (None, value - base_line)
+                else: dict[time] = (dict[time][0], value - base_line)
+                last_value = value
 
         times = [t for t in dict.keys() if (dict[time][0] is not None) and (dict[time][1] is not None)]
         sequencer_start = dict[times[0]][0]
