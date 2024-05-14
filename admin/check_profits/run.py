@@ -10,7 +10,7 @@ from ten.test.utils.gnuplot import GnuplotHelper
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        self.execute_run()
+        self.execute_graph()
 
     def execute_run(self):
         current_time = int(time.time())
