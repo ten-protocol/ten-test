@@ -55,7 +55,7 @@ class PySysTest(TenNetworkTest):
             for line in fp.readlines():
                 time = int(line.split()[0])
                 value = int(line.split()[1])
-                if base_line is None or (value > last_value): base_line = value
+                if base_line is None or (value > last_value): base_line = last_value
                 if not time in dict: dict[time] = (value - base_line, None)
                 last_value = value
 
@@ -67,7 +67,7 @@ class PySysTest(TenNetworkTest):
             for line in fp.readlines():
                 time = int(line.split()[0])
                 value = int(line.split()[1])
-                if base_line is None or (value < last_value): base_line = value
+                if base_line is None or (value < last_value): base_line = last_value
                 if not time in dict: dict[time] = (None, value - base_line)
                 else: dict[time] = (dict[time][0], value - base_line)
                 last_value = value
