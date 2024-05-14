@@ -1,6 +1,6 @@
 # Run a set of robustness tests on uat-testnet on a schedule
 #
-name: '[Execute] Run load through uat-testnet'
+name: '[Execute] Load uat-testnet'
 run-name: Run uat-testnet load tests
 on:
   schedule:
