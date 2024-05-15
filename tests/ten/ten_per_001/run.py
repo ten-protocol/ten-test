@@ -1,4 +1,4 @@
-import secrets, os
+import secrets, os, time
 from datetime import datetime
 from collections import OrderedDict
 from web3.exceptions import TimeExhausted
@@ -104,6 +104,9 @@ class PySysTest(TenNetworkTest):
         average = float(self.ITERATIONS) / float(duration) if duration != 0 else 0
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'), branch, date,
                             str(self.mode), str(self.ITERATIONS), str(duration), '%.3f'%average)
+
+        # persist the result
+        self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()), average)
 
         # passed if no failures (though pdf output should be reviewed manually)
         self.addOutcome(PASSED)

@@ -5,7 +5,7 @@ class ResultsPersistence:
     """Abstracts the persistence of performance results into a local database. """
 
     SQL_CREATE = "CREATE TABLE IF NOT EXISTS results " \
-                 "(test TEXT, environment TEXT, time INTEGER, result STRING, " \
+                 "(test TEXT, environment TEXT, time INTEGER, result REAL, " \
                  "PRIMARY KEY (test, environment))"
     SQL_INSERT = "INSERT INTO results VALUES (?, ?, ?, ?)"
     SQL_DELETE = "DELETE from results WHERE environment=?"
