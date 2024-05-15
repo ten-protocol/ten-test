@@ -20,7 +20,7 @@ on:
       arguments:
         description: 'Arguments to the pysys run'
         required: true
-        default: '-e skip'
+        default: '-e skip -e performance'
       release:
         type: choice
         description: 'The release version of testnet'
