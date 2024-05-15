@@ -6,7 +6,7 @@ class ResultsPersistence:
 
     SQL_CREATE = "CREATE TABLE IF NOT EXISTS results " \
                  "(test TEXT, environment TEXT, time INTEGER, result REAL, " \
-                 "PRIMARY KEY (test, environment))"
+                 "PRIMARY KEY (test, environment, time))"
     SQL_INSERT = "INSERT INTO results VALUES (?, ?, ?, ?)"
     SQL_DELETE = "DELETE from results WHERE environment=?"
     SQL_SELECT = "SELECT time, results FROM result WHERE test=? AND environment=? ORDER BY time ASC"
