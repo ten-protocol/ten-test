@@ -9,6 +9,7 @@ from pysys.utils.logutils import BaseLogFormatter
 from ten.test.persistence.nonce import NoncePersistence
 from ten.test.persistence.funds import FundsPersistence
 from ten.test.persistence.counts import CountsPersistence
+from ten.test.persistence.results import ResultsPersistence
 from ten.test.persistence.contract import ContractPersistence
 from ten.test.utils.properties import Properties
 from ten.test.networks.default import DefaultPostLondon
@@ -37,6 +38,7 @@ class GenericNetworkTest(BaseTest):
         self.contract_db = ContractPersistence(db_dir)
         self.funds_db = FundsPersistence(db_dir)
         self.counts_db = CountsPersistence(db_dir)
+        self.results_db = ResultsPersistence(db_dir)
         self.addCleanupFunction(self.close_db)
 
         # every test has a unique connection for the funded account

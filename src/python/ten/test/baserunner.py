@@ -11,6 +11,7 @@ from pysys.utils.logutils import BaseLogFormatter
 from ten.test.persistence.nonce import NoncePersistence
 from ten.test.persistence.funds import FundsPersistence
 from ten.test.persistence.counts import CountsPersistence
+from ten.test.persistence.results import ResultsPersistence
 from ten.test.persistence.contract import ContractPersistence
 from ten.test.utils.properties import Properties
 
@@ -66,6 +67,8 @@ class TenRunnerPlugin():
         funds_db.create()
         counts_db = CountsPersistence(db_dir)
         counts_db.create()
+        results_db = ResultsPersistence(db_dir)
+        results_db.create()
 
         if self.is_ten() and runner.threads > 3:
             raise Exception('Max threads against Ten cannot be greater than 3')
