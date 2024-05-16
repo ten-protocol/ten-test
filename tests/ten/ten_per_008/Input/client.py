@@ -11,12 +11,15 @@ def run(name, web3, num_iterations, start):
     num_requests = 0
     throughput = []
     for i in range(0, num_iterations):
-        start_time = time.perf_counter_ns()
-        web3.eth.get_balance(address)
-        end_time = time.perf_counter_ns()
-        latency.append((end_time - start_time)/1e6)
-        num_requests = num_requests + 1
-        throughput.append(((end_time - start)/1e9, num_requests))
+        try:
+            start_time = time.perf_counter_ns()
+            web3.eth.get_balance(address)
+            end_time = time.perf_counter_ns()
+            latency.append((end_time - start_time)/1e6)
+            num_requests = num_requests + 1
+            throughput.append(((end_time - start)/1e9, num_requests))
+        except Exception as e:
+            logging.error('Error performing transaction %s', e)
 
     logging.info('Logging latency for the RPC requests')
     with open('%s_latency.log' % name, 'w') as fp:
