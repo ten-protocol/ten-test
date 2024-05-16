@@ -66,7 +66,7 @@ class PySysTest(TenNetworkTest):
         self.log.info('  Block Hash: %s ', block_hash)
         self.log.info('  TX Hash:    %s ', tx_hash)
 
-        batch = self.tenscan_get_batch_for_transaction(tx_hash)
+        batch = self.scan_get_batch_for_transaction(tx_hash)
         if batch is not None:
             batch_txns = batch['TxHashes']
             self.log.info('Number of transactions in the batch are %d', len(batch_txns))

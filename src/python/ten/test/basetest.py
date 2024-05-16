@@ -240,15 +240,7 @@ class TenNetworkTest(GenericNetworkTest):
     layer2 of an Ten Network.
     """
 
-    def tenscan_get_total_transactions(self):
-        """Return the total number of L2 transactions on Ten. """
-        data = {"jsonrpc": "2.0", "method": "scan_getTotalTransactionCount", "params": [], "id": self.MSG_ID }
-        response = self.post(data)
-        if 'result' in response.json(): return int(response.json()['result'])
-        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
-        return None
-
-    def tenscan_get_latest_transactions(self, num):
+    def scan_get_latest_transactions(self, num):
         """Return the last x number of L2 transactions. @todo """
         data = {"jsonrpc": "2.0", "method": "scan_getLatestTransactions", "params": [num], "id": self.MSG_ID }
         response = self.post(data)
@@ -256,7 +248,7 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def tenscan_get_head_rollup_header(self):
+    def scan_get_head_rollup_header(self):
         """Get the rollup header of the head rollup. @todo """
         data = {"jsonrpc": "2.0", "method": "scan_getLatestRollupHeader", "params": [], "id": self.MSG_ID }
         response = self.post(data)
@@ -264,7 +256,7 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def tenscan_get_batch(self, hash):
+    def scan_get_batch(self, hash):
         """Get the rollup by its hash. @todo """
         data = {"jsonrpc": "2.0", "method": "scan_getBatch", "params": [hash], "id": self.MSG_ID }
         response = self.post(data)
@@ -272,7 +264,7 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def tenscan_get_batch_for_transaction(self, tx_hash):
+    def scan_get_batch_for_transaction(self, tx_hash):
         """Get the rollup for a given L2 transaction. """
         data = {"jsonrpc": "2.0", "method": "scan_getBatchByTx", "params": [tx_hash], "id": self.MSG_ID }
         response = self.post(data)
@@ -289,14 +281,6 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def get_debug_event_log_relevancy(self, tx_hash):
-        """Get the debug_LogVisibility. """
-        data = {"jsonrpc": "2.0", "method": "debug_eventLogRelevancy", "params": [tx_hash], "id": self.MSG_ID }
-        response = self.post(data)
-        if 'result' in response.json(): return response.json()['result']
-        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
-        return None
-
     def scan_get_latest_rollup_header(self):
         """Get the latest rollup header as part of the scan_ api. @todo """
         data = {"jsonrpc": "2.0", "method": "scan_getLatestRollupHeader", "params": [], "id": self.MSG_ID }
@@ -305,9 +289,20 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
+    def scan_get_approx_total_transaction_count(self):
+        """Get the approx. total transaction count as part of the scan_ api.
+
+        Note this an an approx count which reduces overhead on the node and therefore should be used with caution.
+        If an exact count is used, use the method scan_get_total_transaction_count. """
+        data = {"jsonrpc": "2.0", "method": "scan_getTotalTransactionCount", "params": [], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
     def scan_get_total_transaction_count(self):
         """Get the ltotal transaction count as part of the scan_ api."""
-        data = {"jsonrpc": "2.0", "method": "scan_getTotalTransactionCount", "params": [], "id": self.MSG_ID }
+        data = {"jsonrpc": "2.0", "method": "scan_getTotalTransactionsQuery", "params": [], "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return response.json()['result']
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
@@ -379,6 +374,14 @@ class TenNetworkTest(GenericNetworkTest):
     def scan_get_batch_by_height(self):
         """Get batch by height. @todo """
         pass
+
+    def get_debug_event_log_relevancy(self, tx_hash):
+        """Get the debug_LogVisibility. """
+        data = {"jsonrpc": "2.0", "method": "debug_eventLogRelevancy", "params": [tx_hash], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
 
     def obscuro_health(self):
         """Get the debug_LogVisibility. """
