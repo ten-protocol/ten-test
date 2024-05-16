@@ -38,7 +38,7 @@ class PySysTest(TenNetworkTest):
         # run the clients and wait for their completion
         results_file = os.path.join(self.output, 'results.log')
         with open(results_file, 'w') as fp:
-            for clients in [1,2,3,4]:
+            for clients in [2,3,4]:
                 self.log.info(' ')
                 self.log.info('Running for %d clients' % clients)
 

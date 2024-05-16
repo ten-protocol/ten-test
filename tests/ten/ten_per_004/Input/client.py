@@ -48,6 +48,7 @@ def run(name, chainId, web3, account, num_accounts, num_iterations, amount, gas_
             fp.write('%d %d\n' % (receipt[1], timestamp))
 
     logging.info('Client %s completed', name)
+    logging.shutdown()
 
 
 if __name__ == "__main__":
