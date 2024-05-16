@@ -43,10 +43,12 @@ class PySysTest(TenNetworkTest):
                 fp.write('%d %.2f %.2f %.2f\n' % (clients, throughput, avg_latency, mode_latency))
 
                 # graph the output for the single run of 4 clients
-                if clients == 4: self.graph_four_clients(throughput, avg_latency, mode_latency)
+                if clients == 4:
+                    throughput_4_clients = throughput
+                    self.graph_four_clients(throughput, avg_latency, mode_latency)
 
         # plot the summary graph
-        self.graph_all_clients()
+        self.graph_all_clients(throughput_4_clients)
 
         # passed if no failures (though pdf output should be reviewed manually)
         self.addOutcome(PASSED)
@@ -127,10 +129,13 @@ class PySysTest(TenNetworkTest):
         GnuplotHelper.graph(self, os.path.join(self.input, 'four_clients.in'), branch, date, str(self.mode),
                             '%.2f' % throughput, '%.2f' % avg_latency, '%.2f' % mode_latency)
 
-    def graph_all_clients(self):
+        # persist the result
+        self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()), '%.2f' % throughput)
+
+    def graph_all_clients(self, throughput):
         branch = GnuplotHelper.buildInfo().branch
         date = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-        GnuplotHelper.graph(self, os.path.join(self.input, 'all_clients.in'), branch, date, str(self.mode))
+        GnuplotHelper.graph(self, os.path.join(self.input, 'all_clients.in'), branch, date, str(self.mode), throughput)
 
     def bin_array(self, data, num_bins=40):
         min_val = min(data)

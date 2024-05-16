@@ -1,4 +1,4 @@
-import os, secrets
+import os, secrets, time
 from datetime import datetime
 from collections import OrderedDict
 from pysys.constants import PASSED
@@ -44,9 +44,13 @@ class PySysTest(TenNetworkTest):
             for t in range(0, last + 1 - first):
                 fp.write('%d %s\n' % (t, ' '.join([str(d[t]) for d in data_binned])))
 
+        heights = []
         with open(os.path.join(self.output, 'clients.bin'), 'w') as fp:
             for t in range(0, last + 1 - first):
-                fp.write('%d %d\n' % (t, sum([d[t] for d in data_binned])))
+                height = sum([d[t] for d in data_binned])
+                heights.append(height)
+                fp.write('%d %d\n' % (t, height))
+        average = '%.2f' % (float(sum(heights)) / len(heights))
 
         # plot out the results
         branch = GnuplotHelper.buildInfo().branch
@@ -55,6 +59,9 @@ class PySysTest(TenNetworkTest):
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
                             branch, date,
                             str(self.mode), str(self.CLIENTS*self.ITERATIONS), str(duration), '%d' % self.CLIENTS)
+
+        # persist the result
+        self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()), average)
 
         # passed if no failures (though pdf output should be reviewed manually)
         self.addOutcome(PASSED)

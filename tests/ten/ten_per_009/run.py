@@ -60,6 +60,10 @@ class PySysTest(TenNetworkTest):
                 self.log.info('Approx. throughput %.2f (requests/sec)' % throughput)
                 fp.write('%d %.2f\n' % (clients, throughput))
 
+                # persist the result
+                if clients == 4:
+                    self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()), '%.2f' % throughput)
+
         # plot the summary graph
         self.graph_all_clients()
 

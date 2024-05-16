@@ -1,4 +1,4 @@
-import os, secrets
+import os, secrets, time
 from datetime import datetime
 from collections import OrderedDict
 from pysys.constants import PASSED
@@ -57,6 +57,9 @@ class PySysTest(TenNetworkTest):
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
                             branch, date,
                             str(self.mode), str(len(self.clients)*self.ITERATIONS), str(duration), '%.3f' % average)
+
+        # persist the result
+        self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()), average)
 
         # passed if no failures (though pdf output should be reviewed manually)
         self.addOutcome(PASSED)

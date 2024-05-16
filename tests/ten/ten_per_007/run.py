@@ -90,7 +90,10 @@ class PySysTest(TenNetworkTest):
         # plot out the results
         branch = GnuplotHelper.buildInfo().branch
         date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+        latency = '%.2f' % (sum(l) / len(l))
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
                             branch, date,
-                            str(self.mode), str(len(l)), '%d' % self.CLIENTS, '%.2f' % (sum(l) / len(l)))
+                            str(self.mode), str(len(l)), '%d' % self.CLIENTS, latency)
 
+        # persist the result
+        self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()), latency)
