@@ -27,7 +27,7 @@ def run(name, web3, num_iterations, start):
         for t,n in throughput: fp.write('%.3f %d\n' % (t,n))
 
     logging.info('Client %s completed', name)
-
+    logging.shutdown()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='event_listener')

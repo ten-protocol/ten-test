@@ -48,7 +48,7 @@ def run(name, chainId, web3, account, contract, num_iterations, gas_limit):
             fp.write('%d %d\n' % (receipt[1], timestamp))
 
     logging.info('Client %s completed', name)
-
+    logging.shutdown()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='storage_client')

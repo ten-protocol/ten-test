@@ -59,6 +59,6 @@ if __name__ == "__main__":
             fp.write('%.4f\n' % store_value(random.randint(0,100), web3, account, contract, int(args.gas_limit)))
             fp.flush()
     logging.info('Client completed')
-
+    logging.shutdown()
 
 

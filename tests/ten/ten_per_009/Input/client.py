@@ -60,7 +60,7 @@ def run(name, chainId, web3, account, num_accounts, num_iterations, amount, gas_
             fp.write('%d\n' % timestamp)
 
     logging.info('Client %s completed', name)
-
+    logging.shutdown()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='event_listener')

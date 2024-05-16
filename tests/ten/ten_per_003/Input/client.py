@@ -65,7 +65,7 @@ def run(name, chainId, web3, sending_accounts, num_accounts, num_iterations, amo
         balance = web3.eth.get_balance(account)
         logging.info('Account %s has nonce %d, balance %d', account, nonces[account], balance)
     logging.info('Client %s completed', name)
-
+    logging.shutdown()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='event_listener')
