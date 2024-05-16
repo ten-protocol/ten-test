@@ -8,7 +8,7 @@ class PySysTest(TenNetworkTest):
         page_sze = 3
 
         # get some public transaction data
-        tx_count = self.tenscan_get_total_transactions()         # independent check on num tx transactions
+        tx_count = self.scan_get_total_transaction_count()         # independent check on num tx transactions
         pages = self.split_into_segments(tx_count, page_sze)[-2:]
         self.log.info('Total transaction count:            %d', tx_count)
         self.log.info('Page size being used:               %d', page_sze)

@@ -13,6 +13,6 @@ class PySysTest(TenNetworkTest):
         tx_hash = tx_receipt['transactionHash'].hex()
 
         # get the batch for transaction and from that the l1 proof
-        batch = self.tenscan_get_batch_for_transaction(tx_hash)
+        batch = self.scan_get_batch_for_transaction(tx_hash)
         l1_proof = batch['Header']['l1Proof']
 

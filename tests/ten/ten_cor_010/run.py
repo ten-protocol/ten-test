@@ -12,7 +12,7 @@ class PySysTest(TenNetworkTest):
         web3, account = network.connect_account1(self)
 
         # get the transaction count
-        tot_start = self.tenscan_get_total_transactions()
+        tot_start = self.scan_get_total_transaction_count()
         self.log.info('Total transaction count: %d', tot_start)
 
         # deploy the contract make some transactions
@@ -28,7 +28,7 @@ class PySysTest(TenNetworkTest):
         self.wait(float(self.block_time) * 2)
 
         # get some public transaction data
-        tot_end = self.tenscan_get_total_transactions()
+        tot_end = self.scan_get_total_transaction_count()
         self.log.info('Total transaction count: %d', tot_end)
 
         tx_data = self.scan_get_public_transaction_data(0, page_sze)
