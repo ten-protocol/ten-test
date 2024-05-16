@@ -9,11 +9,11 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         start = time.time()
-        start_txs = int(self.scan_get_total_transaction_count())
+        start_txs = int(self.scan_get_approx_total_transaction_count())
         start_bts = int(self.scan_get_batch_listing(size=2)['Total'])
 
         while True:
-            txs = int(self.scan_get_total_transaction_count())
+            txs = int(self.scan_get_approx_total_transaction_count())
             bts = int(self.scan_get_batch_listing(size=2)['Total'])
             elapsed = (time.time() - start)
             self.log.info('Elapsed %.2f, txs=%d, batches=%d', elapsed, txs, bts)
