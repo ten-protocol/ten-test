@@ -1,6 +1,7 @@
 from web3 import Web3
 import logging, random
 import argparse, json, sys, time
+from web3.exceptions import TimeExhausted
 
 logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
 
@@ -27,13 +28,15 @@ def store_value(value, web3, account, contract, gas_limit):
         }
     )
     signed_tx = account.sign_transaction(build_tx)
-    tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
-    tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
-
-    if tx_receipt.status != 1:
-        logging.error('Error performing transaction\n')
-    else:
-        logging.info('Transaction complete - stored value %d', value)
+    try:
+        tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+        tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash, timeout=180)
+        if tx_receipt.status != 1:
+            logging.error('Error performing transaction\n')
+        else:
+            logging.info('Transaction complete - stored value %d', value)
+    except Exception as e:
+        logging.error('Error performing transaction %s', e)
 
 
 if __name__ == "__main__":
