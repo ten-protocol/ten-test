@@ -135,7 +135,7 @@ class PySysTest(TenNetworkTest):
     def graph_all_clients(self, throughput):
         branch = GnuplotHelper.buildInfo().branch
         date = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-        GnuplotHelper.graph(self, os.path.join(self.input, 'all_clients.in'), branch, date, str(self.mode), throughput)
+        GnuplotHelper.graph(self, os.path.join(self.input, 'all_clients.in'), branch, date, str(self.mode), '%.2f' % throughput)
 
     def bin_array(self, data, num_bins=40):
         min_val = min(data)
