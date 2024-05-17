@@ -4,6 +4,7 @@
     <description>
         <title>Graph performance results</title>
         <purpose><![CDATA[
+Produces an overall summary of the performance metrics overtime for a particular environment. 
 ]]>
         </purpose>
     </description>
