@@ -4,13 +4,13 @@
     <description>
         <title>Graph performance results</title>
         <purpose><![CDATA[
-Produces an overall summary of the performance metrics overtime for a particular environment. 
+Produces an overall summary of the performance metrics overtime for a particular environment.
 ]]>
         </purpose>
     </description>
     <classification>
         <groups inherit="true">
-            <group></group>
+            <group>performance</group>
         </groups>
         <modes inherit="true">
             <mode>ten.uat</mode>

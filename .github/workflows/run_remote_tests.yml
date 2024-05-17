@@ -70,18 +70,16 @@ jobs:
         run: |
           cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ten.uat -r ${{ github.event.inputs.arguments }}
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ten.uat -r ${{ github.event.inputs.arguments }} check_performance
 
       - name: 'Run tests on dev-testnet on a workflow_dispatch'
         if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.environment == 'dev-testnet') }}
         run: |
           cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ten.dev -r ${{ github.event.inputs.arguments }}
-
-      - name: 'Run tests on dev-testnet on a schedule'
-        if: ${{ (github.event_name == 'schedule') }}
-        run: |
-          cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ten.dev -e skip
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ten.dev -r ${{ github.event.inputs.arguments }} check_performance
 
       - name: 'Collate pdf output'
         if: always()
