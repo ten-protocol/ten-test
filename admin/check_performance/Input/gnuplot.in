@@ -1,0 +1,93 @@
+	set terminal pdf enhanced size 18cm, 18cm
+set output ARG2.".pdf"
+
+set grid
+set xdata time
+set timefmt "%s"
+set format x "%j"
+set xtics rotate by 90 right
+set xtics font "Courier,10"
+set ytics font "Courier,10"
+set title font "Courier,10"
+
+Y1MARGIN = "set tmargin at screen 0.950000; set bmargin at screen 0.670667"
+Y2MARGIN = "set tmargin at screen 0.654667; set bmargin at screen 0.375333"
+Y3MARGIN = "set tmargin at screen 0.359333; set bmargin at screen 0.080000"
+X1MARGIN = "set lmargin at screen 0.060000; set rmargin at screen 0.322000"
+X2MARGIN = "set lmargin at screen 0.334000; set rmargin at screen 0.596000"
+X3MARGIN = "set lmargin at screen 0.608000; set rmargin at screen 0.870000"
+
+NOXTICS = "set format x ''; unset xlabel"
+NOYTICS = "set format y ''; unset ylabel"
+XTICS = "set format x '%j'; set xlabel 'Day of year'"
+YTICS = "set format y '%g'; unset ylabel"
+
+set multiplot layout 3,3 title ARG2.": ".ARG1 noenhanced scale 0.95,0.95
+
+@Y1MARGIN; @X1MARGIN; @NOXTICS; @YTICS;
+set offsets graph 0.0, 0.0, 3, 3
+set title '{/Arial:Bold=10 Ten\_per\_001}' offset 0,-2.5
+plot "ten_per_001.log" using 1:2 with linespoints lw 1 lc 1 notitle, \
+    "ten_per_001.log" using 1:2 smooth bezier w l lw 2 lc 2 notitle
+
+@Y1MARGIN; @X2MARGIN; @NOXTICS; @YTICS;
+set offsets graph 0.0, 0.0, 3, 3
+set ytics offset 4.2, 0
+set title '{/Arial:Bold=10 Ten\_per\_002}' offset 0,-2.5
+plot "ten_per_002.log" using 1:2 with linespoints lw 1 lc 1 notitle, \
+    "ten_per_002.log" using 1:2 smooth bezier w l lw 2 lc 2 notitle
+
+@Y1MARGIN; @X3MARGIN; @NOXTICS; @YTICS;
+set offsets graph 0.0, 0.0, 3, 3
+set ytics offset 4.2, 0
+set title '{/Arial:Bold=10 Ten\_per\_003}' offset 0,-2.5
+plot "ten_per_003.log" using 1:2 with linespoints lw 1 lc 1 notitle, \
+    "ten_per_003.log" using 1:2 smooth bezier w l lw 2 lc 2 notitle
+
+@Y2MARGIN; @X1MARGIN; @NOXTICS; @YTICS;
+set offsets graph 0.0, 0.0, 3, 3
+set ytics offset 0,0
+set title '{/Arial:Bold=10 Ten\_per\_004}' offset 0,-2.5
+plot "ten_per_004.log" using 1:2 with linespoints lw 1 lc 1 notitle, \
+   "ten_per_004.log" using 1:2 smooth bezier w l lw 2 lc 2 notitle
+
+@Y2MARGIN; @X2MARGIN; @NOXTICS; @YTICS;
+set offsets graph 0.0, 0.0, 3, 3
+set ytics offset 4.2, 0
+set title '{/Arial:Bold=10 Ten\_per\_005}' offset 0,-2.5
+plot "ten_per_005.log" using 1:2 with linespoints lw 1 lc 1 notitle, \
+    "ten_per_005.log" using 1:2 smooth bezier w l lw 2 lc 2 notitle
+
+@Y2MARGIN; @X3MARGIN; @NOXTICS; @YTICS;
+set offsets graph 0.0, 0.0, 0.01, 0.01
+set ytics offset 5, 0
+set title '{/Arial:Bold=10 Ten\_per\_006}' offset 0,-2.5
+plot "ten_per_006.log" using 1:2 with linespoints lw 1 lc 1 notitle, \
+     "ten_per_006.log" using 1:2 smooth bezier w l lw 2 lc 2 notitle
+
+@Y3MARGIN; @X1MARGIN; @XTICS; @YTICS;
+set offsets graph 0.0, 0.0, 0.01, 0.01
+set ytics offset 0,0
+set title '{/Arial:Bold=10 Ten\_per\_007}' offset 0,-2.5
+plot "ten_per_007.log" using 1:2 with linespoints lw 1 lc 1 notitle, \
+   "ten_per_007.log" using 1:2 smooth bezier w l lw 2 lc 2 notitle
+
+@Y3MARGIN; @X2MARGIN; @XTICS; @YTICS;
+set offsets graph 0.0, 0.0, 3, 3
+set ytics offset 5, 0
+set title '{/Arial:Bold=10 Ten\_per\_008}' offset 0,-2.5
+plot "ten_per_008.log" using 1:2 with linespoints lw 1 lc 1 notitle, \
+    "ten_per_008.log" using 1:2 smooth bezier w l lw 2 lc 2 notitle
+
+@Y3MARGIN; @X3MARGIN; @XTICS; @YTICS;
+set offsets graph 0.0, 0.0, 0.01, 0.01
+set ytics offset 4.2, 0
+set title '{/Arial:Bold=10 Ten\_per\_009}' offset 0,-2.5
+plot "ten_per_009.log" using 1:2 with linespoints lw 1 lc 1 notitle, \
+     "ten_per_009.log" using 1:2 smooth bezier w l lw 2 lc 2 notitle
+
+unset multiplot
+
+
+
+

@@ -9,7 +9,7 @@ class ResultsPersistence:
                  "PRIMARY KEY (test, environment, time))"
     SQL_INSERT = "INSERT INTO results VALUES (?, ?, ?, ?)"
     SQL_DELETE = "DELETE from results WHERE environment=?"
-    SQL_SELECT = "SELECT time, results FROM result WHERE test=? AND environment=? ORDER BY time ASC"
+    SQL_SELECT = "SELECT time, result FROM results WHERE test=? AND environment=? ORDER BY time ASC"
 
     def __init__(self, db_dir):
         """Instantiate an instance."""
