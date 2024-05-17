@@ -12,7 +12,7 @@ class PySysTest(TenNetworkTest):
 
         for test in tests:
             with open(os.path.join(self.output, '%s.log' % test), 'w') as fp:
-                for entry in reversed(self.results_db.get_results(test=test, environment='ten.uat')):
+                for entry in reversed(self.results_db.get_results(test=test, environment=self.env)):
                     fp.write('%s %s\n' % (entry[0], entry[1]))
         self.graph()
 
