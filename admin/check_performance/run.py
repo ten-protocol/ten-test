@@ -14,7 +14,6 @@ class PySysTest(TenNetworkTest):
             with open(os.path.join(self.output, '%s.log' % test), 'w') as fp:
                 for entry in reversed(self.results_db.get_results(test=test, environment=self.env)):
                     fp.write('%s %s\n' % (self.epoch_to_fractional_doy(entry[0]), entry[1]))
-                    fp.write('%s %s\n' % (entry[0], entry[1]))
         self.graph()
 
     def graph(self):
