@@ -31,7 +31,7 @@ class PySysTest(TenNetworkTest):
                 for i in range(0, clients):
                     self.waitForGrep(file=os.path.join(out_dir, 'client_%s.out' % i),
                                      expr='Client client_%s completed' % i, timeout=300)
-                    self.ratio_failures(file=os.path.join(self.output, 'client_%s.out' % i))
+                    self.ratio_failures(file=os.path.join(out_dir, 'client_%s.out' % i))
 
                 end_ns = time.perf_counter_ns()
                 bulk_throughput = float(clients * self.ITERATIONS) / float((end_ns-start_ns)/1e9)
