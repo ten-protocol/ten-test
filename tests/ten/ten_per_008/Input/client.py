@@ -1,7 +1,7 @@
 import logging, argparse, sys, time, os
 from web3 import Web3
 
-logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
+logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', stream=sys.stdout, level=logging.INFO)
 
 
 def run(name, web3, num_iterations, start):

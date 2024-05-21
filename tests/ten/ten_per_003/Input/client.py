@@ -2,7 +2,7 @@ from web3 import Web3
 import secrets, time
 import logging, random, argparse, sys
 
-logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
+logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', stream=sys.stdout, level=logging.INFO)
 
 nonces = {}
 counts = {}

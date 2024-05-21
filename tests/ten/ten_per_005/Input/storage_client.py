@@ -2,7 +2,7 @@ from web3 import Web3
 import logging
 import argparse, json, sys
 
-logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
+logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', stream=sys.stdout, level=logging.INFO)
 
 
 def create_signed_tx(name, account, nonce, contract, gas_price, gas_limit, chainId):

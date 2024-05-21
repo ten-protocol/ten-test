@@ -3,7 +3,7 @@ import logging
 import time
 import argparse, json, sys
 
-logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
+logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', stream=sys.stdout, level=logging.INFO)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='event_listener')

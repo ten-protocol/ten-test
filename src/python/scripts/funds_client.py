@@ -6,7 +6,7 @@ from web3 import Web3
 import logging, random
 import argparse, sys
 
-logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
+logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', stream=sys.stdout, level=logging.INFO)
 
 
 def transfer_value(web3, account, gas_estimate, recipient):

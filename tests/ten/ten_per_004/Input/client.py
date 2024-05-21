@@ -2,7 +2,7 @@ from web3 import Web3
 import secrets
 import logging, random, argparse, sys
 
-logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
+logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', stream=sys.stdout, level=logging.INFO)
 
 
 def create_signed_tx(account, nonce, address, value, gas_price, gas_limit, chain_id):
