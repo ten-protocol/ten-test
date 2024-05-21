@@ -40,7 +40,7 @@ def run(name, chainId, web3, account, num_accounts, num_iterations, amount, gas_
             logging.error('Error sending raw transaction, sent = %d', len(receipts))
             stats[1] += 1
 
-    logging.warning('Ratio transaction failures = %.2f', float(stats[1]) / sum(stats))
+    logging.warning('Ratio failures = %.2f', float(stats[1]) / sum(stats))
 
     logging.info('Waiting for last transaction')
     web3.eth.wait_for_transaction_receipt(receipts[-1][0], timeout=600)
