@@ -39,9 +39,9 @@ def run(name, chainId, web3, sending_accounts, num_accounts, num_iterations, amo
         txs.append((tx, i))
 
     logging.info('Bulk sending transactions to the network')
+    stats = [0,0]
     receipts = []
     start_time = time.perf_counter()
-    stats = [0,0]
     for tx in txs:
         try:
             receipts.append((web3.eth.send_raw_transaction(tx[0].rawTransaction), tx[1]))
@@ -49,12 +49,11 @@ def run(name, chainId, web3, sending_accounts, num_accounts, num_iterations, amo
         except:
             logging.error('Error sending raw transaction, sent = %d', len(receipts))
             stats[1] += 1
+    logging.warning('Ratio failures = %.2f', float(stats[1]) / sum(stats))
 
     end_time = time.perf_counter()
     duration = end_time - start_time
     logging.info('Time to send all transactions was %.4f', duration)
-
-    logging.warning('Ratio transaction failures = %.2f', float(stats[1]) / sum(stats))
 
     logging.info('Waiting for last transaction')
     web3.eth.wait_for_transaction_receipt(receipts[-1][0], timeout=600)

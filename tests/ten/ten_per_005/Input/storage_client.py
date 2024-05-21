@@ -28,8 +28,8 @@ def run(name, chainId, web3, account, contract, num_iterations, gas_limit):
         txs.append((tx, i))
 
     logging.info('Bulk sending transactions to the network')
-    receipts = []
     stats = [0,0]
+    receipts = []
     for tx in txs:
         try:
             receipts.append((web3.eth.send_raw_transaction(tx[0].rawTransaction), tx[1]))
@@ -38,8 +38,7 @@ def run(name, chainId, web3, account, contract, num_iterations, gas_limit):
             logging.error('Error sending raw transaction, sent = %d', len(receipts))
             logging.error('Exception is', e)
             stats[1] += 1
-
-    logging.warning('Ratio transaction failures = %.2f', float(stats[1]) / sum(stats))
+    logging.warning('Ratio failures = %.2f', float(stats[1]) / sum(stats))
 
     logging.info('Waiting for last transaction %s', receipts[-1][0].hex())
     web3.eth.wait_for_transaction_receipt(receipts[-1][0], timeout=900)

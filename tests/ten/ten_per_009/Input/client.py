@@ -46,10 +46,7 @@ def run(name, chainId, web3, account, num_accounts, num_iterations, amount, gas_
             logging.error(e)
             stats[1] += 1
 
-    logging.warning('Ratio send failures = %.2f',  float(stats[1]) / sum(stats))
-
     logging.info('Waiting for transactions')
-    stats = [0,0]
     for receipt in receipts:
         try:
             web3.eth.wait_for_transaction_receipt(receipt[0], timeout=30)
@@ -59,8 +56,7 @@ def run(name, chainId, web3, account, num_accounts, num_iterations, amount, gas_
             logging.error('Timedout waiting for %d' % receipt[1])
             logging.error(e)
             stats[1] += 1
-
-    logging.warning('Ratio mined failures = %.2f',  float(stats[1]) / sum(stats))
+    logging.warning('Ratio failures = %.2f',  float(stats[1]) / sum(stats))
 
     logging.info('Logging the timestamps of each transaction')
     with open('%s_throughput.log' % name, 'w') as fp:

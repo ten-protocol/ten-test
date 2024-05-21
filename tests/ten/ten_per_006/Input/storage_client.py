@@ -27,6 +27,7 @@ def store_value(value, web3, account, contract, gas_limit):
         }
     )
     signed_tx = account.sign_transaction(build_tx)
+
     stats = [0,0]
     try:
         tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
@@ -40,8 +41,7 @@ def store_value(value, web3, account, contract, gas_limit):
     except Exception as e:
         logging.error('Error performing transaction %s', e)
         stats[1] += 1
-
-    logging.warning('Ratio transaction failures = %.2f', float(stats[1]) / sum(stats))
+    logging.warning('Ratio failures = %.2f', float(stats[1]) / sum(stats))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='storage_client')

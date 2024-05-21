@@ -23,8 +23,7 @@ def run(name, web3, num_iterations, start):
         except Exception as e:
             logging.error('Error getting balance %s', e)
             stats[1] += 1
-
-    logging.warning('Ratio request failures = %.2f', float(stats[1]) / sum(stats))
+    logging.warning('Ratio failures = %.2f', float(stats[1]) / sum(stats))
 
     logging.info('Logging latency for the RPC requests')
     with open('%s_latency.log' % name, 'w') as fp:
