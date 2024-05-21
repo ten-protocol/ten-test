@@ -34,23 +34,33 @@ def run(name, chainId, web3, account, num_accounts, num_iterations, amount, gas_
 
     logging.info('Bulk sending transactions to the network')
     receipts = []
+    stats = [0,0]
     for tx in txs:
         try:
             receipt = web3.eth.send_raw_transaction(tx[0].rawTransaction)
             receipts.append((receipt, tx[1]))
             logging.info('Sent %d', tx[1])
+            stats[0] += 1
         except Exception as e:
             logging.info('Error sending raw transaction, sent = %d', len(receipts))
             logging.error(e)
+            stats[1] += 1
+
+    logging.warning('Ratio send failures = %.2f',  float(stats[1]) / sum(stats))
 
     logging.info('Waiting for transactions')
+    stats = [0,0]
     for receipt in receipts:
         try:
             web3.eth.wait_for_transaction_receipt(receipt[0], timeout=30)
             logging.info('Received tx receipt for %d' % receipt[1])
+            stats[0] += 1
         except Exception as e:
-            logging.info('Timedout waiting for %d' % receipt[1])
+            logging.error('Timedout waiting for %d' % receipt[1])
             logging.error(e)
+            stats[1] += 1
+
+    logging.warning('Ratio mined failures = %.2f',  float(stats[1]) / sum(stats))
 
     logging.info('Logging the timestamps of each transaction')
     with open('%s_throughput.log' % name, 'w') as fp:

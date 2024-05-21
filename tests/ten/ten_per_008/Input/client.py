@@ -10,6 +10,7 @@ def run(name, web3, num_iterations, start):
     latency = []
     num_requests = 0
     throughput = []
+    stats = [0,0]
     for i in range(0, num_iterations):
         try:
             start_time = time.perf_counter_ns()
@@ -18,8 +19,12 @@ def run(name, web3, num_iterations, start):
             latency.append((end_time - start_time)/1e6)
             num_requests = num_requests + 1
             throughput.append(((end_time - start)/1e9, num_requests))
+            stats[0] += 1
         except Exception as e:
-            logging.error('Error performing transaction %s', e)
+            logging.error('Error getting balance %s', e)
+            stats[1] += 1
+
+    logging.warning('Ratio request failures = %.2f', float(stats[1]) / sum(stats))
 
     logging.info('Logging latency for the RPC requests')
     with open('%s_latency.log' % name, 'w') as fp:
