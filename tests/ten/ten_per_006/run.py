@@ -1,4 +1,4 @@
-import secrets, os, math, time
+import secrets, os, math, time, re
 from datetime import datetime
 from collections import OrderedDict
 from web3 import Web3
@@ -54,6 +54,7 @@ class PySysTest(TenNetworkTest):
                 self.storage_client(storage.address, storage.abi_path, i, network, funds_needed)
             for i in range(0, self.CLIENTS):
                 self.waitForGrep(file='client_%d.out' % i, expr='Client completed', timeout=450)
+                self.ratio_failures(file=os.path.join(self.output, 'client_%d.out' % i))
             self.graph()
 
         # passed if no failures (though pdf output should be reviewed manually)
@@ -109,3 +110,14 @@ class PySysTest(TenNetworkTest):
 
         # persist the result
         self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()), latency)
+
+    def ratio_failures(self, file):
+        ratio = None
+        regex = re.compile('Ratio failures = (?P<ratio>.*)$', re.M)
+        with open(file, 'r') as fp:
+            for line in fp.readlines():
+                result = regex.search(line)
+                if result is not None:
+                    ratio = float(result.group('ratio'))
+        self.log.info('Ratio of failures is %.2f' % ratio)
+        return ratio

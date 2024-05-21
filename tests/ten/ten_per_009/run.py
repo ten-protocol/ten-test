@@ -1,4 +1,4 @@
-import os, time, secrets, sys
+import os, time, secrets, sys, re
 import numpy as np
 from datetime import datetime
 from collections import OrderedDict
@@ -52,6 +52,7 @@ class PySysTest(TenNetworkTest):
                 for i in range(0, clients):
                     self.waitForGrep(file=os.path.join(out_dir, 'client_%s.out' % i),
                                      expr='Client client_%s completed' % i, timeout=300)
+                    self.ratio_failures(file=os.path.join(self.output, 'client_%s.out' % i))
                 end_ns = time.perf_counter_ns()
 
                 bulk_throughput = float(clients * self.ITERATIONS) / float((end_ns - start_ns) / 1e9)
@@ -152,3 +153,13 @@ class PySysTest(TenNetworkTest):
         for l in lists[1:]: overlap = np.intersect1d(overlap, np.array(l))
         return overlap.tolist()[0], overlap.tolist()[-1]
 
+    def ratio_failures(self, file):
+        ratio = None
+        regex = re.compile('Ratio failures = (?P<ratio>.*)$', re.M)
+        with open(file, 'r') as fp:
+            for line in fp.readlines():
+                result = regex.search(line)
+                if result is not None:
+                    ratio = float(result.group('ratio'))
+        self.log.info('Ratio of failures is %.2f' % ratio)
+        return ratio
