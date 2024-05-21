@@ -2,7 +2,7 @@ from web3 import Web3
 import secrets
 import logging, random, argparse, sys
 
-logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
+logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', stream=sys.stdout, level=logging.INFO)
 
 
 def create_signed_tx(account, nonce, address, value, gas_price, gas_limit, chain_id):
@@ -30,12 +30,16 @@ def run(name, chainId, web3, account, num_accounts, num_iterations, amount, gas_
         txs.append((tx, i))
 
     logging.info('Bulk sending transactions to the network')
+    stats = [0,0]
     receipts = []
     for tx in txs:
         try:
             receipts.append((web3.eth.send_raw_transaction(tx[0].rawTransaction), tx[1]))
+            stats[0] += 1
         except:
-            logging.info('Error sending raw transaction, sent = %d', len(receipts))
+            logging.error('Error sending raw transaction, sent = %d', len(receipts))
+            stats[1] += 1
+    logging.warning('Ratio failures = %.2f', float(stats[1]) / sum(stats))
 
     logging.info('Waiting for last transaction')
     web3.eth.wait_for_transaction_receipt(receipts[-1][0], timeout=600)

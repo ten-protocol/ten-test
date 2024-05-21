@@ -1,4 +1,4 @@
-import os, secrets, time
+import os, secrets, time, re
 from datetime import datetime
 from collections import OrderedDict
 from pysys.constants import PASSED
@@ -35,6 +35,7 @@ class PySysTest(TenNetworkTest):
         for i in range(self.CLIENTS): self.run_client('client_%d' % i, storage, setup[i][0], setup[i][1])
         for i in range(self.CLIENTS):
             self.waitForGrep(file='client_%d.out' % i, expr='Client client_%d completed' % i, timeout=900)
+            self.ratio_failures(file=os.path.join(self.output, 'client_%d.out' % i))
 
         # process and graph the output
         data = [self.load_data('client_%d.log' % i) for i in range(self.CLIENTS)]
@@ -107,3 +108,14 @@ class PySysTest(TenNetworkTest):
         for _, t in data: b[t] = 1 if t not in b else b[t] + 1
         for t in range(first, last + 1): binned_data[t - first] = 0 if t not in b else b[t]
         return binned_data
+
+    def ratio_failures(self, file):
+        ratio = None
+        regex = re.compile('Ratio failures = (?P<ratio>.*)$', re.M)
+        with open(file, 'r') as fp:
+            for line in fp.readlines():
+                result = regex.search(line)
+                if result is not None:
+                    ratio = float(result.group('ratio'))
+        self.log.info('Ratio of failures is %.2f' % ratio)
+        return ratio

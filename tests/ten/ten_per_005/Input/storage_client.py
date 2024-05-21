@@ -2,7 +2,7 @@ from web3 import Web3
 import logging
 import argparse, json, sys
 
-logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
+logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', stream=sys.stdout, level=logging.INFO)
 
 
 def create_signed_tx(name, account, nonce, contract, gas_price, gas_limit, chainId):
@@ -28,13 +28,17 @@ def run(name, chainId, web3, account, contract, num_iterations, gas_limit):
         txs.append((tx, i))
 
     logging.info('Bulk sending transactions to the network')
+    stats = [0,0]
     receipts = []
     for tx in txs:
         try:
             receipts.append((web3.eth.send_raw_transaction(tx[0].rawTransaction), tx[1]))
+            stats[0] += 1
         except Exception as e:
-            logging.info('Error sending raw transaction, sent = %d', len(receipts))
-            logging.info('Exception is', e)
+            logging.error('Error sending raw transaction, sent = %d', len(receipts))
+            logging.error('Exception is', e)
+            stats[1] += 1
+    logging.warning('Ratio failures = %.2f', float(stats[1]) / sum(stats))
 
     logging.info('Waiting for last transaction %s', receipts[-1][0].hex())
     web3.eth.wait_for_transaction_receipt(receipts[-1][0], timeout=900)

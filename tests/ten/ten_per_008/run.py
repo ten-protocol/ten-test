@@ -1,4 +1,4 @@
-import os, time, secrets, math
+import os, time, secrets, math, re
 import numpy as np
 from web3 import Web3
 from datetime import datetime
@@ -31,6 +31,7 @@ class PySysTest(TenNetworkTest):
                 for i in range(0, clients):
                     self.waitForGrep(file=os.path.join(out_dir, 'client_%s.out' % i),
                                      expr='Client client_%s completed' % i, timeout=300)
+                    self.ratio_failures(file=os.path.join(out_dir, 'client_%s.out' % i))
 
                 end_ns = time.perf_counter_ns()
                 bulk_throughput = float(clients * self.ITERATIONS) / float((end_ns-start_ns)/1e9)
@@ -166,3 +167,14 @@ class PySysTest(TenNetworkTest):
         coeffs = np.polyfit(x_values, y_values, deg=0)
         best_fit_y_values = np.full_like(y_values, fill_value=coeffs[0])
         return best_fit_y_values[0]
+
+    def ratio_failures(self, file):
+        ratio = None
+        regex = re.compile('Ratio failures = (?P<ratio>.*)$', re.M)
+        with open(file, 'r') as fp:
+            for line in fp.readlines():
+                result = regex.search(line)
+                if result is not None:
+                    ratio = float(result.group('ratio'))
+        self.log.info('Ratio of failures is %.2f' % ratio)
+        return ratio

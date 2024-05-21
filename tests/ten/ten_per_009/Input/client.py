@@ -2,7 +2,7 @@ from web3 import Web3
 import secrets, time, os
 import logging, random, argparse, sys
 
-logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
+logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', stream=sys.stdout, level=logging.INFO)
 
 
 def create_signed_tx(account, nonce, address, value, gas_price, gas_limit, chain_id):
@@ -34,23 +34,29 @@ def run(name, chainId, web3, account, num_accounts, num_iterations, amount, gas_
 
     logging.info('Bulk sending transactions to the network')
     receipts = []
+    stats = [0,0]
     for tx in txs:
         try:
             receipt = web3.eth.send_raw_transaction(tx[0].rawTransaction)
             receipts.append((receipt, tx[1]))
             logging.info('Sent %d', tx[1])
+            stats[0] += 1
         except Exception as e:
             logging.info('Error sending raw transaction, sent = %d', len(receipts))
             logging.error(e)
+            stats[1] += 1
 
     logging.info('Waiting for transactions')
     for receipt in receipts:
         try:
             web3.eth.wait_for_transaction_receipt(receipt[0], timeout=30)
             logging.info('Received tx receipt for %d' % receipt[1])
+            stats[0] += 1
         except Exception as e:
-            logging.info('Timedout waiting for %d' % receipt[1])
+            logging.error('Timedout waiting for %d' % receipt[1])
             logging.error(e)
+            stats[1] += 1
+    logging.warning('Ratio failures = %.2f',  float(stats[1]) / sum(stats))
 
     logging.info('Logging the timestamps of each transaction')
     with open('%s_throughput.log' % name, 'w') as fp:

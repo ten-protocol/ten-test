@@ -4,7 +4,7 @@ from web3 import Web3
 from eth_account import Account
 from eth_account.messages import encode_typed_data
 
-logging.basicConfig(format='%(asctime)s %(message)s', stream=sys.stdout, level=logging.INFO)
+logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', stream=sys.stdout, level=logging.INFO)
 
 
 def join(host, port):
