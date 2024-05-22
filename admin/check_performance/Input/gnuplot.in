@@ -16,7 +16,7 @@ X3MARGIN = "set lmargin at screen 0.608000; set rmargin at screen 0.870000"
 
 NOXTICS = "set format x ''; unset xlabel"
 NOYTICS = "set format y ''; unset ylabel"
-XTICS = "set format x '%g'; set xlabel 'Day of year' offset 0,1.5 "
+XTICS = "set format x '%g'; set xlabel 'Day of year' offset 0,1.25 "
 YTICS = "set format y '%g'; unset ylabel"
 
 set multiplot layout 3,3 title ARG2.": ".ARG1 noenhanced scale 0.95,0.95
