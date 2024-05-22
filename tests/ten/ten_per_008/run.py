@@ -16,6 +16,7 @@ class PySysTest(TenNetworkTest):
         network = self.get_network_connection()
 
         # run the clients and wait for their completion
+        results = []
         results_file = os.path.join(self.output, 'results.log')
         with open(results_file, 'w') as fp:
             for clients in [1,2,4,8,16,20]:
@@ -42,6 +43,7 @@ class PySysTest(TenNetworkTest):
                 self.log.info('Average latency %.2f (ms)' % avg_latency)
                 self.log.info('Modal latency %.2f (ms)' % mode_latency)
                 fp.write('%d %.2f %.2f %.2f\n' % (clients, throughput, avg_latency, mode_latency))
+                results.append(throughput)
 
                 # graph the output for the single run of 4 clients
                 if clients == 4:
@@ -50,6 +52,9 @@ class PySysTest(TenNetworkTest):
 
         # plot the summary graph
         self.graph_all_clients(throughput_4_clients)
+
+        # persist the result (average of the last three clients)
+        self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()), '%.2f' % (sum(results[-3:])/3.0))
 
         # passed if no failures (though pdf output should be reviewed manually)
         self.addOutcome(PASSED)
@@ -129,9 +134,6 @@ class PySysTest(TenNetworkTest):
         date = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
         GnuplotHelper.graph(self, os.path.join(self.input, 'four_clients.in'), branch, date, str(self.mode),
                             '%.2f' % throughput, '%.2f' % avg_latency, '%.2f' % mode_latency)
-
-        # persist the result
-        self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()), '%.2f' % throughput)
 
     def graph_all_clients(self, throughput):
         branch = GnuplotHelper.buildInfo().branch
