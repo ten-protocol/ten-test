@@ -169,7 +169,7 @@ class PySysTest(TenNetworkTest):
         return best_fit_y_values[0]
 
     def ratio_failures(self, file):
-        ratio = None
+        ratio = 0
         regex = re.compile('Ratio failures = (?P<ratio>.*)$', re.M)
         with open(file, 'r') as fp:
             for line in fp.readlines():

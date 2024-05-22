@@ -112,7 +112,7 @@ class PySysTest(TenNetworkTest):
         self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()), latency)
 
     def ratio_failures(self, file):
-        ratio = None
+        ratio = 0
         regex = re.compile('Ratio failures = (?P<ratio>.*)$', re.M)
         with open(file, 'r') as fp:
             for line in fp.readlines():

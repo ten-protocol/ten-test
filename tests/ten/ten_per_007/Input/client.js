@@ -40,14 +40,17 @@ async function sendTransaction(key, value) {
    },
     function(error, event){
        if (error) {
+         stats[1] += 1
          console.log('Error returned is ', error)
        } else {
+         stats[0] += 1
          log_time = Number(process.hrtime.bigint() - start_time) / 1e9
          fs.appendFile(options.output_file, log_time.toString() + os.EOL, function (err) { if (err) throw err })
          if (value <= iterations) {
             sendTransaction(key, value+1)
          }
          else {
+            console.log('Ratio failures =', ( stats[1] / (stats[0]+stats[1])).toFixed(2) )
             console.log('Completed transactions')
          }
        }
@@ -78,6 +81,7 @@ const web3 = new Web3(`${options.network}`)
 const contract = new web3.eth.Contract(abi, options.contract_address)
 const sender_address = web3.eth.accounts.privateKeyToAccount(options.private_key).address
 const iterations = parseInt(options.num_iterations)
+let stats = [0,0]
 
 console.log('Starting transactions')
 sendTransaction(options.key, 0)
