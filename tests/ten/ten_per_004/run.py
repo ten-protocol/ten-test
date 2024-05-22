@@ -1,7 +1,7 @@
 import os, secrets, time, re
 from datetime import datetime
 from collections import OrderedDict
-from pysys.constants import PASSED
+from pysys.constants import PASSED, FAILED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
 
@@ -116,4 +116,5 @@ class PySysTest(TenNetworkTest):
                 if result is not None:
                     ratio = float(result.group('ratio'))
         self.log.info('Ratio of failures is %.2f' % ratio)
+        if ratio > 0.05: self.addOutcome(FAILED, outcomeReason='Failure ratio > 0.05', abortOnError=False)
         return ratio

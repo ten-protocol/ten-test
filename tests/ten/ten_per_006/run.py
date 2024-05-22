@@ -120,4 +120,5 @@ class PySysTest(TenNetworkTest):
                 if result is not None:
                     ratio = float(result.group('ratio'))
         self.log.info('Ratio of failures is %.2f' % ratio)
+        if ratio > 0.05: self.addOutcome(FAILED, outcomeReason='Failure ratio > 0.05', abortOnError=False)
         return ratio
