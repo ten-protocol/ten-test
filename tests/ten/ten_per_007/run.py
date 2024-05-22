@@ -1,8 +1,8 @@
-import secrets, os, time, math
+import secrets, os, time, math, re
 from web3 import Web3
 from collections import OrderedDict
 from datetime import datetime
-from pysys.constants import PASSED
+from pysys.constants import PASSED, FAILED
 from ten.test.contracts.storage import KeyStorage
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
@@ -37,6 +37,7 @@ class PySysTest(TenNetworkTest):
 
         for i in range(0, self.CLIENTS):
             self.waitForGrep(file='client_%d.out' % i, expr='Completed transactions', timeout=450)
+            self.ratio_failures(file=os.path.join(self.output, 'client_%d.out' % i))
 
         # graph the output
         self.graph()
@@ -97,3 +98,15 @@ class PySysTest(TenNetworkTest):
 
         # persist the result
         self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()), latency)
+
+    def ratio_failures(self, file):
+        ratio = 0
+        regex = re.compile('Ratio failures = (?P<ratio>.*)$', re.M)
+        with open(file, 'r') as fp:
+            for line in fp.readlines():
+                result = regex.search(line)
+                if result is not None:
+                    ratio = float(result.group('ratio'))
+        self.log.info('Ratio of failures is %.2f' % ratio)
+        if ratio > 0.05: self.addOutcome(FAILED, outcomeReason='Failure ratio > 0.05', abortOnError=False)
+        return ratio
