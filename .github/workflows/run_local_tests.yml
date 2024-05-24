@@ -87,7 +87,9 @@ jobs:
         if: ${{ github.event_name == 'schedule' }}
         run: |
           cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ten.local -r -e skip -e persistence -e performance 
+          /usr/local/bin/pysys.py run -m ten.local -r -e skip -e persistence 
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ten.local -r check_performance
 
       - name: 'Collate pdf output'
         if: always()
