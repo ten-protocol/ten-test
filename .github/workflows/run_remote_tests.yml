@@ -1,11 +1,8 @@
-# Run a set of E2E tests on a previously deployed ten network (dev-testnet, uat-testnet or sepolia-testnet). The
-# workflow is triggered either manually via a workflow dispatch, or on a schedule (dev-testnet only)
+# Run a set of E2E tests on a previously deployed ten network (dev-testnet, uat-testnet or sepolia-testnet).
 #
 name: '[Execute] Tests against remote network'
 run-name: Run remote tests (${{ github.event_name }} ${{ github.event.inputs.environment }} )
 on:
-#  schedule:
-#    - cron: '10 */6 * * *'
   workflow_dispatch:
     inputs:
       environment:
@@ -28,9 +25,8 @@ on:
         default: main
         options:
           - main
+          - releases/v0.24
           - releases/v0.23
-          - releases/v0.22
-          - releases/v0.21
 
 jobs:
   test-run:
