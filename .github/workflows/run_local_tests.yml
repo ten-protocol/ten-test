@@ -81,7 +81,7 @@ jobs:
           cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ten.local -r ${{ github.event.inputs.arguments }}
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.local -r ${{ github.event.inputs.arguments }} check_performance
+          /usr/local/bin/pysys.py run -m ten.local -r check_performance
 
       - name: 'Run tests on schedule'
         if: ${{ github.event_name == 'schedule' }}

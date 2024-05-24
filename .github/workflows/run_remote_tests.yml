@@ -67,7 +67,7 @@ jobs:
           cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ten.uat -r ${{ github.event.inputs.arguments }}
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.uat -r ${{ github.event.inputs.arguments }} check_performance
+          /usr/local/bin/pysys.py run -m ten.uat -r check_performance
 
       - name: 'Run tests on dev-testnet on a workflow_dispatch'
         if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.environment == 'dev-testnet') }}
@@ -75,7 +75,7 @@ jobs:
           cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ten.dev -r ${{ github.event.inputs.arguments }}
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.dev -r ${{ github.event.inputs.arguments }} check_performance
+          /usr/local/bin/pysys.py run -m ten.dev -r check_performance
 
       - name: 'Collate pdf output'
         if: always()
