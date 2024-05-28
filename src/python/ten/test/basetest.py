@@ -1,4 +1,4 @@
-import os, copy, sys, json
+import os, copy, sys, json, base64
 import threading, requests
 from web3 import Web3
 from pathlib import Path
@@ -335,9 +335,15 @@ class TenNetworkTest(GenericNetworkTest):
         return None
 
     def scan_list_personal_transactions(self, address, offset=0, size=10):
-        """List personal transactions using. @todo """
+        """List personal transactions using.
+
+        Note that listing personal transactions goes via a call to getStorageAt, where the first argument is an
+        address type that will be interpreted as a request for the personal transactions. This is currently coded
+        as value 2 in the network.
+        """
+        encoded_value = base64.b64encode('2'.encode('utf-8'))
         payload = { "address": address, "pagination": {"offset": offset, "size": size}, }
-        data = {"jsonrpc": "2.0", "method": "eth_getStorageAt", "params": ["listPersonalTransactions", payload, None], "id": self.MSG_ID }
+        data = {"jsonrpc": "2.0", "method": "eth_getStorageAt", "params": [encoded_value.decode('utf-8'), payload], "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return response.json()['result']
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
