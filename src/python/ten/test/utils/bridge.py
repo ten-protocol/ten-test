@@ -44,6 +44,16 @@ class BridgeDetails:
         }
         return message
 
+    @classmethod
+    def get_value_transfer_event(cls, log):
+        """Extract the cross chain message from an event log. """
+        message = {
+            'sender': log['args']['sender'],
+            'sequence': log['args']['sequence'],
+            'nonce': log['args']['nonce']
+        }
+        return message
+
 
 class L1BridgeDetails(BridgeDetails):
     """Abstraction over the L1 side of the bridge for a particular account. """
@@ -214,6 +224,21 @@ class L2BridgeDetails(BridgeDetails):
                                            timeout=timeout)
         logs = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, self.get_cross_chain_message(logs[1])
+
+    def send_native(self, address, amount, timeout=60):
+        """Send native currency across the bridge."""
+        build_tx = self.bridge.contract.functions.sendNative(address).build_transaction(
+            {
+                'gas': 4*21000,
+                'gasPrice': self.web3.eth.gas_price,
+                'value': amount
+            }
+        )
+        tx_receipt = self.network.tx(self.test, self.web3, build_tx, self.account, timeout=timeout)
+
+        value_transfer = self.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
+        log_msg_published = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
+        return tx_receipt, value_transfer, self.get_cross_chain_message(log_msg_published[0])
 
     def relay_message(self, xchain_msg, timeout=60):
         """Relay a cross chain message. """

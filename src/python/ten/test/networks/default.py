@@ -81,6 +81,9 @@ class DefaultPostLondon:
         tx_sign = self.sign_transaction(test, tx, nonce, account, persist_nonce)
         tx_hash = self.send_transaction(test, web3, nonce, account, tx_sign, persist_nonce, verbose)
         tx_recp = self.wait_for_transaction(test, web3, nonce, account, tx_hash, persist_nonce, verbose, timeout)
+        if tx_recp.status != 1:
+            self.replay_transaction(web3, tx, tx_recp)
+            test.addOutcome(FAILED, abortOnError=True)
         return tx_recp
 
     def transact(self, test, web3, target, account, gas_limit, persist_nonce=True, verbose=True, timeout=30, **kwargs):
