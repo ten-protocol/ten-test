@@ -2,7 +2,7 @@
 # given network before being redeployed. The workflow is run manually from a workflow dispatch.
 #
 name: '[System] Reset nonce persistence'
-run-name: Reset persistence  ( ${{ github.event.inputs.environment }} )
+run-name: Reset persistence  (${{ github.event.inputs.environment }})
 on:
   workflow_dispatch:
     inputs:
