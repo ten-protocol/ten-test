@@ -15,7 +15,7 @@ class PySysTest(TenNetworkTest):
         l2_balance_before = accnt1.l2.web3.eth.get_balance(accnt1.l2.account.address)
 
         self.log.info('Send native and wait for the xchain msg on the L2')
-        tx_receipt, xchain_msg = accnt1.l1.send_native(accnt1.l2.account.address, transfer)
+        tx_receipt, _, xchain_msg = accnt1.l1.send_native(accnt1.l2.account.address, transfer)
         accnt1.l2.wait_for_message(xchain_msg)
 
         l1_balance_after = accnt1.l1.web3.eth.get_balance(accnt1.l1.account.address)
