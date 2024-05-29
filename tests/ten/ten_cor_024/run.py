@@ -1,3 +1,4 @@
+import base64
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.bridge import BridgeUser
 from ten.test.utils.properties import Properties
@@ -41,6 +42,11 @@ class PySysTest(TenNetworkTest):
         self.log.info('   L1 incr:   %d', (l1_balance2-l1_balance1))
         self.log.info('   L2 decr:   %d', (l2_balance1-l2_balance2))
 
-        cross_chain_tree = accnt1.l2.web3.eth.get_block(tx_receipt.blockNumber).crossChainTree
+        block = accnt1.l2.web3.eth.get_block(tx_receipt.blockNumber)
         self.log.info('value_transfer:   %s', value_transfer)
-        self.log.info('cross_chain_tree: %s', cross_chain_tree)
+        self.log.info('cross_chain_tree: %s', block.crossChainTree)
+        self.log.info(base64.b64decode(block.crossChainTree))
+        self.log.info(base64.b64encode('valueTransfer'.encode("ascii")))
+        base64.b64decode('woidjw==').hex()
+        # encode the event values, kecca256 it should point to a hash in the cross chain tree
+        # which will be the one you build a proof for
