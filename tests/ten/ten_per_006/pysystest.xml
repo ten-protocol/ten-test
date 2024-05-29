@@ -15,7 +15,6 @@ distribution.
     <classification>
         <groups inherit="true">
             <group>performance</group>
-            <group>health</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
