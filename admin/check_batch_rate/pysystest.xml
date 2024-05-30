@@ -11,7 +11,7 @@ increase is not greater than a threshold value.
     </description>
     <classification>
         <groups inherit="true">
-            <group></group>
+            <group>health</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
