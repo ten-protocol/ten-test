@@ -50,7 +50,8 @@ class BridgeDetails:
         message = {
             'sender': log['args']['sender'],
             'sequence': log['args']['sequence'],
-            'nonce': log['args']['nonce']
+            'receiver': log['args']['receiver'],
+            'amount': log['args']['amount']
         }
         return message
 
@@ -144,7 +145,7 @@ class L1BridgeDetails(BridgeDetails):
 
         value_transfer = self.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
         log_message = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
-        return tx_receipt, value_transfer[1], self.get_cross_chain_message(log_message[0])
+        return tx_receipt, self.get_value_transfer_event(value_transfer[1]), self.get_cross_chain_message(log_message[0])
 
     def send_to_msg_bus(self, amount, timeout=60):
         """Send native currency across the bridge."""
@@ -239,7 +240,7 @@ class L2BridgeDetails(BridgeDetails):
 
         value_transfer = self.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
         log_message = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
-        return tx_receipt, value_transfer[1], self.get_cross_chain_message(log_message[0])
+        return tx_receipt, self.get_value_transfer_event(value_transfer[1]), self.get_cross_chain_message(log_message[0])
 
     def relay_message(self, xchain_msg, timeout=60):
         """Relay a cross chain message. """
