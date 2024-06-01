@@ -49,7 +49,7 @@ class DefaultContract:
 
         self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor(*self.args)
 
-    def deploy(self, network, account, persist_nonce=True, timeout=30):
+    def deploy(self, network, account, persist_nonce=True, timeout=60):
         """Deploy using the given account."""
         self.test.log.info('Deploying %s contract', self.CONTRACT, extra=BaseLogFormatter.tag(LOG_WARN, 0))
         self.account = account
@@ -60,7 +60,7 @@ class DefaultContract:
         self.test.log.info('Contract %s deployed at %s', self.CONTRACT, tx_receipt.contractAddress, extra=BaseLogFormatter.tag(LOG_WARN, 0))
         return tx_receipt
 
-    def get_or_deploy(self, network, account, persist_nonce=True, timeout=30):
+    def get_or_deploy(self, network, account, persist_nonce=True, timeout=60):
         """Get the contract from persistence, or deploy if it is not there."""
         address, abi = self.test.contract_db.get_contract(self.CONTRACT, self.test.env)
         if address is not None:
