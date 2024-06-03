@@ -22,3 +22,6 @@ class PySysTest(TenNetworkTest):
         if count > 0:
             self.log.info('Account %s updating last persisted nonce to %d', account.address, count-1)
             self.nonce_db.insert(account.address, self.env, count-1, 'RESET')
+        else:
+            self.log.info('Account %s removing all nonce entries', account.address)
+            self.nonce_db.delete(account.address, self.env)
