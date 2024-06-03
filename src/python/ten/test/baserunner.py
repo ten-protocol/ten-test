@@ -116,11 +116,13 @@ class TenRunnerPlugin():
                 runner.log.info('Accounts with non-zero funds;')
                 for fn in Properties().accounts():
                     account = web3.eth.account.from_key(fn())
-                    resp = self.__register(account, '%s/v1/authenticate/?token=%s' % (gateway_url, user_id), user_id)
+                    self.__register(account, '%s/v1/authenticate/?token=%s' % (gateway_url, user_id), user_id)
                     self.balances[fn.__name__] = web3.from_wei(web3.eth.get_balance(account.address), 'ether')
                     if self.balances[fn.__name__] > 0:
                         runner.log.info("  Funds for %s: %.18f ETH", fn.__name__, self.balances[fn.__name__],
                                         extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+                    self.reset_persistence(runner, nonce_db, fn.__name__, account,
+                                            web3.eth.get_transaction_count(account.address))
                 runner.log.info('')
 
             elif self.env == 'ganache':
@@ -138,6 +140,14 @@ class TenRunnerPlugin():
         nonce_db.close()
         contracts_db.close()
         funds_db.close()
+
+    def reset_persistence(self, runner, nonce_db, name, account, tx_count):
+        """Reset persistence to tx count at the start of each test run (if they are misaligned)."""
+        persisted = nonce_db.get_latest_nonce(account.address, self.env)
+        if (persisted != tx_count-1) > 0:
+            runner.log.warn("Resetting persistence for %s, persisted %d, tx_count %d", name, persisted, tx_count,
+                            extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+            nonce_db.insert(account.address, self.env, tx_count-1, 'RESET')
 
     def run_ganache(self, runner):
         """Run ganache for use by the tests. """
