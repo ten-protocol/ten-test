@@ -144,7 +144,7 @@ class TenRunnerPlugin():
     def reset_persistence(self, runner, nonce_db, name, account, tx_count):
         """Reset persistence to tx count at the start of each test run (if they are misaligned)."""
         persisted = nonce_db.get_latest_nonce(account.address, self.env)
-        if (persisted != tx_count-1) > 0:
+        if (persisted is not None) and (persisted != tx_count-1) > 0:
             runner.log.warn("Resetting persistence for %s, persisted %d, tx_count %d", name, persisted, tx_count,
                             extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
             nonce_db.insert(account.address, self.env, tx_count-1, 'RESET')
