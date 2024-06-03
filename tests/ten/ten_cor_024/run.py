@@ -38,4 +38,4 @@ class PySysTest(TenNetworkTest):
                       value_transfer['amount'], value_transfer['sequence']]
             encoded_data = encode(abi_types, values)
             hash_result = Web3.keccak(encoded_data).hex()
-            self.assertTrue(hash_result == decoded[0][1])
+            self.assertTrue(hash_result == decoded[0][1])  # the v part
