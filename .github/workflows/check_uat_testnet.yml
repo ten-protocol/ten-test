@@ -31,7 +31,7 @@ jobs:
 
       - name: 'Run health check tests'
         run: |
-          cd ${{ github.workspace }}/ten-test/tests
+          cd ${{ github.workspace }}/ten-test
           /usr/local/bin/pysys.py run -m ten.uat -i health -XITERATIONS_FULL=0
 
       - name: 'Upload testcase output'

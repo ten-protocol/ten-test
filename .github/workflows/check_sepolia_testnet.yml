@@ -35,7 +35,6 @@ jobs:
           cd ${{ github.workspace }}/ten-test
           /usr/local/bin/pysys.py run -m ten.sepolia -i health -XITERATIONS_FULL=0 
 
-
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v3
         if: failure()
