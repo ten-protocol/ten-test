@@ -121,8 +121,18 @@ class TenRunnerPlugin():
                     if self.balances[fn.__name__] > 0:
                         runner.log.info("  Funds for %s: %.18f ETH", fn.__name__, self.balances[fn.__name__],
                                         extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
-                    self.reset_persistence(runner, nonce_db, fn.__name__, account,
-                                            web3.eth.get_transaction_count(account.address))
+
+                runner.log.info('')
+                runner.log.info('Checking alignment of account nonce persistence;')
+                for fn in Properties().accounts():
+                    account = web3.eth.account.from_key(fn())
+                    persisted = nonce_db.get_latest_nonce(account.address, self.env)
+                    if (persisted is not None) and (persisted != tx_count-1) > 0:
+                        # persisted is the last persisted nonce, tx_count is the number of txs for this account
+                        # as nonces started at zero, 1 tx count should mean last persisted was zero (one less)
+                        runner.log.warn("  Resetting persistence for %s, persisted %d, count %d", fn.__name__,
+                                        persisted, tx_count, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+                        nonce_db.insert(account.address, self.env, tx_count-1, 'RESET')
                 runner.log.info('')
 
             elif self.env == 'ganache':
@@ -140,14 +150,6 @@ class TenRunnerPlugin():
         nonce_db.close()
         contracts_db.close()
         funds_db.close()
-
-    def reset_persistence(self, runner, nonce_db, name, account, tx_count):
-        """Reset persistence to tx count at the start of each test run (if they are misaligned)."""
-        persisted = nonce_db.get_latest_nonce(account.address, self.env)
-        if (persisted is not None) and (persisted != tx_count-1) > 0:
-            runner.log.warn("Resetting persistence for %s, persisted %d, tx_count %d", name, persisted, tx_count,
-                            extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
-            nonce_db.insert(account.address, self.env, tx_count-1, 'RESET')
 
     def run_ganache(self, runner):
         """Run ganache for use by the tests. """
