@@ -127,6 +127,7 @@ class TenRunnerPlugin():
                 for fn in Properties().accounts():
                     account = web3.eth.account.from_key(fn())
                     persisted = nonce_db.get_latest_nonce(account.address, self.env)
+                    tx_count = web3.eth.get_transaction_count(account.address)
                     if (persisted is not None) and (persisted != tx_count-1) > 0:
                         # persisted is the last persisted nonce, tx_count is the number of txs for this account
                         # as nonces started at zero, 1 tx count should mean last persisted was zero (one less)
