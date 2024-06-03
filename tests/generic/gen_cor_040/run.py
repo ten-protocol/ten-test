@@ -6,7 +6,7 @@ class PySysTest(GenericNetworkTest):
 
     def execute(self):
         # connect to the network and deploy the contract
-        network = self.get_network_connection()
+        network = self.get_network_connection(name='local')
         web3, account = network.connect_account1(self)
 
         guesser = Guesser(self, web3)
