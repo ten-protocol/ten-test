@@ -4,6 +4,7 @@ from eth_abi.abi import encode
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.bridge import BridgeUser
 from ten.test.utils.properties import Properties
+from ten.test.utils.merkle import MerkleTree
 
 
 class PySysTest(TenNetworkTest):
@@ -38,4 +39,9 @@ class PySysTest(TenNetworkTest):
                       value_transfer['amount'], value_transfer['sequence']]
             encoded_data = encode(abi_types, values)
             hash_result = Web3.keccak(encoded_data).hex()
-            self.assertTrue(hash_result == decoded[0][1])  # the v part
+            self.assertTrue(hash_result == decoded[0][1])
+
+            merkle_tree = MerkleTree(["v"+x[1] for x  in decoded])
+            root = merkle_tree.getRootHash()
+            self.log.info('  merkle_root:      %s', root)
+            # assert the root is correct here once added into the block header

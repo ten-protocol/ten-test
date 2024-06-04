@@ -1,7 +1,6 @@
 from typing import List
 from web3 import Web3
 
-
 class Node:
     def __init__(self, left, right, value: str)-> None:
         self.left: Node = left
