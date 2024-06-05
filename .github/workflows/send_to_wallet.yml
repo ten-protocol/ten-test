@@ -21,8 +21,8 @@ jobs:
 
       - name: 'Send funds'
         run: |
-          cd ${{ github.workspace }}/ten-test/utils/testnet
-          /usr/bin/python3 drain_funds.py --from_pk ${{ secrets.ACCOUNT_PK_WORKER}} --to_account ${{ secrets.ACCOUNT_GNOSIS_TESTNET }} --floor ${{ github.event.inputs.floor }}
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ten.sepolia -XDEPLOYER_PK=${{ secrets.ACCOUNT_PK_WORKER}} --XGNOSIS_ADDRESS=${{ secrets.ACCOUNT_GNOSIS_TESTNET }} drain_balance 
 
  
 

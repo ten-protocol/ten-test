@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Drain the deployer funds and send to the gnosis safe</title>
+        <purpose><![CDATA[
+]]>
+        </purpose>
+    </description>
+    <classification>
+        <groups inherit="true">
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
