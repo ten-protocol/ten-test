@@ -4,10 +4,11 @@ name: '[System] Send deployer funds to wallet'
 run-name: Send L1 deployer funds to safe wallet
 on:
   workflow_dispatch:
-    arguments:
-      floor: 'The amount in ETH to leave in the deployer account'
-      required: true
-      default: 10
+    inputs:
+      arguments:
+        floor: 'The amount in ETH to leave in the deployer account'
+        required: true
+        default: 10
 
 jobs:
   run-check:
@@ -21,9 +22,7 @@ jobs:
       - name: 'Send funds'
         run: |
           cd ${{ github.workspace }}/ten-test/utils/testnet
-          /usr/bin/python3 drain_funds.py --from_pk ${{ secrets.ACCOUNT_PK_WORKER}} \ 
-                --to_account ${{ secrets.ACCOUNT_GNOSIS_TESTNET }} \
-                --floor ${{ github.event.inputs.floor }}
+          /usr/bin/python3 drain_funds.py --from_pk ${{ secrets.ACCOUNT_PK_WORKER}} --to_account ${{ secrets.ACCOUNT_GNOSIS_TESTNET }} --floor ${{ github.event.inputs.floor }}
 
  
 
