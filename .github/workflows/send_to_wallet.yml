@@ -5,9 +5,10 @@ run-name: Send L1 deployer funds to safe wallet
 on:
   workflow_dispatch:
     inputs:
-      floor: 'The amount in ETH to leave in the deployer account'
-      required: true
-      default: 10
+      floor:
+        description: 'The amount in ETH to leave in the deployer account'
+        required: true
+        default: 10
 
 jobs:
   run-check:
