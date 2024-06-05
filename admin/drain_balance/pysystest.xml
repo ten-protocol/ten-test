@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Drain the deployer funds and send to the gnosis safe</title>
+        <title>Drain the balance from an account to a receiver, up to a threshold limit</title>
         <purpose><![CDATA[
 ]]>
         </purpose>
