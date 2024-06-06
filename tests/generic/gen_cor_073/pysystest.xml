@@ -18,6 +18,7 @@ explicitly.
         <groups inherit="true">
             <group>events</group>
             <group>web3js</group>
+            <group>health</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
