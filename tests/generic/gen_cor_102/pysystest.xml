@@ -12,6 +12,7 @@
         <groups inherit="true">
             <group>sanity</group>
             <group>ethers</group>
+            <group>health</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

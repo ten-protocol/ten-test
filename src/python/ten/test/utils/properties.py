@@ -123,11 +123,13 @@ class Properties:
 
     # network connection properties
     def host_http(self, key):
-        if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'HostHTTPDockerNetwork')
+        if os.getenv('PRIMARY_HOST_HTTP'): return os.getenv('PRIMARY_HOST_HTTP')     # override for different gateway
+        if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'HostHTTPDockerNetwork') # for docker to docker
         return self.get('env.'+key, 'HostHTTP')
 
     def host_ws(self, key):
-        if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'HostWSDockerNetwork')
+        if os.getenv('PRIMARY_HOST_WS'): return os.getenv('PRIMARY_HOST_WS')         # override for different gateway
+        if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'HostWSDockerNetwork')   # for docker to docker
         return self.get('env.'+key, 'HostWS')
 
     def port_http(self, key): return int(self.get('env.'+key, 'PortHTTP'))
