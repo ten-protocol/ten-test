@@ -1,0 +1,17 @@
+{
+  "name": "test-project",
+  "version": "1.0.0",
+  "author": "Moray Grieve",
+  "license": "ISC",
+  "devDependencies": {
+    "@openzeppelin/merkle-tree": "^1.0.6",
+    "commander": "^11.1.0"
+  },
+  "keywords": [],
+  "description": ""
+}
+
+
+
+
+
