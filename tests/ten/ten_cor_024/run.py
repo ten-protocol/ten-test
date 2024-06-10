@@ -16,17 +16,15 @@ class PySysTest(TenNetworkTest):
 
         accnt = BridgeUser(self, props.account1pk(), props.account1pk(), 'accnt1')
 
+        # send funds from the L1 to the L2
         self.log.info('Send native from L1 to L2')
         tx_receipt, _, xchain_msg = accnt.l1.send_native(accnt.l2.account.address, transfer_to)
         accnt.l2.wait_for_message(xchain_msg)
 
-        self.log.info('')
+        # send funds from the L2 to the L1
         self.log.info('Send native from L2 to L1')
-        balance = accnt.l2.web3.eth.get_balance(accnt.l2.account.address)
-        self.log.info('  balance:         %d', balance)
-
-        # perform the transfer and log out the cross chain tree leafs (v=value transfer)
         tx_receipt, value_transfer, _ = accnt.l2.send_native(accnt.l1.account.address, transfer_back)
+
         block = accnt.l2.web3.eth.get_block(tx_receipt.blockNumber)
         decoded = ast.literal_eval(base64.b64decode(block.crossChainTree).decode('utf-8'))
         self.log.info('  value_transfer:   %s', list(value_transfer.values()))
@@ -44,7 +42,7 @@ class PySysTest(TenNetworkTest):
         self.assertTrue(hash_result == decoded[0][1])
 
         # pass the cross chain tree leafs to javascript so we can compute the tree and validate
-        # we have the same based on the root hash
+        # we have the same based on the root hash, and then compute the proof
         shutil.copytree(self.input, project)
         self.run_npm(args=['install', '--yes'], stdout='npm.out', stderr='npm.err', working_dir=project)
         stdout = os.path.join(self.output, 'merkle.out')
