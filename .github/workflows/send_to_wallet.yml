@@ -22,7 +22,7 @@ jobs:
       - name: 'Send funds'
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.sepolia -XDEPLOYER_PK=${{ secrets.ACCOUNT_PK_WORKER}} -XGNOSIS_ADDRESS=${{ secrets.ACCOUNT_GNOSIS_TESTNET }} drain_balance 
+          /usr/local/bin/pysys.py run -m ten.sepolia -XSEND_PK=${{ secrets.ACCOUNT_PK_WORKER}} -XRECV_AD=${{ secrets.ACCOUNT_GNOSIS_TESTNET }} drain_balance 
 
  
 
