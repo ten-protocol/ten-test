@@ -37,5 +37,5 @@ class PySysTest(TenNetworkTest):
             'gas': gas_estimate,
             'gasPrice': web3.eth.gas_price
         }
-        return network.tx(self, web3, tx, account, persist_nonce=False)
+        return network.tx(self, web3, tx, account, persist_nonce=False, timeout=120)
 
