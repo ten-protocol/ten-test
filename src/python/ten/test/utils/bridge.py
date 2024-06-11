@@ -2,7 +2,7 @@ import time
 from web3._utils.events import EventLogErrorFlags
 from ten.test.contracts.erc20 import ERC20Token
 from ten.test.contracts.bridge import WrappedERC20
-from ten.test.contracts.bridge import ObscuroBridge, EthereumBridge
+from ten.test.contracts.bridge import ObscuroBridge, EthereumBridge, Management
 from ten.test.contracts.bridge import L1MessageBus, L2MessageBus, L1CrossChainMessenger, L2CrossChainMessenger
 from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 from ten.test.utils.properties import Properties
@@ -66,6 +66,7 @@ class L1BridgeDetails(BridgeDetails):
         bridge = ObscuroBridge(test, web3)
         bus = L1MessageBus(test, web3)
         xchain = L1CrossChainMessenger(test, web3)
+        self.management = Management(test, web3)
         super().__init__(test, web3, account, network, bridge, bus, xchain, name)
         self.tokens = {}
 
@@ -168,6 +169,13 @@ class L1BridgeDetails(BridgeDetails):
                                            timeout=timeout)
         return tx_receipt
 
+    def release_funds(self, msg, proof, root, timeout=60):
+        """Release funds to an account. """
+        tx_receipt = self.network.transact(self.test, self.web3,
+                                       self.management.contract.functions.ExtractNativeValue(msg, proof, root),
+                                       self.account, gas_limit=self.xchain.GAS_LIMIT, persist_nonce=False,
+                                       timeout=timeout)
+        return tx_receipt
 
 class L2BridgeDetails(BridgeDetails):
     """Abstraction of the L2 side of the bridge for a particular address. """
