@@ -149,9 +149,7 @@ class DefaultPostLondon:
             if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'SENT')
         except Exception as e:
             self.log.error('Error sending raw transaction %s', e)
-            if persist_nonce:
-                self.log.warn('Deleting nonce entries in the persistence for nonce %d', nonce)
-                test.nonce_db.delete_entries(account.address, test.env, nonce)
+            if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'TIMEDOUT')
             test.addOutcome(BLOCKED, abortOnError=True)
         if verbose: self.log.info('Transaction sent with hash %s', tx_hash.hex())
         return tx_hash
@@ -172,9 +170,7 @@ class DefaultPostLondon:
 
         except TimeExhausted as e:
             self.log.error('Transaction timed out %s', e)
-            if persist_nonce:
-                self.log.warn('Deleting nonce entries in the persistence for nonce %d', nonce)
-                test.nonce_db.delete_entries(account.address, test.env, nonce)
+            if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'TIMEDOUT')
             test.addOutcome(TIMEDOUT, abortOnError=True)
 
         return tx_receipt
