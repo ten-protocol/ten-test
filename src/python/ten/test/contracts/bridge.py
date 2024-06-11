@@ -9,7 +9,7 @@ class Management:
     def __init__(self, test, web3):
         self.test = test
         self.web3 = web3
-        self.address = Properties().l1_bridge_address()
+        self.address = Properties().l1_management_address()
         self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'management', 'ManagementContract.sol',
                                      'ManagementContract.json')
         with open(self.abi_path, 'r') as fp:

@@ -34,17 +34,18 @@ class PySysTest(TenNetworkTest):
 
         # construct the hash of the value transfer and compare with the xchain tree
         abi_types = ['address', 'address', 'uint256', 'uint64']
-        values = [value_transfer['sender'], value_transfer['receiver'],
-                  value_transfer['amount'], value_transfer['sequence']]
-        encoded_data = encode(abi_types, values)
+        msg = [value_transfer['sender'], value_transfer['receiver'],
+               value_transfer['amount'], value_transfer['sequence']]
+        encoded_data = encode(abi_types, msg)
         hash_result = Web3.keccak(encoded_data).hex()
         self.assertTrue(hash_result == decoded[0][1])
 
         root, proof = self.parse_merkle_output('cross_chain.log', hash_result)
         self.log.info('  calculated root:      %s', root)
         self.log.info('  calculated proof:     %s', proof)
+        self.assertTrue(block.crossChainTreeHash == root)
 
-        accnt.l1.release_funds(values, [proof], root)
+        accnt.l1.release_funds(msg, [proof], root)
 
     def parse_merkle_output(self, dump_file, hash_result):
         """Get the root and proof of a leaf entry in a tree dump to file. """
