@@ -10,19 +10,18 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         props = Properties()
-        transfer_to = 1000000
-        transfer_back = 4000000
+        transfer = 4000000000000000
 
         accnt = BridgeUser(self, props.account1pk(), props.account1pk(), 'accnt1')
-
-        # send funds from the L1 to the L2
-        self.log.info('Send native from L1 to L2')
-        tx_receipt, _, xchain_msg = accnt.l1.send_native(accnt.l2.account.address, transfer_to)
-        accnt.l2.wait_for_message(xchain_msg)
+        l1_before = accnt.l1.web3.eth.get_balance(accnt.l1.account.address)
+        l2_before = accnt.l2.web3.eth.get_balance(accnt.l2.account.address)
+        self.log.info('  l1_balance:   %s', l1_before)
+        self.log.info('  l2_balance:   %s', l2_before)
 
         # send funds from the L2 to the L1
         self.log.info('Send native from L2 to L1')
-        tx_receipt, value_transfer, _ = accnt.l2.send_native(accnt.l1.account.address, transfer_back)
+        tx_receipt, value_transfer, _ = accnt.l2.send_native(accnt.l1.account.address, transfer)
+        l2_cost = int(tx_receipt.gasUsed) * accnt.l2.web3.eth.gas_price
 
         block = accnt.l2.web3.eth.get_block(tx_receipt.blockNumber)
         decoded = ast.literal_eval(base64.b64decode(block.crossChainTree).decode('utf-8'))
@@ -45,7 +44,20 @@ class PySysTest(TenNetworkTest):
         self.log.info('  calculated proof:     %s', proof)
         self.assertTrue(block.crossChainTreeHash == root)
 
-        accnt.l1.release_funds(msg, [proof], root)
+        tx_receipt = accnt.l1.release_funds(msg, [proof], root)
+        l1_cost = int(tx_receipt.gasUsed) * accnt.l1.web3.eth.gas_price
+        l1_after = accnt.l1.web3.eth.get_balance(accnt.l1.account.address)
+        l2_after = accnt.l2.web3.eth.get_balance(accnt.l2.account.address)
+        self.log.info('  l1_balance:            %s', l1_after)
+        self.log.info('  l2_balance:            %s', l2_after)
+        self.log.info('  l1_cost:               %s', l1_cost)
+        self.log.info('  l2_cost:               %s', l1_cost)
+        self.log.info('  l1_delta (inc):        %s', l1_after-l1_before)
+        self.log.info('  l1_delta (with cost):  %s', l1_after-l1_before+l1_cost)
+        self.log.info('  l2_delta (dec):        %s', l2_before-l2_after)
+        self.log.info('  l2_delta (with cost):  %s', l2_before-l2_after-l2_cost)
+
+        self.assertTrue(l1_after-l1_before+l1_cost == transfer)
 
     def parse_merkle_output(self, dump_file, hash_result):
         """Get the root and proof of a leaf entry in a tree dump to file. """

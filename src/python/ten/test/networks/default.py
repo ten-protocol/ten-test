@@ -1,3 +1,4 @@
+import time
 from web3 import Web3
 from web3.exceptions import TimeExhausted
 from pysys.constants import *
@@ -112,6 +113,7 @@ class DefaultPostLondon:
     def build_transaction(self, test, web3, target, nonce, account, gas_limit, verbose=True, **kwargs):
         """Build the transaction dictionary from the contract constructor or function target."""
         estimate = kwargs['estimate'] if 'estimate' in kwargs else True
+        gas_attempts = int(kwargs['gas_attempts']) if 'gas_attempts' in kwargs else 1
         base_fee_per_gas = web3.eth.get_block('latest').baseFeePerGas
         max_priority_fee_per_gas = web3.to_wei(1, 'gwei')
         max_fee_per_gas = (5 * base_fee_per_gas) + max_priority_fee_per_gas
@@ -126,8 +128,15 @@ class DefaultPostLondon:
             'maxPriorityFeePerGas': max_priority_fee_per_gas  # Priority fee to include the transaction in the block
         }
         if estimate:
-            try: gas_estimate = target.estimate_gas(params)
-            except Exception as e: self.log.warn('Error estimating gas needed, %s' % e.args[0])
+            while gas_attempts > 0:
+                self.log.info(gas_attempts)
+                try:
+                    gas_estimate = target.estimate_gas(params)
+                    break
+                except Exception as e:
+                    self.log.warn('Error estimating gas needed, %s' % e.args[0])
+                    gas_attempts -= 1
+                    time.sleep(5)
 
         if verbose:
             self.log.info('Gas %d, base fee %d WEI, cost %d WEI, balance %.18f ETH',
@@ -200,6 +209,7 @@ class DefaultPreLondon(DefaultPostLondon):
     def build_transaction(self, test, web3, target, nonce, account, gas_limit, verbose=True, **kwargs):
         """Build the transaction dictionary from the contract constructor or function target. """
         estimate = kwargs['estimate'] if 'estimate' in kwargs else True
+        gas_attempts = int(kwargs['gas_attempts']) if 'gas_attempts' in kwargs else 1
         balance = web3.eth.get_balance(account.address)
 
         gas_estimate = gas_limit
@@ -211,8 +221,14 @@ class DefaultPreLondon(DefaultPostLondon):
             'gasPrice': gas_price             # the current gas price
         }
         if estimate:
-            try: gas_estimate = target.estimate_gas(params)
-            except Exception as e: self.log.warn('Error estimating gas needed, %s' % e.args[0])
+            while gas_attempts > 0:
+                try:
+                    gas_estimate = target.estimate_gas(params)
+                    break
+                except Exception as e:
+                    self.log.warn('Error estimating gas needed, %s' % e.args[0])
+                    gas_attempts -= 1
+                    time.sleep(5)
 
         if verbose:
             self.log.info('Gas %d, price %d WEI, cost %d WEI, balance %.18F ETH',
