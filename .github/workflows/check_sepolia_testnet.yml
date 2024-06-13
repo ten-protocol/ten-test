@@ -35,6 +35,12 @@ jobs:
           cd ${{ github.workspace }}/ten-test
           /usr/local/bin/pysys.py run -m ten.sepolia -i health -XITERATIONS_FULL=0 
 
+      - name: 'Run health check tests (dexynth gateway)'
+        if: always()
+        run: |
+          cd ${{ github.workspace }}/ten-test/tests
+          PRIMARY_HOST_HTTP=https://dexynth-gateway.ten.xyz PRIMARY_HOST_WS=wss://dexynth-gateway.ten.xyz /usr/local/bin/pysys.py run -m ten.sepolia gen_cor_040 gen_cor_073  
+
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v3
         if: failure()

@@ -3,8 +3,8 @@
 name: '[Execute] Load uat-testnet'
 run-name: Run uat-testnet load tests
 on:
-#  schedule:
-#    - cron: '0 */2 * * *'
+  schedule:
+    - cron: '0 */2 * * *'
   workflow_dispatch:
 
 jobs:
