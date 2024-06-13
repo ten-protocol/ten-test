@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Bridge - withdraw native funds across the bridge using sendNative and ExtractNativeValue</title>
+        <purpose><![CDATA[
+Uses a non-ephemeral account to send ETH from the L2 to the L1. This is initiated by a sendNative call to the
+Ethereum Bridge, for which the transaction receipt is used to get the block number on the L2 so that the
+xchain merkle tree leafs can be decoded. From this the client can construct their own merkle tree to get the root
+hash and compare with the root hash also included in the block header to validate the correctness of their tree. The
+leaf of the transfer value event can then be created and should match one of the leaf entries. From the leaf hash and the
+merkle tree the proof of inclusion can be constructed. The leaf hash, proof and root are then used to release the
+funds on the L1 via a call to ExtractNativeValue to the management contract. Note that funds cannot be released on the L1
+until the xchain tree is seen ... to do this keep checking the gas to perform the release until it doesn't revert. On
+a local testnet this can take 60 seconds.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>bridge</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

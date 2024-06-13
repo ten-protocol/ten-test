@@ -2,7 +2,7 @@ import time
 from web3._utils.events import EventLogErrorFlags
 from ten.test.contracts.erc20 import ERC20Token
 from ten.test.contracts.bridge import WrappedERC20
-from ten.test.contracts.bridge import ObscuroBridge, EthereumBridge
+from ten.test.contracts.bridge import ObscuroBridge, EthereumBridge, Management
 from ten.test.contracts.bridge import L1MessageBus, L2MessageBus, L1CrossChainMessenger, L2CrossChainMessenger
 from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 from ten.test.utils.properties import Properties
@@ -44,6 +44,17 @@ class BridgeDetails:
         }
         return message
 
+    @classmethod
+    def get_value_transfer_event(cls, log):
+        """Extract the cross chain message from an event log. """
+        message = {
+            'sender': log['args']['sender'],
+            'sequence': log['args']['sequence'],
+            'receiver': log['args']['receiver'],
+            'amount': log['args']['amount']
+        }
+        return message
+
 
 class L1BridgeDetails(BridgeDetails):
     """Abstraction over the L1 side of the bridge for a particular account. """
@@ -55,6 +66,7 @@ class L1BridgeDetails(BridgeDetails):
         bridge = ObscuroBridge(test, web3)
         bus = L1MessageBus(test, web3)
         xchain = L1CrossChainMessenger(test, web3)
+        self.management = Management(test, web3)
         super().__init__(test, web3, account, network, bridge, bus, xchain, name)
         self.tokens = {}
 
@@ -132,8 +144,9 @@ class L1BridgeDetails(BridgeDetails):
         )
         tx_receipt = self.network.tx(self.test, self.web3, build_tx, self.account, persist_nonce=False, timeout=timeout)
 
-        logs = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
-        return tx_receipt, self.get_cross_chain_message(logs[0])
+        value_transfer = self.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
+        log_message = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
+        return tx_receipt, self.get_value_transfer_event(value_transfer[1]), self.get_cross_chain_message(log_message[0])
 
     def send_to_msg_bus(self, amount, timeout=60):
         """Send native currency across the bridge."""
@@ -156,6 +169,13 @@ class L1BridgeDetails(BridgeDetails):
                                            timeout=timeout)
         return tx_receipt
 
+    def release_funds(self, msg, proof, root, timeout=60):
+        """Release funds to an account. """
+        tx_receipt = self.network.transact(self.test, self.web3,
+                                       self.management.contract.functions.ExtractNativeValue(msg, proof, root),
+                                       self.account, gas_limit=self.xchain.GAS_LIMIT, persist_nonce=False,
+                                       timeout=timeout, gas_attempts=10)
+        return tx_receipt
 
 class L2BridgeDetails(BridgeDetails):
     """Abstraction of the L2 side of the bridge for a particular address. """
@@ -214,6 +234,21 @@ class L2BridgeDetails(BridgeDetails):
                                            timeout=timeout)
         logs = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, self.get_cross_chain_message(logs[1])
+
+    def send_native(self, address, amount, timeout=60):
+        """Send native currency across the bridge."""
+        build_tx = self.bridge.contract.functions.sendNative(address).build_transaction(
+            {
+                'gas': 4*21000,
+                'gasPrice': self.web3.eth.gas_price,
+                'value': amount
+            }
+        )
+        tx_receipt = self.network.tx(self.test, self.web3, build_tx, self.account, timeout=timeout)
+
+        value_transfer = self.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
+        log_message = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
+        return tx_receipt, self.get_value_transfer_event(value_transfer[1]), self.get_cross_chain_message(log_message[0])
 
     def relay_message(self, xchain_msg, timeout=60):
         """Relay a cross chain message. """
