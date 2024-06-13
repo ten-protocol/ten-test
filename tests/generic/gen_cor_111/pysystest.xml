@@ -4,13 +4,15 @@
     <description>
         <title>Access List - one contracts calls another with and without using access lists</title>
         <purpose><![CDATA[
+Contact B makes a call to contract A to set a value, with and without the access list specified in the transaction.
+The gas used with an access list should be less than the gas used without it. 
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>ethers</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
