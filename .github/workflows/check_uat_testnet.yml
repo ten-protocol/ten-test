@@ -51,5 +51,5 @@ jobs:
           webhook: ${{ secrets.UAT_TESTNET_HEALTH_WEBHOOK }}
           title: "UAT-testnet health check tests failed"
           description: "UAT-testnet health check"
-          content: "Please investigate"
+          content: "Please investigate <@643461415532756992> <@814873419207409685> <@92361563276591104> <@920586981581393983> <@921049923414261821> <@1034771491436363797> <@639076633994592256> <@398020680966471680> <@216439743947341824>"
           avatar_url: ${{ secrets.AVATAR_URL }}
