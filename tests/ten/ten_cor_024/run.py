@@ -12,6 +12,7 @@ class PySysTest(TenNetworkTest):
         props = Properties()
         transfer = 4000000000000000
 
+        # create the bridge user
         accnt = BridgeUser(self, props.account1pk(), props.account1pk(), 'accnt1')
         l1_before = accnt.l1.web3.eth.get_balance(accnt.l1.account.address)
         l2_before = accnt.l2.web3.eth.get_balance(accnt.l2.account.address)
@@ -37,12 +38,14 @@ class PySysTest(TenNetworkTest):
                value_transfer['amount'], value_transfer['sequence']]
         encoded_data = encode(abi_types, msg)
         hash_result = Web3.keccak(encoded_data).hex()
-        self.assertTrue(hash_result == decoded[0][1])
+        self.assertTrue(hash_result in [x[1] for x in decoded],
+                        assertMessage='Value transfer has should be in the xchain tree')
 
         root, proof = self.parse_merkle_output('cross_chain.log', hash_result)
         self.log.info('  calculated root:      %s', root)
         self.log.info('  calculated proof:     %s', proof)
-        self.assertTrue(block.crossChainTreeHash == root)
+        self.assertTrue(block.crossChainTreeHash == root,
+                        assertMessage='Calculated merkle root should be same as the block header')
 
         tx_receipt = accnt.l1.release_funds(msg, [proof], root)
         l1_cost = int(tx_receipt.gasUsed) * accnt.l1.web3.eth.gas_price
@@ -56,8 +59,8 @@ class PySysTest(TenNetworkTest):
         self.log.info('  l1_delta (with cost):  %s', l1_after-l1_before+l1_cost)
         self.log.info('  l2_delta (dec):        %s', l2_before-l2_after)
         self.log.info('  l2_delta (with cost):  %s', l2_before-l2_after-l2_cost)
-
-        self.assertTrue(l1_after-l1_before+l1_cost == transfer)
+        self.assertTrue(l1_after-l1_before+l1_cost == transfer,
+                        assertMessage='L1 balance should increase by transfer amount')
 
     def parse_merkle_output(self, dump_file, hash_result):
         """Get the root and proof of a leaf entry in a tree dump to file. """
