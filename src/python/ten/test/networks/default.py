@@ -127,6 +127,7 @@ class DefaultPostLondon:
             'maxFeePerGas': max_fee_per_gas,                  # Maximum amount you’re willing to pay
             'maxPriorityFeePerGas': max_priority_fee_per_gas  # Priority fee to include the transaction in the block
         }
+        if 'access_list' in kwargs: params['accessList'] = kwargs['access_list']
         if estimate:
             while gas_attempts > 0:
                 self.log.info(gas_attempts)
@@ -216,6 +217,7 @@ class DefaultPreLondon(DefaultPostLondon):
             'chainId': web3.eth.chain_id,     # the chain id
             'gasPrice': gas_price             # the current gas price
         }
+        if 'access_list' in kwargs: params['accessList'] = kwargs['access_list']
         if estimate:
             while gas_attempts > 0:
                 try:
