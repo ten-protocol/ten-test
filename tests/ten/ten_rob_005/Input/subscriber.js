@@ -1,23 +1,9 @@
-const { ethers } = require("ethers");
+const fs = require('fs')
+const ethers = require('ethers')
+const commander = require('commander')
 
-// Replace with your actual provider URL
-const providerUrl = "https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID";
-const provider = new ethers.JsonRpcProvider(providerUrl);
+require('console-stamp')(console, 'HH:MM:ss')
 
-// Replace with your contract address
-const contractAddress = "YOUR_CONTRACT_ADDRESS";
-
-// Replace with your contract ABI
-const contractABI = [
-    // Event ABIs
-    "event SimpleEvent(uint indexed id, string message, address sender)",
-    "event ArrayEvent(uint indexed id, uint[] numbers, string[] messages)",
-    "event StructEvent(uint indexed id, tuple(uint id, string name, address userAddress) user)",
-];
-
-const contract = new ethers.Contract(contractAddress, contractABI, provider);
-
-// Function to listen to SimpleEvent with filtering
 async function listenToFilteredSimpleEvent(idFilter, senderFilter) {
     const filter = contract.filters.SimpleEvent(idFilter, null, senderFilter);
 
@@ -26,7 +12,6 @@ async function listenToFilteredSimpleEvent(idFilter, senderFilter) {
     });
 }
 
-// Function to listen to ArrayEvent with filtering
 async function listenToFilteredArrayEvent(idFilter) {
     const filter = contract.filters.ArrayEvent(idFilter);
 
@@ -35,9 +20,8 @@ async function listenToFilteredArrayEvent(idFilter) {
     });
 }
 
-// Function to listen to StructEvent with filtering
 async function listenToFilteredStructEvent(idFilter, userAddressFilter) {
-    const filter = contract.filters.StructEvent(idFilter, null);
+    const filter = contract.filters.StructEvent(idFilter);
 
     contract.on(filter, (id, user) => {
         if (user.userAddress === userAddressFilter) {
@@ -46,17 +30,41 @@ async function listenToFilteredStructEvent(idFilter, userAddressFilter) {
     });
 }
 
-// Example usage
-(async () => {
-    // Replace these with your desired filter values
-    const idFilter = 1; // Set to `null` if no filtering on this parameter
-    const senderFilter = "0x1234..."; // Set to `null` if no filtering on this parameter
-    const userAddressFilter = "0xABCD..."; // Set to the user address you want to filter on
+async function listenToFilteredMappingEvent(idFilter, keyFilter) {
+    const filter = contract.filters.MappingEvent(idFilter);
 
-    // Start listening with filters
-    listenToFilteredSimpleEvent(idFilter, senderFilter);
-    listenToFilteredArrayEvent(idFilter);
-    listenToFilteredStructEvent(idFilter, userAddressFilter);
+    contract.on(filter, (id, keys, values) => {
+        const index = keys.indexOf(keyFilter);
+        if (index !== -1) {
+            const value = values[index];
+            console.log(`Filtered MappingEvent - ID: ${id}, Key: ${keyFilter}, Value: ${value}`);
+        }
+    });
+}
 
-    console.log("Listening for filtered events...");
-})();
+commander
+  .version('1.0.0', '-v, --version')
+  .usage('[OPTIONS]...')
+  .option('--network_ws <value>', 'Web socket connection URL to the network')
+  .option('--address <value>', 'Contract address')
+  .option('--contract_abi <value>', 'Contract ABI file')
+  .option('--id_filter <value>', '')
+  .option('--sender_filter <value>', '')
+  .option('--user_address_filter <value>', '')
+  .option('--key_filter <value>', '')
+  .option('--value_filter <value>', '')
+  .parse(process.argv)
+
+const options = commander.opts()
+const provider = new ethers.providers.WebSocketProvider(options.network_ws)
+
+var json = fs.readFileSync(options.contract_abi)
+var abi = JSON.parse(json)
+const contract = new ethers.Contract(options.address, abi, provider)
+const interface = new ethers.utils.Interface(abi)
+
+listenToFilteredSimpleEvent(options.id_filter, options.sender_filter);
+listenToFilteredArrayEvent(options.id_filter);
+listenToFilteredStructEvent(options.id_filter, options.user_address_filter);
+listenToFilteredMappingEvent(options.id_filter, options.key_filter);
+console.log("Listening for filtered events...");
