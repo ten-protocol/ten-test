@@ -1,11 +1,12 @@
-import os, random, string, secrets
+import os, random, string, secrets, re
+from pysys.constants import FAILED
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.emitter import EventEmitter
 
 
 class PySysTest(TenNetworkTest):
     CLIENTS = 10         # number of transactors and subscribers
-    TRANSACTIONS = 50    # number of txs the transactors will perform
+    TRANSACTIONS = 200   # number of txs the transactors will perform
 
     def execute(self):
         # connect to network on the primary gateway  and deploy contract
@@ -27,13 +28,19 @@ class PySysTest(TenNetworkTest):
         funds_needed = 1.1 * self.TRANSACTIONS * (self.gas_price * self.gas_limit)
 
         # setup the transactors and run the subscribers
+        clients = []
         for id in range(0,self.CLIENTS):
             pk, account, network = self.setup_transactor(funds_needed)
+            clients.append((id, pk, account, network))
             self.run_subscriber(network, emitter, account, id)
-            self.run_transactor(id, emitter, pk, network)
 
+        # run the transactors and wait for them to complete
+        for id, pk, account, network in clients:
+            self.run_transactor(id, emitter, pk, network)
         for i in range(self.CLIENTS):
             self.waitForGrep(file='transactor%d.out' % i, expr='Transactor %s completed' % i, timeout=900)
+            self.ratio_failures(file=os.path.join(self.output, 'transactor%d.out' % i))
+
 
     def setup_transactor(self, funds_needed):
         pk = secrets.token_hex(32)
@@ -74,3 +81,14 @@ class PySysTest(TenNetworkTest):
     def randString(self):
         return ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
 
+    def ratio_failures(self, file):
+        ratio = 0
+        regex = re.compile('Ratio failures = (?P<ratio>.*)$', re.M)
+        with open(file, 'r') as fp:
+            for line in fp.readlines():
+                result = regex.search(line)
+                if result is not None:
+                    ratio = float(result.group('ratio'))
+        self.log.info('Ratio of failures is %.2f' % ratio)
+        if ratio > 0.05: self.addOutcome(FAILED, outcomeReason='Failure ratio > 0.05', abortOnError=False)
+        return ratio

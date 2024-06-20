@@ -30,14 +30,14 @@ async function listenToFilteredStructEvent(idFilter, userAddressFilter) {
     });
 }
 
-async function listenToFilteredMappingEvent(idFilter, keyFilter) {
+async function listenToFilteredMappingEvent(idFilter, userAddressFilter) {
     const filter = contract.filters.MappingEvent(idFilter);
 
     contract.on(filter, (id, keys, values) => {
-        const index = keys.indexOf(keyFilter);
+        const index = keys.indexOf(userAddressFilter);
         if (index !== -1) {
             const value = values[index];
-            console.log(`Filtered MappingEvent - ID: ${id}, Key: ${keyFilter}, Value: ${value}`);
+            console.log(`Filtered MappingEvent - ID: ${id}, Key: ${userAddressFilter}, Value: ${value}`);
         }
     });
 }
@@ -63,5 +63,5 @@ const interface = new ethers.utils.Interface(abi)
 listenToFilteredSimpleEvent(options.id_filter, options.address_filter);
 listenToFilteredArrayEvent(options.id_filter);
 listenToFilteredStructEvent(options.id_filter, options.address_filter);
-listenToFilteredMappingEvent(options.id_filter, 'transactor%s'%options.id_filter);
+listenToFilteredMappingEvent(options.id_filter, options.address_filter);
 console.log("Listening for filtered events...");

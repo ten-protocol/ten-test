@@ -31,7 +31,7 @@ def run(id, chainId, web3, account, contract, transactions, gas_limit):
         if choice == 0: target = contract.functions.emitSimpleEvent(int(id), rand_string())
         if choice == 1: target = contract.functions.emitArrayEvent(int(id), [1,2], [rand_string(), rand_string()])
         if choice == 2: target = contract.functions.emitStructEvent(int(id), rand_string())
-        if choice == 3: target = contract.functions.emitMappingEvent(int(id), ['transactor%s'%id], [200])
+        if choice == 3: target = contract.functions.emitMappingEvent(int(id), [account.address], [random.randrange(100)])
         tx = create_signed_tx(account, i, target, gas_price, gas_limit, chainId)
         txs.append((tx, i))
 
