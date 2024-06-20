@@ -1,15 +1,15 @@
 import os, random, string, secrets, re
-from pysys.constants import FAILED
+from pysys.constants import FAILED, PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.emitter import EventEmitter
 
 
 class PySysTest(TenNetworkTest):
     CLIENTS = 10         # number of transactors and subscribers
-    TRANSACTIONS = 200   # number of txs the transactors will perform
+    TRANSACTIONS = 1000  # number of txs the transactors will perform
 
     def execute(self):
-        # connect to network on the primary gateway  and deploy contract
+        # connect to network on the primary gateway and deploy contract
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
         emitter = EventEmitter(self, web3, 100)
@@ -35,12 +35,13 @@ class PySysTest(TenNetworkTest):
             self.run_subscriber(network, emitter, account, id)
 
         # run the transactors and wait for them to complete
-        for id, pk, account, network in clients:
-            self.run_transactor(id, emitter, pk, network)
-        for i in range(self.CLIENTS):
-            self.waitForGrep(file='transactor%d.out' % i, expr='Transactor %s completed' % i, timeout=900)
-            self.ratio_failures(file=os.path.join(self.output, 'transactor%d.out' % i))
+        for id, pk, account, network in clients: self.run_transactor(id, emitter, pk, network)
+        for id, _, _, _ in clients:
+            self.waitForGrep(file='transactor%d.out' % id, expr='Transactor %s completed' % id, timeout=900)
+            self.ratio_failures(file=os.path.join(self.output, 'transactor%d.out' % id))
 
+        # assuming no other errors raised then we have passed
+        self.addOutcome(PASSED)
 
     def setup_transactor(self, funds_needed):
         pk = secrets.token_hex(32)
