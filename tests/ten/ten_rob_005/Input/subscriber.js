@@ -46,13 +46,10 @@ commander
   .version('1.0.0', '-v, --version')
   .usage('[OPTIONS]...')
   .option('--network_ws <value>', 'Web socket connection URL to the network')
-  .option('--address <value>', 'Contract address')
+  .option('--contract_address <value>', 'Contract address')
   .option('--contract_abi <value>', 'Contract ABI file')
   .option('--id_filter <value>', '')
-  .option('--sender_filter <value>', '')
-  .option('--user_address_filter <value>', '')
-  .option('--key_filter <value>', '')
-  .option('--value_filter <value>', '')
+  .option('--address_filter <value>', '')
   .parse(process.argv)
 
 const options = commander.opts()
@@ -60,11 +57,11 @@ const provider = new ethers.providers.WebSocketProvider(options.network_ws)
 
 var json = fs.readFileSync(options.contract_abi)
 var abi = JSON.parse(json)
-const contract = new ethers.Contract(options.address, abi, provider)
+const contract = new ethers.Contract(options.contract_address, abi, provider)
 const interface = new ethers.utils.Interface(abi)
 
-listenToFilteredSimpleEvent(options.id_filter, options.sender_filter);
+listenToFilteredSimpleEvent(options.id_filter, options.address_filter);
 listenToFilteredArrayEvent(options.id_filter);
-listenToFilteredStructEvent(options.id_filter, options.user_address_filter);
-listenToFilteredMappingEvent(options.id_filter, options.key_filter);
+listenToFilteredStructEvent(options.id_filter, options.address_filter);
+listenToFilteredMappingEvent(options.id_filter, 'transactor%s'%options.id_filter);
 console.log("Listening for filtered events...");
