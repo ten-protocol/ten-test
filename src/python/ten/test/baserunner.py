@@ -133,6 +133,7 @@ class TenRunnerPlugin():
                         # as nonces started at zero, 1 tx count should mean last persisted was zero (one less)
                         runner.log.warn("  Resetting persistence for %s, persisted %d, count %d", fn.__name__,
                                         persisted, tx_count, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+                        if (persisted > tx_count-1): nonce_db.delete_from(account.address, self.env, tx_count)
                         nonce_db.insert(account.address, self.env, tx_count-1, 'RESET')
                 runner.log.info('')
 

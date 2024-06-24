@@ -8,6 +8,7 @@ class NoncePersistence:
     SQL_INSERT = "INSERT INTO nonce_db VALUES (?, ?, ?, ?)"
     SQL_UPDATE = "UPDATE nonce_db SET status=? WHERE account=? AND environment=? AND nonce=?"
     SQL_DELETE = "DELETE from nonce_db WHERE account=? AND environment=?"
+    SQL_DELFRO = "DELETE from nonce_db WHERE account=? AND environment=? AND nonce>=?"
     SQL_LATEST = "SELECT nonce FROM nonce_db WHERE account=? AND environment=? ORDER BY nonce DESC LIMIT 1"
     SQL_DELENV = "DELETE from nonce_db WHERE environment=?"
     SQL_ACCNTS = "SELECT DISTINCT account from nonce_db where environment=?"
@@ -58,6 +59,11 @@ class NoncePersistence:
     def delete(self, account, environment):
         """Delete all nonce entries in the persistence for a given account and environment. """
         self.cursor.execute(self.SQL_DELETE, (account, environment))
+        self.connection.commit()
+
+    def delete_from(self, account, environment, nonce):
+        """Delete all nonce entries in the persistence for a given account and environment. """
+        self.cursor.execute(self.SQL_DELFRO, (account, environment, nonce))
         self.connection.commit()
 
     def delete_environment(self, environment):
