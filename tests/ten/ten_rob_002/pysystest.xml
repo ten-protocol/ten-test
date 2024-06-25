@@ -13,7 +13,6 @@ network and ensure that there is no outage.
 
     <classification>
         <groups inherit="true">
-            <group>events</group>
             <group>robustness</group>
         </groups>
         <modes inherit="true">

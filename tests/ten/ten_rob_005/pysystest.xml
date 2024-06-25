@@ -12,6 +12,7 @@
         <groups inherit="true">
             <group>events</group>
             <group>robustness</group>
+            <group>loadtesting</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
