@@ -41,6 +41,7 @@ sleep 30
 
 # connect using given SSH key
 echo "Transferring the install script ... "
-IP=`az vm show -d -g ${group}  -n ${name} --query publicIps -o tsv`
-scp -i ${ssh_key} -o StrictHostKeyChecking=no install.sh tenadmin@$IP:~
+ssh_private=`echo id_rsa.pub | sed 's/.pub//g'`
+IP=`az vm show -d -g ${group} -n ${name} --query publicIps -o tsv`
+scp -i ${ssh_private} -o StrictHostKeyChecking=no install.sh tenadmin@$IP:~
 

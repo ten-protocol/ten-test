@@ -10,7 +10,7 @@ on:
 
 jobs:
   run-check:
-    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-02]
+    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-03]
     steps:
       - name: 'Check out ten-test'
         uses: actions/checkout@v3
