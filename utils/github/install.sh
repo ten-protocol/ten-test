@@ -11,12 +11,13 @@ apt-get install -y nodejs
 npm install console-stamp --global
 npm install web3@1.9.0 --global
 npm install ethers@5.7.2 --global
-npm install commander --global
+npm install commander@11.1.0 --global
 npm install -g ganache
 npm install -g ganache-cli
 apt install -y vim
 apt install -y python3-pip
-python3 -m pip install web3==5.31.3
+python3 -m pip install eth-account==0.10.0
+python3 -m pip install web3==6.13.0
 python3 -m pip install pysys==1.6.1
 python3 -m pip install solc-select
 python3 -m pip install py-solc-x
