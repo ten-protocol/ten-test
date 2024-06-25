@@ -37,7 +37,7 @@ class PySysTest(TenNetworkTest):
         # run the transactors and wait for them to complete
         for id, pk, account, network in clients: self.run_transactor(id, emitter, pk, network)
         for id, _, _, _ in clients:
-            self.waitForGrep(file='transactor%d.out' % id, expr='Transactor %s completed' % id, timeout=900)
+            self.waitForGrep(file='transactor%d.out' % id, expr='Transactor %s completed' % id, timeout=300)
             self.ratio_failures(file=os.path.join(self.output, 'transactor%d.out' % id))
 
         # assuming no other errors raised then we have passed
