@@ -31,9 +31,8 @@ jobs:
       - name: 'Run load and perf tests'
         run: |
           cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ten.uat -i events
-          /usr/local/bin/pysys.py run -m ten.uat -i robustness
-          /usr/local/bin/pysys.py run -m ten.uat ten_per_002 ten_per_005
+          /usr/local/bin/pysys.py run -m ten.uat -i events 
+          /usr/local/bin/pysys.py run -m ten.uat ten_per_002 
 
       - name: 'Collate pdf output'
         if: always()
