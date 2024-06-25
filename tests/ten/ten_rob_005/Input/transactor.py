@@ -41,6 +41,7 @@ def run(id, chainId, web3, account, contract, transactions, gas_limit):
     for tx in txs:
         try:
             receipts.append((web3.eth.send_raw_transaction(tx[0].rawTransaction), tx[1]))
+            time.sleep(0.02)
             stats[0] += 1
         except Exception as e:
             logging.error('Error sending raw transaction, sent = %d', len(receipts))
