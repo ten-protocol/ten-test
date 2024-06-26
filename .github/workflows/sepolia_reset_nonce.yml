@@ -1,20 +1,10 @@
 # Resets the nonce persistence and redeploys the set of persisted contracts that should persist on a
 # given network before being redeployed. The workflow is run manually from a workflow dispatch.
 #
-name: '[System] Reset nonce persistence'
-run-name: Reset persistence  (${{ github.event.inputs.environment }})
+name: '[sepolia] Reset nonce persistence'
+run-name: Reset persistence on sepolia-testnet
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        type: choice
-        description: Environment
-        required: true
-        default: dev-testnet
-        options:
-          - sepolia-testnet
-          - uat-testnet
-          - dev-testnet
 
 jobs:
   reset-persistence:
@@ -38,22 +28,9 @@ jobs:
           ls -l ${{ github.workspace }}/ten-test/artifacts
 
       - name: 'Persistence reset on sepolia-testnet'
-        if: ${{ github.event.inputs.environment == 'sepolia-testnet' }}
         run: |
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.sepolia persistence_reset
-
-      - name: 'Persistence reset on uat-testnet'
-        if: ${{ github.event.inputs.environment == 'uat-testnet' }}
-        run: |
-          cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.uat persistence_reset
-
-      - name: 'Persistence reset on dev-testnet'
-        if: ${{ github.event.inputs.environment == 'dev-testnet' }}
-        run: |
-          cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.dev persistence_reset
 
       - name: 'Upload output'
         uses: actions/upload-artifact@v3

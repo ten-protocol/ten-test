@@ -1,19 +1,10 @@
-# Run a set of E2E tests on a previously deployed ten network (dev-testnet, uat-testnet or sepolia-testnet).
+# Run a set of E2E tests on sepolia-testnet
 #
-name: '[Execute] Tests against remote network'
-run-name: Run remote tests (${{ github.event_name }} ${{ github.event.inputs.environment }} )
+name: '[sepolia] Run remote tests'
+run-name: Run tests against sepolia-testnet
 on:
   workflow_dispatch:
     inputs:
-      environment:
-        type: choice
-        description: Environment
-        required: true
-        default: dev-testnet
-        options:
-          - sepolia-testnet
-          - uat-testnet
-          - dev-testnet
       arguments:
         description: 'Arguments to the pysys run'
         required: true
@@ -56,26 +47,9 @@ jobs:
           ls -l ${{ github.workspace }}/ten-test/artifacts   
 
       - name: 'Run tests on sepolia-testnet on a workflow_dispatch'
-        if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.environment == 'sepolia-testnet') }}
         run: |
           cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ten.sepolia -r ${{ github.event.inputs.arguments }}
-
-      - name: 'Run tests on uat-testnet on a workflow_dispatch'
-        if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.environment == 'uat-testnet') }}
-        run: |
-          cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ten.uat -r ${{ github.event.inputs.arguments }}
-          cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.uat -r check_performance
-
-      - name: 'Run tests on dev-testnet on a workflow_dispatch'
-        if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.environment == 'dev-testnet') }}
-        run: |
-          cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ten.dev -r ${{ github.event.inputs.arguments }}
-          cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.dev -r check_performance
 
       - name: 'Collate pdf output'
         if: always()

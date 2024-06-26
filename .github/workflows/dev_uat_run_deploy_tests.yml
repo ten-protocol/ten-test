@@ -1,16 +1,14 @@
-# Run tests on a new deployment or upgrade of sepolia-testnet, uat-testnet or dev-testnet. The workflow is only triggered
-# on a repository dispatch sent by the deployment of the faucet. For dev-testnet full tests will be run with a persistence
-# if a new deployment. For testnet only a persistence reset will be performed on a new deployment.
+# Run tests on a new deployment or upgrade of uat-testnet or dev-testnet
 #
-name: '[Execute] Tests on network deployment'
-run-name: Run deploy tests (${{ github.event.action }})
+name: '[dev/uat] Run deploy tests'
+run-name: Run deploy tests on uat/dev (${{ github.event.action }})
 on:
   repository_dispatch:
     types: [ uat_testnet_deployed, uat_testnet_upgraded, dev_testnet_deployed, dev_testnet_upgraded ]
 
 jobs:
   test-run:
-    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-02]
+    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-03]
     steps:
       - name: 'Check out ten-test'
         uses: actions/checkout@v3
@@ -32,12 +30,6 @@ jobs:
       - name: 'Sleep to allow network to come up'
         run: |
           sleep 60  
-
-      - name: 'Run tests on sepolia-testnet on a repository_dispatch trigger of a new deployment'
-        if: ${{ (github.event_name == 'repository_dispatch') && (github.event.action == 'sepolia_testnet_deployed') }}
-        run: |
-          cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.sepolia persistence_reset
 
       - name: 'Run tests on uat-testnet on a repository_dispatch trigger of a new deployment'
         if: ${{ (github.event_name == 'repository_dispatch') && (github.event.action == 'uat_testnet_deployed') }}

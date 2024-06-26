@@ -1,6 +1,6 @@
 # Check key balances on Sepolia to determine profits
 #
-name: '[Monitor] Check sepolia-testnet profits'
+name: '[sepolia] Check profits'
 run-name: Check sepolia-testnet profits
 on:
   schedule:

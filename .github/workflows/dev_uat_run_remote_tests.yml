@@ -1,0 +1,98 @@
+# Run a set of E2E tests on uat-testnet or dev-testnet
+#
+name: '[dev/uat] Run remote tests'
+run-name: Run remote tests on dev/uat (${{ github.event_name }} ${{ github.event.inputs.environment }} )
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: Environment
+        required: true
+        default: dev-testnet
+        options:
+          - uat-testnet
+          - dev-testnet
+      arguments:
+        description: 'Arguments to the pysys run'
+        required: true
+        default: '-e skip -e performance'
+      release:
+        type: choice
+        description: 'The release version of testnet'
+        required: true
+        default: main
+        options:
+          - main
+          - releases/v0.24
+          - releases/v0.23
+
+jobs:
+  test-run:
+    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-03]
+    steps:
+      - name: Set the variables
+        env:
+          DEFAULT_VERSION: 'main'
+        run: echo "VERSION=${{ github.event.inputs.release || env.DEFAULT_VERSION }}" >> $GITHUB_ENV
+
+      - name: 'Check out ten-test'
+        uses: actions/checkout@v3
+        with:
+          path: ./ten-test
+
+      - name: 'Check out go-ten code'
+        uses: actions/checkout@v3
+        with:
+          repository: ten-protocol/go-ten
+          path: ./go-ten
+          ref: ${{env.VERSION}}
+
+      - name: 'Build required artifacts for running tests'
+        run: |
+          cd ${{ github.workspace }}/ten-test
+          ./get_artifacts.sh
+          ls -l ${{ github.workspace }}/ten-test/artifacts   
+
+      - name: 'Run tests on uat-testnet on a workflow_dispatch'
+        if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.environment == 'uat-testnet') }}
+        run: |
+          cd ${{ github.workspace }}/ten-test/tests
+          /usr/local/bin/pysys.py run -m ten.uat -r ${{ github.event.inputs.arguments }}
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ten.uat -r check_performance
+
+      - name: 'Run tests on dev-testnet on a workflow_dispatch'
+        if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.environment == 'dev-testnet') }}
+        run: |
+          cd ${{ github.workspace }}/ten-test/tests
+          /usr/local/bin/pysys.py run -m ten.dev -r ${{ github.event.inputs.arguments }}
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ten.dev -r check_performance
+
+      - name: 'Collate pdf output'
+        if: always()
+        run: |
+          cd ${{ github.workspace }}/ten-test
+          pdftk $(find . -name \*.pdf | sort) cat output results_graphs.pdf || true
+
+      - name: 'Upload testcase output'
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: test-artifact
+          path: |
+            ${{ github.workspace }}/ten-test/**/Output
+            !${{ github.workspace }}/ten-test/**/node_modules
+          retention-days: 1
+
+      - name: 'Upload performance output'
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: performance-artifact
+          path: |
+            ${{ github.workspace }}/ten-test/results_graphs.pdf
+          if-no-files-found: ignore
+          retention-days: 1
+

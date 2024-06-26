@@ -1,6 +1,6 @@
 # Sends any funds from the L1 deployment account to the gnosis safe wallet.
 #
-name: '[System] Send deployer funds to wallet'
+name: '[system] Send deployer funds to wallet'
 run-name: Send L1 deployer funds to safe wallet
 on:
   workflow_dispatch:
