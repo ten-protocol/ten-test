@@ -174,7 +174,7 @@ class L1BridgeDetails(BridgeDetails):
         tx_receipt = self.network.transact(self.test, self.web3,
                                        self.management.contract.functions.ExtractNativeValue(msg, proof, root),
                                        self.account, gas_limit=self.xchain.GAS_LIMIT, persist_nonce=False,
-                                       timeout=timeout, gas_attempts=10)
+                                       timeout=timeout, gas_attempts=20)
         return tx_receipt
 
 class L2BridgeDetails(BridgeDetails):
