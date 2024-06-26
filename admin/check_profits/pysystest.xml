@@ -15,7 +15,6 @@ change in time with the account funds, and the overall profit and loss.
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
-            <mode>ten.local</mode>
         </modes>
     </classification>
 

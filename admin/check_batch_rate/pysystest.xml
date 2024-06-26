@@ -15,9 +15,6 @@ increase is not greater than a threshold value.
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
-            <mode>ten.uat</mode>
-            <mode>ten.dev</mode>
-            <mode>ten.local</mode>
         </modes>
     </classification>
 
