@@ -6,7 +6,7 @@ from ten.test.contracts.emitter import EventEmitter
 
 class PySysTest(TenNetworkTest):
     CLIENTS = 10         # number of transactors and subscribers
-    TRANSACTIONS = 200   # number of txs the transactors will perform
+    TRANSACTIONS = 250   # number of txs the transactors will perform
 
     def execute(self):
         # connect to network on the primary gateway and deploy contract
