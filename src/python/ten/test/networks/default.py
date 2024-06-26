@@ -130,7 +130,6 @@ class DefaultPostLondon:
         if 'access_list' in kwargs: params['accessList'] = kwargs['access_list']
         if estimate:
             while gas_attempts > 0:
-                self.log.info(gas_attempts)
                 try:
                     gas_estimate = target.estimate_gas(params)
                     break
