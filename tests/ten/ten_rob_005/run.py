@@ -1,5 +1,5 @@
 import os, random, string, secrets, re
-from pysys.constants import FAILED, PASSED
+from pysys.constants import FAILED, PASSED, FOREGROUND
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.emitter import EventEmitter
 
@@ -29,15 +29,14 @@ class PySysTest(TenNetworkTest):
 
         # setup the transactors and run the subscribers
         clients = []
-        for id in range(0,self.CLIENTS):
+        for id in range(0, self.CLIENTS):
             pk, account, network = self.setup_transactor(funds_needed)
             clients.append((id, pk, account, network))
             self.run_subscriber(network, emitter, account, id)
 
-        # run the transactors and wait for them to complete
-        for id, pk, account, network in clients: self.run_transactor(id, emitter, pk, network)
-        for id, _, _, _ in clients:
-            self.waitForGrep(file='transactor%d.out' % id, expr='Transactor %s completed' % id, timeout=300)
+        # run the transactors serially in the foreground
+        for id, pk, account, network in clients:
+            self.run_transactor(id, emitter, pk, network)
             self.ratio_failures(file=os.path.join(self.output, 'transactor%d.out' % id))
 
         # assuming no other errors raised then we have passed
@@ -63,8 +62,7 @@ class PySysTest(TenNetworkTest):
         args.extend(['--transactions', '%d' % self.TRANSACTIONS])
         args.extend(['--id', '%d' % id])
         args.extend(['--gas_limit', '%d' % self.gas_limit])
-        self.run_python(script, stdout, stderr, args)
-        self.waitForSignal(file=stdout, expr='Starting transactor %s' % id)
+        self.run_python(script, stdout, stderr, args, state=FOREGROUND)
 
     def run_subscriber(self, network, emitter, account, id_filter):
         stdout = os.path.join(self.output, 'subscriber%d.out' % id_filter)

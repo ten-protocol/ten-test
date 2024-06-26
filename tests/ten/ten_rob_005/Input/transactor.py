@@ -35,25 +35,21 @@ def run(id, chainId, web3, account, contract, transactions, gas_limit):
         tx = create_signed_tx(account, i, target, gas_price, gas_limit, chainId)
         txs.append((tx, i))
 
-    logging.info('Sending transactions to the network')
+    logging.info('Bulk sending transactions to the network')
     stats = [0,0]
     receipts = []
     for tx in txs:
         try:
-            tx_hash = web3.eth.send_raw_transaction(tx[0].rawTransaction)
-            tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash.hex(), timeout=60, poll_latency=0.05)
-            if tx_receipt.status == 1:
-                logging.info('Transaction successful')
-                stats[0] += 1
-            else:
-                logging.error('Transaction failed')
-                stats[1] += 1
+            receipts.append((web3.eth.send_raw_transaction(tx[0].rawTransaction), tx[1]))
+            stats[0] += 1
         except Exception as e:
             logging.error('Error sending raw transaction, sent = %d', len(receipts))
             logging.error('Exception is', e)
             stats[1] += 1
     logging.warning('Ratio failures = %.2f', float(stats[1]) / sum(stats))
 
+    logging.info('Waiting for last transaction %s', receipts[-1][0].hex())
+    web3.eth.wait_for_transaction_receipt(receipts[-1][0], timeout=900)
     logging.info('Transactor %s completed', id)
     logging.shutdown()
 
