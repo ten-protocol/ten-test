@@ -1,6 +1,6 @@
 # Builds a local testnet and runs a set of merge tests
 #
-name: '[local] Run merge tests'
+name: '[locally] Run merge tests'
 run-name: Run merge tests for PR ${{ github.event.client_payload.number }} by @${{ github.event.client_payload.owner }}
 on:
   repository_dispatch:
