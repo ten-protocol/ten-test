@@ -1,36 +1,37 @@
-# Runs the tests through ganache to aid in debugging.
+# Run a set of robustness tests on uat-testnet on a schedule
 #
-name: '[Debug] Tests for debugging'
-run-name: Run debug tests (${{ github.event_name }})
+name: '[uat] Run load'
+run-name: Run uat-testnet load tests
 on:
+  schedule:
+    - cron: '*/15 * * * *'
   workflow_dispatch:
-    inputs:
-      mode:
-        type: choice
-        description: 'Mode to run the tests in'
-        required: true
-        default: ganache
-        options:
-          - ganache
-          - sepolia
-      arguments:
-        description: 'Arguments to the pysys run'
-        required: true
-        default: '-e skip'
 
 jobs:
-  test-run:
-    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-01]
+  run-check:
+    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-03]
     steps:
       - name: 'Check out ten-test'
         uses: actions/checkout@v3
         with:
           path: ./ten-test
 
-      - name: 'Run tests'
+      - name: 'Check out go-ten code'
+        uses: actions/checkout@v3
+        with:
+          repository: ten-protocol/go-ten
+          path: ./go-ten
+
+      - name: 'Build required artifacts for running tests'
+        run: |
+          cd ${{ github.workspace }}/ten-test
+          ./get_artifacts.sh
+          ls -l ${{ github.workspace }}/ten-test/artifacts   
+
+      - name: 'Run load and perf tests'
         run: |
           cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.mode }} -r ${{ github.event.inputs.arguments }}
+          /usr/local/bin/pysys.py run -m ten.uat -i remote_load -c 5 
 
       - name: 'Collate pdf output'
         if: always()
@@ -57,3 +58,5 @@ jobs:
             ${{ github.workspace }}/ten-test/results_graphs.pdf
           if-no-files-found: ignore
           retention-days: 1
+
+

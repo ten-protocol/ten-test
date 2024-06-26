@@ -1,0 +1,64 @@
+# Resets the nonce persistence on dev-testnet or uat-testnet
+#
+name: '[dev/uat] Reset nonce persistence'
+run-name: Reset persistence on dev/uat (${{ github.event.inputs.environment }})
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: Environment
+        required: true
+        default: dev-testnet
+        options:
+          - uat-testnet
+          - dev-testnet
+
+jobs:
+  reset-persistence:
+    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-03]
+    steps:
+      - name: 'Check out ten-test'
+        uses: actions/checkout@v3
+        with:
+          path: ./ten-test
+
+      - name: 'Check out go-ten code'
+        uses: actions/checkout@v3
+        with:
+          repository: ten-protocol/go-ten
+          path: ./go-ten
+
+      - name: 'Build artifacts'
+        run: |
+          cd ${{ github.workspace }}/go-ten/tools/walletextension/main
+          go build -o ${{ github.workspace }}/ten-test/artifacts/wallet_extension/wallet_extension
+          ls -l ${{ github.workspace }}/ten-test/artifacts
+
+      - name: 'Persistence reset on sepolia-testnet'
+        if: ${{ github.event.inputs.environment == 'sepolia-testnet' }}
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ten.sepolia persistence_reset
+
+      - name: 'Persistence reset on uat-testnet'
+        if: ${{ github.event.inputs.environment == 'uat-testnet' }}
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ten.uat persistence_reset
+
+      - name: 'Persistence reset on dev-testnet'
+        if: ${{ github.event.inputs.environment == 'dev-testnet' }}
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ten.dev persistence_reset
+
+      - name: 'Upload output'
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: test-artifact
+          path: |
+            ${{ github.workspace }}/ten-test/**/Output
+            !${{ github.workspace }}/ten-test/**/node_modules
+          retention-days: 1

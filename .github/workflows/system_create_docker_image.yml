@@ -1,8 +1,6 @@
-# Build a docker image of the e2e tests and push it to the azure docker registry. Runs either from a workflow dispatch,
-# or when a PR is merged to main. You can specify the tag for the version required (e.g. 0.19 for the releases/v0.19
-# branch) or latest for main. When run on a merge to main latest is always used.  
+# Build a docker image of the e2e tests and push it to the azure docker registry
 #
-name: '[System] Create docker image'
+name: '[system] Create docker image'
 run-name: Create docker image (${{ github.event_name }})
 on:
   pull_request:

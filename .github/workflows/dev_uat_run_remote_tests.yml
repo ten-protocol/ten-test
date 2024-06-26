@@ -1,7 +1,7 @@
-# Run a set of E2E tests on a previously deployed ten network (dev-testnet, uat-testnet or sepolia-testnet).
+# Run a set of tests on uat-testnet or dev-testnet
 #
-name: '[Execute] Tests against remote network'
-run-name: Run remote tests (${{ github.event_name }} ${{ github.event.inputs.environment }} )
+name: '[dev/uat] Run remote tests'
+run-name: Run remote tests on dev/uat (${{ github.event_name }} ${{ github.event.inputs.environment }} )
 on:
   workflow_dispatch:
     inputs:
@@ -11,7 +11,6 @@ on:
         required: true
         default: dev-testnet
         options:
-          - sepolia-testnet
           - uat-testnet
           - dev-testnet
       arguments:
@@ -30,7 +29,7 @@ on:
 
 jobs:
   test-run:
-    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-02]
+    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-03]
     steps:
       - name: Set the variables
         env:
@@ -54,12 +53,6 @@ jobs:
           cd ${{ github.workspace }}/ten-test
           ./get_artifacts.sh
           ls -l ${{ github.workspace }}/ten-test/artifacts   
-
-      - name: 'Run tests on sepolia-testnet on a workflow_dispatch'
-        if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.environment == 'sepolia-testnet') }}
-        run: |
-          cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ten.sepolia -r ${{ github.event.inputs.arguments }}
 
       - name: 'Run tests on uat-testnet on a workflow_dispatch'
         if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.environment == 'uat-testnet') }}

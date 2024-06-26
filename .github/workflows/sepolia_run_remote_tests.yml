@@ -1,16 +1,33 @@
-# Run a set of robustness tests on uat-testnet on a schedule
+# Run a set of tests on sepolia-testnet
 #
-name: '[Execute] Load uat-testnet'
-run-name: Run uat-testnet load tests
+name: '[sepolia] Run remote tests'
+run-name: Run remote tests on sepolia-testnet
 on:
-  schedule:
-    - cron: '*/15 * * * *'
   workflow_dispatch:
+    inputs:
+      arguments:
+        description: 'Arguments to the pysys run'
+        required: true
+        default: '-e skip -e performance'
+      release:
+        type: choice
+        description: 'The release version of testnet'
+        required: true
+        default: main
+        options:
+          - main
+          - releases/v0.24
+          - releases/v0.23
 
 jobs:
-  run-check:
-    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-03]
+  test-run:
+    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-02]
     steps:
+      - name: Set the variables
+        env:
+          DEFAULT_VERSION: 'main'
+        run: echo "VERSION=${{ github.event.inputs.release || env.DEFAULT_VERSION }}" >> $GITHUB_ENV
+
       - name: 'Check out ten-test'
         uses: actions/checkout@v3
         with:
@@ -21,6 +38,7 @@ jobs:
         with:
           repository: ten-protocol/go-ten
           path: ./go-ten
+          ref: ${{env.VERSION}}
 
       - name: 'Build required artifacts for running tests'
         run: |
@@ -28,10 +46,10 @@ jobs:
           ./get_artifacts.sh
           ls -l ${{ github.workspace }}/ten-test/artifacts   
 
-      - name: 'Run load and perf tests'
+      - name: 'Run tests on sepolia-testnet on a workflow_dispatch'
         run: |
           cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ten.uat -i remote_load -c 5 
+          /usr/local/bin/pysys.py run -m ten.sepolia -r ${{ github.event.inputs.arguments }}
 
       - name: 'Collate pdf output'
         if: always()
@@ -58,5 +76,4 @@ jobs:
             ${{ github.workspace }}/ten-test/results_graphs.pdf
           if-no-files-found: ignore
           retention-days: 1
-
 

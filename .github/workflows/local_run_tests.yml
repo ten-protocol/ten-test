@@ -1,61 +1,44 @@
-# Builds a local testnet and runs a set of E2E tests. Is run via a repository dispatch when a PR is merged down to
-# main in the go-ten repo
+# Builds a local testnet and runs a set of tests.
 #
-name: '[Execute] Tests on PR merge'
-run-name: Run merge tests for PR ${{ github.event.client_payload.number }} by @${{ github.event.client_payload.owner }}
+name: '[Local] Run tests'
+run-name: Run local tests (${{ github.event_name }})
 on:
-  repository_dispatch:
-    types: [merged_pull_request]
+  schedule:
+    - cron: '10 2 * * *'
+  workflow_dispatch:
+    inputs:
+      target_branch:
+        description: 'Branch of go-ten to run against'
+        required: true
+        default: main
+      arguments:
+        description: 'Arguments to the pysys run'
+        required: true
+        default: '-e skip'
 
 jobs:
   test-run:
     runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-01]
     steps:
-      - name: 'Map IDs for ObscuroLabs'
-        uses: kanga333/variable-mapper@master
-        with:
-          key: "${{ github.event.client_payload.owner }}"
-          map: |
-            {
-              "StefanIliev545": {
-                "discord_id": "1034771491436363797"
-              },
-              "BedrockSquirrel": {
-                "discord_id": "92361563276591104"
-              },
-              "moraygrieve": {
-                "discord_id": "814873419207409685"
-              },
-              "tudor-malene": {
-                "discord_id": "921049923414261821"
-              },
-              "zkokelj": {
-                "discord_id": "639076633994592256"
-              },
-              "anixon604": {
-                "discord_id": "643461415532756992"
-              },
-              "badgersrus": {
-                "discord_id": "920586981581393983"
-              },
-              "Jennievon": {
-                "discord_id": "902910727948492840"
-              },
-              ".*": {
-                "discord_id": "814873419207409685"
-              }
-            }
-
       - name: 'Check out ten-test'
         uses: actions/checkout@v3
         with:
           path: ./ten-test
 
-      - name: 'Check out go-ten code'
+      - name: 'Check out go-ten code on schedule trigger'
+        if: ${{ github.event_name == 'schedule' }}
         uses: actions/checkout@v3
         with:
           repository: ten-protocol/go-ten
           path: ./go-ten
+
+      - name: 'Check out go-ten code on workflow dispatch'
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        uses: actions/checkout@v3
+        with:
+          repository: ten-protocol/go-ten
+          path: ./go-ten
+          ref: ${{ github.event.inputs.target_branch }}
 
       - name: 'Docker clean containers and images before the test'
         run: |
@@ -66,7 +49,7 @@ jobs:
       - name: 'Build docker containers'
         run: |
           cd ${{ github.workspace }}/go-ten/testnet
-          ./testnet-local-build_images.sh  
+          ./testnet-local-build_images.sh 
 
       - name: 'Start up testnet'
         run: |
@@ -86,34 +69,32 @@ jobs:
           ./get_artifacts.sh
           ls -l ${{ github.workspace }}/ten-test/artifacts   
 
-      - name: 'Do a persistence reset for nonce and contracts'
+      - name: 'Do a persistence reset'
         run: |
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.local persistence_reset
 
-      - name: 'Run tests'
+      - name: 'Run tests on workflow dispatch'
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ten.local -r -e skip -e persistence -e performance -e robustness
+          /usr/local/bin/pysys.py run -m ten.local -r ${{ github.event.inputs.arguments }}
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ten.local -r check_performance
 
-      - name: 'Discord notification'
-        if: success()
-        uses: sarisia/actions-status-discord@v1
-        with:
-          webhook: ${{ secrets.CONT_INT_WEBHOOK }}
-          title: "Merge tests for PR ${{ github.event.client_payload.number }} by @${{ github.event.client_payload.owner }} passed"
-          description: "Local testnet tests on PR merge"
-          avatar_url: ${{ secrets.AVATAR_URL }}
+      - name: 'Run tests on schedule'
+        if: ${{ github.event_name == 'schedule' }}
+        run: |
+          cd ${{ github.workspace }}/ten-test/tests
+          /usr/local/bin/pysys.py run -m ten.local -r -e skip -e persistence 
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ten.local -r check_performance
 
-      - name: 'Discord notification'
-        if: failure()
-        uses: sarisia/actions-status-discord@v1
-        with:
-          webhook: ${{ secrets.CONT_INT_WEBHOOK }}
-          title: "Merge tests for PR ${{ github.event.client_payload.number }} by @${{ github.event.client_payload.owner }} failed"
-          description: "Local testnet tests on PR merge"
-          content: "Please investigate <@${{ env.discord_id }}>"
-          avatar_url: ${{ secrets.AVATAR_URL }}
+      - name: 'Collate pdf output'
+        if: always()
+        run: |
+          cd ${{ github.workspace }}/ten-test
+          pdftk $(find . -name \*.pdf | sort) cat output results_graphs.pdf || true
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v3
@@ -141,9 +122,20 @@ jobs:
             ${{ github.workspace }}/go-ten/*.out
           retention-days: 1
 
+      - name: 'Upload performance output'
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: performance-artifact
+          path: |
+            ${{ github.workspace }}/ten-test/results_graphs.pdf
+          if-no-files-found: ignore
+          retention-days: 1
+          
       - name: 'Docker clean containers and images after the test'
         if: always()
         run: |
           for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
           docker system prune -af --volumes
           for i in `docker volume ls --filter dangling=true -q`; do docker volume rm $i; done
+
