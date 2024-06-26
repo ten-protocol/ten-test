@@ -1,4 +1,4 @@
-# Sends any funds from the L1 deployment account to the gnosis safe wallet.
+# Send any funds from the L1 deployment account to the gnosis safe wallet
 #
 name: '[system] Send deployer funds to wallet'
 run-name: Send L1 deployer funds to safe wallet

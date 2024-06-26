@@ -1,4 +1,4 @@
-# Performs any clean up or health checks on the VM runner 02
+# Perform clean up or health checks on the VM runner 03
 #
 name: '[system] Clean gh-runner-03'
 run-name: Cleaning runner 03 (${{ github.event_name }})

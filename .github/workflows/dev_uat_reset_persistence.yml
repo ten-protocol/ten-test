@@ -1,4 +1,4 @@
-# Resets the nonce persistence on dev-testnet or uat-testnet
+# Reset the nonce persistence on dev-testnet or uat-testnet
 #
 name: '[dev/uat] Reset persistence'
 run-name: Reset persistence on dev/uat (${{ github.event.inputs.environment }})

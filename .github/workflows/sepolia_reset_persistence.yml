@@ -1,5 +1,4 @@
-# Resets the nonce persistence and redeploys the set of persisted contracts that should persist on a
-# given network before being redeployed. The workflow is run manually from a workflow dispatch.
+# Reset the nonce persistence on sepolia-testnet
 #
 name: '[sepolia] Reset persistence'
 run-name: Reset persistence on sepolia-testnet

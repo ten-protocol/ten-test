@@ -1,4 +1,4 @@
-# Check key balances on Sepolia to determine profits
+# Check key balances on sepolia-testnet to determine profits
 #
 name: '[sepolia] Check profits'
 run-name: Check sepolia-testnet profits
