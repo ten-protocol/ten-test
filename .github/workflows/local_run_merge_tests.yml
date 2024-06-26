@@ -1,4 +1,4 @@
-# Builds a local testnet and runs a set of E2E tests
+# Builds a local testnet and runs a set of merge tests
 #
 name: '[local] Run tests on PR merge'
 run-name: Run merge tests for PR ${{ github.event.client_payload.number }} by @${{ github.event.client_payload.owner }}

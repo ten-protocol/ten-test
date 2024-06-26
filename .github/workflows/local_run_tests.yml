@@ -1,4 +1,4 @@
-# Builds a local testnet and runs a set of E2E tests.
+# Builds a local testnet and runs a set of tests.
 #
 name: '[Local] Run tests'
 run-name: Run local tests (${{ github.event_name }})

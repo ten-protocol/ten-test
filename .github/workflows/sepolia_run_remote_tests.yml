@@ -1,7 +1,7 @@
-# Run a set of E2E tests on sepolia-testnet
+# Run a set of tests on sepolia-testnet
 #
 name: '[sepolia] Run remote tests'
-run-name: Run tests against sepolia-testnet
+run-name: Run remote tests on sepolia-testnet
 on:
   workflow_dispatch:
     inputs:

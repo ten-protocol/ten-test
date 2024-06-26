@@ -1,4 +1,4 @@
-# Run a set of E2E tests on uat-testnet or dev-testnet
+# Run a set of tests on uat-testnet or dev-testnet
 #
 name: '[dev/uat] Run remote tests'
 run-name: Run remote tests on dev/uat (${{ github.event_name }} ${{ github.event.inputs.environment }} )

@@ -1,4 +1,4 @@
-# Performs operations on a new sepolia-testnet deployment or upgrade
+# Run tests on a new deployment or upgrade of sepolia-testnet
 #
 name: '[sepolia] Run deploy tests'
 run-name: Sepolia-testnet deployment or upgrade
