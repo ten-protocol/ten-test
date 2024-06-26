@@ -1,6 +1,6 @@
 # Run a set of load on uat-testnet on a schedule
 #
-name: '[dev/uat] Run load'
+name: '[dev/uat] Run load tests'
 run-name: Run uat-testnet load tests
 on:
   schedule:
