@@ -1,6 +1,6 @@
 # Builds a local testnet and runs a set of tests.
 #
-name: '[Local] Run tests'
+name: '[local] Run tests'
 run-name: Run local tests (${{ github.event_name }})
 on:
   schedule:
