@@ -16,7 +16,7 @@ class PySysTest(TenNetworkTest):
         emitter.deploy(network, account)
 
         # estimate how much gas each transactor will need
-        rstr = self.randString()
+        rstr = self.rand_str()
         self.chain_id = network.chain_id()
         self.gas_price = web3.eth.gas_price
         params = {'from': account.address, 'chainId': web3.eth.chain_id, 'gasPrice': self.gas_price}
@@ -33,6 +33,9 @@ class PySysTest(TenNetworkTest):
             pk, account, network = self.setup_transactor(funds_needed)
             clients.append((id, pk, account, network))
             self.run_subscriber(network, emitter, account, id)
+
+        # start the poller
+        self.run_poller(network, emitter)
 
         # run the transactors serially in the foreground
         for id, pk, account, network in clients:
@@ -77,7 +80,17 @@ class PySysTest(TenNetworkTest):
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Listening for filtered events...', timeout=10)
 
-    def randString(self):
+    def run_poller(self, network, emitter):
+        stdout = os.path.join(self.output, 'poller.out')
+        stderr = os.path.join(self.output, 'poller.err')
+        script = os.path.join(self.input, 'poller.js')
+        args = []
+        args.extend(['--network_ws', network.connection_url(web_socket=True)])
+        args.extend(['--contract_address', '%s' % emitter.address])
+        args.extend(['--contract_abi', '%s' % emitter.abi_path])
+        self.run_javascript(script, stdout, stderr, args)
+
+    def rand_str(self):
         return ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
 
     def ratio_failures(self, file):
