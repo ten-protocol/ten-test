@@ -1,9 +1,9 @@
 import os
-from ten.test.basetest import TenNetworkTest
+from ten.test.basetest import GenericNetworkTest
 from ten.test.contracts.emitter import EventEmitter
 
 
-class PySysTest(TenNetworkTest):
+class PySysTest(GenericNetworkTest):
 
     def execute(self):
         # connect to network on the primary gateway and deploy contract

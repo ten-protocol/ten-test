@@ -106,15 +106,3 @@ class PySysTest(TenNetworkTest):
 
     def rand_str(self):
         return ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
-
-    def ratio_failures(self, file):
-        ratio = 0
-        regex = re.compile('Ratio failures = (?P<ratio>.*)$', re.M)
-        with open(file, 'r') as fp:
-            for line in fp.readlines():
-                result = regex.search(line)
-                if result is not None:
-                    ratio = float(result.group('ratio'))
-        self.log.info('Ratio of failures is %.2f' % ratio)
-        if ratio > 0.05: self.addOutcome(FAILED, outcomeReason='Failure ratio > 0.05', abortOnError=False)
-        return ratio

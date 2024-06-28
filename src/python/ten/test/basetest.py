@@ -1,9 +1,9 @@
-import os, copy, sys, json, base64
+import os, copy, sys, json, base64, re
 import threading, requests
 from web3 import Web3
 from pathlib import Path
 from pysys.basetest import BaseTest
-from pysys.constants import PROJECT, BACKGROUND
+from pysys.constants import PROJECT, BACKGROUND, FAILED
 from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
 from ten.test.persistence.nonce import NoncePersistence
@@ -406,6 +406,20 @@ class TenNetworkTest(GenericNetworkTest):
         return None
 
     def post(self, data):
+        """Post to the node host. """
         self.MSG_ID += 1
         server = 'http://%s:%s' % (Properties().node_host(self.env, self.NODE_HOST), Properties().node_port_http(self.env))
         return requests.post(server, json=data)
+
+    def ratio_failures(self, file, threshold=0.05):
+        """Search through a log for failure ratios and fail if above a threshold. """
+        ratio = 0
+        regex = re.compile('Ratio failures = (?P<ratio>.*)$', re.M)
+        with open(file, 'r') as fp:
+            for line in fp.readlines():
+                result = regex.search(line)
+                if result is not None:
+                    ratio = float(result.group('ratio'))
+        self.log.info('Ratio of failures is %.2f' % ratio)
+        if ratio > threshold: self.addOutcome(FAILED, outcomeReason='Failure ratio > 0.05', abortOnError=False)
+        return ratio
