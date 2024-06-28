@@ -153,14 +153,3 @@ class PySysTest(TenNetworkTest):
         for l in lists[1:]: overlap = np.intersect1d(overlap, np.array(l))
         return overlap.tolist()[0], overlap.tolist()[-1]
 
-    def ratio_failures(self, file):
-        ratio = 0
-        regex = re.compile('Ratio failures = (?P<ratio>.*)$', re.M)
-        with open(file, 'r') as fp:
-            for line in fp.readlines():
-                result = regex.search(line)
-                if result is not None:
-                    ratio = float(result.group('ratio'))
-        self.log.info('Ratio of failures is %.2f' % ratio)
-        if ratio > 0.05: self.addOutcome(FAILED, outcomeReason='Failure ratio > 0.05', abortOnError=False)
-        return ratio

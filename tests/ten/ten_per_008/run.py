@@ -169,15 +169,3 @@ class PySysTest(TenNetworkTest):
         coeffs = np.polyfit(x_values, y_values, deg=0)
         best_fit_y_values = np.full_like(y_values, fill_value=coeffs[0])
         return best_fit_y_values[0]
-
-    def ratio_failures(self, file):
-        ratio = 0
-        regex = re.compile('Ratio failures = (?P<ratio>.*)$', re.M)
-        with open(file, 'r') as fp:
-            for line in fp.readlines():
-                result = regex.search(line)
-                if result is not None:
-                    ratio = float(result.group('ratio'))
-        self.log.info('Ratio of failures is %.2f' % ratio)
-        if ratio > 0.05: self.addOutcome(FAILED, outcomeReason='Failure ratio > 0.05', abortOnError=False)
-        return ratio
