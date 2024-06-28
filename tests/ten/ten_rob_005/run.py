@@ -12,20 +12,21 @@ class PySysTest(TenNetworkTest):
         # connect to network on the primary gateway and deploy contract
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
+
         emitter = EventEmitter(self, web3, 100)
         emitter.deploy(network, account)
 
         # estimate how much gas each transactor will need
         rstr = self.rand_str()
-        self.chain_id = network.chain_id()
-        self.gas_price = web3.eth.gas_price
-        params = {'from': account.address, 'chainId': web3.eth.chain_id, 'gasPrice': self.gas_price}
+        chain_id = network.chain_id()
+        gas_price = web3.eth.gas_price
+        params = {'from': account.address, 'chainId': chain_id, 'gasPrice': gas_price}
         limits = [emitter.contract.functions.emitSimpleEvent(1, rstr).estimate_gas(params)]
         limits.append(emitter.contract.functions.emitArrayEvent(1, [1,2], [rstr, rstr]).estimate_gas(params))
         limits.append(emitter.contract.functions.emitStructEvent(1, rstr).estimate_gas(params))
         limits.append(emitter.contract.functions.emitMappingEvent(1, [account.address], [200]).estimate_gas(params))
-        self.gas_limit = max(limits)
-        funds_needed = 1.1 * self.TRANSACTIONS * (self.gas_price * self.gas_limit)
+        gas_limit = max(limits)
+        funds_needed = 1.1 * self.TRANSACTIONS * (gas_price * gas_limit)
 
         # setup the transactors and run the subscribers
         clients = []
@@ -34,12 +35,13 @@ class PySysTest(TenNetworkTest):
             clients.append((id, pk, account, network))
             self.run_subscriber(network, emitter, account, id)
 
-        # start the poller
-        self.run_poller(network, emitter)
+        # start the pollers
+        self.run_poller_simple(network, emitter, id_filter=1)
+        self.run_poller_all(network, emitter)
 
         # run the transactors serially in the foreground
         for id, pk, account, network in clients:
-            self.run_transactor(id, emitter, pk, network)
+            self.run_transactor(id, emitter, pk, network, gas_limit)
             self.ratio_failures(file=os.path.join(self.output, 'transactor%d.out' % id))
 
         # assuming no other errors raised then we have passed
@@ -52,7 +54,7 @@ class PySysTest(TenNetworkTest):
         self.distribute_native(account, web3.from_wei(funds_needed, 'ether'))
         return pk, account, network
 
-    def run_transactor(self, id, emitter, pk, network):
+    def run_transactor(self, id, emitter, pk, network, gas_limit):
         stdout = os.path.join(self.output, 'transactor%s.out' % id)
         stderr = os.path.join(self.output, 'transactor%s.err' % id)
         script = os.path.join(self.input, 'transactor.py')
@@ -64,7 +66,7 @@ class PySysTest(TenNetworkTest):
         args.extend(['--contract_abi', '%s' % emitter.abi_path])
         args.extend(['--transactions', '%d' % self.TRANSACTIONS])
         args.extend(['--id', '%d' % id])
-        args.extend(['--gas_limit', '%d' % self.gas_limit])
+        args.extend(['--gas_limit', '%d' % gas_limit])
         self.run_python(script, stdout, stderr, args, state=FOREGROUND)
 
     def run_subscriber(self, network, emitter, account, id_filter):
@@ -80,14 +82,26 @@ class PySysTest(TenNetworkTest):
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Listening for filtered events...', timeout=10)
 
-    def run_poller(self, network, emitter):
-        stdout = os.path.join(self.output, 'poller.out')
-        stderr = os.path.join(self.output, 'poller.err')
-        script = os.path.join(self.input, 'poller.js')
+    def run_poller_simple(self, network, emitter, id_filter):
+        stdout = os.path.join(self.output, 'poller_simple.out')
+        stderr = os.path.join(self.output, 'poller_simple.err')
+        script = os.path.join(self.input, 'poller_simple.js')
         args = []
         args.extend(['--network_ws', network.connection_url(web_socket=True)])
         args.extend(['--contract_address', '%s' % emitter.address])
         args.extend(['--contract_abi', '%s' % emitter.abi_path])
+        args.extend(['--id_filter', '%d' % id_filter])
+        self.run_javascript(script, stdout, stderr, args)
+
+    def run_poller_all(self, network, emitter):
+        stdout = os.path.join(self.output, 'poller_all.out')
+        stderr = os.path.join(self.output, 'poller_all.err')
+        script = os.path.join(self.input, 'poller_all.js')
+        args = []
+        args.extend(['--network_ws', network.connection_url(web_socket=True)])
+        args.extend(['--contract_address', '%s' % emitter.address])
+        args.extend(['--contract_abi', '%s' % emitter.abi_path])
+        args.extend(['--id_range', '%d' % self.CLIENTS])
         self.run_javascript(script, stdout, stderr, args)
 
     def rand_str(self):
