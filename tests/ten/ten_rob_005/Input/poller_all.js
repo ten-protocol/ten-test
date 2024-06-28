@@ -10,30 +10,37 @@ function getRandomInt(min, max) {
 
 async function task() {
     let blockNumber = await web3.eth.getBlockNumber()
-    let randomInt = getRandomInt(1, 4);
+    let choice = getRandomInt(1, 4);
+    let look_back = getRandomInt(10, 25);
 
-    switch (randomInt) {
+    switch (choice) {
         case 1:
-            pollSimpleEvent(blockNumber-5)
+            let id_filter = getRandomInt(1, parseInt(options.id_range));
+            pollSimpleEvent(blockNumber-look_back, id_filter)
             break;
         case 2:
-            pollArrayEvent(blockNumber-5)
+            pollArrayEvent(blockNumber-look_back)
             break;
         case 3:
-            pollStructEvent(blockNumber-5)
+            pollStructEvent(blockNumber-look_back)
             break;
         case 4:
-            pollMappingEvent(blockNumber-5)
+            pollMappingEvent(blockNumber-look_back)
             break;
         default:
             console.log("Out of range");
     }
 }
 
-function pollSimpleEvent(from) {
-    console.log('Getting past SimpleEvent events from', from, 'to latest')
+function pollSimpleEvent(from, id_filter) {
+    console.log('Getting past SimpleEvent events from', from, 'to latest, id filter', id_filter)
+    topic = web3.utils.sha3('SimpleEvent(uint,string,address)')
     setTimeout(function() {
-      contract.getPastEvents('SimpleEvent', { fromBlock: from, toBlock: 'latest'})
+      contract.getPastEvents('SimpleEvent', {
+          fromBlock: from,
+          toBlock: 'latest',
+          filter: {id: id_filter}
+          })
       .then(function(events) {
           if (events.length) {
               console.log('  Events received =', events.length)
@@ -88,6 +95,7 @@ commander
   .option('--network_ws <value>', 'Web socket connection URL to the network')
   .option('--contract_address <value>', 'Web socket connection URL to the network')
   .option('--contract_abi <value>', 'Web socket connection URL to the network')
+  .option('--id_range <value>', 'The range of the id index field')
   .parse(process.argv)
 
 const options = commander.opts()
