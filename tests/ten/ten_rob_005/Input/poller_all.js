@@ -44,7 +44,7 @@ function pollSimpleEvent(from, id_filter) {
           if (events.length) {
               console.log('  Events received =', events.length)
           }
-          task(from)
+          task()
       });
     }, 2000);
 }
@@ -57,7 +57,7 @@ function pollArrayEvent(from) {
           if (events.length) {
               console.log('  Events received =', events.length)
           }
-          task(from)
+          task()
       });
     }, 2000);
 }
@@ -70,7 +70,7 @@ async function pollStructEvent(from) {
           if (events.length) {
               console.log('  Events received =', events.length)
           }
-          task(from)
+          task()
       });
     }, 2000);
 }
@@ -83,7 +83,7 @@ async function pollMappingEvent(from) {
           if (events.length) {
               console.log('  Events received =', events.length)
           }
-          task(from)
+          task()
       });
     }, 2000);
 }
