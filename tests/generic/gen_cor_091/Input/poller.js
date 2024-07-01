@@ -25,8 +25,8 @@ commander
   .version('1.0.0', '-v, --version')
   .usage('[OPTIONS]...')
   .option('--network_ws <value>', 'Web socket connection URL to the network')
-  .option('--contract_address <value>', 'Web socket connection URL to the network')
-  .option('--contract_abi <value>', 'Web socket connection URL to the network')
+  .option('--contract_address <value>', 'Contract address')
+  .option('--contract_abi <value>', 'Contract ABI file')
   .option('--id_filter <value>', 'The id index field')
   .parse(process.argv)
 
