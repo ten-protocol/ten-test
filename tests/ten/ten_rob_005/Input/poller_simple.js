@@ -10,7 +10,6 @@ async function task() {
 
 function pollSimpleEvent(from) {
     console.log('Getting past SimpleEvent events from', from, 'to latest, id filter', options.id_filter)
-    topic = web3.utils.sha3('SimpleEvent(uint,string,address)')
     setTimeout(function() {
       contract.getPastEvents('SimpleEvent', {
           fromBlock: from,
@@ -30,8 +29,8 @@ commander
   .version('1.0.0', '-v, --version')
   .usage('[OPTIONS]...')
   .option('--network_ws <value>', 'Web socket connection URL to the network')
-  .option('--contract_address <value>', 'Web socket connection URL to the network')
-  .option('--contract_abi <value>', 'Web socket connection URL to the network')
+  .option('--contract_address <value>', 'Contract address')
+  .option('--contract_abi <value>', 'Contract ABI file')
   .option('--id_filter <value>', 'The id index field')
   .parse(process.argv)
 
