@@ -34,7 +34,6 @@ async function task() {
 
 function pollSimpleEvent(from, id_filter) {
     console.log('Getting past SimpleEvent events from', from, 'to latest, id filter', id_filter)
-    topic = web3.utils.sha3('SimpleEvent(uint,string,address)')
     setTimeout(function() {
       contract.getPastEvents('SimpleEvent', {
           fromBlock: from,
