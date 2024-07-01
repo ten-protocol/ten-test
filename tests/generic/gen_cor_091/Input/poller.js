@@ -6,7 +6,6 @@ require('console-stamp')(console, 'HH:MM:ss')
 
 function pollSimpleEvent() {
     console.log('Getting past SimpleEvent events from 0 to latest, id filter', options.id_filter)
-    topic = web3.utils.sha3('SimpleEvent(uint,string,address)')
     setTimeout(function() {
       contract.getPastEvents('SimpleEvent', {
           fromBlock: 0,
