@@ -17,14 +17,21 @@ class PySysTest(GenericNetworkTest):
         contract = KeyStorage(self, web3)
         contract.deploy(network, account)
 
-        self.client(network, contract, 'meaning_of_life', 42)
+        # estimate how much gas is needed and then make the transaction via ethers
+        chain_id = network.chain_id()
+        gas_price = web3.eth.gas_price
+        params = {'from': account.address, 'chainId': chain_id, 'gasPrice': gas_price}
+        gas_limit = contract.contract.functions.setItem("1", 1).estimate_gas(params)
+        funds_needed = 1.1 * (gas_price * gas_limit)
+
+        self.client(network, contract, 'meaning_of_life', 42, web3.from_wei(funds_needed, 'ether'))
         value_after = contract.contract.functions.getItem('meaning_of_life').call()
         self.log.info('The meaning of life is ... %d', value_after)
         self.assertTrue(value_after == 42)
 
-    def client(self, network, contract, key, value):
+    def client(self, network, contract, key, value, funds_needed):
         private_key = secrets.token_hex(32)
-        self.distribute_native(Web3().eth.account.from_key(private_key), network.ETH_ALLOC_EPHEMERAL)
+        self.distribute_native(Web3().eth.account.from_key(private_key), funds_needed, 'ether')
         network.connect(self, private_key=private_key, check_funds=False)
 
         # create the client
