@@ -26,8 +26,8 @@ class PySysTest(GenericNetworkTest):
         network.transact(self, web3_2, emitter.contract.functions.emitSimpleEvent(1, 'five'), account_2, emitter.GAS_LIMIT)
         network.transact(self, web3_2, emitter.contract.functions.emitSimpleEvent(1, 'six'), account_2, emitter.GAS_LIMIT)
 
-        # wait for the poller to have made 5 attempts
-        self.waitForSignal(os.path.join(self.output, 'poller.out'), expr='Getting past SimpleEvent events', condition=">=5")
+        # wait for the poller to have made 6 attempts
+        self.waitForSignal(os.path.join(self.output, 'poller.out'), expr='Getting past SimpleEvent events', condition=">=6")
         self.assertGrep(os.path.join(self.output, 'poller.out'), expr='Events received = 6')
         self.assertLineCount(os.path.join(self.output, 'subscriber.out'), expr='Filtered SimpleEvent', condition='==6')
 
