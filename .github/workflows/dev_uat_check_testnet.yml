@@ -4,7 +4,7 @@ name: '[dev/uat] Check health'
 run-name: Check uat-testnet health
 on:
   schedule:
-    - cron: '0 */2 * * *'
+    - cron: '0 * * * *'
   workflow_dispatch:
 
 jobs:
