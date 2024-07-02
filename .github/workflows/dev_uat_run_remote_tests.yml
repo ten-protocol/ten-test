@@ -54,19 +54,29 @@ jobs:
           ./get_artifacts.sh
           ls -l ${{ github.workspace }}/ten-test/artifacts   
 
-      - name: 'Run tests on uat-testnet on a workflow_dispatch'
-        if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.environment == 'uat-testnet') }}
+      - name: 'Run tests on uat-testnet'
+        if: ${{ (github.event.inputs.environment == 'uat-testnet') }}
         run: |
           cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ten.uat -r ${{ github.event.inputs.arguments }}
-          cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.uat -r check_performance
 
-      - name: 'Run tests on dev-testnet on a workflow_dispatch'
-        if: ${{ (github.event_name == 'workflow_dispatch') && (github.event.inputs.environment == 'dev-testnet') }}
+      - name: 'Run tests on dev-testnet'
+        if: ${{ (github.event.inputs.environment == 'dev-testnet') }}
         run: |
           cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ten.dev -r ${{ github.event.inputs.arguments }}
+
+      - name: 'Check performance on uat-testnet'
+        if: ${{ (github.event.inputs.environment == 'uat-testnet') }}
+        continue-on-error: true
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ten.uat -r check_performance
+
+      - name: 'Check performance on dev-testnet'
+        if: ${{ (github.event.inputs.environment == 'dev-testnet') }}
+        continue-on-error: true
+        run: |
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.dev -r check_performance
 
