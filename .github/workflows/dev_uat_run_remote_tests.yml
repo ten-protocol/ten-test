@@ -26,14 +26,6 @@ on:
           - main
           - releases/v0.24
           - releases/v0.23
-      graph_summary:
-        type: choice
-        description: 'Graph the performance summary'
-        required: true
-        default: false
-        options:
-          - false
-          - true
 
 jobs:
   test-run:
@@ -68,8 +60,7 @@ jobs:
           /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} -r ${{ github.event.inputs.arguments }}
 
       - name: 'Graph the performance summary'
-        if: always() && ${{ (github.event.inputs.graph_summary == 'true') }}
-        continue-on-error: true
+        if: always()
         run: |
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} -r graph_performance
