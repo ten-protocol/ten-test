@@ -67,8 +67,8 @@ jobs:
           cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} -r ${{ github.event.inputs.arguments }}
 
-      - name: 'Check performance'
-        if: ${{ (github.event.inputs.graph_summary == 'true') }}
+      - name: 'Graph the performance summary'
+        if: always() && ${{ (github.event.inputs.graph_summary == 'true') }}
         continue-on-error: true
         run: |
           cd ${{ github.workspace }}/ten-test/admin
