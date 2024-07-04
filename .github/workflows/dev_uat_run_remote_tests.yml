@@ -9,10 +9,10 @@ on:
         type: choice
         description: Environment
         required: true
-        default: dev-testnet
+        default: ten.dev
         options:
-          - uat-testnet
-          - dev-testnet
+          - ten.dev
+          - ten.uat
       arguments:
         description: 'Arguments to the pysys run'
         required: true
@@ -26,6 +26,14 @@ on:
           - main
           - releases/v0.24
           - releases/v0.23
+      graph_summary:
+        type: choice
+        description: 'Graph the performance summary'
+        required: true
+        default: false
+        options:
+          - false
+          - true
 
 jobs:
   test-run:
@@ -54,31 +62,17 @@ jobs:
           ./get_artifacts.sh
           ls -l ${{ github.workspace }}/ten-test/artifacts   
 
-      - name: 'Run tests on uat-testnet'
-        if: ${{ (github.event.inputs.environment == 'uat-testnet') }}
+      - name: 'Run tests'
         run: |
           cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ten.uat -r ${{ github.event.inputs.arguments }}
+          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} -r ${{ github.event.inputs.arguments }}
 
-      - name: 'Run tests on dev-testnet'
-        if: ${{ (github.event.inputs.environment == 'dev-testnet') }}
-        run: |
-          cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ten.dev -r ${{ github.event.inputs.arguments }}
-
-      - name: 'Check performance on uat-testnet'
-        if: ${{ (github.event.inputs.environment == 'uat-testnet') }}
+      - name: 'Check performance'
+        if: ${{ (github.event.inputs.graph_summary == 'true') }}
         continue-on-error: true
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.uat -r check_performance
-
-      - name: 'Check performance on dev-testnet'
-        if: ${{ (github.event.inputs.environment == 'dev-testnet') }}
-        continue-on-error: true
-        run: |
-          cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.dev -r check_performance
+          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} -r check_performance
 
       - name: 'Collate pdf output'
         if: always()

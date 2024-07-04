@@ -9,10 +9,10 @@ on:
         type: choice
         description: Environment
         required: true
-        default: dev-testnet
+        default: ten.dev
         options:
-          - uat-testnet
-          - dev-testnet
+          - ten.dev
+          - ten.uat
 
 jobs:
   reset-persistence:
@@ -35,23 +35,10 @@ jobs:
           go build -o ${{ github.workspace }}/ten-test/artifacts/wallet_extension/wallet_extension
           ls -l ${{ github.workspace }}/ten-test/artifacts
 
-      - name: 'Persistence reset on sepolia-testnet'
-        if: ${{ github.event.inputs.environment == 'sepolia-testnet' }}
+      - name: 'Persistence reset'
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.sepolia persistence_reset
-
-      - name: 'Persistence reset on uat-testnet'
-        if: ${{ github.event.inputs.environment == 'uat-testnet' }}
-        run: |
-          cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.uat persistence_reset
-
-      - name: 'Persistence reset on dev-testnet'
-        if: ${{ github.event.inputs.environment == 'dev-testnet' }}
-        run: |
-          cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.dev persistence_reset
+          /usr/local/bin/pysys.py run -m {{ github.event.inputs.environment }} persistence_reset
 
       - name: 'Upload output'
         uses: actions/upload-artifact@v3
