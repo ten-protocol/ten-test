@@ -40,7 +40,7 @@ class PySysTest(GenericNetworkTest):
             if self.is_ten():
                 self.log.info('Exception type: %s', type(e).__name__)
                 self.log.info('Exception args: %s', e.args)
-                regex = re.compile('illegal access', re.M)
+                regex = re.compile('eth_getStorageAt is not supported on TEN', re.M)
                 self.assertTrue(regex.search(e.args[0]['message']) is not None)
             else:
                 self.addOutcome(FAILED, outcomeReason='Exception should not be thrown')
