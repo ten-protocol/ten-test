@@ -72,7 +72,7 @@ jobs:
         continue-on-error: true
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} -r check_performance
+          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} -r graph_performance
 
       - name: 'Collate pdf output'
         if: always()

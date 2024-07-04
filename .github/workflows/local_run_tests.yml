@@ -80,7 +80,7 @@ jobs:
           cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ten.local -r ${{ github.event.inputs.arguments }}
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.local -r check_performance
+          /usr/local/bin/pysys.py run -m ten.local -r graph_performance
 
       - name: 'Run tests on schedule'
         if: ${{ github.event_name == 'schedule' }}
@@ -88,7 +88,7 @@ jobs:
           cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ten.local -r -e skip -e persistence 
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.local -r check_performance
+          /usr/local/bin/pysys.py run -m ten.local -r graph_performance
 
       - name: 'Collate pdf output'
         if: always()
