@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Graph performance results</title>
+        <title>Graph performance summary</title>
         <purpose><![CDATA[
 Produces an overall summary of the performance metrics overtime for a particular environment.
 ]]>
