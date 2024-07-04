@@ -14,8 +14,8 @@ on:
         default: latest
         options:
           - latest
+          - 0.24
           - 0.23
-          - 0.22
 
 jobs:
   test-run:
