@@ -334,18 +334,26 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def scan_list_personal_transactions(self, address, offset=0, size=10):
+    def json_hex_to_obj(self, hex_str):
+        """Convert a json hex string to an object. """
+        if hex_str.startswith('0x'): hex_str = hex_str[2:]
+        byte_str = bytes.fromhex(hex_str)
+        json_str = byte_str.decode('utf-8')
+        return json.loads(json_str)
+
+    def scan_list_personal_transactions(self, url, address, offset=0, size=10):
         """List personal transactions using.
 
         Note that listing personal transactions goes via a call to getStorageAt, where the first argument is an
         address type that will be interpreted as a request for the personal transactions. This is currently coded
         as value 2 in the network.
         """
-        encoded_value = base64.b64encode('2'.encode('utf-8'))
-        payload = { "address": address, "pagination": {"offset": offset, "size": size}, }
-        data = {"jsonrpc": "2.0", "method": "eth_getStorageAt", "params": [encoded_value.decode('utf-8'), payload], "id": self.MSG_ID }
-        response = self.post(data)
-        if 'result' in response.json(): return response.json()['result']
+        payload = {"address": address, "pagination": {"offset": offset, "size": size}}
+        data = {"jsonrpc": "2.0", "method": "eth_getStorageAt",
+                "params": ["0x0000000000000000000000000000000000000002", json.dumps(payload), None],
+                "id": self.MSG_ID }
+        response = self.post(data, url)
+        if 'result' in response.json(): return self.json_hex_to_obj(response.json()['result'])
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
@@ -405,10 +413,11 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def post(self, data):
+    def post(self, data, server=None):
         """Post to the node host. """
         self.MSG_ID += 1
-        server = 'http://%s:%s' % (Properties().node_host(self.env, self.NODE_HOST), Properties().node_port_http(self.env))
+        if not server:
+            server = 'http://%s:%s' % (Properties().node_host(self.env, self.NODE_HOST), Properties().node_port_http(self.env))
         return requests.post(server, json=data)
 
     def ratio_failures(self, file, threshold=0.05):
