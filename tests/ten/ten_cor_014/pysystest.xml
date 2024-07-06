@@ -13,7 +13,6 @@ user. They then call to get their personal transactions and the test confirms re
     <classification>
         <groups inherit="true">
             <group>tenscan</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
