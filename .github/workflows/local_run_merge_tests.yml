@@ -82,8 +82,7 @@ jobs:
       - name: 'Build required artifacts for running tests'
         run: |
           cd ${{ github.workspace }}/ten-test
-          ./get_artifacts.sh
-          ls -l ${{ github.workspace }}/ten-test/artifacts   
+          ./get_artifacts.sh  
 
       - name: 'Do a persistence reset for nonce and contracts'
         run: |
