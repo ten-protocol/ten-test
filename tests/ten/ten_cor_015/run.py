@@ -16,7 +16,7 @@ class PySysTest(TenNetworkTest):
         web3_2, account_2 = network_2.connect_account2(self)
 
         # account 3 is ephemeral, never seen, never transacted
-        account_3 = Web3().eth.account.from_key(secrets.token_hex(32))
+        unseen = '0x0000000000000000000000000000000000000001'
 
         # deploy the storage contract using account 1, and get a handle to it for account 2
         contract_1 = Relevancy(self, web3_1)
@@ -28,17 +28,13 @@ class PySysTest(TenNetworkTest):
 
         # account 2 transacts, passing an indexed account address of the unseen account, and then transacts again
         # using the account address of the seen account (account 1)
-        network_2.transact(self, web3_2, contract_2.contract.functions.indexedAddressAndNumber(account_3.address), account_2, contract_2.GAS_LIMIT)
-        self.wait(float(self.block_time) * 3)
+        network_2.transact(self, web3_2, contract_2.contract.functions.indexedAddressAndNumber(unseen), account_2, contract_2.GAS_LIMIT)
         network_2.transact(self, web3_2, contract_2.contract.functions.indexedAddressAndNumber(account_1.address), account_2, contract_2.GAS_LIMIT)
-        self.wait(float(self.block_time) * 3)
 
         # account 1 transacts, passing an indexed account address of the unseen account, and then transacts again
         # using the account address of the seen account (account 2)
-        network_1.transact(self, web3_1, contract_1.contract.functions.indexedAddressAndNumber(account_3.address), account_1, contract_2.GAS_LIMIT)
-        self.wait(float(self.block_time) * 3)
+        network_1.transact(self, web3_1, contract_1.contract.functions.indexedAddressAndNumber(unseen), account_1, contract_2.GAS_LIMIT)
         network_1.transact(self, web3_1, contract_1.contract.functions.indexedAddressAndNumber(account_2.address), account_1, contract_1.GAS_LIMIT)
-        self.wait(float(self.block_time) * 3)
 
     def subscribe(self, network, address, abi_path):
         subscriber = AllEventsLogSubscriber(self, network, address, abi_path, stdout='subscriber.out', stderr='subscriber.err')
