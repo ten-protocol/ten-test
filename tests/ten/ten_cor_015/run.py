@@ -29,13 +29,16 @@ class PySysTest(TenNetworkTest):
         # account 2 transacts, passing an indexed account address of the unseen account, and then transacts again
         # using the account address of the seen contract
         network_2.transact(self, web3_2, contract_2.contract.functions.indexedAddressAndNumber(account_3.address), account_2, contract_2.GAS_LIMIT)
+        self.wait(float(self.block_time) * 3)
         network_2.transact(self, web3_2, contract_2.contract.functions.indexedAddressAndNumber(account_1.address), account_2, contract_2.GAS_LIMIT)
+        self.wait(float(self.block_time) * 3)
 
         # account 1 transacts, passing an indexed account address of the unseen account, and then transacts again
         # using the account address of the seen contract
         network_1.transact(self, web3_1, contract_1.contract.functions.indexedAddressAndNumber(account_3.address), account_1, contract_2.GAS_LIMIT)
+        self.wait(float(self.block_time) * 3)
         network_1.transact(self, web3_1, contract_1.contract.functions.indexedAddressAndNumber(account_2.address), account_1, contract_1.GAS_LIMIT)
-        self.wait(float(self.block_time) * 1.1)
+        self.wait(float(self.block_time) * 3)
 
     def subscribe(self, network, address, abi_path):
         subscriber = AllEventsLogSubscriber(self, network, address, abi_path, stdout='subscriber.out', stderr='subscriber.err')
