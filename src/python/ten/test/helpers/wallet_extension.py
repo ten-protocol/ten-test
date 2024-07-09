@@ -28,7 +28,7 @@ class WalletExtension:
 
         if name is None: name = str(port)
         self.name = name
-        self.logPath = os.path.join(test.output, 'wallet_%s_logs.txt' % name)
+        self.logPath = os.path.join(test.output, 'wallet_%s_logs' % name)
         self.databasePath = os.path.join(test.output, 'wallet_%s_database' % name)
         self.stdout = os.path.join(test.output, 'wallet_%s.out' % name)
         self.stderr = os.path.join(test.output, 'wallet_%s.err' % name)
