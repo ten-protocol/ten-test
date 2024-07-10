@@ -4,6 +4,16 @@
     <description>
         <title>Event relevancy - non-lifecycle event with an unseen account address</title>
         <purpose><![CDATA[
+This replicates an issue that was seen in sepolia-testnet where the steps to reproduce were;
+
+- a new contract is created that has a private event on it
+- the first time that event is emitted it can only involve an account that we've never seen before
+- then later when the contract emits the event but for an address that the network has seen before, it will realise
+  it's a private event and hit this error
+
+The unseen address seems to need a particular format and can be re-created as per the statically coded address used in
+the test. Note also, in the current implementation an event is not relevant to the originator of the transaction that
+created it unless their address is included in the event.
 ]]>
         </purpose>
     </description>
