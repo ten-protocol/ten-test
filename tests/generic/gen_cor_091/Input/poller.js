@@ -2,10 +2,14 @@ const fs = require('fs')
 const Web3 = require('web3')
 const commander = require('commander')
 
-require('console-stamp')(console, 'HH:MM:ss')
+function log(data) {
+    let timestamp = new Date().toISOString();
+    const entry = `${timestamp} ${data}\n`;
+    fs.appendFileSync(options.log_file, entry, { flag: 'a' });
+}
 
 function pollSimpleEvent() {
-    console.log('Getting past SimpleEvent events from 0 to latest, id filter', options.id_filter)
+    log(`Getting past SimpleEvent events from 0 to latest, id filter ${options.id_filter}`)
     setTimeout(function() {
       contract.getPastEvents('SimpleEvent', {
           fromBlock: 0,
@@ -14,7 +18,7 @@ function pollSimpleEvent() {
           })
       .then(function(events) {
           if (events.length) {
-              console.log('  Events received =', events.length)
+              log(`  Events received = ${events.length}`)
           }
           pollSimpleEvent()
       });
@@ -28,6 +32,7 @@ commander
   .option('--contract_address <value>', 'Contract address')
   .option('--contract_abi <value>', 'Contract ABI file')
   .option('--id_filter <value>', 'The id index field')
+  .option('--log_file <value>', 'The output file to write to')
   .parse(process.argv)
 
 const options = commander.opts()

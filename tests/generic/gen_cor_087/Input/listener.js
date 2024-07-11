@@ -2,10 +2,14 @@ const fs = require('fs')
 const ethers = require('ethers')
 const commander = require('commander')
 
-require('console-stamp')(console, 'HH:MM:ss')
+function log(data) {
+    let timestamp = new Date().toISOString();
+    const entry = `${timestamp} ${data}\n`;
+    fs.appendFileSync(options.log_file, entry, { flag: 'a' });
+}
 
 function task() {
-  console.log('Starting task ...')
+  log(`Starting task ...`)
   filter = {
     address: options.address,
     topics: [
@@ -15,7 +19,7 @@ function task() {
   }
   provider.on(filter, (log, event) => {
     decoded_log = interface.decodeEventLog('ItemSet3', log.data, log.topics)
-    console.log('Stored value =', decoded_log.value.toNumber())
+    log(`Stored value = ${decoded_log.value.toNumber()}`)
   });
 }
 
@@ -26,6 +30,7 @@ commander
   .option('--address <value>', 'Contract address')
   .option('--contract_abi <value>', 'Contract ABI file')
   .option('--filter_key <value>', 'Key to filter ony')
+  .option('--log_file <value>', 'The output file to write to')
   .parse(process.argv)
 
 

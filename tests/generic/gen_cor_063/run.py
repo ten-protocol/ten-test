@@ -17,18 +17,20 @@ class PySysTest(GenericNetworkTest):
         # run a background script to poll for balance
         stdout = os.path.join(self.output, 'poller.out')
         stderr = os.path.join(self.output, 'poller.err')
+        logout = os.path.join(self.output, 'poller.log')
         script = os.path.join(self.input, 'balance_poller.js')
         args = []
         args.extend(['--network_http', '%s' % network.connection_url(web_socket=False)])
         args.extend(['--address', '%s' % erc20.address])
         args.extend(['--contract_abi', '%s' % erc20.abi_path])
         args.extend(['--polling_address', '%s' % account2.address])
+        args.extend(['--log_file', '%s' % logout])
         self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting to run the polling loop', timeout=10)
+        self.waitForGrep(file=logout, expr='Starting to run the polling loop', timeout=10)
 
         # transfer from account1 into account2
         for i in range(0, 5):
             network.transact(self, web3, erc20.contract.functions.transfer(account2.address, 1), account1, erc20.GAS_LIMIT)
 
-        self.waitForGrep(file=stdout, expr='New balance = 5', timeout=20)
-        self.assertGrep(file=stdout, expr='New balance = 5')
+        self.waitForGrep(file=logout, expr='New balance = 5', timeout=20)
+        self.assertGrep(file=logout, expr='New balance = 5')

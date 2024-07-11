@@ -17,6 +17,7 @@ class PySysTest(GenericNetworkTest):
         # run a background script to filter and collect events
         stdout = os.path.join(self.output, 'listener.out')
         stderr = os.path.join(self.output, 'listener.err')
+        logout = os.path.join(self.output, 'listener.log')
         script = os.path.join(self.input, 'listener.js')
         args = []
         args.extend(['--network_ws', network.connection_url(web_socket=True)])
@@ -24,8 +25,9 @@ class PySysTest(GenericNetworkTest):
         args.extend(['--contract_abi', '%s' % storage.abi_path])
         args.extend(['--filter_value', '2'])
         args.extend(['--filter_key', 'k2'])
+        args.extend(['--log_file', '%s' % logout])
         self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
+        self.waitForGrep(file=logout, expr='Starting task ...', timeout=10)
 
         # perform some transactions with a sleep in between
         network.transact(self, web3, storage.contract.functions.setItem('k1', 1), account, storage.GAS_LIMIT)
@@ -37,15 +39,15 @@ class PySysTest(GenericNetworkTest):
         self.wait(float(self.block_time) * 1.1)
 
         # wait and validate
-        self.waitForGrep(file=stdout, expr='ItemSet1, key = k2 stored value = 4', timeout=20)
-        self.waitForGrep(file=stdout, expr='ItemSet2, key = r2 stored value = 2', timeout=20)
+        self.waitForGrep(file=logout, expr='ItemSet1, key = k2 stored value = 4', timeout=20)
+        self.waitForGrep(file=logout, expr='ItemSet2, key = r2 stored value = 2', timeout=20)
 
         # contract.filters.ItemSet1(options.filter_key, null) - key is k2
         expr_list = ['ItemSet1, key = k2 stored value = 4']
-        self.assertOrderedGrep(file=stdout, exprList=expr_list)
+        self.assertOrderedGrep(file=logout, exprList=expr_list)
 
         # contract.filters.ItemSet2(null, options.filter_value) - value is 2
         expr_list = ['ItemSet2, key = foo stored value = 2', 'ItemSet2, key = r2 stored value = 2']
-        self.assertOrderedGrep(file=stdout, exprList=expr_list)
-        self.assertLineCount(file=stdout, expr='ItemSet1', condition='== 1')
-        self.assertLineCount(file=stdout, expr='ItemSet2', condition='== 2')
+        self.assertOrderedGrep(file=logout, exprList=expr_list)
+        self.assertLineCount(file=logout, expr='ItemSet1', condition='== 1')
+        self.assertLineCount(file=logout, expr='ItemSet2', condition='== 2')

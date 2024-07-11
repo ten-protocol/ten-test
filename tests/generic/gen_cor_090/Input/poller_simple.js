@@ -2,14 +2,18 @@ const fs = require('fs')
 const Web3 = require('web3')
 const commander = require('commander')
 
-require('console-stamp')(console, 'HH:MM:ss')
+function log(data) {
+    let timestamp = new Date().toISOString();
+    const entry = `${timestamp} ${data}\n`;
+    fs.appendFileSync(options.log_file, entry, { flag: 'a' });
+}
 
 async function task() {
     pollSimpleEvent(0)
 }
 
 function pollSimpleEvent(from) {
-    console.log('Getting past SimpleEvent events from', from, 'to latest, id filter', options.id_filter)
+    log(`Getting past SimpleEvent events from ${from} to latest, id filter ${options.id_filter}`)
     topic = web3.utils.sha3('SimpleEvent(uint,string,address)')
     setTimeout(function() {
       contract.getPastEvents('SimpleEvent', {
@@ -20,10 +24,10 @@ function pollSimpleEvent(from) {
       .then(function(events) {
           if (events.length) {
             for (var i = 0, len = events.length; i < len; i+=1) {
-                console.log('Event: id=', events[i].returnValues['id'], 'message=', events[i].returnValues['message'])
+                log(`Event: id= ${events[i].returnValues['id']} message= ${events[i].returnValues['message']}`)
             }
           }
-          console.log('Poller completed')
+          log(`Poller completed`)
       });
     }, 2000);
 }
@@ -35,6 +39,7 @@ commander
   .option('--contract_address <value>', 'Web socket connection URL to the network')
   .option('--contract_abi <value>', 'Web socket connection URL to the network')
   .option('--id_filter <value>', 'The id index field')
+  .option('--log_file <value>', 'The output file to write to')
   .parse(process.argv)
 
 const options = commander.opts()

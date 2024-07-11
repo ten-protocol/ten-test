@@ -26,18 +26,20 @@ class PySysTest(GenericNetworkTest):
 
         # validate
         expr = ['Event: id= 1 message= one', 'Event: id= 1 message= four']
-        self.assertOrderedGrep('poller_simple.out', exprList=expr)
-        self.assertGrep('poller_simple.out', expr='Event: id= 2', contains=False)
-        self.assertGrep('poller_simple.out', expr='Event: id= 3', contains=False)
+        self.assertOrderedGrep('poller_simple.log', exprList=expr)
+        self.assertGrep('poller_simple.log', expr='Event: id= 2', contains=False)
+        self.assertGrep('poller_simple.log', expr='Event: id= 3', contains=False)
 
     def run_poller_simple(self, network, emitter, id_filter):
         stdout = os.path.join(self.output, 'poller_simple.out')
         stderr = os.path.join(self.output, 'poller_simple.err')
+        logout = os.path.join(self.output, 'poller_simple.log')
         script = os.path.join(self.input, 'poller_simple.js')
         args = []
         args.extend(['--network_ws', network.connection_url(web_socket=True)])
         args.extend(['--contract_address', '%s' % emitter.address])
         args.extend(['--contract_abi', '%s' % emitter.abi_path])
         args.extend(['--id_filter', '%d' % id_filter])
+        args.extend(['--log_file', '%s' % logout])
         self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Poller completed', timeout=10)
+        self.waitForGrep(file=logout, expr='Poller completed', timeout=10)

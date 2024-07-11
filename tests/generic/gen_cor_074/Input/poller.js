@@ -2,12 +2,16 @@ const fs = require('fs')
 const Web3 = require('web3')
 const commander = require('commander')
 
-require('console-stamp')(console, 'HH:MM:ss')
+function log(data) {
+    let timestamp = new Date().toISOString();
+    const entry = `${timestamp} ${data}\n`;
+    fs.appendFileSync(options.log_file, entry, { flag: 'a' });
+}
 
 function task() {
   task1(0)
   task2(0)
-  console.log('Started tasks')
+  log(`Started tasks`)
 }
 
 function task1(from) {
@@ -21,7 +25,7 @@ function task1(from) {
         if (events.length) {
             for (var i = 0, len = events.length; i < len; i+=1) {
                 value = events[i].returnValues['value']
-                console.log('Task1:', value)
+                log(`Task1: ${value}`)
                 from = events[i].blockNumber+1
             }
         }
@@ -42,7 +46,7 @@ function task2(from) {
             for (var i = 0, len = events.length; i < len; i+=1) {
                 key = events[i].returnValues['key']
                 value = events[i].returnValues['value']
-                console.log('Task2:', key, value)
+                log(`Task2: ${key} ${value}`)
                 from = events[i].blockNumber+1
             }
         }
@@ -59,6 +63,7 @@ commander
   .option('--contract_abi <value>', 'Contract ABI path')
   .option('--filter_address <value>', 'Address to filter on')
   .option('--filter_key <value>', 'Key to filter on')
+  .option('--log_file <value>', 'The output file to write to')
   .parse(process.argv)
 
 const options = commander.opts()

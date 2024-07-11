@@ -2,31 +2,35 @@ const fs = require('fs')
 const ethers = require('ethers')
 const commander = require('commander')
 
-require('console-stamp')(console, 'HH:MM:ss')
+function log(data) {
+    let timestamp = new Date().toISOString();
+    const entry = `${timestamp} ${data}\n`;
+    fs.appendFileSync(options.log_file, entry, { flag: 'a' });
+}
 
 async function sendTransaction() {
   try {
     const gasPrice = await provider.getGasPrice();
     const estimatedGas = await contract.estimateGas.force_require_non_view('')
-    console.log(`Wallet address: ${wallet.address}`)
-    console.log(`Gas Price: ${gasPrice}`)
-    console.log(`Estimated Gas: ${estimatedGas}`)
+    log(`Wallet address: ${wallet.address}`)
+    log(`Gas Price: ${gasPrice}`)
+    log(`Estimated Gas: ${estimatedGas}`)
 
     const tx = await contract.populateTransaction.force_require_non_view('key', {
       from: wallet.address,
       gasPrice: gasPrice,
       gasLimit: estimatedGas,
     } )
-    console.log('Transaction created')
+    log('Transaction created')
 
     const txResponse = await wallet.sendTransaction(tx)
-    console.log(`Transaction sent: ${txResponse.hash}`)
+    log(`Transaction sent: ${txResponse.hash}`)
 
     const txReceipt = await txResponse.wait();
-    console.log(`Transaction status: ${txReceipt.status}`)
+    log(`Transaction status: ${txReceipt.status}`)
   }
   catch(err) {
-    console.log(err)
+    log(err)
   }
 }
 
@@ -37,6 +41,7 @@ commander
   .option('--address <value>', 'Contract address')
   .option('--contract_abi <value>', 'Contract ABI file')
   .option('--private_key <value>', 'The account private key')
+  .option('--log_file <value>', 'The output file to write to')
   .parse(process.argv)
 
 const options = commander.opts()
@@ -47,6 +52,6 @@ const provider = new ethers.providers.JsonRpcProvider(options.network)
 const wallet = new ethers.Wallet(options.private_key, provider)
 const contract = new ethers.Contract(options.address, abi, wallet)
 
-console.log('Starting transactions')
-sendTransaction().then(() => console.log('Completed transactions'));
+log('Starting transactions')
+sendTransaction().then(() => log('Completed transactions'));
 

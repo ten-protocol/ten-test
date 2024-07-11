@@ -2,12 +2,16 @@ const fs = require('fs')
 const ethers = require('ethers')
 const commander = require('commander')
 
-require('console-stamp')(console, 'HH:MM:ss')
+function log(data) {
+    let timestamp = new Date().toISOString();
+    const entry = `${timestamp} ${data}\n`;
+    fs.appendFileSync(options.log_file, entry, { flag: 'a' });
+}
 
 function task() {
-  console.log('Starting task ...')
+  log(`Starting task ...`)
   contract.on("Stored", (value, event) => {
-    console.log('Stored value =', value.toNumber())
+    log(`Stored value = ${value.toNumber()}`)
   });
 }
 
@@ -17,6 +21,7 @@ commander
   .option('--network_ws <value>', 'Web socket connection URL to the network')
   .option('--address <value>', 'Web socket connection URL to the network')
   .option('--contract_abi <value>', 'Web socket connection URL to the network')
+  .option('--log_file <value>', 'The output file to write to')
   .parse(process.argv)
 
 const options = commander.opts()
