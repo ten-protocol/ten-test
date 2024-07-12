@@ -2,21 +2,25 @@ const fs = require('fs')
 const Web3 = require('web3')
 const commander = require('commander')
 
-require('console-stamp')(console, 'HH:MM:ss')
+function log(data) {
+    let timestamp = new Date().toISOString();
+    const entry = `${timestamp} ${data}\n`;
+    fs.appendFileSync(options.log_file, entry, { flag: 'a' });
+}
 
 function subscribe() {
   subscription = web3.eth.subscribe('logs', [],
     function(error, result) {
       if (error)
-        console.log('Error returned is ', error)
+        log(`Error returned is ${error}`)
   })
   .on("connected", function(subscriptionId){
-      console.log('Subscribed for event logs')
-      console.log('Subscription id is', subscription.id)
-      console.log('Subscription arguments are', subscription.arguments)
+      log(`Subscribed for event logs`)
+      log(`Subscription id is ${subscription.id}`)
+      log(`Subscription arguments are ${subscription.arguments}`)
   })
   .on("data", function(log){
-      console.log('Stored value =', Web3.utils.hexToNumber(log.data))
+      log(`Stored value = ${Web3.utils.hexToNumber(log.data)}`)
   })
 }
 
@@ -24,6 +28,7 @@ commander
   .version('1.0.0', '-v, --version')
   .usage('[OPTIONS]...')
   .option('--network_ws <value>', 'Web socket connection URL to the network')
+  .option('--log_file <value>', 'The output file to write to')
   .parse(process.argv)
 
 const options = commander.opts()
