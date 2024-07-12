@@ -1,18 +1,22 @@
-
+const fs = require('fs')
 const ethers = require('ethers')
 const commander = require('commander')
 
-require('console-stamp')(console, 'HH:MM:ss.l')
+function log(data) {
+    let timestamp = new Date().toISOString();
+    const entry = `${timestamp} ${data}\n`;
+    fs.appendFileSync(options.log_file, entry, { flag: 'a' });
+}
 
 async function getBlock(blockNumber)  {
   var block = await provider.getBlock(blockNumber);
-  console.log('Block =', block)
+  log(`Block = ${block}`)
 }
 
 function task() {
-  console.log('Starting task ...')
+  log(`Starting task ...`)
   provider.once("block", (blockNumber) => {
-    console.log('Received block notification ... retrieving')
+    log(`Received block notification ... retrieving`)
     getBlock(blockNumber)
   });
 }
@@ -21,6 +25,7 @@ commander
   .version('1.0.0', '-v, --version')
   .usage('[OPTIONS]...')
   .option('--network_ws <value>', 'Web socket connection URL to the network')
+  .option('--log_file <value>', 'The output file to write to')
   .parse(process.argv)
 
 const options = commander.opts()

@@ -2,7 +2,11 @@ const fs = require('fs')
 const ethers = require('ethers')
 const commander = require('commander')
 
-require('console-stamp')(console, 'HH:MM:ss')
+function log(data) {
+    let timestamp = new Date().toISOString();
+    const entry = `${timestamp} ${data}\n`;
+    fs.appendFileSync(options.log_file, entry, { flag: 'a' });
+}
 
 async function sendTransaction() {
   const gasPrice = await provider.getGasPrice();
@@ -12,13 +16,13 @@ async function sendTransaction() {
     gasPrice: gasPrice,
     gasLimit: 100000,
   } )
-  console.log('Transaction created')
+  log(`Transaction created`)
 
   const txResponse = await wallet.sendTransaction(tx)
-  console.log(`Transaction sent: ${txResponse.hash}`)
+  log(`Transaction sent: ${txResponse.hash}`)
 
   const txReceipt = await txResponse.wait();
-  console.log(txReceipt)
+  log(txReceipt)
 }
 
 commander
@@ -30,6 +34,7 @@ commander
   .option('--private_key <value>', 'The account private key')
   .option('--key <value>', 'The key to store against')
   .option('--value <value>', 'The value to store against the key')
+  .option('--log_file <value>', 'The output file to write to')
   .parse(process.argv)
 
 const options = commander.opts()
@@ -40,6 +45,6 @@ const provider = new ethers.providers.JsonRpcProvider(options.network)
 const wallet = new ethers.Wallet(options.private_key, provider)
 const contract = new ethers.Contract(options.address, abi, wallet)
 
-console.log('Starting transactions')
-sendTransaction().then(() => console.log('Completed transactions'));
+log(`Starting transactions`)
+sendTransaction().then(() => log(`Completed transactions`));
 

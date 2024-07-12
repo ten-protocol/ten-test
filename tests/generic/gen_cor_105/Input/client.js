@@ -1,7 +1,12 @@
+const fs = require('fs')
 const Web3 = require('web3')
 const commander = require('commander')
 
-require('console-stamp')(console, 'HH:MM:ss')
+function log(data) {
+    let timestamp = new Date().toISOString();
+    const entry = `${timestamp} ${data}\n`;
+    fs.appendFileSync(options.log_file, entry, { flag: 'a' });
+}
 
 async function sendTransaction() {
   const gasPrice = await web3.eth.getGasPrice()
@@ -14,15 +19,15 @@ async function sendTransaction() {
     value: options.amount,
     nonce: await web3.eth.getTransactionCount(sender_address),
   }
-  console.log('Transaction created')
+  log(`Transaction created`)
 
   const estimateGas = await web3.eth.estimateGas(transactionParameters)
-  console.log(`Gas estimate: ${estimateGas}`)
+  log(`Gas estimate: ${estimateGas}`)
   transactionParameters.gasLimit = estimateGas
 
   const signedTransaction = await web3.eth.accounts.signTransaction(transactionParameters, options.private_key);
   const txReceipt = await web3.eth.sendSignedTransaction(signedTransaction.rawTransaction)
-  console.log(`Transaction status: ${txReceipt.status}`)
+  log(`Transaction status: ${txReceipt.status}`)
 }
 
 commander
@@ -32,12 +37,13 @@ commander
   .option('--private_key <value>', 'The account private key')
   .option('--to <value>', 'The address to send funds to')
   .option('--amount <value>', 'The amount of funds to send')
+  .option('--log_file <value>', 'The output file to write to')
   .parse(process.argv)
 
 const options = commander.opts()
 const web3 = new Web3(`${options.network}`)
 const sender_address = web3.eth.accounts.privateKeyToAccount(options.private_key).address
 
-console.log('Starting transactions')
-sendTransaction().then(() => console.log('Completed transactions'));
+log(`Starting transactions`)
+sendTransaction().then(() => log(`Completed transactions`));
 
