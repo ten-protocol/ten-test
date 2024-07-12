@@ -40,7 +40,7 @@ class PySysTest(GenericNetworkTest):
 
         # validate correct count
         condition = '==3'
-        self.assertLineCount(file=stdout, expr='Received event type ItemSet1', condition=condition)
-        self.assertLineCount(file=stdout, expr='Received event type ItemSet2', condition=condition)
-        self.assertLineCount(file=stdout, expr='Received event type ItemSet3', condition=condition)
+        self.assertLineCount(file=logout, expr='Received event type ItemSet1', condition=condition)
+        self.assertLineCount(file=logout, expr='Received event type ItemSet2', condition=condition)
+        self.assertLineCount(file=logout, expr='Received event type ItemSet3', condition=condition)
 
