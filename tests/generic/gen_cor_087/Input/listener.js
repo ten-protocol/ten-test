@@ -17,8 +17,8 @@ function task() {
       ethers.utils.id(options.filter_key)
     ]
   }
-  provider.on(filter, (log, event) => {
-    decoded_log = interface.decodeEventLog('ItemSet3', log.data, log.topics)
+  provider.on(filter, (result) => {
+    decoded_log = interface.decodeEventLog('ItemSet3', result.data, result.topics)
     log(`Stored value = ${decoded_log.value.toNumber()}`)
   });
 }
