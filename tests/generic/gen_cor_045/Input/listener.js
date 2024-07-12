@@ -2,17 +2,20 @@ const fs = require('fs')
 const ethers = require('ethers')
 const commander = require('commander')
 
-require('console-stamp')(console, 'HH:MM:ss')
-
+function log(data) {
+    let timestamp = new Date().toISOString();
+    const entry = `${timestamp} ${data}\n`;
+    fs.appendFileSync(options.log_file, entry, { flag: 'a' });
+}
 
 function task() {
-  console.log('Starting task ...')
+  log('Starting task ...')
 
   game_contract.on(game_contract.filters.Guessed(), (_, guess, success, secret, event) => {
-      console.log(`Your guess of ${guess} had success ${success} ... secret is ${secret}`)
+      log(`Your guess of ${guess} had success ${success} ... secret is ${secret}`)
   })
 
-  console.log('Registered all subscriptions')
+  log('Registered all subscriptions')
 }
 
 commander
@@ -22,6 +25,7 @@ commander
   .option('--game_address <value>', 'Guess game contract address')
   .option('--game_abi <value>', 'Path to the Guess game ABI')
   .option('--pk_address <value>', 'The address of the account')
+  .option('--log_file <value>', 'The output file to write to')
   .parse(process.argv)
 
 const options = commander.opts()

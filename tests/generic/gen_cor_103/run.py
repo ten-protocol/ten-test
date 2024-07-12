@@ -27,12 +27,14 @@ class PySysTest(GenericNetworkTest):
         # create the client
         stdout = os.path.join(self.output, 'client.out')
         stderr = os.path.join(self.output, 'client.err')
+        logout = os.path.join(self.output, 'client.log')
         script = os.path.join(self.input, 'client.js')
         args = []
         args.extend(['--network', network.connection_url()])
         args.extend(['--private_key', private_key])
         args.extend(['--to', to])
         args.extend(['--amount', str(amount)])
+        args.extend(['--log_file', '%s' % logout])
         self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting transactions', timeout=10)
-        self.waitForGrep(file=stdout, expr='Completed transactions', timeout=40)
+        self.waitForGrep(file=logout, expr='Starting transactions', timeout=10)
+        self.waitForGrep(file=logout, expr='Completed transactions', timeout=40)

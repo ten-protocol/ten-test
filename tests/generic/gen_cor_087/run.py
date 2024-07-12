@@ -17,14 +17,16 @@ class PySysTest(GenericNetworkTest):
         # run a background script to filter and collect events
         stdout = os.path.join(self.output, 'listener.out')
         stderr = os.path.join(self.output, 'listener.err')
+        logout = os.path.join(self.output, 'listener.log')
         script = os.path.join(self.input, 'listener.js')
         args = []
         args.extend(['--network_ws', network.connection_url(web_socket=True)])
         args.extend(['--address', '%s' % storage.address])
         args.extend(['--contract_abi', '%s' % storage.abi_path])
         args.extend(['--filter_key', 'k1'])
+        args.extend(['--log_file', '%s' % logout])
         self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
+        self.waitForGrep(file=logout, expr='Starting task ...', timeout=10)
 
         # perform some transactions with a sleep in between
         network.transact(self, web3, storage.contract.functions.setItem('k1', 1), account, storage.GAS_LIMIT)
@@ -36,7 +38,7 @@ class PySysTest(GenericNetworkTest):
         self.wait(float(self.block_time) * 1.1)
 
         # wait and validate
-        self.waitForGrep(file=stdout, expr='Stored value = 6', timeout=20)
+        self.waitForGrep(file=logout, expr='Stored value = 6', timeout=20)
         expr_list = ['Stored value = 1', 'Stored value = 6']
-        self.assertOrderedGrep(file=stdout, exprList=expr_list)
-        self.assertLineCount(file=stdout, expr='Stored value = [0-9]$', condition='== 2')
+        self.assertOrderedGrep(file=logout, exprList=expr_list)
+        self.assertLineCount(file=logout, expr='Stored value = [0-9]$', condition='== 2')

@@ -1,10 +1,15 @@
+const fs = require('fs')
 const Web3 = require('web3')
 const commander = require('commander')
 
-require('console-stamp')(console, 'HH:MM:ss')
+function log(data) {
+    let timestamp = new Date().toISOString();
+    const entry = `${timestamp} ${data}\n`;
+    fs.appendFileSync(options.log_file, entry, { flag: 'a' });
+}
 
 function task(address) {
-  console.log('Starting subscription for address', address)
+  log(`Starting subscription for address ${address}`)
   topic = web3.utils.sha3('IndexedAddressAndNumber(address,uint256)')
   topics = [ topic, address ]
   web3.eth.subscribe('logs', {
@@ -12,14 +17,14 @@ function task(address) {
     },
     function(error, result) {
       if (error) {
-        console.log('Error returned is ', error)
+        log(`Error returned is ${error}`)
       } else {
-        console.log('Result =', Web3.utils.hexToNumber(result.data))
+        log(`Result = ${Web3.utils.hexToNumber(result.data)}`)
       }
     }
   ) .on("connected", function(subscriptionId){
-       console.log('Subscribed for event logs')
-       console.log('Subscription id is', subscriptionId)
+       log(`Subscribed for event logs`)
+       log(`Subscription id is ${subscriptionId}`)
   })
 }
 
@@ -28,6 +33,7 @@ commander
   .usage('[OPTIONS]...')
   .option('--network_ws <value>', 'Web socket connection URL to the network')
   .option('--address <value>', 'The externally owned address to filter on')
+  .option('--log_file <value>', 'The output file to write to')
   .parse(process.argv)
 
 const options = commander.opts()

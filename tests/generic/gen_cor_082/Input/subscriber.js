@@ -1,10 +1,15 @@
+const fs = require('fs')
 const Web3 = require('web3')
 const commander = require('commander')
 
-require('console-stamp')(console, 'HH:MM:ss')
+function log(data) {
+    let timestamp = new Date().toISOString();
+    const entry = `${timestamp} ${data}\n`;
+    fs.appendFileSync(options.log_file, entry, { flag: 'a' });
+}
 
 function task() {
-  console.log('Starting task ...')
+  log(`Starting task ...`)
   topic = web3.utils.sha3('ItemSet1(string,uint256)')
   inputs = [{"indexed": true, "name": "key", "type": "string"}, {"indexed": false, "name": "value", "type": "uint256"}]
   topics = [ topic, [web3.utils.sha3(options.filter_key1), web3.utils.sha3(options.filter_key2)] ]
@@ -14,15 +19,15 @@ function task() {
     },
     function(error, result) {
       if (error) {
-        console.log('Error returned is ', error)
+        log(`Error returned is ${error}`)
       } else {
         result = web3.eth.abi.decodeLog(inputs, result.data, result.topics)
-        console.log('Stored value =', result.value)
+        log(`Stored value = ${result.value}`)
       }
     }
   ) .on("connected", function(subscriptionId){
-       console.log('Subscribed for event logs')
-       console.log('Subscription id is', subscriptionId)
+       log('Subscribed for event logs')
+       log('Subscription id is', subscriptionId)
   })
 }
 
@@ -32,6 +37,7 @@ commander
   .option('--network_ws <value>', 'Web socket connection URL to the network')
   .option('--filter_key1 <value>', 'The first key value to filter on')
   .option('--filter_key2 <value>', 'The second key value to filter on')
+  .option('--log_file <value>', 'The output file to write to')
   .parse(process.argv)
 
 const options = commander.opts()

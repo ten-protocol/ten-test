@@ -2,17 +2,21 @@ const fs = require('fs')
 const Web3 = require('web3')
 const commander = require('commander')
 
-require('console-stamp')(console, 'HH:MM:ss');
+function log(data) {
+    let timestamp = new Date().toISOString();
+    const entry = `${timestamp} ${data}\n`;
+    fs.appendFileSync(options.log_file, entry, { flag: 'a' });
+}
 
 function task() {
-  console.log('Starting task ...')
+  log('Starting task ...')
   contract.events.Stored({fromBlock:'latest'},
     function(error, result) {
       if (error) {
-        console.log('Error returned is ', error)
+        log(`Error returned is ${error}`)
       } else {
-        console.log(result);
-        console.log('Stored value =', result.returnValues['value']);
+        log(result);
+        log(`Stored value = ${result.returnValues['value']}`);
       }
     }
   )
@@ -24,6 +28,7 @@ commander
   .option('--network_ws <value>', 'Web socket connection URL to the network')
   .option('--address <value>', 'Web socket connection URL to the network')
   .option('--contract_abi <value>', 'Web socket connection URL to the network')
+  .option('--log_file <value>', 'The output file to write to')
   .parse(process.argv)
 
 const options = commander.opts()

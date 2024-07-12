@@ -17,11 +17,13 @@ class PySysTest(GenericNetworkTest):
         # run a background script to filter and collect events
         stdout = os.path.join(self.output, 'block_notifier.out')
         stderr = os.path.join(self.output, 'block_notifier.err')
+        logout = os.path.join(self.output, 'block_notifier.log')
         script = os.path.join(self.input, 'block_notifier.js')
         args = []
         args.extend(['--network_ws', network.connection_url(web_socket=True)])
+        args.extend(['--log_file', '%s' % logout])
         self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting task ...', timeout=10)
+        self.waitForGrep(file=logout, expr='Starting task ...', timeout=10)
 
         network.transact(self, web3, storage.contract.functions.store(0), account, storage.GAS_LIMIT)
         self.wait(float(self.block_time))
@@ -33,9 +35,9 @@ class PySysTest(GenericNetworkTest):
         self.wait(float(self.block_time))
 
         # wait and validate
-        self.waitForGrep(file='block_notifier.out', expr='Block =', condition='==4', timeout=120)
+        self.waitForGrep(file=logout, expr='Block =', condition='==4', timeout=120)
 
         network.transact(self, web3, storage.contract.functions.store(4), account, storage.GAS_LIMIT)
         self.wait(float(self.block_time))
 
-        self.assertLineCount(file='block_notifier.out', expr='Block =', condition='==4')
+        self.assertLineCount(file=logout, expr='Block =', condition='==4')

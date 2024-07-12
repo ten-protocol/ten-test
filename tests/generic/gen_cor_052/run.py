@@ -18,8 +18,8 @@ class PySysTest(GenericNetworkTest):
         # we don't need to manage the nonce
         self.client(network, error, 'ethers')
         self.client(network, error, 'web3')
-        self.assertGrep(file='client_ethers.out', expr='Error: transaction failed')
-        self.assertGrep(file='client_web3.out', expr='Error: Transaction has been reverted by the EVM')
+        self.assertGrep(file='client_ethers.log', expr='Error: transaction failed')
+        self.assertGrep(file='client_web3.log', expr='Error: Transaction has been reverted by the EVM')
 
     def client(self, network, contract, type):
         private_key = secrets.token_hex(32)
@@ -29,13 +29,15 @@ class PySysTest(GenericNetworkTest):
         # create the client
         stdout = os.path.join(self.output, 'client_%s.out' % type)
         stderr = os.path.join(self.output, 'client_%s.err' % type)
+        logout = os.path.join(self.output, 'client_%s.log' % type)
         script = os.path.join(self.input, 'client_%s.js' % type)
         args = []
         args.extend(['--network', network.connection_url()])
         args.extend(['--address', contract.address])
         args.extend(['--contract_abi', contract.abi_path])
         args.extend(['--private_key', private_key])
+        args.extend(['--log_file', '%s' % logout])
         self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting transactions', timeout=10)
-        self.waitForGrep(file=stdout, expr='Completed transactions', timeout=40)
+        self.waitForGrep(file=logout, expr='Starting transactions', timeout=10)
+        self.waitForGrep(file=logout, expr='Completed transactions', timeout=40)
 
