@@ -1,6 +1,7 @@
 import base64, ast, os, shutil, re
 from web3 import Web3
 from eth_abi.abi import encode
+from pysys.constants import PROJECT
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.bridge import BridgeUser
 from ten.test.utils.properties import Properties
@@ -65,7 +66,7 @@ class PySysTest(TenNetworkTest):
     def parse_merkle_output(self, dump_file, hash_result):
         """Get the root and proof of a leaf entry in a tree dump to file. """
         project = os.path.join(self.output, 'project')
-        shutil.copytree(self.input, project)
+        shutil.copytree(os.path.join(PROJECT.root,'src','javascript','project','merkle_tree'), project)
         self.run_npm(args=['install', '--yes'], stdout='npm.out', stderr='npm.err', working_dir=project)
         stdout = os.path.join(self.output, 'merkle.out')
         stderr = os.path.join(self.output, 'merkle.err')
