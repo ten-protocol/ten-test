@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Transact: ethers6 client send a single transaction to a contract function</title>
+        <purpose><![CDATA[
+Skipped due to https://github.com/ten-protocol/ten-internal/issues/3637
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>sanity</group>
+            <group>ethers</group>
+            <group>skip</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+            <mode>arbitrum.sepolia</mode>
+            <mode>ganache</mode>
+            <mode>sepolia</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

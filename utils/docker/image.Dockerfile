@@ -16,6 +16,7 @@ RUN npm install console-stamp --global
 RUN npm install ganache --global
 RUN npm install web3@1.9.0 --global
 RUN npm install ethers@5.7.2 --global
+RUN npm install ethers6@npm:ethers@6.13.1 --global
 RUN npm install commander@11.1.0 --global
 
 RUN apt install -y vim
