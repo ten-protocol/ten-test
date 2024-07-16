@@ -1,7 +1,3 @@
-import base64, ast, os, shutil, re
-from web3 import Web3
-from eth_abi.abi import encode
-from pysys.constants import PROJECT
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.bridge import BridgeUser
 from ten.test.helpers.merkle_tree import MerkleTreeHelper

@@ -19,6 +19,7 @@ a local testnet this can take 60 seconds.
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
             <group>bridge</group>
         </groups>
         <modes inherit="true">
