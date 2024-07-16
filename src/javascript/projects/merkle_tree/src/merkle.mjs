@@ -8,7 +8,7 @@ program
   .version('1.0.0', '-v, --version')
   .usage('[OPTIONS]...')
   .option('--dump_file <value>', 'Input file containing the leafs')
-  .option('--leaf_for_proof <value>', 'The leaf used for the proof')
+  .option('--leaf_hash <value>', 'The leaf used for the proof')
   .parse(process.argv)
 
   const options = program.opts()
@@ -24,6 +24,6 @@ program
         const tree = StandardMerkleTree.of(result, ["string", "bytes32"]);
         console.log('Root:', tree.root);
 
-        const proof = tree.getProof(options.leaf_for_proof.split(','));
+        const proof = tree.getProof(options.leaf_hash.split(','));
         console.log('Proof:', proof[0]);
     });

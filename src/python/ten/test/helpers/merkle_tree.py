@@ -30,12 +30,12 @@ class MerkleTreeHelper:
         """Instantiate an instance. """
         self.test = test
 
-    def value_transfer_to_hash(self,value_transfer):
-        """Return the hash of the value transfer event, as stored in the cross chain tree. """
+    def process_transfer(self, value_transfer):
+        """Return the msg and hash of the value transfer event, as stored in the cross chain tree. """
         abi_types = ['address', 'address', 'uint256', 'uint64']
         msg = [value_transfer['sender'], value_transfer['receiver'], value_transfer['amount'], value_transfer['sequence']]
-        encoded_data = encode(abi_types, msg)
-        return Web3.keccak(encoded_data).hex()
+        msg_hash = Web3.keccak(encode(abi_types, msg)).hex()
+        return msg, msg_hash
 
     def dump_tree(self, web3, tx_receipt, dump_file):
         """From a transaction receipt, extract block and the cross chain tree, decode it and dump to file.
@@ -51,7 +51,7 @@ class MerkleTreeHelper:
             for entry in decoded: fp.write('%s,%s\n' % (entry[0], entry[1]))
         return block, decoded
 
-    def parse_merkle_output(self, dump_file, leaf_for_proof):
+    def get_proof(self, dump_file, leaf_hash):
         """From a cross chain tree dump file, construct the merkle tree and obtain a proof of leaf entry.
 
         The method spawns a javascript process to read in the dump file containing the value transfer events and cross
@@ -64,7 +64,7 @@ class MerkleTreeHelper:
         stderr = os.path.join(self.test.output, 'merkle.err')
         script = os.path.join(project, 'src/merkle.mjs')
         args = ['--dump_file', os.path.join(self.test.output, dump_file)]
-        args.extend(['--leaf_for_proof', 'v,%s' % leaf_for_proof])
+        args.extend(['--leaf_hash', 'v,%s' % leaf_hash])
         self.test.run_javascript(script, stdout, stderr, args)
         self.test.waitForGrep(os.path.join(self.test.output, 'merkle.out'), expr='Proof:')
 
