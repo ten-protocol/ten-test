@@ -25,7 +25,9 @@ class PySysTest(TenNetworkTest):
         self.send_tx(accnt, nonce1, tx_sign1)
         tx_hash = self.send_tx(accnt, nonce2, tx_sign2)
         tx_receipt = self.wait_tx(accnt, nonce2, tx_hash)
-        value_transfer = accnt.l2.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
+
+        logs = accnt.l2.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
+        value_transfer = accnt.l2.get_value_transfer_event(logs[1])
 
         # dump the tree, log out details and assert the transfer is in the tree
         mh = MerkleTreeHelper.create(self)
