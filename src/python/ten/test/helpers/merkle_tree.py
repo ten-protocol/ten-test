@@ -58,7 +58,7 @@ class MerkleTreeHelper:
         chain messages, to independently contstruct the tree, and then to obtain a proof of a leaf inclusion.
         """
         project = os.path.join(self.test.output, 'project')
-        shutil.copytree(os.path.join(PROJECT.root,'src','javascript','project','merkle_tree'), project)
+        shutil.copytree(os.path.join(PROJECT.root,'src','javascript','projects','merkle_tree'), project)
         self.test.run_npm(args=['install', '--yes'], stdout='npm.out', stderr='npm.err', working_dir=project)
         stdout = os.path.join(self.test.output, 'merkle.out')
         stderr = os.path.join(self.test.output, 'merkle.err')

@@ -292,7 +292,7 @@ class TenNetworkTest(GenericNetworkTest):
     def scan_get_approx_total_transaction_count(self):
         """Get the approx. total transaction count as part of the scan_ api.
 
-        Note this an an approx count which reduces overhead on the node and therefore should be used with caution.
+        Note this an approx count which reduces overhead on the node and therefore should be used with caution.
         If an exact count is used, use the method scan_get_total_transaction_count. """
         data = {"jsonrpc": "2.0", "method": "scan_getTotalTransactionCount", "params": [], "id": self.MSG_ID }
         response = self.post(data)

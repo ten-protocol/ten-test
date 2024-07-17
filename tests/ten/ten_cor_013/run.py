@@ -10,27 +10,25 @@ class PySysTest(TenNetworkTest):
         web3, account = network.connect_account1(self)
 
         # log the contracts before, deploy contract, and log contracts after
-        contracts_before = self.scan_get_total_contract_count()
-        transactions_before = self.scan_get_total_transaction_count()
-        self.log.info('Total contract count is %d' % contracts_before)
-        self.log.info('Total transaction count is %d' % transactions_before)
-
+        cnt_before_deploy = self.scan_get_total_contract_count()
+        txs_before_deploy = self.scan_get_total_transaction_count()
         storage = Storage(self, web3, 0)
         storage.deploy(network, account)
 
-        contracts_after = self.scan_get_total_contract_count()
-        transactions_after = self.scan_get_total_transaction_count()
-        self.log.info('Total contract count is %d' % contracts_after)
-        self.log.info('Total transaction count is %d' % transactions_after)
+        cnt_after_deploy = self.scan_get_total_contract_count()
+        txs_after_deploy = self.scan_get_total_transaction_count()
+        self.log.info('Contract count before deployment:    %d' % cnt_before_deploy)
+        self.log.info('Contract count after deployment:     %d' % cnt_after_deploy)
+        self.log.info('Transaction count before deployment: %d' % txs_before_deploy)
+        self.log.info('Transaction count after deployment:  %d' % txs_after_deploy)
 
         # perform some more transactions and then log the before and after transaction count
         for i in range(0,4):
             network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS_LIMIT)
+        txs_after_storing = self.scan_get_total_transaction_count()
+        self.log.info('Transaction count after txs: %d' % txs_after_storing)
 
-        transactions_after_storing = self.scan_get_total_transaction_count()
-        self.log.info('Total transaction count is %d' % transactions_after_storing)
-
-        self.assertTrue(contracts_after == (contracts_before + 1))
-        self.assertTrue(transactions_after == (transactions_before + 1))
-        self.assertTrue(transactions_after_storing == (transactions_after + 4))
+        self.assertTrue(cnt_after_deploy == (cnt_before_deploy + 1), assertMessage='Contract count should increase by 1 after deploy')
+        self.assertTrue(txs_after_deploy == (txs_before_deploy + 1), assertMessage='Tx count should increase by 1 after deploy')
+        self.assertTrue(txs_after_storing == (txs_after_deploy + 4), assertMessage='Tx count should increase by 4 after storing')
 
