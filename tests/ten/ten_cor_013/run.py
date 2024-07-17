@@ -22,12 +22,15 @@ class PySysTest(TenNetworkTest):
         self.log.info('Transaction count before deployment: %d' % txs_before_deploy)
         self.log.info('Transaction count after deployment:  %d' % txs_after_deploy)
 
-        # perform some more transactions and then log the before and after transaction count
+        # perform some transactions
         for i in range(0,4):
             network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS_LIMIT)
-        txs_after_storing = self.scan_get_total_transaction_count()
-        self.log.info('Transaction count after txs: %d' % txs_after_storing)
+            self.log.info('Count after single tx: %d' % self.scan_get_total_transaction_count())
 
+        txs_after_storing = self.scan_get_total_transaction_count()
+        self.log.info('Transaction count after all txs: %d' % txs_after_storing)
+
+        # assert on the expected changes
         self.assertTrue(cnt_after_deploy == (cnt_before_deploy + 1), assertMessage='Contract count should increase by 1 after deploy')
         self.assertTrue(txs_after_deploy == (txs_before_deploy + 1), assertMessage='Tx count should increase by 1 after deploy')
         self.assertTrue(txs_after_storing == (txs_after_deploy + 4), assertMessage='Tx count should increase by 4 after storing')
