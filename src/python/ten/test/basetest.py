@@ -301,7 +301,7 @@ class TenNetworkTest(GenericNetworkTest):
         return None
 
     def scan_get_total_transaction_count(self):
-        """Get the ltotal transaction count as part of the scan_ api."""
+        """Get the total transaction count as part of the scan_ api."""
         data = {"jsonrpc": "2.0", "method": "scan_getTotalTransactionsQuery", "params": [], "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return response.json()['result']

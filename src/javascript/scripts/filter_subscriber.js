@@ -14,7 +14,7 @@ function decodeLog(log, decode_as_stored_event) {
 }
 
 function subscribe() {
-  dict = {}
+  dict = []
   if (options.filter_from_block) dict["fromBlock"] = options.filter_from_block
   if (options.filter_address) dict["address"] = options.filter_address
   if (options.filter_topics) dict["topics"] = filter_topics

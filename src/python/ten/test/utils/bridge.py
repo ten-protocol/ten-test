@@ -189,6 +189,7 @@ class L2BridgeDetails(BridgeDetails):
         xchain = L2CrossChainMessenger(test, web3)
         super().__init__(test, web3, account, network, bridge, bus, xchain, name)
         self.tokens = {}
+        self.send_native_count = 0
 
     def set_token_contract(self, address, name, symbol):
         """Store a reference to the ERC20 token, keyed on its symbol. """
@@ -245,6 +246,8 @@ class L2BridgeDetails(BridgeDetails):
             }
         )
         tx_receipt = self.network.tx(self.test, self.web3, build_tx, self.account, timeout=timeout)
+        self.network.dump(tx_receipt, 'send_native_tx_receipt_%d.json'%self.send_native_count)
+        self.send_native_count = self.send_native_count+1
 
         value_transfer = self.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
         log_message = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
