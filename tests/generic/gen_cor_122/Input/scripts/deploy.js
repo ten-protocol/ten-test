@@ -7,11 +7,9 @@ async function main() {
   const address = await doublev1.getAddress()
   console.log("Proxy deployed at", address);
 
-  // @todo comment back in when we support upgrades against proxies
-  //const DoubleV2 = await ethers.getContractFactory("DoubleV2");
-  //const doublev2 = await upgrades.upgradeProxy(address, DoubleV2);
-  //console.log("DoubleV2 deployed to:", await doublev2.getAddress());
-
+  const DoubleV2 = await ethers.getContractFactory("DoubleV2");
+  const doublev2 = await upgrades.upgradeProxy(address, DoubleV2);
+  console.log("DoubleV2 deployed to:", await doublev2.getAddress());
 }
 
 main().catch((error) => {

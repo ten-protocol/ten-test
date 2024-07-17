@@ -50,10 +50,9 @@ class PySysTest(GenericNetworkTest):
         self.assertTrue(ret == 4)
 
         # make a call to v2 and assert we get the correct returned result
-        # @todo comment back in when we support upgrades against proxies
-        #with open(os.path.join(self.output,'project','artifacts','contracts','DoubleV2.sol', 'DoubleV2.json')) as f:
-        #    contract = web3.eth.contract(address=address, abi=json.load(f)['abi'])
-        #ret = int(contract.functions.doItTwice(2).call())
-        #self.log.info('Returned value is %d', ret)
-        #self.assertTrue(ret == 8)
+        with open(os.path.join(self.output,'project','artifacts','contracts','DoubleV2.sol', 'DoubleV2.json')) as f:
+            contract = web3.eth.contract(address=address, abi=json.load(f)['abi'])
+        ret = int(contract.functions.doItTwice(2).call())
+        self.log.info('Returned value is %d', ret)
+        self.assertTrue(ret == 8)
         
