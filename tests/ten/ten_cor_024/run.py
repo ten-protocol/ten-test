@@ -38,10 +38,6 @@ class PySysTest(TenNetworkTest):
 
         # dump the tx receipt to file
         tx_dict = self.recursive_dict(tx_receipt)
-        self.log.info(tx_dict)
-        for key, value in tx_dict.items():
-            if isinstance(value, bytes):
-                tx_dict[key] = value.hex()
         with open(os.path.join(self.output, 'transaction_receipt.json'), 'w') as file:
             json.dump(tx_dict, file, indent=4)
 
