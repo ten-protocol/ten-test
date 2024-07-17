@@ -6,7 +6,7 @@ require('console-stamp')(console, 'HH:MM:ss')
 
 function subscribe() {
   console.log('Subscribing for event logs')
-  subscription = web3.eth.subscribe('logs', [],
+  subscription = web3.eth.subscribe('logs', {},
     function(error, result) {
       if (error) {
         console.log('Error returned is ', error)

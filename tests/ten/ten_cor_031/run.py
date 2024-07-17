@@ -26,16 +26,18 @@ class PySysTest(TenNetworkTest):
         network.transact(self, web3, storage.contract.functions.store(1), account, storage.GAS_LIMIT)
         network.transact(self, web3, storage.contract.functions.store(2), account, storage.GAS_LIMIT)
 
-        self.waitForSignal(file='subscriber.out', expr='Stored value = [0-9]', condition='==2', timeout=10)
-        self.assertOrderedGrep(file='subscriber.out', exprList=['Stored value = 1', 'Stored value = 2'])
-        self.assertLineCount(file='subscriber.out', expr='Stored value = [0-9]', condition='==2')
+        self.waitForSignal(file='subscriber.log', expr='Stored value = [0-9]', condition='==2', timeout=10)
+        self.assertOrderedGrep(file='subscriber.log', exprList=['Stored value = 1', 'Stored value = 2'])
+        self.assertLineCount(file='subscriber.log', expr='Stored value = [0-9]', condition='==2')
 
     def subscribe(self, network):
         # run a background script to filter and collect events
         stdout = os.path.join(self.output, 'subscriber.out')
         stderr = os.path.join(self.output, 'subscriber.err')
+        logout = os.path.join(self.output, 'subscriber.log')
         script = os.path.join(self.input, 'subscriber.js')
         args = []
         args.extend(['--network_ws', network.connection_url(web_socket=True)])
+        args.extend(['--log_file', '%s' % logout])
         self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Subscribed for event logs', timeout=10)
+        self.waitForGrep(file=logout, expr='Subscribed for event logs', timeout=10)

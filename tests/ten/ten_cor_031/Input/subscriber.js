@@ -9,7 +9,7 @@ function log(data) {
 }
 
 function subscribe() {
-  subscription = web3.eth.subscribe('logs', [],
+  subscription = web3.eth.subscribe('logs', {},
     function(error, result) {
       if (error)
         log(`Error returned is ${error}`)
@@ -19,8 +19,9 @@ function subscribe() {
       log(`Subscription id is ${subscription.id}`)
       log(`Subscription arguments are ${subscription.arguments}`)
   })
-  .on("data", function(log){
-      log(`Stored value = ${Web3.utils.hexToNumber(log.data)}`)
+  .on("data", function(event){
+      value = Web3.utils.hexToNumber(event.data)
+      log(`Stored value = ${value}`)
   })
 }
 
