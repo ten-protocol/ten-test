@@ -1,3 +1,4 @@
+import time
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.storage import Storage
 
@@ -25,6 +26,7 @@ class PySysTest(TenNetworkTest):
         # perform some transactions
         for i in range(0,4):
             network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS_LIMIT)
+            time.sleep(1)
             self.log.info('Count after single tx: %d' % self.scan_get_total_transaction_count())
 
         txs_after_storing = self.scan_get_total_transaction_count()
