@@ -7,6 +7,8 @@ __pycache__/
 .idea/
 *.iml
 .DS_Store
+.swp
+.workflow
 
 # pysys related
 **/Output/*

@@ -11,9 +11,9 @@ function log(data) {
 async function sendTransaction() {
   const gasPrice = await provider.getGasPrice();
   const estimatedGas = await contract.estimateGas.setItem(options.key, options.value);
-  console.log(`Wallet address: ${wallet.address}`)
-  console.log(`Gas Price: ${gasPrice}`)
-  console.log(`Estimated Gas: ${estimatedGas}`)
+  log(`Wallet address: ${wallet.address}`)
+  log(`Gas Price: ${gasPrice}`)
+  log(`Estimated Gas: ${estimatedGas}`)
 
   const tx = await contract.populateTransaction.setItem(options.key, options.value, {
     from: wallet.address,
@@ -23,10 +23,10 @@ async function sendTransaction() {
   log(`Transaction created`)
 
   const txResponse = await wallet.sendTransaction(tx)
-  console.log(`Transaction sent: ${txResponse.hash}`)
+  log(`Transaction sent: ${txResponse.hash}`)
 
   const txReceipt = await txResponse.wait();
-  console.log(`Transaction status: ${txReceipt.status}`)
+  log(`Transaction status: ${txReceipt.status}`)
 }
 
 commander

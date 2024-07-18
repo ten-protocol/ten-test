@@ -1,4 +1,4 @@
-import time
+import time, os
 from web3._utils.events import EventLogErrorFlags
 from ten.test.contracts.erc20 import ERC20Token
 from ten.test.contracts.bridge import WrappedERC20
@@ -251,7 +251,7 @@ class L2BridgeDetails(BridgeDetails):
             }
         )
         tx_receipt = self.network.tx(self.test, self.web3, build_tx, self.account, timeout=timeout)
-        if dump_file: self.network.dump(tx_receipt, dump_file)
+        if dump_file: self.network.dump(tx_receipt, os.path.join(self.test.output, dump_file))
 
         value_transfer = self.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
         log_message = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)

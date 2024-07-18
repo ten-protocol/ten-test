@@ -1,4 +1,3 @@
-import os, json
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.bridge import BridgeUser
 from ten.test.helpers.merkle_tree import MerkleTreeHelper
@@ -6,8 +5,6 @@ from ten.test.utils.properties import Properties
 
 
 class PySysTest(TenNetworkTest):
-
-
 
     def execute(self):
         props = Properties()
@@ -20,7 +17,7 @@ class PySysTest(TenNetworkTest):
 
         # send funds from the L2 to the L1
         self.log.info('Send native from L2 to L1')
-        tx_receipt, value_transfer, _ = accnt.l2.send_native(accnt.l1.account.address, transfer)
+        tx_receipt, value_transfer, _ = accnt.l2.send_native(accnt.l1.account.address, transfer, dump_file='send_native.tx')
         l2_cost = int(tx_receipt.gasUsed) * accnt.l2.web3.eth.gas_price
 
         # dump the tree, log out details and assert the transfer is in the tree
