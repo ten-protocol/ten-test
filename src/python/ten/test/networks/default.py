@@ -1,8 +1,24 @@
-import time
+import time, json
 from web3 import Web3
+from web3.datastructures import AttributeDict
 from web3.exceptions import TimeExhausted
 from pysys.constants import *
 from ten.test.utils.properties import Properties
+
+
+def attributedict_to_dict(obj):
+    """Convert a web3.datastructures.AttributeDict to a regular dictionary."""
+    if isinstance(obj, AttributeDict):
+        data = {}
+        for (key, value) in obj.items():
+            data[key] = attributedict_to_dict(value)
+        return data
+    elif isinstance(obj, list):
+        return [attributedict_to_dict(item) for item in obj]
+    elif isinstance(obj, bytes):
+        return obj.hex()
+    else:
+        return obj
 
 
 class DefaultPostLondon:
@@ -194,6 +210,12 @@ class DefaultPostLondon:
             self.log.warn('Replaying the transaction did not throw an error')
         except Exception as e:
             self.log.error('Replay call: %s', e)
+
+    def dump(self, obj, filename):
+        """Dump a web3 transaction response to output file. """
+        tx_dict = attributedict_to_dict(obj)
+        with open(os.path.join(self.test.output, filename), 'w') as file:
+            json.dump(tx_dict, file, indent=4)
 
 
 class DefaultPreLondon(DefaultPostLondon):
