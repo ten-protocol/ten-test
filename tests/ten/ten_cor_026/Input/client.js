@@ -38,6 +38,7 @@ const options = commander.opts()
 var json = fs.readFileSync(options.contract_abi)
 var abi = JSON.parse(json)
 
+console.log(`Network URL: ${options.network}`)
 const provider = new ethers.providers.JsonRpcProvider(options.network)
 const wallet = new ethers.Wallet(options.sender_pk, provider)
 const contract = new ethers.Contract(options.contract_address, abi, wallet)

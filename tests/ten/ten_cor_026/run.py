@@ -1,4 +1,5 @@
 import os
+from pysys.constants import FAILED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 from ten.test.contracts.bridge import EthereumBridge
@@ -15,6 +16,8 @@ class PySysTest(TenNetworkTest):
 
         # execute the transfer using ethers
         self.client(network, bridge.address, bridge.abi_path, private_key, account.address, 1000)
+
+        self.addOutcome(FAILED)
 
     def client(self, network, address, abi_path, private_key, to, amount):
         # create the client
