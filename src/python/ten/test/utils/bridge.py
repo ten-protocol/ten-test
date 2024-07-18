@@ -177,6 +177,7 @@ class L1BridgeDetails(BridgeDetails):
                                        timeout=timeout, gas_attempts=20)
         return tx_receipt
 
+
 class L2BridgeDetails(BridgeDetails):
     """Abstraction of the L2 side of the bridge for a particular address. """
 
@@ -189,7 +190,6 @@ class L2BridgeDetails(BridgeDetails):
         xchain = L2CrossChainMessenger(test, web3)
         super().__init__(test, web3, account, network, bridge, bus, xchain, name)
         self.tokens = {}
-        self.send_native_count = 0
 
     def set_token_contract(self, address, name, symbol):
         """Store a reference to the ERC20 token, keyed on its symbol. """
@@ -207,22 +207,25 @@ class L2BridgeDetails(BridgeDetails):
         token = self.tokens[symbol]
         return token.contract.functions.balanceOf(self.account.address).call({"from":self.account.address})
 
-    def relay_whitelist_message(self, xchain_msg, timeout=60):
+    def relay_whitelist_message(self, xchain_msg, timeout=60, dump_file=None):
         """Relay a cross chain message specific to a whitelisting. """
         tx_receipt = self.relay_message(xchain_msg, timeout=timeout)
+        if dump_file: self.network.dump(tx_receipt, dump_file)
         logs = self.bridge.contract.events.CreatedWrappedToken().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, logs[1]['args']['localAddress']
 
-    def approve_token(self, symbol, approval_address, amount, timeout=60):
+    def approve_token(self, symbol, approval_address, amount, timeout=60, dump_file=None):
         """Approve another address to spend ERC20 on behalf of this account. """
         token = self.tokens[symbol]
         tx_receipt = self.network.transact(self.test, self.web3,
                                            token.contract.functions.approve(approval_address, amount),
                                            self.account, gas_limit=token.GAS_LIMIT,
                                            timeout=timeout)
+        if dump_file: self.network.dump(tx_receipt, dump_file)
+
         return tx_receipt
 
-    def send_erc20(self, symbol, address, amount, timeout=60):
+    def send_erc20(self, symbol, address, amount, timeout=60, dump_file=None):
         """Send tokens across the bridge.
 
         The ERC20 contract must have been whitelisted for this operation to be successful.
@@ -233,10 +236,12 @@ class L2BridgeDetails(BridgeDetails):
                                                                                     amount, address),
                                            self.account, gas_limit=self.bridge.GAS_LIMIT,
                                            timeout=timeout)
+        if dump_file: self.network.dump(tx_receipt, dump_file)
+
         logs = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, self.get_cross_chain_message(logs[1])
 
-    def send_native(self, address, amount, timeout=60):
+    def send_native(self, address, amount, timeout=60, dump_file=None):
         """Send native currency across the bridge."""
         build_tx = self.bridge.contract.functions.sendNative(address).build_transaction(
             {
@@ -246,19 +251,19 @@ class L2BridgeDetails(BridgeDetails):
             }
         )
         tx_receipt = self.network.tx(self.test, self.web3, build_tx, self.account, timeout=timeout)
-        self.network.dump(tx_receipt, 'send_native_tx_receipt_%d.json'%self.send_native_count)
-        self.send_native_count = self.send_native_count+1
+        if dump_file: self.network.dump(tx_receipt, dump_file)
 
         value_transfer = self.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
         log_message = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, self.get_value_transfer_event(value_transfer[1]), self.get_cross_chain_message(log_message[0])
 
-    def relay_message(self, xchain_msg, timeout=60):
+    def relay_message(self, xchain_msg, timeout=60, dump_file=None):
         """Relay a cross chain message. """
         tx_receipt = self.network.transact(self.test, self.web3,
                                            self.xchain.contract.functions.relayMessage(xchain_msg),
                                            self.account, gas_limit=self.xchain.GAS_LIMIT,
                                            timeout=timeout)
+        if dump_file: self.network.dump(tx_receipt, dump_file)
         return tx_receipt
 
 

@@ -6,15 +6,15 @@ from pysys.constants import *
 from ten.test.utils.properties import Properties
 
 
-def recursive_dict(obj):
-    """Convert a web3.AttributeDict to a regular dictionary."""
+def attributedict_to_dict(obj):
+    """Convert a web3.datastructures.AttributeDict to a regular dictionary."""
     if isinstance(obj, AttributeDict):
         data = {}
         for (key, value) in obj.items():
-            data[key] = recursive_dict(value)
+            data[key] = attributedict_to_dict(value)
         return data
     elif isinstance(obj, list):
-        return [recursive_dict(item) for item in obj]
+        return [attributedict_to_dict(item) for item in obj]
     elif isinstance(obj, bytes):
         return obj.hex()
     else:
@@ -212,8 +212,8 @@ class DefaultPostLondon:
             self.log.error('Replay call: %s', e)
 
     def dump(self, obj, filename):
-        """Dump web"""
-        tx_dict = recursive_dict(obj)
+        """Dump a web3 transaction response to output file. """
+        tx_dict = attributedict_to_dict(obj)
         with open(os.path.join(self.test.output, filename), 'w') as file:
             json.dump(tx_dict, file, indent=4)
 
