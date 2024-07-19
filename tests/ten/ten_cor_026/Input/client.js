@@ -21,6 +21,8 @@ async function sendTransaction(to, amount) {
 
   const txReceipt = await txResponse.wait();
   console.log(txReceipt)
+
+
 }
 
 commander

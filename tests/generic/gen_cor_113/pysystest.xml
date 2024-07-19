@@ -2,23 +2,26 @@
 <pysystest type="auto">
 
     <description>
-        <title>Bridge - ethers withdraw native funds across the bridge using sendNative and ExtractNativeValue</title>
+        <title>Transact: ethers client send a single transaction and parse the events</title>
         <purpose><![CDATA[
-Skipped whilst under development
+Uses ethers to send a transaction to a contract, and to then parse a specific event out of the transaction receipt
+and validate on the correct values.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
-            <group>bridge</group>
+            <group>ethers</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
+            <mode>arbitrum.sepolia</mode>
+            <mode>ganache</mode>
+            <mode>sepolia</mode>
         </modes>
     </classification>
 
