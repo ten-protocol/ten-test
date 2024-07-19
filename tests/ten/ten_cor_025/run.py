@@ -1,41 +1,44 @@
-import base64, ast, os, secrets
 from web3._utils.events import EventLogErrorFlags
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.bridge import BridgeUser
 from ten.test.utils.properties import Properties
+from ten.test.helpers.merkle_tree import MerkleTreeHelper
 
 
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        transfer = 10000000000000
-        user2_pk = secrets.token_hex(32)
+        props = Properties()
+        transfer = 2000000000000000
 
-        user1 = BridgeUser(self, Properties().account1pk(), Properties().account1pk(), 'user1')
-        user2 = BridgeUser(self, user2_pk, user2_pk, 'user2')
+        # create the bridge user
+        accnt = BridgeUser(self, props.account1pk(), props.account1pk(), 'accnt1')
 
-        params = {'from': user1.l2.account.address,
-                  'chainId': user1.l2.web3.eth.chain_id,
-                  'gasPrice': user1.l2.web3.eth.gas_price,
+        # send two transactions in quick succession, store details for the second one
+        params = {'from': accnt.l2.account.address,
+                  'chainId': accnt.l2.web3.eth.chain_id,
+                  'gasPrice': accnt.l2.web3.eth.gas_price,
                   'value':transfer}
-        gas_limit = user1.l2.bridge.contract.functions.sendNative(user1.l1.account.address).estimate_gas(params)
-        nonce1, tx_sign1 = self.create_signed(user2, transfer, gas_limit)
-        nonce2, tx_sign2 = self.create_signed(user2, transfer, gas_limit)
-        tx_hash1 = self.send_tx(user2, nonce1, tx_sign1)
-        tx_hash2 = self.send_tx(user2, nonce2, tx_sign2)
-        tx_recp1 = self.wait_tx(user2, nonce2, tx_hash1)
-        tx_recp2 = self.wait_tx(user2, nonce2, tx_hash2)
+        gas_limit = accnt.l2.bridge.contract.functions.sendNative(accnt.l1.account.address).estimate_gas(params)
+        nonce1, tx_sign1 = self.create_signed(accnt, transfer, gas_limit)
+        nonce2, tx_sign2 = self.create_signed(accnt, transfer, gas_limit)
+        self.send_tx(accnt, nonce1, tx_sign1)
+        tx_hash = self.send_tx(accnt, nonce2, tx_sign2)
+        tx_receipt = self.wait_tx(accnt, nonce2, tx_hash)
 
-        value_transfer = user2.l2.bus.contract.events.ValueTransfer().process_receipt(tx_recp2, EventLogErrorFlags.Ignore)
-        log_message = user2.l2.bus.contract.events.LogMessagePublished().process_receipt(tx_recp2, EventLogErrorFlags.Ignore)
+        logs = accnt.l2.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
+        value_transfer = accnt.l2.get_value_transfer_event(logs[1])
 
-        block = user2.l2.web3.eth.get_block(tx_recp2.blockNumber)
-        decoded = ast.literal_eval(base64.b64decode(block.crossChainTree).decode('utf-8'))
-        self.log.info('  value_transfer:   %s', list(value_transfer))
-        self.log.info('  cross_chain:      %s', decoded)
-        self.log.info('  merkle_root:      %s', block.crossChainTreeHash)
-        with open(os.path.join(self.output, 'cross_chain.log'), 'w') as fp:
-            for entry in decoded: fp.write('%s,%s\n' % (entry[0], entry[1]))
+        # dump the tree, log out details and assert the transfer is in the tree
+        mh = MerkleTreeHelper.create(self)
+        block, decoded = mh.dump_tree(accnt.l2.web3, tx_receipt, 'cross_train_tree.log')
+        msg, msg_hash = mh.process_transfer(value_transfer)
+        self.log.info('  value_transfer:        %s', msg)
+        self.log.info('  value_transfer_hash:   %s', msg_hash)
+        self.log.info('  cross_chain:           %s', decoded)
+        self.log.info('  merkle_root:           %s', block.crossChainTreeHash)
+        self.assertTrue(msg_hash in [x[1] for x in decoded],
+                        assertMessage='Value transfer has should be in the xchain tree')
 
     def create_signed(self, user, amount, gas_limit):
         nonce = user.l2.network.get_next_nonce(self, user.l2.web3, user.l2.account, True, False)
