@@ -2,14 +2,15 @@ const fs = require('fs')
 const ethers = require('ethers')
 const commander = require('commander')
 
+
 async function sendTransaction(to, amount) {
   const gasPrice = await provider.getGasPrice();
-  const estimatedGas = await contract.estimateGas.sendNative(options.to, { value: options.amount } );
+  const estimatedGas = await bridge_contract.estimateGas.sendNative(options.to, { value: options.amount } );
   console.log(`Wallet address: ${wallet.address}`)
   console.log(`Gas Price: ${gasPrice}`)
   console.log(`Estimated Gas: ${estimatedGas}`)
 
-  const tx = await contract.populateTransaction.sendNative(options.to, {
+  const tx = await bridge_contract.populateTransaction.sendNative(options.to, {
     value: options.amount,
     gasPrice: gasPrice,
     gasLimit: estimatedGas,
@@ -21,27 +22,41 @@ async function sendTransaction(to, amount) {
 
   const txReceipt = await txResponse.wait();
   console.log(txReceipt)
+
+  txReceipt.logs.forEach((log) => {
+    try {
+      const parsedLog = bus_contract.interface.parseLog(log);
+      console.log(parsedLog);
+    } catch (error) {
+      console.log(error)
+    }
+  });
 }
 
 commander
   .version('1.0.0', '-v, --version')
   .usage('[OPTIONS]...')
   .option('--network <value>', 'Connection URL to the network')
-  .option('--contract_address <value>', 'Contract address')
-  .option('--contract_abi <value>', 'Contract ABI file')
+  .option('--bridge_address <value>', 'Contract address for the Ethereum Bridge')
+  .option('--bridge_abi <value>', 'Contract ABI file for the Ethereum Bridge')
+  .option('--bus_address <value>', 'Contract address for the L2 Message Bus')
+  .option('--bus_abi <value>', 'Contract ABI file for the L2 Message Bus')
   .option('--sender_pk <value>', 'The account private key')
   .option('--to <value>', 'The address to transfer to')
   .option('--amount <value>', 'The amount to transfer')
   .parse(process.argv)
 
 const options = commander.opts()
-var json = fs.readFileSync(options.contract_abi)
-var abi = JSON.parse(json)
-
 console.log(`Network URL: ${options.network}`)
 const provider = new ethers.providers.JsonRpcProvider(options.network)
 const wallet = new ethers.Wallet(options.sender_pk, provider)
-const contract = new ethers.Contract(options.contract_address, abi, wallet)
+
+var bridge_abi = JSON.parse(fs.readFileSync(options.bridge_abi))
+const bridge_contract = new ethers.Contract(options.bridge_address, bridge_abi, wallet)
+
+var bus_abi = JSON.parse(fs.readFileSync(options.bus_abi))
+const bus_contract = new ethers.Contract(options.bus_address, bus_abi, wallet)
 
 console.log(`Starting transactions`)
 sendTransaction(options.to, options.amount).then(() => console.log(`Completed transactions`));
+
