@@ -18,6 +18,11 @@ class PySysTest(TenNetworkTest):
 
         # execute the transfer using ethers
         self.client(network, bridge.address, bridge.abi_path, bus.address, bus.abi_path, private_key, account.address, 1000)
+        expr_list = []
+        expr_list.append('Sender:   %s' % bridge.address)
+        expr_list.append('Receiver: %s' % account.address)
+        expr_list.append('Amount:   1000')
+        self.assertOrderedGrep(file='client.out', exprList=expr_list)
 
     def client(self, network, bridge_address, bridge_abi, bus_address, bus_abi, private_key, to, amount):
         # create the client

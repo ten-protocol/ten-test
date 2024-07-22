@@ -6,9 +6,10 @@ const commander = require('commander')
 async function sendTransaction(to, amount) {
   const gasPrice = await provider.getGasPrice();
   const estimatedGas = await bridge_contract.estimateGas.sendNative(options.to, { value: options.amount } );
-  console.log(`Wallet address: ${wallet.address}`)
-  console.log(`Gas Price: ${gasPrice}`)
-  console.log(`Estimated Gas: ${estimatedGas}`)
+  console.log('Command line arguments: ')
+  console.log(`  Wallet address: ${wallet.address}`)
+  console.log(`  Gas Price:      ${gasPrice}`)
+  console.log(`  Estimated Gas:  ${estimatedGas}`)
 
   const tx = await bridge_contract.populateTransaction.sendNative(options.to, {
     value: options.amount,
@@ -21,16 +22,14 @@ async function sendTransaction(to, amount) {
   console.log(`Transaction sent: ${txResponse.hash}`)
 
   const txReceipt = await txResponse.wait();
-  console.log(txReceipt)
+  console.log(`Transaction received: ${txReceipt.transactionHash}`)
 
-  txReceipt.logs.forEach((log) => {
-    try {
-      const parsedLog = bus_contract.interface.parseLog(log);
-      console.log(parsedLog);
-    } catch (error) {
-      console.log(error)
-    }
-  });
+  console.log('Parsing value transfer event: ')
+  const value_transfer = bus_contract.interface.parseLog(txReceipt.logs[0]);
+  console.log(`  Sender:   ${value_transfer["args"].sender}`);
+  console.log(`  Sequence: ${value_transfer["args"].sequence}`);
+  console.log(`  Receiver: ${value_transfer["args"].receiver}`);
+  console.log(`  Amount:   ${value_transfer["args"].amount}`);
 }
 
 commander
@@ -47,7 +46,13 @@ commander
   .parse(process.argv)
 
 const options = commander.opts()
-console.log(`Network URL: ${options.network}`)
+console.log('Command line arguments: ')
+console.log(`  Network URL:    ${options.network}`)
+console.log(`  Bridge_address: ${options.bridge_address}`)
+console.log(`  Bus_address:    ${options.bus_address}`)
+console.log(`  To:             ${options.to}`)
+console.log(`  Amount:         ${options.amount}`)
+
 const provider = new ethers.providers.JsonRpcProvider(options.network)
 const wallet = new ethers.Wallet(options.sender_pk, provider)
 
