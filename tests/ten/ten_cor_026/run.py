@@ -3,6 +3,7 @@ from pysys.constants import FAILED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 from ten.test.contracts.bridge import EthereumBridge
+from ten.test.contracts.bridge import L2MessageBus
 
 
 class PySysTest(TenNetworkTest):
@@ -13,19 +14,22 @@ class PySysTest(TenNetworkTest):
         private_key = Properties().account1pk()
         web3, account = network.connect_account1(self)
         bridge = EthereumBridge(self, web3)
+        bus = L2MessageBus(self, web3)
 
         # execute the transfer using ethers
-        self.client(network, bridge.address, bridge.abi_path, private_key, account.address, 1000)
+        self.client(network, bridge.address, bridge.abi_path, bus.address, bus.abi_path, private_key, account.address, 1000)
 
-    def client(self, network, address, abi_path, private_key, to, amount):
+    def client(self, network, bridge_address, bridge_abi, bus_address, bus_abi, private_key, to, amount):
         # create the client
         stdout = os.path.join(self.output, 'client.out')
         stderr = os.path.join(self.output, 'client.err')
         script = os.path.join(self.input, 'client.js')
         args = []
         args.extend(['--network', network.connection_url()])
-        args.extend(['--contract_address', address])
-        args.extend(['--contract_abi', abi_path])
+        args.extend(['--bridge_address', bridge_address])
+        args.extend(['--bridge_abi', bridge_abi])
+        args.extend(['--bus_address', bus_address])
+        args.extend(['--bus_abi', bus_abi])
         args.extend(['--sender_pk', private_key])
         args.extend(['--to', to])
         args.extend(['--amount', str(amount)])
