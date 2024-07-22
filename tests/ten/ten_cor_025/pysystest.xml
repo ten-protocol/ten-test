@@ -4,14 +4,15 @@
     <description>
         <title>Bridge - withdraw native funds multiple times</title>
         <purpose><![CDATA[
-Skipped whilst under development
+At the moment the test just ensures multiple send native transactions are included in the same cross chain tree. We can
+then extract the transfer event of one of the send natives, get the msg hash, and confirm that is is in the decoded
+tree.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>bridge</group>
         </groups>
         <modes inherit="true">

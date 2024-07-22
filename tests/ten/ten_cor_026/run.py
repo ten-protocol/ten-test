@@ -1,5 +1,4 @@
 import os
-from pysys.constants import FAILED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 from ten.test.contracts.bridge import EthereumBridge
