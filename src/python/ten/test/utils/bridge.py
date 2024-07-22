@@ -254,7 +254,7 @@ class L2BridgeDetails(BridgeDetails):
         if dump_file: self.network.dump(tx_receipt, os.path.join(self.test.output, dump_file))
 
         value_transfer = self.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
-        return tx_receipt, self.get_value_transfer_event(value_transfer[1])
+        return tx_receipt, self.get_value_transfer_event(value_transfer[0])
 
     def relay_message(self, xchain_msg, timeout=60, dump_file=None):
         """Relay a cross chain message. """

@@ -32,7 +32,9 @@ class NoncePersistence:
         """Get the next nonce to use in a transaction.
 
         If persist_nonce is false then the return value will be the transaction count as received from the network.
-        Otherwise, this method will look up the last persisted value and return the next value to use.
+        Otherwise, this method will look up the last persisted value and return the next value to use. Note that nonces
+        start from zero, so if the tx count is 5 the nonces so far would have be 0,1,2,3,4. Hence the next nonce should
+        always match the tx count. 
         """
         transaction_count = web3.eth.get_transaction_count(account)
         persisted_nonce = self.get_latest_nonce(account, environment)
