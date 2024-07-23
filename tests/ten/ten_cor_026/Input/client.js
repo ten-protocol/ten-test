@@ -31,7 +31,6 @@ async function sendTransaction(to, amount) {
   console.log(`Transaction sent:     ${txResponse.hash}`)
 
   const txReceipt = await txResponse.wait();
-  console.log(txReceipt)
   console.log(`Transaction received: ${txReceipt.transactionHash}`)
 
   const block = await provider.send('eth_getBlockByHash', [ethers.utils.hexValue(txReceipt.blockHash), true]);
