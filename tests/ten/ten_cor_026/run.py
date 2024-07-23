@@ -9,7 +9,7 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         # create network and connect
-        network = self.get_network_connection()
+        network = self.get_network_connection(name='local')
         private_key = Properties().account1pk()
         web3, account = network.connect_account1(self)
         bridge = EthereumBridge(self, web3)
