@@ -13,6 +13,7 @@ npm install web3@1.9.0 --global
 npm install ethers@5.7.2 --global
 npm install ethers6@npm:ethers@6.13.1 --global
 npm install commander@11.1.0 --global
+npm install @openzeppelin/merkle-tree@1.0.6 --global
 npm install -g ganache
 npm install -g ganache-cli
 apt install -y vim
