@@ -22,6 +22,7 @@ class PySysTest(TenNetworkTest):
         expr_list.append('Receiver:.*%s' % account.address)
         expr_list.append('Amount:.*1000')
         self.assertOrderedGrep(file='client.out', exprList=expr_list)
+        self.assertGrep(file='client.out', expr='Value transfer hash is in the xchain tree')
 
     def client(self, network, bridge_address, bridge_abi, bus_address, bus_abi, private_key, to, amount):
         # create the client

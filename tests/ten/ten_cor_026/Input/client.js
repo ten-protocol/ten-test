@@ -13,6 +13,11 @@ function get_message_hash(value_transfer) {
   return ethers.utils.keccak256(encodedMsg)
 }
 
+function decode_tree(base64String) {
+  let jsonString = atob(base64String);
+  return JSON.parse(jsonString);
+}
+
 async function sendTransaction(to, amount) {
   const gasPrice = await provider.getGasPrice();
   const estimatedGas = await bridge_contract.estimateGas.sendNative(options.to, { value: options.amount } );
@@ -34,13 +39,20 @@ async function sendTransaction(to, amount) {
   // extract and log all the values
   const value_transfer = bus_contract.interface.parseLog(txReceipt.logs[0]);
   const msgHash = get_message_hash(value_transfer)
+  const decoded = decode_tree(block.crossChainTree)
   console.log(`  Sender:        ${value_transfer['args'].sender}`)
   console.log(`  Receiver:      ${value_transfer['args'].receiver}`)
   console.log(`  Amount:        ${value_transfer['args'].amount}`)
   console.log(`  Sequence:      ${value_transfer['args'].sequence}`)
-  console.log(`  Msg Hash:      ${msgHash}`)
+  console.log(`  VTrans Hash:   ${msgHash}`)
+  console.log(`  XChain tree:   ${decoded}`)
   console.log(`  Merkle root:   ${block.crossChainTreeHash}`)
+
+  if (decoded[0][1] == msgHash) {
+    console.log('Value transfer hash is in the xchain tree')
+  }
 }
+
 
 commander
   .version('1.0.0', '-v, --version')
