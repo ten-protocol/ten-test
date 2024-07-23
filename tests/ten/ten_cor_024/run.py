@@ -38,7 +38,7 @@ class PySysTest(TenNetworkTest):
         self.assertTrue(block.crossChainTreeHash == root,
                         assertMessage='Calculated merkle root should be same as the block header')
 
-        # release the funds from the the L1 and check the balances
+        # release the funds from the L1 and check the balances
         tx_receipt = accnt.l1.release_funds(msg, [proof], root)
         l1_cost = int(tx_receipt.gasUsed) * accnt.l1.web3.eth.gas_price
         l1_after = accnt.l1.web3.eth.get_balance(accnt.l1.account.address)

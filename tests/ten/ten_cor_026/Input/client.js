@@ -1,6 +1,7 @@
 const fs = require('fs')
 const ethers = require('ethers')
 const commander = require('commander')
+const merkle = require('@openzeppelin/merkle-tree')
 
 function get_message_hash(value_transfer) {
   const abiTypes = ['address', 'address', 'uint256', 'uint64'];
@@ -36,7 +37,7 @@ async function sendTransaction(to, amount) {
   const block = await provider.send('eth_getBlockByHash', [ethers.utils.hexValue(txReceipt.blockHash), true]);
   console.log(`Block received:       ${block.number}`)
 
-  // extract and log all the values
+  // extract and log all the values and check that the msgHash is in the decoded tree
   const value_transfer = bus_contract.interface.parseLog(txReceipt.logs[0]);
   const msgHash = get_message_hash(value_transfer)
   const decoded = decode_tree(block.crossChainTree)
@@ -51,31 +52,40 @@ async function sendTransaction(to, amount) {
   if (decoded[0][1] == msgHash) {
     console.log('Value transfer hash is in the xchain tree')
   }
+
+  // construct the merkle tree, get the proof and check the root matches
+  const tree = merkle.StandardMerkleTree.of(decoded, ["string", "bytes32"]);
+  const proof = tree.getProof(['v',msgHash])
+  console.log(`  Merkle root:   ${tree.root}`)
+  console.log(`  Merkle proof:  ${proof[0]}`)
+  if (block.crossChainTreeHash == tree.root) {
+    console.log('Constructed merkle root matches block crossChainTreeHash')
+  }
 }
 
 
 commander
   .version('1.0.0', '-v, --version')
   .usage('[OPTIONS]...')
-  .option('--network <value>', 'Connection URL to the network')
-  .option('--bridge_address <value>', 'Contract address for the Ethereum Bridge')
-  .option('--bridge_abi <value>', 'Contract ABI file for the Ethereum Bridge')
-  .option('--bus_address <value>', 'Contract address for the L2 Message Bus')
-  .option('--bus_abi <value>', 'Contract ABI file for the L2 Message Bus')
+  .option('--l2_network <value>', 'Connection URL to the network')
+  .option('--l2_bridge_address <value>', 'Contract address for the Ethereum Bridge')
+  .option('--l2_bridge_abi <value>', 'Contract ABI file for the Ethereum Bridge')
+  .option('--l2_bus_address <value>', 'Contract address for the L2 Message Bus')
+  .option('--l2_bus_abi <value>', 'Contract ABI file for the L2 Message Bus')
   .option('--sender_pk <value>', 'The account private key')
   .option('--to <value>', 'The address to transfer to')
   .option('--amount <value>', 'The amount to transfer')
   .parse(process.argv)
 
 const options = commander.opts()
-const provider = new ethers.providers.JsonRpcProvider(options.network)
+const provider = new ethers.providers.JsonRpcProvider(options.l2_network)
 const wallet = new ethers.Wallet(options.sender_pk, provider)
 
-var bridge_abi = JSON.parse(fs.readFileSync(options.bridge_abi))
-var bus_abi = JSON.parse(fs.readFileSync(options.bus_abi))
-const bridge_contract = new ethers.Contract(options.bridge_address, bridge_abi, wallet)
-const bus_contract = new ethers.Contract(options.bus_address, bus_abi, wallet)
+var bridge_abi = JSON.parse(fs.readFileSync(options.l2_bridge_abi))
+var bus_abi = JSON.parse(fs.readFileSync(options.l2_bus_abi))
+const bridge_contract = new ethers.Contract(options.l2_bridge_address, bridge_abi, wallet)
+const bus_contract = new ethers.Contract(options.l2_bus_address, bus_abi, wallet)
 
 console.log(`Starting transactions`)
-sendTransaction(options.to, options.amount).then(() => console.log(`Completed transactions`));
+sendTransaction(options.to, options.amount).then(() => console.log(`Completed transactions`))
 
