@@ -33,6 +33,7 @@ async function sendTransfer(provider, wallet, to, amount) {
 
   const txReceipt = await txResponse.wait();
   console.log(`Transaction received: ${txReceipt.transactionHash}`)
+  console.log(txReceipt)
 
   const block = await provider.send('eth_getBlockByHash', [ethers.utils.hexValue(txReceipt.blockHash), true]);
   console.log(`Block received:       ${block.number}`)
