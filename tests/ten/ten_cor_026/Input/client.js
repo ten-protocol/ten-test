@@ -3,7 +3,7 @@ const ethers = require('ethers')
 const commander = require('commander')
 const merkle = require('@openzeppelin/merkle-tree')
 
-function get_message_hash(value_transfer) {
+function process_transfer(value_transfer) {
   const abiTypes = ['address', 'address', 'uint256', 'uint64'];
   const msg = [
     value_transfer['args'].sender, value_transfer['args'].receiver,
@@ -11,7 +11,7 @@ function get_message_hash(value_transfer) {
   ];
   const abiCoder = new ethers.utils.AbiCoder()
   const encodedMsg = abiCoder.encode(abiTypes, msg)
-  return ethers.utils.keccak256(encodedMsg)
+  return [msg, ethers.utils.keccak256(encodedMsg)]
 }
 
 function decode_tree(base64String) {
@@ -19,7 +19,7 @@ function decode_tree(base64String) {
   return JSON.parse(jsonString);
 }
 
-async function sendTransaction(to, amount) {
+async function sendTransfer(provider, wallet, to, amount) {
   const gasPrice = await provider.getGasPrice();
   const estimatedGas = await bridge_contract.estimateGas.sendNative(options.to, { value: options.amount } );
 
@@ -37,9 +37,11 @@ async function sendTransaction(to, amount) {
   const block = await provider.send('eth_getBlockByHash', [ethers.utils.hexValue(txReceipt.blockHash), true]);
   console.log(`Block received:       ${block.number}`)
 
-  // extract and log all the values and check that the msgHash is in the decoded tree
+  // extract and log all the values, check that the msgHash is in the decoded tree
   const value_transfer = bus_contract.interface.parseLog(txReceipt.logs[0]);
-  const msgHash = get_message_hash(value_transfer)
+  const _processed_value_transfer = process_transfer(value_transfer)
+  const msg = _processed_value_transfer[0]
+  const msgHash = _processed_value_transfer[1]
   const decoded = decode_tree(block.crossChainTree)
   console.log(`  Sender:        ${value_transfer['args'].sender}`)
   console.log(`  Receiver:      ${value_transfer['args'].receiver}`)
@@ -53,7 +55,7 @@ async function sendTransaction(to, amount) {
     console.log('Value transfer hash is in the xchain tree')
   }
 
-  // construct the merkle tree, get the proof and check the root matches
+  // construct the merkle tree, get the proof, check the root matches
   const tree = merkle.StandardMerkleTree.of(decoded, ["string", "bytes32"]);
   const proof = tree.getProof(['v',msgHash])
   console.log(`  Merkle root:   ${tree.root}`)
@@ -61,17 +63,23 @@ async function sendTransaction(to, amount) {
   if (block.crossChainTreeHash == tree.root) {
     console.log('Constructed merkle root matches block crossChainTreeHash')
   }
+
+  return [msg, proof[0], tree.root]
+}
+
+async function extractNativeValue(provider, wallet, msg, proof, root) {
 }
 
 
 commander
   .version('1.0.0', '-v, --version')
   .usage('[OPTIONS]...')
-  .option('--l2_network <value>', 'Connection URL to the network')
+  .option('--l2_network <value>', 'Connection URL to the L2 network')
   .option('--l2_bridge_address <value>', 'Contract address for the Ethereum Bridge')
   .option('--l2_bridge_abi <value>', 'Contract ABI file for the Ethereum Bridge')
   .option('--l2_bus_address <value>', 'Contract address for the L2 Message Bus')
   .option('--l2_bus_abi <value>', 'Contract ABI file for the L2 Message Bus')
+  .option('--l1_network <value>', 'Connection URL to the L1 network')
   .option('--l1_management_address <value>', 'Contract address for the L1 Management Contract')
   .option('--l1_management_abi <value>', 'Contract ABI file for the L1 Management Contract')
   .option('--sender_pk <value>', 'The account private key')
@@ -89,5 +97,7 @@ const bridge_contract = new ethers.Contract(options.l2_bridge_address, bridge_ab
 const bus_contract = new ethers.Contract(options.l2_bus_address, bus_abi, wallet)
 
 console.log(`Starting transactions`)
-sendTransaction(options.to, options.amount).then(() => console.log(`Completed transactions`))
+sendTransfer(provider, wallet, options.to, options.amount).then((arg) => {
+  console.log(`Completed transactions`)
+})
 
