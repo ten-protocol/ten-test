@@ -72,6 +72,8 @@ commander
   .option('--l2_bridge_abi <value>', 'Contract ABI file for the Ethereum Bridge')
   .option('--l2_bus_address <value>', 'Contract address for the L2 Message Bus')
   .option('--l2_bus_abi <value>', 'Contract ABI file for the L2 Message Bus')
+  .option('--l1_management_address <value>', 'Contract address for the L1 Management Contract')
+  .option('--l1_management_abi <value>', 'Contract ABI file for the L1 Management Contract')
   .option('--sender_pk <value>', 'The account private key')
   .option('--to <value>', 'The address to transfer to')
   .option('--amount <value>', 'The amount to transfer')
