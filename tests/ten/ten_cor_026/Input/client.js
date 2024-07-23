@@ -2,50 +2,44 @@ const fs = require('fs')
 const ethers = require('ethers')
 const commander = require('commander')
 
+function get_message_hash(value_transfer) {
+  const abiTypes = ['address', 'address', 'uint256', 'uint64'];
+  const msg = [
+    value_transfer['args'].sender, value_transfer['args'].receiver,
+    value_transfer['args'].amount, value_transfer['args'].sequence
+  ];
+  const abiCoder = new ethers.utils.AbiCoder()
+  const encodedMsg = abiCoder.encode(abiTypes, msg)
+  return ethers.utils.keccak256(encodedMsg)
+}
 
 async function sendTransaction(to, amount) {
-  console.log('Gas values: ')
   const gasPrice = await provider.getGasPrice();
   const estimatedGas = await bridge_contract.estimateGas.sendNative(options.to, { value: options.amount } );
-  console.log(`  Gas Price:      ${gasPrice}`)
-  console.log(`  Estimated Gas:  ${estimatedGas}`)
 
+  // send the transaction and get the block it is included into
   const tx = await bridge_contract.populateTransaction.sendNative(options.to, {
-    value: options.amount,
-    gasPrice: gasPrice,
-    gasLimit: estimatedGas,
+    value: options.amount, gasPrice: gasPrice, gasLimit: estimatedGas,
   } )
-  console.log(`Transaction created`)
 
   const txResponse = await wallet.sendTransaction(tx)
-  console.log(`Transaction sent: ${txResponse.hash}`)
+  console.log(`Transaction sent:     ${txResponse.hash}`)
 
   const txReceipt = await txResponse.wait();
   console.log(`Transaction received: ${txReceipt.transactionHash}`)
 
-  console.log(`Parsing value transfer event: `)
-  const value_transfer = bus_contract.interface.parseLog(txReceipt.logs[0]);
-  console.log(`  Sender:   ${value_transfer["args"].sender}`)
-  console.log(`  Receiver: ${value_transfer["args"].receiver}`)
-  console.log(`  Amount:   ${value_transfer["args"].amount}`)
-  console.log(`  Sequence: ${value_transfer["args"].sequence}`)
-
   const block = await provider.send('eth_getBlockByNumber', [ethers.utils.hexValue(txReceipt.blockNumber), true]);
-  console.log(`Block received: ${block.number}`)
-  console.log(`Decoding cross chain tree info: `)
+  console.log(`Block received:       ${block.number}`)
+
+  // extract and log all the values
+  const value_transfer = bus_contract.interface.parseLog(txReceipt.logs[0]);
+  const msgHash = get_message_hash(value_transfer)
+  console.log(`  Sender:        ${value_transfer['args'].sender}`)
+  console.log(`  Receiver:      ${value_transfer['args'].receiver}`)
+  console.log(`  Amount:        ${value_transfer['args'].amount}`)
+  console.log(`  Sequence:      ${value_transfer['args'].sequence}`)
+  console.log(`  Msg Hash:      ${msgHash}`)
   console.log(`  Merkle root:   ${block.crossChainTreeHash}`)
-
-  const abiTypes = ['address', 'address', 'uint256', 'uint64'];
-  const msg = [
-    value_transfer["args"].sender, value_transfer["args"].receiver,
-    value_transfer["args"].amount, value_transfer["args"].sequence
-  ];
-  const abiCoder = new ethers.utils.AbiCoder()
-  const encodedMsg = abiCoder.encode(abiTypes, msg)
-  const msgHash = ethers.utils.keccak256(encodedMsg)
-  console.log(`Value Transfer Hash: ${msgHash}`)
-
-
 }
 
 commander
@@ -62,13 +56,6 @@ commander
   .parse(process.argv)
 
 const options = commander.opts()
-console.log('Command line arguments: ')
-console.log(`  Network URL:    ${options.network}`)
-console.log(`  Bridge_address: ${options.bridge_address}`)
-console.log(`  Bus_address:    ${options.bus_address}`)
-console.log(`  To:             ${options.to}`)
-console.log(`  Amount:         ${options.amount}`)
-
 const provider = new ethers.providers.JsonRpcProvider(options.network)
 const wallet = new ethers.Wallet(options.sender_pk, provider)
 
