@@ -48,5 +48,5 @@ class PySysTest(TenNetworkTest):
         args.extend(['--to', to])
         args.extend(['--amount', str(amount)])
         self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=stdout, expr='Starting transactions', timeout=10)
-        self.waitForGrep(file=stdout, expr='Completed transactions', timeout=40)
+        self.waitForGrep(file=stdout, expr='Starting transaction to send funds to the L1', timeout=10)
+        self.waitForGrep(file=stdout, expr='Completed transactions', timeout=90)
