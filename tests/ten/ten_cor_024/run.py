@@ -17,7 +17,7 @@ class PySysTest(TenNetworkTest):
 
         # send funds from the L2 to the L1
         self.log.info('Send native from L2 to L1')
-        tx_receipt, value_transfer, _ = accnt.l2.send_native(accnt.l1.account.address, transfer, dump_file='send_native.tx')
+        tx_receipt, value_transfer = accnt.l2.send_native(accnt.l1.account.address, transfer, dump_file='send_native.tx')
         l2_cost = int(tx_receipt.gasUsed) * accnt.l2.web3.eth.gas_price
 
         # dump the tree, log out details and assert the transfer is in the tree
@@ -38,7 +38,7 @@ class PySysTest(TenNetworkTest):
         self.assertTrue(block.crossChainTreeHash == root,
                         assertMessage='Calculated merkle root should be same as the block header')
 
-        # release the funds from the the L1 and check the balances
+        # release the funds from the L1 and check the balances
         tx_receipt = accnt.l1.release_funds(msg, [proof], root)
         l1_cost = int(tx_receipt.gasUsed) * accnt.l1.web3.eth.gas_price
         l1_after = accnt.l1.web3.eth.get_balance(accnt.l1.account.address)

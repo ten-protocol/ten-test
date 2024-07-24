@@ -4,14 +4,14 @@
     <description>
         <title>Bridge - ethers withdraw native funds across the bridge using sendNative and ExtractNativeValue</title>
         <purpose><![CDATA[
-Port of the web3 test using ethers.
+Hands over the transaction and processing of the send native call, and value transfer extraction, from python to
+an ethers client.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>bridge</group>
         </groups>
         <modes inherit="true">

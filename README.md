@@ -97,6 +97,7 @@ npm install web3@1.9.0 --global
 npm install ethers@5.7.2 --global
 npm install ethers6@npm:ethers@6.13.1 --global
 npm install commander@11.1.0 --global
+npm install @openzeppelin/merkle-tree@1.0.6 --global
 
 pip3 install web3==6.13.0 
 pip3 install pysys==1.6.1
@@ -129,6 +130,7 @@ npm install web3@1.9.0 --global
 npm install ethers@5.7.2 --global
 npm install ethers6@npm:ethers@6.13.1 --global
 npm install commander@11.1.0 --global
+npm install @openzeppelin/merkle-tree@1.0.6 --global
 
 apt install -y python3-pip
 python3 -m pip install web3==5.31.3

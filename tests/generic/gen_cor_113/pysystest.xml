@@ -2,24 +2,26 @@
 <pysystest type="auto">
 
     <description>
-        <title>Bridge - withdraw native funds multiple times</title>
+        <title>Transact: ethers client send a single transaction and parse the events</title>
         <purpose><![CDATA[
-At the moment the test just ensures multiple send native transactions are included in the same cross chain tree. We can
-then extract the transfer event of one of the send natives, get the msg hash, and confirm that is is in the decoded
-tree.
+Uses ethers to send a transaction to a contract, and to then parse a specific event out of the transaction receipt
+and validate on the correct values.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>bridge</group>
+            <group>ethers</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
+            <mode>arbitrum.sepolia</mode>
+            <mode>ganache</mode>
+            <mode>sepolia</mode>
         </modes>
     </classification>
 
