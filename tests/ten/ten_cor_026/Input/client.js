@@ -19,13 +19,13 @@ function decode_tree(base64String) {
   return JSON.parse(jsonString);
 }
 
-async function sendTransfer(provider, wallet, to, amount) {
+async function sendTransfer(provider, wallet, to, amount, bridge, bus) {
   const gasPrice = await provider.getGasPrice();
-  const estimatedGas = await bridge_contract.estimateGas.sendNative(options.to, { value: options.amount } );
+  const estimatedGas = await bridge.estimateGas.sendNative(to, { value: amount } );
 
   // send the transaction and get the block it is included into
-  const tx = await bridge_contract.populateTransaction.sendNative(options.to, {
-    value: options.amount, gasPrice: gasPrice, gasLimit: estimatedGas,
+  const tx = await bridge.populateTransaction.sendNative(to, {
+    value: amount, gasPrice: gasPrice, gasLimit: estimatedGas,
   } )
 
   const txResponse = await wallet.sendTransaction(tx)
@@ -33,13 +33,12 @@ async function sendTransfer(provider, wallet, to, amount) {
 
   const txReceipt = await txResponse.wait();
   console.log(`Transaction received: ${txReceipt.transactionHash}`)
-  console.log(txReceipt)
 
-  const block = await provider.send('eth_getBlockByHash', [ethers.utils.hexValue(txReceipt.blockHash), true]);
+  const block = await provider.send('eth_getBlockByHash', [txReceipt.blockHash, true]);
   console.log(`Block received:       ${block.number}`)
 
   // extract and log all the values, check that the msgHash is in the decoded tree
-  const value_transfer = bus_contract.interface.parseLog(txReceipt.logs[0]);
+  const value_transfer = bus.interface.parseLog(txReceipt.logs[0]);
   const _processed_value_transfer = process_transfer(value_transfer)
   const msg = _processed_value_transfer[0]
   const msgHash = _processed_value_transfer[1]
@@ -61,6 +60,7 @@ async function sendTransfer(provider, wallet, to, amount) {
   const proof = tree.getProof(['v',msgHash])
   console.log(`  Merkle root:   ${tree.root}`)
   console.log(`  Merkle proof:  ${proof[0]}`)
+
   if (block.crossChainTreeHash == tree.root) {
     console.log('Constructed merkle root matches block crossChainTreeHash')
   }
@@ -68,7 +68,9 @@ async function sendTransfer(provider, wallet, to, amount) {
   return [msg, proof[0], tree.root]
 }
 
-async function extractNativeValue(provider, wallet, msg, proof, root) {
+async function extractNativeValue(provider, wallet, management, msg, proof, root) {
+  //const gasPrice = await provider.getGasPrice();
+  //const estimatedGas = await management.estimateGas.ExtractNativeValue(msg, proof, root, {} );
 }
 
 
@@ -83,22 +85,29 @@ commander
   .option('--l1_network <value>', 'Connection URL to the L1 network')
   .option('--l1_management_address <value>', 'Contract address for the L1 Management Contract')
   .option('--l1_management_abi <value>', 'Contract ABI file for the L1 Management Contract')
-  .option('--sender_pk <value>', 'The account private key')
+  .option('--pk <value>', 'The account private key')
   .option('--to <value>', 'The address to transfer to')
   .option('--amount <value>', 'The amount to transfer')
   .parse(process.argv)
 
 const options = commander.opts()
-const provider = new ethers.providers.JsonRpcProvider(options.l2_network)
-const wallet = new ethers.Wallet(options.sender_pk, provider)
+var provider = new ethers.providers.JsonRpcProvider(options.l2_network)
+var wallet = new ethers.Wallet(options.pk, provider)
 
 var bridge_abi = JSON.parse(fs.readFileSync(options.l2_bridge_abi))
 var bus_abi = JSON.parse(fs.readFileSync(options.l2_bus_abi))
-const bridge_contract = new ethers.Contract(options.l2_bridge_address, bridge_abi, wallet)
-const bus_contract = new ethers.Contract(options.l2_bus_address, bus_abi, wallet)
+var bridge_contract = new ethers.Contract(options.l2_bridge_address, bridge_abi, wallet)
+var bus_contract = new ethers.Contract(options.l2_bus_address, bus_abi, wallet)
 
 console.log(`Starting transactions`)
-sendTransfer(provider, wallet, options.to, options.amount).then((arg) => {
-  console.log(`Completed transactions`)
+sendTransfer(provider, wallet, options.to, options.amount, bridge_contract, bus_contract).then((arg) => {
+  var provider = new ethers.providers.JsonRpcProvider(options.l1_network)
+  var wallet = new ethers.Wallet(options.pk, provider)
+  var management_abi = JSON.parse(fs.readFileSync(options.l1_management_abi))
+  var management_contract = new ethers.Contract(options.l1_management_address, management_abi, wallet)
+
+  extractNativeValue(provider, wallet, management_contract, arg[0], arg[1], arg[2]).then(() => {
+      console.log(`Completed transactions`)
+  })
 })
 
