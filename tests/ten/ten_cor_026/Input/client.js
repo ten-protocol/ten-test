@@ -78,7 +78,7 @@ async function sendTransfer(provider, wallet, to, amount, bridge, bus) {
 }
 
 /** Utility function to wait for the merkle root to be published on the L1 */
-async function waitForRootPublished(management, msg, proof, root, interval = 5000, timeout = 60000) {
+async function waitForRootPublished(management, msg, proof, root, interval = 5000, timeout = 90000) {
   var gas_estimate = null
   const startTime = Date.now();
 
@@ -148,10 +148,12 @@ sendTransfer(provider, wallet, options.to, options.amount, bridge_contract, bus_
   waitForRootPublished(management_contract, arg[0], arg[1], arg[2]).then( (estimate) => {
     console.log(`Estimate gas is: ${estimate}`)
 
-    console.log('Starting transaction to extract the native value L1')
-    extractNativeValue(provider, wallet, management_contract, arg[0], arg[1], arg[2], estimate).then( () => {
-      console.log(`Completed transactions`)
-    })
+    if (estimate != null) {
+      console.log('Starting transaction to extract the native value L1')
+      extractNativeValue(provider, wallet, management_contract, arg[0], arg[1], arg[2], estimate).then( () => {
+        console.log(`Completed transactions`)
+      })
+    }
   })
 })
 
