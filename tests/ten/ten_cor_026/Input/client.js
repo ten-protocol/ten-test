@@ -20,8 +20,8 @@ function process_value_transfer(value_transfer) {
   const abiTypes = ['address', 'address', 'uint256', 'uint64'];
   const msg = [
     value_transfer['args'].sender, value_transfer['args'].receiver,
-    value_transfer['args'].amount, value_transfer['args'].sequence
-  ];
+    value_transfer['args'].amount.toString(), value_transfer['args'].sequence.toString()
+  ]
   const abiCoder = new ethers.utils.AbiCoder()
   const encodedMsg = abiCoder.encode(abiTypes, msg)
   return [msg, ethers.utils.keccak256(encodedMsg)]
@@ -34,7 +34,7 @@ async function sendTransfer(provider, wallet, to, amount, bridge, bus) {
 
   // send the transaction and get the block it is included into
   const tx = await bridge.populateTransaction.sendNative(to, {
-    value: amount, gasPrice: gasPrice, gasLimit: estimatedGas,
+    value: amount, gasPrice: gasPrice, gasLimit: estimatedGas
   } )
 
   const txResponse = await wallet.sendTransaction(tx)
@@ -99,6 +99,17 @@ async function waitForRootPublished(management, msg, proof, root, interval = 500
 
 /** Logic on the L1 side to instruct the management contract to release funds */
 async function extractNativeValue(provider, wallet, management, msg, proof, root, gas_estimate) {
+  const gasPrice = await provider.getGasPrice();
+
+  const tx = await management.populateTransaction.ExtractNativeValue(msg, proof, root, {
+    gasPrice: gasPrice, gasLimit: gas_estimate
+  } )
+
+  const txResponse = await wallet.sendTransaction(tx)
+  console.log(`Transaction sent:     ${txResponse.hash}`)
+
+  const txReceipt = await txResponse.wait();
+  console.log(`Transaction received: ${txReceipt.transactionHash}`)
 }
 
 commander
@@ -127,21 +138,20 @@ var bridge_contract = new ethers.Contract(options.l2_bridge_address, bridge_abi,
 var bus_contract = new ethers.Contract(options.l2_bus_address, bus_abi, wallet)
 
 console.log('Starting transaction to send funds to the L1')
-sendTransfer(provider, wallet, options.to, options.amount, bridge_contract, bus_contract).then((arg) => {
-  console.log('Starting transaction to distribute transaction on the L1 to end account')
-
+sendTransfer(provider, wallet, options.to, options.amount, bridge_contract, bus_contract).then( (arg) => {
   var provider = new ethers.providers.JsonRpcProvider(options.l1_network)
   var wallet = new ethers.Wallet(options.pk, provider)
   var management_abi = JSON.parse(fs.readFileSync(options.l1_management_abi))
   var management_contract = new ethers.Contract(options.l1_management_address, management_abi, wallet)
 
-  waitForRootPublished(management_contract, arg[0], arg[1], arg[2]).then((estimate) => {
+  console.log('Waiting for the merkle tree root to be published on the L1')
+  waitForRootPublished(management_contract, arg[0], arg[1], arg[2]).then( (estimate) => {
     console.log(`Estimate gas is: ${estimate}`)
-    console.log(`Completed transactions`)
-  })
 
-  //extractNativeValue(provider, wallet, management_contract, arg[0], arg[1], arg[2]).then(() => {
-  //    console.log(`Completed transactions`)
-  //})
+    console.log('Starting transaction to extract the native value L1')
+    extractNativeValue(provider, wallet, management_contract, arg[0], arg[1], arg[2], estimate).then( () => {
+      console.log(`Completed transactions`)
+    })
+  })
 })
 
