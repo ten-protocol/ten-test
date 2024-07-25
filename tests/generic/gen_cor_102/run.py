@@ -5,8 +5,6 @@ from ten.test.basetest import GenericNetworkTest
 
 
 class PySysTest(GenericNetworkTest):
-    ITERATIONS = 10
-    CLIENTS = 5
 
     def execute(self):
         # connect to the network

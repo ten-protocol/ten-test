@@ -5,12 +5,10 @@ from ten.test.basetest import GenericNetworkTest
 
 
 class PySysTest(GenericNetworkTest):
-    ITERATIONS = 10
-    CLIENTS = 5
 
     def execute(self):
         # connect to the network
-        network = self.get_network_connection()
+        network = self.get_network_connection(name='local')
         web3, account = network.connect_account1(self)
 
         # deploy the contract

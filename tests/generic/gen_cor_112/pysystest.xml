@@ -12,7 +12,6 @@ Skipped due to https://github.com/ten-protocol/ten-internal/issues/3637
     <classification>
         <groups inherit="true">
             <group>ethers</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
