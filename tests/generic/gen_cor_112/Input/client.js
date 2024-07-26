@@ -9,7 +9,7 @@ function log(data) {
 }
 
 async function sendTransaction() {
-  const gasPrice = await provider.getFeeData();
+  const gasPrice = (await provider.getFeeData()).gasPrice
   const estimatedGas = await contract.estimateGas.setItem(options.key, options.value);
   log(`Wallet address: ${wallet.address}`)
   log(`Gas Price: ${gasPrice}`)
