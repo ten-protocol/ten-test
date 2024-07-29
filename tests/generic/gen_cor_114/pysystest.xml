@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Events - one contract calls another and both emit an event</title>
+        <title>Events - one contract calls another and both emit an event (no addresses)</title>
         <purpose><![CDATA[
 Checks that transacting against a contract, whose function calls into another contract, and both functions emit an
 event, works correctly. Specifically, that the transaction receipt logs shows both events, and that they can be extracted
