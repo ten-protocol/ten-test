@@ -33,7 +33,7 @@ class PySysTest(GenericNetworkTest):
             simple_event = emitter.contract.events.SimpleEvent().process_receipt(tx_receipt, errors=DISCARD)[0]
             caller_simple_event = emitter_caller.contract.events.CallerSimpleEvent().process_receipt(tx_receipt, errors=DISCARD)[0]
 
-            self.log.info('  id, message:                %d, %s' % (id, simple_event['args']['message']))
+            self.log.info('  id, message:                %d, %s' % (id, message))
             self.log.info('  simpleEvent.message:        %s' % simple_event['args']['message'])
             self.log.info('  simpleEvent.sender:         %s' % simple_event['args']['sender'])
             self.log.info('  callerSimpleEvent.message:  %s' % caller_simple_event['args']['message'])

@@ -1,19 +1,21 @@
 pragma solidity ^0.8.0;
 
 contract EventEmitter {
-    event SimpleEvent(uint indexed id, string message, address indexed sender);
-
-    event ArrayEvent(uint indexed id, uint[] numbers, string[] messages);
-
     struct User {uint id; string name; address userAddress;}
+    event SimpleEvent(uint indexed id, string message, address indexed sender);
+    event AddressEvent(uint indexed id, address indexed _address);
+    event ArrayEvent(uint indexed id, uint[] numbers, string[] messages);
     event StructEvent(uint indexed id, User user);
-
     event MappingEvent(uint indexed id, address[] keys, uint[] values);
 
     uint public eventCounter;
 
     function emitSimpleEvent(uint id, string memory _message) public {
         emit SimpleEvent(id, _message, msg.sender);
+    }
+
+    function emitAddressEvent(uint id, address _address) public {
+        emit AddressEvent(id, _address);
     }
 
     function emitArrayEvent(uint id, uint[] memory _numbers, string[] memory _messages) public {
