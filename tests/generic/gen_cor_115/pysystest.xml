@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Events - one contract calls another and both emit an event (two addresses)</title>
+        <purpose><![CDATA[
+Checks that transacting against a contract, whose function calls into another contract, and both functions emit an
+event, works correctly. Specifically, that the transaction receipt logs shows both events, and that they can be extracted
+correctly from the receipt. In this case the caller supplies two addresses.
+
+Note this is not enabled for TEN currently, as the behaviour is under debate on whether visibility rules should be
+applied to event logs in transaction receipts. At the moment, only the originator of the transaction can actually
+receive the transaction receipt.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>events</group>
+        </groups>
+        <modes inherit="true">
+            <!-- <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode> -->
+            <mode>arbitrum.sepolia</mode>
+            <mode>ganache</mode>
+            <mode>sepolia</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
