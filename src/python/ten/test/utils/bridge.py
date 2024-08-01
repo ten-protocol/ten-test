@@ -212,7 +212,7 @@ class L2BridgeDetails(BridgeDetails):
         tx_receipt = self.relay_message(xchain_msg, timeout=timeout)
         if dump_file: self.network.dump(tx_receipt, dump_file)
         logs = self.bridge.contract.events.CreatedWrappedToken().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
-        return tx_receipt, logs[1]['args']['localAddress']
+        return tx_receipt, logs[0]['args']['localAddress']
 
     def approve_token(self, symbol, approval_address, amount, timeout=60, dump_file=None):
         """Approve another address to spend ERC20 on behalf of this account. """
@@ -239,7 +239,7 @@ class L2BridgeDetails(BridgeDetails):
         if dump_file: self.network.dump(tx_receipt, dump_file)
 
         logs = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
-        return tx_receipt, self.get_cross_chain_message(logs[1])
+        return tx_receipt, self.get_cross_chain_message(logs[0])
 
     def send_native(self, address, amount, timeout=60, dump_file=None):
         """Send native currency across the bridge."""

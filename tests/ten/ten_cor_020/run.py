@@ -39,7 +39,7 @@ class PySysTest(TenNetworkTest):
 
             # relay the whitelisting message and set the L2 contract instance
             self.log.info('Relay the token on L2')
-            _, l2_token_address = accnt1.l2.relay_whitelist_message(xchain_msg)
+            _, l2_token_address = accnt1.l2.relay_whitelist_message(xchain_msg, dump_file='relay_whitelist_message.tx')
 
             funded.l2.set_token_contract(l2_token_address, name, sym)
             accnt1.l2.set_token_contract(l2_token_address, name, sym)

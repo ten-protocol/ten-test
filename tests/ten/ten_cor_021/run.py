@@ -49,7 +49,8 @@ class PySysTest(TenNetworkTest):
         self.log.info('Approve the bridge to spend tokens on the L2')
         accnt1.l2.approve_token(self.SYMB, accnt1.l2.bridge.address, 10)
         self.log.info('Send tokens to cross the bridge on the L2')
-        tx_receipt, xchain_msg = accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 2)
+        tx_receipt, xchain_msg = accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 2,
+                                                      dump_file='send_erc20.tx')
         self.log.info('Wait for the message on the L1 and relay it')
         accnt1.l1.wait_for_message(xchain_msg, timeout=120)
         _ = accnt1.l1.relay_message(xchain_msg)
