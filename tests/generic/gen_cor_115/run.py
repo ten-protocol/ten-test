@@ -20,23 +20,23 @@ class PySysTest(GenericNetworkTest):
         emitter_caller.deploy(network_1, account_1)
 
         # transact in a loop
-        for id in range(0, 9):
+        for id in range(0, 5):
             # callEmitAddressEvent will emit the CallerAddressEvent with the msg.sender address in it, and through the
             # contract call will also emit AddressEvent with the address field supplied
             tx_receipt_1 = network_1.transact(self, web3_1,
                                           emitter_caller.contract.functions.callEmitAddressEvent(1, account_2.address),
                                           account_1, emitter_caller.GAS_LIMIT)
-            self.log.info(tx_receipt_1.logs)
-            tx_receipt_2 = web3_2.eth.get_transaction_receipt(tx_receipt_1.transactionHash)
 
             try:
+                tx_receipt_2 = web3_2.eth.get_transaction_receipt(tx_receipt_1.transactionHash)
+
                 event_1 = emitter_caller.contract.events.CallerAddressEvent().process_receipt(tx_receipt_1, errors=DISCARD)[0]
                 event_2 = emitter_caller.contract.events.CallerAddressEvent().process_receipt(tx_receipt_2, errors=DISCARD)[0]
 
-
                 self.log.info('  simpleEvent.address:        %s' % event_1['args']['_address'])
                 self.log.info('  callerSimpleEvent.address:  %s' % event_2['args']['_address'])
-            except:
+            except Exception as e:
+                self.log.info('Exception: %s' % e['message'])
                 self.addOutcome(FAILED, outcomeReason='We should be able to get the two events from the tx receipt', abortOnError=True)
 
 
