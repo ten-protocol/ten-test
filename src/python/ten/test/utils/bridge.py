@@ -116,6 +116,7 @@ class L1BridgeDetails(BridgeDetails):
                                                                                          token.symbol),
                                            self.account, gas_limit=self.bridge.GAS_LIMIT, persist_nonce=False,
                                            timeout=timeout)
+
         logs = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
         return tx_receipt, self.get_cross_chain_message(logs[1])
 
@@ -239,7 +240,7 @@ class L2BridgeDetails(BridgeDetails):
         if dump_file: self.network.dump(tx_receipt, dump_file)
 
         logs = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
-        return tx_receipt, self.get_cross_chain_message(logs[0])
+        return tx_receipt, self.get_cross_chain_message(logs[1])
 
     def send_native(self, address, amount, timeout=60, dump_file=None):
         """Send native currency across the bridge."""
@@ -254,7 +255,7 @@ class L2BridgeDetails(BridgeDetails):
         if dump_file: self.network.dump(tx_receipt, os.path.join(self.test.output, dump_file))
 
         value_transfer = self.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
-        return tx_receipt, self.get_value_transfer_event(value_transfer[0])
+        return tx_receipt, self.get_value_transfer_event(value_transfer[1])
 
     def relay_message(self, xchain_msg, timeout=60, dump_file=None):
         """Relay a cross chain message. """

@@ -47,7 +47,7 @@ async function sendTransfer(provider, wallet, to, amount, bridge, bus) {
   console.log(`Block received:       ${block.number}`)
 
   // extract and log all the values, check that the msgHash is in the decoded tree
-  const value_transfer = bus.interface.parseLog(txReceipt.logs[0]);
+  const value_transfer = bus.interface.parseLog(txReceipt.logs[1]);
   const _processed_value_transfer = process_value_transfer(value_transfer)
   const msg = _processed_value_transfer[0]
   const msgHash = _processed_value_transfer[1]
