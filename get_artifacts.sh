@@ -11,9 +11,10 @@ cd $script_path
 
 # purge artifacts
 echo Purging artifacts directory
-rm ${script_path}/artifacts/build.info
-rm -rf ${script_path}/artifacts/wallet_extension
-rm -rf ${script_path}/artifacts/contracts
+if [ -d ${script_path}/artifacts ]; then
+  rm -rfv ${script_path}/artifacts
+fi
+mkdir ${script_path}/artifacts
 
 # write the build info
 echo Creating build info
@@ -26,10 +27,11 @@ echo "" >> ${script_path}/artifacts/build.info
 echo Building the wallet extension
 cd $src_path/tools/walletextension/main
 
-echo Building for target platform
-go build -o ${script_path}/artifacts/wallet_extension/wallet_extension .
+echo Building wallet extension for target platform
+go build -a -v -o ${script_path}/artifacts/wallet_extension/wallet_extension .
 
 # run the abigen to create the contract ABIs
+echo Building the contract ABIs
 cd $src_path/contracts
 npm install
 npx hardhat compile
