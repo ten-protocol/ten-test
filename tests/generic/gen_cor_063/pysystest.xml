@@ -13,6 +13,7 @@ as a javascript script and checks that it can detect the updates to the balance.
     <classification>
         <groups inherit="true">
             <group>web3js</group>
+            <group>erc20</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

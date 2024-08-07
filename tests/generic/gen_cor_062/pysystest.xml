@@ -13,6 +13,7 @@ concurrent accounts can be used against the network to send and detect receipt o
 
     <classification>
         <groups inherit="true">
+            <group>erc20</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

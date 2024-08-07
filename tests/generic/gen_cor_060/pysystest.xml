@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>ERC20: transfer, approve and transfer from using three accounts</title>
+        <title>ERC20: transfer, approve and transferFrom from using three accounts</title>
         <purpose><![CDATA[
 Uses three accounts; account1 deploys the OBX ERC20 contract and therefore owns all initial tokens.
 Account1 transfers some tokens to account2. Account1 then approves account2 for a certain amount of
@@ -15,6 +15,7 @@ their balances.
 
     <classification>
         <groups inherit="true">
+            <group>erc20</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
