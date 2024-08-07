@@ -1,3 +1,4 @@
+from pysys.constants import PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.storage import Storage
 
@@ -15,4 +16,8 @@ class PySysTest(TenNetworkTest):
         # get the batch for transaction and from that the l1 proof
         batch = self.scan_get_batch_for_transaction(tx_hash)
         l1_proof = batch['Header']['l1Proof']
+
+        # if we get this far we'll treat it as a pass
+        self.addOutcome(PASSED)
+
 

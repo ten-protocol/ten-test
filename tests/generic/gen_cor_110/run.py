@@ -44,4 +44,7 @@ class PySysTest(GenericNetworkTest):
         self.waitForGrep(file=logout, expr='Starting transactions', timeout=10)
         self.waitForGrep(file=stderr, expr="code: \'CALL_EXCEPTION\'", timeout=5)
 
+        # add an explicit assert on the call exception
+        self.assertGrep(file=stderr, expr="code: \'CALL_EXCEPTION\'")
+
 
