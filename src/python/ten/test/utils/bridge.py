@@ -213,6 +213,8 @@ class L2BridgeDetails(BridgeDetails):
         tx_receipt = self.relay_message(xchain_msg, timeout=timeout)
         if dump_file: self.network.dump(tx_receipt, dump_file)
         logs = self.bridge.contract.events.CreatedWrappedToken().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
+
+        self.test.log.info('Extracted logs: %s' % logs)
         return tx_receipt, logs[0]['args']['localAddress']
 
     def approve_token(self, symbol, approval_address, amount, timeout=60, dump_file=None):
