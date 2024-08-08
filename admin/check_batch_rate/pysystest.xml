@@ -14,6 +14,7 @@ increase is not greater than a threshold value.
             <group>health</group>
         </groups>
         <modes inherit="true">
+            <mode>ten.local</mode>
             <mode>ten.uat</mode>
             <mode>ten.sepolia</mode>
         </modes>

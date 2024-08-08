@@ -3,19 +3,17 @@ from ten.test.basetest import TenNetworkTest
 
 
 class PySysTest(TenNetworkTest):
-    DURATION = 75 # in 150 secs set 175 as threshold, scale down by 2
+    DURATION = 75    # in 150 secs set 175 as threshold, scale down by 2
     INTERVAL = 5
     THRESHOLD = 88
 
     def execute(self):
         start = time.time()
-        start_txs = int(self.scan_get_approx_total_transaction_count())
-        start_bts = int(self.scan_get_batch_listing(size=2)['Total'])
+        start_bts = int(self.scan_get_batch_listing(size=1)['BatchesData'][0]['number'], 16)
 
         while True:
             txs = int(self.scan_get_approx_total_transaction_count())
-            bts = int(self.scan_get_batch_listing(size=2)['Total'])
-            self.log.info(self.scan_get_batch_listing(size=2))
+            bts = int(self.scan_get_batch_listing(size=1)['BatchesData'][0]['number'], 16)
             elapsed = (time.time() - start)
             self.log.info('Elapsed %.2f, txs=%d, batches=%d', elapsed, txs, bts)
             if elapsed > self.DURATION: break
