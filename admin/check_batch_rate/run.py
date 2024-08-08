@@ -21,4 +21,4 @@ class PySysTest(TenNetworkTest):
             time.sleep(self.INTERVAL)
 
         self.assertTrue((bts-start_bts) < self.THRESHOLD,
-                        assertMessage='Batch change %d is above threshold %s' % ((bts-start_bts), self.THRESHOLD))
+                        assertMessage='Batch change %d is below threshold %s' % ((bts-start_bts), self.THRESHOLD))
