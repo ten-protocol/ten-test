@@ -40,7 +40,7 @@ class PySysTest(TenNetworkTest):
 
         # release the funds from the L1 and check the balances
         tx_receipt = accnt.l1.release_funds(msg, [proof], root)
-        l1_cost = int(tx_receipt.gasUsed) * accnt.l1.web3.eth.gas_price
+        l1_cost = int(tx_receipt.gasUsed) * int(tx_receipt.effectiveGasPrice)
         l1_after = accnt.l1.web3.eth.get_balance(accnt.l1.account.address)
         l2_after = accnt.l2.web3.eth.get_balance(accnt.l2.account.address)
         self.log.info('  l1_balance before:     %s', l1_before)

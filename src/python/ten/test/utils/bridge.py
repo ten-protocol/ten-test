@@ -176,6 +176,7 @@ class L1BridgeDetails(BridgeDetails):
                                        self.management.contract.functions.ExtractNativeValue(msg, proof, root),
                                        self.account, gas_limit=self.xchain.GAS_LIMIT, persist_nonce=False,
                                        timeout=timeout, gas_attempts=20)
+
         return tx_receipt
 
 
