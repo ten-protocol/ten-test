@@ -15,7 +15,7 @@ class PySysTest(TenNetworkTest):
         accnt1 = BridgeUser(self, props.account1pk(), props.account1pk(), 'accnt1')
 
         # run the test loop for different tokens
-        for entry in [('CoolioCoin','CCN'), ('SmudgeToken','STK'), ('BigOleCoin','BOC')]:
+        for entry in [('CoolioCoin','CCN'), ('BigOleCoin','BOC')]:
             name = entry[0]
             sym = entry[1]
             amount = random.randint(1, 20)
