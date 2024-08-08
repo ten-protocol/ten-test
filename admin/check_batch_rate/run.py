@@ -15,6 +15,7 @@ class PySysTest(TenNetworkTest):
         while True:
             txs = int(self.scan_get_approx_total_transaction_count())
             bts = int(self.scan_get_batch_listing(size=2)['Total'])
+            self.log.info(self.scan_get_batch_listing(size=2))
             elapsed = (time.time() - start)
             self.log.info('Elapsed %.2f, txs=%d, batches=%d', elapsed, txs, bts)
             if elapsed > self.DURATION: break
