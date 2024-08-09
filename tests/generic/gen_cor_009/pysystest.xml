@@ -17,6 +17,7 @@ Checks the calls to get_transactionCount increase as you deploy a contract and i
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
+            <mode>ten.sim</mode>
             <mode>arbitrum.sepolia</mode>
             <mode>ganache</mode>
             <mode>sepolia</mode>

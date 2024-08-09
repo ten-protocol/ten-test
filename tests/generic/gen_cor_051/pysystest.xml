@@ -18,6 +18,7 @@ Deploy a contract and check for error reporting on failure of a transaction.
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
+            <mode>ten.sim</mode>
             <mode>arbitrum.sepolia</mode>
             <mode>ganache</mode>
             <mode>sepolia</mode>

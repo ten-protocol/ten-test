@@ -18,6 +18,7 @@ Checks the cost of requesting the balance of an account.
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
+            <mode>ten.sim</mode>
             <mode>arbitrum.sepolia</mode>
             <mode>ganache</mode>
             <mode>sepolia</mode>
