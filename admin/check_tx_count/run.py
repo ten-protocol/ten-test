@@ -14,7 +14,7 @@ class PySysTest(TenNetworkTest):
 
         # recorded last then get last two hours of recorded tx counts - note that we expect a regular interval of
         # recordings which might not be the case if the job is queued or stopped at any point
-        sequencer_address = Properties().sequencer_address(key=self.env)
+        sequencer_address = Properties().sequencer_address(key='ten.sepolia')
         sequencer_count = web3.eth.get_transaction_count(sequencer_address)
         self.log.info('Sequencer tx count %d', sequencer_count)
         self.counts_db.insert_count('Sequencer', sequencer_address, self.env, current_time, sequencer_count)
