@@ -20,6 +20,7 @@ time, and also the trend of the processing i.e. do we see synchronised pauses im
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
+            <mode>ten.sim</mode>
         </modes>
     </classification>
 

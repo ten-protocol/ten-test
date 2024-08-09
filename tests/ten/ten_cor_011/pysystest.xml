@@ -21,6 +21,7 @@ if other clients are writing transactions whilst this test is running.
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
+            <mode>ten.sim</mode>
         </modes>
     </classification>
 

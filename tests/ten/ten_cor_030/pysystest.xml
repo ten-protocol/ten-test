@@ -27,6 +27,7 @@ registered. For each connection a single event log subscription is made for all 
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
+            <mode>ten.sim</mode>
         </modes>
     </classification>
 

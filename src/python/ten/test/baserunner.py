@@ -41,6 +41,7 @@ class TenRunnerPlugin():
             runner.log.info('   ten.uat       Ten uat testnet')
             runner.log.info('   ten.dev       Ten dev testnet')
             runner.log.info('   ten.local     Ten local testnet')
+            runner.log.info('   ten.sim       Ten sim testnet')
             runner.log.info('   arbitrum      Arbitrum Network')
             runner.log.info('   ganache       Ganache Network started by the framework')
             runner.log.info('   sepolia       Sepolia Network')
@@ -196,7 +197,7 @@ class TenRunnerPlugin():
 
     def is_ten(self):
         """Return true if we are running against a Ten network. """
-        return self.env in ['ten.sepolia', 'ten.uat', 'ten.dev', 'ten.local']
+        return self.env in ['ten.sepolia', 'ten.uat', 'ten.dev', 'ten.local', 'ten.sim']
 
     def is_local_ten(self):
         """Return true if we are running against a local Ten network. """
@@ -214,7 +215,8 @@ class TenRunnerPlugin():
         runner.log.info('Running for user address %s', account.address)
         headers = {'Content-Type': 'application/json'}
         data = {"address": account.address}
-        requests.post(url, data=json.dumps(data), headers=headers)
+        response = requests.post(url, data=json.dumps(data), headers=headers)
+        if not response.ok: runner.log.info('Request for funds was not successful, response text: %s', response.text)
 
     def __print_cost(self, runner, url, web3, user_id):
         """Print out balances. """
@@ -268,20 +270,25 @@ class TenRunnerPlugin():
     def __set_contract_addresses(self, runner):
         """Get the contract addresses and set into the properties. """
         data = {"jsonrpc": "2.0", "method": "obscuro_config", "id": self.MSG_ID}
-        response = self.post(data)
+        response = self.post(runner, data)
         if 'result' in response.json():
             config = response.json()['result']
             Properties.L1ManagementAddress = config["ManagementContractAddress"]
             Properties.L1MessageBusAddress = config["MessageBusAddress"]
-            Properties.L1BridgeAddress = config["ImportantContracts"]["L1Bridge"]
-            Properties.L1CrossChainMessengerAddress = config["ImportantContracts"]["L1CrossChainMessenger"]
             Properties.L2MessageBusAddress = config["L2MessageBusAddress"]
-            Properties.L2BridgeAddress = config["ImportantContracts"]["L2Bridge"]
-            Properties.L2CrossChainMessengerAddress = config["ImportantContracts"]["L2CrossChainMessenger"]
+            if "ImportantContracts" in config:
+                contracts = config["ImportantContracts"]
+                Properties.L1BridgeAddress = self.__get_contract(contracts, "L1Bridge")
+                Properties.L2BridgeAddress = self.__get_contract(contracts, "L2Bridge")
+                Properties.L1CrossChainMessengerAddress = self.__get_contract(contracts, "L1CrossChainMessenger")
+                Properties.L2CrossChainMessengerAddress = self.__get_contract(contracts, "L2CrossChainMessenger")
         elif 'error' in response.json():
             runner.log.error(response.json()['error']['message'])
 
-    def post(self, data):
+    def __get_contract(self, contracts, key):
+        return contracts[key] if key in contracts else None
+
+    def post(self, runner, data):
         self.MSG_ID += 1
         server = 'http://%s:%s' % (Properties().node_host(self.env, self.NODE_HOST), Properties().node_port_http(self.env))
         return requests.post(server, json=data)

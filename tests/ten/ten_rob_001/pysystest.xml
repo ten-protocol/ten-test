@@ -23,6 +23,7 @@ unsubscribes should not cause any disruption to event notification / call back.
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
+            <mode>ten.sim</mode>
         </modes>
     </classification>
 

@@ -17,6 +17,7 @@ Similar to the previous test, but this time a non life-cycle event is used.
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
+            <mode>ten.sim</mode>
         </modes>
     </classification>
 
