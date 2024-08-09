@@ -22,6 +22,7 @@ subscriptions should receive the event.
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
+            <mode>ten.sim</mode>
         </modes>
     </classification>
 

@@ -20,6 +20,7 @@ should return a set of transactions that contain them. Test also validates on co
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
+            <mode>ten.sim</mode>
         </modes>
     </classification>
 

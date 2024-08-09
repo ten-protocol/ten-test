@@ -19,6 +19,7 @@ results before and after deploying a contract and interacting with it.
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
+            <mode>ten.sim</mode>
         </modes>
     </classification>
 

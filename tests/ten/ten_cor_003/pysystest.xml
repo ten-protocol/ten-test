@@ -24,6 +24,7 @@ there should be 4 events logged.
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
+            <mode>ten.sim</mode>
         </modes>
     </classification>
 

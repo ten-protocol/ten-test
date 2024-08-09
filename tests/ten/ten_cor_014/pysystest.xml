@@ -19,6 +19,7 @@ user. They then call to get their personal transactions and the test confirms re
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
+            <mode>ten.sim</mode>
         </modes>
     </classification>
 

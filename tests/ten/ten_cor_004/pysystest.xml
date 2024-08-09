@@ -22,6 +22,7 @@ subscriptions as the event is relevant to them, whereas Account2 and Account3 sh
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
+            <mode>ten.sim</mode>
         </modes>
     </classification>
 

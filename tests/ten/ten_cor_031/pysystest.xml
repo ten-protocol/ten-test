@@ -21,6 +21,7 @@ the network, we expect a single call back for our subscriber (de-duplication).
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
+            <mode>ten.sim</mode>
         </modes>
     </classification>
 

@@ -19,6 +19,7 @@ deploys a contract using each of the accounts, which therefore must be authentic
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
+            <mode>ten.sim</mode>
         </modes>
     </classification>
 

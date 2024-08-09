@@ -22,6 +22,7 @@ As such, only Account4's subscription should receive back an event i.e. the othe
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
+            <mode>ten.sim</mode>
         </modes>
     </classification>
 

@@ -19,6 +19,7 @@ Tests the gateway getmessage call to return the format to use when authenticatin
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
+            <mode>ten.sim</mode>
         </modes>
     </classification>
 
