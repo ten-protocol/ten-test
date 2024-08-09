@@ -69,7 +69,7 @@ class GenericNetworkTest(BaseTest):
 
     def is_ten(self):
         """Return true if we are running against a Ten network. """
-        return self.env in ['ten.sepolia', 'ten.uat', 'ten.dev', 'ten.local']
+        return self.env in ['ten.sepolia', 'ten.uat', 'ten.dev', 'ten.local', 'ten.sim']
 
     def is_local_ten(self):
         """Return true if we are running against a local Ten network. """
