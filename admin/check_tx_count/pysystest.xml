@@ -12,7 +12,6 @@
             <group>health</group>
         </groups>
         <modes inherit="true">
-            <mode>ten.uat</mode>
             <mode>ten.sepolia</mode>
         </modes>
     </classification>
