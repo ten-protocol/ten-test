@@ -195,6 +195,9 @@ pysys.py run -m ten.dev
 # run the tests against Ten local testnet
 pysys.py run -m ten.local
 
+# run the tests against Ten sim testnet
+pysys.py run -m ten.sim
+
 # run the tests against a local ganache network 
 pysys.py run -m ganache
 
@@ -210,6 +213,16 @@ yourself using the approach as described in the [go-ten readme](https://github.c
 Both the local testnet and the faucet will need to be started. To run against ganache the test framework will start the 
 local ganache network on your behalf, and tear it down when test execution is complete. To run the same tests against 
 Sepolia or Arbitrum, the `~/.tentest/user.properties` should be created as described earlier. 
+
+If you wish to run against a Ten simulated testnet, you will need to run the simulation from within the go-land IDE, and 
+additionally start the faucet manually. To run the network, in the IDE run the method `TestRunLocalNetwork` within the 
+file `integration/networktest/tests/helpful/spin_up_local_network_test.go`. In order for the network to come up, you 
+need to set the IDE flag in the Run Configurations to true, or remove the line `networktest.TestOnlyRunsInIDE(t)` from 
+within the method. To run the faucet, in `go-ten` directory execute the below;
+
+```
+go run ./tools/faucet/cmd --nodePort 17801 -nodeHost 127.0.0.1  --pk 0x8dfb8083da6275ae3e4f41e3e8a8c19d028d32c9247e24530933782f2a05035b --jwtSecret This_is_the_secret --serverPort 99
+```
 
 
 Running a specific test or range of tests
