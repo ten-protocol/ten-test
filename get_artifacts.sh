@@ -28,7 +28,19 @@ echo Building the wallet extension
 cd $src_path/tools/walletextension/main
 
 echo Building wallet extension for target platform
-go build -a -v -o ${script_path}/artifacts/wallet_extension/wallet_extension .
+go build -o ${script_path}/artifacts/wallet_extension/wallet_extension .
+
+echo Building wallet extension for GOOS=darwin GOARCH=amd64
+env GOOS=darwin GOARCH=amd64 go build -o ${script_path}/artifacts/wallet_extension/wallet_extension_macos_amd64 .
+
+echo Building wallet extension for GOOS=darwin GOARCH=arm64
+env GOOS=darwin GOARCH=arm64 go build -o ${script_path}/artifacts/wallet_extension/wallet_extension_macos_arm64 .
+
+echo Building wallet extension for GOOS=windows GOARCH=amd64
+env GOOS=windows GOARCH=amd64 go build -o ${script_path}/artifacts/wallet_extension/wallet_extension_win_amd64.exe .
+
+echo Building wallet extension for GOOS=linux GOARCH=amd64
+env GOOS=linux GOARCH=amd64 go build -o ${script_path}/artifacts/wallet_extension/wallet_extension_linux_amd64
 
 # run the abigen to create the contract ABIs
 echo Building the contract ABIs
