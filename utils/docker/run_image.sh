@@ -29,4 +29,10 @@ done
 docker rm --volumes e2e-tests
 
 # run up the container
-docker run -it -e DOCKER_TEST_ENV=true --network=node_network --name=e2e-tests testnetobscuronet.azurecr.io/obscuronet/obscuro_test:${version}
+docker network inspect node_network > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    docker run -it -e DOCKER_TEST_ENV=true --network=node_network --name=e2e-tests testnetobscuronet.azurecr.io/obscuronet/obscuro_test:${version}
+else
+    docker run -it -e DOCKER_TEST_ENV=true --name=e2e-tests testnetobscuronet.azurecr.io/obscuronet/obscuro_test:${version}
+fi
+
