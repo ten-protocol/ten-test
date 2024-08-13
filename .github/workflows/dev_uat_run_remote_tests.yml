@@ -72,7 +72,7 @@ jobs:
           pdftk $(find . -name \*.pdf | sort) cat output results_graphs.pdf || true
 
       - name: 'Upload testcase output'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-artifact
@@ -82,7 +82,7 @@ jobs:
           retention-days: 1
 
       - name: 'Upload performance output'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: performance-artifact

@@ -46,7 +46,7 @@ jobs:
           PRIMARY_HOST_HTTP=https://dexynth-gateway.ten.xyz PRIMARY_HOST_WS=wss://dexynth-gateway.ten.xyz /usr/local/bin/pysys.py run -m ten.sepolia -o dexynth gen_cor_040 gen_cor_073 gen_cor_106
 
       - name: 'Upload testcase output'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-artifact
