@@ -40,7 +40,7 @@ jobs:
           /usr/local/bin/pysys.py run -m ten.uat ten_cor_020 ten_cor_024
 
       - name: 'Upload testcase output'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-artifact
