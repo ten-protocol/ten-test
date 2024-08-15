@@ -245,13 +245,12 @@ class L2BridgeDetails(BridgeDetails):
 
     def send_native(self, address, amount, timeout=60, dump_file=None):
         """Send native currency across the bridge."""
-        build_tx = self.bridge.contract.functions.sendNative(address).build_transaction(
-            {
-                'gas': 4*21000,
-                'gasPrice': self.web3.eth.gas_price,
-                'value': amount
-            }
-        )
+        target = self.bridge.contract.functions.sendNative(address)
+        params = {'gasPrice': self.web3.eth.gas_price, 'value': amount}
+        gas_estimate = target.estimate_gas(params)
+        params['gas'] = int(1.1*gas_estimate)
+        build_tx = target.build_transaction(params)
+
         tx_receipt = self.network.tx(self.test, self.web3, build_tx, self.account, timeout=timeout)
         if dump_file: self.network.dump(tx_receipt, os.path.join(self.test.output, dump_file))
 
