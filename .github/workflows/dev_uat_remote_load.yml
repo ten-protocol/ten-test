@@ -4,7 +4,7 @@ name: '[dev/uat] Run load tests'
 run-name: Run uat-testnet load tests
 on:
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '0 * * * *'
   workflow_dispatch:
 
 jobs:
