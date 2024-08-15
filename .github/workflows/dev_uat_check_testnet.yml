@@ -33,11 +33,11 @@ jobs:
           cd ${{ github.workspace }}/ten-test
           /usr/local/bin/pysys.py run -m ten.uat -i health -XITERATIONS_FULL=0
 
-#      - name: 'Run health check tests (bridge)'
-#        if: always()
-#        run: |
-#          cd ${{ github.workspace }}/ten-test
-#          /usr/local/bin/pysys.py run -m ten.uat ten_cor_020 ten_cor_024
+      - name: 'Run health check tests (bridge)'
+        if: always()
+        run: |
+          cd ${{ github.workspace }}/ten-test
+          /usr/local/bin/pysys.py run -m ten.uat ten_cor_020 ten_cor_024
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v4
