@@ -42,7 +42,7 @@ RUN echo "node = /usr/bin/node" >> ~/.tentest/user.properties
 RUN echo "node_path = /usr/lib/node_modules:/usr/local/lib/node_modules" >> ~/.tentest/user.properties
 
 WORKDIR /home/ten-test/artifacts/wallet_extension
-RUN rm wallet_extension
+RUN rm -f wallet_extension
 RUN ln -s wallet_extension_linux_amd64 wallet_extension
 
 WORKDIR /home/ten-test
