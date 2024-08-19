@@ -38,7 +38,7 @@ class WalletExtension:
             test.log.info('Removing wallet extension persistence file')
             os.remove(self.databasePath)
 
-    def run(self):
+    def run(self, rate_limit_user_compute_time=0):
         """Run an instance of the wallet extension."""
         self.test.log.info('Starting %s wallet extension on port=%d, ws_port=%d', self.name, self.port, self.ws_port)
 
@@ -50,6 +50,7 @@ class WalletExtension:
         arguments.extend(('--portWS', str(self.ws_port)))
         arguments.extend(('--logPath', self.logPath))
         arguments.extend(('--databasePath', self.databasePath))
+        arguments.extend(('--rateLimitUserComputeTime', str(rate_limit_user_compute_time)))
         if self.verbose: arguments.append('--verbose')
         hprocess = self.test.startProcess(command=self.binary, displayName='wallet_extension',
                                           workingDir=self.test.output, environs=os.environ, quiet=True,
