@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Hardhat: deploy an upgradable contract with state through a proxy</title>
+        <purpose><![CDATA[
+The initial deployed contract has state that can be set and retrieved. The contract is upgraded through the proxy
+pattern to a new contract that returns double the store state.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>hardhat</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+            <mode>ten.sim</mode>
+            <mode>ganache</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

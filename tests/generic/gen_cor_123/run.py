@@ -38,21 +38,31 @@ class PySysTest(GenericNetworkTest):
                 result = regex.search(line)
                 if result is not None: address = result.group('address')
         self.log.info('Proxy deployed at address %s', address)
-        self.wait(4*float(self.block_time))
+        self.wait(4 * float(self.block_time))
 
         # construct an instance of the contract from the address and abi
-        with open(os.path.join(self.output,'project','artifacts','contracts','DoubleV1.sol', 'DoubleV1.json')) as f:
+        with open(os.path.join(self.output, 'project', 'artifacts', 'contracts', 'StoreV1.sol', 'StoreV1.json')) as f:
             contract = web3.eth.contract(address=address, abi=json.load(f)['abi'])
 
-        # make a call to v1 and assert we get the correct returned result
-        ret = int(contract.functions.doIt(2).call())
+        # store a value in the contract and retrieve it
+        network.transact(self, web3, contract.functions.store(200), account, 3_000_000, persist_nonce=False)
+        ret = int(contract.functions.retrieve().call())
         self.log.info('Returned value is %d', ret)
-        self.assertTrue(ret == 4)
+        self.assertTrue(ret == 200)
 
-        # make a call to v2 and assert we get the correct returned result
-        with open(os.path.join(self.output,'project','artifacts','contracts','DoubleV2.sol', 'DoubleV2.json')) as f:
+        # upgrade the contract
+        environ['ADDRESS'] = address
+        self.run_npx(args=['hardhat', 'run', '--network', self.get_network(), 'scripts/upgrade.js'],
+                     working_dir=project, environ=environ, stdout='npx_upgrade.out', stderr='npx_upgrade.err')
+
+        # make a call to v2 and assert we get the correct returned result, then repeat
+        with open(os.path.join(self.output, 'project', 'artifacts', 'contracts', 'StoreV2.sol', 'StoreV2.json')) as f:
             contract = web3.eth.contract(address=address, abi=json.load(f)['abi'])
-        ret = int(contract.functions.doItTwice(2).call())
+        ret = int(contract.functions.retrieve().call())
         self.log.info('Returned value is %d', ret)
-        self.assertTrue(ret == 8)
-        
+        self.assertTrue(ret == 400)
+
+        network.transact(self, web3, contract.functions.store(400), account, 3_000_000, persist_nonce=False)
+        ret = int(contract.functions.retrieve().call())
+        self.log.info('Returned value is %d', ret)
+        self.assertTrue(ret == 800)
