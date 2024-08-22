@@ -1,26 +1,30 @@
+import os
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.bridge import BridgeUser
 from ten.test.utils.properties import Properties
-from ten.test.helpers.log_subscriber import FilterLogSubscriber
 
 
 class PySysTest(TenNetworkTest):
 
     def execute(self):
         props = Properties()
-        transfer = 1000
+        transfer = 1010
 
         # the account of the user for the bridges
         accnt1 = BridgeUser(self, props.account1pk(), props.account1pk(), 'accnt1')
 
         # run the javascript event log subscriber in the background
-        subscriber = FilterLogSubscriber(self, accnt1.l1.network)
-        subscriber.run(
-            decode_as_stored_event=False,
-            filter_address=accnt1.l1.bus.address,
-            filter_topics=[accnt1.l1.web3.keccak(text='ValueTransfer(address,address,uint256,uint64)').hex()]
-        )
-        subscriber.subscribe()
+        stdout = os.path.join(self.output, 'query.out')
+        stderr = os.path.join(self.output, 'query.err')
+        logout = os.path.join(self.output, 'query.log')
+        script = os.path.join(self.input, 'query.js')
+        args = []
+        args.extend(['--network_ws', accnt1.l1.network.connection_url(web_socket=True)])
+        args.extend(['--contract_address', '%s' % accnt1.l1.bus.address])
+        args.extend(['--contract_abi', '%s' % accnt1.l1.bus.abi_path])
+        args.extend(['--log_file', '%s' % logout])
+        self.run_javascript(script, stdout, stderr, args)
+        self.waitForGrep(file=logout, expr='Starting task ...', timeout=10)
 
         # send native from the L1 to the L2
         self.log.info('Send native and wait for the xchain msg on the L2')
@@ -28,5 +32,5 @@ class PySysTest(TenNetworkTest):
         accnt1.l2.wait_for_message(xchain_msg)
 
         # we should see the log
-        self.assertGrep(file='subscriber.out', expr='Full log')
+        self.assertGrep(file='query.log', expr='Full log')
 

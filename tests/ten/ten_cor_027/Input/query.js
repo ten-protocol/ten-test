@@ -1,5 +1,5 @@
 const fs = require('fs')
-const Web3 = require('web3')
+const ethers = require('ethers')
 const commander = require('commander')
 
 function log(data) {
@@ -8,39 +8,38 @@ function log(data) {
     fs.appendFileSync(options.log_file, entry, { flag: 'a' });
 }
 
-async function task() {
-    log(`Getting past SimpleEvent events from ${from} to latest, id filter ${options.id_filter}`)
-    topic = web3.utils.sha3('SimpleEvent(uint,string,address)')
-    contract.getPastEvents('SimpleEvent', {
-          fromBlock: 0,
-          toBlock: 'latest',
-          filter: {id: options.id_filter}
-          })
-    .then(function(events) {
-     if (events.length) {
-            for (var i = 0, len = events.length; i < len; i+=1) {
-                log(events[i])
-            }
-          }
-          log(`Poller completed`)
-      });
+function task() {
+  log(`Starting task ...`)
+  filter = {
+    address: options.contract_address,
+    topics: [
+      ethers.utils.id('ValueTransfer(address,address,uint256,uint64)')
+    ]
+  }
+  provider.on(filter, (result) => {
+    decoded_log = interface.decodeEventLog('ValueTransfer', result.data, result.topics)
+    log(`Log transfer receiver = ${decoded_log.receiver}`)
+    log(`Log transfer amount = ${decoded_log.amount.toNumber()}`)
+  });
 }
 
 commander
   .version('1.0.0', '-v, --version')
   .usage('[OPTIONS]...')
   .option('--network_ws <value>', 'Web socket connection URL to the network')
-  .option('--contract_address <value>', 'Web socket connection URL to the network')
-  .option('--contract_abi <value>', 'Web socket connection URL to the network')
+  .option('--contract_address <value>', 'Contract address')
+  .option('--contract_abi <value>', 'Contract ABI file')
   .option('--log_file <value>', 'The output file to write to')
   .parse(process.argv)
 
-const options = commander.opts()
-const web3 = new Web3(`${options.network_ws}`)
 
-var json = fs.readFileSync(`${options.contract_abi}`)
+const options = commander.opts()
+const provider = new ethers.providers.WebSocketProvider(options.network_ws)
+
+var json = fs.readFileSync(options.contract_abi)
 var abi = JSON.parse(json)
-const contract = new web3.eth.Contract(abi, `${options.contract_address}`)
+const contract = new ethers.Contract(options.contract_address, abi, provider)
+const interface = new ethers.utils.Interface(abi)
 task()
 
 
