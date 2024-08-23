@@ -12,6 +12,9 @@ class PySysTest(TenNetworkTest):
 
         # the account of the user for the bridges
         accnt1 = BridgeUser(self, props.account1pk(), props.account1pk(), 'accnt1')
+        self.log.info(accnt1.l1.bus.address)
+        self.log.info(accnt1.l1.bridge.address)
+        self.log.info(accnt1.l1.network.connection_url(web_socket=True))
 
         # run the javascript event log subscriber in the background
         stdout = os.path.join(self.output, 'query.out')
@@ -20,8 +23,8 @@ class PySysTest(TenNetworkTest):
         script = os.path.join(self.input, 'query.js')
         args = []
         args.extend(['--network_ws', accnt1.l1.network.connection_url(web_socket=True)])
-        args.extend(['--contract_address', '%s' % accnt1.l1.bus.address])
-        args.extend(['--contract_abi', '%s' % accnt1.l1.bus.abi_path])
+        args.extend(['--bus_address', '%s' % accnt1.l1.bus.address])
+        args.extend(['--bus_abi', '%s' % accnt1.l1.bus.abi_path])
         args.extend(['--log_file', '%s' % logout])
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=logout, expr='Starting task ...', timeout=10)
