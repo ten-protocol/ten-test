@@ -16,18 +16,9 @@ class PySysTest(TenNetworkTest):
         self.log.info(accnt1.l1.bridge.address)
         self.log.info(accnt1.l1.network.connection_url(web_socket=True))
 
-        # run the javascript event log subscriber in the background
-        stdout = os.path.join(self.output, 'query.out')
-        stderr = os.path.join(self.output, 'query.err')
-        logout = os.path.join(self.output, 'query.log')
-        script = os.path.join(self.input, 'query.js')
-        args = []
-        args.extend(['--network_ws', accnt1.l1.network.connection_url(web_socket=True)])
-        args.extend(['--bus_address', '%s' % accnt1.l1.bus.address])
-        args.extend(['--bus_abi', '%s' % accnt1.l1.bus.abi_path])
-        args.extend(['--log_file', '%s' % logout])
-        self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=logout, expr='Starting task ...', timeout=10)
+        # run the subscribers
+        self.run_client(accnt1.l1, 'l1')
+        self.run_client(accnt1.l2, 'l2')
 
         # send native from the L1 to the L2
         self.log.info('Send native and wait for the xchain msg on the L2')
@@ -35,5 +26,22 @@ class PySysTest(TenNetworkTest):
         accnt1.l2.wait_for_message(xchain_msg)
 
         # we should see the log
-        self.assertGrep(file='query.log', expr='Full log')
+        expr_list = []
+        expr_list.append('Log transfer sender = %s' % accnt1.l1.bridge.address)
+        expr_list.append('Log transfer receiver = %s' % accnt1.l1.account.address)
+        expr_list.append('Log transfer amount = %d' % transfer)
+        self.assertOrderedGrep(file='query_l1.log', exprList=expr_list)
 
+    def run_client(self, layer, id):
+        # run the javascript event log subscriber in the background
+        stdout = os.path.join(self.output, 'query_%s.out'%id)
+        stderr = os.path.join(self.output, 'query_%s.err'%id)
+        logout = os.path.join(self.output, 'query_%s.log'%id)
+        script = os.path.join(self.input, 'query.js')
+        args = []
+        args.extend(['--network_ws', layer.network.connection_url(web_socket=True)])
+        args.extend(['--bus_address', '%s' % layer.bus.address])
+        args.extend(['--bus_abi', '%s' % layer.bus.abi_path])
+        args.extend(['--log_file', '%s' % logout])
+        self.run_javascript(script, stdout, stderr, args)
+        self.waitForGrep(file=logout, expr='Starting task ...', timeout=10)
