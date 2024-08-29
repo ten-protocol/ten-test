@@ -5,6 +5,7 @@ from ten.test.utils.properties import Properties
 
 
 class PySysTest(TenNetworkTest):
+    GAS_ATTEMPTS=20
 
     def execute(self):
         props = Properties()
@@ -39,7 +40,7 @@ class PySysTest(TenNetworkTest):
                         assertMessage='Calculated merkle root should be same as the block header')
 
         # release the funds from the L1 and check the balances
-        tx_receipt = accnt.l1.release_funds(msg, [proof], root)
+        tx_receipt = accnt.l1.release_funds(msg, [proof], root, gas_attempts=self.GAS_ATTEMPTS)
         l1_cost = int(tx_receipt.gasUsed) * int(tx_receipt.effectiveGasPrice)
         l1_after = accnt.l1.web3.eth.get_balance(accnt.l1.account.address)
         l2_after = accnt.l2.web3.eth.get_balance(accnt.l2.account.address)
