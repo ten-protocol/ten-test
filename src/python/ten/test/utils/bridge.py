@@ -170,12 +170,12 @@ class L1BridgeDetails(BridgeDetails):
                                            timeout=timeout)
         return tx_receipt
 
-    def release_funds(self, msg, proof, root, timeout=60):
+    def release_funds(self, msg, proof, root, timeout=60, gas_attempts=20):
         """Release funds to an account. """
         tx_receipt = self.network.transact(self.test, self.web3,
                                        self.management.contract.functions.ExtractNativeValue(msg, proof, root),
                                        self.account, gas_limit=self.xchain.GAS_LIMIT, persist_nonce=False,
-                                       timeout=timeout, gas_attempts=20)
+                                       timeout=timeout, gas_attempts=gas_attempts)
 
         return tx_receipt
 
