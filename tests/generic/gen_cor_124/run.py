@@ -12,13 +12,11 @@ class PySysTest(GenericNetworkTest):
     def execute(self):
         project = os.path.join(self.output, 'project')
         private_key_1 = secrets.token_hex(32)
-        private_key_2 = secrets.token_hex(32)
 
         # connect to the network, allocate the normal ephemeral amount
         network = self.get_network_connection(name='local')
         self.distribute_native(Web3().eth.account.from_key(private_key_1), network.ETH_ALLOC)
         web3_1, account_1 = network.connect(self, private_key=private_key_1, check_funds=False)
-        web3_2, account_2 = network.connect(self, private_key=private_key_2, check_funds=False)
 
         # copy over and initialise the project
         shutil.copytree(self.input, project)
@@ -53,11 +51,7 @@ class PySysTest(GenericNetworkTest):
         self.assertTrue(ret == 200)
 
         # upgrade the contract
-        environ = copy.deepcopy(os.environ)
         environ['PK'] = private_key_1
-        environ['HOST'] = network.HOST
-        environ['PORT'] = str(network.PORT)
-        environ['TOKEN'] = network.ID if self.is_ten() else ''
         environ['ADDRESS'] = address
         self.run_npx(args=['hardhat', 'run', '--network', self.get_network(), 'scripts/upgrade.js'],
                      working_dir=project, environ=environ, stdout='npx_upgrade.out', stderr='npx_upgrade.err')
