@@ -16,9 +16,9 @@ class PySysTest(GenericNetworkTest):
 
         # connect to the network, allocate the normal ephemeral amount
         network = self.get_network_connection(name='local')
-        self.distribute_native(Web3().eth.account.from_key(private_key_1), 4*network.ETH_ALLOC)
-        self.distribute_native(Web3().eth.account.from_key(private_key_2), 4*network.ETH_ALLOC)
-        web3_1, account_1 = network.connect(self, private_key=private_key_1, check_funds=False)
+        self.distribute_native(Web3().eth.account.from_key(private_key_1), network.ETH_ALLOC)
+        self.distribute_native(Web3().eth.account.from_key(private_key_2), network.ETH_ALLOC)
+        web3, account = network.connect(self, private_key=private_key_1, check_funds=False)
         _, _ = network.connect(self, private_key=private_key_2, check_funds=False)
 
         # copy over and initialise the project
@@ -42,32 +42,28 @@ class PySysTest(GenericNetworkTest):
                 result = regex.search(line)
                 if result is not None: address = result.group('address')
         self.log.info('Proxy deployed at address %s', address)
-        self.wait(4*float(self.block_time))
 
-        # construct an instance of the contract from the address and abi
-        with open(os.path.join(self.output, 'project', 'artifacts', 'contracts', 'StoreV1.sol', 'StoreV1.json')) as f:
-            contract = web3_1.eth.contract(address=address, abi=json.load(f)['abi'])
-
-        # retrieve the value from initialisation (shows the contract is still accessible)
-        ret = int(contract.functions.retrieve().call())
-        self.log.info('Returned value is %d', ret)
-        self.assertTrue(ret == 100)
-
+        # validate the proxy ownership is reported as changed
         expr_list = []
         expr_list.append('1 proxies ownership transferred through proxy admin')
         expr_list.append('%s.*transparent' % address)
         self.assertOrderedGrep('npx_deploy.out', exprList=expr_list)
 
-        # upgrade the contract
+        # check the initial value is set
+        with open(os.path.join(self.output, 'project', 'artifacts', 'contracts', 'StoreV1.sol', 'StoreV1.json')) as f:
+            contract = web3.eth.contract(address=address, abi=json.load(f)['abi'])
+        ret = int(contract.functions.retrieve().call())
+        self.log.info('Returned value is %d', ret)
+        self.assertTrue(ret == 100)
+
+        # upgrade the contract, set and retrieve the value
         environ['ADDRESS'] = address
         self.run_npx(args=['hardhat', 'run', '--network', self.get_network(), 'scripts/upgrade.js'],
                      working_dir=project, environ=environ, stdout='npx_upgrade.out', stderr='npx_upgrade.err')
 
-        # make a call to v2 and assert we get the correct returned result, then repeat
         with open(os.path.join(self.output, 'project', 'artifacts', 'contracts', 'StoreV2.sol', 'StoreV2.json')) as f:
-            contract = web3_1.eth.contract(address=address, abi=json.load(f)['abi'])
-
-        network.transact(self, web3_1, contract.functions.store(400), account_1, 3_000_000, persist_nonce=False)
+            contract = web3.eth.contract(address=address, abi=json.load(f)['abi'])
+        network.transact(self, web3, contract.functions.store(400), account, 3_000_000, persist_nonce=False)
         ret = int(contract.functions.retrieve().call())
         self.log.info('Returned value is %d', ret)
         self.assertTrue(ret == 800)
