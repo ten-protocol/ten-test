@@ -15,7 +15,7 @@ class PySysTest(GenericNetworkTest):
         private_key_2 = secrets.token_hex(32)
 
         # connect to the network, allocate the normal ephemeral amount
-        network = self.get_network_connection(name='local')
+        network = self.get_network_connection()
         self.distribute_native(Web3().eth.account.from_key(private_key_1), network.ETH_ALLOC)
         self.distribute_native(Web3().eth.account.from_key(private_key_2), network.ETH_ALLOC)
         web3, account = network.connect(self, private_key=private_key_1, check_funds=False)
