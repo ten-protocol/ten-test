@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Hardhat: transfer proxy ownership and upgrade</title>
+        <purpose><![CDATA[
+Executes a single hardhat script to deploy an upgradeable contract via a proxy, and then transfer ownership of that
+proxy to another user, who then performs the upgrade. Note that the used of @openzeppelin/contracts-upgradeable
+is to allow the storage contract to be initialised with a first value (you can not set directly with proxies).
+
+Skipped due to https://github.com/ten-protocol/ten-internal/issues/3875
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>hardhat</group>
+            <group>skip</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+            <mode>ten.sim</mode>
+            <mode>ganache</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
