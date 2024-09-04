@@ -117,8 +117,8 @@ class Ten(DefaultPreLondon):
                 self.log.info('Using primary gateway on host=%s, port=%d', self.HOST, self.PORT)
             else:
                 wallet = WalletExtension.start(test, name=name)
-                self.PORT = 'http://127.0.0.1'
-                self.WS_PORT = 'ws://127.0.0.1'
+                self.HOST = 'http://127.0.0.1'
+                self.WS_HOST = 'ws://127.0.0.1'
                 self.PORT = wallet.port
                 self.WS_PORT = wallet.ws_port
                 self.log.info('Using local gateway %s on host=%s, port=%d', name, self.HOST, self.PORT)
