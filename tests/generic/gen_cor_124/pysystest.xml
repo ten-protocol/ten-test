@@ -6,7 +6,9 @@
         <purpose><![CDATA[
 Executes a single hardhat script to deploy an upgradeable contract via a proxy, and then transfer ownership of that
 proxy to another user, who then performs the upgrade. Note that the used of @openzeppelin/contracts-upgradeable
-is to allow the storage contract to be initialised with a first value (you can not set directly with proxies)
+is to allow the storage contract to be initialised with a first value (you can not set directly with proxies).
+
+Skipped due to https://github.com/ten-protocol/ten-internal/issues/3875
 ]]>
         </purpose>
     </description>
@@ -14,6 +16,7 @@ is to allow the storage contract to be initialised with a first value (you can n
     <classification>
         <groups inherit="true">
             <group>hardhat</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
