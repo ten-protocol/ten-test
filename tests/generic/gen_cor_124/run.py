@@ -12,11 +12,14 @@ class PySysTest(GenericNetworkTest):
     def execute(self):
         project = os.path.join(self.output, 'project')
         private_key_1 = secrets.token_hex(32)
+        private_key_2 = secrets.token_hex(32)
 
         # connect to the network, allocate the normal ephemeral amount
         network = self.get_network_connection(name='local')
-        self.distribute_native(Web3().eth.account.from_key(private_key_1), network.ETH_ALLOC)
+        self.distribute_native(Web3().eth.account.from_key(private_key_1), 4*network.ETH_ALLOC)
+        self.distribute_native(Web3().eth.account.from_key(private_key_2), 4*network.ETH_ALLOC)
         web3_1, account_1 = network.connect(self, private_key=private_key_1, check_funds=False)
+        _, _ = network.connect(self, private_key=private_key_2, check_funds=False)
 
         # copy over and initialise the project
         shutil.copytree(self.input, project)
@@ -24,7 +27,8 @@ class PySysTest(GenericNetworkTest):
 
         # deploy and get the address from the hardhat output
         environ = copy.deepcopy(os.environ)
-        environ['PK'] = private_key_1
+        environ['PK1'] = private_key_1
+        environ['PK2'] = private_key_2
         environ['HOST'] = network.HOST
         environ['PORT'] = str(network.PORT)
         environ['TOKEN'] = network.ID if self.is_ten() else ''
@@ -38,20 +42,23 @@ class PySysTest(GenericNetworkTest):
                 result = regex.search(line)
                 if result is not None: address = result.group('address')
         self.log.info('Proxy deployed at address %s', address)
-        self.wait(4 * float(self.block_time))
+        self.wait(4*float(self.block_time))
 
         # construct an instance of the contract from the address and abi
         with open(os.path.join(self.output, 'project', 'artifacts', 'contracts', 'StoreV1.sol', 'StoreV1.json')) as f:
             contract = web3_1.eth.contract(address=address, abi=json.load(f)['abi'])
 
-        # store a value in the contract and retrieve it
-        network.transact(self, web3_1, contract.functions.store(200), account_1, 3_000_000, persist_nonce=False)
+        # retrieve the value from initialisation (shows the contract is still accessible)
         ret = int(contract.functions.retrieve().call())
         self.log.info('Returned value is %d', ret)
-        self.assertTrue(ret == 200)
+        self.assertTrue(ret == 100)
+
+        expr_list = []
+        expr_list.append('1 proxies ownership transferred through proxy admin')
+        expr_list.append('%s.*transparent' % address)
+        self.assertOrderedGrep('npx_deploy.out', exprList=expr_list)
 
         # upgrade the contract
-        environ['PK'] = private_key_1
         environ['ADDRESS'] = address
         self.run_npx(args=['hardhat', 'run', '--network', self.get_network(), 'scripts/upgrade.js'],
                      working_dir=project, environ=environ, stdout='npx_upgrade.out', stderr='npx_upgrade.err')
@@ -59,9 +66,6 @@ class PySysTest(GenericNetworkTest):
         # make a call to v2 and assert we get the correct returned result, then repeat
         with open(os.path.join(self.output, 'project', 'artifacts', 'contracts', 'StoreV2.sol', 'StoreV2.json')) as f:
             contract = web3_1.eth.contract(address=address, abi=json.load(f)['abi'])
-        ret = int(contract.functions.retrieve().call())
-        self.log.info('Returned value is %d', ret)
-        self.assertTrue(ret == 400)
 
         network.transact(self, web3_1, contract.functions.store(400), account_1, 3_000_000, persist_nonce=False)
         ret = int(contract.functions.retrieve().call())

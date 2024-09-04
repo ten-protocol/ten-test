@@ -4,6 +4,8 @@
     <description>
         <title>Hardhat: transfer proxy ownership and upgrade</title>
         <purpose><![CDATA[
+Executes a single hardhat script to deploy an upgradeable contract via a proxy, and then transfer ownership of that
+proxy to another user, who then performs the upgrade.
 ]]>
         </purpose>
     </description>
