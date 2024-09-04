@@ -2,8 +2,10 @@
 <pysystest type="auto">
 
     <description>
-        <title>Hardhat: deploy an upgradable contract through a transparent proxy</title>
+        <title>Hardhat: deploy an upgradable contract through a UUPS proxy</title>
         <purpose><![CDATA[
+
+Skipped due to https://github.com/ten-protocol/ten-internal/issues/3878
 ]]>
         </purpose>
     </description>
@@ -11,6 +13,7 @@
     <classification>
         <groups inherit="true">
             <group>hardhat</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
