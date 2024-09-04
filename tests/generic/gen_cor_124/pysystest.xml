@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Hardhat: transfer proxy ownership and upgrade</title>
+        <title>Hardhat: transfer ownership and upgrade for transparent proxy</title>
         <purpose><![CDATA[
 Executes a single hardhat script to deploy an upgradeable contract via a proxy, and then transfer ownership of that
 proxy to another user, who then performs the upgrade. Note that the used of @openzeppelin/contracts-upgradeable

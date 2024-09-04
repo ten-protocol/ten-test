@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Hardhat: deploy an upgradable contract with state through a proxy</title>
+        <title>Hardhat: deploy an upgradable contract with state through a transparent proxy</title>
         <purpose><![CDATA[
 The initial deployed contract has state that can be set and retrieved. The contract is upgraded through the proxy
 pattern to a new contract that returns double the store state.
