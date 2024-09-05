@@ -2,11 +2,12 @@
 <pysystest type="auto">
 
     <description>
-        <title>Hardhat: transfer ownership and upgrade for transparent proxy</title>
+        <title>Hardhat: deploy then transfer ownership and upgrade through transparent proxy</title>
         <purpose><![CDATA[
-Executes a single hardhat script to deploy an upgradeable contract via a proxy, and then transfer ownership of that
-proxy to another user, who then performs the upgrade. Note that the used of @openzeppelin/contracts-upgradeable
-is to allow the storage contract to be initialised with a first value (you can not set directly with proxies).
+Executes a hardhat script to deploy an upgradeable contract via a transaprent proxy, and then transfer ownership of that
+proxy to another user. A second hardhat script is then used to upgrade the constract to a new version by the new
+owner. Note that the use of @openzeppelin/contracts-upgradeable is to allow the storage contract to be initialised with
+a first value (you can not set directly with proxies).
 
 Skipped due to https://github.com/ten-protocol/ten-internal/issues/3875
 ]]>
