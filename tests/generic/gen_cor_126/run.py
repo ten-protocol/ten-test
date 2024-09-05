@@ -31,4 +31,20 @@ class PySysTest(GenericNetworkTest):
         self.run_npx(args=['hardhat', 'run', '--network', self.get_network(), 'scripts/deploy.js'],
                      working_dir=project, environ=environ, stdout='npx_deploy.out', stderr='npx_deploy.err')
 
+        address = 'undefined'
+        regex = re.compile('Proxy deployed at (?P<address>.*)$', re.M)
+        with open(os.path.join(self.output, 'npx_deploy.out'), 'r') as fp:
+            for line in fp.readlines():
+                result = regex.search(line)
+                if result is not None: address = result.group('address')
+        self.log.info('Proxy deployed at address %s', address)
+        self.wait(4*float(self.block_time))
 
+        # construct an instance of the contract from the address and abi
+        with open(os.path.join(self.output,'project','artifacts','contracts','DoubleV1.sol', 'DoubleV1.json')) as f:
+            contract = web3.eth.contract(address=address, abi=json.load(f)['abi'])
+
+        # make a call to v1 and assert we get the correct returned result
+        ret = int(contract.functions.doIt(2).call())
+        self.log.info('Returned value is %d', ret)
+        self.assertTrue(ret == 4)
