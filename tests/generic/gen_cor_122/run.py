@@ -41,7 +41,7 @@ class PySysTest(GenericNetworkTest):
         self.wait(4*float(self.block_time))
 
         # construct an instance of the contract from the address and abi
-        with open(os.path.join(self.output,'project','artifacts','contracts','DoubleV1.sol', 'DoubleV1.json')) as f:
+        with open(os.path.join(self.output,'project','artifacts','contracts','DoubleV2.sol', 'DoubleV2.json')) as f:
             contract = web3.eth.contract(address=address, abi=json.load(f)['abi'])
 
         # make a call to v1 and assert we get the correct returned result
@@ -50,8 +50,6 @@ class PySysTest(GenericNetworkTest):
         self.assertTrue(ret == 4)
 
         # make a call to v2 and assert we get the correct returned result
-        with open(os.path.join(self.output,'project','artifacts','contracts','DoubleV2.sol', 'DoubleV2.json')) as f:
-            contract = web3.eth.contract(address=address, abi=json.load(f)['abi'])
         ret = int(contract.functions.doItTwice(2).call())
         self.log.info('Returned value is %d', ret)
         self.assertTrue(ret == 8)

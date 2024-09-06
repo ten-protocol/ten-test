@@ -4,8 +4,9 @@
     <description>
         <title>Hardhat: deploy and upgrade a contract with state through a transparent proxy</title>
         <purpose><![CDATA[
-The initial deployed contract has state that can be set and retrieved. The contract is upgraded through the transparent
-proxy pattern to a new contract that returns double the stored state.
+The test continues to use the transparent proxy model, but in this case the contract that is upgraded has state that
+should be persisted across the upgrade, and rather than add a new method to the contract, it overrides an existing one.
+The deployment and upgrade are performed in two separate actions via independent hardhat scripts.
 ]]>
         </purpose>
     </description>
