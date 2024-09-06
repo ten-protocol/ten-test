@@ -2,8 +2,19 @@
 <pysystest type="auto">
 
     <description>
-        <title>Hardhat: deploy an upgradable contract through a transparent proxy</title>
+        <title>Hardhat: deploy and upgrade a contract through a transparent proxy</title>
         <purpose><![CDATA[
+Transparent proxies are similar to UUPS, other than the fact that any call to the proxy should go to the implementation
+contract (the proxy is said to be transparent) including calls to functions with a name collision (e.g. upgradeTo). This
+is done by using the msg.sender; if the caller is the admin of the proxy, the proxy will not delegate calls and only
+answer management messages it understands; if the caller is any other address the proxy will always delete the calls,
+even on a name collision. Note that a ProxyAdmin contract is the actual admin of the transparent proxy. This means that
+you can interact with the proxy from any account, without having to worry about the nuances of the transparent proxy
+pattern.
+
+In the test a single hardhat deployment script is used to deploy the version 1 of a contract that has a method to double
+the value of something passed into it, and to then upgrade the contract to version 2 which adds another method to
+quadruple the value. The test ensures that you can construct an instance of the contract from it's ABI and call into it.
 ]]>
         </purpose>
     </description>
