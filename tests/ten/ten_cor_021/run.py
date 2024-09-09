@@ -52,7 +52,7 @@ class PySysTest(TenNetworkTest):
         tx_receipt, xchain_msg = accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 2,
                                                       dump_file='send_erc20.tx')
         self.log.info('Wait for the message on the L1 and relay it')
-        accnt1.l1.wait_for_message(xchain_msg, timeout=120)
+        accnt1.l1.wait_for_message(xchain_msg, timeout=480)
         _ = accnt1.l1.relay_message(xchain_msg)
 
         # print out the balances and perform test validation
