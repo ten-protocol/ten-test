@@ -34,7 +34,7 @@ class PySysTest(TenNetworkTest):
                         assertMessage='Value transfer has should be in the xchain tree')
 
         # from the dump, get the root and proof of inclusion and assert same root as in the block header
-        root, proof = mh.get_proof('cross_train_tree.log', msg_hash)
+        root, proof = mh.get_proof('cross_train_tree.log', 'v,%s' % msg_hash)
         self.log.info('  calculated root:      %s', root)
         self.log.info('  calculated proof:     %s', proof)
         self.assertTrue(block.crossChainTreeHash == root,
@@ -42,7 +42,7 @@ class PySysTest(TenNetworkTest):
 
         # release the funds from the L1 and check the balances
         start_time = time.perf_counter_ns()
-        tx_receipt = accnt.l1.release_funds(msg, [proof], root, gas_attempts=self.GAS_ATTEMPTS)
+        tx_receipt = accnt.l1.release_funds(msg, [], root, gas_attempts=self.GAS_ATTEMPTS)
         end_time = time.perf_counter_ns()
         self.log.info('Total time waiting for the gas estimate to pass: %.1f secs', (end_time-start_time)/1e9)
 

@@ -30,6 +30,14 @@ class MerkleTreeHelper:
         """Instantiate an instance. """
         self.test = test
 
+    def process_log_msg(self, log_msg):
+        """Return the msg and hash of the log message published event, as stored in the cross chain tree. """
+        abi_types = ['address', 'uint64', 'uint32', 'uint32', 'bytes', 'uint8']
+        msg = [log_msg['sender'], log_msg['sequence'], log_msg['nonce'],
+               log_msg['topic'], b'0x01234567890123456789012345678901', log_msg['consistencyLevel']]
+        msg_hash = Web3.keccak(encode(abi_types, msg)).hex()
+        return msg, msg_hash
+
     def process_transfer(self, value_transfer):
         """Return the msg and hash of the value transfer event, as stored in the cross chain tree. """
         abi_types = ['address', 'address', 'uint256', 'uint64']
@@ -64,7 +72,7 @@ class MerkleTreeHelper:
         stderr = os.path.join(self.test.output, 'merkle.err')
         script = os.path.join(project, 'src/merkle.mjs')
         args = ['--dump_file', os.path.join(self.test.output, dump_file)]
-        args.extend(['--leaf_hash', 'v,%s' % leaf_hash])
+        args.extend(['--leaf_hash', leaf_hash])
         self.test.run_javascript(script, stdout, stderr, args)
         self.test.waitForGrep(os.path.join(self.test.output, 'merkle.out'), expr='Proof:')
 
@@ -78,4 +86,4 @@ class MerkleTreeHelper:
                 result2 = regex2.search(line)
                 if result1 is not None: root = result1.group('root')
                 if result2 is not None: proof = result2.group('proof')
-        return root, proof
+        return root, '' if proof=='undefined' else proof
