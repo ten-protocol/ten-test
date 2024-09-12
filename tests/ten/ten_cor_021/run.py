@@ -1,4 +1,5 @@
 import time
+from web3 import Web3
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.erc20 import MintedERC20Token
 from ten.test.utils.bridge import BridgeUser
@@ -74,7 +75,7 @@ class PySysTest(TenNetworkTest):
         # release the tokens from the L1 and check the balances
         self.log.info('Wait for the message on the L1 and relay it')
         start_time = time.perf_counter_ns()
-        _ = accnt1.l1.release_tokens(msg, [proof], root, gas_attempts=self.GAS_ATTEMPTS)
+        _ = accnt1.l1.release_tokens(msg, [] if proof is None else [proof], root, gas_attempts=self.GAS_ATTEMPTS)
         end_time = time.perf_counter_ns()
         self.log.info('Total time waiting for the gas estimate to pass: %.1f secs', (end_time-start_time)/1e9)
 

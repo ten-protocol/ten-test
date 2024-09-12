@@ -42,7 +42,7 @@ class PySysTest(TenNetworkTest):
 
         # release the funds from the L1 and check the balances
         start_time = time.perf_counter_ns()
-        tx_receipt = accnt.l1.release_funds(msg, [], root, gas_attempts=self.GAS_ATTEMPTS)
+        tx_receipt = accnt.l1.release_funds(msg, [] if proof is None else [proof], root, gas_attempts=self.GAS_ATTEMPTS)
         end_time = time.perf_counter_ns()
         self.log.info('Total time waiting for the gas estimate to pass: %.1f secs', (end_time-start_time)/1e9)
 

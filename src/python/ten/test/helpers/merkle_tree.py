@@ -34,7 +34,7 @@ class MerkleTreeHelper:
         """Return the msg and hash of the log message published event, as stored in the cross chain tree. """
         abi_types = ['address', 'uint64', 'uint32', 'uint32', 'bytes', 'uint8']
         msg = [log_msg['sender'], log_msg['sequence'], log_msg['nonce'],
-               log_msg['topic'], b'0x01234567890123456789012345678901', log_msg['consistencyLevel']]
+               log_msg['topic'], log_msg['payload'], log_msg['consistencyLevel']]
         msg_hash = Web3.keccak(encode(abi_types, msg)).hex()
         return msg, msg_hash
 
@@ -86,4 +86,4 @@ class MerkleTreeHelper:
                 result2 = regex2.search(line)
                 if result1 is not None: root = result1.group('root')
                 if result2 is not None: proof = result2.group('proof')
-        return root, '' if proof=='undefined' else proof
+        return root, None if proof=='undefined' else proof
