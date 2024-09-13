@@ -5,12 +5,16 @@
         <title>Payable: only the contract owner can see the balance of the contract address</title>
         <purpose><![CDATA[
 Checks that only the deployer of a contract can read the balance of the contract when funds are sent to it.
+
+Skipped as this test is no longer valid. From Tudor "because it can be bypassed easy, you can create a contract that
+queries any balance and returns it"
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
             <group>payable</group>
         </groups>
         <modes inherit="true">
