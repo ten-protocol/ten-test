@@ -4,6 +4,10 @@
     <description>
         <title>RPC - rates for handling eth_call, increasing clients</title>
         <purpose><![CDATA[
+Spawns a set number of clients calling a pure function call to retrieve the latest value of a stored integer in the
+Storage contract, and measures the latency in the response, the client throughput and the bulk throughput across all
+clients. Note that the stored value is updated concurrently so that the block number is increasing, and that the
+gateway does not just return the cached value. 
 ]]>
         </purpose>
     </description>

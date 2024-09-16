@@ -1,7 +1,7 @@
 import os, secrets, time, re
 from datetime import datetime
 from collections import OrderedDict
-from pysys.constants import PASSED, FAILED
+from pysys.constants import PASSED
 from ten.test.contracts.storage import KeyStorage
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
