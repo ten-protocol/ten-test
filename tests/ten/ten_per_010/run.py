@@ -1,4 +1,4 @@
-import os, time, secrets, math, re
+import os, time, secrets, math, shutil
 import numpy as np
 from web3 import Web3
 from datetime import datetime
@@ -54,13 +54,14 @@ class PySysTest(TenNetworkTest):
 
                 end_ns = time.perf_counter_ns()
                 bulk_throughput = float(clients * self.ITERATIONS) / float((end_ns - start_ns) / 1e9)
-                avg_latency, mode_latency = self.process_latency(clients, out_dir)
+                avg_latency, mode_latency, nnth_percentile = self.process_latency(clients, out_dir)
                 throughput = self.process_throughput(clients, out_dir, start_ns, end_ns)
                 self.log.info('Bulk rate throughput %.2f (requests/sec)' % bulk_throughput)
                 self.log.info('Approx. throughput %.2f (requests/sec)' % throughput)
                 self.log.info('Average latency %.2f (ms)' % avg_latency)
                 self.log.info('Modal latency %.2f (ms)' % mode_latency)
-                fp.write('%d %.2f %.2f %.2f\n' % (clients, throughput, avg_latency, mode_latency))
+                self.log.info('99th latency %.2f (ms)' % nnth_percentile)
+                fp.write('%d %.2f %.2f %.2f %.2f\n' % (clients, throughput, avg_latency, mode_latency, nnth_percentile))
                 results.append(throughput)
 
                 # graph the output for the single run of 4 clients
@@ -126,6 +127,7 @@ class PySysTest(TenNetworkTest):
                 for line in fp.readlines(): data.append(float(line.strip()))
         data.sort()
         avg_latency = (sum(data) / len(data))
+        nnth_percentile = np.percentile(data, 99)
 
         bins = self.bin_array(data)
         max_value = 0
@@ -137,7 +139,7 @@ class PySysTest(TenNetworkTest):
                     mode_latency = b
                 fp.write('%.2f %d\n' % (b, v))
             fp.flush()
-        return avg_latency, mode_latency
+        return avg_latency, mode_latency, nnth_percentile
 
     def process_throughput(self, num_clients, out_dir, start, end):
         client_bins = []  # bins for a given client
