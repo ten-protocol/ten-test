@@ -3,9 +3,10 @@ import numpy as np
 from web3 import Web3
 from datetime import datetime
 from collections import OrderedDict
-from pysys.constants import PASSED, FAILED
+from pysys.constants import PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
+from ten.test.contracts.storage import Storage
 
 
 class PySysTest(TenNetworkTest):
@@ -14,6 +15,14 @@ class PySysTest(TenNetworkTest):
     def execute(self):
         # connect to the network and determine constants and funds required to run the test
         network = self.get_network_connection()
+        web3, account = network.connect_account1(self)
+        storage = Storage(self, web3, 0)
+        storage.deploy(network, account)
+
+        gas_price = web3.eth.gas_price
+        params = {'from': account.address, 'chainId': web3.eth.chain_id, 'gasPrice': gas_price}
+        gas_limit = storage.contract.functions.store(1).estimate_gas(params)
+        funds_needed = 1.1 * (gas_price*gas_limit)
 
         # run the clients and wait for their completion
         results = []
@@ -23,13 +32,14 @@ class PySysTest(TenNetworkTest):
                 self.log.info(' ')
                 self.log.info('Running for %d clients' % clients)
                 out_dir = os.path.join(self.output, 'clients_%d' % clients)
+                if not os.path.exists(out_dir): os.mkdir(out_dir)
                 start_ns = time.perf_counter_ns()
                 signal = os.path.join(out_dir, '.signal')
-                for i in range(0, clients):
-                    self.run_client('client_%s' % i, network, self.ITERATIONS, start_ns, out_dir, signal)
 
-                with open(signal, 'w') as sig:
-                    sig.write('go')
+                for i in range(0, clients):
+                    self.run_client('client_%s' % i, network, self.ITERATIONS, storage, funds_needed, start_ns, out_dir, signal)
+
+                with open(signal, 'w') as sig: sig.write('go')
                 for i in range(0, clients):
                     self.waitForGrep(file=os.path.join(out_dir, 'client_%s.out' % i),
                                      expr='Client client_%s completed' % i, timeout=300)
@@ -61,21 +71,22 @@ class PySysTest(TenNetworkTest):
         # passed if no failures (though pdf output should be reviewed manually)
         self.addOutcome(PASSED)
 
-    def run_client(self, name, network, num_iterations, start, out_dir, signal_file):
+    def run_client(self, name, network, num_iterations, contract, funds_needed, start, out_dir, signal_file):
         pk = secrets.token_hex(32)
         account = Web3().eth.account.from_key(pk)
-        self.distribute_native(account, Web3().from_wei(1, 'ether'))
+        self.distribute_native(account, Web3().from_wei(funds_needed, 'ether'))
         network.connect(self, private_key=pk, check_funds=False)
 
-        if not os.path.exists(out_dir): os.mkdir(out_dir)
         stdout = os.path.join(out_dir, '%s.out' % name)
         stderr = os.path.join(out_dir, '%s.err' % name)
         script = os.path.join(self.input, 'client.py')
         args = []
         args.extend(['--network_http', network.connection_url()])
-        args.extend(['--num_iterations', '%d' % num_iterations])
         args.extend(['--client_name', name])
+        args.extend(['--num_iterations', '%d' % num_iterations])
         args.extend(['--pk', pk])
+        args.extend(['--contract_address', '%s' % contract.address])
+        args.extend(['--contract_abi', '%s' % contract.abi_path])
         args.extend(['--start', '%d' % start])
         args.extend(['--signal_file', signal_file])
         self.run_python(script, stdout, stderr, args, workingDir=out_dir)
