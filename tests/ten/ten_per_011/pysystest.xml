@@ -4,6 +4,10 @@
     <description>
         <title>RPC - rates for handling estimate_gas, increasing clients</title>
         <purpose><![CDATA[
+Spawns a set number of clients calling to estimate gas on a transaction to store a value in the Storage contract, then
+measures the latency in the response, the client throughput and the bulk throughput across all clients. Note that the
+stored value is updated concurrently by another account so that the block number is increasing, and that the gateway
+does not just return the cached value.
 ]]>
         </purpose>
     </description>

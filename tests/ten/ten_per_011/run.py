@@ -22,7 +22,7 @@ class PySysTest(TenNetworkTest):
         gas_price = web3.eth.gas_price
         params = {'from': account.address, 'chainId': web3.eth.chain_id, 'gasPrice': gas_price}
         gas_limit = storage.contract.functions.store(1).estimate_gas(params)
-        funds_needed = 1.1 * (gas_price*gas_limit)
+        funds_needed = 1.1 * self.ITERATIONS * (gas_price*gas_limit)
 
         # run the clients and wait for their completion
         results = []
@@ -36,6 +36,10 @@ class PySysTest(TenNetworkTest):
                 start_ns = time.perf_counter_ns()
                 signal = os.path.join(out_dir, '.signal')
 
+                # start transacting to set the storage value
+                hprocess = self.run_storage_client(storage, funds_needed, gas_limit, out_dir)
+
+                # run the clients to call into the contract get retrieve the value
                 for i in range(0, clients):
                     self.run_client('client_%s' % i, network, self.ITERATIONS, storage, funds_needed, start_ns, out_dir, signal)
 
@@ -44,6 +48,9 @@ class PySysTest(TenNetworkTest):
                     self.waitForGrep(file=os.path.join(out_dir, 'client_%s.out' % i),
                                      expr='Client client_%s completed' % i, timeout=300)
                     self.ratio_failures(file=os.path.join(out_dir, 'client_%s.out' % i))
+
+                # stop transacting to set the storage value
+                hprocess.stop()
 
                 end_ns = time.perf_counter_ns()
                 bulk_throughput = float(clients * self.ITERATIONS) / float((end_ns - start_ns) / 1e9)
@@ -71,10 +78,30 @@ class PySysTest(TenNetworkTest):
         # passed if no failures (though pdf output should be reviewed manually)
         self.addOutcome(PASSED)
 
+    def run_storage_client(self, contract, funds_needed, gas_limit, out_dir):
+        """Run a background load client. """
+        pk = secrets.token_hex(32)
+        network = self.get_network_connection()
+        web3, account = network.connect(self, private_key=pk, check_funds=False)
+        self.distribute_native(account, web3.from_wei(funds_needed, 'ether'))
+
+        stdout = os.path.join(out_dir, 'storage.out')
+        stderr = os.path.join(out_dir, 'storage.err')
+        script = os.path.join(self.input, 'storage_client.py')
+        args = []
+        args.extend(['--network_http', network.connection_url()])
+        args.extend(['--contract_address', '%s' % contract.address])
+        args.extend(['--contract_abi', '%s' % contract.abi_path])
+        args.extend(['--pk', pk])
+        args.extend(['--gas_limit', '%d' % gas_limit])
+        hprocess = self.run_python(script, stdout, stderr, args)
+        self.waitForSignal(file=stdout, expr='Starting storage client ...')
+        return hprocess
+
     def run_client(self, name, network, num_iterations, contract, funds_needed, start, out_dir, signal_file):
         pk = secrets.token_hex(32)
         account = Web3().eth.account.from_key(pk)
-        self.distribute_native(account, Web3().from_wei(funds_needed, 'ether'))
+        self.distribute_native(account, Web3().from_wei(funds_needed / num_iterations, 'ether'))
         network.connect(self, private_key=pk, check_funds=False)
 
         stdout = os.path.join(out_dir, '%s.out' % name)
