@@ -26,14 +26,6 @@ on:
           - main
           - releases/v0.26
           - releases/v0.25
-      graph:
-        type: choice
-        description: 'Graph performance output'
-        required: true
-        default: false
-        options:
-          - true
-          - false
 
 jobs:
   test-run:
@@ -68,13 +60,13 @@ jobs:
           /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} -r ${{ github.event.inputs.arguments }}
 
       - name: 'Graph the performance summary'
-        if: ${{ inputs.graph == 'true' }}
+        if: always()
         run: |
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} -r graph_performance
 
       - name: 'Collate pdf output'
-        if: always() && ${{ inputs.graph == 'true' }}
+        if: always()
         run: |
           cd ${{ github.workspace }}/ten-test
           pdftk $(find . -name \*.pdf | sort) cat output results_graphs.pdf || true
@@ -91,7 +83,7 @@ jobs:
 
       - name: 'Upload performance output'
         uses: actions/upload-artifact@v4
-        if: ${{ inputs.graph == 'true' }}
+        if: always()
         with:
           name: performance-artifact
           path: |
