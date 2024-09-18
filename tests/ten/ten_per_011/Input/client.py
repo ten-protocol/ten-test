@@ -19,6 +19,8 @@ def run(name, web3, contract, num_iterations, start):
             end_time = time.perf_counter_ns()
             latency.append((end_time - start_time)/1e6)
             num_requests = num_requests + 1
+            if num_requests % 10 == 0:
+                logging.info('Sent = %d' % num_requests)
             throughput.append(((end_time - start)/1e9, num_requests))
             stats[0] += 1
         except Exception as e:
