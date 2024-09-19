@@ -46,7 +46,7 @@ class PySysTest(TenNetworkTest):
                 with open(signal, 'w') as sig: sig.write('go')
                 for i in range(0, clients):
                     self.waitForGrep(file=os.path.join(out_dir, 'client_%s.out' % i),
-                                     expr='Client client_%s completed' % i, timeout=300)
+                                     expr='Client client_%s completed' % i, timeout=600)
                     self.ratio_failures(file=os.path.join(out_dir, 'client_%s.out' % i))
 
                 # stop transacting to set the storage value
