@@ -4,6 +4,8 @@
     <description>
         <title>Visibility Config: open up calls to storageAt</title>
         <purpose><![CDATA[
+Uses the simple guessing game but opens it up to expose and allow calls to get_storage. Thus the user is now able to
+determine the hidden number and make a single call to win.
 ]]>
         </purpose>
     </description>

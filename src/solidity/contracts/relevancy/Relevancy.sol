@@ -2,6 +2,13 @@
 pragma solidity ^0.8.0;
 
 contract Relevancy {
+    struct EventLogConfig {
+        bytes eventSignature; bool isPublic;
+        bool topic1CanView; bool topic2CanView; bool topic3CanView;
+        bool visibleToSender;
+    }
+    struct VisibilityConfig { bool isTransparent; EventLogConfig[] eventLogConfigs; }
+
     event CallerIndexedAddress(address indexed addr);
     event TwoIndexedAddresses(address indexed addr1, address indexed addr2);
     event NonIndexedAddressAndNumber(address addr1, uint256 value);

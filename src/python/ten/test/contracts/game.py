@@ -7,6 +7,6 @@ class Game(DefaultContract):
     CONTRACT = 'GuessGame'
 
 
-class OpenGame(DefaultContract):
-    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'OpenGuessGame.sol')
-    CONTRACT = 'OpenGuessGame'
+class OpenStorageGuessGame(DefaultContract):
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'OpenStorageGuessGame.sol')
+    CONTRACT = 'OpenStorageGuessGame'

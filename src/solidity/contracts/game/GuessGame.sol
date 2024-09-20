@@ -2,6 +2,13 @@
 pragma solidity ^0.8.0;
 
 contract GuessGame {
+    struct EventLogConfig {
+        bytes eventSignature; bool isPublic;
+        bool topic1CanView; bool topic2CanView; bool topic3CanView;
+        bool visibleToSender;
+    }
+    struct VisibilityConfig { bool isTransparent; EventLogConfig[] eventLogConfigs; }
+
     address private owner;
     uint256 private secretNumber;
     uint256 public totalGuesses;
@@ -9,6 +16,7 @@ contract GuessGame {
     // constants
     uint256 public constant MAX_GUESS = 10;
 
+    // events emitted by the game
     event Guessed(address indexed user, uint256 guessedNumber, bool success, uint256 secretNumber);
 
     constructor() {
