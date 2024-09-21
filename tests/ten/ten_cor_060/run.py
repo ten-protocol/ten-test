@@ -24,4 +24,5 @@ class PySysTest(GenericNetworkTest):
         target = int.from_bytes(web3_usr.eth.get_storage_at(game.address, 1))
         self.log.info('Number to guess is %d', target)
         network_usr.transact(self, web3_usr, game_usr.contract.functions.guess(target), account_usr, game.GAS_LIMIT)
+        self.waitForGrep(file='subscriber.out', expr='Full event', timeout=10)
         self.assertOrderedGrep(file='subscriber.out', exprList=['success: true', 'secretNumber: \'%d\'' % target])
