@@ -78,7 +78,7 @@ async function sendTransfer(provider, wallet, to, amount, bridge, bus) {
 }
 
 /** Utility function to wait for the merkle root to be published on the L1 */
-async function waitForRootPublished(management, msg, proof, root, interval = 5000, timeout = 90000) {
+async function waitForRootPublished(management, msg, proof, root, interval = 5000, timeout = 2400000) {
   var gas_estimate = null
   const startTime = Date.now();
 

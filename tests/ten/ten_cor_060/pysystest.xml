@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Visibility Config: transparent contract, call storageAt with a guessing game</title>
+        <purpose><![CDATA[
+Use a simple guessing game, with VisibilityConfig.isTransparent set to true. This opens up calls to get_storage_at, and
+additionally makes all event public. In this test only calls to get_storage_at are used to try and figure out the
+secret number to guess, and to win the game in a single call.
+
+Skipped due to https://github.com/ten-protocol/ten-internal/issues/3933
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>skip</group>
+            <group>vis_config</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+            <mode>ten.sim</mode>
+            <mode>ganache</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

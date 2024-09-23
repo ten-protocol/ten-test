@@ -12,7 +12,7 @@ leaf of the transfer value event can then be created and should match one of the
 merkle tree the proof of inclusion can be constructed. The leaf hash, proof and root are then used to release the
 funds on the L1 via a call to ExtractNativeValue to the management contract. Note that funds cannot be released on the L1
 until the xchain tree is seen ... to do this keep checking the gas to perform the release until it doesn't revert. On
-a local testnet this can take 60 seconds.
+a local testnet this can take 60 seconds, on a real deployment it can take 30 mins.
 ]]>
         </purpose>
     </description>

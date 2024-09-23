@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Visibility Config: transparent contract, all events are public with a guessing game</title>
+        <purpose><![CDATA[
+Use a simple guessing game, with VisibilityConfig.isTransparent set to true. This opens up calls to get_storage_at, and
+additionally makes all events public. In this test two gateways are used, the first by a dev user that deploys the
+contract and the second by a player of the game. The dev user has a subscriber to the events, and should be able to
+see the events even though they contain an EOA which does not belong to them.
+
+Skipped due to https://github.com/ten-protocol/ten-internal/issues/3933 (may be related)
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>skip</group>
+            <group>vis_config</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+            <mode>ten.sim</mode>
+            <mode>ganache</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
