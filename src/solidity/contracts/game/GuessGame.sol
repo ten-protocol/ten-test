@@ -3,11 +3,17 @@ pragma solidity ^0.8.0;
 
 contract GuessGame {
     struct EventLogConfig {
-        bytes eventSignature; bool isPublic;
-        bool topic1CanView; bool topic2CanView; bool topic3CanView;
-        bool visibleToSender;
+        bytes eventSignature;
+        bool isPublic;        // everyone can see and query for this event
+        bool topic1CanView;   // if private and true the address from topic1 is an EOA that can view
+        bool topic2CanView;   // if private and true the address from topic2 is an EOA that can view
+        bool topic3CanView;   // if private and true the address from topic2 is an EOA that can view
+        bool visibleToSender; // if true, the tx signer will see this event
     }
-    struct VisibilityConfig { bool isTransparent; EventLogConfig[] eventLogConfigs; }
+    struct VisibilityConfig {
+        bool isTransparent;  // if true getStorageAt will be accessible to everyone, and all events will be public
+        EventLogConfig[] eventLogConfigs; // if an event is not included, semantics fall back to previous behaviour
+    }
 
     address private owner;
     uint256 private secretNumber;
