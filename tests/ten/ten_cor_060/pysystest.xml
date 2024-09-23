@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config: transparent contract, call storageAt with a guessing game</title>
+        <title>Visibility Config: subscribe, transparent contract, call storageAt</title>
         <purpose><![CDATA[
 Use a simple guessing game, with VisibilityConfig.isTransparent set to true. This opens up calls to get_storage_at, and
 additionally makes all event public. In this test only calls to get_storage_at are used to try and figure out the
@@ -24,7 +24,6 @@ Skipped due to https://github.com/ten-protocol/ten-internal/issues/3933
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
             <mode>ten.sim</mode>
-            <mode>ganache</mode>
         </modes>
     </classification>
 
