@@ -7,7 +7,7 @@ class PySysTest(GenericNetworkTest):
 
     def execute(self):
         # connect to the network and deploy the game
-        network_dev = self.get_network_connection(name='local')
+        network_dev = self.get_network_connection()
         web3_dev, account_dev = network_dev.connect_account2(self)
         game = OpenStorageGuessGame(self, web3_dev)
         game.deploy(network_dev, account_dev)

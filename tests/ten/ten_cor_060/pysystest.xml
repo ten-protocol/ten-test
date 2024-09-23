@@ -4,14 +4,17 @@
     <description>
         <title>Visibility Config: open up calls to storageAt with a simple guessing game</title>
         <purpose><![CDATA[
-Uses the simple guessing game but opens it up to expose and allow calls to get_storage. Thus the user is now able to
+Uses a simple guessing game but opens it up to expose and allow calls to get_storage_at. Thus the user is able to
 determine the hidden number and make a single call to win.
+
+Skipped due to https://github.com/ten-protocol/ten-internal/issues/3933
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
             <group>vis_config</group>
         </groups>
         <modes inherit="true">
