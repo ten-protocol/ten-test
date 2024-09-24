@@ -1,8 +1,7 @@
-import secrets
-from web3 import Web3
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.relevancy import Relevancy
 from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
+
 
 class PySysTest(TenNetworkTest):
 

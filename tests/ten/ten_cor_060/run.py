@@ -1,9 +1,9 @@
-from ten.test.basetest import GenericNetworkTest
+from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.game import TransparentGuessGame
 from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
-class PySysTest(GenericNetworkTest):
+class PySysTest(TenNetworkTest):
 
     def execute(self):
         # connect to the network and deploy the game

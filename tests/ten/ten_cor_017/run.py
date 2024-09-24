@@ -1,10 +1,10 @@
 import os
 from pysys.constants import FAILED, PASSED
-from ten.test.basetest import GenericNetworkTest
+from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.storage import Storage
 
 
-class PySysTest(GenericNetworkTest):
+class PySysTest(TenNetworkTest):
 
     def execute(self):
         expected_keys = ['blockHash', 'blockNumber', 'contractAddress', 'cumulativeGasUsed', 'effectiveGasPrice',

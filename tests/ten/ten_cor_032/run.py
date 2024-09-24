@@ -1,8 +1,8 @@
-from ten.test.basetest import GenericNetworkTest
+from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.nested import StoreAndRetrieve
 
 
-class PySysTest(GenericNetworkTest):
+class PySysTest(TenNetworkTest):
 
     def execute(self):
         # connect to the network and deploy the contract

@@ -1,5 +1,4 @@
 import time
-from web3 import Web3
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.erc20 import MintedERC20Token
 from ten.test.utils.bridge import BridgeUser

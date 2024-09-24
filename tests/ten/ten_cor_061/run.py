@@ -1,9 +1,9 @@
-from ten.test.basetest import GenericNetworkTest
+from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.game import TransparentGuessGame
 from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
-class PySysTest(GenericNetworkTest):
+class PySysTest(TenNetworkTest):
 
     def execute(self):
         # connect to the network and deploy the game
@@ -23,7 +23,10 @@ class PySysTest(GenericNetworkTest):
 
         for i in range(1,5):
             self.log.info('Number to guess is %d', i)
-            network_usr.transact(self, web3_usr, game_usr.contract.functions.guess(i), account_usr, game.GAS_LIMIT)
+            tx_recp = network_usr.transact(self, web3_usr, game_usr.contract.functions.guess(i), account_usr, game.GAS_LIMIT)
+
+        response = self.get_debug_event_log_relevancy(tx_recp.transactionHash.hex())
+        self.log.info(response)
 
         self.waitForGrep('subscriber.out', expr='Received event', condition='==8', timeout=10)
         self.assertLineCount('subscriber.out', expr='Received event: Guessed', condition='==4')

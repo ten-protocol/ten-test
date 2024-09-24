@@ -1,10 +1,9 @@
-import secrets
-import os, shutil, copy
+import secrets, os, shutil, copy
 from web3 import Web3
-from ten.test.basetest import GenericNetworkTest
+from ten.test.basetest import TenNetworkTest
 
 
-class PySysTest(GenericNetworkTest):
+class PySysTest(TenNetworkTest):
 
     def execute(self):
         project = os.path.join(self.output, 'project')
