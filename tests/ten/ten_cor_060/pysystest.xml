@@ -24,6 +24,7 @@ Skipped due to https://github.com/ten-protocol/ten-internal/issues/3933
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
             <mode>ten.sim</mode>
+            <mode>ganache</mode>
         </modes>
     </classification>
 
