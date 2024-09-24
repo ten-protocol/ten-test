@@ -12,6 +12,11 @@ class TransparentGuessGame(DefaultContract):
     CONTRACT = 'TransparentGuessGame'
 
 
+class TransparentGuessGameOneFile(DefaultContract):
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'TransparentGuessGameOneFile.sol')
+    CONTRACT = 'TransparentGuessGameOneFile'
+
+
 class PublicEventGuessGame(DefaultContract):
     SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'PublicEventGuessGame.sol')
     CONTRACT = 'PublicEventGuessGame'
