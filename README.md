@@ -221,7 +221,7 @@ need to set the IDE flag in the Run Configurations to true, or remove the line `
 within the method. To run the faucet, in `go-ten` directory execute the below;
 
 ```
-go run ./tools/faucet/cmd --nodePort 17801 -nodeHost 127.0.0.1  --pk 0x8dfb8083da6275ae3e4f41e3e8a8c19d028d32c9247e24530933782f2a05035b --jwtSecret This_is_the_secret --serverPort 99
+go run ./tools/faucet/cmd --nodePort 25801 -nodeHost 127.0.0.1  --pk 0x8dfb8083da6275ae3e4f41e3e8a8c19d028d32c9247e24530933782f2a05035b --jwtSecret This_is_the_secret --serverPort 99
 ```
 
 
