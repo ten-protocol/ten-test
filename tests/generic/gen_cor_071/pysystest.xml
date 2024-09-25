@@ -6,14 +6,15 @@
         <purpose><![CDATA[
 This is all implemented in the process of the test, where after performing transactions on a contract a filter is placed
 on the contract and all new entries are queried for.
+
+Skipped due to https://github.com/ten-protocol/ten-internal/issues/1461
 ]]>
         </purpose>
     </description>
 
-    <skipped reason="https://github.com/ten-protocol/ten-internal/issues/1461"/>
-
     <classification>
         <groups inherit="true">
+            <group>skip</group>
             <group>events</group>
         </groups>
         <modes inherit="true">

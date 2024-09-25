@@ -7,14 +7,15 @@
 This is a polling implementation in python to get event logs from a contract as transactions are written to it in real
 time. It creates a filter on the events.Event method on the contract instance, then repeatedly calls for
 get_new_entries() on the filter to return new logs. As a polling implementation it uses HTTP for the connection protocol.
+
+Skipped due to https://github.com/ten-protocol/ten-internal/issues/1461
 ]]>
         </purpose>
     </description>
 
-    <skipped reason="https://github.com/ten-protocol/ten-internal/issues/1461"/>
-
     <classification>
         <groups inherit="true">
+            <group>skip</group>
             <group>events</group>
         </groups>
         <modes inherit="true">
