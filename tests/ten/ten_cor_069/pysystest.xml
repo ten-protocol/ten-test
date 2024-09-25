@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Visibility Config: from tx receipt, public event, one event is public</title>
+        <purpose><![CDATA[
+Use a simple guessing game, with VisibilityConfig.eventLogConfigs[0].isPublic set to true. This is set for one event
+within the contract, the Guessed event, such that anyone is able to receive call backs for it. In this test two gateways
+are used, the first by a dev user that deploys the contract and the second by a player of the game.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>skip</group>
+            <group>vis_config</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+            <mode>ten.sim</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
