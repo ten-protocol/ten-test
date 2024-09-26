@@ -4,6 +4,11 @@
     <description>
         <title>Visibility Config: get logs, public event, one EOA in event can view</title>
         <purpose><![CDATA[
+Uses a simple guessing game, with VisibilityConfig.eventLogConfigs[0].isPublic set to false, and topic1CanView set to
+true. This is set for one event within the contract, the Guessed event. Two gateway connections are used, the first
+by a dev user that deploys the contract and the second by a player of the game. The dev user waits for the player
+to play some moves, then runs a script to getPastEvents on the contract to see what the user was playing. Normally
+without setting topic1CanView to true, the dev user would not be able to see the event.
 ]]>
         </purpose>
     </description>
