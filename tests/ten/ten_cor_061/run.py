@@ -1,5 +1,5 @@
 from ten.test.basetest import TenNetworkTest
-from ten.test.contracts.game import TransparentGuessGameOneFile
+from ten.test.contracts.game import TransparentGuessGame
 from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
@@ -7,15 +7,15 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         # connect to the network and deploy the game
-        network_dev = self.get_network_connection(name='dev')
+        network_dev = self.get_network_connection()
         web3_dev, account_dev = network_dev.connect_account2(self)
-        game = TransparentGuessGameOneFile(self, web3_dev)
+        game = TransparentGuessGame(self, web3_dev)
         game.deploy(network_dev, account_dev)
 
         # connect a user to the network
-        network_usr = self.get_network_connection(name='user')
+        network_usr = self.get_network_connection()
         web3_usr, account_usr = network_usr.connect_account1(self)
-        game_usr = TransparentGuessGameOneFile.clone(web3_usr, account_usr, game)
+        game_usr = TransparentGuessGame.clone(web3_usr, account_usr, game)
 
         # run a background script to filter and collect events
         subscriber = AllEventsLogSubscriber(self, network_dev, game.address, game.abi_path)

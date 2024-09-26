@@ -2,12 +2,8 @@
 <pysystest type="auto">
 
     <description>
-        <title>Events: filter and get new entries since deployment</title>
+        <title>Visibility Config: get logs, public event, one EOA in event can view</title>
         <purpose><![CDATA[
-This is all implemented in the process of the test, where after performing transactions on a contract a filter is placed
-on the contract and all new entries are queried for.
-
-Skipped due to https://github.com/ten-protocol/ten-internal/issues/1461
 ]]>
         </purpose>
     </description>
@@ -15,7 +11,7 @@ Skipped due to https://github.com/ten-protocol/ten-internal/issues/1461
     <classification>
         <groups inherit="true">
             <group>skip</group>
-            <group>events</group>
+            <group>vis_config</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
@@ -23,9 +19,6 @@ Skipped due to https://github.com/ten-protocol/ten-internal/issues/1461
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
             <mode>ten.sim</mode>
-            <mode>arbitrum.sepolia</mode>
-            <mode>ganache</mode>
-            <mode>sepolia</mode>
         </modes>
     </classification>
 
