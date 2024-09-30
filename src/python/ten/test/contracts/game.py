@@ -12,12 +12,19 @@ class TransparentGuessGame(DefaultContract):
     CONTRACT = 'TransparentGuessGame'
 
 
-class TransparentGuessGameOneFile(DefaultContract):
-    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'TransparentGuessGameOneFile.sol')
-    CONTRACT = 'TransparentGuessGameOneFile'
-
-
 class PublicEventGuessGame(DefaultContract):
     SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'PublicEventGuessGame.sol')
     CONTRACT = 'PublicEventGuessGame'
+
+
+class Topic1CanViewGuessGame(DefaultContract):
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'Topic1CanViewGuessGame.sol')
+    CONTRACT = 'Topic1CanViewGuessGame'
+
+
+class Topic2CanViewGuessGame(DefaultContract):
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'Topic1CanViewGuessGame.sol')
+    CONTRACT = 'Topic1CanViewGuessGame'
+
+
 
