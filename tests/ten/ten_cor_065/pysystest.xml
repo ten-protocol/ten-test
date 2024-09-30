@@ -2,13 +2,8 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config: get logs, transparent contract, all events are public</title>
+        <title>Visibility Config: subscribe, ContractCfg.PRIVATE, Field.SENDER on one event</title>
         <purpose><![CDATA[
-Uses a simple guessing game, with VisibilityConfig.isTransparent set to true. This opens up calls to get_storage_at, and
-additionally makes all events public. Two gateway connections are used, the first by a dev user that deploys the
-contract and the second by a player of the game. The dev user waits for the player to play some moves, then runs
-a script to getPastEvents on the contract to see what the user was playing. Normally without setting isTransparent to
-true, the dev user would not be able to see the events.
 ]]>
         </purpose>
     </description>
@@ -24,7 +19,6 @@ true, the dev user would not be able to see the events.
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
             <mode>ten.sim</mode>
-            <mode>ganache</mode>
         </modes>
     </classification>
 

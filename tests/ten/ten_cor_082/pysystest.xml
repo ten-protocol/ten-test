@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config: get logs, public event, one EOA in event can view</title>
+        <title>Visibility Config: from tx receipt, public event, one EOA in event can view</title>
         <purpose><![CDATA[
 ]]>
         </purpose>

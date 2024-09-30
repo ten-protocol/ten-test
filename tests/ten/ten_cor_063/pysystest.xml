@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config: subscribe, public event, one EOA in event can view</title>
+        <title>Visibility Config: subscribe, ContractCfg.PRIVATE, Field.TOPIC1 on one event</title>
         <purpose><![CDATA[
 ]]>
         </purpose>

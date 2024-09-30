@@ -1,19 +1,24 @@
 interface ContractTransparencyConfig {
-    // configuration per event log type
+    enum Field {
+        TOPIC1, TOPIC2, TOPIC3,
+        SENDER,  // tx.origin - msg.sender
+        EVERYONE // the event is public - visible to everyone
+    }
+
+    enum ContractCfg {
+        TRANSPARENT, // internal state via getStorageAt is accessible to everyone, all events are public
+        PRIVATE      // internal state is hidden, and events can be configured individually
+    }
+
     struct EventLogConfig {
-        bytes eventSignature;
-        bool isPublic;        // everyone can see and query for this event
-        bool topic1CanView;   // if private and true the address from topic1 is an EOA that can view
-        bool topic2CanView;   // if private and true the address from topic2 is an EOA that can view
-        bool topic3CanView;   // if private and true the address from topic2 is an EOA that can view
-        bool visibleToSender; // if true, the tx signer will see this event
+        bytes32 eventSignature; // the event signature hash
+        Field[] visibleTo;      // list of fields denoting who can see the event when private
     }
 
     struct VisibilityConfig {
-        bool isTransparent;  // if true getStorageAt will be accessible to everyone, and all events will be public
-        EventLogConfig[] eventLogConfigs; // if an event is not included, semantics fall back to previous behaviour
+        ContractCfg contractCfg;
+        EventLogConfig[] eventLogConfigs;
     }
 
-    // keep the logic independent of the environment
     function visibilityRules() external pure returns (VisibilityConfig memory);
 }
