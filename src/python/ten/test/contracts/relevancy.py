@@ -6,3 +6,9 @@ class Relevancy(DefaultContract):
     SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'relevancy', 'Relevancy.sol')
     CONTRACT = 'Relevancy'
 
+
+class RelevancyOneCantView(DefaultContract):
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'relevancy', 'RelevancyOneCantView.sol')
+    CONTRACT = 'RelevancyOneCantView'
+
+

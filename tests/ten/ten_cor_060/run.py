@@ -1,3 +1,4 @@
+import sys
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.game import TransparentGuessGame
 from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
@@ -21,7 +22,7 @@ class PySysTest(TenNetworkTest):
         web3_usr, account_usr = network_usr.connect_account1(self)
         game_usr = TransparentGuessGame.clone(web3_usr, account_usr, game)
 
-        target = int.from_bytes(web3_usr.eth.get_storage_at(game.address, 1))
+        target = int.from_bytes(web3_usr.eth.get_storage_at(game.address, 1), sys.byteorder)
         self.log.info('Number to guess is %d', target)
         network_usr.transact(self, web3_usr, game_usr.contract.functions.guess(target), account_usr, game.GAS_LIMIT)
         self.waitForGrep(file='subscriber.out', expr='Full event', timeout=10)

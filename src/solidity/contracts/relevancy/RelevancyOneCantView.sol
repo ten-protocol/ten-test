@@ -4,11 +4,13 @@ pragma solidity ^0.8.0;
 import "./Relevancy.sol";
 import "./ContractTransparencyConfig.sol";
 
-contract Topic2CanView is Relevancy, ContractTransparencyConfig  {
+contract RelevancyOneCantView is Relevancy, ContractTransparencyConfig  {
 
     function visibilityRules() external pure override returns (VisibilityConfig memory) {
         EventLogConfig[]  memory configs = new EventLogConfig[](1);
-        configs[0] = EventLogConfig(hex"bc11465ed8ccb85c11046e78bf3d70287e3c77bf1c9542a3e250511bfb3c1b04", false, false, true, false, false);
+
+        //TwoIndexedAddresses
+        configs[0] = EventLogConfig(hex"bd0c34a389065c93b7dd305b36de77856672fb59b283b31e9f43dc0cf48898b0", false, true, false, true, false);
         return VisibilityConfig(false, configs);
     }
 }
