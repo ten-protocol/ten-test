@@ -8,15 +8,12 @@ Use a simple guessing game, with ContractCfg.TRANSPARENT. This opens up calls to
 all events public. Two gateway connections are used, the first by a dev user that deploys the contract and the second
 by a player of the game. The dev user has a subscriber to the events, and should be able to see the events even though
 they contain an EOA which does not belong to them (so both Guessed and Attempts).
-
-Skipped due to https://github.com/ten-protocol/ten-internal/issues/3933 (may be related)
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>vis_config</group>
         </groups>
         <modes inherit="true">

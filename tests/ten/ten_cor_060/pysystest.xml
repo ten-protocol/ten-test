@@ -8,14 +8,12 @@ Uses a simple guessing game, with ContractCfg.TRANSPARENT. This opens up calls t
 makes all events public. Two gateway connections are used, the first by a dev user that deploys the contract and the
 second by a player of the game. The player of the games attempts to use get_storage_at to try and figure out the secret
 number to guess, and to win the game in a single call.
-
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>vis_config</group>
         </groups>
         <modes inherit="true">

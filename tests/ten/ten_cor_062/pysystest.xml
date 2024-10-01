@@ -9,15 +9,12 @@ able to see it. Two gateway connections are used, the first by a dev user that d
 player of the game. The dev user has a subscriber to the event, and should be able to see the event logs even though
 they contain an EOA which does not belong to them. They should not be able to see the Attempts event as that remains
 private as there is no overriding config.
-
-Skipped due to https://github.com/ten-protocol/ten-internal/issues/3933 (may be related)
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>vis_config</group>
         </groups>
         <modes inherit="true">
