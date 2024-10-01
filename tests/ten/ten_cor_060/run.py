@@ -9,9 +9,9 @@ class PySysTest(TenNetworkTest):
     def execute(self):
         # connect players to the network
         network_1 = self.get_network_connection()
-        web3_1, account_1 = network_1.connect_account2(self)
+        web3_1, account_1 = network_1.connect_account1(self)
         network_2 = self.get_network_connection()
-        web3_2, account_2 = network_2.connect_account1(self)
+        web3_2, account_2 = network_2.connect_account2(self)
 
         # player 1 deploys the contract
         game_1 = TransparentGuessGame(self, web3_1)
