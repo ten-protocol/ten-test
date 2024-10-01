@@ -6,24 +6,25 @@ from ten.test.contracts.game import TransparentGuessGame
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        # connect the dev to the network to deploy the game
-        network_dev = self.get_network_connection()
-        web3_dev, account_dev = network_dev.connect_account2(self)
-        block_number = web3_dev.eth.get_block_number()
-        game = TransparentGuessGame(self, web3_dev)
-        game.deploy(network_dev, account_dev)
+        # connect the players to the network
+        network_1 = self.get_network_connection()
+        network_2 = self.get_network_connection()
+        web3_1, account_1 = network_1.connect_account1(self)
+        web3_2, account_2 = network_2.connect_account2(self)
 
-        # connect a user to the network to play the game and make some guesses
-        network_usr = self.get_network_connection()
-        web3_usr, account_usr = network_usr.connect_account1(self)
-        game_usr = TransparentGuessGame.clone(web3_usr, account_usr, game)
-        target = game_usr.contract.functions.guess
-        for i in range(1,5): network_dev.transact(self, web3_usr, target(i), account_usr, game_usr.GAS_LIMIT)
+        # player 1 deploys the contract
+        game = TransparentGuessGame(self, web3_1)
+        game.deploy(network_1, account_1)
+        block_number = web3_1.eth.get_block_number()
 
-        # both the dev and usr should be able to get all events
-        self.get_logs(network_dev, game, block_number, 'dev')
-        self.get_logs(network_usr, game_usr, block_number, 'usr')
+        # player 2 transacts with the contract
+        game = TransparentGuessGame.clone(web3_2, account_2, game)
+        target = game.contract.functions.guess
+        for i in range(1,5): network_2.transact(self, web3_2, target(i), account_2, game.GAS_LIMIT)
 
+        # both players should be able to get all events
+        self.get_logs(network_1, game, block_number, '1')
+        self.get_logs(network_2, game, block_number, '2')
 
     def get_logs(self, network, contract, block_numer, name):
         # run a javascript by the dev to get past events
@@ -35,7 +36,6 @@ class PySysTest(TenNetworkTest):
         args = []
         args.extend(['--network_ws', network.connection_url(web_socket=True)])
         args.extend(['--address', '%s' % contract.address])
-        args.extend(['--contract_abi', '%s' % contract.abi_path])
         args.extend(['--contract_abi', '%s' % contract.abi_path])
         args.extend(['--log_file', '%s' % logout])
         args.extend(['--from_block', '%s' % block_numer])

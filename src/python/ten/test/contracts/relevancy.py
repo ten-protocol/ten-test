@@ -7,8 +7,8 @@ class Relevancy(DefaultContract):
     CONTRACT = 'Relevancy'
 
 
-class RelevancyOneCantView(DefaultContract):
-    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'relevancy', 'RelevancyOneCantView.sol')
-    CONTRACT = 'RelevancyOneCantView'
+class FieldSenderRelevancy(DefaultContract):
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'relevancy', 'FieldSenderRelevancy.sol')
+    CONTRACT = 'FieldSenderRelevancy'
 
 

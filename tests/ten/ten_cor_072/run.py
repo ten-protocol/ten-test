@@ -6,32 +6,33 @@ from ten.test.contracts.game import FieldTopic1GuessGame
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        # connect the dev to the network to deploy the game
-        network_dev = self.get_network_connection()
-        web3_dev, account_dev = network_dev.connect_account2(self)
-        block_number = web3_dev.eth.get_block_number()
-        game = FieldTopic1GuessGame(self, web3_dev)
-        game.deploy(network_dev, account_dev)
+        # connect the players to the network
+        network_1 = self.get_network_connection()
+        network_2 = self.get_network_connection()
+        web3_1, account_1 = network_1.connect_account1(self)
+        web3_2, account_2 = network_2.connect_account2(self)
 
-        # connect a user to the network to play the game and make some guesses
-        network_usr = self.get_network_connection()
-        web3_usr, account_usr = network_usr.connect_account1(self)
-        game_usr = FieldTopic1GuessGame.clone(web3_usr, account_usr, game)
-        target = game_usr.contract.functions.guess
-        for i in range(1,5): network_dev.transact(self, web3_usr, target(i), account_usr, game_usr.GAS_LIMIT)
+        # player 1 deploys the contract
+        game_1 = FieldTopic1GuessGame(self, web3_1)
+        game_1.deploy(network_1, account_1)
+        block_number = web3_1.eth.get_block_number()
 
-        # dev account can see the Guessed event but not the Attempts event
-        logout = self.get_logs(network_dev, game, block_number, 'dev')
+        # player 2 transacts with the contract
+        game_2 = FieldTopic1GuessGame.clone(web3_2, account_2, game_1)
+        target = game_2.contract.functions.guess
+        for i in range(1,5): network_2.transact(self, web3_2, target(i), account_2, game_2.GAS_LIMIT)
+
+        # player 1 can not see the Guessed or Attempts events
+        logout = self.get_logs(network_1, game_1, block_number, 'dev')
         self.assertLineCount(file=logout, expr='Guessed event:', condition='==0')
         self.assertLineCount(file=logout, expr='Attempts event:', condition='==0')
 
-        # usr account can see the Guessed event and the Attempts event
-        logout = self.get_logs(network_usr, game_usr, block_number, 'usr')
+        # player 2 can see the Guessed event and the Attempts event
+        logout = self.get_logs(network_2, game_2, block_number, 'usr')
         self.assertLineCount(file=logout, expr='Guessed event:', condition='==4')
         self.assertOrderedGrep(file=logout, exprList=['guessedNumber = %d' % d for d in range(1,5)])
         self.assertLineCount(file=logout, expr='Attempts event:', condition='==4')
         self.assertOrderedGrep(file=logout, exprList=['attempts = %d' % d for d in range(1,5)])
-
 
     def get_logs(self, network, contract, block_numer, name):
         # run a javascript by the dev to get past events
