@@ -23,12 +23,12 @@ class PySysTest(TenNetworkTest):
         for i in range(1,5): network_2.transact(self, web3_2, target(i), account_2, game_2.GAS_LIMIT)
 
         # player 1 can not see the Guessed or Attempts events
-        logout = self.get_logs(network_1, game_1, block_number, 'dev')
+        logout = self.get_logs(network_1, game_1, block_number, '1')
         self.assertLineCount(file=logout, expr='Guessed event:', condition='==0')
         self.assertLineCount(file=logout, expr='Attempts event:', condition='==0')
 
         # player 2 can not see the Guessed event but can see the Attempts event
-        logout = self.get_logs(network_2, game_2, block_number, 'usr')
+        logout = self.get_logs(network_2, game_2, block_number, '2')
         self.assertLineCount(file=logout, expr='Guessed event:', condition='==0')
         self.assertLineCount(file=logout, expr='Attempts event:', condition='==4')
         self.assertOrderedGrep(file=logout, exprList=['attempts = %d' % d for d in range(1,5)])

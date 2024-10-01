@@ -26,3 +26,9 @@ class FieldTopic2GuessGame(DefaultContract):
     SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'FieldTopic2GuessGame.sol')
     CONTRACT = 'FieldTopic2GuessGame'
 
+
+class FieldEveryoneAllEventsGuessGame(DefaultContract):
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'FieldEveryoneAllEventsGuessGame.sol')
+    CONTRACT = 'FieldEveryoneAllEventsGuessGame'
+
+
