@@ -13,18 +13,18 @@ class PySysTest(TenNetworkTest):
         web3_2, account_2 = network_2.connect_account2(self)
 
         # player 1 deploys the contract
-        game = TransparentGuessGame(self, web3_1)
-        game.deploy(network_1, account_1)
+        game_1 = TransparentGuessGame(self, web3_1)
+        game_1.deploy(network_1, account_1)
         block_number = web3_1.eth.get_block_number()
 
         # player 2 transacts with the contract
-        game = TransparentGuessGame.clone(web3_2, account_2, game)
-        target = game.contract.functions.guess
-        for i in range(1,5): network_2.transact(self, web3_2, target(i), account_2, game.GAS_LIMIT)
+        game_2 = TransparentGuessGame.clone(web3_2, account_2, game_1)
+        target = game_2.contract.functions.guess
+        for i in range(1,5): network_2.transact(self, web3_2, target(i), account_2, game_2.GAS_LIMIT)
 
         # both players should be able to get all events
-        self.get_logs(network_1, game, block_number, '1')
-        self.get_logs(network_2, game, block_number, '2')
+        self.get_logs(network_1, game_1, block_number, '1')
+        self.get_logs(network_2, game_2, block_number, '2')
 
     def get_logs(self, network, contract, block_numer, name):
         # run a javascript by the dev to get past events
