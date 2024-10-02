@@ -1,3 +1,4 @@
+from pysys.constants import FAILED
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.game import FieldEveryoneGuessGame
 from web3._utils.events import EventLogErrorFlags
@@ -27,8 +28,11 @@ class PySysTest(TenNetworkTest):
         self.assertTrue(logs[0]['args']['attempts'] == 1, assertMessage='Logs should show the number attempts as 1')
 
         # player 1 tries to get the tx receipt and see the logs
-        receipt = web3_1.eth.get_transaction_receipt(tx_rcpt.transactionHash)
-        logs = game_1.contract.events.Guessed().process_receipt(receipt, EventLogErrorFlags.Discard)
-        self.assertTrue(logs[0]['args']['guessedNumber'] == 2, assertMessage='Logs should show the guessed number as 2')
-        logs = game_1.contract.events.Attempts().process_receipt(receipt, EventLogErrorFlags.Discard)
-        self.assertTrue(len(logs) == 0, assertMessage='Should not be able to retrieve Attempts events')
+        try:
+            receipt = web3_1.eth.get_transaction_receipt(tx_rcpt.transactionHash)
+            logs = game_1.contract.events.Guessed().process_receipt(receipt, EventLogErrorFlags.Discard)
+            self.assertTrue(logs[0]['args']['guessedNumber'] == 2, assertMessage='Logs should show the guessed number as 2')
+            logs = game_1.contract.events.Attempts().process_receipt(receipt, EventLogErrorFlags.Discard)
+            self.assertTrue(len(logs) == 0, assertMessage='Should not be able to retrieve Attempts events')
+        except:
+            self.addOutcome(FAILED, 'Unable to get logs for player 1')

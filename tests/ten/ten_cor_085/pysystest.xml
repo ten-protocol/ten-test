@@ -1,32 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <pysystest type="auto">
-  
-  <description> 
-	<title></title>    
-	<purpose><![CDATA[
+
+    <description>
+        <title>Visibility Config: tx receipt, ContractCfg.PRIVATE, Field.EVERYONE on two events</title>
+        <purpose><![CDATA[
+Uses a simple guessing game, with ContractCfg.PRIVATE and Field.EVERYONE set for the Guessed and Attempts events.
+Two gateway connections are used, the first by a dev user that deploys the contract and the second by a player of the
+game. Both users should see all events when getting the tx receipts.
 ]]>
-	</purpose>
-  </description>
+        </purpose>
+    </description>
 
-  <!-- uncomment this to skip the test:  
-  <skipped reason=""/> 
-  -->
-  
-  <classification>
-	<groups inherit="true">
-	  <group></group>
-	</groups>
-	<modes inherit="true">
-	</modes>
-  </classification>
+    <classification>
+        <groups inherit="true">
+            <group>vis_config</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+            <mode>ten.sim</mode>
+        </modes>
+    </classification>
 
-  <data>
-	<class name="PySysTest" module="run"/>
-  </data>
-  
-  <traceability>
-	<requirements>
-	  <requirement id=""/>     
-	</requirements>
-  </traceability>
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
 </pysystest>
