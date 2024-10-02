@@ -4,11 +4,12 @@
     <description>
         <title>Visibility Config: from tx receipt, transparent contract, all events are public</title>
         <purpose><![CDATA[
-Uses a simple guessing game, with VisibilityConfig.isTransparent set to true. This opens up calls to get_storage_at, and
-additionally makes all events public. Two gateway connections are used, the first by a dev user that deploys the
-contract and the second by a player of the game. The player makes a guess, and using the tx hash the dev user gets the
-transaction receipt and attempts to parse out the event log. Given the contract is transparent we expect the dev user to
-be able to get the event logs from the tx receipt, even though they did not initiate the transaction.
+Uses a simple guessing game, with ContractCfg.TRANSPARENT. This opens up calls to get_storage_at, and additionally
+makes all events public. Two gateway connections are used, the first by a dev user that deploys the contract and the
+second by a player of the game. The second player makes a guess, and using the tx receipt hash the dev tries to get the
+receipt and inspect the event logs to see what the player guessed (naughty naughty).
+
+Skipped as this functionality is still be decided upon. 
 ]]>
         </purpose>
     </description>
