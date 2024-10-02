@@ -12,19 +12,23 @@ class TransparentGuessGame(DefaultContract):
     CONTRACT = 'TransparentGuessGame'
 
 
-class PublicEventGuessGame(DefaultContract):
-    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'PublicEventGuessGame.sol')
-    CONTRACT = 'PublicEventGuessGame'
+class FieldEveryoneGuessGame(DefaultContract):
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'FieldEveryoneGuessGame.sol')
+    CONTRACT = 'FieldEveryoneGuessGame'
 
 
-class Topic1CanViewGuessGame(DefaultContract):
-    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'Topic1CanViewGuessGame.sol')
-    CONTRACT = 'Topic1CanViewGuessGame'
+class FieldTopic1GuessGame(DefaultContract):
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'FieldTopic1GuessGame.sol')
+    CONTRACT = 'FieldTopic1GuessGame'
 
 
-class Topic2CanViewGuessGame(DefaultContract):
-    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'Topic1CanViewGuessGame.sol')
-    CONTRACT = 'Topic1CanViewGuessGame'
+class FieldTopic2GuessGame(DefaultContract):
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'FieldTopic2GuessGame.sol')
+    CONTRACT = 'FieldTopic2GuessGame'
 
+
+class FieldEveryoneAllEventsGuessGame(DefaultContract):
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'FieldEveryoneAllEventsGuessGame.sol')
+    CONTRACT = 'FieldEveryoneAllEventsGuessGame'
 
 

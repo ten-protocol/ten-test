@@ -7,23 +7,25 @@ from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        # connect to the network and deploy the game
-        network_dev = self.get_network_connection()
-        web3_dev, account_dev = network_dev.connect_account2(self)
-        game = TransparentGuessGame(self, web3_dev)
-        game.deploy(network_dev, account_dev)
+        # connect players to the network
+        network_1 = self.get_network_connection()
+        web3_1, account_1 = network_1.connect_account1(self)
+        network_2 = self.get_network_connection()
+        web3_2, account_2 = network_2.connect_account2(self)
 
-        # run a background script to filter and collect events
-        subscriber = AllEventsLogSubscriber(self, network_dev, game.address, game.abi_path)
+        # player 1 deploys the contract
+        game_1 = TransparentGuessGame(self, web3_1)
+        game_1.deploy(network_1, account_1)
+
+        # player 2 subscribes for events, gets the secret number, and plays
+        game_2 = TransparentGuessGame.clone(web3_2, account_2, game_1)
+        subscriber = AllEventsLogSubscriber(self, network_2, game_2.address, game_2.abi_path)
         subscriber.run()
 
-        # connect a user to the network
-        network_usr = self.get_network_connection()
-        web3_usr, account_usr = network_usr.connect_account1(self)
-        game_usr = TransparentGuessGame.clone(web3_usr, account_usr, game)
-
-        target = int.from_bytes(web3_usr.eth.get_storage_at(game.address, 1), sys.byteorder)
+        target = int.from_bytes(web3_2.eth.get_storage_at(game_2.address, 1), sys.byteorder)
         self.log.info('Number to guess is %d', target)
-        network_usr.transact(self, web3_usr, game_usr.contract.functions.guess(target), account_usr, game.GAS_LIMIT)
+        network_2.transact(self, web3_2, game_2.contract.functions.guess(target), account_2, game_2.GAS_LIMIT)
+
+        # player 2 should see the events from player 2s interactions
         self.waitForGrep(file='subscriber.out', expr='Full event', timeout=10)
         self.assertOrderedGrep(file='subscriber.out', exprList=['success: true', 'secretNumber: \'%d\'' % target])

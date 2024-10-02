@@ -2,11 +2,13 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config: get logs, ContractCfg.TRANSPARENT, check events</title>
+        <title>Visibility Config: get logs, ContractCfg.PRIVATE, Field.TOPIC1 TOPIC2 SENDER on one event</title>
         <purpose><![CDATA[
-Use a simple guessing game, with ContractCfg.TRANSPARENT. Two gateway connections are used, the first by a dev user that
-deploys the contract and the second by a player of the game. The dev user waits for the player to play some moves, then
-both users run a script to getPastEvents on the contract. The dev and game user should see both events.
+Three accounts are used. The third account deploys the relevancy contract with ContractCfg.PRIVATE and Field.Sender
+configured on the TwoIndexedAddresses event (Field.TOPIC1 and Field.TOPIC2 are also included). The third account calls
+twoIndexedAddresses supplying the first and second account addresses. The first and second accounts getPastEvents and
+should see the event as it is relevant to them both. The third account does the same and should also see it as
+Field.SENDER is enabled.
 ]]>
         </purpose>
     </description>
@@ -22,7 +24,6 @@ both users run a script to getPastEvents on the contract. The dev and game user 
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
             <mode>ten.sim</mode>
-            <mode>ganache</mode>
         </modes>
     </classification>
 

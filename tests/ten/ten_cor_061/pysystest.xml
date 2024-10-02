@@ -2,14 +2,12 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config: subscribe, transparent contract, all events are public</title>
+        <title>Visibility Config: subscribe, ContractCfg.TRANSPARENT, check events</title>
         <purpose><![CDATA[
-Use a simple guessing game, with VisibilityConfig.isTransparent set to true. This opens up calls to get_storage_at, and
-additionally makes all events public. Two gateway connections are used, the first by a dev user that deploys the
-contract and the second by a player of the game. The dev user has a subscriber to the events, and should be able to
-see the events even though they contain an EOA which does not belong to them.
-
-Skipped due to https://github.com/ten-protocol/ten-internal/issues/3933 (may be related)
+Use a simple guessing game, with ContractCfg.TRANSPARENT. This opens up calls to get_storage_at, and additionally makes
+all events public. Two gateway connections are used, the first by a dev user that deploys the contract and the second
+by a player of the game. The dev user has a subscriber to the events, and should be able to see the events even though
+they contain an EOA which does not belong to them (so both Guessed and Attempts).
 ]]>
         </purpose>
     </description>

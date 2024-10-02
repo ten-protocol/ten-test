@@ -2,14 +2,13 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config: subscribe, public event, one event is public</title>
+        <title>Visibility Config: subscribe, ContractCfg.PRIVATE, Field.EVERYONE on one event</title>
         <purpose><![CDATA[
-Uses a simple guessing game, with VisibilityConfig.eventLogConfigs[0].isPublic set to true. This is set for one event
-within the contract, the Guessed event, such that anyone is able to see it. Two gateway connections are used, the first
-by a dev user that deploys the contract and the second by a player of the game. The dev user has a subscriber to the
-events, and should be able to see the events even though they contain an EOA which does not belong to them.
-
-Skipped due to https://github.com/ten-protocol/ten-internal/issues/3933 (may be related)
+Uses a simple guessing game, with ContractCfg.PRIVATE and Field.EVERYONE set for the Guessed event, such that anyone is
+able to see it. Two gateway connections are used, the first by a dev user that deploys the contract and the second by a
+player of the game. The dev user has a subscriber to the event, and should be able to see the event logs even though
+they contain an EOA which does not belong to them. They should not be able to see the Attempts event as that remains
+private as there is no overriding config.
 ]]>
         </purpose>
     </description>
@@ -25,6 +24,7 @@ Skipped due to https://github.com/ten-protocol/ten-internal/issues/3933 (may be 
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
             <mode>ten.sim</mode>
+            <mode>ganache</mode>
         </modes>
     </classification>
 

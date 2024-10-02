@@ -6,8 +6,9 @@ import "./ContractTransparencyConfig.sol";
 
 contract TransparentGuessGame is GuessGame, ContractTransparencyConfig  {
 
-    // set the isTransparent property of the contract to true
+    // set the visibility config to make the contract fully open
     function visibilityRules() external pure override returns (VisibilityConfig memory) {
-        return VisibilityConfig(true, new EventLogConfig[](0));
+        EventLogConfig[]  memory eventLogConfigs = new EventLogConfig[](0);
+        return VisibilityConfig(ContractCfg.TRANSPARENT, eventLogConfigs);
     }
 }

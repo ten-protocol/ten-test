@@ -1,40 +1,37 @@
-import os
 from ten.test.basetest import TenNetworkTest
-from ten.test.contracts.game import PublicEventGuessGame
+from ten.test.contracts.game import FieldEveryoneAllEventsGuessGame
+from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        # connect the dev to the network to deploy the game
-        network_dev = self.get_network_connection()
-        web3_dev, account_dev = network_dev.connect_account2(self)
-        block_number = web3_dev.eth.get_block_number()
-        game = PublicEventGuessGame(self, web3_dev)
-        game.deploy(network_dev, account_dev)
+        # connect players to the network
+        network_1 = self.get_network_connection()
+        web3_1, account_1 = network_1.connect_account1(self)
+        network_2 = self.get_network_connection()
+        web3_2, account_2 = network_2.connect_account2(self)
 
-        # connect a user to the network to play the game and make some guesses
-        network_usr = self.get_network_connection()
-        web3_usr, account_usr = network_usr.connect_account1(self)
-        game_usr = PublicEventGuessGame.clone(web3_usr, account_usr, game)
-        target = game_usr.contract.functions.guess
-        for i in range(1,5): network_dev.transact(self, web3_usr, target(i), account_usr, game_usr.GAS_LIMIT)
+        # player 1 deploys the contract and subscribes for events
+        game_1 = FieldEveryoneAllEventsGuessGame(self, web3_1)
+        game_1.deploy(network_1, account_1)
+        subscriber1 = AllEventsLogSubscriber(self, network_1, game_1.address, game_1.abi_path,
+                                             stdout='subscriber1.out', stderr='subscriber1.err')
+        subscriber1.run()
 
-        # run a javascript by the dev to get past events
-        stdout = os.path.join(self.output, 'poller.out')
-        stderr = os.path.join(self.output, 'poller.err')
-        logout = os.path.join(self.output, 'poller.log')
-        script = os.path.join(self.input, 'poller.js')
-        args = []
-        args.extend(['--network_ws', network_dev.connection_url(web_socket=True)])
-        args.extend(['--address', '%s' % game.address])
-        args.extend(['--contract_abi', '%s' % game.abi_path])
-        args.extend(['--contract_abi', '%s' % game.abi_path])
-        args.extend(['--log_file', '%s' % logout])
-        args.extend(['--from_block', '%s' % block_number])
-        self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=logout, expr='Completed task', timeout=30)
+        # player 2 transacts to guess the number
+        game_2 = FieldEveryoneAllEventsGuessGame.clone(web3_2, account_2, game_1)
+        subscriber2 = AllEventsLogSubscriber(self, network_2, game_2.address, game_2.abi_path,
+                                             stdout='subscriber2.out', stderr='subscriber2.err')
+        subscriber2.run()
+        for i in range(1, 5):
+            self.log.info('Number to guess is %d', i)
+            network_2.transact(self, web3_2, game_2.contract.functions.guess(i), account_2, game_2.GAS_LIMIT)
 
-        self.assertLineCount(file=logout, expr='Guessed event', condition='==4')
-        self.assertOrderedGrep(file=logout, exprList=['guessedNumber = %d' % d for d in range(1,5)])
+        # player 2 should see just the Attempts event, player 1 should not see any
+        self.waitForGrep('subscriber2.out', expr='attempts:.*4', timeout=10)
+        self.assertLineCount('subscriber2.out', expr='Received event: Guessed', condition='==4')
+        self.assertLineCount('subscriber2.out', expr='Received event: Attempts', condition='==4')
+        self.assertLineCount('subscriber1.out', expr='Received event: Guessed', condition='==4')
+        self.assertLineCount('subscriber1.out', expr='Received event: Attempts', condition='==4')
 

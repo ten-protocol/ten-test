@@ -2,11 +2,12 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config: get logs, ContractCfg.TRANSPARENT, check events</title>
+        <title>Visibility Config: tx receipt, ContractCfg.PRIVATE, Field.EVERYONE on one event</title>
         <purpose><![CDATA[
-Use a simple guessing game, with ContractCfg.TRANSPARENT. Two gateway connections are used, the first by a dev user that
-deploys the contract and the second by a player of the game. The dev user waits for the player to play some moves, then
-both users run a script to getPastEvents on the contract. The dev and game user should see both events.
+Uses a simple guessing game, with ContractCfg.PRIVATE and Field.EVERYONE set for the Guessed event, such that anyone is
+able to see it. Two gateway connections are used, the first by a dev user that deploys the contract and the second by a
+player of the game. The dev user gets the transaction from an attempt by the player, and should be able to see the
+Guessed event, but not the Attempts event.
 ]]>
         </purpose>
     </description>
@@ -22,7 +23,6 @@ both users run a script to getPastEvents on the contract. The dev and game user 
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
             <mode>ten.sim</mode>
-            <mode>ganache</mode>
         </modes>
     </classification>
 
