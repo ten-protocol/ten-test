@@ -6,7 +6,7 @@ from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        # connect the players to the network
+        # connect the accounts to the network
         network_1 = self.get_network_connection()
         network_2 = self.get_network_connection()
         network_3 = self.get_network_connection()
@@ -14,7 +14,7 @@ class PySysTest(TenNetworkTest):
         web3_2, account_2 = network_2.connect_account2(self)
         web3_3, account_3 = network_3.connect_account3(self)
 
-        # player 3 deploys the contract, all players subscribe, then player3 transacts
+        # account 3 deploys the contract, all accounts subscribe, then account3 transacts
         relevancy = FieldSenderRelevancy(self, web3_3)
         relevancy.deploy(network_3, account_3)
         subscriber_1 = self.subscribe(network_1, relevancy, '1')
@@ -23,7 +23,7 @@ class PySysTest(TenNetworkTest):
         target = relevancy.contract.functions.twoIndexedAddresses
         network_3.transact(self, web3_3, target(account_1.address, account_2.address), account_3, relevancy.GAS_LIMIT)
 
-        # all players should be able to see the event (player 3 as they are the sender, player 1 and 2 as the
+        # all accounts should be able to see the event (account 3 as they are the sender, account 1 and 2 as the
         # references their addresses as indexed fields
         self.assertLineCount(file=subscriber_1.stdout, expr='Received event: TwoIndexedAddresses', condition='==1')
         self.assertLineCount(file=subscriber_2.stdout, expr='Received event: TwoIndexedAddresses', condition='==1')

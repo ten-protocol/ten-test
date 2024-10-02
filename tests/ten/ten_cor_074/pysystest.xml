@@ -4,10 +4,10 @@
     <description>
         <title>Visibility Config: get logs, ContractCfg.PRIVATE, Field.TOPIC1 TOPIC2 SENDER on one event</title>
         <purpose><![CDATA[
-Three players are used. The third player deploys the relevancy contract with ContractCfg.PRIVATE and Field.Sender
-configured on the TwoIndexedAddresses event (Field.TOPIC1 and Field.TOPIC2 are also included). The third player calls
-twoIndexedAddresses supplying the first and second player addresses. The first and second players getPastEvents and
-should see the event as it is relevant to them both. The third player does the same and should also see it as
+Three accounts are used. The third account deploys the relevancy contract with ContractCfg.PRIVATE and Field.Sender
+configured on the TwoIndexedAddresses event (Field.TOPIC1 and Field.TOPIC2 are also included). The third account calls
+twoIndexedAddresses supplying the first and second account addresses. The first and second accounts getPastEvents and
+should see the event as it is relevant to them both. The third account does the same and should also see it as
 Field.SENDER is enabled.
 ]]>
         </purpose>

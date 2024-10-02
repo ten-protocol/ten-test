@@ -6,7 +6,7 @@ from ten.test.contracts.relevancy import FieldSenderRelevancy
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        # connect the players to the network
+        # connect the accounts to the network
         network_1 = self.get_network_connection()
         network_2 = self.get_network_connection()
         network_3 = self.get_network_connection()
@@ -14,14 +14,14 @@ class PySysTest(TenNetworkTest):
         web3_2, account_2 = network_2.connect_account2(self)
         web3_3, account_3 = network_3.connect_account3(self)
 
-        # player 3 deploys and interacts with the contract
+        # account 3 deploys and interacts with the contract
         relevancy = FieldSenderRelevancy(self, web3_3)
         relevancy.deploy(network_3, account_3)
         target = relevancy.contract.functions.twoIndexedAddresses
         network_3.transact(self, web3_3, target(account_1.address, account_2.address), account_3, relevancy.GAS_LIMIT)
         block_number = web3_3.eth.get_block_number()
 
-        # all players should be able to see the event (player 3 as they are the sender, player 1 and 2 as the
+        # all accounts should be able to see the event (account 3 as they are the sender, account 1 and 2 as the
         # references their addresses as indexed fields
         logout_1 = self.get_logs(network_1, relevancy, block_number, '1')
         logout_2 = self.get_logs(network_2, relevancy, block_number, '2')

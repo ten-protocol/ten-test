@@ -1,32 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <pysystest type="auto">
-  
-  <description> 
-	<title></title>    
-	<purpose><![CDATA[
+
+    <description>
+        <title>Visibility Config: tx receipt, ContractCfg.PRIVATE, Field.TOPIC1 TOPIC2 SENDER on one event</title>
+        <purpose><![CDATA[
+Three accounts are used. The third account deploys the relevancy contract with ContractCfg.PRIVATE and Field.Sender
+configured on the TwoIndexedAddresses event (Field.TOPIC1 and Field.TOPIC2 are also included). The third account calls
+twoIndexedAddresses supplying the first and second account addresses. The first and second accounts get the tx receipt
+and should see the event as it is relevant to them both. The third account does the same and should also see it as
+Field.SENDER is enabled.
 ]]>
-	</purpose>
-  </description>
+        </purpose>
+    </description>
 
-  <!-- uncomment this to skip the test:  
-  <skipped reason=""/> 
-  -->
-  
-  <classification>
-	<groups inherit="true">
-	  <group></group>
-	</groups>
-	<modes inherit="true">
-	</modes>
-  </classification>
+    <classification>
+        <groups inherit="true">
+            <group>vis_config</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+            <mode>ten.sim</mode>
+        </modes>
+    </classification>
 
-  <data>
-	<class name="PySysTest" module="run"/>
-  </data>
-  
-  <traceability>
-	<requirements>
-	  <requirement id=""/>     
-	</requirements>
-  </traceability>
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
 </pysystest>
