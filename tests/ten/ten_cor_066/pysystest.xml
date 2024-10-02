@@ -4,13 +4,15 @@
     <description>
         <title>Visibility Config: subscribe, ContractCfg.PRIVATE, Field.EVERYONE on two events</title>
         <purpose><![CDATA[
+Uses a simple guessing game, with ContractCfg.PRIVATE and Field.EVERYONE set for the Guessed and Attempts events.
+Two gateway connections are used, the first by a dev user that deploys the contract and the second by a player of the
+game. Both users run a script to subscribed for the events; both users should see all events.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>vis_config</group>
         </groups>
         <modes inherit="true">
