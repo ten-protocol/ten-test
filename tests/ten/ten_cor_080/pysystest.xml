@@ -2,14 +2,14 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config: from tx receipt, transparent contract, all events are public</title>
+        <title>Visibility Config: tx receipt, ContractCfg.TRANSPARENT, check events</title>
         <purpose><![CDATA[
 Uses a simple guessing game, with ContractCfg.TRANSPARENT. This opens up calls to get_storage_at, and additionally
 makes all events public. Two gateway connections are used, the first by a dev user that deploys the contract and the
 second by a player of the game. The second player makes a guess, and using the tx receipt hash the dev tries to get the
 receipt and inspect the event logs to see what the player guessed (naughty naughty).
 
-Skipped as this functionality is still be decided upon. 
+Skipped as this functionality is still be decided upon.
 ]]>
         </purpose>
     </description>
