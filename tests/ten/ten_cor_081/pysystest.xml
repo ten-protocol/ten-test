@@ -2,14 +2,12 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config: from tx receipt, public event, one event is public</title>
+        <title>Visibility Config: tx receipt, ContractCfg.PRIVATE, Field.EVERYONE on one event</title>
         <purpose><![CDATA[
-Uses a simple guessing game, with VisibilityConfig.eventLogConfigs[0].isPublic set to true. This is set for one event
-within the contract, the Guessed event, such that anyone is able to see it. Two gateway connections are used, the first
-by a dev user that deploys the contract and the second by a player of the game. The player makes a guess, and using the
-tx hash the dev user gets the transaction receipt and attempts to parse out the event log. Given the event is public we
-expect the dev user to be able to get the event logs from the tx receipt, even though they did not initiate the
-transaction.
+Uses a simple guessing game, with ContractCfg.PRIVATE and Field.EVERYONE set for the Guessed event, such that anyone is
+able to see it. Two gateway connections are used, the first by a dev user that deploys the contract and the second by a
+player of the game. The dev user gets the transaction from an attempt by the player, and should be able to see the
+Guessed event, but not the Attempts event.
 ]]>
         </purpose>
     </description>
