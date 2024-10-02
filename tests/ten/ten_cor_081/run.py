@@ -31,4 +31,4 @@ class PySysTest(TenNetworkTest):
         logs = game_1.contract.events.Guessed().process_receipt(receipt, EventLogErrorFlags.Discard)
         self.assertTrue(logs[0]['args']['guessedNumber'] == 2, assertMessage='Logs should show the guessed number as 2')
         logs = game_1.contract.events.Attempts().process_receipt(receipt, EventLogErrorFlags.Discard)
-        self.assertTrue(len(logs) == 0, assertMessage='Should not be able to retrieve attempts')
+        self.assertTrue(len(logs) == 0, assertMessage='Should not be able to retrieve Attempts events')
