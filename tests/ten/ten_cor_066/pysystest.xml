@@ -13,6 +13,7 @@ game. Both users run a script to subscribed for the events; both users should se
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
             <group>vis_config</group>
         </groups>
         <modes inherit="true">

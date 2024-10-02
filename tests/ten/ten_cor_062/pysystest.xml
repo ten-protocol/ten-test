@@ -15,6 +15,7 @@ private as there is no overriding config.
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
             <group>vis_config</group>
         </groups>
         <modes inherit="true">

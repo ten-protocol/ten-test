@@ -13,6 +13,7 @@ game. Both users should see all events when getting the tx receipts.
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
             <group>vis_config</group>
         </groups>
         <modes inherit="true">

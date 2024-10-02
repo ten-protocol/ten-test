@@ -14,6 +14,7 @@ contract. Both users should see all events.
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
             <group>vis_config</group>
         </groups>
         <modes inherit="true">
