@@ -36,7 +36,7 @@ class PySysTest(TenNetworkTest):
 
     def get_logs(self, network, contract, block_numer, name):
         # run a javascript by the dev to get past events
-        self.log.info('Gett past events for %s'%name)
+        self.log.info('Get past events for %s'%name)
         stdout = os.path.join(self.output, 'poller_%s.out'%name)
         stderr = os.path.join(self.output, 'poller_%s.err'%name)
         logout = os.path.join(self.output, 'poller_%s.log'%name)

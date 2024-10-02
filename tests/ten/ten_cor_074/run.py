@@ -21,7 +21,8 @@ class PySysTest(TenNetworkTest):
         network_3.transact(self, web3_3, target(account_1.address, account_2.address), account_3, relevancy.GAS_LIMIT)
         block_number = web3_3.eth.get_block_number()
 
-        # dev account can not see the TwoIndexedAddresses event
+        # all players should be able to see the event (player 3 as they are the sender, player 1 and 2 as the
+        # references their addresses as indexed fields
         logout_1 = self.get_logs(network_1, relevancy, block_number, '1')
         logout_2 = self.get_logs(network_2, relevancy, block_number, '2')
         logout_3 = self.get_logs(network_3, relevancy, block_number, '3')
@@ -31,7 +32,7 @@ class PySysTest(TenNetworkTest):
 
     def get_logs(self, network, contract, block_numer, name):
         # run a javascript by the dev to get past events
-        self.log.info('Gett past events for %s'%name)
+        self.log.info('Get past events for %s'%name)
         stdout = os.path.join(self.output, 'poller_%s.out'%name)
         stderr = os.path.join(self.output, 'poller_%s.err'%name)
         logout = os.path.join(self.output, 'poller_%s.log'%name)
