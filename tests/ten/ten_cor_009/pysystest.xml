@@ -6,7 +6,7 @@
         <purpose><![CDATA[
 Makes a call to debug log visibility for a single non-lifecycle event emitted from the relevancy contract.
 
-Skipped until fixed after the vis_config changes. 
+Skipped until fixed after the vis_config changes.
 ]]>
         </purpose>
     </description>
