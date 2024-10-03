@@ -25,8 +25,6 @@ class PySysTest(TenNetworkTest):
             self.log.info('Number to guess is %d', i)
             tx_recp = network_2.transact(self, web3_2, game_2.contract.functions.guess(i), account_2, game_2.GAS_LIMIT)
 
-        if self.is_ten(): self.get_debug_event_log_relevancy(tx_recp.transactionHash.hex())
-
         # the contract is transparent so player 1 should see all the events
         self.waitForGrep('subscriber.out', expr='Received event', condition='==8', timeout=10)
         self.assertLineCount('subscriber.out', expr='Received event: Guessed', condition='==4')
