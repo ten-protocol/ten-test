@@ -1,4 +1,4 @@
-from pysys.constants import FAILED
+from pysys.constants import FAILED, PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 
@@ -28,3 +28,4 @@ class PySysTest(TenNetworkTest):
             self.addOutcome(FAILED, abortOnError=False)
         else:
             self.log.info('  Deployed contract %s at %s has code' % (name, address))
+            self.addOutcome(PASSED)
