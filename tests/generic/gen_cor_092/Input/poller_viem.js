@@ -37,6 +37,7 @@ async function task(network_http, network_ws, chainId, address, abi) {
       address: address,
       fromBlock: 0,
       toBlock: 'latest',
+      topics: ['0xc6d8c0af6d21f291e7c359603aa97e0ed500f04db6e983b9fce75a91c6b8da6b'],
     });
     log('Raw Events:', logs);
 
