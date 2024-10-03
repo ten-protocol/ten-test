@@ -1,6 +1,7 @@
 const fs = require('fs')
 const commander = require('commander')
-import { createPublicClient, http, getContractEvents, defineChain } from 'viem';
+const { createPublicClient, http, webSocket, getContractEvents, defineChain, getAbiItem } = require('viem');
+
 
 function log(data) {
     let timestamp = new Date().toISOString();
@@ -8,34 +9,46 @@ function log(data) {
     fs.appendFileSync(options.log_file, entry, { flag: 'a' });
 }
 
-function createCustomClient(chain_id, network_http) {
+function createCustomClient(network_http, network_ws, chain_id) {
   const customChain = defineChain({
     id: chain_id,
-    name: 'Ten',
-    network: 'ten',
+    name: 'test',
+    network: 'test',
     nativeCurrency: {
       name: 'Ether',
       symbol: 'ETH',
       decimals: 18,
     },
     rpcUrls: {
-      default: { http: [network_http], },
+      default: {
+        http: [network_http],
+        webSocket: [network_ws],
+      },
     },
   });
 
   return createPublicClient({ chain: customChain, transport: http(network_http), });
 }
 
-async function task(network_http, address, abi, from) {
+async function task(network_http, network_ws, chainId, address, abi) {
   try {
-    const client = createCustomClient(network_http);
-    const events = await getContractEvents(client, {
+    const client = createCustomClient(network_http, network_ws, chainId);
+    const logs = await client.getLogs({
       address: address,
-      abi: abi,
-      fromBlock: BigInt(from),
+      fromBlock: 0,
       toBlock: 'latest',
     });
-    log('Past Events:', events);
+    log('Raw Events:', logs);
+
+    const decodedEvents = logs.map(log => {
+      const abiItem = getAbiItem({ abi: abi, name: log.name });
+      return {
+        ...log,
+        decoded: abiItem ? abiItem.decode(log.data) : null,
+      };
+    });
+
+    log('Decoded Events:', decodedEvents);
   } catch (error) {
     console.error('Error fetching events:', error);
   }
@@ -45,6 +58,8 @@ commander
   .version('1.0.0', '-v, --version')
   .usage('[OPTIONS]...')
   .option('--network_http <value>', 'HTTP connection URL to the network')
+  .option('--network_ws <value>', 'Websocket connection URL to the network')
+  .option('--chain_id <value>', 'The network chain ID')
   .option('--contract_address <value>', 'The contract address')
   .option('--contract_abi <value>', 'The contract ABI file')
   .option('--log_file <value>', 'The output file to write to')
@@ -53,7 +68,7 @@ commander
 const options = commander.opts()
 var json = fs.readFileSync(`${options.contract_abi}`)
 var abi = JSON.parse(json)
-task(options.network_http, option.contract_address, abi, 0);
+task(options.network_http, options.network_ws, options.chain_id, options.contract_address, abi);
 
 
 

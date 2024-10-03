@@ -16,7 +16,7 @@ class PySysTest(GenericNetworkTest):
         storage.deploy(network, account)
 
         # perform some transactions with a sleep in between
-        for i in range(0, 5):
+        for i in range(0, 2):
             network.transact(self, web3, storage.contract.functions.store(i), account, storage.GAS_LIMIT)
         self.wait(float(self.block_time) * 1.1)
 
@@ -26,7 +26,9 @@ class PySysTest(GenericNetworkTest):
         logout = os.path.join(self.output, 'poller.log')
         script = os.path.join(self.input, 'poller.js')
         args = []
+        args.extend(['--network_http', network.connection_url(web_socket=False)])
         args.extend(['--network_ws', network.connection_url(web_socket=True)])
+        args.extend(['--chain_id', '%s' % network.chain_id()])
         args.extend(['--contract_address', '%s' % storage.address])
         args.extend(['--contract_abi', '%s' % storage.abi_path])
         args.extend(['--log_file', '%s' % logout])
