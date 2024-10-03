@@ -45,7 +45,6 @@ class PySysTest(TenNetworkTest):
         args.extend(['--network_ws', network.connection_url(web_socket=True)])
         args.extend(['--address', '%s' % contract.address])
         args.extend(['--contract_abi', '%s' % contract.abi_path])
-        args.extend(['--contract_abi', '%s' % contract.abi_path])
         args.extend(['--log_file', '%s' % logout])
         args.extend(['--from_block', '%s' % block_numer])
         self.run_javascript(script, stdout, stderr, args)
