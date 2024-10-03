@@ -14,5 +14,9 @@ class PySysTest(TenNetworkTest):
         relevancy = Relevancy(self, web3)
         relevancy.deploy(network, account)
         self.log.info('Relevancy contract address is %s', relevancy.address)
-        response = self.get_debug_event_log_relevancy(relevancy.address, '0x85217d12aec82988299a2d33c06c6d141fb9af7717cb74856740aad1f0a3b8e9')
-        self.log.info(response)
+
+        response = self.get_debug_event_log_relevancy(
+            url=network.connection_url(),
+            address=relevancy.address,
+            signature=web3.keccak(text='TwoIndexedAddresses(address,address)').hex())
+        self.log.info('Returned response: %s', response)
