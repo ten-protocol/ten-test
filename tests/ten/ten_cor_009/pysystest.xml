@@ -4,9 +4,7 @@
     <description>
         <title>Debug APIs - request debug_logVisibility, single non-lifecycle event</title>
         <purpose><![CDATA[
-Makes a call to debug log visibility for a single non-lifecycle event emitted from the relevancy contract.
-
-Skipped until fixed after the vis_config changes.
+Makes a call to debug log visibility for a single non-lifecycle event defined by the relevancy contract.
 ]]>
         </purpose>
     </description>
