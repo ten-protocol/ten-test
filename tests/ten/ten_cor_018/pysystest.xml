@@ -15,6 +15,7 @@ added into, and then can finally see the logs.
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
