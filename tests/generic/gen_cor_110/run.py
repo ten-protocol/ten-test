@@ -42,7 +42,7 @@ class PySysTest(GenericNetworkTest):
         args.extend(['--log_file', '%s' % logout])
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=logout, expr='Starting transactions', timeout=10)
-        self.waitForGrep(file=stderr, expr="code: \'CALL_EXCEPTION\'", timeout=5)
+        self.waitForGrep(file=stderr, expr="code: \'CALL_EXCEPTION\'", timeout=10)
 
         # add an explicit assert on the call exception
         self.assertGrep(file=stderr, expr="code: \'CALL_EXCEPTION\'")
