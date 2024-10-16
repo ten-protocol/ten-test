@@ -22,6 +22,7 @@ created it unless their address is included in the event.
         <groups inherit="true">
             <group>events</group>
             <group>web3js</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
