@@ -20,7 +20,6 @@ the transaction. The gas holding account is then checked to ensure the spent gas
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
-            <mode>ten.sim</mode>
         </modes>
     </classification>
 
