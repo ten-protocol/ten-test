@@ -15,7 +15,6 @@ is not set the user will not be able to see the Guessed event, nor will the dev 
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>vis_config</group>
         </groups>
         <modes inherit="true">

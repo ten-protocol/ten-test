@@ -16,7 +16,6 @@ Skipped as this functionality is still be decided upon.
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>vis_config</group>
         </groups>
         <modes inherit="true">

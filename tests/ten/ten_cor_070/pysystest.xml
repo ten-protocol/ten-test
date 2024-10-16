@@ -13,7 +13,6 @@ both users run a script to getPastEvents on the contract. The dev and game user 
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>vis_config</group>
         </groups>
         <modes inherit="true">

@@ -14,7 +14,6 @@ cannot see any events (none are open to them) they should fail in the request.
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>vis_config</group>
         </groups>
         <modes inherit="true">

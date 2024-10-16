@@ -14,7 +14,6 @@ they contain an EOA which does not belong to them (so both Guessed and Attempts)
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>vis_config</group>
         </groups>
         <modes inherit="true">
