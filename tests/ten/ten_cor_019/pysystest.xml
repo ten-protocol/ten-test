@@ -2,9 +2,10 @@
 <pysystest type="auto">
 
     <description>
-        <title>Account going through separate connection can't get receipt or logs (non-lifecycle)</title>
+        <title>Account going through separate connection can't get receipt or logs </title>
         <purpose><![CDATA[
-Similar to the previous test, but this time a non life-cycle event is used.
+If an event is not visibility to everyone, then an account sharing a token should be able to still get it, but an
+account using a different token should not.
 ]]>
         </purpose>
     </description>
