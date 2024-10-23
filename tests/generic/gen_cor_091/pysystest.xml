@@ -14,7 +14,6 @@ be six in total, and the poller keeps trying 5 times to get the events from bloc
         <groups inherit="true">
             <group>events</group>
             <group>web3js</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
