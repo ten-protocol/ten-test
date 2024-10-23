@@ -5,13 +5,13 @@
         <title>Hardhat: deploy an upgradable contract through a beacon proxy</title>
         <purpose><![CDATA[
 In the Beacon pattern, a single Beacon Proxy holds details of the implementation contract and can then be referenced
-by multiple proxies that all share the same implementation (done in some cases where we cant different users to use
+by multiple proxies that all share the same implementation (done in some cases where we want different users to use
 an independent proxy, but for it to be all managed by one implementation contract). The Beacon Proxy signals to the
 proxies where the implementation lives (hence the name Beacon). With Beacon Proxies the interface for their deployment
 and upgrade differs from Transparent and UUPS proxies.
 
 In the test a single hardhat script deploys version 1 of a contract, then deploys the beacon proxy and the proxy. At
-this point in time no uprade is performed, and the test only ensure the initial version of the contract can be deployed
+this point in time no upgrade is performed, and the test only ensure the initial version of the contract can be deployed
 and that it is possible to interact with it. 
 ]]>
         </purpose>
@@ -20,7 +20,6 @@ and that it is possible to interact with it.
     <classification>
         <groups inherit="true">
             <group>hardhat</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

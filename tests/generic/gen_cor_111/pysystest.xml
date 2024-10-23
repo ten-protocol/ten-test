@@ -12,7 +12,7 @@ The gas used with an access list should be less than the gas used without it.
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
+            <group>access_list</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

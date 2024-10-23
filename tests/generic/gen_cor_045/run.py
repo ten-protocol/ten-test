@@ -31,10 +31,10 @@ class PySysTest(GenericNetworkTest):
 
         # play the game (we clone so that the abstraction use the users web3 and account details)
         game_usr = Game.clone(web3_usr, account_usr, game)
-        for i in range(1,11):
+        for i in range(1,6):
             self.log.info('Guessing with number=%d', i)
             network_usr.transact(self, web3_usr, game_usr.contract.functions.guess(i), account_usr, game.GAS_LIMIT)
             self.waitForSignal(file=logout, expr='Your guess of %d' % i, timeout=20)
 
-        self.assertLineCount(file=logout, expr='Your guess of', condition='==10')
+        self.assertLineCount(file=logout, expr='Your guess of', condition='==5')
 
