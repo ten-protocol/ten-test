@@ -4,17 +4,15 @@
     <description>
         <title>Hardhat: deploy an upgradable contract through a UUPS proxy</title>
         <purpose><![CDATA[
-UUPS proxies (universal upgradable proxy standard) were added to supercede transparent proxies as they are more
+UUPS proxies (universal upgradable proxy standard) were added to supersede transparent proxies as they are more
 lightweight (cheaper to deploy) and versatile. In UUPS proxies the upgrade is handled by the implementation, though they
-use the same interface for upgrading. Upgrades are triggered by via the logic contract, which therefore must extend the
+use the same interface for upgrading. Upgrades are triggered via the logic contract, which therefore must extend the
 UUPSUpgradeable interface, and uses a unique storage slot in the proxy contract to store the address of the logic
 contract. Upgradability can be removed in this model which makes them more versatile.
 
 In the test a single hardhat script is used to deploy and then upgrade a simple contract that returns a hardcoded
-value for it's version. The test simply performs the deployment and upgrade, and then queries for the version to ensure
-the upgrade was successfull. The interface of the contract is not changed. 
-
-Skipped due to https://github.com/ten-protocol/ten-internal/issues/3878
+value for its version. The test simply performs the deployment and upgrade, and then queries for the version to ensure
+the upgrade was successful. The interface of the contract is not changed.
 ]]>
         </purpose>
     </description>
@@ -22,7 +20,6 @@ Skipped due to https://github.com/ten-protocol/ten-internal/issues/3878
     <classification>
         <groups inherit="true">
             <group>hardhat</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
