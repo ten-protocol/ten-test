@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config: subscribe, ContractCfg.PRIVATE, Field.TOPIC1 on one event</title>
+        <title>Visibility Config - subscribe, ContractCfg.PRIVATE, Field.TOPIC1 on one event</title>
         <purpose><![CDATA[
 Uses a simple guessing game, with ContractCfg.PRIVATE and Field.TOPIC1 set for the Guessed event, such that if topic1
 is an address, only that address can see it. Two gateway connections are used, the first by a dev user that deploys the

@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Hardhat: deploy a single contract using the ten plugin</title>
+        <title>Hardhat - deploy a single contract using the ten plugin</title>
         <purpose><![CDATA[
 ]]>
         </purpose>
