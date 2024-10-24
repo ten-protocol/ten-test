@@ -28,15 +28,15 @@ class PySysTest(GenericNetworkTest):
         emitter_2 = EventEmitter.clone(web3_2, account_2, emitter_1)
         emitter_2_caller = EventEmitterCaller.clone(web3_2, account_2, emitter_1_caller)
 
-        # transact and check that both event logs are seen in the tx receipt and have the expected values
-        # events emitted will be
-        #   SimpleEvent(id, message, msg.sender)
-        #   CallerSimpleEvent(id, prepend+message, msg.sender)
+        # transact and check event logs in the tx receipt
+        #   SimpleEvent(id, message, msg.sender) - emitted where msg.sender is the CallerSimpleEvent address
+        #   CallerSimpleEvent(id, prepend+message, msg.sender) - where msg.sender is account 1
 
         # check for account 1
         id = 1
         prepend = 'c-'
         message = generate_random_string()
+        self.log.info('Submitting tx and get tx receipt for account 1')
         tx_receipt_1 = network_1.transact(self, web3_1,
                                           emitter_1_caller.contract.functions.callEmitSimpleEvent(id, prepend, message),
                                           account_1, emitter_1_caller.GAS_LIMIT)
@@ -57,10 +57,14 @@ class PySysTest(GenericNetworkTest):
         self.assertTrue(caller_simple_event_1['args']['message'] == prepend+message, assertMessage='CallerSimpleEvent message incorrect')
 
         # check for account 2
+        self.log.info('Attempting to get tx receipt for account 2')
         tx_receipt_2 = web3_2.eth.get_transaction_receipt(tx_receipt_1.transactionHash)
-        simple_event = emitter_2.contract.events.SimpleEvent().process_receipt(tx_receipt_2, errors=DISCARD)[0]
+        simple_event_2 = emitter_2.contract.events.SimpleEvent().process_receipt(tx_receipt_2, errors=DISCARD)[0]
         self.log.info('  id, message:                %d, %s' % (id, message))
-        self.log.info('  simpleEvent.message:        %s' % simple_event['args']['message'])
-        self.log.info('  simpleEvent.sender:         %s' % simple_event['args']['sender'])
+        self.log.info('  account1.address            %s' % account_1.address)
+        self.log.info('  account2.address            %s' % account_2.address)
+        self.log.info('  simpleEvent.message:        %s' % simple_event_2['args']['message'])
+        self.log.info('  simpleEvent.sender:         %s' % simple_event_2['args']['sender'])
 
-        caller_simple_event = emitter_2_caller.contract.events.CallerSimpleEvent().process_receipt(tx_receipt_2, errors=DISCARD)[0]
+        self.assertTrue(len(tx_receipt_2.logs) == 1, assertMessage='There should be one event logs')
+        self.assertTrue(simple_event_2['args']['message'] == message, assertMessage='SimpleEvent message incorrect')

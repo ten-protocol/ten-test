@@ -2,22 +2,26 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config - one contract calls another and both emit an event (two addresses)</title>
+        <title>Visibility Config - contract calls another, both emit an event with address, both contain same EOA</title>
         <purpose><![CDATA[
 Checks that transacting against a contract, whose function calls into another contract, and both functions emit an
-event, works correctly. Specifically, that the transaction receipt logs shows both events, and that they can be extracted
-correctly from the receipt. In this case the caller supplies two addresses.
+event, works correctly. The contract call goes EventEmitterCaller.callEmitAddressEvent -> EventEmitter.emitAddressEvent.
+In this case msg.sender in EventEmitterCaller.callEmitAddressEvent is the account that performs the transaction, as is
+the address passed to the EventEmitter.emitAddressEvent. The events are defined as;
 
-Note this is not enabled for TEN currently, as the behaviour is under debate on whether visibility rules should be
-applied to event logs in transaction receipts. At the moment, only the originator of the transaction can actually
-receive the transaction receipt.
+  AddressEvent(uint indexed id, address indexed _address);
+  CallerAddressEvent(uint indexed id, address indexed _address);
+
+Note that we expect AddressEvent to be emitted first, and then CallerAddressEvent to be emitted next. The AddressEvent
+address is an EOA address. Hence the account calling EventEmitterCaller.callEmitAddressEvent should see both events,
+whereas another account should not see any events, or indeed should not be able to get the transaction receipt.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>events</group>
+            <group>vis_config</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

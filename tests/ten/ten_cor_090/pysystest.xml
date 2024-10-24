@@ -2,26 +2,26 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config - one contract calls another and both emit an event (msg.sender address)</title>
+        <title>Visibility Config - contract calls another, both emit an event with address, only one an EOA</title>
         <purpose><![CDATA[
 Checks that transacting against a contract, whose function calls into another contract, and both functions emit an
-event, works correctly. Specifically, that the transaction receipt logs shows both events, and that they can be
-extracted correctly from the receipt.
+event, works correctly. The contract call goes EventEmitterCaller.callEmitSimpleEvent -> EventEmitter.emitSimpleEvent.
+In this case msg.sender in EventEmitterCaller is the account that performs the transaction, whereas msg.sending in
+EventEmitter is the address of the EventEmitterCaller contract. The events are defined as;
 
-The contract call goes EventEmitterCaller.callEmitSimpleEvent -> EventEmitter.emitSimpleEvent. In this case msg.sender
-in EventEmitterCaller is the account that performs the transaction, whereas msg.sending in EventEmitter is the
-address of the EventEmitterCaller contract. The events are defined as;
-
-  CallerSimpleEvent(uint indexed id, string message, address indexed sender)
   SimpleEvent(uint indexed id, string message, address indexed sender);
+  CallerSimpleEvent(uint indexed id, string message, address indexed sender)
 
+Note that we expect SimpleEvent to be emitted first, and then CallerSimpleEvent to be emitted next. The SimpleEvent
+address is an index address, but it is not an EOA but rather a contract address. Hence the account calling
+EventEmitterCaller.callEmitSimpleEvent should see both events, whereas another account would only see the SimpleEvent.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>events</group>
+            <group>vis_config</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
