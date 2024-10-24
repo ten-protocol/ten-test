@@ -4,13 +4,14 @@
     <description>
         <title>Tx receipt - check the contents of a transaction receipt against ten</title>
         <purpose><![CDATA[
+The test just gets the transaction receipt from a network transaction and confirms that various expected entries
+are returned. The expected entries are hard coded in the test as a list literal.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

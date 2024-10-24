@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config: subscribe, ContractCfg.PRIVATE, Field.EVERYONE on one event</title>
+        <title>Visibility Config - subscribe, ContractCfg.PRIVATE, Field.EVERYONE on one event</title>
         <purpose><![CDATA[
 Uses a simple guessing game, with ContractCfg.PRIVATE and Field.EVERYONE set for the Guessed event, such that anyone is
 able to see it. Two gateway connections are used, the first by a dev user that deploys the contract and the second by a
