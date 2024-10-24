@@ -24,9 +24,7 @@ class PySysTest(GenericNetworkTest):
         emitter_1.deploy(network_1, account_1)
         emitter_1_caller = EventEmitterCaller(self, web3_1, emitter_1.address)
         emitter_1_caller.deploy(network_1, account_1)
-
         emitter_2 = EventEmitter.clone(web3_2, account_2, emitter_1)
-        emitter_2_caller = EventEmitterCaller.clone(web3_2, account_2, emitter_1_caller)
 
         # transact and check event logs in the tx receipt
         #   SimpleEvent(id, message, msg.sender) - emitted where msg.sender is the CallerSimpleEvent address
@@ -40,7 +38,6 @@ class PySysTest(GenericNetworkTest):
         tx_receipt_1 = network_1.transact(self, web3_1,
                                           emitter_1_caller.contract.functions.callEmitSimpleEvent(id, prepend, message),
                                           account_1, emitter_1_caller.GAS_LIMIT)
-
         simple_event_1 = emitter_1.contract.events.SimpleEvent().process_receipt(tx_receipt_1, errors=DISCARD)[0]
         caller_simple_event_1 = emitter_1_caller.contract.events.CallerSimpleEvent().process_receipt(tx_receipt_1, errors=DISCARD)[0]
 

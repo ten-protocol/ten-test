@@ -2,19 +2,20 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config - contract calls another, both emit an event with address, both contain same EOA</title>
+        <title>Visibility Config - contract calls another, both emit an event with address, both contain different EOA</title>
         <purpose><![CDATA[
 Checks that transacting against a contract, whose function calls into another contract, and both functions emit an
 event, works correctly. The contract call goes EventEmitterCaller.callEmitAddressEvent -> EventEmitter.emitAddressEvent.
-In this case msg.sender in EventEmitterCaller.callEmitAddressEvent is the account that performs the transaction, as is
-the address passed to the EventEmitter.emitAddressEvent. The events are defined as;
+In this case msg.sender in EventEmitterCaller.callEmitAddressEvent is the account that performs the transaction, and
+the address passed to the EventEmitter.emitAddressEvent is that of a different account. The events are defined as;
 
   AddressEvent(uint indexed id, address indexed _address);
   CallerAddressEvent(uint indexed id, address indexed _address);
 
 Note that we expect AddressEvent to be emitted first, and then CallerAddressEvent to be emitted next. The AddressEvent
-address is an EOA address. Hence the account calling EventEmitterCaller.callEmitAddressEvent should see both events,
-whereas another account should not see any events, or indeed should not be able to get the transaction receipt.
+address is an EOA address. The account calling EventEmitterCaller.callEmitAddressEvent should see the CallerAddressEvent
+event but not the AddressEvent, whereas the other account should not see the CallerAddressEvent event but should see the
+AddressEvent.
 ]]>
         </purpose>
     </description>
