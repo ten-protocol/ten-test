@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Visibility Config - contract calls another, ContractCfg.TRANSPARENT on called, check events</title>
+        <purpose><![CDATA[
+Checks that transacting against a contract, whose function calls into another contract, and both functions emit an
+event, works. The contract call goes EventEmitterCaller.callEmitAddressEvent ->TransparentEventEmitter.emitAddressEvent.
+In this case msg.sender in EventEmitterCaller.callEmitAddressEvent is the account that performs the transaction, and the
+address passed to the TransparentEventEmitter.emitAddressEvent is that of a different account. The events are defined as;
+
+  AddressEvent(uint indexed id, address indexed _address);
+  CallerAddressEvent(uint indexed id, address indexed _address);
+
+Note that we expect AddressEvent to be emitted first, and then CallerAddressEvent to be emitted next. The AddressEvent
+address is an EOA address. Although the called into contract emits an event with an address different to the msg.sender
+of the calling contract, it is configured to be transparent and therefore we expect to see both events in the tx receipt.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>vis_config</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+            <mode>ten.sim</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
