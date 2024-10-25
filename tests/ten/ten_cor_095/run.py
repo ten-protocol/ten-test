@@ -14,6 +14,11 @@ class PySysTest(TenNetworkTest):
         storage.deploy(network, account)
         self.log.info('Storage contract address is %s', storage.address)
 
+        # transact against the contract
+        tx_receipt_1 = network.transact(self, web3, storage.contract.functions.store(0), account, storage.GAS_LIMIT)
+        self.wait(float(self.block_time))
+        tx_receipt_2 = network.transact(self, web3, storage.contract.functions.store(1), account, storage.GAS_LIMIT)
+
         response = self.get_debug_event_log_relevancy(
             url=network.connection_url(),
             address=storage.address,
