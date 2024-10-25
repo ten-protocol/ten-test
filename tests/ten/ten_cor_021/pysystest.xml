@@ -6,7 +6,7 @@
         <purpose><![CDATA[
 
 Skipped due to https://github.com/ten-protocol/ten-internal/issues/3309 (Validate token withdrawals over the bridge
-work on dev/uat/sepolia
+work on dev/uat/sepolia)
 ]]>
         </purpose>
     </description>
