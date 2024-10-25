@@ -7,6 +7,14 @@ class EventEmitter(DefaultContract):
     CONTRACT = 'EventEmitter'
 
 
+class TransparentEventEmitter(DefaultContract):
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'emitter', 'TransparentEventEmitter.sol')
+    CONTRACT = 'TransparentEventEmitter'
+
+
 class EventEmitterCaller(DefaultContract):
     SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'emitter', 'EventEmitterCaller.sol')
     CONTRACT = 'EventEmitterCaller'
+
+
+
