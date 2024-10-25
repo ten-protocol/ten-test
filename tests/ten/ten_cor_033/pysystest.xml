@@ -12,7 +12,6 @@ Tests the gateway getmessage call to return the format to use when authenticatin
     <classification>
         <groups inherit="true">
             <group>gateway</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
