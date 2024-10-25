@@ -2,10 +2,12 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC - rates for handling balance requests, increasing clients</title>
+        <title>Latency - storage, tx receipt time</title>
         <purpose><![CDATA[
-Spawns a set number of clients querying for their balance, and measures the latency in the response, the client
-throughput and the bulk throughput across all clients. 
+The test uses N web3.py clients to submit a transaction to set a value in the Storage contract, and time how long it
+takes to get the transaction receipt. Once done it repeats. Multiple clients are run concurrently, and the overall
+latency profile is produced by binning the measured latencies in the transactions into increments and plotting as a
+distribution.
 ]]>
         </purpose>
     </description>
@@ -13,6 +15,7 @@ throughput and the bulk throughput across all clients.
     <classification>
         <groups inherit="true">
             <group>performance</group>
+            <group>health</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

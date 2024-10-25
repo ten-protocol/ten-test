@@ -2,17 +2,19 @@
 <pysystest type="auto">
 
     <description>
-        <title>Debug APIs - request debug_logVisibility, single lifecycle event</title>
+        <title>Gateway - create large number of connections (shared and unique)</title>
         <purpose><![CDATA[
-Makes a call to debug log visibility for a single lifecycle event defined by the storage contract.
+The test opens around 100 connections through a single gateway. Approx half of those connections go through a single
+user id, whilst the other half create their own unique user id with the single registered user. Once done we check some
+random accounts can trade through the wallet extension successfully.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
-            <group>debug_apis</group>
+            <group>gateway</group>
+            <group>robustness</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

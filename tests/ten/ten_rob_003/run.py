@@ -1,58 +1,108 @@
-import secrets, random, time
+import os, random, string, secrets, re
+from pysys.constants import FAILED, PASSED, FOREGROUND
 from ten.test.basetest import TenNetworkTest
-from ten.test.contracts.storage import Storage
-from ten.test.helpers.wallet_extension import WalletExtension
-from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
+from ten.test.contracts.emitter import EventEmitter
 
 
 class PySysTest(TenNetworkTest):
-    CLIENTS = 100
-    TRANSACTIONS = 10
+    CLIENTS = 10         # number of transactors and subscribers
+    TRANSACTIONS = 250   # number of txs the transactors will perform
 
     def execute(self):
-        # get the main connection through the primary gateway
-        network_connection_primary = self.get_network_connection()
-        web3_1, account_1 = network_connection_primary.connect_account1(self)
+        # connect to network on the primary gateway and deploy contract
+        network = self.get_network_connection()
+        web3, account = network.connect_account1(self)
 
-        # deploy a contract that emits a lifecycle event on calling a specific method as a transaction
-        storage_1 = Storage(self, web3_1, 100)
-        storage_1.deploy(network_connection_primary, account_1)
+        emitter = EventEmitter(self, web3, 100)
+        emitter.deploy(network, account)
 
-        # make a subscription for all events to the contract
-        subscriber_1 = AllEventsLogSubscriber(self, network_connection_primary, storage_1.address, storage_1.abi_path,
-                                              stdout='subscriber.out',
-                                              stderr='subscriber.err')
-        subscriber_1.run()
+        # estimate how much gas each transactor will need
+        rstr = self.rand_str()
+        chain_id = network.chain_id()
+        gas_price = web3.eth.gas_price
+        params = {'from': account.address, 'chainId': chain_id, 'gasPrice': gas_price}
+        limits = [emitter.contract.functions.emitSimpleEvent(1, rstr).estimate_gas(params)]
+        limits.append(emitter.contract.functions.emitArrayEvent(1, [1,2], [rstr, rstr]).estimate_gas(params))
+        limits.append(emitter.contract.functions.emitStructEvent(1, rstr).estimate_gas(params))
+        limits.append(emitter.contract.functions.emitMappingEvent(1, [account.address], [200]).estimate_gas(params))
+        gas_limit = max(limits)
+        funds_needed = 1.1 * self.TRANSACTIONS * (gas_price * gas_limit)
 
-        # register, or join and register all the clients
-        connections = []
-        primary_userid = 1
-        additional_userid = 0
-        for i in range(0, self.CLIENTS):
-            pk = secrets.token_hex(32)
-            if random.randint(0, 8) < 4:
-                additional_userid = additional_userid + 1
-                self.log.info('Registering client %d with new user id (current total %d)', i, additional_userid)
-                network_connection = self.get_network_connection()
-            else:
-                primary_userid = primary_userid + 1
-                self.log.info('Registering client %d with primary user id (current total %d)', i, primary_userid)
-                network_connection = network_connection_primary
-            web3, account = network_connection.connect(self, private_key=pk, check_funds=False)
-            storage = Storage.clone(web3, account, storage_1)
-            connections.append((web3, account, network_connection, storage))
-            time.sleep(0.05)
+        # setup the transactors and run the subscribers
+        clients = []
+        for id in range(0, self.CLIENTS):
+            pk, account, network = self.setup_transactor(funds_needed)
+            clients.append((id, pk, account, network))
+            self.run_subscriber(network, emitter, account, id)
 
-        self.log.info('Number registrations on primary user id = %d', primary_userid)
-        self.log.info('Number registrations on unique user id = %d', additional_userid)
+        # start the pollers
+        self.run_poller_simple(network, emitter, id_filter=1)
+        self.run_poller_all(network, emitter)
 
-        # perform some randon client transactions
-        count = 0
-        for i in range(0, self.TRANSACTIONS):
-            count = count + 1
-            web3, account, network_connection, storage = random.choice(connections)
-            self.distribute_native(account, network_connection.ETH_ALLOC_EPHEMERAL)
-            network_connection.transact(self, web3, storage.contract.functions.store(count), account, storage.GAS_LIMIT)
+        # run the transactors serially in the foreground
+        for id, pk, account, network in clients:
+            self.run_transactor(id, emitter, pk, network, gas_limit)
+            self.ratio_failures(file=os.path.join(self.output, 'transactor%d.out' % id))
 
-        self.waitForSignal(file='subscriber.out', expr='Received event: Stored', condition='==%d' % self.TRANSACTIONS, timeout=120)
-        self.assertLineCount(file='subscriber.out', expr='Received event: Stored', condition='==%d' % self.TRANSACTIONS)
+        # assuming no other errors raised then we have passed
+        self.addOutcome(PASSED)
+
+    def setup_transactor(self, funds_needed):
+        pk = secrets.token_hex(32)
+        network = self.get_network_connection()
+        web3, account = network.connect(self, private_key=pk, check_funds=False)
+        self.distribute_native(account, web3.from_wei(funds_needed, 'ether'))
+        return pk, account, network
+
+    def run_transactor(self, id, emitter, pk, network, gas_limit):
+        stdout = os.path.join(self.output, 'transactor%s.out' % id)
+        stderr = os.path.join(self.output, 'transactor%s.err' % id)
+        script = os.path.join(self.input, 'transactor.py')
+        args = []
+        args.extend(['--network_http', network.connection_url()])
+        args.extend(['--chainId', '%s' % network.chain_id()])
+        args.extend(['--pk', pk])
+        args.extend(['--contract_address', '%s' % emitter.address])
+        args.extend(['--contract_abi', '%s' % emitter.abi_path])
+        args.extend(['--transactions', '%d' % self.TRANSACTIONS])
+        args.extend(['--id', '%d' % id])
+        args.extend(['--gas_limit', '%d' % gas_limit])
+        self.run_python(script, stdout, stderr, args, state=FOREGROUND)
+
+    def run_subscriber(self, network, emitter, account, id_filter):
+        stdout = os.path.join(self.output, 'subscriber%d.out' % id_filter)
+        stderr = os.path.join(self.output, 'subscriber%d.err' % id_filter)
+        script = os.path.join(self.input, 'subscriber.js')
+        args = []
+        args.extend(['--network_ws', network.connection_url(web_socket=True)])
+        args.extend(['--contract_address', '%s' % emitter.address])
+        args.extend(['--contract_abi', '%s' % emitter.abi_path])
+        args.extend(['--id_filter', str(id_filter)])
+        args.extend(['--address_filter', account.address])
+        self.run_javascript(script, stdout, stderr, args)
+        self.waitForGrep(file=stdout, expr='Listening for filtered events...', timeout=10)
+
+    def run_poller_simple(self, network, emitter, id_filter):
+        stdout = os.path.join(self.output, 'poller_simple.out')
+        stderr = os.path.join(self.output, 'poller_simple.err')
+        script = os.path.join(self.input, 'poller_simple.js')
+        args = []
+        args.extend(['--network_ws', network.connection_url(web_socket=True)])
+        args.extend(['--contract_address', '%s' % emitter.address])
+        args.extend(['--contract_abi', '%s' % emitter.abi_path])
+        args.extend(['--id_filter', '%d' % id_filter])
+        self.run_javascript(script, stdout, stderr, args)
+
+    def run_poller_all(self, network, emitter):
+        stdout = os.path.join(self.output, 'poller_all.out')
+        stderr = os.path.join(self.output, 'poller_all.err')
+        script = os.path.join(self.input, 'poller_all.js')
+        args = []
+        args.extend(['--network_ws', network.connection_url(web_socket=True)])
+        args.extend(['--contract_address', '%s' % emitter.address])
+        args.extend(['--contract_abi', '%s' % emitter.abi_path])
+        args.extend(['--id_range', '%d' % self.CLIENTS])
+        self.run_javascript(script, stdout, stderr, args)
+
+    def rand_str(self):
+        return ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))

@@ -2,9 +2,9 @@
 <pysystest type="auto">
 
     <description>
-        <title>Debug APIs - request debug_logVisibility, single non-lifecycle event</title>
+        <title>Visibility Config - request debug_logVisibility, single lifecycle event</title>
         <purpose><![CDATA[
-Makes a call to debug log visibility for a single non-lifecycle event defined by the relevancy contract.
+Makes a call to debug log visibility for a single lifecycle event defined by the storage contract.
 ]]>
         </purpose>
     </description>

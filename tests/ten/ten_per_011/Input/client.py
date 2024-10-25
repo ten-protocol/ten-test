@@ -4,23 +4,18 @@ from web3 import Web3
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', stream=sys.stdout, level=logging.INFO)
 
 
-def run(name, web3, contract, num_iterations, start):
-    address = Web3().eth.account.from_key(args.pk).address
-
+def run(name, contract, num_iterations, start):
     latency = []
     num_requests = 0
     throughput = []
     stats = [0,0]
-    params = {'from': address, 'chainId': web3.eth.chain_id, 'gasPrice': web3.eth.gas_price}
     for i in range(0, num_iterations):
         try:
             start_time = time.perf_counter_ns()
-            contract.functions.store(1).estimate_gas(params)
+            value = contract.functions.retrieve().call()
             end_time = time.perf_counter_ns()
             latency.append((end_time - start_time)/1e6)
             num_requests = num_requests + 1
-            if num_requests % 10 == 0:
-                logging.info('Sent = %d' % num_requests)
             throughput.append(((end_time - start)/1e9, num_requests))
             stats[0] += 1
         except Exception as e:
@@ -57,6 +52,6 @@ if __name__ == "__main__":
 
     logging.info('Starting client %s', args.client_name)
     while not os.path.exists(args.signal_file): time.sleep(0.1)
-    run(args.client_name, web3, contract, int(args.num_iterations), int(args.start))
+    run(args.client_name, contract, int(args.num_iterations), int(args.start))
 
 

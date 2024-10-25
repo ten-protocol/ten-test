@@ -1,4 +1,4 @@
-import os, time, secrets, math, re
+import os, time, secrets, math, shutil
 import numpy as np
 from web3 import Web3
 from datetime import datetime
@@ -41,12 +41,12 @@ class PySysTest(TenNetworkTest):
 
                 # run the clients to call into the contract get retrieve the value
                 for i in range(0, clients):
-                    self.run_client('client_%s' % i, network, self.ITERATIONS, storage, funds_needed, start_ns, out_dir, signal)
+                    self.run_client('client_%s' % i, network, self.ITERATIONS, storage, start_ns, out_dir, signal)
 
                 with open(signal, 'w') as sig: sig.write('go')
                 for i in range(0, clients):
                     self.waitForGrep(file=os.path.join(out_dir, 'client_%s.out' % i),
-                                     expr='Client client_%s completed' % i, timeout=600)
+                                     expr='Client client_%s completed' % i, timeout=300)
                     self.ratio_failures(file=os.path.join(out_dir, 'client_%s.out' % i))
 
                 # stop transacting to set the storage value
@@ -99,10 +99,10 @@ class PySysTest(TenNetworkTest):
         self.waitForSignal(file=stdout, expr='Starting storage client ...')
         return hprocess
 
-    def run_client(self, name, network, num_iterations, contract, funds_needed, start, out_dir, signal_file):
+    def run_client(self, name, network, num_iterations, contract, start, out_dir, signal_file):
         pk = secrets.token_hex(32)
         account = Web3().eth.account.from_key(pk)
-        self.distribute_native(account, Web3().from_wei(funds_needed / num_iterations, 'ether'))
+        self.distribute_native(account, Web3().from_wei(1, 'ether'))
         network.connect(self, private_key=pk, check_funds=False)
 
         stdout = os.path.join(out_dir, '%s.out' % name)

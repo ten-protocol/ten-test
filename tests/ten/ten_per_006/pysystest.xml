@@ -2,12 +2,8 @@
 <pysystest type="auto">
 
     <description>
-        <title>Latency - storage, tx receipt time</title>
+        <title>TPS - rates for balance transfer, increasing clients</title>
         <purpose><![CDATA[
-The test uses N web3.py clients to submit a transaction to set a value in the Storage contract, and time how long it
-takes to get the transaction receipt. Once done it repeats. Multiple clients are run concurrently, and the overall
-latency profile is produced by binning the measured latencies in the transactions into increments and plotting as a
-distribution.
 ]]>
         </purpose>
     </description>
@@ -15,7 +11,6 @@ distribution.
     <classification>
         <groups inherit="true">
             <group>performance</group>
-            <group>health</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
@@ -23,6 +18,8 @@ distribution.
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
             <mode>ten.sim</mode>
+            <mode>ganache</mode>
+            <mode>sepolia</mode>
         </modes>
     </classification>
 

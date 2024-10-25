@@ -2,19 +2,17 @@
 <pysystest type="auto">
 
     <description>
-        <title>Gateway - create large number of connections (shared and unique)</title>
+        <title>Stress - high event rate publishing with multiple filters</title>
         <purpose><![CDATA[
-The test opens around 100 connections through a single gateway. Approx half of those connections go through a single
-user id, whilst the other half create their own unique user id with the single registered user. Once done we check some
-random accounts can trade through the wallet extension successfully.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>gateway</group>
+            <group>events</group>
             <group>robustness</group>
+            <group>remote_load</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
