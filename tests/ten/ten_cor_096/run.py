@@ -1,6 +1,5 @@
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.relevancy import Relevancy
-from ten.test.helpers.log_subscriber import FilterLogSubscriber
 
 
 class PySysTest(TenNetworkTest):

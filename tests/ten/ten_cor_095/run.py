@@ -6,7 +6,7 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         # connect to the network via the primary gateway
-        network = self.get_network_connection(name='local')
+        network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
         # deploy a contract and get the debug event log relevancy on the Storage event
