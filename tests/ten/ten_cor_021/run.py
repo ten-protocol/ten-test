@@ -56,7 +56,6 @@ class PySysTest(TenNetworkTest):
         block, decoded = mh.dump_tree(accnt1.l2.web3, tx_receipt, 'cross_train_tree.log')
         msg, msg_hash = mh.process_log_msg(log_msg)
 
-        self.log.info(log_msg)
         self.log.info('  log_msg_published:        %s', msg)
         self.log.info('  log_msg_published_hash:   %s', msg_hash)
         self.log.info('  cross_chain:              %s', decoded)

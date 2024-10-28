@@ -2,10 +2,10 @@
 <pysystest type="auto">
 
     <description>
-        <title>Bridge - withdraw native funds multiple times</title>
+        <title>Bridge - ensure multiple send native transactions are included in the same cross chain tree</title>
         <purpose><![CDATA[
 At the moment the test just ensures multiple send native transactions are included in the same cross chain tree. We can
-then extract the transfer event of one of the send natives, get the msg hash, and confirm that is is in the decoded
+then extract the transfer event of one of the send natives, get the msg hash, and confirm that it is in the decoded
 tree.
 ]]>
         </purpose>

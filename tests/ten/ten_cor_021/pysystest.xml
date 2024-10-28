@@ -4,16 +4,12 @@
     <description>
         <title>Bridge - create and whitelist token, send and withdraw tokens across the bridge</title>
         <purpose><![CDATA[
-
-Skipped due to https://github.com/ten-protocol/ten-internal/issues/3309 (Validate token withdrawals over the bridge
-work on dev/uat/sepolia)
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>bridge</group>
         </groups>
         <modes inherit="true">

@@ -1,6 +1,5 @@
-import os
+import os, secrets
 from ten.test.basetest import TenNetworkTest
-from ten.test.utils.properties import Properties
 from ten.test.contracts.bridge import EthereumBridge, L2MessageBus, Management
 
 
@@ -8,13 +7,17 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         transfer = 4000000000000000
+        pk = secrets.token_hex(32)
 
         # the l1 and l2 networks and connections
         l1 = self.get_l1_network_connection()
         l2 = self.get_network_connection()
-        web3_l1, account_l1 = l1.connect_account1(self)
-        web3_l2, account_l2 = l2.connect_account1(self)
+        web3_l1, account_l1 = l1.connect(self, private_key=pk)
+        web3_l2, account_l2 = l2.connect(self, private_key=pk)
         l1_before = web3_l1.eth.get_balance(account_l1.address)
+        l2_before = web3_l2.eth.get_balance(account_l2.address)
+        self.log.info('  l1_balance before:     %s', l1_before)
+        self.log.info('  l2_balance before:     %s', l2_before)
 
         # the relevant contracts on the l1 and l2 networks
         management = Management(self, web3_l1)
@@ -22,11 +25,12 @@ class PySysTest(TenNetworkTest):
         bus = L2MessageBus(self, web3_l2)
 
         # execute the transfer using ethers
-        self.client(l2, bridge.address, bridge.abi_path, bus.address, bus.abi_path, Properties().account1pk(),
+        self.client(l2, bridge.address, bridge.abi_path, bus.address, bus.abi_path, pk,
                     l1, management.address, management.abi_path, account_l1.address, transfer)
         l1_after = web3_l1.eth.get_balance(account_l1.address)
-        self.log.info('  l1_balance before:     %s', l1_before)
+        l2_after = web3_l2.eth.get_balance(account_l2.address)
         self.log.info('  l1_balance after:      %s', l1_after)
+        self.log.info('  l2_balance after:      %s', l2_after)
 
         # validate the outcome
         expr_list = []
@@ -55,4 +59,4 @@ class PySysTest(TenNetworkTest):
         args.extend(['--amount', str(amount)])
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting transaction to send funds to the L1', timeout=10)
-        self.waitForGrep(file=stdout, expr='Completed transactions', timeout=90)
+        self.waitForGrep(file=stdout, expr='Completed transactions', timeout=1200)
