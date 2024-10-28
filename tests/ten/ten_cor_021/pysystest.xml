@@ -4,16 +4,15 @@
     <description>
         <title>Bridge - create and whitelist token, send and withdraw tokens across the bridge</title>
         <purpose><![CDATA[
-
-Skipped due to https://github.com/ten-protocol/ten-internal/issues/3309 (Validate token withdrawals over the bridge
-work on dev/uat/sepolia)
+Deploys ERC20 contracts on the L1, whitelists them and sends tokens across the bridge from the L1 to the L2, and then
+sends some tokens back from the L2 to the L1. Note that sending tokens from the L2 to the L1 requires the merkle
+tree proof, as per withdrawing native funds.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>bridge</group>
         </groups>
         <modes inherit="true">

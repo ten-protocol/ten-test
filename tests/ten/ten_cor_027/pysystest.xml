@@ -6,7 +6,7 @@
         <purpose><![CDATA[
 Performs a transfer from the L1 to the L2, and from the L2 to the L1. In each case a subscription is made for
 the value transfer event emitted by the bridge, using the sender address as the bridge, and the receiver address
-as the account performing the transfer. Validates that the event is see and with the correct contents.
+as the account performing the transfer. Validates that the event is seen and with the correct contents.
 ]]>
         </purpose>
     </description>
