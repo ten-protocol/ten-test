@@ -6,7 +6,7 @@ import "./ContractTransparencyConfig.sol";
 
 contract FieldTopic2GuessGame is GuessGame, ContractTransparencyConfig  {
 
-    // set the Guessed event log config to everyone
+    // set the Guessed event log config to topic 2
     function visibilityRules() external pure override returns (VisibilityConfig memory) {
         bytes32 eventSig = hex"bc11465ed8ccb85c11046e78bf3d70287e3c77bf1c9542a3e250511bfb3c1b04";
         Field[]  memory relevantTo = new Field[](1);
