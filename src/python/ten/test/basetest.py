@@ -389,11 +389,16 @@ class TenNetworkTest(GenericNetworkTest):
         """Get batch by height. @todo """
         pass
 
-    def get_debug_event_log_relevancy(self, url, address, signature):
+    def get_debug_event_log_relevancy(self, url, address, signature, fromBlock=0, toBlock='latest'):
         """Get the debug_LogVisibility. """
         data = {"jsonrpc": "2.0",
                 "method": "debug_eventLogRelevancy",
-                "params": [{"address": address, "topics": [signature]}],
+                "params": [{
+                    "fromBlock":fromBlock,
+                    "toBlock":toBlock,
+                    "address": address,
+                    "topics": [signature]
+                }],
                 "id": self.MSG_ID }
         response = self.post(data, server=url)
         if 'result' in response.json(): return response.json()['result']

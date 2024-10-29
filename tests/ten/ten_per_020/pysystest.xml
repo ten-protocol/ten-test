@@ -2,17 +2,20 @@
 <pysystest type="auto">
 
     <description>
-        <title>Debug APIs - request debug_logVisibility, single non-lifecycle event</title>
+        <title>Latency - storage, tx receipt time</title>
         <purpose><![CDATA[
-Makes a call to debug log visibility for a single non-lifecycle event defined by the relevancy contract.
+The test uses N web3.py clients to submit a transaction to set a value in the Storage contract, and time how long it
+takes to get the transaction receipt. Once done it repeats. Multiple clients are run concurrently, and the overall
+latency profile is produced by binning the measured latencies in the transactions into increments and plotting as a
+distribution.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
-            <group>debug_apis</group>
+            <group>performance</group>
+            <group>health</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

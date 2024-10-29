@@ -2,17 +2,19 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC - rates for handling balance requests, increasing clients</title>
+        <title>Visibility Config - request debug_logVisibility, single non-lifecycle event, default contract</title>
         <purpose><![CDATA[
-Spawns a set number of clients querying for their balance, and measures the latency in the response, the client
-throughput and the bulk throughput across all clients. 
+Makes a call to debug log visibility for a single non-lifecycle event defined by the relevancy contract. Reminder
+that where there are no account addresses in an event's topics, then the event is considered relevant to everyone and
+is termed a life-cycle event. In this case an address is included in the event. The relevancy contract has no visibility
+configuration set up and is therefore a default contract.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>performance</group>
+            <group>debug_apis</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
