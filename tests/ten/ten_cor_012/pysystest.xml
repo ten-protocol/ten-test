@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Tenscan RPC - check transaction rollup header is correct</title>
+        <title>Tenscan RPC: check transaction rollup header is correct</title>
         <purpose><![CDATA[
 Performs a transaction, then based on the transaction receipt gets the rollup that contains the transaction hash and
 checks that the details are correct, specifically that the rollup number returned for the transaction hash is the

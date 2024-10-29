@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Gateway - use getMessage for authentication message format</title>
+        <title>Gateway: use getMessage for authentication message format</title>
         <purpose><![CDATA[
 Tests the gateway getmessage call to return the format to use when authenticating an account with a token.
 ]]>

@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Bridge - ethers withdraw native funds across the bridge using sendNative and ExtractNativeValue</title>
+        <title>Bridge: ethers withdraw native funds across the bridge using sendNative and ExtractNativeValue</title>
         <purpose><![CDATA[
 Hands over the transaction and processing of the send native call, and value transfer extraction, from python to
 an ethers client.

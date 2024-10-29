@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Tenscan RPC - check transaction and contract counts</title>
+        <title>Tenscan RPC: check transaction and contract counts</title>
         <purpose><![CDATA[
 Checks the calls to get the total number of contracts and transactions via the scan_interface returns the expected
 results before and after deploying a contract and interacting with it.

@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Config - check ten contracts have code</title>
+        <title>Config: check ten contracts have code</title>
         <purpose><![CDATA[
 ]]>
         </purpose>

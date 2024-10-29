@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Stress - multiple clients performing pure function calls, transactions, errors, fund transfers</title>
+        <title>Stress: multiple clients performing pure function calls, transactions, errors, fund transfers</title>
         <purpose><![CDATA[
 In this test multiple clients are started to run concurrently against the storage, guesser and error contract, as well
 as perform fund transfers between set accounts. The intention being to perform long running interactions against the

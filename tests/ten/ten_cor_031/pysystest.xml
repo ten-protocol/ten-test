@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Gateway - two registered users with a single subscription (subscribe all logs)</title>
+        <title>Gateway: two registered users with a single subscription (subscribe all logs)</title>
         <purpose><![CDATA[
 In the test we have a user that deploys and transacts against the Storage contract through the primary gateway and
 it's own connection. Another connection is created with two registered users, and a single subscription is made to all

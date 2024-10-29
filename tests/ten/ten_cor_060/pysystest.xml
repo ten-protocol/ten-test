@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config - subscribe, ContractCfg.TRANSPARENT, check storageAt</title>
+        <title>Visibility Config: subscribe, ContractCfg.TRANSPARENT, check storageAt</title>
         <purpose><![CDATA[
 Uses a simple guessing game, with ContractCfg.TRANSPARENT. This opens up calls to get_storage_at, and additionally
 makes all events public. Two gateway connections are used, the first by a dev user that deploys the contract and the

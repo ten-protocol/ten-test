@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Event relevancy - 4 accounts single gateway and token, 1 account subscribes, 4 unique relevant events</title>
+        <title>Event relevancy: 4 accounts single gateway and token, 1 account subscribes, 4 unique relevant events</title>
         <purpose><![CDATA[
 We have 4 accounts registered and connected to the network through a single gateway user_id. Account4 deploys the
 relevancy contract and subscribes to all events from the contract. As the subscription to all events gives no indication

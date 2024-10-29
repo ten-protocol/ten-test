@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config - contract calls another, both emit an event with address, both contain different EOA</title>
+        <title>Visibility Config: contract calls another, both emit an event with address, both contain different EOA</title>
         <purpose><![CDATA[
 Checks that transacting against a contract, whose function calls into another contract, and both functions emit an
 event, works correctly. The contract call goes EventEmitterCaller.callEmitAddressEvent -> EventEmitter.emitAddressEvent.

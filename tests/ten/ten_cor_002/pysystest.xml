@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Event relevancy - 4 accounts own gateway, 4 accounts subscribe, 1 relevant event, 1 received</title>
+        <title>Event relevancy: 4 accounts own gateway, 4 accounts subscribe, 1 relevant event, 1 received</title>
         <purpose><![CDATA[
 We have 4 accounts registered and connected to the network through their own gateways. Account4 is connected through the
 primary gateway, and deploys the relevancy contract; all accounts then subscribe to all events from the contract.

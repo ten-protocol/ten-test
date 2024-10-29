@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>TPS - rates for balance transfer, increasing clients</title>
+        <title>TPS: rates for balance transfer, increasing clients</title>
         <purpose><![CDATA[
 ]]>
         </purpose>

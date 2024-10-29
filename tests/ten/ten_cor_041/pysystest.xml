@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Gas - fire increasingly costly transactions attempting into a single batch</title>
+        <title>Gas: fire increasingly costly transactions attempting into a single batch</title>
         <purpose><![CDATA[
 The test pre-builds and signs a set of increasingly expensive contract calls, then bulk loads them into the mem pool,
 waits for the last tx receipt, then checks all txs went into the same batch (this may not always be the case based on
