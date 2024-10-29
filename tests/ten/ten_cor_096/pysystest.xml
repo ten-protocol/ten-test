@@ -2,16 +2,18 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config - request debug_logVisibility, single non-lifecycle event</title>
+        <title>Visibility Config - request debug_logVisibility, single non-lifecycle event, default contract</title>
         <purpose><![CDATA[
-Makes a call to debug log visibility for a single non-lifecycle event defined by the relevancy contract.
+Makes a call to debug log visibility for a single non-lifecycle event defined by the relevancy contract. Reminder
+that where there are no account addresses in an event's topics, then the event is considered relevant to everyone and
+is termed a life-cycle event. In this case an address is included in the event. The relevancy contract has no visibility
+configuration set up and is therefore a default contract.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>debug_apis</group>
         </groups>
         <modes inherit="true">

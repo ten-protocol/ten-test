@@ -4,14 +4,15 @@
     <description>
         <title>Visibility Config - request debug_logVisibility, single lifecycle event, default contract</title>
         <purpose><![CDATA[
-Makes a call to debug log visibility for a single lifecycle event defined by the storage contract.
+Makes a call to debug log visibility for a single lifecycle event defined by the storage contract. Reminder that
+where there are no account addresses in an event's topics, then the event is considered relevant to everyone and termed
+a life-cycle event. The storage contract has no visibility configuration set up and is therefore a default contract.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>debug_apis</group>
         </groups>
         <modes inherit="true">
