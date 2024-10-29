@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Rollups - check the L1 rollup is persisted for a successful transaction</title>
+        <title>Rollups: check the L1 rollup is persisted for a successful transaction</title>
         <purpose><![CDATA[
 This test has not yet been implemented, but left in from the perspective of retrieving the L1 proof for a given
 transaction. Inability to retrieve the proof will result in a fail ... needs to be fully implemented though post

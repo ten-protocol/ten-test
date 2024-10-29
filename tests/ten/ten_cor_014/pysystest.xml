@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Tenscan RPC - check getting personal transactions</title>
+        <title>Tenscan RPC: check getting personal transactions</title>
         <purpose><![CDATA[
 An ephemeral client joins the network and performs two transactions against a contract deployed by a different
 user. They then call to get their personal transactions and the test confirms receipt.

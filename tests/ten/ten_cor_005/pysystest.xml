@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Event relevancy - 4 accounts own gateway, 4 accounts subscribe, 1 life-cycle event, 4 received</title>
+        <title>Event relevancy: 4 accounts own gateway, 4 accounts subscribe, 1 life-cycle event, 4 received</title>
         <purpose><![CDATA[
 We have 4 accounts registered and connected to the network through their own gateways. All accounts subscribe
 to all events from the relevancy contract. Account4 transacts resulting in a NonIndexedAddressAndNumber event being

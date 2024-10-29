@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Gateway - single gateway with two token connections and two accounts registered (subscribe contract)</title>
+        <title>Gateway: single gateway with two token connections and two accounts registered (subscribe contract)</title>
         <purpose><![CDATA[
 Tests transacting and subscribing for event logs with two connections (so different tokens), each with two accounts
 registered. For each connection a single event log subscription is made for all events from a given contract, i.e.

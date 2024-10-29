@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Gas - check payment is taken on a transaction and goes to the holding account
+        <title>Gas: check payment is taken on a transaction and goes to the holding account
         </title>
         <purpose><![CDATA[
 A user makes a transaction against a contract and we determine the reduction in their balance as the cost of performing

@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Stress - high event rate publishing with multiple filters</title>
+        <title>Stress: high event rate publishing with multiple filters</title>
         <purpose><![CDATA[
 ]]>
         </purpose>

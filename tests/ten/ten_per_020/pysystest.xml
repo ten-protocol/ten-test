@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Latency - storage, tx receipt time</title>
+        <title>Latency: storage, tx receipt time</title>
         <purpose><![CDATA[
 The test uses N web3.py clients to submit a transaction to set a value in the Storage contract, and time how long it
 takes to get the transaction receipt. Once done it repeats. Multiple clients are run concurrently, and the overall

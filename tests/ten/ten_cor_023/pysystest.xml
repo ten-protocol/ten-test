@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Bridge - send native funds across the bridge using the message bus directly</title>
+        <title>Bridge: send native funds across the bridge using the message bus directly</title>
         <purpose><![CDATA[
 ]]>
         </purpose>

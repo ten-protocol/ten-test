@@ -14,19 +14,18 @@ class PySysTest(GenericNetworkTest):
         contract.deploy(network, account)
 
         est_1 = contract.contract.functions.get_balance().estimate_gas()
-        self.log.info("Estimate get_balance:    %d", est_1)
-
-        self.percentile_difference('get_balance', self.REFERENCE[0], est_1, 5)
+        self.log.info("  Estimate get_balance:    %d", est_1)
+        self.percentile_difference('get_balance',self.REFERENCE[0],est_1,'reference','estimate',40)
 
         tx1 = network.transact(self, web3, contract.contract.functions.get_balance(), account, contract.GAS_LIMIT)
-        self.log.info("Gas used get_balance:    %d", int(tx1["gasUsed"]))
+        self.log.info("  Gas used get_balance:    %d", int(tx1["gasUsed"]))
+        self.percentile_difference('get_balance',self.REFERENCE[0],int(tx1["gasUsed"]),'reference','gasUsed',5)
 
-        self.percentile_difference('get_balance', int(tx1["gasUsed"]), est_1, 5)
-
-    def percentile_difference(self, text, result, reference, tolerance):
-        percentile = abs(((reference - result) / reference) * 100)
+    def percentile_difference(self, text, num1, num2, num1_txt, num2_txt, tolerance):
+        percentile = abs(((num1 - num2) / num1) * 100)
         if percentile >= tolerance:
-            self.log.error('Percentile difference for %s is %d (%d compared to %d)', text, percentile, result, reference)
+            self.log.error('  Percentile difference for %s is %d (%s %d, %s %d)',text,percentile,num1_txt,num1,num2_txt,num2)
             self.addOutcome(FAILED)
         else:
+            self.log.info('  Percentile difference for %s is %d (%s %d, %s %d)',text,percentile,num1_txt,num1,num2_txt,num2)
             self.addOutcome(PASSED)

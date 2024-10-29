@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>TPS - funds transfer, two external concurrent clients (20 sending, 8 receiving accounts each)</title>
+        <title>TPS: funds transfer, two external concurrent clients (20 sending, 8 receiving accounts each)</title>
         <purpose><![CDATA[
 The test uses two clients to perform the bulk loading of transactions into the network concurrently, as per
 ten_per_002. The test uses 20 sending accounts for each client though in this instance, to see what the distribution of

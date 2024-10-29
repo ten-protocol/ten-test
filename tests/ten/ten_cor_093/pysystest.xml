@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config - contract calls another, ContractCfg.TRANSPARENT on called, check events</title>
+        <title>Visibility Config: contract calls another, ContractCfg.TRANSPARENT on called, check events</title>
         <purpose><![CDATA[
 Checks that transacting against a contract, whose function calls into another contract, and both functions emit an
 event, works. The contract call goes EventEmitterCaller.callEmitAddressEvent ->TransparentEventEmitter.emitAddressEvent.

@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Hardhat - deploy two contracts using the hardhat deploy and ten plugins using typescript</title>
+        <title>Hardhat: deploy two contracts using the hardhat deploy and ten plugins using typescript</title>
         <purpose><![CDATA[
 In this test two accounts are included in the hardhat config file, and the deploy and ten plugins are used. The test
 deploys a contract using each of the accounts, which therefore must be authenticated with the network first. 

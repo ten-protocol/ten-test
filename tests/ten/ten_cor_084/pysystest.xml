@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config - tx receipt, ContractCfg.PRIVATE, Field.TOPIC1 TOPIC2 SENDER on one event</title>
+        <title>Visibility Config: tx receipt, ContractCfg.PRIVATE, Field.TOPIC1 TOPIC2 SENDER on one event</title>
         <purpose><![CDATA[
 Three accounts are used. The third account deploys the relevancy contract with ContractCfg.PRIVATE and Field.Sender
 configured on the TwoIndexedAddresses event (Field.TOPIC1 and Field.TOPIC2 are also included). The third account calls

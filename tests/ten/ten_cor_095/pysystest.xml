@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config - request debug_logVisibility, single lifecycle event, default contract</title>
+        <title>Visibility Config: request debug_logVisibility, single lifecycle event, default contract</title>
         <purpose><![CDATA[
 Makes a call to debug log visibility for a single lifecycle event defined by the storage contract. Reminder that
 where there are no account addresses in an event's topics, then the event is considered relevant to everyone and termed
