@@ -7,6 +7,20 @@
 Makes a call to debug log visibility for a single lifecycle event defined by the storage contract. Reminder that
 where there are no account addresses in an event's topics, then the event is considered relevant to everyone and termed
 a life-cycle event. The storage contract has no visibility configuration set up and is therefore a default contract.
+
+Note that the semantics of the return values are as below;
+  defaultContract:     true when no config
+  transparentContract: true when ContractCfg.TRANSPARENT
+  eventConfigPublic:   true when Field.EVERYONE specified OR when ContractCfg.TRANSPARENT
+  topic1Relevant:      true when Field.TOPIC1 specified
+  topic2Relevant:      true when Field.TOPIC2 specified
+  topic3Relevant:      true when Field.TOPIC3 specified
+  senderRelevant:      true when Field.SENDER specified
+  eventAutoVisibility: true if you haven't configured the event explicitly (but it is not a default contract)
+  eventAutoPublic:     true if you haven't configured the event explicitly AND there were no EOA addresses in the topics
+  topic1AutoRelevant:  true if you haven't configured the event explicitly AND topic1 contains an EOA
+  topic2AutoRelevant:  true if you haven't configured the event explicitly AND topic2 contains an EOA
+  topic3AutoRelevant:  true if you haven't configured the event explicitly AND topic3 contains an EOA
 ]]>
         </purpose>
     </description>
