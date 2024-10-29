@@ -37,10 +37,10 @@ class PySysTest(TenNetworkTest):
         self.assertTrue(len(response_1) == 2)
         self.assertTrue(response_1[0]['transactionHash'] == tx_receipt_1.transactionHash.hex())
         self.assertTrue(response_1[1]['transactionHash'] == tx_receipt_2.transactionHash.hex())
-        self.assertTrue(response_1[0]['defaultContract'] == 'True')
-        self.assertTrue(response_1[1]['defaultContract'] == 'True')
-        self.assertTrue(response_1[0]['topic1AutoRelevant'] == 'True')
-        self.assertTrue(response_1[1]['topic1AutoRelevant'] == 'True')
+        self.assertTrue(response_1[0]['defaultContract'] == True)
+        self.assertTrue(response_1[1]['defaultContract'] == True)
+        self.assertTrue(response_1[0]['topic1AutoRelevant'] == True)
+        self.assertTrue(response_1[1]['topic1AutoRelevant'] == True)
 
     def dump(self, obj, filename):
         with open(os.path.join(self.output, filename), 'w') as file:
