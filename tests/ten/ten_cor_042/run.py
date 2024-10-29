@@ -22,10 +22,10 @@ class PySysTest(GenericNetworkTest):
         self.log.info("  Estimate add_thrice:                        %d", est_3)
         self.log.info("  Estimate add_three_times_with_a_long_name:  %d", est_4)
 
-        # validate 25% difference tolerance in the estimate from the reference
-        self.percentile_difference('add_once',self.REFERENCE[0],est_1,'reference','estimate', 40)
-        self.percentile_difference('add_twice',self.REFERENCE[1],est_2,'reference','estimate',  40)
-        self.percentile_difference('add_thrice',self.REFERENCE[2],est_3,'reference','estimate',  40)
+        # validate 40% difference tolerance in the estimate from the reference
+        self.percentile_difference('add_once',self.REFERENCE[0],est_1,'reference','estimate',40)
+        self.percentile_difference('add_twice',self.REFERENCE[1],est_2,'reference','estimate',40)
+        self.percentile_difference('add_thrice',self.REFERENCE[2],est_3,'reference','estimate',40)
         self.percentile_difference('add_three_times_with_a_long_name',self.REFERENCE[3],est_4,'reference','estimate',40)
 
         tx1 = network.transact(self, web3, contract.contract.functions.add_once(), account, contract.GAS_LIMIT)
