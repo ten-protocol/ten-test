@@ -7,12 +7,15 @@
 In the test a call into contract B, calls into contract A to emit an event, and then emits its own event. Under these
 circumstances both events should be in the tx receipt. It should also be possible to first call into contract A
 directly to emit and event, and for this to not effect any later calls.
+
+Skipped due to https://github.com/ten-protocol/ten-internal/issues/4149
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
             <group>events</group>
         </groups>
         <modes inherit="true">
