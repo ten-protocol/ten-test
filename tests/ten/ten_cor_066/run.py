@@ -42,17 +42,26 @@ class PySysTest(TenNetworkTest):
                                                       address=game_1.address,
                                                       signature=web3_1.keccak(text='Guessed(address,uint256,bool,uint256)').hex(),
                                                       fromBlock=hex(start_block_num), toBlock='latest')
+        self.validate_response('guessed', response)
 
+        # assert get_debug_event_log_relevancy for the attempts events
+        response = self.get_debug_event_log_relevancy(url=network_1.connection_url(),
+                                                      address=game_1.address,
+                                                      signature=web3_1.keccak(text='Attempts(address,uint256)').hex(),
+                                                      fromBlock=hex(start_block_num), toBlock='latest')
+        self.validate_response('attempts', response)
+
+    def validate_response(self, event, response):
         for i in range(0, len(response)):
-            self.dump(response[i], 'response_event_%d.log' % i)
+            self.dump(response[i], 'response_%s_%d.log' % (event, i))
             self.log.info('Assert get_debug_event_log_relevancy for event %d' % i)
             self.assertTrue(response[i]['defaultContract'] == False)      # there is a config
             self.assertTrue(response[i]['transparentContract'] == False)  # ContractCfg.PRIVATE is set
-            self.assertTrue(response[i]['eventConfigPublic'] == True)    # Field.EVERYONE is set
-            self.assertTrue(response[i]['topic1Relevant'] == None)       # Field.TOPIC1 is not explicitly set
-            self.assertTrue(response[i]['topic2Relevant'] == None)       # Field.TOPIC2 is not explicitly set
-            self.assertTrue(response[i]['topic3Relevant'] == None)       # Field.TOPIC3 is not explicitly set
-            self.assertTrue(response[i]['senderRelevant'] == None)       # Field.SENDER is not explicitly set
+            self.assertTrue(response[i]['eventConfigPublic'] == True)     # Field.EVERYONE is set
+            self.assertTrue(response[i]['topic1Relevant'] == None)        # Field.TOPIC1 is not explicitly set
+            self.assertTrue(response[i]['topic2Relevant'] == None)        # Field.TOPIC2 is not explicitly set
+            self.assertTrue(response[i]['topic3Relevant'] == None)        # Field.TOPIC3 is not explicitly set
+            self.assertTrue(response[i]['senderRelevant'] == None)        # Field.SENDER is not explicitly set
 
     def dump(self, obj, filename):
         with open(os.path.join(self.output, filename), 'w') as file:
