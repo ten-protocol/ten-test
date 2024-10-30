@@ -35,6 +35,7 @@ class PySysTest(TenNetworkTest):
 
         # contract has no explicit configuration so should be default
         self.assertTrue(len(response) == 2)
+        self.assertTrue(response[0]['eventSig'] == web3.keccak(text='CallerIndexedAddress(address)').hex())
         self.assertTrue(response[0]['transactionHash'] == tx_receipt_1.transactionHash.hex())
         self.assertTrue(response[0]['defaultContract'] == True)         # there is no config so it is default
         self.assertTrue(response[0]['transparentContract'] == None)     # hasn't been set to be transparent
@@ -44,7 +45,7 @@ class PySysTest(TenNetworkTest):
         self.assertTrue(response[0]['topic3Relevant'] == None)          # as above
         self.assertTrue(response[0]['senderRelevant'] == None)          # as above
         self.assertTrue(response[0]['eventAutoVisibility'] == True)     # it's not been configured
-        self.assertTrue(response[0]['eventAutoPublic'] == False)        # it's not by default public (life-cycle)
+        self.assertTrue(response[0]['eventAutoPublic'] == False)        # it's not by default public (non life-cycle)
         self.assertTrue(response[0]['topic1AutoRelevant'] == True)      # only topic 1 has an EOA address field
         self.assertTrue(response[0]['topic2AutoRelevant'] == False)     # as above
         self.assertTrue(response[0]['topic3AutoRelevant'] == False)     # as above
