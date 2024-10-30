@@ -79,14 +79,15 @@ jobs:
         run: |
           cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ten.local -r ${{ github.event.inputs.arguments }}
-          cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.local -r graph_performance
 
       - name: 'Run tests on schedule'
         if: ${{ github.event_name == 'schedule' }}
         run: |
           cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ten.local -r -e skip -e persistence
+
+      - name: 'Run the performance summary'
+        run: |
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.local -r graph_performance
 
