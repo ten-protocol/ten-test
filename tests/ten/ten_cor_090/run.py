@@ -34,7 +34,13 @@ class PySysTest(GenericNetworkTest):
         id = 1
         prepend = 'c-'
         message = generate_random_string()
-        self.log.info('Submitting tx and get tx receipt for account 1')
+
+        self.log.info('Submitting tx to the EventEmitter contract directly')
+        tx_receipt_0 = network_1.transact(self, web3_1,
+                                          emitter_1.contract.functions.emitSimpleEvent(id, message),
+                                          account_1, emitter_1.GAS_LIMIT)
+
+        self.log.info('Submitting tx to the EventEmitterCaller contract (which then calls EventEmitter')
         tx_receipt_1 = network_1.transact(self, web3_1,
                                           emitter_1_caller.contract.functions.callEmitSimpleEvent(id, prepend, message),
                                           account_1, emitter_1_caller.GAS_LIMIT)
