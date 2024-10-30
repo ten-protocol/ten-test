@@ -87,6 +87,7 @@ jobs:
           /usr/local/bin/pysys.py run -m ten.local -r -e skip -e persistence
 
       - name: 'Run the performance summary'
+        if: always()
         run: |
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.local -r graph_performance
