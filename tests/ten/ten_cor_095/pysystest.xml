@@ -21,6 +21,14 @@ Note that the semantics of the return values are as below;
   topic1AutoRelevant:  true if you haven't configured the event explicitly AND topic1 contains an EOA
   topic2AutoRelevant:  true if you haven't configured the event explicitly AND topic2 contains an EOA
   topic3AutoRelevant:  true if you haven't configured the event explicitly AND topic3 contains an EOA
+
+There are 3 possible states for the values;
+  was explicitly set to true/false
+  was not set and does not apply (so null)
+
+Note that you cannot explicitly set a value to false, but certain values will be set to false when one of it's relevant
+group is set to true i.e. Field.TOPIC1 set to true (included in the config) will set TOPIC2, TOPIC3 and SENDER all to
+false, and therefore be reflected in the topic2Relevant, topic3Relevant and senderRelevant values as false also.
 ]]>
         </purpose>
     </description>
