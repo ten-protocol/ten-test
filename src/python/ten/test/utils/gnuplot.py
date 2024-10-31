@@ -17,7 +17,7 @@ class GnuplotHelper:
         arguments.append('%s' % test.descriptor.id)
         arguments.extend(args)
         test.startProcess(command=Properties().gnuplot_binary(), displayName='gnuplot', workingDir=test.output,
-                          arguments=arguments, stdout=stdout, stderr=stderr, state=FOREGROUND)
+                          arguments=arguments, stdout=stdout, stderr=stderr, state=FOREGROUND, ignoreExitStatus=True)
 
     @classmethod
     def buildInfo(cls):
