@@ -1,6 +1,6 @@
-import string, random
+import string, random, os, json
 from web3.logs import DISCARD
-from ten.test.basetest import GenericNetworkTest
+from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.emitter import EventEmitter, EventEmitterCaller
 
 
@@ -10,7 +10,7 @@ def generate_random_string(length=8):
     return random_string
 
 
-class PySysTest(GenericNetworkTest):
+class PySysTest(TenNetworkTest):
 
     def execute(self):
         # connect two accounts to the network
@@ -65,4 +65,28 @@ class PySysTest(GenericNetworkTest):
         self.log.info('  simpleEvent.sender:         %s' % simple_event_2['args']['sender'])
 
         self.assertTrue(len(tx_receipt_2.logs) == 1, assertMessage='There should be one event logs')
-        self.assertTrue(simple_event_2['args']['message'] == message, assertMessage='SimpleEvent message incorrect')
+        self.assertTrue(simple_event_2['args']['message'] == message, assertMessage='SimpleEvent message should be correct')
+
+        response = self.get_debug_event_log_relevancy( url=network_1.connection_url(),
+                                                       address=emitter_1.address,
+                                                       signature=web3_1.keccak(text='SimpleEvent(uint256,string,address)').hex(),
+                                                       fromBlock=hex(tx_receipt_1.blockNumber), toBlock='latest')
+        self.dump(response, 'response_simple_event.log')
+        self.assertTrue(len(response) == 1)
+        self.assertTrue(response[0]['contractAddress'] == emitter_1.address.lower())
+        self.assertTrue(response[0]['eventSig'] == web3_1.keccak(text='SimpleEvent(uint256,string,address)').hex())
+        self.assertTrue(response[0]['transactionHash'] == tx_receipt_1.transactionHash.hex())
+
+        response = self.get_debug_event_log_relevancy( url=network_1.connection_url(),
+                                                       address=emitter_1_caller.address,
+                                                       signature=web3_1.keccak(text='CallerSimpleEvent(uint256,string,address)').hex(),
+                                                       fromBlock=hex(tx_receipt_1.blockNumber), toBlock='latest')
+        self.dump(response, 'response_caller_simple_event.log')
+        self.assertTrue(len(response) == 1)
+        self.assertTrue(response[0]['contractAddress'] == emitter_1_caller.address.lower())
+        self.assertTrue(response[0]['eventSig'] == web3_1.keccak(text='CallerSimpleEvent(uint256,string,address)').hex())
+        self.assertTrue(response[0]['transactionHash'] == tx_receipt_1.transactionHash.hex())
+
+    def dump(self, obj, filename):
+        with open(os.path.join(self.output, filename), 'w') as file:
+            json.dump(obj, file, indent=4)
