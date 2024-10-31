@@ -110,6 +110,7 @@ jobs:
 
       - name: 'Get the gateway logs'
         if: failure()
+        continue-on-error: true
         run: |
           cd ${{ github.workspace }}/go-ten/
           docker container cp `docker ps -aqf "name=gateway"`:/gateway_logs.log gateway_logs.out
