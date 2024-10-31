@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 contract ReceiveEther {
-    event Received(string key, uint value);
+    event Received(string key, uint256 value);
 
     /*
                 send Ether
@@ -36,7 +36,7 @@ contract ReceiveEther {
 }
 
 contract SendEther {
-    event Send(string key, uint value);
+    event Send(string key, uint256 value);
 
     function sendViaTransfer(address payable _to) public payable {
         emit Send("sendViaTransfer", msg.value);
