@@ -1,4 +1,4 @@
-import logging, random, string, argparse, json, sys, time
+import logging, random, string, argparse, json, sys
 from web3 import Web3
 
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', stream=sys.stdout, level=logging.INFO)
