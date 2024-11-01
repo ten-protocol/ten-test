@@ -1,10 +1,10 @@
 import re
 from web3.logs import DISCARD
-from ten.test.basetest import GenericNetworkTest
+from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.emitter import EventEmitter, EventEmitterCaller
 
 
-class PySysTest(GenericNetworkTest):
+class PySysTest(TenNetworkTest):
 
     def execute(self):
         # connect two accounts to the network
