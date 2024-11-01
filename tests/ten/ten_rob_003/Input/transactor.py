@@ -54,7 +54,7 @@ def run(id, chainId, web3, account, contract, transactions, gas_limit):
     logging.shutdown()
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(prog='storage_client')
+    parser = argparse.ArgumentParser(prog='transactor')
     parser.add_argument('-u', '--network_http', help='Connection URL')
     parser.add_argument('-c', '--chainId', help='The network chain Id')
     parser.add_argument('-p', '--pk', help='The accounts private key')

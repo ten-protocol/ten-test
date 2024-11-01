@@ -1,5 +1,5 @@
-import os, random, string, secrets, re
-from pysys.constants import FAILED, PASSED, FOREGROUND
+import os, random, string, secrets
+from pysys.constants import PASSED, FOREGROUND
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.emitter import EventEmitter
 
@@ -15,6 +15,7 @@ class PySysTest(TenNetworkTest):
 
         emitter = EventEmitter(self, web3, 100)
         emitter.deploy(network, account)
+        debugger_url = network.connection_url()
 
         # estimate how much gas each transactor will need
         rstr = self.rand_str()
@@ -35,7 +36,8 @@ class PySysTest(TenNetworkTest):
             clients.append((id, pk, account, network))
             self.run_subscriber(network, emitter, account, id)
 
-        # start the pollers
+        # start the pollers and the debugger
+        self.run_debugger(emitter, debugger_url)
         self.run_poller_simple(network, emitter, id_filter=1)
         self.run_poller_all(network, emitter)
 
@@ -68,6 +70,15 @@ class PySysTest(TenNetworkTest):
         args.extend(['--id', '%d' % id])
         args.extend(['--gas_limit', '%d' % gas_limit])
         self.run_python(script, stdout, stderr, args, state=FOREGROUND)
+
+    def run_debugger(self, emitter, url):
+        stdout = os.path.join(self.output, 'debugger.out')
+        stderr = os.path.join(self.output, 'debugger.err')
+        script = os.path.join(self.input, 'debugger.py')
+        args = []
+        args.extend(['--network_http', url])
+        args.extend(['--contract_address', '%s' % emitter.address])
+        self.run_python(script, stdout, stderr, args)
 
     def run_subscriber(self, network, emitter, account, id_filter):
         stdout = os.path.join(self.output, 'subscriber%d.out' % id_filter)
