@@ -23,7 +23,8 @@ class PySysTest(TenNetworkTest):
     def graph(self):
         branch = GnuplotHelper.buildInfo().branch
         date = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-        GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'), branch, date, str(self.mode))
+        GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot_pg1.in'), branch, date, str(self.mode))
+        GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot_pg2.in'), branch, date, str(self.mode))
 
     def epoch_to_fractional_doy(self, epoch_time):
         date = datetime.utcfromtimestamp(epoch_time)

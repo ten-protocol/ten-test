@@ -1,3 +1,4 @@
+import os
 from pysys.constants import *
 from collections import namedtuple
 from ten.test.utils.properties import Properties
@@ -9,8 +10,8 @@ class GnuplotHelper:
     @classmethod
     def graph(cls, test, command_file, *args):
         """Run gnuplot on a command input file."""
-        stdout = os.path.join(test.output, 'gnuplot.out')
-        stderr = os.path.join(test.output, 'gnuplot.err')
+        stdout = os.path.join(test.output, os.path.basename(command_file).split('.')[0]+'.out')
+        stderr = os.path.join(test.output, os.path.basename(command_file).split('.')[0]+'.err')
 
         arguments = ['-c', command_file]
         arguments.append('\"%s\"' % test.descriptor.title)
