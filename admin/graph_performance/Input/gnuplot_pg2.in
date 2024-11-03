@@ -1,0 +1,46 @@
+	set terminal pdf enhanced size 18cm, 18cm
+set output ARG2."_2.pdf"
+
+set grid
+set xtics rotate by 90 right
+set xtics font "Courier,8"
+set ytics font "Courier,8"
+set title font "Courier,10"
+
+Y1MARGIN = "set tmargin at screen 0.950000; set bmargin at screen 0.670667"
+Y2MARGIN = "set tmargin at screen 0.654667; set bmargin at screen 0.375333"
+Y3MARGIN = "set tmargin at screen 0.359333; set bmargin at screen 0.080000"
+X1MARGIN = "set lmargin at screen 0.060000; set rmargin at screen 0.322000"
+X2MARGIN = "set lmargin at screen 0.334000; set rmargin at screen 0.596000"
+X3MARGIN = "set lmargin at screen 0.608000; set rmargin at screen 0.870000"
+
+NOXTICS = "set format x ''; unset xlabel"
+NOYTICS = "set format y ''; unset ylabel"
+XTICS = "set format x '%g'; set xlabel 'Day of year' offset 0,0.5 "
+YTICS = "set format y '%g'; unset ylabel"
+
+set multiplot layout 3,3 title ARG2." (page 2): ".ARG1 noenhanced scale 0.95,0.95
+
+
+@Y1MARGIN; @X1MARGIN; @NOXTICS; @YTICS;
+f1(x) = m*x + b
+fit f1(x) "ten_per_020.log" using 1:2 via m,b
+set offsets graph 0.0, 0.0, 3, 3
+set title '{/Arial:Bold=10 ten\_per\_020}' offset 0,-2.5
+plot "ten_per_020.log" using 1:2 with linespoints lw 1 lc 11 pt 6 ps 0.5 notitle, \
+      f1(x) w l lw 2 lc 7 notitle
+
+@Y1MARGIN; @X2MARGIN; @NOXTICS; @YTICS;
+f2(x) = m*x + b
+fit f2(x) "ten_per_021.log" using 1:2 via m,b
+set offsets graph 0.0, 0.0, 3, 3
+set ytics offset 3.6, 0
+set title '{/Arial:Bold=10 ten\_per\_021}' offset 0,-2.5
+plot "ten_per_021.log" using 1:2 with linespoints lw 1 lc 11 pt 6 ps 0.5 notitle, \
+      f2(x) w l lw 2 lc 7 notitle
+
+unset multiplot
+
+
+
+
