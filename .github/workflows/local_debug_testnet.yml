@@ -1,0 +1,95 @@
+# Builds a local testnet and runs a set of tests
+#
+name: '[locally] Debug local testnet'
+run-name: Run debug local testnet (${{ github.event_name }})
+on:
+  workflow_dispatch:
+    inputs:
+      target_branch:
+        description: 'Branch of go-ten to run against'
+        required: true
+        default: main
+
+jobs:
+  test-run:
+    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-04]
+    steps:
+      - name: 'Check out ten-test'
+        uses: actions/checkout@v3
+        with:
+          path: ./ten-test
+
+      - name: 'Check out go-ten code'
+        uses: actions/checkout@v3
+        with:
+          repository: ten-protocol/go-ten
+          path: ./go-ten
+          ref: ${{ github.event.inputs.target_branch }}
+
+      - name: 'Docker clean containers and images before the test'
+        run: |
+          for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
+          docker system prune -af --volumes
+          for i in `docker volume ls --filter dangling=true -q`; do docker volume rm $i; done
+
+      - name: 'Build docker containers'
+        run: |
+          cd ${{ github.workspace }}/go-ten/testnet
+          ./testnet-local-build_images.sh 
+
+      - name: 'Start up testnet'
+        run: |
+          cd ${{ github.workspace }}/go-ten/
+          go run ./testnet/launcher/cmd
+
+      - name: 'Collect container logs'
+        if: always()
+        run: |
+          echo "Run docker container log background processes"
+          docker logs -f `docker ps -aqf "name=validator-host"` > validator-host.out 2>&1 &
+          docker logs -f `docker ps -aqf "name=validator-enclave"` > validator-enclave.out 2>&1 &
+          docker logs -f `docker ps -aqf "name=sequencer-host"` > sequencer-host.out 2>&1 &
+          docker logs -f `docker ps -aqf "name=sequencer-enclave"` > sequencer-enclave.out 2>&1 &
+          docker logs -f `docker ps -aqf "name=eth2network"` > eth2network.out 2>&1 &
+          docker logs -f `docker ps -aqf "name=gateway"` > gateway.out 2>&1 &
+
+      - name: 'Build required artifacts for running tests'
+        run: |
+          cd ${{ github.workspace }}/ten-test
+          ./get_artifacts.sh
+          ls -l ${{ github.workspace }}/ten-test/artifacts   
+
+      - name: 'Do a persistence reset'
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ten.local persistence_reset
+
+      - name: 'Run tests'
+        run: |
+          cd ${{ github.workspace }}/ten-test/tests
+          /usr/local/bin/pysys.py run -m ten.local gen_cor_040
+
+      - name: 'Get the gateway logs'
+        if: always()
+        continue-on-error: true
+        run: |
+          cd ${{ github.workspace }}/go-ten/
+          docker container cp `docker ps -aqf "name=gateway"`:/gateway_logs.log gateway_logs.out
+
+      - name: 'Upload container logs'
+        uses: actions/upload-artifact@v4
+        if: always()
+        continue-on-error: true
+        with:
+          name: container-artifact
+          path: |
+            ${{ github.workspace }}/go-ten/*.out
+          retention-days: 1
+          
+      - name: 'Docker clean containers and images after the test'
+        if: always()
+        run: |
+          for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
+          docker system prune -af --volumes
+          for i in `docker volume ls --filter dangling=true -q`; do docker volume rm $i; done
+
