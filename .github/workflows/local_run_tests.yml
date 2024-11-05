@@ -113,7 +113,7 @@ jobs:
           retention-days: 1
 
       - name: 'Get the gateway logs'
-        if: failure()
+        if: always()
         continue-on-error: true
         run: |
           cd ${{ github.workspace }}/go-ten/
@@ -121,7 +121,7 @@ jobs:
 
       - name: 'Upload container logs'
         uses: actions/upload-artifact@v4
-        if: failure()
+        if: always()
         continue-on-error: true
         with:
           name: container-artifact
