@@ -29,6 +29,16 @@ sudo usermod -aG docker tenadmin
 newgrp docker
 ```
 
+Note that we need to use go 1.21.13, and more recent VMs may come with a later version. To install 1.21.13 see the 
+[go installation](https://go.dev/doc/install) guide, download `go1.21.13.linux-amd64.tar.gz` and install by unpacking 
+and symbolically linking using;
+
+```bash
+sudo rm -rf /usr/local/go
+sudo tar -C /usr/local -xzf go1.21.13.linux-amd64.tar.gz
+sudo ln -s /usr/local/go/bin/go /usr/local/bin/go 
+```
+
 ## Configure the runner
 Go to the [runners](https://github.com/ten-protocol/ten-test/settings/actions/runners) section of the `ten-test`
 repo and click on new runner. Follow the commands there to install and run the new runner. 
