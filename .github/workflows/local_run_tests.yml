@@ -91,13 +91,11 @@ jobs:
           /usr/local/bin/pysys.py run -m ten.local -i sanity
 
       - name: 'Run the performance summary'
-        if: always()
         run: |
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.local -r graph_performance
 
       - name: 'Collate pdf output'
-        if: always()
         run: |
           cd ${{ github.workspace }}/ten-test
           pdftk $(find . -name \*.pdf | sort) cat output results_graphs.pdf || true
@@ -113,7 +111,7 @@ jobs:
           retention-days: 1
 
       - name: 'Get the gateway logs'
-        if: always()
+        if: failure()
         continue-on-error: true
         run: |
           cd ${{ github.workspace }}/go-ten/
@@ -121,7 +119,7 @@ jobs:
 
       - name: 'Upload container logs'
         uses: actions/upload-artifact@v4
-        if: always()
+        if: failure()
         continue-on-error: true
         with:
           name: container-artifact
