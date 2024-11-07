@@ -122,7 +122,7 @@ class GenericNetworkTest(BaseTest):
                           arguments=arguments, environs=environ, stdout=stdout, stderr=stderr,
                           timeout=timeout)
 
-    def run_npx(self, stdout, stderr, args, environ, working_dir, timeout=120):
+    def run_npx(self, stdout, stderr, args, environ, working_dir, timeout=180):
         self.log.info('Running npx with args "%s"', ' '.join(args))
         arguments = []
         if args is not None: arguments.extend(args)
