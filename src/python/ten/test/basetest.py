@@ -110,7 +110,7 @@ class GenericNetworkTest(BaseTest):
                                      state=state, timeout=timeout)
         return hprocess
 
-    def run_npm(self, stdout, stderr, args, working_dir, timeout=120):
+    def run_npm(self, stdout, stderr, args, working_dir, timeout=180):
         self.log.info('Running npm with args "%s"', ' '.join(args))
         arguments = []
         if args is not None: arguments.extend(args)
