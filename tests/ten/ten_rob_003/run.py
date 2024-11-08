@@ -69,7 +69,7 @@ class PySysTest(TenNetworkTest):
         args.extend(['--transactions', '%d' % self.TRANSACTIONS])
         args.extend(['--id', '%d' % id])
         args.extend(['--gas_limit', '%d' % gas_limit])
-        self.run_python(script, stdout, stderr, args, state=FOREGROUND)
+        self.run_python(script, stdout, stderr, args, state=FOREGROUND, timeout=300)
 
     def run_debugger(self, emitter, url):
         stdout = os.path.join(self.output, 'debugger.out')
