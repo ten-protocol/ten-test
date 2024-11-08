@@ -24,8 +24,8 @@ on:
         default: main
         options:
           - main
+          - releases/v0.27
           - releases/v0.26
-          - releases/v0.25
 
 jobs:
   test-run:
@@ -61,15 +61,28 @@ jobs:
 
       - name: 'Graph the performance summary'
         if: always()
+        continue-on-error: true
         run: |
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} -r graph_performance
 
-      - name: 'Collate pdf output'
+      - name: 'Collate performance output'
         if: always()
+        continue-on-error: true
         run: |
           cd ${{ github.workspace }}/ten-test
           pdftk $(find . -name \*.pdf | sort) cat output results_graphs.pdf || true
+
+      - name: 'Upload performance output'
+        uses: actions/upload-artifact@v4
+        if: always()
+        continue-on-error: true
+        with:
+          name: performance-artifact
+          path: |
+            ${{ github.workspace }}/ten-test/results_graphs.pdf
+          if-no-files-found: ignore
+          retention-days: 1
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v4
@@ -81,13 +94,5 @@ jobs:
             !${{ github.workspace }}/ten-test/**/node_modules
           retention-days: 1
 
-      - name: 'Upload performance output'
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: performance-artifact
-          path: |
-            ${{ github.workspace }}/ten-test/results_graphs.pdf
-          if-no-files-found: ignore
-          retention-days: 1
+
 

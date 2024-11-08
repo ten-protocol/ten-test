@@ -97,16 +97,28 @@ jobs:
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.local -r graph_performance
 
-      - name: 'Collate pdf output'
+      - name: 'Collate performance output'
         if: always()
         continue-on-error: true
         run: |
           cd ${{ github.workspace }}/ten-test
           pdftk $(find . -name \*.pdf | sort) cat output results_graphs.pdf || true
 
+      - name: 'Upload performance output'
+        uses: actions/upload-artifact@v4
+        if: always()
+        continue-on-error: true
+        with:
+          name: performance-artifact
+          path: |
+            ${{ github.workspace }}/ten-test/results_graphs.pdf
+          if-no-files-found: ignore
+          retention-days: 1
+
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v4
         if: failure()
+        continue-on-error: true
         with:
           name: test-artifact
           path: |
@@ -131,17 +143,6 @@ jobs:
             ${{ github.workspace }}/go-ten/*.out
           retention-days: 1
 
-      - name: 'Upload performance output'
-        uses: actions/upload-artifact@v4
-        if: always()
-        continue-on-error: true
-        with:
-          name: performance-artifact
-          path: |
-            ${{ github.workspace }}/ten-test/results_graphs.pdf
-          if-no-files-found: ignore
-          retention-days: 1
-          
       - name: 'Docker clean containers and images after the test'
         if: always()
         run: |
