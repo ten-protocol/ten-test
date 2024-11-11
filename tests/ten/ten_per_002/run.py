@@ -1,7 +1,7 @@
-import os, secrets, time, re
+import os, secrets, time
 from datetime import datetime
 from collections import OrderedDict
-from pysys.constants import PASSED, FAILED
+from pysys.constants import PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
 
@@ -20,7 +20,7 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         # connect to the network on the primary gateway and calculate funds needs
-        network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary')
+        network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary', verbose=False)
         web3, _ = network.connect_account1(self)
         account = web3.eth.account.from_key(secrets.token_hex(32))
         self.chain_id = network.chain_id()
@@ -67,7 +67,7 @@ class PySysTest(TenNetworkTest):
 
     def setup_client(self, name, funds_needed):
         pk = secrets.token_hex(32)
-        network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary')
+        network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary', verbose=False)
         web3, account = network.connect(self, private_key=pk, check_funds=False)
         self.distribute_native(account, web3.from_wei(funds_needed, 'ether'))
         return pk, network

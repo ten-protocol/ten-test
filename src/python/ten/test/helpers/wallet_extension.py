@@ -40,7 +40,8 @@ class WalletExtension:
 
     def run(self, rate_limit_user_compute_time=0):
         """Run an instance of the wallet extension."""
-        self.test.log.info('Starting %s wallet extension on port=%d, ws_port=%d', self.name, self.port, self.ws_port)
+        self.test.log.info('Starting %s wallet extension on port=%d, ws_port=%d, verbose=%s',
+                           self.name, self.port, self.ws_port, self.verbose)
 
         arguments = []
         arguments.extend(('--nodeHost', self.node_host))

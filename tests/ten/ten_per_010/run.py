@@ -1,4 +1,4 @@
-import os, time, secrets, math, re
+import os, time, secrets, math
 import numpy as np
 from web3 import Web3
 from datetime import datetime
@@ -13,7 +13,7 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         # connect to the network and determine constants and funds required to run the test
-        network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary')
+        network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary', verbose=False)
 
         # run the clients and wait for their completion
         results = []

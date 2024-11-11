@@ -1,4 +1,4 @@
-import secrets, os, math, time, re
+import secrets, os, math, time
 from datetime import datetime
 from collections import OrderedDict
 from web3 import Web3
@@ -27,7 +27,7 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         # connect to the network on the primary gateway and deploy the contract
-        network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary')
+        network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary', verbose=False)
         web3, account = network.connect_account1(self)
         storage = Storage(self, web3, 0)
         storage.deploy(network, account)

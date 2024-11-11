@@ -19,7 +19,7 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         # connect to the network on the primary connection
-        network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary')
+        network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary', verbose=False)
         web3, _ = network.connect_account1(self)
 
         # use an ephemeral account, so we don't need to manage nonce through persistence
