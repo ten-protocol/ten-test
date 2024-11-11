@@ -71,7 +71,12 @@ jobs:
         run: |
           cd ${{ github.workspace }}/go-ten/
           go run ./testnet/launcher/cmd
+
+      - name: 'Collect container logs'
+        if: always()
+        run: |
           echo "Run docker container log background processes"
+          cd ${{ github.workspace }}/go-ten/
           docker logs -f `docker ps -aqf "name=validator-host"` > validator-host.out 2>&1 &
           docker logs -f `docker ps -aqf "name=validator-enclave"` > validator-enclave.out 2>&1 &
           docker logs -f `docker ps -aqf "name=sequencer-host"` > sequencer-host.out 2>&1 &
