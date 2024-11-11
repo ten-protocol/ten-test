@@ -5,16 +5,12 @@
         <title>Events: web3js client using eth.subscribe and unsubscribe</title>
         <purpose><![CDATA[
 Filters on events from a particular contract, and subscribes and unsubscribes.
-
-Skipped due to https://github.com/ten-protocol/ten-internal/issues/1076 (Unsubscribe after a tx receipt with an emitted
-event will not always send out the event to the subscribers)
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>events</group>
             <group>web3js</group>
         </groups>
