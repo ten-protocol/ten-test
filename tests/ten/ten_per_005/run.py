@@ -1,4 +1,4 @@
-import os, secrets, time, re
+import os, secrets, time
 from datetime import datetime
 from collections import OrderedDict
 from pysys.constants import PASSED
@@ -19,7 +19,7 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         # connect to the network on the primary gateway and deploy the contract
-        network = self.get_network_connection()
+        network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary', verbose=False)
         web3, account = network.connect_account1(self)
         storage = KeyStorage(self, web3)
         storage.deploy(network, account)
@@ -71,7 +71,7 @@ class PySysTest(TenNetworkTest):
 
     def setup_client(self, name, funds_needed):
         pk = secrets.token_hex(32)
-        network = self.get_network_connection()
+        network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary', verbose=False)
         web3, account = network.connect(self, private_key=pk, check_funds=False)
         self.distribute_native(account, web3.from_wei(funds_needed, 'ether'))
         return pk, network

@@ -1,8 +1,8 @@
-import secrets, os, time, math, re
+import secrets, os, time, math
 from web3 import Web3
 from collections import OrderedDict
 from datetime import datetime
-from pysys.constants import PASSED, FAILED
+from pysys.constants import PASSED
 from ten.test.contracts.storage import KeyStorage
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
@@ -20,7 +20,7 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         # connect to the network on the primary gateway and deploy the contract
-        network = self.get_network_connection()
+        network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary', verbose=False)
         web3, account = network.connect_account1(self)
         storage = KeyStorage(self, web3)
         storage.deploy(network, account)
