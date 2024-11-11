@@ -21,7 +21,7 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         # connect to the network on the primary gateway and calculate funds needs
-        network = self.get_network_connection()
+        network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary')
         web3, _ = network.connect_account1(self)
         account = web3.eth.account.from_key(secrets.token_hex(32))
         self.chain_id = network.chain_id()
@@ -68,7 +68,7 @@ class PySysTest(TenNetworkTest):
 
     def setup_client(self, name, funds_needed):
         pk_file = '%s_pk.txt' % name
-        network = self.get_network_connection()
+        network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary')
         with open(os.path.join(self.output, pk_file), 'w') as fw:
             for i in range(0, self.SENDING_ACCOUNTS):
                 pk = secrets.token_hex(32)

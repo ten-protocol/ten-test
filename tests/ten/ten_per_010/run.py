@@ -13,7 +13,7 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         # connect to the network and determine constants and funds required to run the test
-        network = self.get_network_connection()
+        network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary')
 
         # run the clients and wait for their completion
         results = []
