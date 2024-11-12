@@ -27,7 +27,7 @@ class PySysTest(TenNetworkTest):
         self.chain_id = network.chain_id()
         self.gas_price = web3.eth.gas_price
         params = {'from': account.address, 'chainId': web3.eth.chain_id, 'gasPrice': self.gas_price}
-        self.gas_limit = storage.contract.functions.setItem('test', 1).estimate_gas(params)
+        self.gas_limit = 4*storage.contract.functions.setItem('test', 1).estimate_gas(params)
         funds_needed = 1.1 * self.ITERATIONS * (self.gas_price*self.gas_limit)
 
         # run the clients

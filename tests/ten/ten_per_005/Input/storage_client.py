@@ -17,6 +17,14 @@ def create_signed_tx(name, account, nonce, contract, gas_price, gas_limit, chain
     return account.sign_transaction(build_tx)
 
 
+def tenths(list):
+    every_tenth = list[9::10]
+    last_element = list[-1]
+    if last_element not in every_tenth:
+        return every_tenth + [last_element]
+    return every_tenth
+
+
 def run(name, chainId, web3, account, contract, num_iterations, gas_limit):
     """Run a loop of bulk loading transactions into the mempool, draining, and collating results. """
     logging.info('Creating and signing %d transactions', num_iterations)
@@ -40,8 +48,9 @@ def run(name, chainId, web3, account, contract, num_iterations, gas_limit):
             stats[1] += 1
     logging.warning('Ratio failures = %.2f', float(stats[1]) / sum(stats))
 
-    logging.info('Waiting for last transaction %s', receipts[-1][0].hex())
-    web3.eth.wait_for_transaction_receipt(receipts[-1][0], timeout=900)
+    for receipt in tenths(receipts):
+        logging.info('Waiting for transaction receipt number  %s', receipt[1])
+        web3.eth.wait_for_transaction_receipt(receipt[0], timeout=900)
     logging.info('Retrieved value for %s is %d', name, contract.functions.getItem(name).call())
 
     logging.info('Constructing binned data from the transaction receipts')
