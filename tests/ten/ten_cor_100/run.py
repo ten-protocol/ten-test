@@ -1,5 +1,4 @@
 from ten.test.basetest import TenNetworkTest
-from ten.test.contracts.storage import Storage
 
 
 class PySysTest(TenNetworkTest):
@@ -7,8 +6,21 @@ class PySysTest(TenNetworkTest):
     def execute(self):
         # connect to the network via the primary gateway
         network = self.get_network_connection()
-        web3, account = network.connect_account1(self)
+        web3, account = network.connect_account2(self)
 
-        # deploy the storage account
-        storage = Storage(self, web3, 100)
-        tx_receipt = storage.deploy(network, account)
+        self.log.info('Activate when no session key')
+        active = self.activate_session_key(network.connection_url())
+        self.log.info('  Session active: %s' % active)
+
+        self.log.info('De-activate when no session key')
+        active = self.deactivate_session_key(network.connection_url())
+        self.log.info('  Session active: %s' % active)
+
+        self.log.info('Activate when have session key')
+        sk = self.get_session_key(network.connection_url())
+        active = self.activate_session_key(network.connection_url())
+        self.log.info('  Session active: %s' % active)
+
+        self.log.info('De-activate when have session key')
+        deactive = self.deactivate_session_key(network.connection_url())
+        self.log.info('  Session active: %s' % deactive)

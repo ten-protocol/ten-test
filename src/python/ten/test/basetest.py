@@ -357,6 +357,36 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
+    def get_session_key(self, url):
+        """Get a session key.
+        """
+        data = {"jsonrpc": "2.0", "method": "eth_getStorageAt",
+                "params": ["0x0000000000000000000000000000000000000003", None, None], "id": self.MSG_ID }
+        response = self.post(data, url)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    def activate_session_key(self, url):
+        """Activate a session key.
+        """
+        data = {"jsonrpc": "2.0", "method": "eth_getStorageAt",
+                "params": ["0x0000000000000000000000000000000000000004", None, None], "id": self.MSG_ID }
+        response = self.post(data, url)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    def deactivate_session_key(self, url):
+        """Dectivate a session key.
+        """
+        data = {"jsonrpc": "2.0", "method": "eth_getStorageAt",
+                "params": ["0x0000000000000000000000000000000000000005", None, None], "id": self.MSG_ID }
+        response = self.post(data, url)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
     def scan_get_transaction(self):
         """Get TX by hash. @todo """
         pass
