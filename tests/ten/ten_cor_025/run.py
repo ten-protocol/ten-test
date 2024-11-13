@@ -41,7 +41,7 @@ class PySysTest(TenNetworkTest):
                         assertMessage='Value transfer has should be in the xchain tree')
 
     def create_signed(self, user, amount, gas_limit):
-        nonce = user.l2.network.get_next_nonce(self, user.l2.web3, user.l2.account, True, False)
+        nonce = user.l2.network.get_next_nonce(self, user.l2.web3, user.l2.account.address, True, False)
         tx = user.l2.bridge.contract.functions.sendNative(user.l1.account.address).build_transaction(
             {
                 'nonce': nonce,
@@ -55,7 +55,7 @@ class PySysTest(TenNetworkTest):
         return nonce, tx_sign
 
     def send_tx(self, user, nonce, tx_sign):
-        return user.l2.network.send_transaction(self, user.l2.web3, nonce, user.l2.account, tx_sign, True, False)
+        return user.l2.network.send_transaction(self, user.l2.web3, nonce, user.l2.account.address, tx_sign, True, False)
 
     def wait_tx(self, user, nonce, tx_hash, timeout=30):
-        return user.l2.network.wait_for_transaction(self, user.l2.web3, nonce, user.l2.account, tx_hash, True, False, timeout)
+        return user.l2.network.wait_for_transaction(self, user.l2.web3, nonce, user.l2.account.address, tx_hash, True, False, timeout)

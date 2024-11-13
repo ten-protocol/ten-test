@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Session keys: transact through a session key</title>
+        <title>Session keys: activate and deactivate a session key</title>
         <purpose><![CDATA[
 ]]>
         </purpose>

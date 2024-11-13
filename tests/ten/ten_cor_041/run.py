@@ -32,17 +32,17 @@ class PySysTest(TenNetworkTest):
         txs = []
         nonce = 0
         for i in steps:
-            tx = network.build_transaction(self, web3, target(i), nonce, account, contract.GAS_LIMIT, verbose=False)
+            tx = network.build_transaction(self, web3, target(i), nonce, account.address, contract.GAS_LIMIT, verbose=False)
             tx_sign = network.sign_transaction(self, tx, nonce, account, persist_nonce=False)
             txs.append((nonce, tx_sign))
             nonce = nonce + 1
 
         self.log.info('Sending  the transactions')
-        tx_hashes = [network.send_transaction(self, web3, nonce, account, tx, persist_nonce=False) for nonce, tx in txs]
+        tx_hashes = [network.send_transaction(self, web3, nonce, account.address, tx, persist_nonce=False) for nonce, tx in txs]
 
         tx_receipts = []
         for tx_hash in tx_hashes:
-            tx_receipt = network.wait_for_transaction(self, web3, nonce, account, tx_hash, persist_nonce=False)
+            tx_receipt = network.wait_for_transaction(self, web3, nonce, account.address, tx_hash, persist_nonce=False)
             self.assertTrue(tx_receipt.status == 1)
             tx_receipts.append(tx_receipt)
 
