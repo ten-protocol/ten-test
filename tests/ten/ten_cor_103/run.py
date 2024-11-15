@@ -13,8 +13,9 @@ class PySysTest(TenNetworkTest):
         game.deploy(network, account)
 
         # run the event log subscriber and transact as account 1 (signed transactions)
-        subscriber = AllEventsLogSubscriber(self, network, game.address, game.abi_path)
-        subscriber.run()
+        subscriber1 = AllEventsLogSubscriber(self, network, game.address, game.abi_path,
+                                             stdout='subscriber1.out', stderr='subscriber1.err')
+        subscriber1.run()
         for i in range(1, 6):
             self.log.info('  Guessing number as account1: %d'%i)
             network.transact(self, web3, game.contract.functions.guess(i), account, game.GAS_LIMIT)
@@ -24,6 +25,11 @@ class PySysTest(TenNetworkTest):
         tx = {'to': sk, 'value': web3.to_wei(0.01, 'ether'), 'gasPrice': web3.eth.gas_price}
         tx['gas'] = web3.eth.estimate_gas(tx)
         network.tx(self, web3, tx, account)
+
+
+        subscriber2 = AllEventsLogSubscriber(self, network, game.address, game.abi_path,
+                                             stdout='subscriber2.out', stderr='subscriber2.err')
+        subscriber2.run()
         self.activate_session_key(network.connection_url())
 
         # transact as the session key (unsigned transactions)
@@ -40,5 +46,7 @@ class PySysTest(TenNetworkTest):
         self.deactivate_session_key(network.connection_url())
 
         # assert that we see the event logs
-        self.assertLineCount('subscriber.out', expr='Received event: Guessed', condition='==10')
-        self.assertOrderedGrep('subscriber.out', exprList=['guessedNumber: \'%d\'' % x for x in range(1, 11)])
+        self.assertLineCount('subscriber1.out', expr='Received event: Guessed', condition='==5')
+        self.assertOrderedGrep('subscriber1.out', exprList=['guessedNumber: \'%d\'' % x for x in range(1, 6)])
+        self.assertLineCount('subscriber2.out', expr='Received event: Guessed', condition='==5')
+        self.assertOrderedGrep('subscriber2.out', exprList=['guessedNumber: \'%d\'' % x for x in range(6, 11)])
