@@ -363,7 +363,7 @@ class TenNetworkTest(GenericNetworkTest):
         data = {"jsonrpc": "2.0", "method": "eth_getStorageAt",
                 "params": ["0x0000000000000000000000000000000000000003", None, None], "id": self.MSG_ID }
         response = self.post(data, url)
-        if 'result' in response.json(): return response.json()['result']
+        if 'result' in response.json(): return Web3().to_checksum_address(response.json()['result'])
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
