@@ -26,7 +26,6 @@ class PySysTest(TenNetworkTest):
         tx['gas'] = web3.eth.estimate_gas(tx)
         network.tx(self, web3, tx, account)
 
-
         subscriber2 = AllEventsLogSubscriber(self, network, game.address, game.abi_path,
                                              stdout='subscriber2.out', stderr='subscriber2.err')
         subscriber2.run()
@@ -50,3 +49,4 @@ class PySysTest(TenNetworkTest):
         self.assertOrderedGrep('subscriber1.out', exprList=['guessedNumber: \'%d\'' % x for x in range(1, 6)])
         self.assertLineCount('subscriber2.out', expr='Received event: Guessed', condition='==5')
         self.assertOrderedGrep('subscriber2.out', exprList=['guessedNumber: \'%d\'' % x for x in range(6, 11)])
+
