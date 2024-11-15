@@ -6,7 +6,7 @@ from ten.test.contracts.game import Game
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        # connect to the network via the primary gateway and deploy the storage contract
+        # connect to the network via the primary gateway, and deploy the game contract
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
         game = Game(self, web3)

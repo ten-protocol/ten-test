@@ -5,7 +5,7 @@
         <title>Session keys: transact through a session key, get past event logs</title>
         <purpose><![CDATA[
 Transact through a session key and get the past event logs through the web3 connection the session key was created
-against. 
+against.
 ]]>
         </purpose>
     </description>

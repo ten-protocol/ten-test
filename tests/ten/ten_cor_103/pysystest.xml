@@ -4,12 +4,18 @@
     <description>
         <title>Session keys: transact through a session key, subscribe event logs</title>
         <purpose><![CDATA[
+Transact through a session key and subscribe for event logs through the web3 connection the session key was created
+against. Note that in the test we first transact using the account the network connection was made from to ensure
+that we see those event logs, then we create and activate the session key and transact through that.
+
+Skipped due to https://github.com/ten-protocol/ten-internal/issues/4242
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
             <group>session_keys</group>
         </groups>
         <modes inherit="true">
