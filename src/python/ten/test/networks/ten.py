@@ -190,6 +190,23 @@ class Ten(DefaultPreLondon):
         requests.post('%s:%d/v1/authenticate/?token=%s' % (self.HOST, self.PORT, self.ID),
                       data=json.dumps(data), headers=headers)
 
+    def tx_unsigned(self, test, web3, tx, address, persist_nonce=True, verbose=True, timeout=30):
+        """Send an unsigned transaction using the supplied transaction dictionary.
+
+        Note that the nonce and chainId will automatically be added into the transaction dictionary in this method
+        and therefore do not need to be supplied by the caller. If they are supplied, they will be overwritten.
+        """
+        if verbose: self.log.info('Account %s performing transaction', address)
+        nonce = self.get_next_nonce(test, web3, address, persist_nonce, verbose)
+        tx['nonce'] = nonce
+        tx['chainId'] = web3.eth.chain_id
+        tx_hash = self.send_unsigned_transaction(test, web3, nonce, address, tx, persist_nonce, verbose)
+        tx_recp = self.wait_for_transaction(test, web3, nonce, address, tx_hash, persist_nonce, verbose, timeout)
+        if tx_recp.status != 1:
+            self.replay_transaction(web3, tx, tx_recp)
+            test.addOutcome(FAILED, abortOnError=True)
+        return tx_recp
+
     def transact_unsigned(self, test, web3, target, address, gas_limit, persist_nonce=True, verbose=True, timeout=30, **kwargs):
         """Transact unsigned using either a contract constructor or contract function as the target.
 

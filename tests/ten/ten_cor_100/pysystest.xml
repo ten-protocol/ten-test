@@ -4,12 +4,17 @@
     <description>
         <title>Session keys: activate and deactivate a session key</title>
         <purpose><![CDATA[
+Attempts to active a session key when one has not be created, deactivate when one has not been created, and then
+activate and deactivate when one has been created.
+
+Skipped due to https://github.com/ten-protocol/ten-internal/issues/4231
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
             <group>session_keys</group>
         </groups>
         <modes inherit="true">

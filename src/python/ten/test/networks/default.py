@@ -177,7 +177,7 @@ class DefaultPostLondon:
             if persist_nonce: test.nonce_db.update(address, test.env, nonce, 'SENT')
         except Exception as e:
             self.log.error('Error sending raw transaction %s', e)
-            if persist_nonce: test.nonce_db.update(address, test.env, nonce, 'TIMEDOUT')
+            if persist_nonce: test.nonce_db.update(address, test.env, nonce, 'FAILED')
             test.addOutcome(BLOCKED, abortOnError=True)
         if verbose: self.log.info('Transaction sent with hash %s', tx_hash.hex())
         return tx_hash

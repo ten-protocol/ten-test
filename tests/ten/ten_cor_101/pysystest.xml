@@ -2,8 +2,12 @@
 <pysystest type="auto">
 
     <description>
-        <title>Session keys: transact through a session key</title>
+        <title>Session keys: transact through a session key, deactivate and re-activate</title>
         <purpose><![CDATA[
+The test creates a session key for a token/userid with a single registered account. The account transfers funds to the
+session key, then activates it, and then transacts using unsigned transactions for the session key. It then deactivates
+the session key and tries to transact, which should fail, then re-activates it and transacts again, which should pass.
+At the end of the test funds are returned to the account.
 ]]>
         </purpose>
     </description>
