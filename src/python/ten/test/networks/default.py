@@ -86,58 +86,58 @@ class DefaultPostLondon:
         return self.connect(test, Properties().account4pk(), web_socket, check_funds, verbose)
 
     def tx(self, test, web3, tx, account, persist_nonce=True, verbose=True, timeout=30):
-        """Transact using the supplied transaction dictionary.
+        """Send a signed transaction using the supplied transaction dictionary.
 
         Note that the nonce and chainId will automatically be added into the transaction dictionary in this method
         and therefore do not need to be supplied by the caller. If they are supplied, they will be overwritten.
         """
         if verbose: self.log.info('Account %s performing transaction', account.address)
-        nonce = self.get_next_nonce(test, web3, account, persist_nonce, verbose)
+        nonce = self.get_next_nonce(test, web3, account.address, persist_nonce, verbose)
         tx['nonce'] = nonce
         tx['chainId'] = web3.eth.chain_id
         tx_sign = self.sign_transaction(test, tx, nonce, account, persist_nonce)
-        tx_hash = self.send_transaction(test, web3, nonce, account, tx_sign, persist_nonce, verbose)
-        tx_recp = self.wait_for_transaction(test, web3, nonce, account, tx_hash, persist_nonce, verbose, timeout)
+        tx_hash = self.send_transaction(test, web3, nonce, account.address, tx_sign, persist_nonce, verbose)
+        tx_recp = self.wait_for_transaction(test, web3, nonce, account.address, tx_hash, persist_nonce, verbose, timeout)
         if tx_recp.status != 1:
             self.replay_transaction(web3, tx, tx_recp)
             test.addOutcome(FAILED, abortOnError=True)
         return tx_recp
 
     def transact(self, test, web3, target, account, gas_limit, persist_nonce=True, verbose=True, timeout=30, **kwargs):
-        """Transact using either a contract constructor or contract function as the target.
+        """Send a signed transaction using either a contract constructor or contract function as the target.
 
         This method expects the target to be a contract constructor or function, and will build this into the
         transaction dictionary using build_transaction on the target. The nonce will automatically be added during this
         process.
         """
         self.log.info('Account %s performing transaction', account.address)
-        nonce = self.get_next_nonce(test, web3, account, persist_nonce, verbose)
-        tx = self.build_transaction(test, web3, target, nonce, account, gas_limit, verbose, **kwargs)
+        nonce = self.get_next_nonce(test, web3, account.address, persist_nonce, verbose)
+        tx = self.build_transaction(test, web3, target, nonce, account.address, gas_limit, verbose, **kwargs)
         tx_sign = self.sign_transaction(test, tx, nonce, account, persist_nonce)
-        tx_hash = self.send_transaction(test, web3, nonce, account, tx_sign, persist_nonce, verbose)
-        tx_recp = self.wait_for_transaction(test, web3, nonce, account, tx_hash, persist_nonce, verbose, timeout)
+        tx_hash = self.send_transaction(test, web3, nonce, account.address, tx_sign, persist_nonce, verbose)
+        tx_recp = self.wait_for_transaction(test, web3, nonce, account.address, tx_hash, persist_nonce, verbose, timeout)
         if tx_recp.status != 1:
             self.replay_transaction(web3, tx, tx_recp)
             test.addOutcome(FAILED, abortOnError=True)
         return tx_recp
 
-    def get_next_nonce(self, test, web3, account, persist_nonce, verbose=True):
+    def get_next_nonce(self, test, web3, address, persist_nonce, verbose=True):
         """Get the next nonce, either from persistence or from the transaction count."""
-        nonce = test.nonce_db.get_next_nonce(test, web3, account.address, test.env, persist_nonce, verbose)
+        nonce = test.nonce_db.get_next_nonce(test, web3, address, test.env, persist_nonce, verbose)
         return nonce
 
-    def build_transaction(self, test, web3, target, nonce, account, gas_limit, verbose=True, **kwargs):
+    def build_transaction(self, test, web3, target, nonce, address, gas_limit, verbose=True, **kwargs):
         """Build the transaction dictionary from the contract constructor or function target."""
         estimate = kwargs['estimate'] if 'estimate' in kwargs else True
         gas_attempts = int(kwargs['gas_attempts']) if 'gas_attempts' in kwargs else 1
         base_fee_per_gas = web3.eth.get_block('latest').baseFeePerGas
         max_priority_fee_per_gas = web3.to_wei(1, 'gwei')
         max_fee_per_gas = (5 * base_fee_per_gas) + max_priority_fee_per_gas
-        balance = web3.eth.get_balance(account.address)
+        balance = web3.eth.get_balance(address)
 
         gas_estimate = gas_limit
         params = {
-            'from': account.address,                          # the account originating the transaction
+            'from': address,                                  # the account originating the transaction
             'nonce': nonce,                                   # the nonce to use
             'chainId': web3.eth.chain_id,                     # the chain id
             'maxFeePerGas': max_fee_per_gas,                  # Maximum amount you’re willing to pay
@@ -169,20 +169,20 @@ class DefaultPostLondon:
         if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'SIGNED')
         return signed_tx
 
-    def send_transaction(self, test, web3, nonce, account, signed_tx, persist_nonce, verbose=True):
+    def send_transaction(self, test, web3, nonce, address, signed_tx, persist_nonce, verbose=True):
         """Send the signed transaction to the network."""
         tx_hash = None
         try:
             tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
-            if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'SENT')
+            if persist_nonce: test.nonce_db.update(address, test.env, nonce, 'SENT')
         except Exception as e:
             self.log.error('Error sending raw transaction %s', e)
-            if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'TIMEDOUT')
+            if persist_nonce: test.nonce_db.update(address, test.env, nonce, 'FAILED')
             test.addOutcome(BLOCKED, abortOnError=True)
         if verbose: self.log.info('Transaction sent with hash %s', tx_hash.hex())
         return tx_hash
 
-    def wait_for_transaction(self, test, web3, nonce, account, tx_hash, persist_nonce, verbose=True, timeout=30):
+    def wait_for_transaction(self, test, web3, nonce, address, tx_hash, persist_nonce, verbose=True, timeout=30):
         """Wait for the transaction from the network to be acknowledged."""
         tx_receipt = None
         try:
@@ -190,15 +190,15 @@ class DefaultPostLondon:
 
             if tx_receipt.status == 1:
                 if verbose: self.log.info('Transaction receipt block hash %s', tx_receipt.blockHash.hex())
-                if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'CONFIRMED')
+                if persist_nonce: test.nonce_db.update(address, test.env, nonce, 'CONFIRMED')
             else:
                 self.log.error('Transaction receipt failed')
                 self.log.error('Full receipt: %s', tx_receipt)
-                if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'FAILED')
+                if persist_nonce: test.nonce_db.update(address, test.env, nonce, 'FAILED')
 
         except TimeExhausted as e:
             self.log.error('Transaction timed out %s', e)
-            if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'TIMEDOUT')
+            if persist_nonce: test.nonce_db.update(address, test.env, nonce, 'TIMEDOUT')
             test.addOutcome(TIMEDOUT, abortOnError=True)
 
         return tx_receipt
@@ -224,16 +224,16 @@ class DefaultPreLondon(DefaultPostLondon):
     def __init__(self, test, name=None, **kwargs):
         super().__init__(test, name, **kwargs)
 
-    def build_transaction(self, test, web3, target, nonce, account, gas_limit, verbose=True, **kwargs):
+    def build_transaction(self, test, web3, target, nonce, address, gas_limit, verbose=True, **kwargs):
         """Build the transaction dictionary from the contract constructor or function target. """
         estimate = kwargs['estimate'] if 'estimate' in kwargs else True
         gas_attempts = int(kwargs['gas_attempts']) if 'gas_attempts' in kwargs else 1
-        balance = web3.eth.get_balance(account.address)
+        balance = web3.eth.get_balance(address)
 
         gas_estimate = gas_limit
         gas_price = web3.eth.gas_price
         params = {
-            'from': account.address,          # the account originating the transaction
+            'from': address,                  # the account originating the transaction
             'nonce': nonce,                   # the nonce to use
             'chainId': web3.eth.chain_id,     # the chain id
             'gasPrice': gas_price             # the current gas price

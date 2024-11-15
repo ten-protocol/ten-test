@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Session keys: transact through a session key, get past event logs</title>
+        <purpose><![CDATA[
+Transact through a session key and get the past event logs through the web3 connection the session key was created
+against.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>session_keys</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+            <mode>ten.sim</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

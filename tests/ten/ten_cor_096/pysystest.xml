@@ -37,6 +37,7 @@ false, and therefore be reflected in the topic2Relevant, topic3Relevant and send
     <classification>
         <groups inherit="true">
             <group>debug_apis</group>
+            <group>vis_config</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
