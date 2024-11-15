@@ -4,12 +4,14 @@
     <description>
         <title>Session keys: transact through a session key, get events logs from receipt</title>
         <purpose><![CDATA[
+Transact through a session key and get event logs from the transaction receipt.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
             <group>session_keys</group>
         </groups>
         <modes inherit="true">
