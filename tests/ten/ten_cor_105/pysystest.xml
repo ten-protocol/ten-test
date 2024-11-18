@@ -4,13 +4,13 @@
     <description>
         <title>Session keys: transact through a session key through different connection</title>
         <purpose><![CDATA[
+Tests that if we leak a session key, we cannot transact using it through a different userid for the same account.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>session_keys</group>
         </groups>
         <modes inherit="true">

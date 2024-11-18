@@ -13,7 +13,6 @@ that we see those event logs, then we create and activate the session key and tr
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>session_keys</group>
         </groups>
         <modes inherit="true">

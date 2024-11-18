@@ -21,10 +21,11 @@ class PySysTest(TenNetworkTest):
         self.log.info('Activate when have session key')
         sk = self.get_session_key(network.connection_url())
         active = self.activate_session_key(network.connection_url())
+        self.log.info('  Session key: %s' % sk)
         self.log.info('  Session active: %s' % active)
-        self.assertTrue(int(active, 16) == 1)
+        self.assertTrue(active == 1)
 
         self.log.info('De-activate when have session key')
         deactive = self.deactivate_session_key(network.connection_url())
         self.log.info('  Session active: %s' % deactive)
-        self.assertTrue(int(active, 16) == 1)
+        self.assertTrue(active == 1)
