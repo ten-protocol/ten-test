@@ -6,15 +6,21 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', stream=sys.s
 
 
 def store_value(value, web3, account, contract):
+    gas_price = web3.eth.gas_price
     params = {
         'nonce': web3.eth.get_transaction_count(account.address),
-        'gasPrice': web3.eth.gas_price,
+        'gasPrice': gas_price,
         'chainId': web3.eth.chain_id
     }
     gas_estimate = contract.functions.store(value).estimate_gas(params)
     params['gas'] = int(1.1*gas_estimate)
 
-    build_tx = contract.functions.store(value).buildTransaction(params)
+    logging.info('Account Balance: %d', web3.eth.get_balance(account.address))
+    logging.info('Cost Estimate:   %d', gas_estimate*gas_price)
+    logging.info('Gas Estimate:    %d', gas_estimate)
+    logging.info('Gas Price:       %d', gas_price)
+
+    build_tx = contract.functions.store(value).build_transaction(params)
     signed_tx = account.sign_transaction(build_tx)
     tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
     tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash)

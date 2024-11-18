@@ -72,7 +72,7 @@ class PySysTest(TenNetworkTest):
 
     def funds_client(self, network, pk, recipients, num, funders_connection):
         web3, account = funders_connection.connect(self, private_key=pk, check_funds=False)
-        self.distribute_native(account, network.ETH_ALLOC_EPHEMERAL)
+        self.distribute_native(account, 5*network.ETH_ALLOC_EPHEMERAL)
 
         stdout = os.path.join(self.output, 'funds_%d.out' % num)
         stderr = os.path.join(self.output, 'funds_%d.err' % num)
@@ -90,16 +90,16 @@ class PySysTest(TenNetworkTest):
     def storage_client_sk(self, address, abi_path, num):
         network = self.get_network_connection()
         web3, account = network.connect(self, private_key=secrets.token_hex(32), check_funds=False)
-        self.distribute_native(account, network.ETH_ALLOC_EPHEMERAL)
+        self.distribute_native(account, 5*network.ETH_ALLOC_EPHEMERAL)
         sk = self.get_session_key(network.connection_url())
-        tx = {'to': sk, 'value': web3.to_wei(0.9*network.ETH_ALLOC_EPHEMERAL, 'ether'), 'gasPrice': web3.eth.gas_price}
+        tx = {'to': sk, 'value': web3.to_wei(0.9*5*network.ETH_ALLOC_EPHEMERAL, 'ether'), 'gasPrice': web3.eth.gas_price}
         tx['gas'] = web3.eth.estimate_gas(tx)
         network.tx(self, web3, tx, account)
         self.activate_session_key(network.connection_url())
 
         stdout = os.path.join(self.output, 'storage_client_sk_%d.out' % num)
         stderr = os.path.join(self.output, 'storage_client_sk_%d.err' % num)
-        script = os.path.join(PROJECT.root, 'src', 'python', 'scripts', 'storage_client_sk.py')
+        script = os.path.join(self.input, 'storage_client_sk.py')
         args = []
         args.extend(['--network_http', '%s' % network.connection_url()])
         args.extend(['--address', '%s' % address])
@@ -118,7 +118,7 @@ class PySysTest(TenNetworkTest):
         pk = secrets.token_hex(32)
         web3, account = network.connect(self, private_key=pk, check_funds=False)
         if fund:
-            self.distribute_native(account, network.ETH_ALLOC_EPHEMERAL)
+            self.distribute_native(account, 5*network.ETH_ALLOC_EPHEMERAL)
             self.client_connections.append((web3, account, network))
 
         stdout = os.path.join(self.output, '%s_%d.out' % (name, num))
