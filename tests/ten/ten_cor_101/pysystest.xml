@@ -14,7 +14,6 @@ At the end of the test funds are returned to the account.
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>session_keys</group>
         </groups>
         <modes inherit="true">

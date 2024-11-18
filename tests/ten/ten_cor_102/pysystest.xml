@@ -12,7 +12,6 @@ against.
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>session_keys</group>
         </groups>
         <modes inherit="true">
