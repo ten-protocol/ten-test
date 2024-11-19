@@ -282,6 +282,9 @@ class TenRunnerPlugin():
                 Properties.L2BridgeAddress = self.__get_contract(contracts, "L2Bridge")
                 Properties.L1CrossChainMessengerAddress = self.__get_contract(contracts, "L1CrossChainMessenger")
                 Properties.L2CrossChainMessengerAddress = self.__get_contract(contracts, "L2CrossChainMessenger")
+            if "PublicSystemContracts" in config:
+                contracts = config["PublicSystemContracts"]
+                Properties.L2PublicCallbacks = self.__get_contract(contracts, "PublicCallbacks")
         elif 'error' in response.json():
             runner.log.error(response.json()['error']['message'])
 

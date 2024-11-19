@@ -14,6 +14,7 @@ class Properties:
     L2BridgeAddress = None
     L2MessageBusAddress = None
     L2CrossChainMessengerAddress = None
+    L2PublicCallbacks = None
 
     def __init__(self):
         self.default_config = configparser.ConfigParser()

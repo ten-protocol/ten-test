@@ -7,6 +7,11 @@ class Game(DefaultContract):
     CONTRACT = 'GuessGame'
 
 
+class GameTwoPhase(DefaultContract):
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'GuessGameTwoPhase.sol')
+    CONTRACT = 'GuessGameTwoPhase'
+
+
 class TransparentGuessGame(DefaultContract):
     SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'TransparentGuessGame.sol')
     CONTRACT = 'TransparentGuessGame'
