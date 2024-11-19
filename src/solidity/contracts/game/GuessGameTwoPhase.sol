@@ -28,23 +28,24 @@ contract GuessGameTwoPhase {
     }
 
     function guess(uint256 _number) public payable {
-        bytes memory callbackData = abi.encodeWithSelector(this.handleGuess.selector, _number);
+        bytes memory callbackData = abi.encodeWithSelector(this.handleGuess.selector, _number, msg.sender);
         callbacks.register{value: msg.value}(callbackData);
     }
 
-    function handleGuess(uint256 _number) external {
+    function handleGuess(uint256 _number, address originator) external {
+        require(msg.sender == address(callbacks));
         require(_number > 0 && _number <= MAX_GUESS, 'Secret number should be between 1 and 1000');
         totalGuesses += 1;
-        attempts[msg.sender] += 1;
+        attempts[originator] += 1;
 
         if (_number == secretNumber) {
-            emit Guessed(msg.sender, _number, true, secretNumber);
+            emit Guessed(originator, _number, true, secretNumber);
             _resetSecretNumber();
             totalGuesses = 0;
         } else {
-            emit Guessed(msg.sender, _number, false, secretNumber);
+            emit Guessed(originator, _number, false, secretNumber);
         }
-        emit Attempts(msg.sender, attempts[msg.sender]);
+        emit Attempts(originator, attempts[originator]);
     }
 
     function _resetSecretNumber() private {
