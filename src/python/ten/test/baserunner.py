@@ -269,7 +269,7 @@ class TenRunnerPlugin():
 
     def __set_contract_addresses(self, runner):
         """Get the contract addresses and set into the properties. """
-        data = {"jsonrpc": "2.0", "method": "obscuro_config", "id": self.MSG_ID}
+        data = {"jsonrpc": "2.0", "method": "ten_config", "id": self.MSG_ID}
         response = self.post(runner, data)
         if 'result' in response.json():
             config = response.json()['result']
