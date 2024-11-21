@@ -6,7 +6,7 @@
         <purpose><![CDATA[
 Deploys two contracts that use the two phase callback implementation to pass execution of a tx to the public callbacks
 contract. The test just checks that the txs go through as expected and update the stored value held within the
-contract. 
+contract.
 ]]>
         </purpose>
     </description>
