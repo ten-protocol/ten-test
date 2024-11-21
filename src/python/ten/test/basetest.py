@@ -431,7 +431,7 @@ class TenNetworkTest(GenericNetworkTest):
 
     def obscuro_health(self):
         """Get the debug_LogVisibility. """
-        data = {"jsonrpc": "2.0", "method": "obscuro_health", "id": self.MSG_ID }
+        data = {"jsonrpc": "2.0", "method": "ten_health", "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return response.json()['result']
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
@@ -439,7 +439,7 @@ class TenNetworkTest(GenericNetworkTest):
 
     def obscuro_config(self):
         """Get the obscuro_config. """
-        data = {"jsonrpc": "2.0", "method": "obscuro_config", "id": self.MSG_ID }
+        data = {"jsonrpc": "2.0", "method": "ten_config", "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return response.json()['result']
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
