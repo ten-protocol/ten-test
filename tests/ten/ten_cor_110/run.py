@@ -6,7 +6,7 @@ from ten.test.contracts.storage import StorageTwoPhaseNoEvents, StorageTwoPhaseW
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        # connect to the network via the primary gateway and deploy the contract
+        # connect to the network
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 

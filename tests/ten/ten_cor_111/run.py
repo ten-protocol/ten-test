@@ -7,11 +7,11 @@ from ten.test.contracts.storage import StorageTwoPhaseWithEvents
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        # connect to the network via the primary gateway and deploy the contract
+        # connect to the network
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
-        # deploy the contract, create a filter, transact against the contract
+        # deploy the contract
         storage = StorageTwoPhaseWithEvents(self, web3, 100, Properties().L2PublicCallbacks)
         storage.deploy(network, account)
 
@@ -29,6 +29,7 @@ class PySysTest(TenNetworkTest):
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=logout, expr='Starting task ...', timeout=10)
 
+        # transact against the contract
         for i in range(0,5): self.transact(storage, web3, network, account, i)
         self.wait(float(self.block_time) * 1.1)
 
