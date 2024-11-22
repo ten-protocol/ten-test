@@ -6,7 +6,7 @@ interface IPublicCallbacks {
     function reattemptCallback(uint256 callbackId) external;
 }
 
-contract StorageTwoPhaseWithReceive {
+contract StorageTwoPhaseReceiveWithRevert {
     IPublicCallbacks public callbacks;
     address public owner;
     uint256 number;
@@ -31,8 +31,7 @@ contract StorageTwoPhaseWithReceive {
         return number;
     }
 
-    receive() external payable {
-    }
+    receive() external payable { revert(); }
 
     function destroy() public {
         require(msg.sender == owner, "You are not the owner");
