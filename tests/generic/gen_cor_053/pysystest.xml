@@ -2,9 +2,11 @@
 <pysystest type="auto">
 
     <description>
-        <title>Error: revert on transaction</title>
+        <title>Error: revert on non-view function via ethers and web3js</title>
         <purpose><![CDATA[
-Deploy a contract and check for error reporting on failure of a transaction.
+In the test we check the web3js and ethers library handling of a transaction that fails due to a revert, specifically
+we check that the libraries don't abstract over doing a call on the function tx in order to get the revert reason, and
+therefore that it is the developers responsibility to get it.
 ]]>
         </purpose>
     </description>
@@ -12,6 +14,8 @@ Deploy a contract and check for error reporting on failure of a transaction.
     <classification>
         <groups inherit="true">
             <group>error</group>
+            <group>ethers</group>
+            <group>web3js</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

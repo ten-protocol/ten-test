@@ -25,7 +25,7 @@ contract Error {
         assert(false);
     }
 
-    function set_key(string memory newKey) public {
+    function set_key_with_require(string memory newKey) public {
         require(bytes(newKey).length != 0, "New key cannot be empty");
         key = newKey;
     }

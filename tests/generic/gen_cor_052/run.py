@@ -1,7 +1,7 @@
-import secrets, os
-from web3 import Web3
-from ten.test.contracts.error import Error
+import re
+from pysys.constants import PASSED, FAILED
 from ten.test.basetest import GenericNetworkTest
+from ten.test.contracts.error import Error
 
 
 class PySysTest(GenericNetworkTest):
@@ -9,35 +9,45 @@ class PySysTest(GenericNetworkTest):
     def execute(self):
         # connect to the network and deploy the contract
         network = self.get_network_connection()
-        web3, account = network.connect_account1(self)
+        web3, account = network.connect_account1(self, web_socket=True)
 
         error = Error(self, web3)
         error.deploy(network, account)
 
-        # the two clients use an ephemeral test account that will leak funds but means
-        # we don't need to manage the nonce
-        self.client(network, error, 'ethers')
-        self.client(network, error, 'web3')
-        self.assertGrep(file='client_ethers.log', expr='Error: transaction failed')
-        self.assertGrep(file='client_web3.log', expr='Error: Transaction has been reverted by the EVM')
+        # transact successfully
+        nonce = self.nonce_db.get_next_nonce(self, web3, account.address, self.env)
+        self.submit(account, error.contract.functions.set_key_with_revert("new"), web3, nonce)
 
-    def client(self, network, contract, type):
-        private_key = secrets.token_hex(32)
-        self.distribute_native(Web3().eth.account.from_key(private_key), network.ETH_ALLOC_EPHEMERAL)
-        network.connect(self, private_key=private_key, check_funds=False)
+        # force a require
+        nonce = self.nonce_db.get_next_nonce(self, web3, account.address, self.env)
+        self.submit(account, error.contract.functions.set_key_with_revert(""), web3, nonce)
 
-        # create the client
-        stdout = os.path.join(self.output, 'client_%s.out' % type)
-        stderr = os.path.join(self.output, 'client_%s.err' % type)
-        logout = os.path.join(self.output, 'client_%s.log' % type)
-        script = os.path.join(self.input, 'client_%s.js' % type)
-        args = []
-        args.extend(['--network', network.connection_url()])
-        args.extend(['--address', contract.address])
-        args.extend(['--contract_abi', contract.abi_path])
-        args.extend(['--private_key', private_key])
-        args.extend(['--log_file', '%s' % logout])
-        self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=logout, expr='Starting transactions', timeout=10)
-        self.waitForGrep(file=logout, expr='Completed transactions', timeout=40)
+    def submit(self, account, target, web3, nonce, expect_success=True):
+        build_tx = target.build_transaction({
+            'nonce': nonce,
+            'gasPrice': web3.eth.gas_price,
+            'gas': 10 * 21000,  # hard code the gas as an estimate will fail
+            'chainId': web3.eth.chain_id
+        })
+        signed_tx = account.sign_transaction(build_tx)
+        self.nonce_db.update(account.address, self.env, nonce, 'SIGNED')
 
+        tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+        self.nonce_db.update(account.address, self.env, nonce, 'SENT')
+
+        tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash.hex(), timeout=30)
+        if tx_receipt.status == 1:
+            self.log.info('Transaction successful')
+            self.nonce_db.update(account.address, self.env, nonce, 'CONFIRMED')
+            self.addOutcome(PASSED if expect_success else FAILED, 'Transaction should pass')
+        else:
+            self.log.info('Transaction failed')
+            self.nonce_db.update(account.address, self.env, nonce, 'FAILED')
+            try:
+                web3.eth.call(build_tx, block_identifier=tx_receipt.blockNumber)
+            except Exception as e:
+                self.addOutcome(FAILED if expect_success else PASSED, 'Transaction should fail')
+                self.log.error('Replay call: %s', e)
+                regex = re.compile('.*New key cannot be empty', re.M)
+                self.assertTrue(regex.search(e.args[0]) is not None)
+        return tx_receipt
