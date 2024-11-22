@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Callbacks: storage two phase callback implementation with and without events</title>
+        <purpose><![CDATA[
+Deploys two contracts that use the two phase callback implementation to pass execution of a tx to the public callbacks
+contract. The test just checks that the txs go through as expected and that they update the stored value held within the
+contract.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>callbacks</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+            <mode>ten.sim</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

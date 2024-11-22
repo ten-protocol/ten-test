@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Callbacks: two phase commit with life-cycle event, contract.getPastEvents to get new entries</title>
+        <purpose><![CDATA[
+Deploys the storage contract which implements the two phase commit approach. After transacting five times a javascript
+event poller polls using contract.getPastEvents to get events since the latest block, where contract is the storage
+contract.
+
+Skipped due to https://github.com/ten-protocol/ten-internal/issues/4281
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>skip</group>
+            <group>callbacks</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+            <mode>ten.sim</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

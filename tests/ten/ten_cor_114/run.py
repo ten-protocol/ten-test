@@ -1,7 +1,8 @@
 import re
 from pysys.constants import PASSED, FAILED
 from ten.test.basetest import GenericNetworkTest
-from ten.test.contracts.error import Error
+from ten.test.utils.properties import Properties
+from ten.test.contracts.error import ErrorTwoPhase
 
 
 class PySysTest(GenericNetworkTest):
@@ -11,23 +12,24 @@ class PySysTest(GenericNetworkTest):
         network = self.get_network_connection()
         web3, account = network.connect_account1(self, web_socket=True)
 
-        error = Error(self, web3)
+        error = ErrorTwoPhase(self, web3, Properties().L2PublicCallbacks)
         error.deploy(network, account)
 
         # transact successfully
         nonce = self.nonce_db.get_next_nonce(self, web3, account.address, self.env)
-        self.submit(account, error.contract.functions.set_key("new"), web3, nonce)
+        self.submit(account, error.contract.functions.set_key_with_require("new"), web3, nonce)
 
         # force a require
         nonce = self.nonce_db.get_next_nonce(self, web3, account.address, self.env)
-        self.submit(account, error.contract.functions.set_key(""), web3, nonce)
+        self.submit(account, error.contract.functions.set_key_with_require(""), web3, nonce)
 
     def submit(self, account, target, web3, nonce, expect_success=True):
         build_tx = target.build_transaction({
             'nonce': nonce,
             'gasPrice': web3.eth.gas_price,
             'gas': 10*21000,                    # hard code the gas as an estimate will fail
-            'chainId': web3.eth.chain_id
+            'chainId': web3.eth.chain_id,
+            'value': web3.to_wei(0.01, 'ether') # we need to provide funds for the tx to go through
         })
         signed_tx = account.sign_transaction(build_tx)
         self.nonce_db.update(account.address, self.env, nonce, 'SIGNED')

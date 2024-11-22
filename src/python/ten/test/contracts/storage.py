@@ -7,6 +7,16 @@ class Storage(DefaultContract):
     CONTRACT = 'Storage'
 
 
+class StorageTwoPhaseNoEvents(DefaultContract):
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'storage', 'StorageTwoPhaseNoEvents.sol')
+    CONTRACT = 'StorageTwoPhaseNoEvents'
+
+
+class StorageTwoPhaseWithEvents(DefaultContract):
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'storage', 'StorageTwoPhaseWithEvents.sol')
+    CONTRACT = 'StorageTwoPhaseWithEvents'
+
+
 class KeyStorage(DefaultContract):
     SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'storage', 'KeyStorage.sol')
     CONTRACT = 'KeyStorage'

@@ -243,8 +243,7 @@ class L2BridgeDetails(BridgeDetails):
         """
         token = self.tokens[symbol]
         tx_receipt = self.network.transact(self.test, self.web3,
-                                           self.bridge.contract.functions.sendERC20(token.address,
-                                                                                    amount, address),
+                                           self.bridge.contract.functions.sendERC20(token.address, amount, address),
                                            self.account, gas_limit=self.bridge.GAS_LIMIT,
                                            timeout=timeout)
         if dump_file: self.network.dump(tx_receipt, dump_file)
