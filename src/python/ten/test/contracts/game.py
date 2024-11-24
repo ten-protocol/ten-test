@@ -5,12 +5,7 @@ from ten.test.contracts.default import DefaultContract
 class Game(DefaultContract):
     SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'GuessGame.sol')
     CONTRACT = 'GuessGame'
-
-
-class GameTwoPhase(DefaultContract):
-    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'GuessGameTwoPhase.sol')
-    CONTRACT = 'GuessGameTwoPhase'
-
+    
 
 class TransparentGuessGame(DefaultContract):
     SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'TransparentGuessGame.sol')
