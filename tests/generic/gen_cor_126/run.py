@@ -48,3 +48,6 @@ class PySysTest(GenericNetworkTest):
         ret = int(contract.functions.doIt(2).call())
         self.log.info('Returned value is %d', ret)
         self.assertTrue(ret == 4)
+
+        # return remaining funds
+        self.drain_native(web3, account, network)

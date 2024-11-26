@@ -47,3 +47,6 @@ class PySysTest(GenericNetworkTest):
         ret = int(contract.functions.testSquareRoot(25).call())
         self.log.info('Returned value is %d', ret)
         self.assertTrue(ret == 5)
+
+        # return remaining funds
+        self.drain_native(web3, account, network)

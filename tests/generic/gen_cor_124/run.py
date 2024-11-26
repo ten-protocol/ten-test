@@ -19,7 +19,7 @@ class PySysTest(GenericNetworkTest):
         self.distribute_native(Web3().eth.account.from_key(private_key_1), network.ETH_ALLOC)
         self.distribute_native(Web3().eth.account.from_key(private_key_2), network.ETH_ALLOC)
         web3, account = network.connect(self, private_key=private_key_1, check_funds=False)
-        _, _ = network.connect(self, private_key=private_key_2, check_funds=False)
+        web3_2, account_2 = network.connect(self, private_key=private_key_2, check_funds=False)
 
         # copy over and initialise the project
         shutil.copytree(self.input, project)
@@ -67,3 +67,7 @@ class PySysTest(GenericNetworkTest):
         ret = int(contract.functions.retrieve().call())
         self.log.info('Returned value is %d', ret)
         self.assertTrue(ret == 800)
+
+        # return remaining funds
+        self.drain_native(web3, account, network)
+        self.drain_native(web3_2, account_2, network)
