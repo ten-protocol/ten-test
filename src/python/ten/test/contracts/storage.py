@@ -17,6 +17,11 @@ class StorageTwoPhaseWithEvents(DefaultContract):
     CONTRACT = 'StorageTwoPhaseWithEvents'
 
 
+class StorageTwoPhaseReceiveWithRevert(DefaultContract):
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'storage', 'StorageTwoPhaseReceiveWithRevert.sol')
+    CONTRACT = 'StorageTwoPhaseReceiveWithRevert'
+
+
 class KeyStorage(DefaultContract):
     SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'storage', 'KeyStorage.sol')
     CONTRACT = 'KeyStorage'

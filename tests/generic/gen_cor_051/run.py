@@ -16,11 +16,11 @@ class PySysTest(GenericNetworkTest):
 
         # transact successfully
         nonce = self.nonce_db.get_next_nonce(self, web3, account.address, self.env)
-        self.submit(account, error.contract.functions.set_key("new"), web3, nonce)
+        self.submit(account, error.contract.functions.set_key_with_require("new"), web3, nonce)
 
         # force a require
         nonce = self.nonce_db.get_next_nonce(self, web3, account.address, self.env)
-        self.submit(account, error.contract.functions.set_key(""), web3, nonce)
+        self.submit(account, error.contract.functions.set_key_with_require(""), web3, nonce, expect_success=False)
 
     def submit(self, account, target, web3, nonce, expect_success=True):
         build_tx = target.build_transaction({

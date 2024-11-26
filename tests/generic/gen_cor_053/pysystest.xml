@@ -2,21 +2,20 @@
 <pysystest type="auto">
 
     <description>
-        <title>Callbacks: two phase commit where the callback triggers a require</title>
+        <title>Error: revert on non-view function via ethers and web3js</title>
         <purpose><![CDATA[
-Deploys the error contract which implements the two phase commit approach. Transacting with the contract results in a
-callback to a method which has a require that triggers - we expect this to be handled in the same way in which it
-would have had it been done without the call back approach.
-
-Skipped due to https://github.com/ten-protocol/ten-internal/issues/4282
+In the test we check the web3js and ethers library handling of a transaction that fails due to a revert, specifically
+we check that the libraries don't abstract over doing a call on the function tx in order to get the revert reason, and
+therefore that it is the developers responsibility to get it.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
-            <group>callbacks</group>
+            <group>error</group>
+            <group>ethers</group>
+            <group>web3js</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
@@ -24,6 +23,9 @@ Skipped due to https://github.com/ten-protocol/ten-internal/issues/4282
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
             <mode>ten.sim</mode>
+            <mode>arbitrum.sepolia</mode>
+            <mode>ganache</mode>
+            <mode>sepolia</mode>
         </modes>
     </classification>
 

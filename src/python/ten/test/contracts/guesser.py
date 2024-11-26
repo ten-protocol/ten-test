@@ -34,6 +34,6 @@ class Guesser(DefaultContract):
 
 
 class GuesserConstructor(Guesser):
-    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'guesser', 'Guesser_constructor.sol')
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'guesser', 'GuesserWithConstructor.sol')
     CONTRACT = 'GuesserConstructor'
 
