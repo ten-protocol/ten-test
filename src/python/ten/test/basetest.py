@@ -6,6 +6,7 @@ from pysys.basetest import BaseTest
 from pysys.constants import PROJECT, BACKGROUND, FAILED
 from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
+from ten.test.persistence.rates import RatesPersistence
 from ten.test.persistence.nonce import NoncePersistence
 from ten.test.persistence.funds import FundsPersistence
 from ten.test.persistence.counts import CountsPersistence
@@ -34,6 +35,7 @@ class GenericNetworkTest(BaseTest):
 
         # every test has its own connection to the nonce and contract db
         db_dir = os.path.join(str(Path.home()), '.tentest')
+        self.rates_db = RatesPersistence(db_dir)
         self.nonce_db = NoncePersistence(db_dir)
         self.contract_db = ContractPersistence(db_dir)
         self.funds_db = FundsPersistence(db_dir)
@@ -48,6 +50,7 @@ class GenericNetworkTest(BaseTest):
         self.accounts = []
         self.transfer_costs = []
         self.average_transfer_cost = 21000
+        self.eth_price = self.rates_db.get_latest_rate('ETH', 'USD')
 
         for fn in Properties().accounts():
             web3, account = self.network_funding.connect(self, fn(), check_funds=False, verbose=False)
@@ -62,6 +65,9 @@ class GenericNetworkTest(BaseTest):
         sign = '-' if (self.balance - balance) < 0 else ''
         self.log.info("  %s: %s%d Wei", 'Test cost', sign, delta, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
         self.log.info("  %s: %s%.9f ETH", 'Test cost', sign, Web3().from_wei(delta, 'ether'), extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+        if self.eth_price is not None:
+            change = float(Web3().from_wei(delta, 'ether'))
+            self.log.info("  %s: %s%.3f USD", 'Test cost', sign, self.eth_price*change, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
 
     def close_db(self):
         """Close the connection to the nonce database on completion. """

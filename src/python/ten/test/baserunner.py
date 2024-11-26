@@ -1,4 +1,4 @@
-import os, shutil, sys, json, requests
+import os, shutil, sys, json, requests, time
 from collections import OrderedDict
 from web3 import Web3
 from pathlib import Path
@@ -8,6 +8,7 @@ from pysys.constants import PROJECT, BACKGROUND
 from pysys.exceptions import AbortExecution
 from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
+from ten.test.persistence.rates import RatesPersistence
 from ten.test.persistence.nonce import NoncePersistence
 from ten.test.persistence.funds import FundsPersistence
 from ten.test.persistence.counts import CountsPersistence
@@ -60,6 +61,8 @@ class TenRunnerPlugin():
         # create the nonce db if it does not already exist, clean it out if using ganache
         db_dir = os.path.join(str(Path.home()), '.tentest')
         if not os.path.exists(db_dir): os.makedirs(db_dir)
+        rates_db = RatesPersistence(db_dir)
+        rates_db.create()
         nonce_db = NoncePersistence(db_dir)
         nonce_db.create()
         contracts_db = ContractPersistence(db_dir)
@@ -70,6 +73,13 @@ class TenRunnerPlugin():
         counts_db.create()
         results_db = ResultsPersistence(db_dir)
         results_db.create()
+
+        eth_price = self.get_eth_price()
+        if eth_price is not None:
+            runner.log.info('Current ETH price is %f USD' % eth_price)
+            rates_db.insert_rates('ETH', 'USD', int(time.time()), eth_price)
+        else:
+            eth_price = rates_db.get_latest_rate('ETH', 'USD')
 
         if self.is_ten() and runner.threads > 3:
             raise Exception('Max threads against Ten cannot be greater than 3')
@@ -98,7 +108,7 @@ class TenRunnerPlugin():
                 web3 = Web3(Web3.HTTPProvider('%s/v1/?token=%s' % (gateway_url, user_id)))
                 runner.addCleanupFunction(lambda: self.__print_cost(runner,
                                                                     '%s/v1/authenticate/?token=%s' % (gateway_url, user_id),
-                                                                    web3, user_id))
+                                                                    web3, user_id, eth_price))
 
                 tx_count = web3.eth.get_transaction_count(account.address)
                 balance = web3.from_wei(web3.eth.get_balance(account.address), 'ether')
@@ -218,7 +228,7 @@ class TenRunnerPlugin():
         response = requests.post(url, data=json.dumps(data), headers=headers)
         if not response.ok: runner.log.info('Request for funds was not successful, response text: %s', response.text)
 
-    def __print_cost(self, runner, url, web3, user_id):
+    def __print_cost(self, runner, url, web3, user_id, eth_price):
         """Print out balances. """
         try:
             delta = 0
@@ -235,8 +245,18 @@ class TenRunnerPlugin():
             runner.log.info("  %s: %s%d Wei", 'Total cost', sign, Web3().to_wei(abs(delta), 'ether'),
                             extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
             runner.log.info("  %s: %s%.9f ETH", 'Total cost', sign, abs(delta), extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+            if eth_price is not None:
+                runner.log.info("  %s: %s%.6f USD", 'Total cost', sign, abs(float(delta)*eth_price), extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
         except Exception as e:
             pass
+
+    def get_eth_price(self):
+        url = "https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD"
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            return float(response.json()['USD'])
+        return None
 
     @staticmethod
     def __stop_process(hprocess):
