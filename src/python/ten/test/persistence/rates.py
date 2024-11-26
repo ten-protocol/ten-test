@@ -40,7 +40,6 @@ class RatesPersistence:
         self.cursor.execute(self.SQL_SELECT, (crypto, currency))
         try:
             result = self.cursor.fetchone()[1]
-            print(float(result))
             return float(result)
         except:
             return None
