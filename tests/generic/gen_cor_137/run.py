@@ -39,6 +39,9 @@ class PySysTest(GenericNetworkTest):
         except TransactionError:
             self.addOutcome(PASSED, 'Transaction error received as expected')
 
+        # return remaining funds
+        self.drain_native(web3, account, network)
+
     def submit(self, account, target, web3, nonce, gas_limit):
         build_tx = target.build_transaction({
                 'nonce': nonce,

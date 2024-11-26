@@ -79,6 +79,7 @@ class PySysTest(TenNetworkTest):
             self.log.warn('Exception thrown %s', e)
             self.addOutcome(FAILED)
 
+        # return remaining funds
         self.drain_native(web3, account, network)
 
 

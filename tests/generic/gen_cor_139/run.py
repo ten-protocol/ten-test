@@ -50,6 +50,10 @@ class PySysTest(GenericNetworkTest):
             except Exception:
                 self.addOutcome(FAILED, 'Unexpected behaviour in that the tx has not been successful')
 
+        # return remaining funds
+        self.drain_native(web3_send, account_send, network)
+        self.drain_native(web3_recv, account_recv, network)
+
     def submit(self, web3, account, to_address, value, gas_price, gas_estimate, nonce=0):
         build_tx = {
             'to': to_address, 'value': value, 'gasPrice': gas_price, 'gas': gas_estimate,

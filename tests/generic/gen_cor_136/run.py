@@ -74,3 +74,6 @@ class PySysTest(GenericNetworkTest):
         except TimeExhausted as e:
             self.log.error(e.args[0]['message'])
             raise TransactionTimeOut('Transaction timed out waiting for receipt')
+
+        # return remaining funds
+        self.drain_native(web3, account, network)
