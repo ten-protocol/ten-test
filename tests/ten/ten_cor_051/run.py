@@ -35,3 +35,4 @@ class PySysTest(TenNetworkTest):
         self.assertGrep('npx_deploy.out', expr='Registering account %s...' % account_2.address)
         self.assertGrep('npx_deploy.out', expr='deploying "Double" .*deployed at .* with .* gas')
         self.assertGrep('npx_deploy.out', expr='deploying "Triple" .*deployed at .* with .* gas')
+

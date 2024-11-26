@@ -47,6 +47,7 @@ class GenericNetworkTest(BaseTest):
         self.balance = 0
         self.accounts = []
         self.transfer_costs = []
+        self.average_transfer_cost = 21000
 
         for fn in Properties().accounts():
             web3, account = self.network_funding.connect(self, fn(), check_funds=False, verbose=False)
@@ -146,25 +147,27 @@ class GenericNetworkTest(BaseTest):
         tx['gas'] = web3_pk.eth.estimate_gas(tx)
         if verbose: self.log.info('Gas estimate for distribute native is %d', tx['gas'])
 
-        if verbose: self.log.info('Sending %.6f ETH to account %s', amount, account.address)
+        if verbose: self.log.info('Sending %.9f ETH to account %s', amount, account.address)
         self.network_funding.tx(self, web3_pk, tx, account_pk, verbose=verbose)
         balance_after = web3_pk.eth.get_balance(account_pk.address)
         self.transfer_costs.append((balance_before - web3_pk.to_wei(amount, 'ether') - balance_after))
+        self.average_transfer_cost = int(sum(self.transfer_costs) / len(self.transfer_costs))
+        self.log.info('Average transfer cost: %.9f ETH' % web3_pk.from_wei(self.average_transfer_cost, 'ether'))
 
     def drain_native(self, web3, account, network):
-        """A native transfer of all funds from and account to the funded account."""
-        average_cost = int(sum(self.transfer_costs) / len(self.transfer_costs))
+        """A native transfer of all funds from an account to the funded account."""
         balance = web3.eth.get_balance(account.address)
-        amount = web3.eth.get_balance(account.address) - 10*average_cost
-        self.log.info("Drain account %s of %d (current balance %d)", account.address, amount, balance)
+        amount = web3.eth.get_balance(account.address) - 5*self.average_transfer_cost
+        self.log.info("Draining account %s", account.address)
 
         address = Web3().eth.account.from_key(Properties().fundacntpk()).address
-        self.log.info('Send to address is %s', address)
-
         tx = {'to':  address, 'value': amount, 'gasPrice': web3.eth.gas_price}
         tx['gas'] = web3.eth.estimate_gas(tx)
-        self.log.info('Gas estimate for drain native is %d', tx['gas'])
-        network.tx(self, web3, tx, account, persist_nonce=False)
+        tx['value'] = web3.eth.get_balance(account.address) - tx['gas'] * web3.eth.gas_price
+        self.log.info('Drain estimate cost:  %.9f ETH' % web3.from_wei(tx['gas'] * web3.eth.gas_price, 'ether'))
+        self.log.info('Pre-drain balance:    %.9f ETH' % web3.from_wei(web3.eth.get_balance(account.address), 'ether'))
+        network.tx(self, web3, tx, account, persist_nonce=False, verbose=False)
+        self.log.info('Post-drain balance:   %.9f ETH' % web3.from_wei(web3.eth.get_balance(account.address), 'ether'))
 
     def fund_native(self, network, account, amount, pk, persist_nonce=True, gas_limit=None):
         """A native transfer of funds from one address to another.

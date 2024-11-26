@@ -15,22 +15,22 @@ class PySysTest(TenNetworkTest):
 
         sequencer_address = Properties().sequencer_address(key='ten.sepolia')
         sequencer_balance = web3.from_wei(web3.eth.get_balance(sequencer_address), 'ether')
-        self.log.info('Sequencer account %s balance %.6f ETH', sequencer_address, sequencer_balance)
+        self.log.info('Sequencer account %s balance %.9f ETH', sequencer_address, sequencer_balance)
 
         validator1_address = Properties().validator1_address(key='ten.sepolia')
         validator1_balance = web3.from_wei(web3.eth.get_balance(validator1_address), 'ether')
-        self.log.info('Validator 1 account %s balance %.6f ETH', validator1_address, validator1_balance)
+        self.log.info('Validator 1 account %s balance %.9f ETH', validator1_address, validator1_balance)
 
         validator2_address = Properties().validator2_address(key='ten.sepolia')
         validator2_balance = web3.from_wei(web3.eth.get_balance(validator2_address), 'ether')
-        self.log.info('Validator 2 account %s balance %.6f ETH', validator2_address, validator2_balance)
+        self.log.info('Validator 2 account %s balance %.9f ETH', validator2_address, validator2_balance)
 
         deployer_address = Properties().l1_deployer_address(key='ten.sepolia')
         deployer_balance = web3.from_wei(web3.eth.get_balance(deployer_address), 'ether')
-        self.log.info('Deployer account %s balance %.6f ETH', deployer_address, deployer_balance)
+        self.log.info('Deployer account %s balance %.9f ETH', deployer_address, deployer_balance)
 
         faucet_balance = web3.from_wei(self.get_faucet_balance(), 'ether')
-        self.log.info('Faucet balance %.6f ETH', faucet_balance)
+        self.log.info('Faucet balance %.9f ETH', faucet_balance)
 
         self.assertTrue(sequencer_balance >= self.L1_THRESHOLD,
                         assertMessage='L1 Sequencer balance is below threshold %s' % self.L1_THRESHOLD)

@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Callbacks: storage two phase callback having a receive with a revert</title>
+        <title>Callbacks: storage two phase commit having a receive with a revert</title>
         <purpose><![CDATA[
 Tests that for a contract implementing the two phase commit paradigm, having a receive method containing a revert
 does not cause any issues with the network functionality. 
