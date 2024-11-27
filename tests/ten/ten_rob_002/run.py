@@ -60,7 +60,7 @@ class PySysTest(TenNetworkTest):
 
         # wait the duration of the test, then check we can still transact
         self.wait(self.DURATION)
-        self._stop_and_drain()
+        self._stop_clients()
         self.wait(2.0*float(self.block_time))
 
         self.log.info('Transact and check')
@@ -132,8 +132,6 @@ class PySysTest(TenNetworkTest):
         self.clients.append(self.run_python(script, stdout, stderr, args))
         self.waitForGrep(file=stdout, expr='Client running', timeout=10)
 
-    def _stop_and_drain(self):
-        self.log.info('Stopping all concurrent clients and drain accounts')
+    def _stop_clients(self):
+        self.log.info('Stopping all concurrent clients')
         for client in self.clients: client.stop()
-        # for web3, account, network in self.client_connections:
-        #      self.drain_native(web3, account, network)

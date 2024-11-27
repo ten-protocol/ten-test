@@ -19,7 +19,6 @@ class PySysTest(TenNetworkTest):
         self.transact(calldata, web3, account, limit=5000)
         self.transact(calldata, web3, account, limit=1000)
         self.transact(calldata, web3, account, limit=500)
-        self.drain_native(web3, account, network)
 
     def transact(self, calldata, web3, account, limit):
         # build the transaction
