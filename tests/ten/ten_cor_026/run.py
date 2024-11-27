@@ -40,6 +40,9 @@ class PySysTest(TenNetworkTest):
         self.assertOrderedGrep(file='client.out', exprList=expr_list)
         self.assertGrep(file='client.out', expr='Value transfer hash is in the xchain tree')
 
+        # return remaining funds
+        self.drain_native(web3_l2, account_l2, l2)
+
     def client(self, l2_network, bridge_address, bridge_abi, bus_address, bus_abi, private_key,
                l1_network, management_address, management_abi, to, amount):
         stdout = os.path.join(self.output, 'client.out')

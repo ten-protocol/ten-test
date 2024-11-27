@@ -26,3 +26,6 @@ class PySysTest(TenNetworkTest):
         self.assertTrue(len(txs) == 2)
         self.assertTrue(tx_receipt1.blockHash.hex() in tx_hashs)
         self.assertTrue(tx_receipt2.blockHash.hex() in tx_hashs)
+
+        # return remaining funds
+        self.drain_native(web3_usr, account_usr, network)

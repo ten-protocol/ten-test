@@ -48,6 +48,9 @@ class PySysTest(GenericNetworkTest):
 
         self.log.info('Balance of account is now %d' % web3.eth.get_balance(account.address))
 
+        # return remaining funds
+        self.drain_native(web3, account, network)
+
     def submit(self, account, target, web3, nonce, gas_price, gas_limit):
         build_tx = target.build_transaction({
             'nonce': nonce,
@@ -75,5 +78,3 @@ class PySysTest(GenericNetworkTest):
             self.log.error(e.args[0]['message'])
             raise TransactionTimeOut('Transaction timed out waiting for receipt')
 
-        # return remaining funds
-        self.drain_native(web3, account, network)

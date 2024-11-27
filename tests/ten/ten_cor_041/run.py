@@ -57,6 +57,9 @@ class PySysTest(TenNetworkTest):
         self.assertTrue(bn_second >= bn_first)
         if bn_first == bn_second: self.check(tx_receipts[-1])
 
+        # return remaining funds
+        self.drain_native(web3, account, network)
+
     def check(self, tx_receipt):
         self.log.info('Transaction details;')
         tx_hash = tx_receipt['transactionHash'].hex()
