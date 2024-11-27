@@ -178,14 +178,15 @@ class GenericNetworkTest(BaseTest):
     def drain_native(self, web3, account, network):
         """A native transfer of all funds from an account to the funded account."""
         balance = web3.eth.get_balance(account.address)
+        if balance == 0: return
         self.log.info("Draining account %s", account.address)
         if balance < self.average_transfer_cost:
             self.log.info('Drain estimate cost:  %.9f ETH' % web3.from_wei(self.average_transfer_cost, 'ether'))
             self.log.info('Pre-drain balance:    %.9f ETH' % web3.from_wei(balance, 'ether'))
             self.log.info('Post-drain balance:   %.9f ETH' % web3.from_wei(balance, 'ether'))
             return
-        amount = web3.eth.get_balance(account.address) - self.average_transfer_cost
 
+        amount = web3.eth.get_balance(account.address) - self.average_transfer_cost
         tx = {'nonce': web3.eth.get_transaction_count(account.address),
               'chainId': web3.eth.chain_id,
               'to':  Web3().eth.account.from_key(Properties().fundacntpk()).address,
