@@ -1,4 +1,4 @@
-import os, secrets, time
+import os, time
 from datetime import datetime
 from collections import OrderedDict
 from pysys.constants import PASSED
@@ -70,7 +70,7 @@ class PySysTest(TenNetworkTest):
         self.addOutcome(PASSED)
 
     def setup_client(self, name, funds_needed):
-        pk = secrets.token_hex(32)
+        pk = self.get_ephemeral_pk()
         network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary', verbose=False)
         web3, account = network.connect(self, private_key=pk, check_funds=False)
         self.distribute_native(account, web3.from_wei(funds_needed, 'ether'))

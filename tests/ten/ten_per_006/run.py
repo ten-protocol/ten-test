@@ -1,4 +1,4 @@
-import os, time, secrets, sys
+import os, time, sys
 import numpy as np
 from datetime import datetime
 from collections import OrderedDict
@@ -22,7 +22,7 @@ class PySysTest(TenNetworkTest):
         # connect to the network on the primary gateway and calculate funds needs
         network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary', verbose=False)
         web3, _ = network.connect_account1(self)
-        account = web3.eth.account.from_key(secrets.token_hex(32))
+        account = web3.eth.account.from_key(self.get_ephemeral_pk())
         self.chain_id = network.chain_id()
         self.gas_price = web3.eth.gas_price
         self.gas_limit = web3.eth.estimate_gas({'to': account.address, 'value': self.value, 'gasPrice': self.gas_price})
@@ -73,7 +73,7 @@ class PySysTest(TenNetworkTest):
 
     def run_client(self, name, funds_needed, out_dir, signal_file):
         """Run a background load client. """
-        pk = secrets.token_hex(32)
+        pk = self.get_ephemeral_pk()
         network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary', verbose=False)
         web3, account = network.connect(self, private_key=pk, check_funds=False)
         self.distribute_native(account, web3.from_wei(funds_needed, 'ether'))

@@ -1,4 +1,4 @@
-import os, secrets
+import os
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.bridge import EthereumBridge, L2MessageBus, Management
 
@@ -7,7 +7,7 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         transfer = 4000000000000000
-        pk = secrets.token_hex(32)
+        pk = self.get_ephemeral_pk()
 
         # the l1 and l2 networks and connections
         l1 = self.get_l1_network_connection()
@@ -39,9 +39,6 @@ class PySysTest(TenNetworkTest):
         expr_list.append('Amount:.*%d' % transfer)
         self.assertOrderedGrep(file='client.out', exprList=expr_list)
         self.assertGrep(file='client.out', expr='Value transfer hash is in the xchain tree')
-
-        # return remaining funds
-        self.drain_native(web3_l2, account_l2, l2)
 
     def client(self, l2_network, bridge_address, bridge_abi, bus_address, bus_abi, private_key,
                l1_network, management_address, management_abi, to, amount):

@@ -1,4 +1,4 @@
-import os, secrets
+import os
 from web3 import Web3
 from pysys.constants import PROJECT
 from ten.test.basetest import TenNetworkTest
@@ -26,7 +26,7 @@ class PySysTest(TenNetworkTest):
         web3, account = network.connect_account1(self)
 
         # deploy the contracts and create a new connection on the primary gateway for each client
-        funders = [secrets.token_hex() for _ in range(0, self.NUM_FUNDS)]
+        funders = [self.get_ephemeral_pk() for _ in range(0, self.NUM_FUNDS)]
         funders_connection = self.get_network_connection()
 
         storage = Storage(self, web3, 100)
@@ -89,7 +89,7 @@ class PySysTest(TenNetworkTest):
 
     def storage_client_sk(self, address, abi_path, num):
         network = self.get_network_connection()
-        web3, account = network.connect(self, private_key=secrets.token_hex(32), check_funds=False)
+        web3, account = network.connect(self, private_key=self.get_ephemeral_pk(), check_funds=False)
         self.distribute_native(account, 5*network.ETH_ALLOC_EPHEMERAL)
         sk = self.get_session_key(network.connection_url())
         tx = {'to': sk, 'value': web3.to_wei(0.9*5*network.ETH_ALLOC_EPHEMERAL, 'ether'), 'gasPrice': web3.eth.gas_price}
@@ -115,7 +115,7 @@ class PySysTest(TenNetworkTest):
         self._client(address, abi_path, 'error_client', num, network, False)
 
     def _client(self, address, abi_path, name, num, network, fund=True):
-        pk = secrets.token_hex(32)
+        pk = self.get_ephemeral_pk()
         web3, account = network.connect(self, private_key=pk, check_funds=False)
         if fund:
             self.distribute_native(account, 5*network.ETH_ALLOC_EPHEMERAL)

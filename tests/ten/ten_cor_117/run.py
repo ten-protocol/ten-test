@@ -1,4 +1,3 @@
-import secrets
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 from ten.test.contracts.callbacks import LargeCallData
@@ -9,7 +8,7 @@ class PySysTest(TenNetworkTest):
     def execute(self):
         # connect to the network (use an ephemeral account)
         network = self.get_network_connection()
-        web3, account = network.connect(self, private_key=secrets.token_hex(32), check_funds=False)
+        web3, account = network.connect(self, private_key=self.get_ephemeral_pk(), check_funds=False)
         self.distribute_native(account, network.ETH_ALLOC)
 
         # deploy the contract

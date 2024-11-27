@@ -1,4 +1,4 @@
-import os, secrets
+import os
 from web3 import Web3
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
@@ -34,7 +34,7 @@ class PySysTest(TenNetworkTest):
                                  expr='Balance is %d' % self.FUNDS, condition='== %d' % self.NUM_ITERATIONS)
 
     def _client(self, name, network, trigger):
-        pk = secrets.token_hex(32)
+        pk = self.get_ephemeral_pk()
         account = Web3().eth.account.from_key(pk)
         self.distribute_native(account, Web3().from_wei(self.FUNDS, 'ether'))
 

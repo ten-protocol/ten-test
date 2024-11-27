@@ -1,4 +1,4 @@
-import secrets, os, time, math
+import os, time, math
 from web3 import Web3
 from collections import OrderedDict
 from datetime import datetime
@@ -46,7 +46,7 @@ class PySysTest(TenNetworkTest):
         self.addOutcome(PASSED)
 
     def client(self, network, contract, num, funds_needed):
-        private_key = secrets.token_hex(32)
+        private_key = self.get_ephemeral_pk()
         account = Web3().eth.account.from_key(private_key)
         key = '%d_%d' % (int(time.time()), num)
         self.log.info('Client %d has key %s', num, key)

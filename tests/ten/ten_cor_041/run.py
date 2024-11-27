@@ -1,4 +1,3 @@
-import secrets
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.expensive import ExpensiveContract
 
@@ -21,7 +20,7 @@ class PySysTest(TenNetworkTest):
         self.log.info('Total gas cost is %.9f ETH', web3.from_wei(cost_estimate, 'ether'))
 
         # create an ephemeral account and get their own reference to the contract
-        web3, account = network.connect(self, private_key=secrets.token_hex(32), check_funds=False)
+        web3, account = network.connect(self, private_key=self.get_ephemeral_pk(), check_funds=False)
         contract = ExpensiveContract.clone(web3, account, contract)
         target = contract.contract.functions.calculateFibonacci
         self.distribute_native(account, web3.from_wei(1.2*cost_estimate, 'ether'))
@@ -56,9 +55,6 @@ class PySysTest(TenNetworkTest):
         self.log.info('Block number of first and last, %d %d', bn_first, bn_second)
         self.assertTrue(bn_second >= bn_first)
         if bn_first == bn_second: self.check(tx_receipts[-1])
-
-        # return remaining funds
-        self.drain_native(web3, account, network)
 
     def check(self, tx_receipt):
         self.log.info('Transaction details;')

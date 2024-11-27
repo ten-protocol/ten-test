@@ -1,9 +1,9 @@
-import os, time, secrets, math
+import os, time, math
 import numpy as np
 from web3 import Web3
 from datetime import datetime
 from collections import OrderedDict
-from pysys.constants import PASSED, FAILED
+from pysys.constants import PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
 
@@ -60,7 +60,7 @@ class PySysTest(TenNetworkTest):
         self.addOutcome(PASSED)
 
     def run_client(self, name, network, num_iterations, start, out_dir, signal_file):
-        pk = secrets.token_hex(32)
+        pk = self.get_ephemeral_pk()
         account = Web3().eth.account.from_key(pk)
         self.distribute_native(account, Web3().from_wei(1, 'ether'))
         network.connect(self, private_key=pk, check_funds=False)

@@ -1,4 +1,3 @@
-import secrets
 from web3 import Web3
 from web3.exceptions import TimeExhausted
 from pysys.constants import FAILED, PASSED
@@ -12,7 +11,7 @@ class PySysTest(GenericNetworkTest):
     def execute(self):
         # connect to the network using an ephemeral account in-case anything gets messed up
         network = self.get_network_connection()
-        private_key = secrets.token_hex(32)
+        private_key = self.get_ephemeral_pk()
         self.distribute_native(Web3().eth.account.from_key(private_key), network.ETH_ALLOC_EPHEMERAL)
         web3, account = network.connect(self, private_key=private_key, check_funds=False)
 
@@ -31,8 +30,6 @@ class PySysTest(GenericNetworkTest):
         except TransactionError:
             self.addOutcome(PASSED, 'Transaction error received as expected')
 
-        # return remaining funds
-        self.drain_native(web3, account, network)
 
     def submit(self, account, target, web3, nonce, gas_limit):
         build_tx = target.build_transaction({

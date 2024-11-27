@@ -1,4 +1,3 @@
-import secrets
 from web3.exceptions import TimeExhausted
 from pysys.constants import PASSED, FAILED
 from ten.test.utils.exceptions import *
@@ -11,8 +10,8 @@ class PySysTest(GenericNetworkTest):
     def execute(self):
         # get the network, and connect two ephemeral accounts for the test
         network = self.get_network_connection()
-        ps_sender = secrets.token_hex(32)
-        pk_receiver = secrets.token_hex(32)
+        ps_sender = self.get_ephemeral_pk()
+        pk_receiver = self.get_ephemeral_pk()
         web3, _ = self.network_funding.connect(self, Properties().fundacntpk(), check_funds=False)
         web3_send, account_send = network.connect(self, private_key=ps_sender, check_funds=False)
         web3_recv, account_recv = network.connect(self, private_key=pk_receiver, check_funds=False)
@@ -50,9 +49,6 @@ class PySysTest(GenericNetworkTest):
             except Exception:
                 self.addOutcome(FAILED, 'Unexpected behaviour in that the tx has not been successful')
 
-        # return remaining funds
-        self.drain_native(web3_send, account_send, network)
-        self.drain_native(web3_recv, account_recv, network)
 
     def submit(self, web3, account, to_address, value, gas_price, gas_estimate, nonce=0):
         build_tx = {

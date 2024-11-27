@@ -1,4 +1,4 @@
-import secrets, os, shutil, copy
+import os, shutil, copy
 from web3 import Web3
 from ten.test.basetest import TenNetworkTest
 
@@ -7,8 +7,8 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         project = os.path.join(self.output, 'project')
-        private_key_1 = secrets.token_hex(32)
-        private_key_2 = secrets.token_hex(32)
+        private_key_1 = self.get_ephemeral_pk()
+        private_key_2 = self.get_ephemeral_pk()
 
         # connect to the network
         network = self.get_network_connection()
