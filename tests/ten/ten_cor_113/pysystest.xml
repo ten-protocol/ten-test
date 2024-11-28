@@ -5,7 +5,7 @@
         <title>Callbacks: two phase commit with life-cycle event, using eth.subscribe on logs (event Keccak256)</title>
         <purpose><![CDATA[
 Deploys the storage contract which implements the two phase commit approach. Before transacting five times a javascript
-event subscriber is started using eth.subscribe on logs for the event; not that this should pick up all events from
+event subscriber is started using eth.subscribe on logs for the event; note that this should pick up all events from
 any contract, not just the storage contract.
 ]]>
         </purpose>
