@@ -50,7 +50,7 @@ class GenericNetworkTest(BaseTest):
         self.accounts = []
         self.ephemeral_pks = []
         self.transfer_costs = []
-        self.average_transfer_cost = 21000
+        self.average_transfer_cost = 21000000000000
         self.eth_price = self.rates_db.get_latest_rate('ETH', 'USD')
 
         for fn in Properties().accounts():
