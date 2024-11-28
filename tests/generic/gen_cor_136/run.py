@@ -1,6 +1,3 @@
-import secrets
-from web3 import Web3
-from hexbytes import HexBytes
 from web3.exceptions import TimeExhausted
 from pysys.constants import PASSED, FAILED
 from ten.test.utils.exceptions import *
@@ -21,7 +18,7 @@ class PySysTest(GenericNetworkTest):
 
         # connect an ephemeral account, grab a reference to the contract with it's details and give it
         # enough funds to cover the expected cost
-        private_key = secrets.token_hex(32)
+        private_key = self.get_ephemeral_pk()
         web3, account = network.connect(self, private_key=private_key, check_funds=False)
         contract = Storage.clone(web3, account, contract_1)
 
@@ -47,6 +44,7 @@ class PySysTest(GenericNetworkTest):
             self.addOutcome(FAILED, 'Transaction error was not successful as expected')
 
         self.log.info('Balance of account is now %d' % web3.eth.get_balance(account.address))
+
 
     def submit(self, account, target, web3, nonce, gas_price, gas_limit):
         build_tx = target.build_transaction({
@@ -74,3 +72,4 @@ class PySysTest(GenericNetworkTest):
         except TimeExhausted as e:
             self.log.error(e.args[0]['message'])
             raise TransactionTimeOut('Transaction timed out waiting for receipt')
+

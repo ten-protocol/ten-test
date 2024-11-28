@@ -1,4 +1,4 @@
-import os, copy, sys, json, base64, re
+import os, copy, sys, json, secrets, re
 import threading, requests
 from web3 import Web3
 from pathlib import Path
@@ -6,6 +6,7 @@ from pysys.basetest import BaseTest
 from pysys.constants import PROJECT, BACKGROUND, FAILED
 from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
+from ten.test.persistence.rates import RatesPersistence
 from ten.test.persistence.nonce import NoncePersistence
 from ten.test.persistence.funds import FundsPersistence
 from ten.test.persistence.counts import CountsPersistence
@@ -34,6 +35,7 @@ class GenericNetworkTest(BaseTest):
 
         # every test has its own connection to the nonce and contract db
         db_dir = os.path.join(str(Path.home()), '.tentest')
+        self.rates_db = RatesPersistence(db_dir)
         self.nonce_db = NoncePersistence(db_dir)
         self.contract_db = ContractPersistence(db_dir)
         self.funds_db = FundsPersistence(db_dir)
@@ -46,13 +48,17 @@ class GenericNetworkTest(BaseTest):
         self.network_funding = self.get_network_connection()
         self.balance = 0
         self.accounts = []
+        self.ephemeral_pks = []
         self.transfer_costs = []
+        self.average_transfer_cost = 21000
+        self.eth_price = self.rates_db.get_latest_rate('ETH', 'USD')
 
         for fn in Properties().accounts():
             web3, account = self.network_funding.connect(self, fn(), check_funds=False, verbose=False)
             self.accounts.append((web3, account))
             self.balance = self.balance + web3.eth.get_balance(account.address)
         self.addCleanupFunction(self.__test_cost)
+        self.addCleanupFunction(self.drain_ephemeral_pks)
 
     def __test_cost(self):
         balance = 0
@@ -61,11 +67,22 @@ class GenericNetworkTest(BaseTest):
         sign = '-' if (self.balance - balance) < 0 else ''
         self.log.info("  %s: %s%d Wei", 'Test cost', sign, delta, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
         self.log.info("  %s: %s%.9f ETH", 'Test cost', sign, Web3().from_wei(delta, 'ether'), extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+        if self.eth_price is not None:
+            change = float(Web3().from_wei(delta, 'ether'))
+            self.log.info("  %s: %s%.3f USD", 'Test cost', sign, self.eth_price*change, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
 
     def close_db(self):
         """Close the connection to the nonce database on completion. """
         self.nonce_db.close()
         self.contract_db.close()
+
+    def drain_ephemeral_pks(self):
+        """Drain any ephemeral accounts of their funds. """
+        if len(self.ephemeral_pks) == 0: return
+        for pk in self.ephemeral_pks:
+            web3, account = self.network_funding.connect(self, private_key=pk, check_funds=False, verbose=False)
+            self.drain_native(web3, account, self.network_funding)
+        self.log.info('')
 
     def is_ten(self):
         """Return true if we are running against a Ten network. """
@@ -78,6 +95,11 @@ class GenericNetworkTest(BaseTest):
     def is_sepolia_ten(self):
         """Return true if we are running against a sepolia Ten network. """
         return self.env in ['ten.sepolia']
+
+    def get_ephemeral_pk(self):
+        private_key = secrets.token_hex(32)
+        self.ephemeral_pks.append(private_key)
+        return private_key
 
     def run_python(self, script, stdout, stderr, args=None, workingDir=None, state=BACKGROUND, timeout=120):
         """Run a python process. """
@@ -146,25 +168,42 @@ class GenericNetworkTest(BaseTest):
         tx['gas'] = web3_pk.eth.estimate_gas(tx)
         if verbose: self.log.info('Gas estimate for distribute native is %d', tx['gas'])
 
-        if verbose: self.log.info('Sending %.6f ETH to account %s', amount, account.address)
+        if verbose: self.log.info('Sending %.9f ETH to account %s', amount, account.address)
         self.network_funding.tx(self, web3_pk, tx, account_pk, verbose=verbose)
         balance_after = web3_pk.eth.get_balance(account_pk.address)
         self.transfer_costs.append((balance_before - web3_pk.to_wei(amount, 'ether') - balance_after))
+        self.average_transfer_cost = int(sum(self.transfer_costs) / len(self.transfer_costs))
+        self.log.info('Average transfer cost: %.9f ETH' % web3_pk.from_wei(self.average_transfer_cost, 'ether'))
 
     def drain_native(self, web3, account, network):
-        """A native transfer of all funds from and account to the funded account."""
-        average_cost = int(sum(self.transfer_costs) / len(self.transfer_costs))
+        """A native transfer of all funds from an account to the funded account."""
         balance = web3.eth.get_balance(account.address)
-        amount = web3.eth.get_balance(account.address) - 10*average_cost
-        self.log.info("Drain account %s of %d (current balance %d)", account.address, amount, balance)
+        if balance == 0: return
+        self.log.info("Draining account %s", account.address)
+        if balance < self.average_transfer_cost:
+            self.log.info('Drain estimate cost:  %.9f ETH' % web3.from_wei(self.average_transfer_cost, 'ether'))
+            self.log.info('Pre-drain balance:    %.9f ETH' % web3.from_wei(balance, 'ether'))
+            self.log.info('Post-drain balance:   %.9f ETH' % web3.from_wei(balance, 'ether'))
+            return
 
-        address = Web3().eth.account.from_key(Properties().fundacntpk()).address
-        self.log.info('Send to address is %s', address)
-
-        tx = {'to':  address, 'value': amount, 'gasPrice': web3.eth.gas_price}
+        amount = web3.eth.get_balance(account.address) - self.average_transfer_cost
+        tx = {'nonce': web3.eth.get_transaction_count(account.address),
+              'chainId': web3.eth.chain_id,
+              'to':  Web3().eth.account.from_key(Properties().fundacntpk()).address,
+              'value': amount,
+              'gasPrice': web3.eth.gas_price}
         tx['gas'] = web3.eth.estimate_gas(tx)
-        self.log.info('Gas estimate for drain native is %d', tx['gas'])
-        network.tx(self, web3, tx, account, persist_nonce=False)
+        tx['value'] = web3.eth.get_balance(account.address) - tx['gas'] * web3.eth.gas_price
+
+        self.log.info('Drain estimate cost:  %.9f ETH' % web3.from_wei(tx['gas'] * web3.eth.gas_price, 'ether'))
+        self.log.info('Pre-drain balance:    %.9f ETH' % web3.from_wei(web3.eth.get_balance(account.address), 'ether'))
+        try:
+            signed_tx = account.sign_transaction(tx)
+            tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+            web3.eth.wait_for_transaction_receipt(tx_hash)
+        except:
+            pass # fail silently
+        self.log.info('Post-drain balance:   %.9f ETH' % web3.from_wei(web3.eth.get_balance(account.address), 'ether'))
 
     def fund_native(self, network, account, amount, pk, persist_nonce=True, gas_limit=None):
         """A native transfer of funds from one address to another.

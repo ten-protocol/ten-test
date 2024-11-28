@@ -1,4 +1,4 @@
-import os, random, string, secrets
+import os, random, string
 from pysys.constants import PASSED, FOREGROUND
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.emitter import EventEmitter
@@ -50,7 +50,7 @@ class PySysTest(TenNetworkTest):
         self.addOutcome(PASSED)
 
     def setup_transactor(self, funds_needed):
-        pk = secrets.token_hex(32)
+        pk = self.get_ephemeral_pk()
         network = self.get_network_connection()
         web3, account = network.connect(self, private_key=pk, check_funds=False)
         self.distribute_native(account, web3.from_wei(funds_needed, 'ether'))

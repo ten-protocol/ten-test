@@ -1,4 +1,4 @@
-import secrets, os, time
+import os, time
 from datetime import datetime
 from collections import OrderedDict
 from web3.exceptions import TimeExhausted
@@ -25,12 +25,12 @@ class PySysTest(TenNetworkTest):
         # use an ephemeral account, so we don't need to manage nonce through persistence
         self.log.info('')
         self.log.info('Creating ephemeral account to distribute funds from')
-        web3_send, account_send = network.connect(self, private_key=secrets.token_hex(), check_funds=False)
+        web3_send, account_send = network.connect(self, private_key=self.get_ephemeral_pk(), check_funds=False)
 
         # use an ephemeral account to receive funds
         self.log.info('')
         self.log.info('Creating ephemeral account to receive funds')
-        web3_recv, account_recv = network.connect(self, private_key=secrets.token_hex(), check_funds=False)
+        web3_recv, account_recv = network.connect(self, private_key=self.get_ephemeral_pk(), check_funds=False)
 
         # determine constants and funds required to run the test
         self.log.info('')

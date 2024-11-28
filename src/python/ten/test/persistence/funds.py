@@ -26,7 +26,7 @@ class FundsPersistence:
         self.connection.close()
 
     def delete_environment(self, environment):
-        """Delete all stored contract details for a particular environment."""
+        """Delete all stored details for a particular environment."""
         self.cursor.execute(self.SQL_DELETE, (environment, ))
         self.connection.commit()
 

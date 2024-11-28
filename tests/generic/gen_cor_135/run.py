@@ -1,4 +1,4 @@
-import secrets, time
+import time
 from collections import deque
 from pysys.constants import PASSED, FAILED
 from ten.test.basetest import TenNetworkTest
@@ -36,7 +36,7 @@ class PySysTest(TenNetworkTest):
         contract = ExpensiveContract(self, web3_deploy)
         contract.deploy(network, account_deploy)
 
-        pk = secrets.token_hex(32)
+        pk = self.get_ephemeral_pk()
         web3, account = network.connect(self, private_key=pk, check_funds=False)
         self.distribute_native(account, network.ETH_ALLOC_EPHEMERAL)
 
@@ -79,6 +79,5 @@ class PySysTest(TenNetworkTest):
             self.log.warn('Exception thrown %s', e)
             self.addOutcome(FAILED)
 
-        self.drain_native(web3, account, network)
 
 

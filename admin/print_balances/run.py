@@ -22,5 +22,5 @@ class PySysTest(TenNetworkTest):
             self.log.info("Checking L2 funds for %s:", fn.__name__, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
             web3, account = network.connect(self, fn(), check_funds=False, verbose=False)
             balance = web3.from_wei(web3.eth.get_balance(account.address), 'ether')
-            self.log.info('Account %s balance %.6f ETH', account.address, balance)
+            self.log.info('Account %s balance %.9f ETH', account.address, balance)
 

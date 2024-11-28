@@ -1,4 +1,4 @@
-import secrets, os, math, time
+import os, math, time
 from datetime import datetime
 from collections import OrderedDict
 from web3 import Web3
@@ -61,7 +61,7 @@ class PySysTest(TenNetworkTest):
         self.addOutcome(PASSED)
 
     def storage_client(self, address, abi_path, num, network, funds_needed):
-        pk = secrets.token_hex(32)
+        pk = self.get_ephemeral_pk()
         account = Web3().eth.account.from_key(pk)
         self.distribute_native(account, Web3().from_wei(funds_needed, 'ether'))
         network.connect(self, private_key=pk, check_funds=False)

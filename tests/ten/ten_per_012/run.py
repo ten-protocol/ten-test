@@ -1,4 +1,4 @@
-import os, time, secrets, math
+import os, time, math
 import numpy as np
 from web3 import Web3
 from datetime import datetime
@@ -81,7 +81,7 @@ class PySysTest(TenNetworkTest):
 
     def run_storage_client(self, contract, funds_needed, gas_limit, out_dir):
         """Run a background load client. """
-        pk = secrets.token_hex(32)
+        pk = self.get_ephemeral_pk()
         network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary', verbose=False)
         web3, account = network.connect(self, private_key=pk, check_funds=False)
         self.distribute_native(account, web3.from_wei(funds_needed, 'ether'))
@@ -100,7 +100,7 @@ class PySysTest(TenNetworkTest):
         return hprocess
 
     def run_client(self, name, network, num_iterations, contract, funds_needed, start, out_dir, signal_file):
-        pk = secrets.token_hex(32)
+        pk = self.get_ephemeral_pk()
         account = Web3().eth.account.from_key(pk)
         self.distribute_native(account, Web3().from_wei(funds_needed / num_iterations, 'ether'))
         network.connect(self, private_key=pk, check_funds=False)

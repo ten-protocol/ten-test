@@ -20,9 +20,9 @@ class PySysTest(TenNetworkTest):
         balance = web3.eth.get_balance(account.address)
         threshold = web3.to_wei(self.REMAIN, 'ether')
         amount = balance - threshold
-        self.log.info('Sender account balance %.6f ETH', web3.from_wei(balance, 'ether'))
+        self.log.info('Sender account balance %.9f ETH', web3.from_wei(balance, 'ether'))
         if balance - threshold > 0:
-            self.log.info('Draining %.6f from the sender account', web3.from_wei(amount, 'ether'))
+            self.log.info('Draining %.9f from the sender account', web3.from_wei(amount, 'ether'))
             self.send(network, web3, account, self.RECV_AD, amount)
 
     def send(self, network, web3, account, address, amount):
@@ -30,7 +30,7 @@ class PySysTest(TenNetworkTest):
         gas_estimate = web3.eth.estimate_gas({'to': address, 'value': amount, 'gasPrice': gas_price})
         self.log.info('Gas price   : %d WEI', gas_price)
         self.log.info('Gas estimate: %d WEI', gas_estimate)
-        self.log.info('Total Cost  : %.6f ETH', web3.from_wei(gas_price*gas_estimate, 'ether'))
+        self.log.info('Total Cost  : %.9f ETH', web3.from_wei(gas_price*gas_estimate, 'ether'))
         tx = {
             'to': address,
             'value': amount-gas_estimate,

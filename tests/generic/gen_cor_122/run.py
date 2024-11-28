@@ -1,4 +1,4 @@
-import re, json, secrets
+import re, json
 import os, shutil, copy
 from web3 import Web3
 from ten.test.basetest import GenericNetworkTest
@@ -11,7 +11,7 @@ class PySysTest(GenericNetworkTest):
 
     def execute(self):
         project = os.path.join(self.output, 'project')
-        private_key = secrets.token_hex(32)
+        private_key = self.get_ephemeral_pk()
 
         # connect to the network, allocate the normal ephemeral amount
         network = self.get_network_connection()
@@ -53,4 +53,3 @@ class PySysTest(GenericNetworkTest):
         ret = int(contract.functions.doItTwice(2).call())
         self.log.info('Returned value is %d', ret)
         self.assertTrue(ret == 8)
-        

@@ -1,4 +1,4 @@
-import os, secrets
+import os
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.bridge import EthereumBridge, L2MessageBus, Management
 
@@ -7,7 +7,7 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         transfer = 4000000000000000
-        pk = secrets.token_hex(32)
+        pk = self.get_ephemeral_pk()
 
         # the l1 and l2 networks and connections
         l1 = self.get_l1_network_connection()

@@ -1,4 +1,3 @@
-import secrets
 from ten.test.basetest import GenericNetworkTest
 from ten.test.contracts.error import Error
 
@@ -20,7 +19,7 @@ class PySysTest(GenericNetworkTest):
 
         # use an ephemeral account and give it funds
         funds_needed = 10*(gas_estimate * gas_price)
-        web3, account = network.connect(self, private_key=secrets.token_hex(32), check_funds=False)
+        web3, account = network.connect(self, private_key=self.get_ephemeral_pk(), check_funds=False)
         self.distribute_native(account, web3.from_wei(funds_needed, 'ether'))
 
         # pre-sign, bulk send, and then wait for the tx with the highest nonce

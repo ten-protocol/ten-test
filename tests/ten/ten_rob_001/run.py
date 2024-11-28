@@ -1,5 +1,5 @@
 from web3 import Web3
-import secrets, os
+import os
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.storage import Storage
 from ten.test.helpers.log_subscriber import FilterLogSubscriber
@@ -22,10 +22,10 @@ class PySysTest(TenNetworkTest):
         storage.deploy(network, account)
 
         # the subscribers (permanent for the duration of the test)
-        for i in range(0, self.NUM_SUBSCRIBERS): self.subscriber(web3, network, secrets.token_hex(32), i)
+        for i in range(0, self.NUM_SUBSCRIBERS): self.subscriber(web3, network, self.get_ephemeral_pk(), i)
 
         # the hammers (brute force subscribe and unsubscribe)
-        for i in range(0, self.NUM_HAMMERS): self.hammer(network, secrets.token_hex(32), i)
+        for i in range(0, self.NUM_HAMMERS): self.hammer(network, self.get_ephemeral_pk(), i)
 
         # perform some transactions
         for i in range(0, self.NUM_TRANSACTIONS):

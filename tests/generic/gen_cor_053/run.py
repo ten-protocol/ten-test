@@ -1,4 +1,4 @@
-import secrets, os
+import os
 from web3 import Web3
 from ten.test.contracts.error import Error
 from ten.test.basetest import GenericNetworkTest
@@ -22,7 +22,7 @@ class PySysTest(GenericNetworkTest):
         self.assertGrep(file='client_web3.log', expr='Error: Transaction has been reverted by the EVM')
 
     def client(self, network, contract, type):
-        private_key = secrets.token_hex(32)
+        private_key = self.get_ephemeral_pk()
         self.distribute_native(Web3().eth.account.from_key(private_key), network.ETH_ALLOC_EPHEMERAL)
         network.connect(self, private_key=private_key, check_funds=False)
 

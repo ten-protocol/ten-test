@@ -59,14 +59,14 @@ class DefaultPostLondon:
         else: web3 = Web3(Web3.WebsocketProvider(url, websocket_timeout=120))
         account = web3.eth.account.from_key(private_key)
         balance = web3.from_wei(web3.eth.get_balance(account.address), 'ether')
-        if verbose: self.log.info('Account %s connected to %s (%.6f ETH), wss=%s', account.address, self.__class__.__name__, balance, web_socket)
+        if verbose: self.log.info('Account %s connected to %s (%.9f ETH), wss=%s', account.address, self.__class__.__name__, balance, web_socket)
 
         if check_funds and balance < self.ETH_LIMIT:
             if verbose: self.log.info('Account %s balance is below threshold %s ... need to distribute funds', account.address, self.ETH_LIMIT)
             test.distribute_native(account, self.ETH_ALLOC)
             if verbose:
                 balance = web3.from_wei(web3.eth.get_balance(account.address), 'ether')
-                self.log.info('Account %s balance is now %.6f ETH', account.address, balance)
+                self.log.info('Account %s balance is now %.9f ETH', account.address, balance)
         return web3, account
 
     def connect_account1(self, test, web_socket=False, check_funds=True, verbose=True):

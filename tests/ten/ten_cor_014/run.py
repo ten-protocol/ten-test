@@ -1,4 +1,3 @@
-import secrets
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.storage import Storage
 
@@ -13,7 +12,7 @@ class PySysTest(TenNetworkTest):
         storage.get_or_deploy(network, account_deploy)
 
         # connect as an ephemeral test user and transact agains the contract
-        pk = secrets.token_hex(32)
+        pk = self.get_ephemeral_pk()
         web3_usr, account_usr = network.connect(self, private_key=pk, check_funds=False)
         self.distribute_native(account_usr, network.ETH_ALLOC_EPHEMERAL)
         tx_receipt1 = network.transact(self, web3_usr, storage.contract.functions.store(1), account_usr, storage.GAS_LIMIT)

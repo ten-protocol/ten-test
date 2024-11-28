@@ -1,4 +1,4 @@
-import secrets, random, time
+import random, time
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.storage import Storage
 from ten.test.helpers.wallet_extension import WalletExtension
@@ -29,7 +29,7 @@ class PySysTest(TenNetworkTest):
         primary_userid = 1
         additional_userid = 0
         for i in range(0, self.CLIENTS):
-            pk = secrets.token_hex(32)
+            pk = self.get_ephemeral_pk()
             if random.randint(0, 8) < 4:
                 additional_userid = additional_userid + 1
                 self.log.info('Registering client %d with new user id (current total %d)', i, additional_userid)
