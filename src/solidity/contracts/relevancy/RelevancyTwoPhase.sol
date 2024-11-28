@@ -6,7 +6,7 @@ interface IPublicCallbacks {
     function reattemptCallback(uint256 callbackId) external;
 }
 
-contract Relevancy {
+contract RelevancyTwoPhase {
     IPublicCallbacks public callbacks;
 
     event CallerIndexedAddress(address indexed addr);
