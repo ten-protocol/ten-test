@@ -173,6 +173,7 @@ class GenericNetworkTest(BaseTest):
         balance_after = web3_pk.eth.get_balance(account_pk.address)
         self.transfer_costs.append((balance_before - web3_pk.to_wei(amount, 'ether') - balance_after))
         self.average_transfer_cost = int(sum(self.transfer_costs) / len(self.transfer_costs))
+        self.log.info('Average transfer cost: %d WEI' % self.average_transfer_cost)
         self.log.info('Average transfer cost: %.9f ETH' % web3_pk.from_wei(self.average_transfer_cost, 'ether'))
 
     def drain_native(self, web3, account, network):
