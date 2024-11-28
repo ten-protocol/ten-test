@@ -172,7 +172,7 @@ class GenericNetworkTest(BaseTest):
         self.network_funding.tx(self, web3_pk, tx, account_pk, verbose=verbose)
         balance_after = web3_pk.eth.get_balance(account_pk.address)
         cost = balance_before - web3_pk.to_wei(amount, 'ether') - balance_after
-        if cost < 25202*web3_pk.eth.gas_price: cost = 25202*web3_pk.eth.gas_price
+        if cost < 21000*web3_pk.eth.gas_price: cost = 21000*web3_pk.eth.gas_price
         self.transfer_costs.append(cost)
         self.log.info('Average transfer cost: %d WEI' % self.average_transfer_cost)
         self.log.info('Average transfer cost: %.9f ETH' % web3_pk.from_wei(self.average_transfer_cost, 'ether'))
