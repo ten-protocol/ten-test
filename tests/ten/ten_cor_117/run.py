@@ -1,6 +1,6 @@
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
-from ten.test.contracts.callbacks import LargeCallData
+from ten.test.contracts.calldata import CallDataTwoPhase
 
 
 class PySysTest(TenNetworkTest):
@@ -12,7 +12,7 @@ class PySysTest(TenNetworkTest):
         self.distribute_native(account, network.ETH_ALLOC)
 
         # deploy the contract
-        calldata = LargeCallData(self, web3, Properties().L2PublicCallbacks)
+        calldata = CallDataTwoPhase(self, web3, Properties().L2PublicCallbacks)
         calldata.deploy(network, account)
 
         # transact (the first should be rejected so we just check later ones go through)

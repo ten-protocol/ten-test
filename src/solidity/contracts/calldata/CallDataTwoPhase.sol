@@ -6,7 +6,7 @@ interface IPublicCallbacks {
     function reattemptCallback(uint256 callbackId) external;
 }
 
-contract LargeCallData {
+contract CallDataTwoPhase {
     IPublicCallbacks public callbacks;
     uint256 public lastSum;
 
