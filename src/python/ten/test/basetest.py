@@ -171,8 +171,13 @@ class GenericNetworkTest(BaseTest):
         if verbose: self.log.info('Sending %.9f ETH to account %s', amount, account.address)
         self.network_funding.tx(self, web3_pk, tx, account_pk, verbose=verbose)
         balance_after = web3_pk.eth.get_balance(account_pk.address)
-        self.transfer_costs.append((balance_before - web3_pk.to_wei(amount, 'ether') - balance_after))
+        cost = balance_before - web3_pk.to_wei(amount, 'ether') - balance_after
+        self.transfer_costs.append(cost)
         self.average_transfer_cost = int(sum(self.transfer_costs) / len(self.transfer_costs))
+        self.log.info('Balance before:        %d WEI' % balance_before)
+        self.log.info('Balance after:         %d WEI' % balance_after)
+        self.log.info('Amount:                %d WEI' % web3_pk.to_wei(amount, 'ether'))
+        self.log.info('Cost:                  %d WEI' % cost)
         self.log.info('Average transfer cost: %d WEI' % self.average_transfer_cost)
         self.log.info('Average transfer cost: %.9f ETH' % web3_pk.from_wei(self.average_transfer_cost, 'ether'))
 
