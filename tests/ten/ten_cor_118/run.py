@@ -1,7 +1,7 @@
+import os
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 from ten.test.contracts.relevancy import Relevancy, RelevancyTwoPhase
-from ten.test.helpers.log_subscriber import FilterLogSubscriber
 
 
 class PySysTest(TenNetworkTest):
@@ -17,24 +17,37 @@ class PySysTest(TenNetworkTest):
         relevancy_normal = Relevancy(self, web3)
         relevancy_normal.deploy(network, account)
 
-        # run the javascript event log subscriber in the background
-        subscriber = FilterLogSubscriber(self, network)
-        subscriber.run(
-            filter_topics=[web3.keccak(text='NonIndexedAddressAndNumber(address,uint256)').hex()]
-        )
-        subscriber.subscribe()
+        # subscribe for CallerIndexedAddress events
+        self.subscribe(relevancy_two_phase, network, 'relevancy_two_phase')
+        self.subscribe(relevancy_normal, network, 'relevancy_normal')
 
         # perform some transactions on both contracts
         for i in range(0, 5): self.transact(relevancy_two_phase, web3, network, account)
-        network.transact(self, web3, relevancy_normal.contract.functions.nonIndexedAddressAndNumber(account.address),
+        network.transact(self, web3, relevancy_normal.contract.functions.callerIndexedAddress(),
                          account, relevancy_normal.GAS_LIMIT)
-        self.wait(float(self.block_time) * 1.1)
-
+        self.waitForGrep('relevancy_two_phase.log', expr='Decoded address', condition='>=5')
+        self.waitForGrep('relevancy_normal.log', expr='Decoded address', condition='>=1')
+        self.assertLineCount('relevancy_two_phase.log', 'Decoded address = %s' % account.address, condition='==5')
+        self.assertLineCount('relevancy_normal.log', 'Decoded address = %s' % account.address, condition='==1')
 
     def transact(self, relevancy, web3, network, account):
-        target = relevancy.contract.functions.nonIndexedAddressAndNumber(account.address)
+        target = relevancy.contract.functions.callerIndexedAddress()
         params = {'gasPrice': web3.eth.gas_price, 'value': web3.to_wei(0.01, 'ether')}
         gas_estimate = target.estimate_gas(params)
         params['gas'] = int(1.1 * gas_estimate)
         build_tx = target.build_transaction(params)
         network.tx(self, web3, build_tx, account)
+
+    def subscribe(self, relevancy, network, name):
+        # run a background script to filter and collect events
+        stdout = os.path.join(self.output, '%s.out' % name)
+        stderr = os.path.join(self.output, '%s.err' % name)
+        logout = os.path.join(self.output, '%s.log' % name)
+        script = os.path.join(self.input, 'subscriber.js')
+        args = []
+        args.extend(['--network_ws', network.connection_url(web_socket=True)])
+        args.extend(['--address', '%s' % relevancy.address])
+        args.extend(['--contract_abi', '%s' % relevancy.abi_path])
+        args.extend(['--log_file', '%s' % logout])
+        self.run_javascript(script, stdout, stderr, args)
+        self.waitForGrep(file=logout, expr='Starting task ...', timeout=10)

@@ -22,13 +22,13 @@ contract RelevancyTwoPhase {
     }
 
     function callerIndexedAddress() public payable {
-        bytes memory callbackData = abi.encodeWithSelector(this.handleCallerIndexedAddress.selector);
+        bytes memory callbackData = abi.encodeWithSelector(this.handleCallerIndexedAddress.selector, msg.sender);
         callbacks.register{value: msg.value}(callbackData);
     }
 
-    function handleCallerIndexedAddress() external {
+    function handleCallerIndexedAddress(address addr1) external {
         num = num + 1;
-        emit CallerIndexedAddress(msg.sender);
+        emit CallerIndexedAddress(addr1);
     }
 
     function twoIndexedAddresses(address addr1, address addr2) public payable {
