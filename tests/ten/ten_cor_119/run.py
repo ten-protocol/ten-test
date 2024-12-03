@@ -15,8 +15,15 @@ class PySysTest(TenNetworkTest):
         storage.deploy(network, account)
 
         # transact against the contract
-        self.transact(storage, web3, network, account, 100)
+        balance_before = web3.eth.get_balance(account.address)
+        estimate, used, price = self.transact(storage, web3, network, account, 100)
         self.wait(float(self.block_time) * 1.1)
+        balance_after = web3.eth.get_balance(account.address)
+        self.log.info('Balance before: %d' % balance_before)
+        self.log.info('Balance after:  %d' % balance_before)
+        self.log.info('Balance diff:   %d' % (balance_before-balance_after))
+        self.log.info('Cost estimate:  %d' % (estimate*price))
+        self.log.info('Cost used:      %d' % (used*price))
 
     def transact(self, storage, web3, network, account, num):
         target = storage.contract.functions.store(num)
@@ -24,4 +31,6 @@ class PySysTest(TenNetworkTest):
         gas_estimate = target.estimate_gas(params)
         params['gas'] = int(1.1 * gas_estimate)
         build_tx = target.build_transaction(params)
-        network.tx(self, web3, build_tx, account)
+        tx_receipt = network.tx(self, web3, build_tx, account)
+        return gas_estimate, int(tx_receipt['gasUsed']), int(tx_receipt['effectiveGasPrice'])
+
