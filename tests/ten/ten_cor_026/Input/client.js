@@ -126,6 +126,7 @@ commander
   .option('--pk <value>', 'The account private key')
   .option('--to <value>', 'The address to transfer to')
   .option('--amount <value>', 'The amount to transfer')
+  .option('--timeout <value>', 'The timeout waiting on the transfer')
   .parse(process.argv)
 
 const options = commander.opts()

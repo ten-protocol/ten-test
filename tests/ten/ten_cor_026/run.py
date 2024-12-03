@@ -8,6 +8,7 @@ class PySysTest(TenNetworkTest):
     def execute(self):
         transfer = 4000000000000000
         pk = self.get_ephemeral_pk()
+        timeout = 60000 if self.is_local_ten() else 2400000 # 1min on a local, 40min otherwise
 
         # the l1 and l2 networks and connections
         l1 = self.get_l1_network_connection()
@@ -26,7 +27,7 @@ class PySysTest(TenNetworkTest):
 
         # execute the transfer using ethers
         self.client(l2, bridge.address, bridge.abi_path, bus.address, bus.abi_path, pk,
-                    l1, management.address, management.abi_path, account_l1.address, transfer)
+                    l1, management.address, management.abi_path, account_l1.address, transfer, timeout)
         l1_after = web3_l1.eth.get_balance(account_l1.address)
         l2_after = web3_l2.eth.get_balance(account_l2.address)
         self.log.info('  l1_balance after:      %s', l1_after)
@@ -41,7 +42,7 @@ class PySysTest(TenNetworkTest):
         self.assertGrep(file='client.out', expr='Value transfer hash is in the xchain tree')
 
     def client(self, l2_network, bridge_address, bridge_abi, bus_address, bus_abi, private_key,
-               l1_network, management_address, management_abi, to, amount):
+               l1_network, management_address, management_abi, to, amount, timeout):
         stdout = os.path.join(self.output, 'client.out')
         stderr = os.path.join(self.output, 'client.err')
         script = os.path.join(self.input, 'client.js')
@@ -57,6 +58,7 @@ class PySysTest(TenNetworkTest):
         args.extend(['--pk', private_key])
         args.extend(['--to', to])
         args.extend(['--amount', str(amount)])
+        args.extend(['--timeout', str(timeout)])
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting transaction to send funds to the L1', timeout=10)
         self.waitForGrep(file=stdout, expr='Completed transactions', timeout=1200)

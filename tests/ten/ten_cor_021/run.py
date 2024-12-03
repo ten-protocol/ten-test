@@ -9,11 +9,11 @@ from ten.test.helpers.merkle_tree import MerkleTreeHelper
 class PySysTest(TenNetworkTest):
     NAME = 'HubbaBubbaBandit'
     SYMB = 'HBB'
-    GAS_ATTEMPTS = 480  # 480 * 5 == 40 mins wait for the L2 to L1 rollup xchain msg to be received
 
     def execute(self):
         props = Properties()
-        
+        gas_attempts = 12 if self.is_local_ten() else 480 # 1min on a local, 40min otherwise
+
         # create the users for the test
         funded = BridgeUser(self, props.l1_funded_account_pk(self.env), props.account2pk(), 'funded')
         accnt1 = BridgeUser(self, props.account1pk(), props.account1pk(), 'accnt1')
@@ -73,7 +73,7 @@ class PySysTest(TenNetworkTest):
         # release the tokens from the L1 and check the balances
         self.log.info('Wait for the message on the L1 and relay it')
         start_time = time.perf_counter_ns()
-        _ = accnt1.l1.release_tokens(msg, [] if proof is None else [proof], root, gas_attempts=self.GAS_ATTEMPTS)
+        _ = accnt1.l1.release_tokens(msg, [] if proof is None else [proof], root, gas_attempts=gas_attempts)
         end_time = time.perf_counter_ns()
         self.log.info('Total time waiting for the gas estimate to pass: %.1f secs', (end_time-start_time)/1e9)
 

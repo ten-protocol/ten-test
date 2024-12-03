@@ -6,11 +6,11 @@ from ten.test.utils.properties import Properties
 
 
 class PySysTest(TenNetworkTest):
-    GAS_ATTEMPTS = 480  # 480 * 5 == 40 mins wait for the L2 to L1 rollup xchain msg to be received
 
     def execute(self):
         props = Properties()
         transfer = 4000000000000000
+        gas_attempts = 12 if self.is_local_ten() else 480 # 1min on a local, 40min otherwise
 
         # create the bridge user
         accnt = BridgeUser(self, props.account1pk(), props.account1pk(), 'accnt1')
@@ -42,7 +42,7 @@ class PySysTest(TenNetworkTest):
 
         # release the funds from the L1 and check the balances
         start_time = time.perf_counter_ns()
-        tx_receipt = accnt.l1.release_funds(msg, [] if proof is None else [proof], root, gas_attempts=self.GAS_ATTEMPTS)
+        tx_receipt = accnt.l1.release_funds(msg, [] if proof is None else [proof], root, gas_attempts=gas_attempts)
         end_time = time.perf_counter_ns()
         self.log.info('Total time waiting for the gas estimate to pass: %.1f secs', (end_time-start_time)/1e9)
 
