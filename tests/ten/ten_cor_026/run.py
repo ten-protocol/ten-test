@@ -61,4 +61,4 @@ class PySysTest(TenNetworkTest):
         args.extend(['--timeout', str(timeout)])
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting transaction to send funds to the L1', timeout=10)
-        self.waitForGrep(file=stdout, expr='Completed transactions', timeout=1200)
+        self.waitForGrep(file=stdout, expr='Completed transactions', timeout=timeout/1000)
