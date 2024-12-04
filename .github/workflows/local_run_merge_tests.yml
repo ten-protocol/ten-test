@@ -8,7 +8,7 @@ on:
 
 jobs:
   test-run:
-    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-01, ten-test-gh-runner-04]
+    runs-on: [self-hosted, Linux, X64, local-testnets]
     steps:
       - name: 'Map IDs for ObscuroLabs'
         uses: kanga333/variable-mapper@master
