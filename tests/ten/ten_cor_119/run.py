@@ -1,6 +1,6 @@
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
-from ten.test.contracts.storage import StorageTwoPhaseWithEvents
+from ten.test.contracts.storage import StorageTwoPhaseWithRefund
 
 
 class PySysTest(TenNetworkTest):
@@ -11,19 +11,25 @@ class PySysTest(TenNetworkTest):
         web3, account = network.connect_account1(self)
 
         # deploy the contract
-        storage = StorageTwoPhaseWithEvents(self, web3, 100, Properties().L2PublicCallbacks)
+        storage = StorageTwoPhaseWithRefund(self, web3, 100, Properties().L2PublicCallbacks)
         storage.deploy(network, account)
 
         # transact against the contract
         balance_before = web3.eth.get_balance(account.address)
-        estimate, used, price = self.transact(storage, web3, network, account, 100)
+        estimate, used, price = self.transact(storage, web3, network, account, 200)
         self.wait(float(self.block_time) * 1.1)
+        value = storage.contract.functions.retrieve().call()
+        self.log.info('Retrieved value: %d' % value)
+
         balance_after = web3.eth.get_balance(account.address)
-        self.log.info('Balance before: %d' % balance_before)
-        self.log.info('Balance after:  %d' % balance_before)
-        self.log.info('Balance diff:   %d' % (balance_before-balance_after))
-        self.log.info('Cost estimate:  %d' % (estimate*price))
-        self.log.info('Cost used:      %d' % (used*price))
+        self.log.info('Balance before:  %d' % balance_before)
+        self.log.info('Balance after:   %d' % balance_before)
+        self.log.info('Balance diff:    %d' % (balance_before-balance_after))
+        self.log.info('Cost estimate:   %d' % (estimate*price))
+        self.log.info('Cost used:       %d' % (used*price))
+
+        refund_balance = storage.contract.functions.refundBalance().call()
+        self.log.info('Refund balance:  %d' % refund_balance)
 
     def transact(self, storage, web3, network, account, num):
         target = storage.contract.functions.store(num)
