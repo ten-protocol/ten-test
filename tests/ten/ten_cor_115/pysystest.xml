@@ -7,15 +7,12 @@
 Deploys the error contract which implements the two phase commit approach. Transacting with the contract results in a
 callback to a method which has a revert that triggers - we expect this to be handled in the same way in which it
 would have had it been done without the call back approach.
-
-Skipped due to https://github.com/ten-protocol/ten-internal/issues/4282
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>callbacks</group>
         </groups>
         <modes inherit="true">
