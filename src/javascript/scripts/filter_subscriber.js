@@ -6,7 +6,6 @@ const http = require('http')
 const commander = require('commander')
 
 function decodeLog(log, decode_as_stored_event) {
-
   if (decode_as_stored_event)
      console.log('Stored value =', Web3.utils.hexToNumber(log.data))
   else
@@ -83,5 +82,4 @@ var subscription = null
 const options = commander.opts()
 const web3 = new Web3(options.network_ws)
 filter_topics = (options.filter_topics + '').split(' ')
-console.log(options.decode_as_stored_event)
 startServer()

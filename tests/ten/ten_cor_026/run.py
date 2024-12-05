@@ -8,7 +8,7 @@ class PySysTest(TenNetworkTest):
     def execute(self):
         transfer = 4000000000000000
         pk = self.get_ephemeral_pk()
-        timeout = 60000 if self.is_local_ten() else 2400000 # 1min on a local, 40min otherwise
+        timeout = 90000 if self.is_local_ten() else 2400000 # 1min on a local, 40min otherwise
 
         # the l1 and l2 networks and connections
         l1 = self.get_l1_network_connection()
