@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Callbacks: two phase commit with life-cycle event, contract.getPastEvents to get new entries</title>
+        <title>Callbacks: privacy callback with life-cycle event, contract.getPastEvents to get new entries</title>
         <purpose><![CDATA[
 Deploys the storage contract which implements the two phase commit approach. After transacting five times a javascript
 event poller polls using contract.getPastEvents to get events since the latest block, where contract is the storage

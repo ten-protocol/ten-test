@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Callbacks: two phase commit on the storage contract with a refund</title>
+        <title>Callbacks: privacy callback on the storage contract with a refund</title>
         <purpose><![CDATA[
 ]]>
         </purpose>

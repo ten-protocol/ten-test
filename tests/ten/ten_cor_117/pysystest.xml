@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Callbacks: large call data two phase commit</title>
+        <title>Callbacks: privacy callback with large call data</title>
         <purpose><![CDATA[
 Uses a contract that processes large call data via a two phase commit (the public call back). The test first sends
 such the tx has oversized data, then sends two other transactions under the limit.
