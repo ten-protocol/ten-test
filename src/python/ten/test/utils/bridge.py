@@ -146,8 +146,7 @@ class L1BridgeDetails(BridgeDetails):
         tx_receipt = self.network.tx(self.test, self.web3, build_tx, self.account, persist_nonce=False, timeout=timeout)
 
         value_transfer = self.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Discard)
-        log_message = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Discard)
-        return tx_receipt, self.get_value_transfer_event(value_transfer[0]), self.get_cross_chain_message(log_message[0])
+        return tx_receipt, self.get_value_transfer_event(value_transfer[0])
 
     def send_to_msg_bus(self, amount, timeout=60):
         """Send native currency across the bridge."""
