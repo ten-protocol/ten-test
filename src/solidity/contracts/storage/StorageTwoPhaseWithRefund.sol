@@ -6,8 +6,11 @@ interface IPublicCallbacks {
     function reattemptCallback(uint256 callbackId) external;
 }
 
-contract StorageTwoPhaseReceiveWithRevert {
+contract StorageTwoPhaseWithRefund {
     IPublicCallbacks public callbacks;
+    mapping(uint256 => address) public idToSender;
+    mapping(address => uint256) public senderToRefund;
+
     address public owner;
     uint256 number;
 
@@ -19,7 +22,8 @@ contract StorageTwoPhaseReceiveWithRevert {
 
     function store(uint256 num) public payable {
         bytes memory callbackData = abi.encodeWithSelector(this.handleStore.selector, num, msg.sender);
-        callbacks.register{value: msg.value}(callbackData);
+        uint256 id = callbacks.register{value: msg.value}(callbackData);
+        idToSender[id] = msg.sender;
     }
 
     function handleStore(uint256 num, address originator) external {
@@ -31,7 +35,18 @@ contract StorageTwoPhaseReceiveWithRevert {
         return number;
     }
 
-    receive() external payable { revert(); }
+    function refundWithdraw() external {
+        msg.sender.call{value: senderToRefund[msg.sender]}("");
+    }
+
+    function refundBalance() public view returns (uint256){
+        return senderToRefund[msg.sender];
+    }
+
+    // called into by IPublicCallbacks
+    function handleRefund(uint256 id) public payable {
+        senderToRefund[idToSender[id]] += msg.value;
+    }
 
     function destroy() public {
         require(msg.sender == owner, "You are not the owner");

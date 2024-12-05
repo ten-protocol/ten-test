@@ -12,3 +12,7 @@ class FieldSenderRelevancy(DefaultContract):
     CONTRACT = 'FieldSenderRelevancy'
 
 
+class RelevancyTwoPhase(DefaultContract):
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'relevancy', 'RelevancyTwoPhase.sol')
+    CONTRACT = 'RelevancyTwoPhase'
+

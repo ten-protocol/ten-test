@@ -242,7 +242,7 @@ class TenRunnerPlugin():
 
             sign = '-' if delta < 0 else ''
             runner.log.info(' ')
-            runner.log.info("  %s: %s%d Wei", 'Total cost', sign, Web3().to_wei(abs(delta), 'ether'),
+            runner.log.info("  %s: %s%d WEI", 'Total cost', sign, Web3().to_wei(abs(delta), 'ether'),
                             extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
             runner.log.info("  %s: %s%.9f ETH", 'Total cost', sign, abs(delta), extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
             if eth_price is not None:

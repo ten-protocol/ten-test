@@ -2,11 +2,11 @@
 pragma solidity ^0.8.0;
 
 interface IPublicCallbacks {
-    function register(bytes calldata callback) external payable;
+    function register(bytes calldata callback) external payable returns (uint256);
     function reattemptCallback(uint256 callbackId) external;
 }
 
-contract LargeCallData {
+contract CallDataTwoPhase {
     IPublicCallbacks public callbacks;
     uint256 public lastSum;
 

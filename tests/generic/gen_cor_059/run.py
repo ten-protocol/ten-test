@@ -10,7 +10,7 @@ class PySysTest(TenNetworkTest):
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
         balance = web3.eth.get_balance(account.address)
-        self.log.info('Balance account %.9f ETH (%d Wei)', web3.from_wei(balance, 'ether'), balance)
+        self.log.info('Balance account %.9f ETH (%d WEI)', web3.from_wei(balance, 'ether'), balance)
 
         recv_contract = ReceiveEther(self, web3)
         recv_contract.deploy(network, account)

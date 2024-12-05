@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Callbacks: storage two phase callback implementation with and without events</title>
+        <title>Callbacks: storage privacy callback implementation with and without events</title>
         <purpose><![CDATA[
 Deploys two contracts that use the two phase callback implementation to pass execution of a tx to the public callbacks
 contract. The test just checks that the txs go through as expected and that they update the stored value held within the

@@ -2,17 +2,21 @@
 <pysystest type="auto">
 
     <description>
-        <title>Callbacks: privacy callback where the callback triggers a require</title>
+        <title>Callbacks: privacy callback on the storage contract with a refund</title>
         <purpose><![CDATA[
-Deploys the error contract which implements the two phase commit approach. Transacting with the contract results in a
-callback to a method which has a require that triggers - we expect this to be handled in the same way in which it
-would have had it been done without the call back approach.
+Uses a storage contract which supports refunds of gas. When a contract is called that is to be handled in a callback,
+the callback id is mapped to the account making the transaction. When the callback is executed, a handleRefund is also
+invoked to add residual funds to the contract that from the callback id can be mapped to the account and stored locally.
+These funds can then be returned to the account on request.
+
+Skipped due to https://github.com/ten-protocol/ten-internal/issues/4358
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
             <group>callbacks</group>
         </groups>
         <modes inherit="true">
