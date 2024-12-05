@@ -4,6 +4,8 @@
     <description>
         <title>Bridge: send native funds across the bridge using the message bus directly</title>
         <purpose><![CDATA[
+Tests sending native ETH from the L1 to the L2 by sending value to the message bus directly. In this case no notification
+on the L2 is sent, rather the client must wait for the balance to increase.
 ]]>
         </purpose>
     </description>

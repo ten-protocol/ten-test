@@ -4,6 +4,9 @@
     <description>
         <title>Bridge: send native funds across the bridge using bridge sendNative</title>
         <purpose><![CDATA[
+Tests sending native ETH from the L1 to the L2 using the bridge sendNative call. This effectively calls in the message
+bus to perform the send. The operation is completed when the NativeDeposit event is received on the L2 for the account
+that requested the transfer.
 ]]>
         </purpose>
     </description>
