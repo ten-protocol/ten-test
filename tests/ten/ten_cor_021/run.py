@@ -51,6 +51,7 @@ class PySysTest(TenNetworkTest):
         self.log.info('Approve the bridge to spend tokens on the L2')
         accnt1.l2.approve_token(self.SYMB, accnt1.l2.bridge.address, 10)
         self.log.info('Send tokens to cross the bridge on the L2')
+        self.log.info('Fees to send are %d' % accnt1.l2.send_erc20_fees())
         tx_receipt, log_msg = accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 2, dump_file='send_erc20.tx')
         mh = MerkleTreeHelper.create(self)
         block, decoded = mh.dump_tree(accnt1.l2.web3, tx_receipt, 'cross_train_tree.log')

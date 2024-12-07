@@ -144,6 +144,7 @@ class DefaultPostLondon:
             'maxPriorityFeePerGas': max_priority_fee_per_gas  # Priority fee to include the transaction in the block
         }
         if 'access_list' in kwargs: params['accessList'] = kwargs['access_list']
+        if 'value' in kwargs: params['value'] = int(kwargs['value'])
         if estimate:
             while gas_attempts > 0:
                 try:
@@ -239,6 +240,7 @@ class DefaultPreLondon(DefaultPostLondon):
             'gasPrice': gas_price             # the current gas price
         }
         if 'access_list' in kwargs: params['accessList'] = kwargs['access_list']
+        if 'value' in kwargs: params['value'] = int(kwargs['value'])
         if estimate:
             while gas_attempts > 0:
                 try:

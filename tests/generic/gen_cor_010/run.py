@@ -12,6 +12,7 @@ class PySysTest(GenericNetworkTest):
         # get the transaction count and deploy
         storage = Storage(self, web3, 100)
         tx_receipt = storage.deploy(network, account)
+        network.dump(tx_receipt, 'receipt')
 
         # get the transaction count and interact
         tx = web3.eth.get_transaction(tx_receipt.transactionHash)
