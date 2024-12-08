@@ -1,6 +1,6 @@
 # Check key balances on sepolia-testnet to determine profits
 #
-name: '[sepolia] Check profits'
+name: '[system] Check sepolia testnet profits'
 run-name: Check sepolia-testnet profits
 on:
   schedule:
@@ -21,7 +21,7 @@ jobs:
         with:
           repository: ten-protocol/go-ten
           path: ./go-ten
-          ref: 'releases/v0.26'
+          ref: 'releases/v0.28'
 
       - name: 'Build required artifacts for running tests'
         run: |

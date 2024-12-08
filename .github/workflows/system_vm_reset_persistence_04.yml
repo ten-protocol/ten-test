@@ -1,7 +1,7 @@
-# Reset the nonce persistence on dev-testnet or uat-testnet
+# Reset the nonce persistence on sepolia-testnet
 #
-name: '[dev/uat] Reset persistence'
-run-name: Reset persistence on dev/uat (${{ github.event.inputs.environment }})
+name: '[system] Reset persistence on gh-runner-04'
+run-name: Reset persistence on gh-runner-04
 on:
   workflow_dispatch:
     inputs:
@@ -9,14 +9,15 @@ on:
         type: choice
         description: Environment
         required: true
-        default: ten.dev
+        default: ten.sepolia
         options:
           - ten.dev
           - ten.uat
+          - ten.sepolia
 
 jobs:
   reset-persistence:
-    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-03]
+    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-04]
     steps:
       - name: 'Check out ten-test'
         uses: actions/checkout@v3

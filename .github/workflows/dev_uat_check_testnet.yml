@@ -9,7 +9,7 @@ on:
 
 jobs:
   run-check:
-    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-03]
+    runs-on: [self-hosted, Linux, X64, all-testnets]
     steps:
       - name: 'Check out ten-test'
         uses: actions/checkout@v3
@@ -32,12 +32,6 @@ jobs:
         run: |
           cd ${{ github.workspace }}/ten-test
           /usr/local/bin/pysys.py run -m ten.uat -i health -XITERATIONS_FULL=0
-
-#      - name: 'Run health check tests (bridge)'
-#        if: always()
-#        run: |
-#          cd ${{ github.workspace }}/ten-test
-#          /usr/local/bin/pysys.py run -m ten.uat ten_cor_020 ten_cor_024 ten_cor_026
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v4

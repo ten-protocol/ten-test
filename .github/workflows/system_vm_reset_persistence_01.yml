@@ -1,13 +1,23 @@
 # Reset the nonce persistence on sepolia-testnet
 #
-name: '[sepolia] Reset persistence'
-run-name: Reset persistence on sepolia-testnet
+name: '[system] Reset persistence on gh-runner-01'
+run-name: Reset persistence on gh-runner-01
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: Environment
+        required: true
+        default: ten.sepolia
+        options:
+          - ten.dev
+          - ten.uat
+          - ten.sepolia
 
 jobs:
   reset-persistence:
-    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-02]
+    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-01]
     steps:
       - name: 'Check out ten-test'
         uses: actions/checkout@v3
@@ -26,10 +36,10 @@ jobs:
           go build -o ${{ github.workspace }}/ten-test/artifacts/wallet_extension/wallet_extension
           ls -l ${{ github.workspace }}/ten-test/artifacts
 
-      - name: 'Persistence reset on sepolia-testnet'
+      - name: 'Persistence reset'
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.sepolia persistence_reset
+          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} persistence_reset
 
       - name: 'Upload output'
         uses: actions/upload-artifact@v4

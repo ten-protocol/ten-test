@@ -24,12 +24,12 @@ on:
         default: main
         options:
           - main
+          - releases/v0.28
           - releases/v0.27
-          - releases/v0.26
 
 jobs:
   test-run:
-    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-03]
+    runs-on: [self-hosted, Linux, X64, all-testnets]
     steps:
       - name: Set the variables
         env:
