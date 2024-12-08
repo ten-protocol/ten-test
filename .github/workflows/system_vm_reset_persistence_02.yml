@@ -1,4 +1,4 @@
-  system_vm_reset_persistence_01.yml# Reset the nonce persistence on sepolia-testnet
+#  system_vm_reset_persistence_01.yml# Reset the nonce persistence on sepolia-testnet
 #
 name: '[system] Reset persistence on gh-runner-02'
 run-name: Reset persistence on gh-runner-02
