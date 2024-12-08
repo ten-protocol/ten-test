@@ -1,6 +1,6 @@
 # Build a local testnet and checks you can run tests from the e2e docker container
 #
-name: '[system] Check docker image'
+name: '[system] Docker image check'
 run-name: Check docker image (${{ github.event_name }})
 on:
   schedule:

@@ -1,6 +1,6 @@
 # Build a docker image of the e2e tests and push it to the azure docker registry
 #
-name: '[system] Docker image check'
+name: '[system] Docker image create'
 run-name: Create docker image (${{ github.event_name }})
 on:
   pull_request:
