@@ -1,6 +1,6 @@
 # Reset the nonce persistence on sepolia-testnet
 #
-name: '[system] Reset persistence on gh-runner-01'
+name: '[system] Reset gh-runner-01'
 run-name: Reset persistence on gh-runner-01
 on:
   workflow_dispatch:
