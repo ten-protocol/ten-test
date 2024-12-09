@@ -1,10 +1,10 @@
 # Run a set of load on uat-testnet on a schedule
 #
-name: '[stress] Run uat load tests'
+name: '[stress] Run sepolia load tests'
 run-name: Run uat-testnet load tests
 on:
   schedule:
-    - cron: '10 * * * *'
+    - cron: '20 */4 * * *'
   workflow_dispatch:
 
 jobs:
@@ -31,7 +31,7 @@ jobs:
       - name: 'Run load and perf tests'
         run: |
           cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ten.uat -i remote_load -c 8 
+          /usr/local/bin/pysys.py run -m ten.sepolia -i remote_load -c 8 
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v4
@@ -42,6 +42,7 @@ jobs:
             ${{ github.workspace }}/ten-test/**/Output
             !${{ github.workspace }}/ten-test/**/node_modules
           retention-days: 1
+
 
 
 
