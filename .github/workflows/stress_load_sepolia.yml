@@ -4,7 +4,7 @@ name: '[stress] Run sepolia load tests'
 run-name: Run uat-testnet load tests
 on:
   schedule:
-    - cron: '20 */4 * * *'
+    - cron: '20 */12 * * *'
   workflow_dispatch:
 
 jobs:
