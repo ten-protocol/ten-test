@@ -4,7 +4,7 @@ name: '[system] Clean gh-runner-04'
 run-name: Cleaning runner 04 (${{ github.event_name }})
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 */2 * * *'
   workflow_dispatch:
 
 jobs:
