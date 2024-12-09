@@ -60,21 +60,14 @@ jobs:
           cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} -r ${{ github.event.inputs.arguments }}
 
-      - name: 'Graph the performance summary'
-        if: always()
-        continue-on-error: true
-        run: |
-          cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} -r graph_performance
-
-      - name: 'Collate performance output'
+      - name: 'Collate pdf output'
         if: always()
         continue-on-error: true
         run: |
           cd ${{ github.workspace }}/ten-test
           pdftk $(find . -name \*.pdf | sort) cat output results_graphs.pdf || true
 
-      - name: 'Upload performance output'
+      - name: 'Upload pdf output'
         uses: actions/upload-artifact@v4
         if: always()
         continue-on-error: true
