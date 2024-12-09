@@ -19,6 +19,7 @@ class PySysTest(TenNetworkTest):
 
         # send funds from the L2 to the L1
         self.log.info('Send native from L2 to L1')
+        self.log.info('Fees to send are %d' % accnt.l2.send_native_fees())
         tx_receipt, value_transfer = accnt.l2.send_native(accnt.l1.account.address, transfer, dump_file='send_native.tx')
         l2_cost = int(tx_receipt.gasUsed) * accnt.l2.web3.eth.gas_price
 
@@ -31,7 +32,7 @@ class PySysTest(TenNetworkTest):
         self.log.info('  cross_chain:           %s', decoded)
         self.log.info('  merkle_root:           %s', block.crossChainTreeHash)
         self.assertTrue(msg_hash in [x[1] for x in decoded],
-                        assertMessage='Value transfer has should be in the xchain tree')
+                        assertMessage='Value transfer hash should be in the xchain tree')
 
         # from the dump, get the root and proof of inclusion and assert same root as in the block header
         root, proof = mh.get_proof('cross_train_tree.log', 'v,%s' % msg_hash)

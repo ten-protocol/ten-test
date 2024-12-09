@@ -217,6 +217,12 @@ class L2BridgeDetails(BridgeDetails):
         token = self.tokens[symbol]
         return token.contract.functions.balanceOf(self.account.address).call({"from":self.account.address})
 
+    def send_erc20_fees(self):
+        return self.bridge.contract.functions.erc20Fee().call()
+
+    def send_native_fees(self):
+        return self.bridge.contract.functions.valueTransferFee().call()
+
     def relay_whitelist_message(self, xchain_msg, timeout=60, dump_file=None):
         """Relay a cross chain message specific to a whitelisting. """
         tx_receipt = self.relay_message(xchain_msg, timeout=timeout)
@@ -244,7 +250,7 @@ class L2BridgeDetails(BridgeDetails):
         tx_receipt = self.network.transact(self.test, self.web3,
                                            self.bridge.contract.functions.sendERC20(token.address, amount, address),
                                            self.account, gas_limit=self.bridge.GAS_LIMIT,
-                                           timeout=timeout)
+                                           timeout=timeout, value=int(self.send_erc20_fees()))
         if dump_file: self.network.dump(tx_receipt, dump_file)
 
         logs = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Discard)
@@ -256,6 +262,7 @@ class L2BridgeDetails(BridgeDetails):
         params = {'gasPrice': self.web3.eth.gas_price, 'value': amount}
         gas_estimate = target.estimate_gas(params)
         params['gas'] = int(1.1*gas_estimate)
+        params['value'] = int(self.send_native_fees())
         build_tx = target.build_transaction(params)
 
         tx_receipt = self.network.tx(self.test, self.web3, build_tx, self.account, timeout=timeout)

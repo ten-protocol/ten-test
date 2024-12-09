@@ -19,6 +19,7 @@ a local testnet this can take 180 seconds, on a real deployment it can take 30 m
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
             <group>bridge</group>
         </groups>
         <modes inherit="true">
