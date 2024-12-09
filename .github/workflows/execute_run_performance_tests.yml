@@ -1,0 +1,106 @@
+# Builds a local testnet and runs a set of tests
+#
+name: '[execute] Execute performance tests'
+run-name: Run performance tests (${{ github.event.inputs.environment }})
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: Environment
+        required: true
+        default: ten.dev
+        options:
+          - ten.local
+          - ten.dev
+          - ten.uat
+          - ten.sepolia
+
+jobs:
+  test-run:
+    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-01]
+    steps:
+      - name: 'Check out ten-test'
+        uses: actions/checkout@v3
+        with:
+          path: ./ten-test
+
+      - name: 'Check out go-ten code'
+        uses: actions/checkout@v3
+        with:
+          repository: ten-protocol/go-ten
+          path: ./go-ten
+
+      - name: 'Docker clean containers and images before the test'
+        if:  ${{ github.event.inputs.environment == 'ten.local' }}
+        run: |
+          for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
+          docker system prune -af --volumes
+          for i in `docker volume ls --filter dangling=true -q`; do docker volume rm $i; done
+
+      - name: 'Build docker containers and start testnet'
+        if:  ${{ github.event.inputs.environment == 'ten.local' }}
+        run: |
+          cd ${{ github.workspace }}/go-ten
+          ./testnet/testnet-local-build_images.sh 
+          go run ./testnet/launcher/cmd
+
+      - name: 'Do a persistence reset'
+        if:  ${{ github.event.inputs.environment == 'ten.local' }}
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ten.local persistence_reset
+
+      - name: 'Build required artifacts for running tests'
+        run: |
+          cd ${{ github.workspace }}/ten-test
+          ./get_artifacts.sh  
+
+      - name: 'Run performance tests'
+        run: |
+          cd ${{ github.workspace }}/ten-test/tests
+          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} -i performance
+
+      - name: 'Run the performance summary'
+        if: always()
+        continue-on-error: true
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} graph_performance
+
+      - name: 'Collate performance output'
+        if: always()
+        continue-on-error: true
+        run: |
+          cd ${{ github.workspace }}/ten-test
+          pdftk $(find . -name \*.pdf | sort) cat output results_graphs.pdf || true
+
+      - name: 'Upload performance output'
+        uses: actions/upload-artifact@v4
+        if: always()
+        continue-on-error: true
+        with:
+          name: performance-artifact
+          path: |
+            ${{ github.workspace }}/ten-test/results_graphs.pdf
+          if-no-files-found: ignore
+          retention-days: 1
+
+      - name: 'Upload testcase output'
+        uses: actions/upload-artifact@v4
+        if: failure()
+        continue-on-error: true
+        with:
+          name: test-artifact
+          path: |
+            ${{ github.workspace }}/ten-test/**/Output
+            !${{ github.workspace }}/ten-test/**/node_modules
+          retention-days: 1
+
+      - name: 'Docker clean containers and images after the test'
+        if:  ${{ github.event.inputs.environment == 'ten.local' }}
+        run: |
+          for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
+          docker system prune -af --volumes
+          for i in `docker volume ls --filter dangling=true -q`; do docker volume rm $i; done
+
