@@ -1,6 +1,6 @@
 # Run a set of tests on uat-testnet or dev-testnet
 #
-name: '[dev/uat] Run remote tests'
+name: '[execute] Execute remote tests'
 run-name: Run remote tests on dev/uat (${{ github.event_name }} ${{ github.event.inputs.environment }} )
 on:
   workflow_dispatch:
@@ -13,6 +13,7 @@ on:
         options:
           - ten.dev
           - ten.uat
+          - ten.sepolia
       arguments:
         description: 'Arguments to the pysys run'
         required: true

@@ -1,33 +1,16 @@
-# Run a set of tests on sepolia-testnet
+# Run a set of load on uat-testnet on a schedule
 #
-name: '[sepolia] Run remote tests'
-run-name: Run remote tests on sepolia-testnet
+name: '[stress] Run uat load tests'
+run-name: Run uat-testnet load tests
 on:
+  schedule:
+    - cron: '10 * * * *'
   workflow_dispatch:
-    inputs:
-      arguments:
-        description: 'Arguments to the pysys run'
-        required: true
-        default: '-e skip -e performance'
-      release:
-        type: choice
-        description: 'The release version of testnet'
-        required: true
-        default: main
-        options:
-          - main
-          - releases/v0.28
-          - releases/v0.27
 
 jobs:
-  test-run:
+  run-check:
     runs-on: [self-hosted, Linux, X64, all-testnets]
     steps:
-      - name: Set the variables
-        env:
-          DEFAULT_VERSION: 'main'
-        run: echo "VERSION=${{ github.event.inputs.release || env.DEFAULT_VERSION }}" >> $GITHUB_ENV
-
       - name: 'Check out ten-test'
         uses: actions/checkout@v3
         with:
@@ -38,7 +21,6 @@ jobs:
         with:
           repository: ten-protocol/go-ten
           path: ./go-ten
-          ref: ${{env.VERSION}}
 
       - name: 'Build required artifacts for running tests'
         run: |
@@ -46,10 +28,10 @@ jobs:
           ./get_artifacts.sh
           ls -l ${{ github.workspace }}/ten-test/artifacts   
 
-      - name: 'Run tests on sepolia-testnet on a workflow_dispatch'
+      - name: 'Run load and perf tests'
         run: |
           cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ten.sepolia -r ${{ github.event.inputs.arguments }}
+          /usr/local/bin/pysys.py run -m ten.uat -i remote_load -c 8 
 
       - name: 'Collate pdf output'
         if: always()
@@ -59,7 +41,7 @@ jobs:
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v4
-        if: failure()
+        if: always()
         with:
           name: test-artifact
           path: |
@@ -76,4 +58,5 @@ jobs:
             ${{ github.workspace }}/ten-test/results_graphs.pdf
           if-no-files-found: ignore
           retention-days: 1
+
 

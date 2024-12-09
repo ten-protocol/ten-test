@@ -1,60 +1,44 @@
-# Builds a local testnet and runs a set of merge tests
+# Builds a local testnet and runs a set of tests
 #
-name: '[local-tn] Run merge tests'
-run-name: Run merge tests for PR ${{ github.event.client_payload.number }} by @${{ github.event.client_payload.owner }}
+name: '[execute] Execute local tests'
+run-name: Run local tests (${{ github.event_name }})
 on:
-  repository_dispatch:
-    types: [merged_pull_request]
+  schedule:
+    - cron: '0 */12 * * *'
+  workflow_dispatch:
+    inputs:
+      target_branch:
+        description: 'Branch of go-ten to run against'
+        required: true
+        default: main
+      arguments:
+        description: 'Arguments to the pysys run'
+        required: true
+        default: '-e skip -e performance -e robustness'
 
 jobs:
   test-run:
     runs-on: [self-hosted, Linux, X64, local-testnets]
     steps:
-      - name: 'Map IDs for ObscuroLabs'
-        uses: kanga333/variable-mapper@master
-        with:
-          key: "${{ github.event.client_payload.owner }}"
-          map: |
-            {
-              "StefanIliev545": {
-                "discord_id": "1034771491436363797"
-              },
-              "BedrockSquirrel": {
-                "discord_id": "92361563276591104"
-              },
-              "moraygrieve": {
-                "discord_id": "814873419207409685"
-              },
-              "tudor-malene": {
-                "discord_id": "921049923414261821"
-              },
-              "zkokelj": {
-                "discord_id": "639076633994592256"
-              },
-              "badgersrus": {
-                "discord_id": "920586981581393983"
-              },
-              "Jennievon": {
-                "discord_id": "902910727948492840"
-              },
-              "pkrishnath": {
-                "discord_id": "1275573709910052947"
-              },
-              ".*": {
-                "discord_id": "814873419207409685"
-              }
-            }
-
       - name: 'Check out ten-test'
         uses: actions/checkout@v3
         with:
           path: ./ten-test
 
-      - name: 'Check out go-ten code'
+      - name: 'Check out go-ten code on schedule trigger'
+        if: ${{ github.event_name == 'schedule' }}
         uses: actions/checkout@v3
         with:
           repository: ten-protocol/go-ten
           path: ./go-ten
+
+      - name: 'Check out go-ten code on workflow dispatch'
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        uses: actions/checkout@v3
+        with:
+          repository: ten-protocol/go-ten
+          path: ./go-ten
+          ref: ${{ github.event.inputs.target_branch }}
 
       - name: 'Docker clean containers and images before the test'
         run: |
@@ -65,7 +49,7 @@ jobs:
       - name: 'Build docker containers'
         run: |
           cd ${{ github.workspace }}/go-ten/testnet
-          ./testnet-local-build_images.sh  
+          ./testnet-local-build_images.sh 
 
       - name: 'Start up testnet'
         run: |
@@ -87,40 +71,55 @@ jobs:
       - name: 'Build required artifacts for running tests'
         run: |
           cd ${{ github.workspace }}/ten-test
-          ./get_artifacts.sh  
+          ./get_artifacts.sh
+          ls -l ${{ github.workspace }}/ten-test/artifacts   
 
-      - name: 'Do a persistence reset for nonce and contracts'
+      - name: 'Do a persistence reset'
         run: |
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.local persistence_reset
 
-      - name: 'Run tests'
+      - name: 'Run tests on workflow dispatch'
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ten.local -r -e skip -e persistence -e performance -e robustness
+          /usr/local/bin/pysys.py run -m ten.local -r ${{ github.event.inputs.arguments }}
 
-      - name: 'Discord notification'
-        if: success()
-        uses: sarisia/actions-status-discord@v1
-        with:
-          webhook: ${{ secrets.CONT_INT_WEBHOOK }}
-          title: "Merge tests for PR ${{ github.event.client_payload.number }} by @${{ github.event.client_payload.owner }} passed"
-          description: "Local testnet tests on PR merge"
-          avatar_url: ${{ secrets.AVATAR_URL }}
+      - name: 'Run tests on schedule'
+        if: ${{ github.event_name == 'schedule' }}
+        run: |
+          cd ${{ github.workspace }}/ten-test/tests
+          /usr/local/bin/pysys.py run -m ten.local -i sanity
 
-      - name: 'Discord notification'
-        if: failure()
-        uses: sarisia/actions-status-discord@v1
+      - name: 'Run the performance summary'
+        if: always()
+        continue-on-error: true
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ten.local -r graph_performance
+
+      - name: 'Collate performance output'
+        if: always()
+        continue-on-error: true
+        run: |
+          cd ${{ github.workspace }}/ten-test
+          pdftk $(find . -name \*.pdf | sort) cat output results_graphs.pdf || true
+
+      - name: 'Upload performance output'
+        uses: actions/upload-artifact@v4
+        if: always()
+        continue-on-error: true
         with:
-          webhook: ${{ secrets.CONT_INT_WEBHOOK }}
-          title: "Merge tests for PR ${{ github.event.client_payload.number }} by @${{ github.event.client_payload.owner }} failed"
-          description: "Local testnet tests on PR merge"
-          content: "Please investigate <@${{ env.discord_id }}>"
-          avatar_url: ${{ secrets.AVATAR_URL }}
+          name: performance-artifact
+          path: |
+            ${{ github.workspace }}/ten-test/results_graphs.pdf
+          if-no-files-found: ignore
+          retention-days: 1
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v4
         if: failure()
+        continue-on-error: true
         with:
           name: test-artifact
           path: |
@@ -130,6 +129,7 @@ jobs:
 
       - name: 'Get the gateway logs'
         if: failure()
+        continue-on-error: true
         run: |
           cd ${{ github.workspace }}/go-ten/
           docker container cp `docker ps -aqf "name=gateway"`:/home/obscuro/gateway_logs.log gateway_logs.out
@@ -150,3 +150,4 @@ jobs:
           for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
           docker system prune -af --volumes
           for i in `docker volume ls --filter dangling=true -q`; do docker volume rm $i; done
+

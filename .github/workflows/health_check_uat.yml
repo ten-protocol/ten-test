@@ -1,6 +1,6 @@
 # Run a set of sanity tests on uat-testnet to ensure it is up and running
 #
-name: '[dev/uat] Check health'
+name: '[health] Check uat'
 run-name: Check uat-testnet health
 on:
   schedule:

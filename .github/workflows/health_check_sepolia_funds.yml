@@ -1,6 +1,6 @@
 # Check key balances on sepolia-testnet
 #
-name: '[sepolia] Check funds'
+name: '[health] Check sepolia funds'
 run-name: Check sepolia-testnet funds
 on:
   schedule:
