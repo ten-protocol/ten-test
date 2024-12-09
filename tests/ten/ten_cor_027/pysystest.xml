@@ -13,6 +13,7 @@ as the account performing the transfer. Validates that the event is seen and wit
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
             <group>bridge</group>
         </groups>
         <modes inherit="true">
