@@ -5,8 +5,8 @@ from ten.test.contracts.emitter import EventEmitter
 
 
 class PySysTest(TenNetworkTest):
-    CLIENTS = 10         # number of transactors and subscribers
-    TRANSACTIONS = 250   # number of txs the transactors will perform
+    NUM_CLIENTS = 10         # number of transactors and subscribers
+    NUM_TRANSACTIONS = 250   # number of txs the transactors will perform
 
     def execute(self):
         # connect to network on the primary gateway and deploy contract
@@ -27,11 +27,11 @@ class PySysTest(TenNetworkTest):
         limits.append(emitter.contract.functions.emitStructEvent(1, rstr).estimate_gas(params))
         limits.append(emitter.contract.functions.emitMappingEvent(1, [account.address], [200]).estimate_gas(params))
         gas_limit = max(limits)
-        funds_needed = 1.1 * self.TRANSACTIONS * (gas_price * gas_limit)
+        funds_needed = 1.1 * self.NUM_TRANSACTIONS * (gas_price * gas_limit)
 
         # setup the transactors and run the subscribers
         clients = []
-        for id in range(0, self.CLIENTS):
+        for id in range(0, self.NUM_CLIENTS):
             pk, account, network = self.setup_transactor(funds_needed)
             clients.append((id, pk, account, network))
             self.run_subscriber(network, emitter, account, id)
@@ -66,7 +66,7 @@ class PySysTest(TenNetworkTest):
         args.extend(['--pk', pk])
         args.extend(['--contract_address', '%s' % emitter.address])
         args.extend(['--contract_abi', '%s' % emitter.abi_path])
-        args.extend(['--transactions', '%d' % self.TRANSACTIONS])
+        args.extend(['--transactions', '%d' % self.NUM_TRANSACTIONS])
         args.extend(['--id', '%d' % id])
         args.extend(['--gas_limit', '%d' % gas_limit])
         self.run_python(script, stdout, stderr, args, state=FOREGROUND, timeout=300)
@@ -112,7 +112,7 @@ class PySysTest(TenNetworkTest):
         args.extend(['--network_ws', network.connection_url(web_socket=True)])
         args.extend(['--contract_address', '%s' % emitter.address])
         args.extend(['--contract_abi', '%s' % emitter.abi_path])
-        args.extend(['--id_range', '%d' % self.CLIENTS])
+        args.extend(['--id_range', '%d' % self.NUM_CLIENTS])
         self.run_javascript(script, stdout, stderr, args)
 
     def rand_str(self):
