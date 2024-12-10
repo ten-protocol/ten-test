@@ -24,10 +24,11 @@ class PySysTest(TenNetworkTest):
         management = Management(self, web3_l1)
         bridge = EthereumBridge(self, web3_l2)
         bus = L2MessageBus(self, web3_l2)
+        fees = bridge.contract.functions.valueTransferFee().call()
 
         # execute the transfer using ethers
         self.client(l2, bridge.address, bridge.abi_path, bus.address, bus.abi_path, pk,
-                    l1, management.address, management.abi_path, account_l1.address, transfer, timeout)
+                    l1, management.address, management.abi_path, account_l1.address, transfer+fees, timeout)
         l1_after = web3_l1.eth.get_balance(account_l1.address)
         l2_after = web3_l2.eth.get_balance(account_l2.address)
         self.log.info('  l1_balance after:      %s', l1_after)
