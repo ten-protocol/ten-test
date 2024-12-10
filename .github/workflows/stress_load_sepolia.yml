@@ -1,7 +1,7 @@
 # Run a set of load on uat-testnet on a schedule
 #
 name: '[stress] Run sepolia load tests'
-run-name: Run uat-testnet load tests
+run-name: Run sepolia-testnet load tests
 on:
   schedule:
     - cron: '20 */12 * * *'
