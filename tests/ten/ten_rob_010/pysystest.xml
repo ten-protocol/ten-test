@@ -15,6 +15,7 @@ that particular user_id.
         <groups inherit="true">
             <group>gateway</group>
             <group>robustness</group>
+            <group>remote_load</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
