@@ -51,9 +51,10 @@ class PySysTest(TenNetworkTest):
                 start_ns = time.perf_counter_ns()
                 with open(signal, 'w') as sig: sig.write('go')
                 for i in range(0, clients):
-                    self.waitForGrep(file=os.path.join(out_dir, 'client_%s.out' % i), expr='Client client_%s completed' % i, timeout=300)
-                    self.assertGrep(file='client_%s.out' % i, expr='Error sending raw transaction', contains=False, abortOnError=False)
-                    txs_sent += self.txs_sent(file='client_%s.out' % i)
+                    stdout = os.path.join(out_dir, 'client_%s.out' % i)
+                    self.waitForGrep(file=stdout, expr='Client client_%s completed' % i, timeout=300)
+                    self.assertGrep(file=stdout, expr='Error sending raw transaction', contains=False, abortOnError=False)
+                    txs_sent += self.txs_sent(file=stdout)
                 end_ns = time.perf_counter_ns()
 
                 bulk_throughput = float(txs_sent) / float((end_ns - start_ns) / 1e9)
@@ -153,11 +154,3 @@ class PySysTest(TenNetworkTest):
         overlap = np.array(lists[0])
         for l in lists[1:]: overlap = np.intersect1d(overlap, np.array(l))
         return overlap.tolist()[0], overlap.tolist()[-1]
-
-    def txs_sent(self, file):
-        regex = re.compile('Number of transactions sent = (?P<sent>.*)$', re.M)
-        with open(file, 'r') as fp:
-            for line in fp.readlines():
-                result = regex.search(line)
-                if result is not None: return int(result.group('sent'))
-        return 0

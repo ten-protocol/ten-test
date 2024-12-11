@@ -33,9 +33,10 @@ class PySysTest(TenNetworkTest):
         for i in range(self.CLIENTS): self.run_client('client_%d' % i, setup[i][0], setup[i][1])
         txs_sent = 0
         for i in range(self.CLIENTS):
-            self.waitForGrep(file='client_%d.out' % i, expr='Client client_%d completed' % i, timeout=900)
-            self.assertGrep(file='client_%s.out' % i, expr='Error sending raw transaction', contains=False, abortOnError=False)
-            txs_sent += self.txs_sent(file='client_%s.out' % i)
+            stdout = os.path.join(self.output,'client_%d.out' % i)
+            self.waitForGrep(file=stdout, expr='Client client_%d completed' % i, timeout=900)
+            self.assertGrep(file=stdout, expr='Error sending raw transaction', contains=False, abortOnError=False)
+            txs_sent += self.txs_sent(file=stdout)
 
         # process and graph the output
         data = [self.load_data('client_%d.log' % i) for i in range(self.CLIENTS)]
@@ -108,11 +109,3 @@ class PySysTest(TenNetworkTest):
         for _, t in data: b[t] = 1 if t not in b else b[t] + 1
         for t in range(first, last + 1): binned_data[t - first] = 0 if t not in b else b[t]
         return binned_data
-
-    def txs_sent(self, file):
-        regex = re.compile('Number of transactions sent = (?P<sent>.*)$', re.M)
-        with open(file, 'r') as fp:
-            for line in fp.readlines():
-                result = regex.search(line)
-                if result is not None: return int(result.group('sent'))
-        return 0

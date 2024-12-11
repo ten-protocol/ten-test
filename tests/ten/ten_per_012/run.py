@@ -44,16 +44,18 @@ class PySysTest(TenNetworkTest):
                     self.run_client('client_%s' % i, network, self.ITERATIONS, storage, funds_needed, start_ns, out_dir, signal)
 
                 with open(signal, 'w') as sig: sig.write('go')
+                txs_sent = 0
                 for i in range(0, clients):
-                    self.waitForGrep(file=os.path.join(out_dir, 'client_%s.out' % i),
-                                     expr='Client client_%s completed' % i, timeout=600)
-                    self.ratio_failures(file=os.path.join(out_dir, 'client_%s.out' % i))
+                    stdout = os.path.join(out_dir, 'client_%s.out' % i)
+                    self.waitForGrep(file=stdout, expr='Client client_%s completed' % i, timeout=600)
+                    self.ratio_failures(file=stdout)
+                    txs_sent += self.txs_sent(stdout)
 
                 # stop transacting to set the storage value
                 hprocess.stop()
 
                 end_ns = time.perf_counter_ns()
-                bulk_throughput = float(clients * self.ITERATIONS) / float((end_ns - start_ns) / 1e9)
+                bulk_throughput = float(txs_sent) / float((end_ns - start_ns) / 1e9)
                 avg_latency, mode_latency, nnth_percentile = self.process_latency(clients, out_dir)
                 throughput = self.process_throughput(clients, out_dir, start_ns, end_ns)
                 self.log.info('Bulk rate throughput %.2f (requests/sec)' % bulk_throughput)
