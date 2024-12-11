@@ -1,4 +1,4 @@
-import os, time, re
+import os, time
 from datetime import datetime
 from collections import OrderedDict
 from pysys.constants import PASSED

@@ -44,19 +44,17 @@ class PySysTest(TenNetworkTest):
                     self.run_client('client_%s' % i, network, self.ITERATIONS, storage, funds_needed, start_ns, out_dir, signal)
 
                 with open(signal, 'w') as sig: sig.write('go')
-                txs_sent = 0
                 for i in range(0, clients):
                     stdout = os.path.join(out_dir, 'client_%s.out' % i)
                     self.waitForGrep(file=stdout, expr='Client client_%s completed' % i, timeout=600)
                     self.ratio_failures(file=stdout)
-                    txs_sent += self.txs_sent(stdout)
 
                 # stop transacting to set the storage value
                 hprocess.stop()
 
                 end_ns = time.perf_counter_ns()
-                bulk_throughput = float(txs_sent) / float((end_ns - start_ns) / 1e9)
-                avg_latency, mode_latency, nnth_percentile = self.process_latency(clients, out_dir)
+                num_data, avg_latency, mode_latency, nnth_percentile = self.process_latency(clients, out_dir)
+                bulk_throughput = float(num_data) / float((end_ns - start_ns) / 1e9)
                 throughput = self.process_throughput(clients, out_dir, start_ns, end_ns)
                 self.log.info('Bulk rate throughput %.2f (requests/sec)' % bulk_throughput)
                 self.log.info('Approx. throughput %.2f (requests/sec)' % throughput)
@@ -128,7 +126,8 @@ class PySysTest(TenNetworkTest):
             with open(os.path.join(out_dir, 'client_%s_latency.log' % i), 'r') as fp:
                 for line in fp.readlines(): data.append(float(line.strip()))
         data.sort()
-        avg_latency = (sum(data) / len(data))
+        num_data = len(data)
+        avg_latency = (sum(data) / num_data)
         nnth_percentile = np.percentile(data, 99)
 
         bins = self.bin_array(data)
@@ -141,7 +140,7 @@ class PySysTest(TenNetworkTest):
                     mode_latency = b
                 fp.write('%.2f %d\n' % (b, v))
             fp.flush()
-        return avg_latency, mode_latency, nnth_percentile
+        return num_data, avg_latency, mode_latency, nnth_percentile
 
     def process_throughput(self, num_clients, out_dir, start, end):
         client_bins = []  # bins for a given client
