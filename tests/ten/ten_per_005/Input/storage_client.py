@@ -41,12 +41,11 @@ def run(name, chainId, web3, account, contract, num_iterations, gas_limit):
     for tx in txs:
         try:
             receipts.append((web3.eth.send_raw_transaction(tx[0].rawTransaction), tx[1]))
-            stats[0] += 1
         except Exception as e:
-            logging.error('Error sending raw transaction, sent = %d', len(receipts))
-            logging.error('Exception is', e)
-            stats[1] += 1
-    logging.warning('Ratio failures = %.2f', float(stats[1]) / sum(stats))
+            logging.error('Error sending raw transaction', e)
+            logging.warning('Continuing with smaller number of transactions ...')
+            break
+    logging.info('Number of transactions sent = %d', len(receipts))
 
     for receipt in tenths(receipts):
         logging.info('Waiting for transaction receipt number  %s', receipt[1])

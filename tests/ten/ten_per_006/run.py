@@ -50,9 +50,8 @@ class PySysTest(TenNetworkTest):
                 start_ns = time.perf_counter_ns()
                 with open(signal, 'w') as sig: sig.write('go')
                 for i in range(0, clients):
-                    self.waitForGrep(file=os.path.join(out_dir, 'client_%s.out' % i),
-                                     expr='Client client_%s completed' % i, timeout=300)
-                    self.ratio_failures(file=os.path.join(out_dir, 'client_%s.out' % i))
+                    self.waitForGrep(file=os.path.join(out_dir, 'client_%s.out' % i), expr='Client client_%s completed' % i, timeout=300)
+                    self.assertGrep(file='client_%s.out' % i, expr='Error sending raw transaction', contains=False, abortOnError=False)
                 end_ns = time.perf_counter_ns()
 
                 bulk_throughput = float(clients * self.ITERATIONS) / float((end_ns - start_ns) / 1e9)

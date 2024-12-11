@@ -33,7 +33,7 @@ class PySysTest(TenNetworkTest):
         for i in range(self.CLIENTS): self.run_client('client_%d' % i, setup[i][0], setup[i][1])
         for i in range(self.CLIENTS):
             self.waitForGrep(file='client_%d.out' % i, expr='Client client_%d completed' % i, timeout=900)
-            self.ratio_failures(file=os.path.join(self.output, 'client_%d.out' % i))
+            self.assertGrep(file='client_%s.out' % i, expr='Error sending raw transaction', contains=False, abortOnError=False)
 
         # process and graph the output
         data = [self.load_data('client_%d.log' % i) for i in range(self.CLIENTS)]
