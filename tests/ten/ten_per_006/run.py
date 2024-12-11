@@ -126,7 +126,7 @@ class PySysTest(TenNetworkTest):
         # reduce to the overlap and find best zero gradient fit
         min, max = self.find_overlap(list_client_times)
         included = [i for i in range(min, max+1, 1)]
-        if len(included) > 0:
+        if len(included) > 1:
             bins_steady = {key: value for key, value in bins.items() if key in included}
             bins_ramp = {key: value for key, value in bins.items() if key not in included}
             throughput = float(sum(bins_steady.values())) / float((included[-1] - included[0]))
