@@ -2,7 +2,7 @@ import time, os
 from web3._utils.events import EventLogErrorFlags
 from ten.test.contracts.erc20 import ERC20Token
 from ten.test.contracts.bridge import WrappedERC20
-from ten.test.contracts.bridge import ObscuroBridge, EthereumBridge, Management
+from ten.test.contracts.bridge import TenBridge, EthereumBridge, Management
 from ten.test.contracts.bridge import L1MessageBus, L2MessageBus, L1CrossChainMessenger, L2CrossChainMessenger
 from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 from ten.test.utils.properties import Properties
@@ -63,7 +63,7 @@ class L1BridgeDetails(BridgeDetails):
         """Instantiate an instance. """
         network = test.get_l1_network_connection()
         web3, account = network.connect(test, pk)
-        bridge = ObscuroBridge(test, web3)
+        bridge = TenBridge(test, web3)
         bus = L1MessageBus(test, web3)
         xchain = L1CrossChainMessenger(test, web3)
         self.management = Management(test, web3)

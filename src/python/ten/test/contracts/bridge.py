@@ -73,15 +73,15 @@ class L2CrossChainMessenger:
         self.contract = self.web3.eth.contract(address=self.address, abi=self.abi)
 
 
-class ObscuroBridge:
+class TenBridge:
     GAS_LIMIT = 3_000_000
 
     def __init__(self, test, web3):
         self.test = test
         self.web3 = web3
         self.address = Properties().l1_bridge_address()
-        self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'bridge', 'L1', 'ObscuroBridge.sol',
-                                     'ObscuroBridge.json')
+        self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'bridge', 'L1', 'TenBridge.sol',
+                                     'TenBridge.json')
         with open(self.abi_path, 'r') as fp:
             self.abi = json.load(fp)
         self.contract = self.web3.eth.contract(address=self.address, abi=self.abi)
