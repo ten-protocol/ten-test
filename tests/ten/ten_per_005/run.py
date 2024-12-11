@@ -33,9 +33,12 @@ class PySysTest(TenNetworkTest):
         # run the clients
         setup = [self.setup_client('client_%d' % i, funds_needed) for i in range(self.CLIENTS)]
         for i in range(self.CLIENTS): self.run_client('client_%d' % i, storage, setup[i][0], setup[i][1])
+        txs_sent = 0
         for i in range(self.CLIENTS):
-            self.waitForGrep(file='client_%d.out' % i, expr='Client client_%d completed' % i, timeout=900)
-            self.ratio_failures(file=os.path.join(self.output, 'client_%d.out' % i))
+            stdout = os.path.join(self.output,'client_%d.out' % i)
+            self.waitForGrep(file=stdout, expr='Client client_%d completed' % i, timeout=900)
+            self.assertGrep(file=stdout, expr='Error sending raw transaction', contains=False, abortOnError=False)
+            txs_sent += self.txs_sent(file=stdout)
 
         # process and graph the output
         data = [self.load_data('client_%d.log' % i) for i in range(self.CLIENTS)]
@@ -61,7 +64,7 @@ class PySysTest(TenNetworkTest):
         date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
                             branch, date,
-                            str(self.mode), str(self.CLIENTS * self.ITERATIONS), str(duration), '%d' % self.CLIENTS)
+                            str(self.mode), str(txs_sent), str(duration), '%d' % self.CLIENTS)
 
         # persist the result
         self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()), average)

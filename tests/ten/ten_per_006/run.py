@@ -2,7 +2,7 @@ import os, time, sys
 import numpy as np
 from datetime import datetime
 from collections import OrderedDict
-from pysys.constants import PASSED, FAILED
+from pysys.constants import PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
 
@@ -36,6 +36,7 @@ class PySysTest(TenNetworkTest):
             scale = scale + increment
 
         # run the clients and wait for their completion
+        txs_sent = 0
         results_file = os.path.join(self.output, 'results.log')
         with open(results_file, 'w') as fp:
             for clients in [2,3,4]:
@@ -50,12 +51,13 @@ class PySysTest(TenNetworkTest):
                 start_ns = time.perf_counter_ns()
                 with open(signal, 'w') as sig: sig.write('go')
                 for i in range(0, clients):
-                    self.waitForGrep(file=os.path.join(out_dir, 'client_%s.out' % i),
-                                     expr='Client client_%s completed' % i, timeout=300)
-                    self.ratio_failures(file=os.path.join(out_dir, 'client_%s.out' % i))
+                    stdout = os.path.join(out_dir, 'client_%s.out' % i)
+                    self.waitForGrep(file=stdout, expr='Client client_%s completed' % i, timeout=300)
+                    self.assertGrep(file=stdout, expr='Error sending raw transaction', contains=False, abortOnError=False)
+                    txs_sent += self.txs_sent(file=stdout)
                 end_ns = time.perf_counter_ns()
 
-                bulk_throughput = float(clients * self.ITERATIONS) / float((end_ns - start_ns) / 1e9)
+                bulk_throughput = float(txs_sent) / float((end_ns - start_ns) / 1e9)
                 throughput = self.process_throughput(clients, out_dir)
                 self.log.info('Bulk rate throughput %.2f (requests/sec)' % bulk_throughput)
                 self.log.info('Approx. throughput %.2f (requests/sec)' % throughput)
@@ -152,4 +154,3 @@ class PySysTest(TenNetworkTest):
         overlap = np.array(lists[0])
         for l in lists[1:]: overlap = np.intersect1d(overlap, np.array(l))
         return overlap.tolist()[0], overlap.tolist()[-1]
-

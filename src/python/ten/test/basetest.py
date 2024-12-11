@@ -504,3 +504,12 @@ class TenNetworkTest(GenericNetworkTest):
         self.log.info('Ratio of failures is %.2f' % ratio)
         if ratio > threshold: self.addOutcome(FAILED, outcomeReason='Failure ratio > 0.05', abortOnError=False)
         return ratio
+
+    def txs_sent(self, file):
+        """Search through a log for number of transactions sent. """
+        regex = re.compile('Number of transactions sent = (?P<sent>.*)$', re.M)
+        with open(file, 'r') as fp:
+            for line in fp.readlines():
+                result = regex.search(line)
+                if result is not None: return int(result.group('sent'))
+        return 0
