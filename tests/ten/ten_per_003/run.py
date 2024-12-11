@@ -1,4 +1,4 @@
-import os, time
+import os, time, re
 from datetime import datetime
 from collections import OrderedDict
 from pysys.constants import PASSED
@@ -34,9 +34,11 @@ class PySysTest(TenNetworkTest):
         pk_file2, conn2 = self.setup_client('client_two', funds_needed)
         self.run_client('client_one', pk_file1, conn1)
         self.run_client('client_two', pk_file2, conn2)
+        txs_sent = 0
         for i in self.clients:
             self.waitForGrep(file='client_%s.out' % i, expr='Client client_%s completed' % i, timeout=900)
             self.assertGrep(file='client_%s.out' % i, expr='Error sending raw transaction', contains=False, abortOnError=False)
+            txs_sent += self.txs_sent(file='client_%s.out' % i)
 
         # process and graph the output
         data = [self.load_data('client_%s.log' % i) for i in self.clients]
@@ -54,11 +56,11 @@ class PySysTest(TenNetworkTest):
 
         branch = GnuplotHelper.buildInfo().branch
         duration = last - first
-        average = float(len(self.clients) * self.ITERATIONS) / float(duration) if duration != 0 else 0
+        average = float(txs_sent) / float(duration) if duration != 0 else 0
         date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
                             branch, date,
-                            str(self.mode), str(len(self.clients) * self.ITERATIONS), str(duration), '%.3f' % average)
+                            str(self.mode), str(txs_sent), str(duration), '%.3f' % average)
 
         # persist the result
         self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()), average)
@@ -110,3 +112,11 @@ class PySysTest(TenNetworkTest):
         for _, t in data: b[t] = 1 if t not in b else b[t] + 1
         for t in range(first, last + 1): binned_data[t - first] = 0 if t not in b else b[t]
         return binned_data
+
+    def txs_sent(self, file):
+        regex = re.compile('Number of transactions sent = (?P<sent>.*)$', re.M)
+        with open(file, 'r') as fp:
+            for line in fp.readlines():
+                result = regex.search(line)
+                if result is not None: return int(result.group('sent'))
+        return 0

@@ -1,4 +1,4 @@
-import os, time, sys
+import os, time, sys, re
 import numpy as np
 from datetime import datetime
 from collections import OrderedDict
@@ -36,6 +36,7 @@ class PySysTest(TenNetworkTest):
             scale = scale + increment
 
         # run the clients and wait for their completion
+        txs_sent = 0
         results_file = os.path.join(self.output, 'results.log')
         with open(results_file, 'w') as fp:
             for clients in [2,3,4]:
@@ -52,9 +53,10 @@ class PySysTest(TenNetworkTest):
                 for i in range(0, clients):
                     self.waitForGrep(file=os.path.join(out_dir, 'client_%s.out' % i), expr='Client client_%s completed' % i, timeout=300)
                     self.assertGrep(file='client_%s.out' % i, expr='Error sending raw transaction', contains=False, abortOnError=False)
+                    txs_sent += self.txs_sent(file='client_%s.out' % i)
                 end_ns = time.perf_counter_ns()
 
-                bulk_throughput = float(clients * self.ITERATIONS) / float((end_ns - start_ns) / 1e9)
+                bulk_throughput = float(txs_sent) / float((end_ns - start_ns) / 1e9)
                 throughput = self.process_throughput(clients, out_dir)
                 self.log.info('Bulk rate throughput %.2f (requests/sec)' % bulk_throughput)
                 self.log.info('Approx. throughput %.2f (requests/sec)' % throughput)
@@ -152,3 +154,10 @@ class PySysTest(TenNetworkTest):
         for l in lists[1:]: overlap = np.intersect1d(overlap, np.array(l))
         return overlap.tolist()[0], overlap.tolist()[-1]
 
+    def txs_sent(self, file):
+        regex = re.compile('Number of transactions sent = (?P<sent>.*)$', re.M)
+        with open(file, 'r') as fp:
+            for line in fp.readlines():
+                result = regex.search(line)
+                if result is not None: return int(result.group('sent'))
+        return 0
