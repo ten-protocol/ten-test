@@ -8,7 +8,7 @@ from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(TenNetworkTest):
-    ITERATIONS = 2048      # iterations per client
+    ITERATIONS = 1024      # iterations per client
     CLIENTS = 4            # the number of concurrent clients
 
     def __init__(self, descriptor, outsubdir, runner):
@@ -40,34 +40,41 @@ class PySysTest(TenNetworkTest):
             self.assertGrep(file=stdout, expr='Error sending raw transaction', contains=False, abortOnError=False)
             txs_sent += self.txs_sent(file=stdout)
 
-        # process and graph the output
+        # process (data is an array of each client results - each is an array of tuple (nonce, ts, block height))
         data = [self.load_data('client_%d.log' % i) for i in range(self.CLIENTS)]
-        first = int(data[0][0][1])
-        last = int(data[-1][-1][1])
 
-        data_binned = [self.bin_data(first, last, d, OrderedDict()) for d in data]
-        with open(os.path.join(self.output, 'clients_all.bin'), 'w') as fp:
-            for t in range(0, last + 1 - first):
-                fp.write('%d %s\n' % (t, ' '.join([str(d[t]) for d in data_binned])))
+        # bin based on timestamps (both for each client, and across all clients)
+        first_ts = int(data[0][0][1])   # first client, first data, ts
+        last_ts = int(data[-1][-1][1])  # last client, last data, ts
+        duration = last_ts - first_ts
+        data_binned_ts = [self.bin_timestamp_data(first_ts, last_ts, d, OrderedDict()) for d in data]
+        with open(os.path.join(self.output, 'clients_all_ts.bin'), 'w') as fp:
+            for t in range(0, last_ts + 1 - first_ts):
+                fp.write('%d %s\n' % (t, ' '.join([str(d[t]) for d in data_binned_ts])))
 
-        heights = []
-        with open(os.path.join(self.output, 'clients.bin'), 'w') as fp:
-            for t in range(0, last + 1 - first):
-                height = sum([d[t] for d in data_binned])
-                heights.append(height)
+        with open(os.path.join(self.output, 'clients_ts.bin'), 'w') as fp:
+            for t in range(0, last_ts + 1 - first_ts):
+                height = sum([d[t] for d in data_binned_ts])
                 fp.write('%d %d\n' % (t, height))
-                average = '%.2f' % (float(sum(heights)) / len(heights))
+
+        # bin based on block height (across all clients)
+        first_bh = int(data[0][0][2])   # first client, first data, block height
+        last_bh = int(data[-1][-1][2])  # last client, last data, block height
+        data_binned_bh = [self.bin_block_height_data(first_bh, last_bh, d, OrderedDict()) for d in data]
+        with open(os.path.join(self.output, 'clients_bh.bin'), 'w') as fp:
+            for t in range(first_bh, last_bh + 1):
+                height = sum([d[t] for d in data_binned_bh])
+                fp.write('%d %d\n' % (t, height))
 
         # plot out the results
         branch = GnuplotHelper.buildInfo().branch
-        duration = last - first
         date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
                             branch, date,
                             str(self.mode), str(txs_sent), str(duration), '%d' % self.CLIENTS)
 
         # persist the result
-        self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()), average)
+        self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()), float(txs_sent)/float(duration))
 
         # passed if no failures (though pdf output should be reviewed manually)
         self.addOutcome(PASSED)
@@ -101,13 +108,22 @@ class PySysTest(TenNetworkTest):
         data = []
         with open(os.path.join(self.output, file), 'r') as fp:
             for line in fp.readlines():
-                nonce, timestamp = line.split()
-                data.append((nonce, int(timestamp)))
+                nonce, timestamp, block_num = line.split()
+                data.append((nonce, int(timestamp), int(block_num)))
         return data
 
-    def bin_data(self, first, last, data, binned_data):
-        """Bin a client transaction data and offset the time. """
+    @staticmethod
+    def bin_timestamp_data(first, last, data, binned_data):
+        """Bin a client transaction data or timestamp, and offset the time. """
         b = OrderedDict()
-        for _, t in data: b[t] = 1 if t not in b else b[t] + 1
+        for _, t, _ in data: b[t] = 1 if t not in b else b[t] + 1
         for t in range(first, last + 1): binned_data[t - first] = 0 if t not in b else b[t]
+        return binned_data
+
+    @staticmethod
+    def bin_block_height_data(first, last, data, binned_data):
+        """Bin a client transaction data for block height. """
+        b = OrderedDict()
+        for _, _, h in data: b[h] = 1 if h not in b else b[h] + 1
+        for h in range(first, last + 1): binned_data[h] = 0 if h not in b else b[h]
         return binned_data

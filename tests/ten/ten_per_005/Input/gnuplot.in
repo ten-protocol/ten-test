@@ -14,7 +14,8 @@ set label "{/Courier:Bold=13 Environment}: ".ARG5 left at screen 0.59, screen 0.
 set label "{/Courier:Bold=13 Transactions}: ".ARG6 left at screen 0.59, screen 0.850
 set label "{/Courier:Bold=13 Duration}: ".ARG7 left at screen 0.59, screen 0.825
 set label "{/Courier:Bold=13 Clients}: ".ARG8 left at screen 0.59, screen 0.800
-stats "clients.bin" using 1:2 nooutput
+stats "clients_ts.bin" using 1:2 nooutput name "TS_STATS"
+stats "clients_bh.bin" using 1:2 nooutput name "BH_STATS"
 
 # plot1
 set grid z dt '- -' lc 'black' lw 2
@@ -28,7 +29,7 @@ set boxwidth 1
 set style fill solid 0.5
 set xlabel "Time (seconds)" font "Courier,12" rotate parallel
 set zlabel "Transactions" font "Courier,12" offset 1,0 rotate parallel
-splot for [client = (ARG8+1) : 2 : -1 ] 'clients_all.bin' using 1:(client):(column(client)) with boxes
+splot for [client = (ARG8+1) : 2 : -1 ] 'clients_all_ts.bin' using 1:(client):(column(client)) with boxes
 
 # plot 2
 unset grid
@@ -43,9 +44,30 @@ set ytics font "Courier,11"
 set key font 'Courier,10'
 set key right top
 set size 0.5, 0.45
-set origin 0.0, 0.04
-set yr [0: ((STATS_max_y)*1.1)]
-set title "{/Arial:Bold=13 Binned Transactions}"
+set origin 0.0, 0.05
+set yr [0: ((TS_STATS_max_y)*1.1)]
+set title "{/Arial:Bold=13 Binned Transactions (timestamp)}"
 set xlabel "Time (seconds)" font "Courier,12"
 set ylabel "Transactions" font "Courier,12" offset 1,0
-plot "clients.bin" using 1:2 with boxes ls 1 title "Binned", "" using 1:(STATS_mean_y) with lines title "Average"
+plot "clients_ts.bin" using 1:2 with boxes ls 1 title "Binned", "" using 1:(TS_STATS_mean_y) with lines title "Average"
+
+# plot 3
+unset grid
+unset yr
+unset ytics
+unset xlabel
+unset zlabel
+unset xr
+set style line 1 lc rgb 'gray30' lt 1 lw 1.2
+set style fill solid 0.3 border rgb 'grey30'
+set xtics font "Courier,11"
+set ytics font "Courier,11"
+set key font 'Courier,10'
+set key right top
+set size 0.5, 0.45
+set origin 0.5, 0.05
+set yr [0: ((BH_STATS_max_y)*1.1)]
+set title "{/Arial:Bold=13 Binned Transactions (Block height)}"
+set xlabel "Block height" font "Courier,12"
+set ylabel "Transactions" font "Courier,12" offset 1,0
+plot "clients_bh.bin" using 1:2 with boxes ls 1 title "Binned", "" using 1:(BH_STATS_mean_y) with lines title "Average"
