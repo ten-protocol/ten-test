@@ -8,7 +8,7 @@ from ten.test.utils.gnuplot import GnuplotHelper
 
 
 class PySysTest(TenNetworkTest):
-    ITERATIONS = 128       # iterations per client
+    ITERATIONS = 1024      # iterations per client
     CLIENTS = 4            # the number of concurrent clients
 
     def __init__(self, descriptor, outsubdir, runner):
@@ -60,12 +60,9 @@ class PySysTest(TenNetworkTest):
         # bin based on block height (across all clients)
         first_bh = int(data[0][0][2])   # first client, first data, block height
         last_bh = int(data[-1][-1][2])  # last client, last data, block height
-        data_binned_bh = [self.bin_block_height_data(d, OrderedDict()) for d in data]
-        self.log.info(first_bh)
-        self.log.info(last_bh)
-        self.log.info(data_binned_bh)
+        data_binned_bh = [self.bin_block_height_data(first_bh, last_bh, d, OrderedDict()) for d in data]
         with open(os.path.join(self.output, 'clients_bh.bin'), 'w') as fp:
-            for t in range(0, last_bh + 1 - first_bh):
+            for t in range(first_bh, last_bh + 1):
                 height = sum([d[t] for d in data_binned_bh])
                 fp.write('%d %d\n' % (t, height))
 
@@ -124,8 +121,9 @@ class PySysTest(TenNetworkTest):
         return binned_data
 
     @staticmethod
-    def bin_block_height_data(data, binned_data):
+    def bin_block_height_data(first, last, data, binned_data):
         """Bin a client transaction data for block height. """
         b = OrderedDict()
         for _, _, h in data: b[h] = 1 if h not in b else b[h] + 1
+        for h in range(first, last + 1): binned_data[h] = 0 if h not in b else b[h]
         return binned_data

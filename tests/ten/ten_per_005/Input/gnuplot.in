@@ -57,6 +57,7 @@ unset yr
 unset ytics
 unset xlabel
 unset zlabel
+unset xr
 set style line 1 lc rgb 'gray30' lt 1 lw 1.2
 set style fill solid 0.3 border rgb 'grey30'
 set xtics font "Courier,11"
