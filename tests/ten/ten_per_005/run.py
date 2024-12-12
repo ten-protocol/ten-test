@@ -114,7 +114,7 @@ class PySysTest(TenNetworkTest):
 
     @staticmethod
     def bin_timestamp_data(first, last, data, binned_data):
-        """Bin a client transaction data or timestamp, and offset the time. """
+        """Bin a client transaction data or timestamp, and offset. """
         b = OrderedDict()
         for _, t, _ in data: b[t] = 1 if t not in b else b[t] + 1
         for t in range(first, last + 1): binned_data[t - first] = 0 if t not in b else b[t]
@@ -122,8 +122,8 @@ class PySysTest(TenNetworkTest):
 
     @staticmethod
     def bin_block_height_data(first, last, data, binned_data):
-        """Bin a client transaction data for block height. """
+        """Bin a client transaction data for block height, and offset."""
         b = OrderedDict()
         for _, _, h in data: b[h] = 1 if h not in b else b[h] + 1
-        for h in range(first, last + 1): binned_data[h] = 0 if h not in b else b[h]
+        for h in range(first, last + 1): binned_data[h - first] = 0 if h not in b else b[h]
         return binned_data
