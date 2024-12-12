@@ -22,5 +22,5 @@ class PySysTest(TenNetworkTest):
         params['gas'] = int(1.1 * gas_estimate)
         build_tx = target.build_transaction(params)
         network.tx(self, web3, build_tx, account)
-        self.log.info('Call shows value: %d', storage.contract.functions.retrieve().call())
+        self.assertTrue(storage.contract.functions.retrieve().call() == 1)
 

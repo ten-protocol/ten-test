@@ -48,7 +48,7 @@ class PySysTest(TenNetworkTest):
 
         expr_list = []
         expr_list.append('Log transfer sender = %s' % accnt1.l2.bridge.address)
-        expr_list.append('Log transfer receiver = %s' % accnt1.l1.account.address)
+        expr_list.append('Log transfer receiver = %s' % accnt1.l2.account.address)
         expr_list.append('Log transfer amount = %d' % transfer_back)
         self.assertOrderedGrep(file='query_l2.log', exprList=expr_list)
 

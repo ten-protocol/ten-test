@@ -13,7 +13,6 @@ tree proof, as per withdrawing native funds.
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>bridge</group>
         </groups>
         <modes inherit="true">
