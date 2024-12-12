@@ -10,7 +10,7 @@ from ten.test.contracts.storage import Storage
 
 
 class PySysTest(TenNetworkTest):
-    ITERATIONS = 2 * 1024  # iterations per client
+    ITERATIONS = 2048  # iterations per client
 
     def execute(self):
         # connect to the network and determine constants and funds required to run the test
