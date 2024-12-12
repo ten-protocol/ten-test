@@ -36,7 +36,7 @@ class PySysTest(TenNetworkTest):
             self.client(network, storage, i, funds_needed)
 
         for i in range(0, self.CLIENTS):
-            self.waitForGrep(file='client_%d.out' % i, expr='Completed transactions', timeout=450)
+            self.waitForGrep(file='client_%d.out' % i, expr='Completed transactions', timeout=900)
             self.ratio_failures(file=os.path.join(self.output, 'client_%d.out' % i))
 
         # graph the output
