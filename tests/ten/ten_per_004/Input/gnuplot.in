@@ -45,7 +45,7 @@ set key font 'Courier,10'
 set key right top
 set size 0.5, 0.45
 set origin 0.0, 0.05
-set yr [0: ((TS_STATS_max_y)*1.1)]
+set yr [0: ((TS_STATS_max_y)*1.2)]
 set title "{/Arial:Bold=13 Binned Transactions (timestamp)}"
 set xlabel "Offset time (seconds)" font "Courier,12"
 set ylabel "Transactions" font "Courier,12" offset 1,0
@@ -66,7 +66,7 @@ set key font 'Courier,10'
 set key right top
 set size 0.5, 0.45
 set origin 0.5, 0.05
-set yr [0: ((BH_STATS_max_y)*1.1)]
+set yr [0: ((BH_STATS_max_y)*1.2)]
 set title "{/Arial:Bold=13 Binned Transactions (Block height)}"
 set xlabel "Offset block height" font "Courier,12"
 set ylabel "Transactions" font "Courier,12" offset 1,0
