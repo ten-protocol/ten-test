@@ -62,7 +62,7 @@ class PySysTest(TenNetworkTest):
         last_bh = int(data[-1][-1][2])  # last client, last data, block height
         data_binned_bh = [self.bin_block_height_data(first_bh, last_bh, d, OrderedDict()) for d in data]
         with open(os.path.join(self.output, 'clients_bh.bin'), 'w') as fp:
-            for t in range(first_bh, last_bh + 1):
+            for t in range(0, last_bh + 1 - first_bh):
                 height = sum([d[t] for d in data_binned_bh])
                 fp.write('%d %d\n' % (t, height))
 
