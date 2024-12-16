@@ -32,7 +32,6 @@ jobs:
           path: ./go-ten
 
       - name: 'Docker clean containers and images before the test'
-        if:  ${{ github.event.inputs.environment == 'ten.local' }}
         run: |
           for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
           docker system prune -af --volumes
@@ -98,7 +97,6 @@ jobs:
           retention-days: 1
 
       - name: 'Docker clean containers and images after the test'
-        if:  ${{ github.event.inputs.environment == 'ten.local' }}
         run: |
           for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
           docker system prune -af --volumes
