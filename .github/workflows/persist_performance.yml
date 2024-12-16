@@ -62,7 +62,7 @@ jobs:
       - name: 'Run performance tests'
         run: |
           cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} ${{ github.event.inputs.arguments }
+          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} ${{ github.event.inputs.arguments }}
 
       - name: 'Run the performance summary'
         if: always()
