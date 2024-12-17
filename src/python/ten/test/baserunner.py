@@ -251,11 +251,11 @@ class TenRunnerPlugin():
             pass
 
     def get_eth_price(self):
-        url = "https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD"
-        response = requests.get(url)
-
-        if response.status_code == 200:
-            return float(response.json()['USD'])
+        try:
+            url = "https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD"
+            response = requests.get(url)
+            if response.status_code == 200: return float(response.json()['USD'])
+        except: return None
         return None
 
     @staticmethod

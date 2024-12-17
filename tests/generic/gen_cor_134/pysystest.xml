@@ -4,6 +4,8 @@
     <description>
         <title>Gas: Large call data</title>
         <purpose><![CDATA[
+Perform some tx calls with large call data, where we expect the tx to both fail and succeed depending on the call data
+size.
 ]]>
         </purpose>
     </description>

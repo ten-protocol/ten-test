@@ -1,3 +1,4 @@
+from pysys.constants import FAILED, PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 from ten.test.contracts.calldata import CallData
@@ -16,11 +17,11 @@ class PySysTest(TenNetworkTest):
         calldata.deploy(network, account)
 
         # transact (the first should be rejected so we just check later ones go through)
-        self.transact(calldata, web3, account, limit=5000)
+        self.transact(calldata, web3, account, limit=5000, expect_pass=False)
         self.transact(calldata, web3, account, limit=1000)
         self.transact(calldata, web3, account, limit=500)
 
-    def transact(self, calldata, web3, account, limit):
+    def transact(self, calldata, web3, account, limit, expect_pass=True):
         # build the transaction
         large_array = [i for i in range(limit)]
         target = calldata.contract.functions.processLargeData(large_array)
@@ -43,5 +44,8 @@ class PySysTest(TenNetworkTest):
                 self.assertTrue(calldata.contract.functions.getLastSum().call() == sum(large_array))
             else:
                 self.log.error('Transaction failed')
+                if expect_pass: self.addOutcome(FAILED,outcomeReason='Expected tx to succeed')
         except Exception as e:
             self.log.error('Error %s' % e)
+            if expect_pass: self.addOutcome(FAILED,outcomeReason='Expected tx to succeed')
+            else: self.addOutcome(PASSED,outcomeReason='Expected tx to fail')
