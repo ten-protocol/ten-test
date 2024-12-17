@@ -8,15 +8,12 @@ In the test we have a user that deploys and transacts against the Storage contra
 it's own connection. Another connection is created with two registered users, and a single subscription is made to all
 event logs from the network. Since the Storage Store event is a lifecycle event, and we subscribe to all event logs from
 the network, we expect a single call back for our subscriber (de-duplication).
-
-Skipped due to https://github.com/ten-protocol/ten-internal/issues/4297
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>gateway</group>
         </groups>
         <modes inherit="true">
