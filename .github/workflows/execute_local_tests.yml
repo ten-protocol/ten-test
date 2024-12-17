@@ -83,20 +83,20 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ten.local -r ${{ github.event.inputs.arguments }}
+          /usr/local/bin/pysys.py run -m ten.local ${{ github.event.inputs.arguments }}
 
       - name: 'Run tests on schedule'
         if: ${{ github.event_name == 'schedule' }}
         run: |
           cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ten.local -i sanity
+          /usr/local/bin/pysys.py run -m ten.local ${{ github.event.inputs.arguments }}
 
       - name: 'Run the performance summary'
         if: always()
         continue-on-error: true
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.local -r graph_performance
+          /usr/local/bin/pysys.py run -m ten.local graph_performance
 
       - name: 'Collate performance output'
         if: always()
