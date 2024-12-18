@@ -34,7 +34,8 @@ class PySysTest(TenNetworkTest):
                   'chainId': web3.eth.chain_id,
                   'gasPrice': web3.eth.gas_price,
                   'value': web3.to_wei(0.01, 'ether')}
-        if self.GAS == 0:
+
+        if int(self.GAS) == 0:
             self.log.info('Estimating gas ...')
             params['gas'] = int(1.1 * target.estimate_gas(params))
         else:
@@ -57,6 +58,6 @@ class PySysTest(TenNetworkTest):
                 if expect_pass: self.addOutcome(FAILED,outcomeReason='Expected tx to succeed')
         except Exception as e:
             self.log.error('Error %s' % e)
-            if expect_pass: self.addOutcome(FAILED,outcomeReason='Expected tx to succeed')
-            else: self.addOutcome(PASSED,outcomeReason='Expected tx to fail')
+            if expect_pass: self.addOutcome(FAILED, outcomeReason='Expected tx to succeed')
+            else: self.addOutcome(PASSED, outcomeReason='Expected tx to fail')
 
