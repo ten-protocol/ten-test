@@ -4,6 +4,7 @@ from ten.test.contracts.calldata import CallDataTwoPhase
 
 
 class PySysTest(TenNetworkTest):
+    GAS = '1000000'
 
     def execute(self):
         # connect to the network (use an ephemeral account)
@@ -29,7 +30,7 @@ class PySysTest(TenNetworkTest):
                   'chainId': web3.eth.chain_id,
                   'gasPrice': web3.eth.gas_price,
                   'value': web3.to_wei(0.01, 'ether')}
-        params['gas'] = 1_000_000
+        params['gas'] = int(self.GAS)
         build_tx = target.build_transaction(params)
 
         # sign, send and wait
