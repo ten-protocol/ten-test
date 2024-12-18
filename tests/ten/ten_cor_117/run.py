@@ -16,7 +16,7 @@ class PySysTest(TenNetworkTest):
         calldata.deploy(network, account)
 
         # transact (the first should be rejected so we just check later ones go through)
-        self.transact(calldata, web3, account, limit=5000)
+        self.transact(calldata, web3, account, limit=4000)
         self.transact(calldata, web3, account, limit=1000)
         self.transact(calldata, web3, account, limit=500)
 
@@ -29,7 +29,7 @@ class PySysTest(TenNetworkTest):
                   'chainId': web3.eth.chain_id,
                   'gasPrice': web3.eth.gas_price,
                   'value': web3.to_wei(0.01, 'ether')}
-        params['gas'] = int(1.1 * target.estimate_gas(params))
+        params['gas'] = 1_000_000
         build_tx = target.build_transaction(params)
 
         # sign, send and wait
