@@ -143,7 +143,7 @@ class L1BridgeDetails(BridgeDetails):
                 'value': amount
             }
         )
-        tx_receipt = self.network.tx(self.test, self.web3, build_tx, self.account, persist_nonce=False, timeout=timeout)
+        tx_receipt = self.network.tx(self.test, self.web3, build_tx, self.account, persist_nonce=False, timeout=timeout, txstr='sendNative(%d)'%amount)
 
         value_transfer = self.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Discard)
         return tx_receipt, self.get_value_transfer_event(value_transfer[0])
@@ -156,7 +156,7 @@ class L1BridgeDetails(BridgeDetails):
             'gas': 4*21000,
             'gasPrice': self.web3.eth.gas_price,
         }
-        tx_receipt = self.network.tx(self.test, self.web3, tx, self.account, persist_nonce=False, timeout=timeout)
+        tx_receipt = self.network.tx(self.test, self.web3, tx, self.account, persist_nonce=False, timeout=timeout, txstr='value transfer')
 
         logs = self.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Discard)
         return tx_receipt, logs
@@ -264,7 +264,7 @@ class L2BridgeDetails(BridgeDetails):
         params['gas'] = int(1.1*gas_estimate)
         build_tx = target.build_transaction(params)
 
-        tx_receipt = self.network.tx(self.test, self.web3, build_tx, self.account, timeout=timeout)
+        tx_receipt = self.network.tx(self.test, self.web3, build_tx, self.account, timeout=timeout, txstr='sendNative(%d)'%amount)
         if dump_file: self.network.dump(tx_receipt, os.path.join(self.test.output, dump_file))
 
         value_transfer = self.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Discard)
