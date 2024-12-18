@@ -40,6 +40,6 @@ class PySysTest(TenNetworkTest):
         gas_estimate = target.estimate_gas(params)
         params['gas'] = int(1.1 * gas_estimate)
         build_tx = target.build_transaction(params)
-        tx_receipt = network.tx(self, web3, build_tx, account)
+        tx_receipt = network.tx(self, web3, build_tx, account, txstr='StorageTwoPhaseWithRefund.store(%d)'%num)
         return gas_estimate, int(tx_receipt['gasUsed']), int(tx_receipt['effectiveGasPrice'])
 

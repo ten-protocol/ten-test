@@ -4,6 +4,9 @@ from eth_account import Account
 from eth_account.messages import encode_typed_data
 from web3.middleware import geth_poa_middleware
 from pysys.constants import FAILED, BLOCKED
+from ten.test.utils import fullname
+from pysys.constants import LOG_WARN
+from pysys.utils.logutils import BaseLogFormatter
 from ten.test.networks.default import DefaultPreLondon
 from ten.test.networks.geth import Geth
 from ten.test.networks.sepolia import Sepolia
@@ -190,13 +193,14 @@ class Ten(DefaultPreLondon):
         requests.post('%s:%d/v1/authenticate/?token=%s' % (self.HOST, self.PORT, self.ID),
                       data=json.dumps(data), headers=headers)
 
-    def tx_unsigned(self, test, web3, tx, address, persist_nonce=True, verbose=True, timeout=30):
+    def tx_unsigned(self, test, web3, tx, address, persist_nonce=True, verbose=True, timeout=30, **kwargs):
         """Send an unsigned transaction using the supplied transaction dictionary.
 
         Note that the nonce and chainId will automatically be added into the transaction dictionary in this method
         and therefore do not need to be supplied by the caller. If they are supplied, they will be overwritten.
         """
-        if verbose: self.log.info('Account %s performing transaction', address)
+        txstr = kwargs['txstr'] if 'txstr' in kwargs else ""
+        self.log.info('Account %s performing transaction %s', address, txstr, extra=BaseLogFormatter.tag(LOG_WARN, 1))
         nonce = self.get_next_nonce(test, web3, address, persist_nonce, verbose)
         tx['nonce'] = nonce
         tx['chainId'] = web3.eth.chain_id
@@ -214,7 +218,8 @@ class Ten(DefaultPreLondon):
         transaction dictionary using build_transaction on the target. The nonce will automatically be added during this
         process. Ten supports unsigned transactions when using session keys.
         """
-        self.log.info('Account %s performing transaction', address)
+        txstr = kwargs['txstr'] if 'txstr' in kwargs else fullname(target)
+        self.log.info('Account %s performing transaction %s', address, txstr, extra=BaseLogFormatter.tag(LOG_WARN, 1))
         nonce = self.get_next_nonce(test, web3, address, persist_nonce, verbose)
         tx = self.build_transaction(test, web3, target, nonce, address, gas_limit, verbose, **kwargs)
         tx_hash = self.send_unsigned_transaction(test, web3, nonce, address, tx, persist_nonce, verbose)

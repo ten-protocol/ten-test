@@ -3,6 +3,9 @@ from web3 import Web3
 from web3.datastructures import AttributeDict
 from web3.exceptions import TimeExhausted
 from pysys.constants import *
+from ten.test.utils import fullname
+from pysys.constants import LOG_WARN
+from pysys.utils.logutils import BaseLogFormatter
 from ten.test.utils.properties import Properties
 
 
@@ -85,13 +88,15 @@ class DefaultPostLondon:
         """Connect account 4 to the network."""
         return self.connect(test, Properties().account4pk(), web_socket, check_funds, verbose)
 
-    def tx(self, test, web3, tx, account, persist_nonce=True, verbose=True, timeout=30):
+    def tx(self, test, web3, tx, account, persist_nonce=True, verbose=True, timeout=30, **kwargs):
         """Send a signed transaction using the supplied transaction dictionary.
 
         Note that the nonce and chainId will automatically be added into the transaction dictionary in this method
         and therefore do not need to be supplied by the caller. If they are supplied, they will be overwritten.
         """
-        if verbose: self.log.info('Account %s performing transaction', account.address)
+        if verbose:
+            txstr = kwargs['txstr'] if 'txstr' in kwargs else ""
+            self.log.info('Account %s performing transaction %s', account.address, txstr, extra=BaseLogFormatter.tag(LOG_WARN, 1))
         nonce = self.get_next_nonce(test, web3, account.address, persist_nonce, verbose)
         tx['nonce'] = nonce
         tx['chainId'] = web3.eth.chain_id
@@ -110,7 +115,8 @@ class DefaultPostLondon:
         transaction dictionary using build_transaction on the target. The nonce will automatically be added during this
         process.
         """
-        self.log.info('Account %s performing transaction', account.address)
+        txstr = kwargs['txstr'] if 'txstr' in kwargs else fullname(target)
+        self.log.info('Account %s performing transaction %s', account.address, txstr, extra=BaseLogFormatter.tag(LOG_WARN, 1))
         nonce = self.get_next_nonce(test, web3, account.address, persist_nonce, verbose)
         tx = self.build_transaction(test, web3, target, nonce, account.address, gas_limit, verbose, **kwargs)
         tx_sign = self.sign_transaction(test, tx, nonce, account, persist_nonce)

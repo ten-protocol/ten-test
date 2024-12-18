@@ -169,7 +169,7 @@ class GenericNetworkTest(BaseTest):
         if verbose: self.log.info('Gas estimate for distribute native is %d', tx['gas'])
 
         if verbose: self.log.info('Sending %.9f ETH to account %s', amount, account.address)
-        self.network_funding.tx(self, web3_pk, tx, account_pk, verbose=verbose)
+        self.network_funding.tx(self, web3_pk, tx, account_pk, verbose=verbose, txstr='value transfer')
         balance_after = web3_pk.eth.get_balance(account_pk.address)
         cost = balance_before - web3_pk.to_wei(amount, 'ether') - balance_after
         if cost < 21000*web3_pk.eth.gas_price: cost = 21000*web3_pk.eth.gas_price
@@ -218,7 +218,7 @@ class GenericNetworkTest(BaseTest):
         if gas_limit is not None: tx['gas'] = gas_limit
         else: tx['gas'] = web3_pk.eth.estimate_gas(tx)
         self.log.info('Gas estimate for fund native is %d', tx['gas'])
-        network.tx(self, web3_pk, tx, account_pk, persist_nonce=persist_nonce)
+        network.tx(self, web3_pk, tx, account_pk, persist_nonce=persist_nonce, txstr='value transfer')
 
     def transfer_token(self, network, token_name, token_address, web3_from, account_from, address,
                        amount, persist_nonce=True):
