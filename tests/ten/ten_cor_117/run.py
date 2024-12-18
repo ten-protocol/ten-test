@@ -4,7 +4,8 @@ from ten.test.contracts.calldata import CallDataTwoPhase
 
 
 class PySysTest(TenNetworkTest):
-    GAS = '1000000'
+    GAS = '0'
+    LIMIT = 5000
 
     def execute(self):
         # connect to the network (use an ephemeral account)
@@ -17,11 +18,12 @@ class PySysTest(TenNetworkTest):
         calldata.deploy(network, account)
 
         # transact (the first should be rejected so we just check later ones go through)
-        self.transact(calldata, web3, account, limit=4000)
+        self.transact(calldata, web3, account, limit=int(self.LIMIT))
         self.transact(calldata, web3, account, limit=1000)
         self.transact(calldata, web3, account, limit=500)
 
     def transact(self, calldata, web3, account, limit):
+        self.log.info('Transacting with limit set to %d' % limit)
         # build the transaction
         large_array = [i for i in range(limit)]
         target = calldata.contract.functions.processLargeData(large_array)
@@ -30,7 +32,12 @@ class PySysTest(TenNetworkTest):
                   'chainId': web3.eth.chain_id,
                   'gasPrice': web3.eth.gas_price,
                   'value': web3.to_wei(0.01, 'ether')}
-        params['gas'] = int(self.GAS)
+        if self.GAS == 0:
+            self.log.info('Estimating gas ...')
+            params['gas'] = int(1.1 * target.estimate_gas(params))
+        else:
+            self.log.info('Using set gas limit of %d' % int(self.GAS))
+            params['gas'] = int(self.GAS)
         build_tx = target.build_transaction(params)
 
         # sign, send and wait
