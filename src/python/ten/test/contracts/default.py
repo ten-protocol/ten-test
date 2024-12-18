@@ -4,6 +4,7 @@ from solcx import compile_source
 from pysys.constants import *
 from pysys.constants import LOG_WARN
 from pysys.utils.logutils import BaseLogFormatter
+from ten.test.utils import fullname
 from ten.test.utils.properties import Properties
 
 
@@ -54,7 +55,7 @@ class DefaultContract:
         self.test.log.info('Deploying %s contract', self.CONTRACT, extra=BaseLogFormatter.tag(LOG_WARN, 0))
         self.account = account
         tx_receipt = network.transact(self.test, self.web3, self.contract, account,
-                                      self.GAS_LIMIT, persist_nonce, timeout=timeout)
+                                      self.GAS_LIMIT, persist_nonce, timeout=timeout, txstr=fullname(self.contract))
         self.address = tx_receipt.contractAddress
         self.contract = self.web3.eth.contract(address=self.address, abi=self.abi)
         self.test.log.info('Contract %s deployed at %s', self.CONTRACT, tx_receipt.contractAddress, extra=BaseLogFormatter.tag(LOG_WARN, 0))
