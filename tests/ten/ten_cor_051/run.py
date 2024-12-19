@@ -9,11 +9,18 @@ class PySysTest(TenNetworkTest):
         project = os.path.join(self.output, 'project')
         private_key_1 = self.get_ephemeral_pk()
         private_key_2 = self.get_ephemeral_pk()
+        private_key_3 = self.get_ephemeral_pk()
 
         # connect to the network
         network = self.get_network_connection()
         account_1 = Web3().eth.account.from_key(private_key_1)
         account_2 = Web3().eth.account.from_key(private_key_2)
+        account_3 = Web3().eth.account.from_key(private_key_3)
+
+        print("account1: ", account_1)
+        print("account2: ", account_2)
+        print("account3: ", account_3)
+
         self.distribute_native(account_1, network.ETH_ALLOC_EPHEMERAL)
         self.distribute_native(account_2, network.ETH_ALLOC_EPHEMERAL)
 
@@ -25,6 +32,7 @@ class PySysTest(TenNetworkTest):
         environ = copy.deepcopy(os.environ)
         environ['PK1'] = private_key_1
         environ['PK2'] = private_key_2
+        environ['PK3'] = private_key_3
         environ['HOST'] = network.HOST
         environ['PORT'] = str(network.PORT)
         self.run_npx(args=['hardhat', 'deploy', '--network', 'ten'],
@@ -33,6 +41,7 @@ class PySysTest(TenNetworkTest):
         self.assertGrep('npx_deploy.out', expr='Found 2 signers configured for this network')
         self.assertGrep('npx_deploy.out', expr='Registering account %s...' % account_1.address)
         self.assertGrep('npx_deploy.out', expr='Registering account %s...' % account_2.address)
+        self.assertGrep('npx_deploy.out', expr='Registering account %s...' % account_3.address)
         self.assertGrep('npx_deploy.out', expr='deploying "Double" .*deployed at .* with .* gas')
         self.assertGrep('npx_deploy.out', expr='deploying "Triple" .*deployed at .* with .* gas')
 
