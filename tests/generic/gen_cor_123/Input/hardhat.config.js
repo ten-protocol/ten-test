@@ -19,6 +19,12 @@ module.exports = {
       url: `${HOST}:${PORT}`,
       accounts: [ `0x${PK}` ],
       gasMultiplier: 2
+    },
+    sepolia: {
+      chainId: 11155111,
+      url: `${HOST}/${TOKEN}`,
+      accounts: [ `0x${PK}` ],
+      gasMultiplier: 2
     }
   }
 };
