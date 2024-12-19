@@ -22,6 +22,7 @@ The deployment and upgrade are performed in two separate actions via independent
             <mode>ten.local</mode>
             <mode>ten.sim</mode>
             <mode>ganache</mode>
+            <mode>sepolia</mode>
         </modes>
     </classification>
 
