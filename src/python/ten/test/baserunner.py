@@ -8,6 +8,7 @@ from pysys.constants import PROJECT, BACKGROUND
 from pysys.exceptions import AbortExecution
 from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
+from ten.test.utils.cloud import is_azure_vm
 from ten.test.persistence.rates import RatesPersistence
 from ten.test.persistence.nonce import NoncePersistence
 from ten.test.persistence.funds import FundsPersistence
@@ -58,7 +59,12 @@ class TenRunnerPlugin():
         if os.path.exists(runner.output): shutil.rmtree(runner.output)
         os.makedirs(runner.output)
 
-        # create the nonce db if it does not already exist, clean it out if using ganache
+        # set up the persistence layer based on if we are running in the cloud, or locally
+        metadata = is_azure_vm()
+        if metadata is not None:
+            runner.log.info('Running on an azure VM')
+            runner.log.info(metadata)
+
         db_dir = os.path.join(str(Path.home()), '.tentest')
         if not os.path.exists(db_dir): os.makedirs(db_dir)
         rates_db = RatesPersistence(db_dir)
