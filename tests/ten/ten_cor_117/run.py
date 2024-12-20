@@ -6,7 +6,7 @@ from ten.test.contracts.calldata import CallDataTwoPhase
 
 class PySysTest(TenNetworkTest):
     GAS = '0'
-    LIMIT = 5000
+    LIMIT = 1200
 
     def execute(self):
         # connect to the network (use an ephemeral account)
@@ -37,7 +37,8 @@ class PySysTest(TenNetworkTest):
 
         if int(self.GAS) == 0:
             self.log.info('Estimating gas ...')
-            params['gas'] = int(1.1 * target.estimate_gas(params))
+            params['gas'] = int(target.estimate_gas(params))
+            self.log.info('Estimating gas %d' % target.estimate_gas(params))
         else:
             self.log.info('Using set gas limit of %d' % int(self.GAS))
             params['gas'] = int(self.GAS)
@@ -55,6 +56,8 @@ class PySysTest(TenNetworkTest):
                 self.assertTrue(calldata.contract.functions.getLastSum().call() == sum(large_array))
             else:
                 self.log.error('Transaction failed')
+                web3.eth.call(build_tx, block_identifier=tx_receipt.blockNumber)
+                self.log.warn('Replaying the transaction did not throw an error')
                 if expect_pass: self.addOutcome(FAILED,outcomeReason='Expected tx to succeed')
         except Exception as e:
             self.log.error('Error %s' % e)
