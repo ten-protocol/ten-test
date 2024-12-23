@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
     inputs:
       arguments:
-        description: 'Arguments to the pysys print'
-        required: false
-        default: ''
+        description: 'Arguments (--help for usage)'
+        required: true
+        default: '-a all'
 
 jobs:
   test-run:
