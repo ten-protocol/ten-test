@@ -1,0 +1,26 @@
+# Print a set of test details
+#
+name: '[execute] Execute print tests'
+run-name: Print test details
+on:
+  workflow_dispatch:
+    inputs:
+      arguments:
+        description: 'Arguments to the pysys print'
+        required: false
+        default: ''
+
+jobs:
+  test-run:
+    runs-on: [self-hosted, Linux, X64, all-testnets]
+    steps:
+      - name: 'Check out ten-test'
+        uses: actions/checkout@v3
+        with:
+          path: ./ten-test
+
+      - name: 'Print tests'
+        run: |
+          cd ${{ github.workspace }}/ten-test
+          /usr/local/bin/pysys.py print ${{ github.event.inputs.arguments }}
+
