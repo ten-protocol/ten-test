@@ -67,7 +67,7 @@ set key right top
 set size 0.5, 0.45
 set origin 0.5, 0.05
 set yr [0: ((BH_STATS_max_y)*1.2)]
-set title "{/Arial:Bold=13 Binned Transactions (Block height)}"
+set title "{/Arial:Bold=13 Binned Transactions (block height)}"
 set xlabel "Offset block height" font "Courier,12"
 set ylabel "Transactions" font "Courier,12" offset 1,0
 plot "clients_bh.bin" using 1:2 with boxes ls 1 title "Binned", "" using 1:(BH_STATS_mean_y) with lines title "Average"
