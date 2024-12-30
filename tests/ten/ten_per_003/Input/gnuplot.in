@@ -56,9 +56,9 @@ set origin 0.5, 0.05
 set yr [0: ((CLIENTS_RECEIPTS_max_y)*1.2)]
 set xr [0: ((CLIENTS_RECEIPTS_max_x)*1.1)]
 set boxwidth 0.05
-set title "{/Arial:Bold=13 Cumulative TX Receipt Waits }"
+set title "{/Arial:Bold=13 Cumulative Tx Receipt Wai Timess }"
 set style line 1 lc rgb 'gray30' lt 1 lw 1.2
 set style fill solid 0.3 border rgb 'grey30'
 set xlabel "Time (seconds)" font "Courier,12"
 set ylabel "Number" font "Courier,12" offset 1,0
-plot "clients_receipt_times.bin" using 1:2 with boxes ls 1 title "Binned", "" using 1:(CLIENTS_RECEIPTS_mean_y) with lines title "Average"
+plot "clients_receipt_times.bin" using 1:2 with boxes ls 1 title "Binned"
