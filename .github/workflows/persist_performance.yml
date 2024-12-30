@@ -1,6 +1,6 @@
 # Builds a local testnet and runs a set of tests
 #
-name: '[Execute] Persist performance'
+name: '[execute] Persist performance'
 run-name: Run performance tests (${{ github.event.inputs.environment }})
 on:
   workflow_dispatch:
