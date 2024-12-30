@@ -1,4 +1,4 @@
-import os, time
+import os, time, re, math
 from datetime import datetime
 from collections import OrderedDict
 from pysys.constants import PASSED
@@ -18,8 +18,13 @@ class PySysTest(TenNetworkTest):
         self.chain_id = 0
         self.value = 100
         self.clients = ['one', 'two']
+        self.expr1 = re.compile('Time to send all transactions was (?P<all>.*)$', re.M)
+        self.expr2 = re.compile('Time to wait for last transaction was (?P<last>.*)$', re.M)
+        self.expr3 = re.compile('Average time to wait for transaction receipt was (?P<avg>.*)$', re.M)
 
     def execute(self):
+        all, last, avg = (None, None, None)
+
         # connect to the network on the primary gateway and calculate funds needs
         network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary', verbose=False)
         web3, _ = network.connect_account1(self)
@@ -36,17 +41,29 @@ class PySysTest(TenNetworkTest):
         self.run_client('client_two', pk_file2, conn2)
         txs_sent = 0
         for i in self.clients:
+            self.log.info('Processing client %s' % i)
             stdout = os.path.join(self.output,'client_%s.out' % i)
             self.waitForGrep(file=stdout, expr='Client client_%s completed' % i, timeout=900)
             self.assertGrep(file=stdout, expr='Error sending raw transaction', contains=False, abortOnError=False)
+            with open(stdout, 'r') as fp:
+                for line in fp.readlines():
+                    result1 = self.expr1.search(line)
+                    result2 = self.expr2.search(line)
+                    result3 = self.expr3.search(line)
+                    if result1 is not None: all = result1.group('all')
+                    if result2 is not None: last = result2.group('last')
+                    if result3 is not None: avg = result3.group('avg')
+            self.log.info('  Time to bulk send the raw transactions was %s' % all)
+            self.log.info('  Time to wait for last tx receipt was %s' % last)
+            self.log.info('  Average time to wait for a tx receipt was %s' % avg)
             txs_sent += self.txs_sent(file=stdout)
 
-        # process and graph the output
-        data = [self.load_data('client_%s.log' % i) for i in self.clients]
-        first = int(data[0][0][1])
-        last = int(data[-1][-1][1])
+        # process and graph the output for the block timestamps
+        data_timestamps = [self.load_timestamp_data('client_%s.log' % i) for i in self.clients]
+        first = int(data_timestamps[0][0][1])
+        last = int(data_timestamps[-1][-1][1])
 
-        data_binned = [self.bin_data(first, last, d, OrderedDict()) for d in data]
+        data_binned = [self.bin_timestamp_data(first, last, d, OrderedDict()) for d in data_timestamps]
         for i in self.clients:
             with open(os.path.join(self.output, 'client_%s.bin' % i), 'w') as fp:
                 for key, value in data_binned[self.clients.index(i)].items(): fp.write('%d %d\n' % (key, value))
@@ -54,6 +71,20 @@ class PySysTest(TenNetworkTest):
         with open(os.path.join(self.output, 'clients.bin'), 'w') as fp:
             for t in range(0, last + 1 - first):
                 fp.write('%d %d\n' % (t, sum([d[t] for d in data_binned])))
+
+        # process and graph the output for the tx receipt times
+        l = []
+        for i in self.clients: l.extend(self.load_duration_data('client_%s.log' % i))
+        l.sort()
+        bins = OrderedDict()
+        bin_inc = 20  # 0.05 intervals
+        bin = lambda x: int(math.floor(bin_inc*x))
+
+        for i in range(bin(l[0]), bin(l[len(l)-1])+1): bins[i] = 0
+        for v in l: bins[bin(v)] = bins[bin(v)] + 1
+        with open(os.path.join(self.output, 'clients_receipt_times.bin'), 'w') as fp:
+            for k in bins.keys(): fp.write('%.2f %d\n' % (k/float(bin_inc), bins[k]))
+            fp.flush()
 
         branch = GnuplotHelper.buildInfo().branch
         duration = last - first
@@ -98,18 +129,27 @@ class PySysTest(TenNetworkTest):
         self.run_python(script, stdout, stderr, args)
         self.waitForSignal(file=stdout, expr='Starting client %s' % name)
 
-    def load_data(self, file):
-        """Load a client transaction log into memory. """
+    def load_timestamp_data(self, file):
+        """Load a client transaction log into memory for the timestamp data. """
         data = []
         with open(os.path.join(self.output, file), 'r') as fp:
             for line in fp.readlines():
-                nonce, block_nume, timestamp = line.split()
+                nonce, _, timestamp, duration = line.split()
                 data.append((nonce, int(timestamp)))
         return data
 
-    def bin_data(self, first, last, data, binned_data):
+    def bin_timestamp_data(self, first, last, data, binned_data):
         """Bin a client transaction data and offset the time. """
         b = OrderedDict()
         for _, t in data: b[t] = 1 if t not in b else b[t] + 1
         for t in range(first, last + 1): binned_data[t - first] = 0 if t not in b else b[t]
         return binned_data
+
+    def load_duration_data(self, file):
+        """Load a client transaction log into memory for the tx receipt times. """
+        data = []
+        with open(os.path.join(self.output, file), 'r') as fp:
+            for line in fp.readlines():
+                _, _, _, duration = line.split()
+                data.append(float(duration))
+        return data

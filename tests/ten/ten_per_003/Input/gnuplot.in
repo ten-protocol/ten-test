@@ -19,6 +19,7 @@ set label "{/Courier:Bold=13 Average}: ".ARG8 left at screen 0.59, screen 0.800
 stats "client_one.bin" using 1:2 name "CLIENT1"
 stats "client_two.bin" using 1:2 name "CLIENT2"
 stats "clients.bin" using 1:2 name "CLIENTS"
+stats "clients_receipt_times.bin" using 1:2 name "CLIENTS_RECEIPTS"
 
 #plot 1
 set size 0.5, 0.25
@@ -42,9 +43,22 @@ plot "client_two.bin" using 1:2 with boxes title "Client Two" lc 3
 set size 0.5, 0.45
 set origin 0.0, 0.04
 set yr [0: ((CLIENTS_max_y)*1.2)]
-set title "{/Arial:Bold=13 Cummulative Binned Transactions }"
+set title "{/Arial:Bold=13 Cumulative Binned Transactions }"
 set style line 1 lc rgb 'gray30' lt 1 lw 1.2
 set style fill solid 0.3 border rgb 'grey30'
 set xlabel "Time (seconds)" font "Courier,12"
 set ylabel "Transactions" font "Courier,12" offset 1,0
 plot "clients.bin" using 1:2 with boxes ls 1 title "Binned", "" using 1:(CLIENTS_mean_y) with lines title "Average"
+
+#plot 3
+set size 0.5, 0.45
+set origin 0.5, 0.05
+set yr [0: ((CLIENTS_RECEIPTS_max_y)*1.2)]
+set xr [0: ((CLIENTS_RECEIPTS_max_x)*1.1)]
+set boxwidth 0.05
+set title "{/Arial:Bold=13 Cumulative Tx Receipt Wait Times }"
+set style line 1 lc rgb 'gray30' lt 1 lw 1.2
+set style fill solid 0.3 border rgb 'grey30'
+set xlabel "Time (seconds)" font "Courier,12"
+set ylabel "Number" font "Courier,12" offset 1,0
+plot "clients_receipt_times.bin" using 1:2 with boxes ls 1 title "Binned"
