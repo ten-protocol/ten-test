@@ -1,6 +1,6 @@
 # Run a set of load on uat-testnet on a schedule
 #
-name: '[stress] Run sepolia load tests'
+name: '[execute] Load test sepolia'
 run-name: Run sepolia-testnet load tests
 on:
   schedule:
