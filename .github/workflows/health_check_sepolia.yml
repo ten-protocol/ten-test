@@ -1,6 +1,6 @@
 # Run a set of sanity tests on sepolia-testnet to ensure it is up and running
 #
-name: '[status] Check sepolia health'
+name: '[health] Check sepolia health'
 run-name: Check sepolia-testnet health
 on:
   schedule:
