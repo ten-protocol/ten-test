@@ -42,7 +42,7 @@ plot "client_two.bin" using 1:2 with boxes title "Client Two" lc 3
 set size 0.5, 0.45
 set origin 0.0, 0.04
 set yr [0: ((CLIENTS_max_y)*1.2)]
-set title "{/Arial:Bold=13 Cummulative Binned Transactions }"
+set title "{/Arial:Bold=13 Cumulative Binned Transactions }"
 set style line 1 lc rgb 'gray30' lt 1 lw 1.2
 set style fill solid 0.3 border rgb 'grey30'
 set xlabel "Time (seconds)" font "Courier,12"

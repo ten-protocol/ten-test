@@ -55,15 +55,23 @@ def run(name, chainId, web3, sending_accounts, num_accounts, num_iterations, amo
     logging.info('Time to send all transactions was %.4f', duration)
 
     logging.info('Waiting for last transaction')
+    start_time = time.perf_counter()
     web3.eth.wait_for_transaction_receipt(receipts[-1][0], timeout=600)
+    end_time = time.perf_counter()
+    logging.info('Time to wait for last transaction was %.4f', (end_time - start_time))
 
-    logging.info('Constructing binned data from the transaction receipts')
+    logging.info('Requesting all transaction receipts')
+    times = []
     with open('%s.log' % name, 'w') as fp:
         for receipt in receipts:
+            start_time = time.perf_counter()
             web3.eth.wait_for_transaction_receipt(receipt[0], timeout=30)
+            end_time = time.perf_counter()
+            times.append((end_time - start_time))
             block_number_deploy = web3.eth.get_transaction(receipt[0]).blockNumber
             timestamp = int(web3.eth.get_block(block_number_deploy).timestamp)
-            fp.write('%d %d %d\n' % (receipt[1], block_number_deploy, timestamp))
+            fp.write('%d %d %d %.4f\n' % (receipt[1], block_number_deploy, timestamp, (end_time - start_time)))
+    logging.info('Average time to wait for transaction receipt was %.4f', (sum(times) / float(len(times))))
 
     for account in nonces.keys():
         balance = web3.eth.get_balance(account)
