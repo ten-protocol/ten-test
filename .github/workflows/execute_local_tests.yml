@@ -72,9 +72,8 @@ jobs:
         run: |
           cd ${{ github.workspace }}/ten-test
           ./get_artifacts.sh
-          ls -l ${{ github.workspace }}/ten-test/artifacts   
 
-      - name: 'Do a persistence reset'
+      - name: 'Do a persistence reset for nonce and contracts'
         run: |
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.local persistence_reset
