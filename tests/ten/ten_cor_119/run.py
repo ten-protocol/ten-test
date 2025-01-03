@@ -1,7 +1,7 @@
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 from ten.test.contracts.storage import StorageTwoPhaseWithRefund
-
+from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 class PySysTest(TenNetworkTest):
 
@@ -13,6 +13,10 @@ class PySysTest(TenNetworkTest):
         # deploy the contract
         storage = StorageTwoPhaseWithRefund(self, web3, 100, Properties().L2PublicCallbacks)
         storage.deploy(network, account)
+
+        # run a background script to filter and collect events
+        subscriber = AllEventsLogSubscriber(self, network, storage.address, storage.abi_path)
+        subscriber.run()
 
         # transact against the contract
         balance_before = web3.eth.get_balance(account.address)
@@ -33,6 +37,10 @@ class PySysTest(TenNetworkTest):
         refund_balance = storage.contract.functions.refundBalance().call()
         self.log.info('Refund balance:  %d' % refund_balance)
         self.assertTrue(refund_balance != 0, assertMessage='Refund should not be zero')
+
+        network.transact(self, web3, storage.contract.functions.refundWithdraw(), account, storage.GAS_LIMIT)
+        balance_after_refund = web3.eth.get_balance(account.address)
+        self.log.info('Balance refund:  %d' % balance_after_refund)
 
     def transact(self, storage, web3, network, account, num):
         target = storage.contract.functions.store(num)

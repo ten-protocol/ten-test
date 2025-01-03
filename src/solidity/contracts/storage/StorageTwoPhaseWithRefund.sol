@@ -14,6 +14,9 @@ contract StorageTwoPhaseWithRefund {
     address public owner;
     uint256 number;
 
+    event IDToAmount(uint256 id, address sender, uint256 amount);
+    event IDToSender(uint256 id, address sender);
+
     constructor(uint256 num, address _callbacks) {
         callbacks = IPublicCallbacks(_callbacks);
         owner = msg.sender;
@@ -24,6 +27,7 @@ contract StorageTwoPhaseWithRefund {
         bytes memory callbackData = abi.encodeWithSelector(this.handleStore.selector, num, msg.sender);
         uint256 id = callbacks.register{value: msg.value}(callbackData);
         idToSender[id] = msg.sender;
+        emit IDToSender(id, msg.sender);
     }
 
     function handleStore(uint256 num, address originator) external {
@@ -46,6 +50,7 @@ contract StorageTwoPhaseWithRefund {
     // called into by IPublicCallbacks
     function handleRefund(uint256 id) public payable {
         senderToRefund[idToSender[id]] += msg.value;
+        emit IDToAmount(id, idToSender[id], msg.value);
     }
 
     function destroy() public {
