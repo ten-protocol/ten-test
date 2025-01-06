@@ -8,7 +8,7 @@ on:
       arguments:
         description: 'Arguments (--help for usage)'
         required: true
-        default: '-a all'
+        default: '-a auto'
 
 jobs:
   test-run:
