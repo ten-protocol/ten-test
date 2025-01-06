@@ -1,6 +1,3 @@
-import sqlite3, os
-
-
 class ResultsPersistence:
     """Abstracts the persistence of performance results into a local database. """
 
@@ -11,10 +8,9 @@ class ResultsPersistence:
     SQL_DELETE = "DELETE from results WHERE environment=?"
     SQL_SELECT = "SELECT time, result FROM results WHERE test=? AND environment=? ORDER BY time ASC"
 
-    def __init__(self, db_dir):
+    def __init__(self, connection):
         """Instantiate an instance."""
-        self.db = os.path.join(db_dir, 'results.db')
-        self.connection = sqlite3.connect(self.db)
+        self.connection = connection
         self.cursor = self.connection.cursor()
 
     def create(self):
@@ -23,7 +19,7 @@ class ResultsPersistence:
 
     def close(self):
         """Close the connection to the underlying persistence."""
-        self.connection.close()
+        self.cursor.close()
 
     def delete_environment(self, environment):
         """Delete all stored performance results for a particular environment."""

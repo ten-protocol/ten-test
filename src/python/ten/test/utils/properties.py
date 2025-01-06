@@ -77,6 +77,12 @@ class Properties:
             raise FileNotFoundException('npx binary not found at default location %s' % path)
         return path
 
+    # persistence
+    def persistence_host(self): return self.get('persistence.db', 'host')
+    def persistence_user(self): return self.get('persistence.db', 'user')
+    def persistence_database(self): return self.get('persistence.db', 'database')
+    def persistence_password(self): return self.get('persistence.db', 'password')
+
     # common to all environments
     def block_time_secs(self, key):
         return self.get('env.'+key, 'BlockTimeSecs')

@@ -1,6 +1,3 @@
-import sqlite3, os
-
-
 class RatesPersistence:
     """Abstracts the persistence of rates across cryptos into a local database. """
 
@@ -11,10 +8,9 @@ class RatesPersistence:
     SQL_DELETE = "DELETE from rates WHERE crypto=?"
     SQL_SELECT = "SELECT time, rate FROM rates WHERE crypto=? and currency=? ORDER BY time DESC LIMIT 1"
 
-    def __init__(self, db_dir):
+    def __init__(self, connection):
         """Instantiate an instance."""
-        self.db = os.path.join(db_dir, 'rates.db')
-        self.connection = sqlite3.connect(self.db)
+        self.connection = connection
         self.cursor = self.connection.cursor()
 
     def create(self):
@@ -23,7 +19,7 @@ class RatesPersistence:
 
     def close(self):
         """Close the connection to the underlying persistence."""
-        self.connection.close()
+        self.cursor.close()
 
     def delete_crypto(self, crypto):
         """Delete all stored rates for a particular crypto."""

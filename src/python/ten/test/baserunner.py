@@ -1,4 +1,4 @@
-import os, shutil, sys, json, requests, time
+import os, shutil, sys, json, requests, time, socket
 from collections import OrderedDict
 from web3 import Web3
 from pathlib import Path
@@ -8,7 +8,6 @@ from pysys.constants import PROJECT, BACKGROUND
 from pysys.exceptions import AbortExecution
 from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
-from ten.test.utils.cloud import is_azure_vm
 from ten.test.persistence.rates import RatesPersistence
 from ten.test.persistence.nonce import NoncePersistence
 from ten.test.persistence.funds import FundsPersistence
@@ -16,6 +15,8 @@ from ten.test.persistence.counts import CountsPersistence
 from ten.test.persistence.results import ResultsPersistence
 from ten.test.persistence.contract import ContractPersistence
 from ten.test.utils.properties import Properties
+from ten.test.persistence import get_connection
+from ten.test.utils.cloud import is_cloud_vm
 
 
 class TenRunnerPlugin():
@@ -33,6 +34,9 @@ class TenRunnerPlugin():
         self.env = None
         self.NODE_HOST = None
         self.balances = OrderedDict()
+        self.cloud_metadata = is_cloud_vm()
+        self.user_dir = os.path.join(str(Path.home()), '.tentest')
+        if not os.path.exists(self.user_dir): os.makedirs(self.user_dir)
 
     def setup(self, runner):
         """Set up a runner plugin to start any processes required to execute the tests. """
@@ -60,23 +64,25 @@ class TenRunnerPlugin():
         os.makedirs(runner.output)
 
         # set up the persistence layer based on if we are running in the cloud, or locally
-        metadata = is_azure_vm()
-        if metadata is not None:
-            runner.log.info('Running on azure (%s, %s)' % (metadata['compute']['name'], metadata['compute']['location']))
+        if self.cloud_metadata is None:
+            machine_name = socket.gethostname()
+            runner.log.info('Running on local (%s)' % machine_name)
+        else:
+            machine_name = self.cloud_metadata['compute']['name']
+            runner.log.info('Running on azure (%s, %s)' % (machine_name, self.cloud_metadata['compute']['location']))
+        connection = get_connection(self.cloud_metadata is None, self.user_dir)
 
-        db_dir = os.path.join(str(Path.home()), '.tentest')
-        if not os.path.exists(db_dir): os.makedirs(db_dir)
-        rates_db = RatesPersistence(db_dir)
+        rates_db = RatesPersistence(connection)
         rates_db.create()
-        nonce_db = NoncePersistence(db_dir)
+        nonce_db = NoncePersistence(connection)
         nonce_db.create()
-        contracts_db = ContractPersistence(db_dir)
+        contracts_db = ContractPersistence(connection)
         contracts_db.create()
-        funds_db = FundsPersistence(db_dir)
+        funds_db = FundsPersistence(connection)
         funds_db.create()
-        counts_db = CountsPersistence(db_dir)
+        counts_db = CountsPersistence(connection)
         counts_db.create()
-        results_db = ResultsPersistence(db_dir)
+        results_db = ResultsPersistence(connection)
         results_db.create()
 
         eth_price = self.get_eth_price()
@@ -165,9 +171,13 @@ class TenRunnerPlugin():
             runner.cleanup()
             sys.exit(1)
 
+        rates_db.close()
         nonce_db.close()
         contracts_db.close()
         funds_db.close()
+        counts_db.close()
+        results_db.close()
+        connection.close()
 
     def run_ganache(self, runner):
         """Run ganache for use by the tests. """

@@ -1,6 +1,3 @@
-import sqlite3, os
-
-
 class CountsPersistence:
     """Abstracts the persistence of transaction counts across accounts into a local database. """
 
@@ -12,10 +9,9 @@ class CountsPersistence:
     SQL_SELECT_THREE = "SELECT time, count FROM counts WHERE name=? and environment=? ORDER BY time DESC LIMIT 3"
     SQL_SELECT_HOUR = "SELECT time, count FROM counts WHERE name=? and environment=? and time >= ? ORDER BY time DESC"
 
-    def __init__(self, db_dir):
+    def __init__(self, connection):
         """Instantiate an instance."""
-        self.db = os.path.join(db_dir, 'counts.db')
-        self.connection = sqlite3.connect(self.db)
+        self.connection = connection
         self.cursor = self.connection.cursor()
 
     def create(self):
@@ -24,7 +20,7 @@ class CountsPersistence:
 
     def close(self):
         """Close the connection to the underlying persistence."""
-        self.connection.close()
+        self.cursor.close()
 
     def delete_environment(self, environment):
         """Delete all stored contract details for a particular environment."""

@@ -1,6 +1,3 @@
-import sqlite3, os
-
-
 class ContractPersistence:
     """Abstracts the persistence of contract addresses into a local database. """
 
@@ -19,10 +16,9 @@ class ContractPersistence:
     SQL_SEL_PARAMS = "SELECT value FROM params WHERE address=? AND environment=? AND key=? " \
                      "ORDER BY address DESC LIMIT 1"
 
-    def __init__(self, db_dir):
+    def __init__(self, connection):
         """Instantiate an instance."""
-        self.db = os.path.join(db_dir, 'contracts.db')
-        self.connection = sqlite3.connect(self.db)
+        self.connection = connection
         self.cursor = self.connection.cursor()
 
     def create(self):
@@ -32,7 +28,7 @@ class ContractPersistence:
 
     def close(self):
         """Close the connection to the underlying persistence."""
-        self.connection.close()
+        self.cursor.close()
 
     def delete_environment(self, environment):
         """Delete all stored contract details for a particular environment."""

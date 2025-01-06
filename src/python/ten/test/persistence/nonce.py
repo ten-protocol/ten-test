@@ -1,6 +1,3 @@
-import sqlite3, os
-
-
 class NoncePersistence:
     """Abstracts the persistence of nonces into a local database. """
 
@@ -14,10 +11,9 @@ class NoncePersistence:
     SQL_ACCNTS = "SELECT DISTINCT account from nonce_db where environment=?"
     SQL_DELENT = "DELETE from nonce_db WHERE account=? AND environment=? AND nonce=?"
 
-    def __init__(self, db_dir):
-        """Instantiate an instance. """
-        self.db = os.path.join(db_dir, 'nonce.db')
-        self.connection = sqlite3.connect(self.db)
+    def __init__(self, connection):
+        """Instantiate an instance."""
+        self.connection = connection
         self.cursor = self.connection.cursor()
 
     def create(self):
@@ -26,7 +22,7 @@ class NoncePersistence:
 
     def close(self):
         """Close the connection to the underlying persistence. """
-        self.connection.close()
+        self.cursor.close()
 
     def get_next_nonce(self, test, web3, account, environment, persist_nonce=True, log=True):
         """Get the next nonce to use in a transaction.

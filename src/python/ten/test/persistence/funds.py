@@ -1,6 +1,3 @@
-import sqlite3, os
-
-
 class FundsPersistence:
     """Abstracts the persistence of funds across accounts into a local database. """
 
@@ -11,10 +8,9 @@ class FundsPersistence:
     SQL_DELETE = "DELETE from funds WHERE environment=?"
     SQL_SELECT = "SELECT time, balance FROM funds WHERE name=? and environment=? ORDER BY time DESC"
 
-    def __init__(self, db_dir):
+    def __init__(self, connection):
         """Instantiate an instance."""
-        self.db = os.path.join(db_dir, 'funds.db')
-        self.connection = sqlite3.connect(self.db)
+        self.connection = connection
         self.cursor = self.connection.cursor()
 
     def create(self):
@@ -23,7 +19,7 @@ class FundsPersistence:
 
     def close(self):
         """Close the connection to the underlying persistence."""
-        self.connection.close()
+        self.cursor.close()
 
     def delete_environment(self, environment):
         """Delete all stored details for a particular environment."""

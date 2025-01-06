@@ -1,6 +1,6 @@
 import requests
 
-def is_azure_vm():
+def is_cloud_vm():
     metadata_url = "http://169.254.169.254/metadata/instance?api-version=2021-02-01"
     headers = {"Metadata": "true"}
 
