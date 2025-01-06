@@ -16,10 +16,10 @@ class ContractPersistence:
     SQL_SEL_PARAMS = "SELECT value FROM params WHERE address=? AND environment=? AND key=? " \
                      "ORDER BY address DESC LIMIT 1"
 
-    def __init__(self, connection):
+    def __init__(self, dbconnection):
         """Instantiate an instance."""
-        self.connection = connection
-        self.cursor = self.connection.cursor()
+        self.dbconnection = dbconnection
+        self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
         """Create the cursor to the underlying persistence."""
@@ -34,12 +34,12 @@ class ContractPersistence:
         """Delete all stored contract details for a particular environment."""
         self.cursor.execute(self.SQL_DELETE, (environment, ))
         self.cursor.execute(self.SQL_DEL_PARAMS, (environment, ))
-        self.connection.commit()
+        self.dbconnection.connection.commit()
 
     def insert_contract(self, name, environment, address, abi):
         """Insert a new contract into the persistence. """
         self.cursor.execute(self.SQL_INSERT, (name, environment, address, abi))
-        self.connection.commit()
+        self.dbconnection.connection.commit()
 
     def get_contract(self, name, environment):
         """Return the address and abi for a particular deployed contract. """
@@ -51,7 +51,7 @@ class ContractPersistence:
     def insert_param(self, address, environment, key, value):
         """Insert a parameter for a named contract. """
         self.cursor.execute(self.SQL_INS_PARAMS, (address, environment, key, value))
-        self.connection.commit()
+        self.dbconnection.connection.commit()
 
     def get_param(self, address, environment, key):
         """Return the address and abi for a particular deployed contract. """

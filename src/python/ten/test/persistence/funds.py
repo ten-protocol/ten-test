@@ -8,10 +8,10 @@ class FundsPersistence:
     SQL_DELETE = "DELETE from funds WHERE environment=?"
     SQL_SELECT = "SELECT time, balance FROM funds WHERE name=? and environment=? ORDER BY time DESC"
 
-    def __init__(self, connection):
+    def __init__(self, dbconnection):
         """Instantiate an instance."""
-        self.connection = connection
-        self.cursor = self.connection.cursor()
+        self.dbconnection = dbconnection
+        self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
         """Create the cursor to the underlying persistence."""
@@ -24,12 +24,12 @@ class FundsPersistence:
     def delete_environment(self, environment):
         """Delete all stored details for a particular environment."""
         self.cursor.execute(self.SQL_DELETE, (environment, ))
-        self.connection.commit()
+        self.dbconnection.connection.commit()
 
     def insert_funds(self, name, address, environment, time, balance):
         """Insert a new funds entry for a particular logical account."""
         self.cursor.execute(self.SQL_INSERT, (name, address, environment, time, str(balance)))
-        self.connection.commit()
+        self.dbconnection.connection.commit()
 
     def get_funds(self, name, environment):
         """Return the funds with time for a particular logical account."""

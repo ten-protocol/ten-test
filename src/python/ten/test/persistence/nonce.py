@@ -11,10 +11,10 @@ class NoncePersistence:
     SQL_ACCNTS = "SELECT DISTINCT account from nonce_db where environment=?"
     SQL_DELENT = "DELETE from nonce_db WHERE account=? AND environment=? AND nonce=?"
 
-    def __init__(self, connection):
+    def __init__(self, dbconnection):
         """Instantiate an instance."""
-        self.connection = connection
-        self.cursor = self.connection.cursor()
+        self.dbconnection = dbconnection
+        self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
         """Create the cursor to the underlying persistence. """
@@ -47,32 +47,32 @@ class NoncePersistence:
     def insert(self, account, environment, nonce, status='PENDING'):
         """Insert a new nonce into the persistence. """
         self.cursor.execute(self.SQL_INSERT, (account, environment, nonce, status))
-        self.connection.commit()
+        self.dbconnection.connection.commit()
 
     def update(self, account, environment, nonce, status):
         """Update the status of a transaction for a given nonce into the persistence. """
         self.cursor.execute(self.SQL_UPDATE, (status, account, environment, nonce))
-        self.connection.commit()
+        self.dbconnection.connection.commit()
 
     def delete(self, account, environment):
         """Delete all nonce entries in the persistence for a given account and environment. """
         self.cursor.execute(self.SQL_DELETE, (account, environment))
-        self.connection.commit()
+        self.dbconnection.connection.commit()
 
     def delete_from(self, account, environment, nonce):
         """Delete all nonce entries in the persistence for a given account and environment. """
         self.cursor.execute(self.SQL_DELFRO, (account, environment, nonce))
-        self.connection.commit()
+        self.dbconnection.connection.commit()
 
     def delete_environment(self, environment):
         """Delete all nonce entries for all accounts for a given environment. """
         self.cursor.execute(self.SQL_DELENV, (environment, ))
-        self.connection.commit()
+        self.dbconnection.connection.commit()
 
     def delete_entries(self, account, environment, nonce):
         """Delete all nonce entries in the persistence for a given account and environment and nonce. """
         self.cursor.execute(self.SQL_DELENT, (account, environment, nonce))
-        self.connection.commit()
+        self.dbconnection.connection.commit()
 
     def get_accounts(self, environment):
         """Return a list of all accounts with persisted values for a given environment. """

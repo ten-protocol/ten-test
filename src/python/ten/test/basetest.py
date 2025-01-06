@@ -34,13 +34,13 @@ class GenericNetworkTest(BaseTest):
         self.log.info('Running test in thread %s', threading.currentThread().getName())
 
         # every test has its own connection to the dbs
-        self.connection = get_connection(is_local=runner.ten_runner.cloud_metadata is None, db_dir=runner.ten_runner.user_dir)
-        self.rates_db = RatesPersistence(self.connection)
-        self.nonce_db = NoncePersistence(self.connection)
-        self.contract_db = ContractPersistence(self.connection)
-        self.funds_db = FundsPersistence(self.connection)
-        self.counts_db = CountsPersistence(self.connection)
-        self.results_db = ResultsPersistence(self.connection)
+        self.dbconnection1, self.dbconnection2 = get_connection(is_local=runner.ten_runner.cloud_metadata is None, db_dir=runner.ten_runner.user_dir)
+        self.rates_db = RatesPersistence(self.dbconnection1)
+        self.nonce_db = NoncePersistence(self.dbconnection1)
+        self.contract_db = ContractPersistence(self.dbconnection1)
+        self.funds_db = FundsPersistence(self.dbconnection1)
+        self.counts_db = CountsPersistence(self.dbconnection1)
+        self.results_db = ResultsPersistence(self.dbconnection1)
         self.addCleanupFunction(self.close_db)
 
         # every test has a unique connection for the funded account
@@ -79,7 +79,8 @@ class GenericNetworkTest(BaseTest):
         self.funds_db.close()
         self.counts_db.close()
         self.results_db.close()
-        self.connection.close()
+        self.dbconnection1.connection.close()
+        self.dbconnection2.connection.close()
 
     def drain_ephemeral_pks(self):
         """Drain any ephemeral accounts of their funds. """

@@ -70,19 +70,19 @@ class TenRunnerPlugin():
         else:
             machine_name = self.cloud_metadata['compute']['name']
             runner.log.info('Running on azure (%s, %s)' % (machine_name, self.cloud_metadata['compute']['location']))
-        connection = get_connection(self.cloud_metadata is None, self.user_dir)
+        dbconnection1, dbconnection2 = get_connection(self.cloud_metadata is None, self.user_dir)
 
-        rates_db = RatesPersistence(connection)
+        rates_db = RatesPersistence(dbconnection1)
         rates_db.create()
-        nonce_db = NoncePersistence(connection)
+        nonce_db = NoncePersistence(dbconnection1)
         nonce_db.create()
-        contracts_db = ContractPersistence(connection)
+        contracts_db = ContractPersistence(dbconnection1)
         contracts_db.create()
-        funds_db = FundsPersistence(connection)
+        funds_db = FundsPersistence(dbconnection1)
         funds_db.create()
-        counts_db = CountsPersistence(connection)
+        counts_db = CountsPersistence(dbconnection1)
         counts_db.create()
-        results_db = ResultsPersistence(connection)
+        results_db = ResultsPersistence(dbconnection1)
         results_db.create()
 
         eth_price = self.get_eth_price()
@@ -177,7 +177,8 @@ class TenRunnerPlugin():
         funds_db.close()
         counts_db.close()
         results_db.close()
-        connection.close()
+        dbconnection1.connection.close()
+        dbconnection2.connection.close()
 
     def run_ganache(self, runner):
         """Run ganache for use by the tests. """
