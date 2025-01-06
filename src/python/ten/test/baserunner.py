@@ -72,7 +72,7 @@ class TenRunnerPlugin():
             runner.log.info('Running on azure (%s, %s)' % (machine_name, self.cloud_metadata['compute']['location']))
         dbconnection1, dbconnection2 = get_connection(self.cloud_metadata is None, self.user_dir)
 
-        rates_db = RatesPersistence(dbconnection1)
+        rates_db = RatesPersistence(dbconnection2)
         rates_db.create()
         nonce_db = NoncePersistence(dbconnection1)
         nonce_db.create()

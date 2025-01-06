@@ -7,6 +7,10 @@ from ten.test.utils.properties import Properties
 DBConnection = namedtuple('DBConnection', 'connection type')
 
 
+def normalise(statement, _type):
+    return statement if _type != 'mysql' else statement.replace('?', '%s')
+
+
 def get_connection(is_local, db_dir):
     #if is_local:
     db = os.path.join(db_dir, 'ten-test.db')
