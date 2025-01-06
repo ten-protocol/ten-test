@@ -14,7 +14,8 @@ def get_connection(is_local, db_dir):
             'host': props.persistence_host(),
             'user': props.persistence_user(),
             'password': props.persistence_password(),
-            'database': props.persistence_database()
+            'database': props.persistence_database(),
+            'connection_timeout': 10
         }
         connection = mysql.connector.connect(**config)
     return connection
