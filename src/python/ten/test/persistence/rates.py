@@ -8,7 +8,7 @@ class RatesPersistence:
                  "(crypto VARCHAR(3), " \
                  "currency VARCHAR(3), " \
                  "time INTEGER, " \
-                 "rate VARCHAR(255), " \
+                 "rate REAL, " \
                  "PRIMARY KEY (crypto, currency, time))"
     SQL_INSERT = "INSERT INTO rates VALUES (?, ?, ?, ?);"
     SQL_DELETE = "DELETE from rates WHERE crypto=?;"
@@ -37,7 +37,7 @@ class RatesPersistence:
 
     def insert_rates(self, crypto, currency, time, rate):
         """Insert a new rate for a particular crypto and currency."""
-        self.cursor.execute(self.insert, (crypto, currency, time, str(rate)))
+        self.cursor.execute(self.insert, (crypto, currency, time, rate))
         self.dbconnection.connection.commit()
 
     def get_latest_rate(self, crypto, currency):

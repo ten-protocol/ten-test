@@ -11,18 +11,18 @@ def normalise(statement, _type):
     return statement if _type != 'mysql' else statement.replace('?', '%s')
 
 
-def get_connection(is_local, db_dir):
-    #if is_local:
-    db = os.path.join(db_dir, 'ten-test.db')
-    connection1 = sqlite3.connect(db)
-    #else:
+def get_connection(is_cloud_vm, db_dir):
     props = Properties()
     config = {
-            'host': props.persistence_host(),
-            'user': props.persistence_user(),
-            'password': props.persistence_password(),
-            'database': props.persistence_database(),
-            'connection_timeout': 10
+        'host': props.persistence_host(),
+        'user': props.persistence_user(),
+        'password': props.persistence_password(),
+        'database': props.persistence_database(),
+        'connection_timeout': 10
     }
-    connection2 = mysql.connector.connect(**config)
-    return DBConnection(connection1, 'sqlite3'), DBConnection(connection2, 'mysql')
+    connection1 = mysql.connector.connect(**config)
+
+    db = os.path.join(db_dir, 'ten-test.db')
+    connection2 = sqlite3.connect(db)
+
+    return DBConnection(connection1, 'mysql'), DBConnection(connection2, 'sqlite3')

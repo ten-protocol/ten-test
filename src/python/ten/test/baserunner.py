@@ -35,6 +35,7 @@ class TenRunnerPlugin():
         self.NODE_HOST = None
         self.balances = OrderedDict()
         self.cloud_metadata = is_cloud_vm()
+        self.is_cloud_vm = self.cloud_metadata is not None
         self.user_dir = os.path.join(str(Path.home()), '.tentest')
         if not os.path.exists(self.user_dir): os.makedirs(self.user_dir)
 
@@ -64,25 +65,25 @@ class TenRunnerPlugin():
         os.makedirs(runner.output)
 
         # set up the persistence layer based on if we are running in the cloud, or locally
-        if self.cloud_metadata is None:
-            machine_name = socket.gethostname()
-            runner.log.info('Running on local (%s)' % machine_name)
-        else:
+        if self.is_cloud_vm:
             machine_name = self.cloud_metadata['compute']['name']
             runner.log.info('Running on azure (%s, %s)' % (machine_name, self.cloud_metadata['compute']['location']))
-        dbconnection1, dbconnection2 = get_connection(self.cloud_metadata is None, self.user_dir)
+        else:
+            machine_name = socket.gethostname()
+            runner.log.info('Running on local (%s)' % machine_name)
+        dbconnection2, dbconnection2 = get_connection(self.is_cloud_vm, self.user_dir)
 
         rates_db = RatesPersistence(dbconnection2)
         rates_db.create()
-        nonce_db = NoncePersistence(dbconnection1)
+        nonce_db = NoncePersistence(dbconnection2)
         nonce_db.create()
-        contracts_db = ContractPersistence(dbconnection1)
+        contracts_db = ContractPersistence(dbconnection2)
         contracts_db.create()
-        funds_db = FundsPersistence(dbconnection1)
+        funds_db = FundsPersistence(dbconnection2)
         funds_db.create()
-        counts_db = CountsPersistence(dbconnection1)
+        counts_db = CountsPersistence(dbconnection2)
         counts_db.create()
-        results_db = ResultsPersistence(dbconnection1)
+        results_db = ResultsPersistence(dbconnection2)
         results_db.create()
 
         eth_price = self.get_eth_price()
@@ -177,7 +178,7 @@ class TenRunnerPlugin():
         funds_db.close()
         counts_db.close()
         results_db.close()
-        dbconnection1.connection.close()
+        dbconnection2.connection.close()
         dbconnection2.connection.close()
 
     def run_ganache(self, runner):
