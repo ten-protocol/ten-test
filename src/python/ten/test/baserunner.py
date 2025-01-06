@@ -62,8 +62,7 @@ class TenRunnerPlugin():
         # set up the persistence layer based on if we are running in the cloud, or locally
         metadata = is_azure_vm()
         if metadata is not None:
-            runner.log.info('Running on an azure VM')
-            runner.log.info('Machine %s, location %s' % (metadata['compute']['location'], metadata['compute']['name']))
+            runner.log.info('Running on azure (%s, %s)' % (metadata['compute']['name'], metadata['compute']['location']))
 
         db_dir = os.path.join(str(Path.home()), '.tentest')
         if not os.path.exists(db_dir): os.makedirs(db_dir)
