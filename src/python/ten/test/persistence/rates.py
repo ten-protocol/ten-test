@@ -2,7 +2,10 @@ class RatesPersistence:
     """Abstracts the persistence of rates across cryptos into a local database. """
 
     SQL_CREATE = "CREATE TABLE IF NOT EXISTS rates " \
-                 "(crypto TEXT, currency INTEGER, time INTEGER, rate TEXT, " \
+                 "(crypto VARCHAR(3), " \
+                 "currency INTEGER, " \
+                 "time INTEGER, " \
+                 "rate VARCHAR(255), " \
                  "PRIMARY KEY (crypto, currency, time))"
     SQL_INSERT = "INSERT INTO rates VALUES (?, ?, ?, ?)"
     SQL_DELETE = "DELETE from rates WHERE crypto=?"
