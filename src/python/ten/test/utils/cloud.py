@@ -5,7 +5,7 @@ def is_azure_vm():
     headers = {"Metadata": "true"}
 
     try:
-        response = requests.get(metadata_url, headers=headers, timeout=10)
+        response = requests.get(metadata_url, headers=headers, timeout=3)
         if response.status_code == 200:
             return response.json()
         else:
