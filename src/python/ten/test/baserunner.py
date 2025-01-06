@@ -63,7 +63,7 @@ class TenRunnerPlugin():
         metadata = is_azure_vm()
         if metadata is not None:
             runner.log.info('Running on an azure VM')
-            runner.log.info(json.dumps(metadata, indent=4))
+            runner.log.info('Machine %s, location %s' % (metadata['compute']['location'], metadata['compute']['name']))
 
         db_dir = os.path.join(str(Path.home()), '.tentest')
         if not os.path.exists(db_dir): os.makedirs(db_dir)
