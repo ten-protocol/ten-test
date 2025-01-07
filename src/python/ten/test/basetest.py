@@ -34,14 +34,13 @@ class GenericNetworkTest(BaseTest):
         self.log.info('Running test in thread %s', threading.currentThread().getName())
 
         # every test has its own connection to the dbs
-        self.dbconnection1, self.dbconnection2 = get_connection(is_cloud_vm=runner.ten_runner.is_cloud_vm, db_dir=runner.ten_runner.user_dir)
-        dbconnection = self.dbconnection1
-        self.rates_db = RatesPersistence(runner.ten_runner.machine_name, dbconnection)
-        self.nonce_db = NoncePersistence(runner.ten_runner.machine_name, dbconnection)
-        self.contract_db = ContractPersistence(runner.ten_runner.machine_name, dbconnection)
-        self.funds_db = FundsPersistence(runner.ten_runner.machine_name, dbconnection)
-        self.counts_db = CountsPersistence(runner.ten_runner.machine_name, dbconnection)
-        self.results_db = ResultsPersistence(runner.ten_runner.machine_name, dbconnection)
+        self.dbconnection = get_connection(is_cloud_vm=runner.ten_runner.is_cloud_vm, db_dir=runner.ten_runner.user_dir)
+        self.rates_db = RatesPersistence(runner.ten_runner.machine_name, self.dbconnection)
+        self.nonce_db = NoncePersistence(runner.ten_runner.machine_name, self.dbconnection)
+        self.contract_db = ContractPersistence(runner.ten_runner.machine_name, self.dbconnection)
+        self.funds_db = FundsPersistence(runner.ten_runner.machine_name, self.dbconnection)
+        self.counts_db = CountsPersistence(runner.ten_runner.machine_name, self.dbconnection)
+        self.results_db = ResultsPersistence(runner.ten_runner.machine_name, self.dbconnection)
         self.addCleanupFunction(self.close_db)
 
         # every test has a unique connection for the funded account
@@ -80,8 +79,7 @@ class GenericNetworkTest(BaseTest):
         self.funds_db.close()
         self.counts_db.close()
         self.results_db.close()
-        self.dbconnection1.connection.close()
-        self.dbconnection2.connection.close()
+        self.dbconnection.connection.close()
 
     def drain_ephemeral_pks(self):
         """Drain any ephemeral accounts of their funds. """

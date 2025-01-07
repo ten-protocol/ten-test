@@ -71,8 +71,7 @@ class TenRunnerPlugin():
         else:
             self.machine_name = socket.gethostname()
             runner.log.info('Running on local (%s)' % self.machine_name)
-        dbconnection1, dbconnection2 = get_connection(self.is_cloud_vm, self.user_dir)
-        dbconnection = dbconnection1
+        dbconnection = get_connection(self.is_cloud_vm, self.user_dir)
         rates_db = RatesPersistence.init(self.machine_name, dbconnection)
         nonce_db = NoncePersistence.init(self.machine_name, dbconnection)
         contracts_db = ContractPersistence.init(self.machine_name, dbconnection)
@@ -172,8 +171,7 @@ class TenRunnerPlugin():
         funds_db.close()
         counts_db.close()
         results_db.close()
-        dbconnection1.connection.close()
-        dbconnection2.connection.close()
+        dbconnection.connection.close()
 
     def run_ganache(self, runner):
         """Run ganache for use by the tests. """
