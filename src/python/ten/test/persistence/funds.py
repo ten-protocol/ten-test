@@ -9,7 +9,7 @@ class FundsPersistence:
                  "address VARCHAR(64), " \
                  "environment VARCHAR(64), " \
                  "time INTEGER, " \
-                 "balance INTEGER, " \
+                 "balance VARCHAR(64), " \
                  "PRIMARY KEY (name, environment, time))"
     SQL_INSERT = "INSERT INTO funds VALUES (?, ?, ?, ?, ?)"
     SQL_DELETE = "DELETE from funds WHERE environment=?"

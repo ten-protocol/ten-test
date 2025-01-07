@@ -4,27 +4,25 @@ from ten.test.persistence import normalise
 class ContractPersistence:
     """Abstracts the persistence of contract addresses into a local database. """
 
-    SQL_CREATE = "CREATE TABLE IF NOT EXISTS contracts " \
-                 "(host VARCHAR(64), " \
-                 "name VARCHAR(64), " \
+    SQL_CREATE = "CREATE TABLE IF NOT EXISTS contract_details " \
+                 "(name VARCHAR(64), " \
                  "environment VARCHAR(64), " \
                  "address VARCHAR(64), " \
                  "abi MEDIUMTEXT, " \
-                 "PRIMARY KEY (host, name, environment))"
-    SQL_INSERT = "INSERT OR REPLACE INTO contracts VALUES (?, ?, ?, ?, ?)"
-    SQL_DELETE = "DELETE from contracts WHERE host=? AND environment=?"
-    SQL_SELECT = "SELECT address, abi FROM contracts WHERE host=? AND name=? AND environment=? ORDER BY name DESC LIMIT 1"
+                 "PRIMARY KEY (name, environment))"
+    SQL_INSERT = "INSERT OR REPLACE INTO contract_details VALUES (?, ?, ?, ?)"
+    SQL_DELETE = "DELETE from contract_details WHERE environment=?"
+    SQL_SELECT = "SELECT address, abi FROM contract_details WHERE name=? AND environment=? ORDER BY name DESC LIMIT 1"
 
-    SQL_CRTPRM = "CREATE TABLE IF NOT EXISTS params " \
-                 "(host VARCHAR(64), " \
-                 "address VARCHAR(64), " \
+    SQL_CRTPRM = "CREATE TABLE IF NOT EXISTS contract_params " \
+                 "(address VARCHAR(64), " \
                  "environment VARCHAR(64), " \
                  "param_key VARCHAR(64), " \
                  "param_val VARCHAR(64), " \
-                 "PRIMARY KEY (host, address, environment, param_key))"
-    SQL_INSPRM = "INSERT OR REPLACE INTO params VALUES (?, ?, ?, ?, ?)"
-    SQL_DELPRM = "DELETE from params WHERE host=? AND environment=?"
-    SQL_SELPRM = "SELECT param_val FROM params WHERE host=? AND address=? AND environment=? AND param_key=? " \
+                 "PRIMARY KEY (address, environment, param_key))"
+    SQL_INSPRM = "INSERT OR REPLACE INTO contract_params VALUES (?, ?, ?, ?)"
+    SQL_DELPRM = "DELETE from contract_params WHERE environment=?"
+    SQL_SELPRM = "SELECT param_val FROM contract_params WHERE address=? AND environment=? AND param_key=? " \
                  "ORDER BY address DESC LIMIT 1"
 
     @classmethod
@@ -56,30 +54,30 @@ class ContractPersistence:
 
     def delete_environment(self, environment):
         """Delete all stored contract details for a particular environment."""
-        self.cursor.execute(self.sqldel, (self.host, environment))
-        self.cursor.execute(self.delprm, (self.host, environment))
+        self.cursor.execute(self.sqldel, (environment, ))
+        self.cursor.execute(self.delprm, (environment, ))
         self.dbconnection.connection.commit()
 
     def insert_contract(self, name, environment, address, abi):
         """Insert a new contract into the persistence. """
-        self.cursor.execute(self.sqlins, (self.host, name, environment, address, abi))
+        self.cursor.execute(self.sqlins, (name, environment, address, abi))
         self.dbconnection.connection.commit()
 
     def get_contract(self, name, environment):
         """Return the address and abi for a particular deployed contract. """
-        self.cursor.execute(self.sqlsel, (self.host, name, environment))
+        self.cursor.execute(self.sqlsel, (name, environment))
         cursor = self.cursor.fetchall()
         if len(cursor) > 0: return cursor[0][0], cursor[0][1]
         return None, None
 
     def insert_param(self, address, environment, key, value):
         """Insert a parameter for a named contract. """
-        self.cursor.execute(self.insprm, (self.host, address, environment, key, value))
+        self.cursor.execute(self.insprm, (address, environment, key, value))
         self.dbconnection.connection.commit()
 
     def get_param(self, address, environment, key):
         """Return the address and abi for a particular deployed contract. """
-        self.cursor.execute(self.selprm, (self.host, address, environment, key))
+        self.cursor.execute(self.selprm, (address, environment, key))
         cursor = self.cursor.fetchall()
         if len(cursor) > 0: return cursor[0][0]
         return None

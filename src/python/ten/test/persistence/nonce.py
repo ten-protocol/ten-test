@@ -5,19 +5,18 @@ class NoncePersistence:
     """Abstracts the persistence of nonces into a local database. """
 
     SQL_CREATE = "CREATE TABLE IF NOT EXISTS nonces " \
-                 "(host VARCHAR(64), " \
-                 "account VARCHAR(64), " \
+                 "(account VARCHAR(64), " \
                  "environment VARCHAR(64), " \
                  "nonce INTEGER, " \
                  "status VARCHAR(64))"
-    SQL_INSERT = "INSERT INTO nonces VALUES (?, ?, ?, ?, ?)"
-    SQL_UPDATE = "UPDATE nonces SET status=? WHERE host=? AND account=? AND environment=? AND nonce=?"
-    SQL_DELETE = "DELETE from nonces WHERE host=? AND account=? AND environment=?"
-    SQL_DELFRO = "DELETE from nonces WHERE host=? AND account=? AND environment=? AND nonce>=?"
-    SQL_LATEST = "SELECT nonce FROM nonces WHERE host=? AND account=? AND environment=? ORDER BY nonce DESC LIMIT 1"
-    SQL_DELENV = "DELETE from nonces WHERE host=? AND environment=?"
-    SQL_ACCNTS = "SELECT DISTINCT account from nonces WHERE host=? AND environment=?"
-    SQL_DELENT = "DELETE from nonces WHERE host=? AND account=? AND environment=? AND nonce=?"
+    SQL_INSERT = "INSERT INTO nonces VALUES ?, ?, ?, ?)"
+    SQL_UPDATE = "UPDATE nonces SET status=? WHERE account=? AND environment=? AND nonce=?"
+    SQL_DELETE = "DELETE from nonces WHERE account=? AND environment=?"
+    SQL_DELFRO = "DELETE from nonces WHERE account=? AND environment=? AND nonce>=?"
+    SQL_LATEST = "SELECT nonce FROM nonces WHERE account=? AND environment=? ORDER BY nonce DESC LIMIT 1"
+    SQL_DELENV = "DELETE from nonces WHERE environment=?"
+    SQL_ACCNTS = "SELECT DISTINCT account from nonces WHERE environment=?"
+    SQL_DELENT = "DELETE from nonces WHERE account=? AND environment=? AND nonce=?"
 
     @classmethod
     def init(cls, host, dbconnection):
@@ -69,42 +68,42 @@ class NoncePersistence:
 
     def insert(self, account, environment, nonce, status='PENDING'):
         """Insert a new nonce into the persistence. """
-        self.cursor.execute(self.sqlins, (self.host, account, environment, nonce, status))
+        self.cursor.execute(self.sqlins, (account, environment, nonce, status))
         self.dbconnection.connection.commit()
 
     def update(self, account, environment, nonce, status):
         """Update the status of a transaction for a given nonce into the persistence. """
-        self.cursor.execute(self.sqlupd, (self.host, status, account, environment, nonce))
+        self.cursor.execute(self.sqlupd, (status, account, environment, nonce))
         self.dbconnection.connection.commit()
 
     def delete(self, account, environment):
         """Delete all nonce entries in the persistence for a given account and environment. """
-        self.cursor.execute(self.sqldel, (self.host, account, environment))
+        self.cursor.execute(self.sqldel, (account, environment))
         self.dbconnection.connection.commit()
 
     def delete_from(self, account, environment, nonce):
         """Delete all nonce entries in the persistence for a given account and environment. """
-        self.cursor.execute(self.delfro, (self.host, account, environment, nonce))
+        self.cursor.execute(self.delfro, (account, environment, nonce))
         self.dbconnection.connection.commit()
 
     def delete_environment(self, environment):
         """Delete all nonce entries for all accounts for a given environment. """
-        self.cursor.execute(self.delenv, (self.host, environment, ))
+        self.cursor.execute(self.delenv, (environment, ))
         self.dbconnection.connection.commit()
 
     def delete_entries(self, account, environment, nonce):
         """Delete all nonce entries in the persistence for a given account and environment and nonce. """
-        self.cursor.execute(self.delent, (self.host, account, environment, nonce))
+        self.cursor.execute(self.delent, (account, environment, nonce))
         self.dbconnection.connection.commit()
 
     def get_accounts(self, environment):
         """Return a list of all accounts with persisted values for a given environment. """
-        self.cursor.execute(self.accnts, (self.host, environment))
+        self.cursor.execute(self.accnts, (environment))
         return self.cursor.fetchall()
 
     def get_latest_nonce(self, account, environment):
         """Get the latest nonce for a given account and environment. """
-        self.cursor.execute(self.latest, (self.host, account, environment))
+        self.cursor.execute(self.latest, (account, environment))
         try:
             result = self.cursor.fetchone()[0]
             return int(result)
