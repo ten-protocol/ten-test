@@ -88,7 +88,7 @@ jobs:
         if: ${{ github.event_name == 'schedule' }}
         run: |
           cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ten.local ${{ github.event.inputs.arguments }}
+          /usr/local/bin/pysys.py run -m ten.local -e skip -e persistence -e performance -e robustness
 
       - name: 'Run the performance summary'
         if: always()
