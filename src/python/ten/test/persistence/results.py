@@ -5,17 +5,25 @@ class ResultsPersistence:
     """Abstracts the persistence of performance results into a local database. """
 
     SQL_CREATE = "CREATE TABLE IF NOT EXISTS results " \
-                 "(test VARCHAR(64), " \
+                 "(host VARCHAR(64), " \
+                 "test VARCHAR(64), " \
                  "environment VARCHAR(64), " \
                  "time INTEGER, " \
                  "result REAL, " \
-                 "PRIMARY KEY (test, environment, time))"
-    SQL_INSERT = "INSERT INTO results VALUES (?, ?, ?, ?)"
-    SQL_DELETE = "DELETE from results WHERE environment=?"
-    SQL_SELECT = "SELECT time, result FROM results WHERE test=? AND environment=? ORDER BY time ASC"
+                 "PRIMARY KEY (host, test, environment, time))"
+    SQL_INSERT = "INSERT INTO results VALUES (?, ?, ?, ?, ?)"
+    SQL_DELETE = "DELETE from results WHERE host=? and environment=?"
+    SQL_SELECT = "SELECT time, result FROM results WHERE host=? AND test=? AND environment=? ORDER BY time ASC"
 
-    def __init__(self, dbconnection):
+    @classmethod
+    def init(cls, host, dbconnection):
+        instance = ResultsPersistence(host, dbconnection)
+        instance.create()
+        return instance
+
+    def __init__(self, host, dbconnection):
         """Instantiate an instance."""
+        self.host = host
         self.dbconnection = dbconnection
         self.insert = normalise(self.SQL_INSERT, dbconnection.type)
         self.delete = normalise(self.SQL_DELETE, dbconnection.type)
@@ -32,16 +40,16 @@ class ResultsPersistence:
 
     def delete_environment(self, environment):
         """Delete all stored performance results for a particular environment."""
-        self.cursor.execute(self.delete, (environment, ))
+        self.cursor.execute(self.delete, (self.host, environment))
         self.dbconnection.connection.commit()
 
     def insert_result(self, test, environment, time, result):
         """Insert a new performance result into the persistence. """
-        self.cursor.execute(self.insert, (test, environment, time, result))
+        self.cursor.execute(self.insert, (self.host, test, environment, time, result))
         self.dbconnection.connection.commit()
 
     def get_results(self, test, environment):
         """Return the performance results for a particular test and environment. """
-        self.cursor.execute(self.select, (test, environment))
+        self.cursor.execute(self.select, (self.host, test, environment))
         return self.cursor.fetchall()
 

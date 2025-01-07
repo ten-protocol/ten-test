@@ -66,25 +66,19 @@ class TenRunnerPlugin():
 
         # set up the persistence layer based on if we are running in the cloud, or locally
         if self.is_cloud_vm:
-            machine_name = self.cloud_metadata['compute']['name']
-            runner.log.info('Running on azure (%s, %s)' % (machine_name, self.cloud_metadata['compute']['location']))
+            self.machine_name = self.cloud_metadata['compute']['name']
+            runner.log.info('Running on azure (%s, %s)' % (self.machine_name, self.cloud_metadata['compute']['location']))
         else:
-            machine_name = socket.gethostname()
-            runner.log.info('Running on local (%s)' % machine_name)
+            self.machine_name = socket.gethostname()
+            runner.log.info('Running on local (%s)' % self.machine_name)
         dbconnection2, dbconnection2 = get_connection(self.is_cloud_vm, self.user_dir)
 
-        rates_db = RatesPersistence(dbconnection2)
-        rates_db.create()
-        nonce_db = NoncePersistence(dbconnection2)
-        nonce_db.create()
-        contracts_db = ContractPersistence(dbconnection2)
-        contracts_db.create()
-        funds_db = FundsPersistence(dbconnection2)
-        funds_db.create()
-        counts_db = CountsPersistence(dbconnection2)
-        counts_db.create()
-        results_db = ResultsPersistence(dbconnection2)
-        results_db.create()
+        rates_db = RatesPersistence.init(dbconnection2, self.machine_name)
+        nonce_db = NoncePersistence.init(dbconnection2, self.machine_name)
+        contracts_db = ContractPersistence.init(dbconnection2, self.machine_name)
+        funds_db = FundsPersistence.init(dbconnection2, self.machine_name)
+        counts_db = CountsPersistence.init(dbconnection2, self.machine_name)
+        results_db = ResultsPersistence.init(dbconnection2, self.machine_name)
 
         eth_price = self.get_eth_price()
         if eth_price is not None:

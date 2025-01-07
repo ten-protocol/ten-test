@@ -34,13 +34,13 @@ class GenericNetworkTest(BaseTest):
         self.log.info('Running test in thread %s', threading.currentThread().getName())
 
         # every test has its own connection to the dbs
-        self.dbconnection2, self.dbconnection2 = get_connection(is_local=runner.ten_runner.is_cloud_vm, db_dir=runner.ten_runner.user_dir)
-        self.rates_db = RatesPersistence(self.dbconnection2)
-        self.nonce_db = NoncePersistence(self.dbconnection2)
-        self.contract_db = ContractPersistence(self.dbconnection2)
-        self.funds_db = FundsPersistence(self.dbconnection2)
-        self.counts_db = CountsPersistence(self.dbconnection2)
-        self.results_db = ResultsPersistence(self.dbconnection2)
+        self.dbconnection2, self.dbconnection2 = get_connection(is_cloud_vm=runner.ten_runner.is_cloud_vm, db_dir=runner.ten_runner.user_dir)
+        self.rates_db = RatesPersistence(self.dbconnection2, runner.ten_runner.machine_name)
+        self.nonce_db = NoncePersistence(self.dbconnection2, runner.ten_runner.machine_name)
+        self.contract_db = ContractPersistence(self.dbconnection2, runner.ten_runner.machine_name)
+        self.funds_db = FundsPersistence(self.dbconnection2, runner.ten_runner.machine_name)
+        self.counts_db = CountsPersistence(self.dbconnection2, runner.ten_runner.machine_name)
+        self.results_db = ResultsPersistence(self.dbconnection2, runner.ten_runner.machine_name)
         self.addCleanupFunction(self.close_db)
 
         # every test has a unique connection for the funded account

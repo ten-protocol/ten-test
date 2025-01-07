@@ -1,5 +1,6 @@
 from ten.test.persistence import normalise
 
+
 class FundsPersistence:
     """Abstracts the persistence of funds across accounts into a local database. """
 
@@ -14,8 +15,15 @@ class FundsPersistence:
     SQL_DELETE = "DELETE from funds WHERE environment=?"
     SQL_SELECT = "SELECT time, balance FROM funds WHERE name=? and environment=? ORDER BY time DESC"
 
-    def __init__(self, dbconnection):
+    @classmethod
+    def init(cls, host, dbconnection):
+        instance = FundsPersistence(host, dbconnection)
+        instance.create()
+        return instance
+
+    def __init__(self, host, dbconnection):
         """Instantiate an instance."""
+        self.host = host
         self.dbconnection = dbconnection
         self.insert = normalise(self.SQL_INSERT, dbconnection.type)
         self.delete = normalise(self.SQL_DELETE, dbconnection.type)

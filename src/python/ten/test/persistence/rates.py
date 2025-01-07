@@ -14,8 +14,15 @@ class RatesPersistence:
     SQL_DELETE = "DELETE from rates WHERE crypto=?;"
     SQL_SELECT = "SELECT time, rate FROM rates WHERE crypto=? and currency=? ORDER BY time DESC LIMIT 1;"
 
-    def __init__(self, dbconnection):
+    @classmethod
+    def init(cls, host, dbconnection):
+        instance = RatesPersistence(host, dbconnection)
+        instance.create()
+        return instance
+
+    def __init__(self, host, dbconnection):
         """Instantiate an instance."""
+        self.host = host
         self.dbconnection = dbconnection
         self.insert = normalise(self.SQL_INSERT, dbconnection.type)
         self.delete = normalise(self.SQL_DELETE, dbconnection.type)
@@ -25,6 +32,7 @@ class RatesPersistence:
     def create(self):
         """Create the cursor to the underlying persistence."""
         self.cursor.execute(self.SQL_CREATE)
+        return self
 
     def close(self):
         """Close the connection to the underlying persistence."""

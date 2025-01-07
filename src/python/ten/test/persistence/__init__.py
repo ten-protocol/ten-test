@@ -12,6 +12,7 @@ def normalise(statement, _type):
 
 
 def get_connection(is_cloud_vm, db_dir):
+    if is_cloud_vm: pass
     props = Properties()
     config = {
         'host': props.persistence_host(),
