@@ -4,20 +4,20 @@ from ten.test.persistence import normalise
 class NoncePersistence:
     """Abstracts the persistence of nonces into a local database. """
 
-    SQL_CREATE = "CREATE TABLE IF NOT EXISTS nonce_db " \
+    SQL_CREATE = "CREATE TABLE IF NOT EXISTS nonces " \
                  "(host VARCHAR(64), " \
                  "account VARCHAR(64), " \
                  "environment VARCHAR(64), " \
                  "nonce INTEGER, " \
                  "status VARCHAR(64))"
-    SQL_INSERT = "INSERT INTO nonce_db VALUES (?, ?, ?, ?, ?)"
-    SQL_UPDATE = "UPDATE nonce_db SET status=? WHERE host=? AND account=? AND environment=? AND nonce=?"
-    SQL_DELETE = "DELETE from nonce_db WHERE host=? AND account=? AND environment=?"
-    SQL_DELFRO = "DELETE from nonce_db WHERE host=? AND account=? AND environment=? AND nonce>=?"
-    SQL_LATEST = "SELECT nonce FROM nonce_db WHERE host=? AND account=? AND environment=? ORDER BY nonce DESC LIMIT 1"
-    SQL_DELENV = "DELETE from nonce_db WHERE host=? AND environment=?"
-    SQL_ACCNTS = "SELECT DISTINCT account from nonce_db WHERE host=? AND environment=?"
-    SQL_DELENT = "DELETE from nonce_db WHERE host=? AND account=? AND environment=? AND nonce=?"
+    SQL_INSERT = "INSERT INTO nonces VALUES (?, ?, ?, ?, ?)"
+    SQL_UPDATE = "UPDATE nonces SET status=? WHERE host=? AND account=? AND environment=? AND nonce=?"
+    SQL_DELETE = "DELETE from nonces WHERE host=? AND account=? AND environment=?"
+    SQL_DELFRO = "DELETE from nonces WHERE host=? AND account=? AND environment=? AND nonce>=?"
+    SQL_LATEST = "SELECT nonce FROM nonces WHERE host=? AND account=? AND environment=? ORDER BY nonce DESC LIMIT 1"
+    SQL_DELENV = "DELETE from nonces WHERE host=? AND environment=?"
+    SQL_ACCNTS = "SELECT DISTINCT account from nonces WHERE host=? AND environment=?"
+    SQL_DELENT = "DELETE from nonces WHERE host=? AND account=? AND environment=? AND nonce=?"
 
     @classmethod
     def init(cls, host, dbconnection):
@@ -29,9 +29,9 @@ class NoncePersistence:
         """Instantiate an instance."""
         self.host = host
         self.dbconnection = dbconnection
-        self.insert = normalise(self.SQL_INSERT, dbconnection.type)
-        self.update = normalise(self.SQL_UPDATE, dbconnection.type)
-        self.delete = normalise(self.SQL_DELETE, dbconnection.type)
+        self.sqlins = normalise(self.SQL_INSERT, dbconnection.type)
+        self.sqlupd = normalise(self.SQL_UPDATE, dbconnection.type)
+        self.sqldel = normalise(self.SQL_DELETE, dbconnection.type)
         self.delfro = normalise(self.SQL_DELFRO, dbconnection.type)
         self.latest = normalise(self.SQL_LATEST, dbconnection.type)
         self.delenv = normalise(self.SQL_DELENV, dbconnection.type)
@@ -61,7 +61,7 @@ class NoncePersistence:
         nonce = transaction_count
         if persist_nonce:
             nonce = 0 if persisted_nonce is None else persisted_nonce+1      # we have to believe the local store
-            test.nonce_db.insert(account, test.env, nonce)
+            self.insert(account, test.env, nonce)
             if log: test.log.info("Account %s count %d using nonce from persistence as %d", account, transaction_count, nonce)
         else:
             if log: test.log.info("Account %s using nonce from transaction count as %d", account, nonce)
@@ -69,17 +69,17 @@ class NoncePersistence:
 
     def insert(self, account, environment, nonce, status='PENDING'):
         """Insert a new nonce into the persistence. """
-        self.cursor.execute(self.insert, (self.host, account, environment, nonce, status))
+        self.cursor.execute(self.sqlins, (self.host, account, environment, nonce, status))
         self.dbconnection.connection.commit()
 
     def update(self, account, environment, nonce, status):
         """Update the status of a transaction for a given nonce into the persistence. """
-        self.cursor.execute(self.update, (self.host, status, account, environment, nonce))
+        self.cursor.execute(self.sqlupd, (self.host, status, account, environment, nonce))
         self.dbconnection.connection.commit()
 
     def delete(self, account, environment):
         """Delete all nonce entries in the persistence for a given account and environment. """
-        self.cursor.execute(self.delete, (self.host, account, environment))
+        self.cursor.execute(self.sqldel, (self.host, account, environment))
         self.dbconnection.connection.commit()
 
     def delete_from(self, account, environment, nonce):

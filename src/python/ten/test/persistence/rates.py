@@ -24,9 +24,9 @@ class RatesPersistence:
         """Instantiate an instance."""
         self.host = host
         self.dbconnection = dbconnection
-        self.insert = normalise(self.SQL_INSERT, dbconnection.type)
-        self.delete = normalise(self.SQL_DELETE, dbconnection.type)
-        self.select = normalise(self.SQL_SELECT, dbconnection.type)
+        self.sqlins = normalise(self.SQL_INSERT, dbconnection.type)
+        self.sqldel = normalise(self.SQL_DELETE, dbconnection.type)
+        self.sqlsel = normalise(self.SQL_SELECT, dbconnection.type)
         self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
@@ -40,17 +40,17 @@ class RatesPersistence:
 
     def delete_crypto(self, crypto):
         """Delete all stored rates for a particular crypto."""
-        self.cursor.execute(self.delete, (crypto, ))
+        self.cursor.execute(self.sqldel, (crypto, ))
         self.dbconnection.connection.commit()
 
     def insert_rates(self, crypto, currency, time, rate):
         """Insert a new rate for a particular crypto and currency."""
-        self.cursor.execute(self.insert, (crypto, currency, time, rate))
+        self.cursor.execute(self.sqlins, (crypto, currency, time, rate))
         self.dbconnection.connection.commit()
 
     def get_latest_rate(self, crypto, currency):
         """Return the latest rate for the crypto and currency."""
-        self.cursor.execute(self.select, (crypto, currency))
+        self.cursor.execute(self.sqlsel, (crypto, currency))
         try:
             result = self.cursor.fetchone()[1]
             return float(result)

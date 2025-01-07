@@ -25,9 +25,9 @@ class FundsPersistence:
         """Instantiate an instance."""
         self.host = host
         self.dbconnection = dbconnection
-        self.insert = normalise(self.SQL_INSERT, dbconnection.type)
-        self.delete = normalise(self.SQL_DELETE, dbconnection.type)
-        self.select = normalise(self.SQL_SELECT, dbconnection.type)
+        self.sqlins = normalise(self.SQL_INSERT, dbconnection.type)
+        self.sqldel = normalise(self.SQL_DELETE, dbconnection.type)
+        self.sqlsel = normalise(self.SQL_SELECT, dbconnection.type)
         self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
@@ -40,16 +40,16 @@ class FundsPersistence:
 
     def delete_environment(self, environment):
         """Delete all stored details for a particular environment."""
-        self.cursor.execute(self.delete, (environment, ))
+        self.cursor.execute(self.sqldel, (environment, ))
         self.dbconnection.connection.commit()
 
     def insert_funds(self, name, address, environment, time, balance):
         """Insert a new funds entry for a particular logical account."""
-        self.cursor.execute(self.insert, (name, address, environment, time, str(balance)))
+        self.cursor.execute(self.sqlins, (name, address, environment, time, str(balance)))
         self.dbconnection.connection.commit()
 
     def get_funds(self, name, environment):
         """Return the funds with time for a particular logical account."""
-        self.cursor.execute(self.select, (name, environment))
+        self.cursor.execute(self.sqlsel, (name, environment))
         return self.cursor.fetchall()
 

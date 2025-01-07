@@ -71,14 +71,14 @@ class TenRunnerPlugin():
         else:
             self.machine_name = socket.gethostname()
             runner.log.info('Running on local (%s)' % self.machine_name)
-        dbconnection2, dbconnection2 = get_connection(self.is_cloud_vm, self.user_dir)
-
-        rates_db = RatesPersistence.init(dbconnection2, self.machine_name)
-        nonce_db = NoncePersistence.init(dbconnection2, self.machine_name)
-        contracts_db = ContractPersistence.init(dbconnection2, self.machine_name)
-        funds_db = FundsPersistence.init(dbconnection2, self.machine_name)
-        counts_db = CountsPersistence.init(dbconnection2, self.machine_name)
-        results_db = ResultsPersistence.init(dbconnection2, self.machine_name)
+        dbconnection1, dbconnection2 = get_connection(self.is_cloud_vm, self.user_dir)
+        dbconnection = dbconnection1
+        rates_db = RatesPersistence.init(self.machine_name, dbconnection)
+        nonce_db = NoncePersistence.init(self.machine_name, dbconnection)
+        contracts_db = ContractPersistence.init(self.machine_name, dbconnection)
+        funds_db = FundsPersistence.init(self.machine_name, dbconnection)
+        counts_db = CountsPersistence.init(self.machine_name, dbconnection)
+        results_db = ResultsPersistence.init(self.machine_name, dbconnection)
 
         eth_price = self.get_eth_price()
         if eth_price is not None:
@@ -172,7 +172,7 @@ class TenRunnerPlugin():
         funds_db.close()
         counts_db.close()
         results_db.close()
-        dbconnection2.connection.close()
+        dbconnection1.connection.close()
         dbconnection2.connection.close()
 
     def run_ganache(self, runner):
@@ -317,6 +317,7 @@ class TenRunnerPlugin():
                 contracts = config["PublicSystemContracts"]
                 Properties.L2PublicCallbacks = self.__get_contract(contracts, "PublicCallbacks")
         elif 'error' in response.json():
+            runner.log.warn('Error getting contract address from ten_config')
             runner.log.error(response.json()['error']['message'])
 
     def __get_contract(self, contracts, key):

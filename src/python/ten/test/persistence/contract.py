@@ -19,12 +19,12 @@ class ContractPersistence:
                  "(host VARCHAR(64), " \
                  "address VARCHAR(64), " \
                  "environment VARCHAR(64), " \
-                 "key VARCHAR(64), " \
-                 "value VARCHAR(64), " \
-                 "PRIMARY KEY (host, address, environment, key))"
+                 "param_key VARCHAR(64), " \
+                 "param_val VARCHAR(64), " \
+                 "PRIMARY KEY (host, address, environment, param_key))"
     SQL_INSPRM = "INSERT OR REPLACE INTO params VALUES (?, ?, ?, ?, ?)"
     SQL_DELPRM = "DELETE from params WHERE host=? AND environment=?"
-    SQL_SELPRM = "SELECT value FROM params WHERE host=? AND address=? AND environment=? AND key=? " \
+    SQL_SELPRM = "SELECT param_val FROM params WHERE host=? AND address=? AND environment=? AND param_key=? " \
                  "ORDER BY address DESC LIMIT 1"
 
     @classmethod
@@ -37,10 +37,9 @@ class ContractPersistence:
         """Instantiate an instance."""
         self.host = host
         self.dbconnection = dbconnection
-        self.insert = normalise(self.SQL_INSERT, dbconnection.type)
-        self.delete = normalise(self.SQL_DELETE, dbconnection.type)
-        self.select = normalise(self.SQL_SELECT, dbconnection.type)
-        self.crtprm = normalise(self.SQL_CRTPRM, dbconnection.type)
+        self.sqlins = normalise(self.SQL_INSERT, dbconnection.type)
+        self.sqldel = normalise(self.SQL_DELETE, dbconnection.type)
+        self.sqlsel = normalise(self.SQL_SELECT, dbconnection.type)
         self.insprm = normalise(self.SQL_INSPRM, dbconnection.type)
         self.delprm = normalise(self.SQL_DELPRM, dbconnection.type)
         self.selprm = normalise(self.SQL_SELPRM, dbconnection.type)
@@ -57,18 +56,18 @@ class ContractPersistence:
 
     def delete_environment(self, environment):
         """Delete all stored contract details for a particular environment."""
-        self.cursor.execute(self.delete, (self.host, environment))
+        self.cursor.execute(self.sqldel, (self.host, environment))
         self.cursor.execute(self.delprm, (self.host, environment))
         self.dbconnection.connection.commit()
 
     def insert_contract(self, name, environment, address, abi):
         """Insert a new contract into the persistence. """
-        self.cursor.execute(self.insert, (self.host, name, environment, address, abi))
+        self.cursor.execute(self.sqlins, (self.host, name, environment, address, abi))
         self.dbconnection.connection.commit()
 
     def get_contract(self, name, environment):
         """Return the address and abi for a particular deployed contract. """
-        self.cursor.execute(self.select, (self.host, name, environment))
+        self.cursor.execute(self.sqlsel, (self.host, name, environment))
         cursor = self.cursor.fetchall()
         if len(cursor) > 0: return cursor[0][0], cursor[0][1]
         return None, None
