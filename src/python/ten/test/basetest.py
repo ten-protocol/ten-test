@@ -1,6 +1,7 @@
 import os, copy, sys, json, secrets, re
 import threading, requests
 from web3 import Web3
+from pathlib import Path
 from pysys.basetest import BaseTest
 from pysys.constants import PROJECT, BACKGROUND, FAILED
 from pysys.constants import LOG_TRACEBACK
@@ -18,7 +19,6 @@ from ten.test.networks.goerli import Goerli
 from ten.test.networks.arbitrum import ArbitrumSepolia
 from ten.test.networks.sepolia import Sepolia
 from ten.test.networks.ten import Ten, TenL1Geth, TenL1Sepolia
-from ten.test.persistence import get_connection
 
 
 class GenericNetworkTest(BaseTest):
@@ -33,14 +33,14 @@ class GenericNetworkTest(BaseTest):
         self.block_time = Properties().block_time_secs(self.env)
         self.log.info('Running test in thread %s', threading.currentThread().getName())
 
-        # every test has its own connection to the dbs
-        self.dbconnection = get_connection(is_cloud_vm=runner.ten_runner.is_cloud_vm, db_dir=runner.ten_runner.user_dir)
-        self.rates_db = RatesPersistence(runner.ten_runner.machine_name, self.dbconnection)
-        self.nonce_db = NoncePersistence(runner.ten_runner.machine_name, self.dbconnection)
-        self.contract_db = ContractPersistence(runner.ten_runner.machine_name, self.dbconnection)
-        self.funds_db = FundsPersistence(runner.ten_runner.machine_name, self.dbconnection)
-        self.counts_db = CountsPersistence(runner.ten_runner.machine_name, self.dbconnection)
-        self.results_db = ResultsPersistence(runner.ten_runner.machine_name, self.dbconnection)
+        # every test has its own connection to the nonce and contract db
+        db_dir = os.path.join(str(Path.home()), '.tentest')
+        self.rates_db = RatesPersistence(db_dir)
+        self.nonce_db = NoncePersistence(db_dir)
+        self.contract_db = ContractPersistence(db_dir)
+        self.funds_db = FundsPersistence(db_dir)
+        self.counts_db = CountsPersistence(db_dir)
+        self.results_db = ResultsPersistence(db_dir)
         self.addCleanupFunction(self.close_db)
 
         # every test has a unique connection for the funded account
@@ -72,14 +72,9 @@ class GenericNetworkTest(BaseTest):
             self.log.info("  %s: %s%.3f USD", 'Test cost', sign, self.eth_price*change, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
 
     def close_db(self):
-        """Close the connection to the databases on completion. """
-        self.rates_db.close()
+        """Close the connection to the nonce database on completion. """
         self.nonce_db.close()
         self.contract_db.close()
-        self.funds_db.close()
-        self.counts_db.close()
-        self.results_db.close()
-        self.dbconnection.connection.close()
 
     def drain_ephemeral_pks(self):
         """Drain any ephemeral accounts of their funds. """

@@ -104,7 +104,6 @@ pip3 install pysys==1.6.1
 pip3 install solc-select==1.0.4 
 pip3 install py-solc-x==2.0.2
 pip3 install numpy==1.26.4
-pip3 install mysql-connector-python==9.0.0
 
 solc-select install 0.8.15
 solc-select use 0.8.15
