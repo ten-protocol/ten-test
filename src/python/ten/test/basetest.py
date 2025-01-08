@@ -32,9 +32,9 @@ class GenericNetworkTest(BaseTest):
         self.env = self.mode
         self.block_time = Properties().block_time_secs(self.env)
         self.log.info('Running test in thread %s', threading.currentThread().getName())
-        self.user_dir = runner.ten_runners.user_dir
-        self.machine_name = runner.ten_runners.machine_name
-        self.is_cloud_vm = runner.ten_runners.is_cloud_vm
+        self.user_dir = runner.ten_runner.user_dir
+        self.machine_name = runner.ten_runner.machine_name
+        self.is_cloud_vm = runner.ten_runner.is_cloud_vm
 
         # every test has its own connection to the dbs)
         self.rates_db = RatesPersistence(self.user_dir, self.machine_name, self.is_cloud_vm)
