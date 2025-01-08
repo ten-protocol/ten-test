@@ -1,4 +1,4 @@
-import os, shutil, sys, json, requests, time
+import os, shutil, sys, json, requests, time, socket
 from collections import OrderedDict
 from web3 import Web3
 from pathlib import Path
@@ -15,6 +15,8 @@ from ten.test.persistence.counts import CountsPersistence
 from ten.test.persistence.results import ResultsPersistence
 from ten.test.persistence.contract import ContractPersistence
 from ten.test.utils.properties import Properties
+from ten.test.persistence import get_connection
+from ten.test.utils.cloud import is_cloud_vm
 
 
 class TenRunnerPlugin():
@@ -32,6 +34,10 @@ class TenRunnerPlugin():
         self.env = None
         self.NODE_HOST = None
         self.balances = OrderedDict()
+        self.cloud_metadata = is_cloud_vm()
+        self.is_cloud_vm = self.cloud_metadata is not None
+        self.user_dir = os.path.join(str(Path.home()), '.tentest')
+        if not os.path.exists(self.user_dir): os.makedirs(self.user_dir)
 
     def setup(self, runner):
         """Set up a runner plugin to start any processes required to execute the tests. """
@@ -58,21 +64,20 @@ class TenRunnerPlugin():
         if os.path.exists(runner.output): shutil.rmtree(runner.output)
         os.makedirs(runner.output)
 
-        # create the nonce db if it does not already exist, clean it out if using ganache
-        db_dir = os.path.join(str(Path.home()), '.tentest')
-        if not os.path.exists(db_dir): os.makedirs(db_dir)
-        rates_db = RatesPersistence(db_dir)
-        rates_db.create()
-        nonce_db = NoncePersistence(db_dir)
-        nonce_db.create()
-        contracts_db = ContractPersistence(db_dir)
-        contracts_db.create()
-        funds_db = FundsPersistence(db_dir)
-        funds_db.create()
-        counts_db = CountsPersistence(db_dir)
-        counts_db.create()
-        results_db = ResultsPersistence(db_dir)
-        results_db.create()
+        # set up the persistence layer based on if we are running in the cloud, or locally
+        if self.is_cloud_vm:
+            self.machine_name = self.cloud_metadata['compute']['name']
+            runner.log.info('Running on azure (%s, %s)' % (self.machine_name, self.cloud_metadata['compute']['location']))
+        else:
+            self.machine_name = socket.gethostname()
+            runner.log.info('Running on local (%s)' % self.machine_name)
+        dbconnection = get_connection(self.is_cloud_vm, self.user_dir)
+        rates_db = RatesPersistence.init(self.machine_name, dbconnection)
+        nonce_db = NoncePersistence.init(self.machine_name, dbconnection)
+        contracts_db = ContractPersistence.init(self.machine_name, dbconnection)
+        funds_db = FundsPersistence.init(self.machine_name, dbconnection)
+        counts_db = CountsPersistence.init(self.machine_name, dbconnection)
+        results_db = ResultsPersistence.init(self.machine_name, dbconnection)
 
         eth_price = self.get_eth_price()
         if eth_price is not None:
@@ -160,9 +165,13 @@ class TenRunnerPlugin():
             runner.cleanup()
             sys.exit(1)
 
+        rates_db.close()
         nonce_db.close()
         contracts_db.close()
         funds_db.close()
+        counts_db.close()
+        results_db.close()
+        dbconnection.connection.close()
 
     def run_ganache(self, runner):
         """Run ganache for use by the tests. """
@@ -306,6 +315,7 @@ class TenRunnerPlugin():
                 contracts = config["PublicSystemContracts"]
                 Properties.L2PublicCallbacks = self.__get_contract(contracts, "PublicCallbacks")
         elif 'error' in response.json():
+            runner.log.warn('Error getting contract address from ten_config')
             runner.log.error(response.json()['error']['message'])
 
     def __get_contract(self, contracts, key):
