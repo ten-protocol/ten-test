@@ -16,9 +16,9 @@ class ResultsPersistence:
                  "time INTEGER, " \
                  "result REAL, " \
                  "PRIMARY KEY (host, test, environment, time))"
-    SQL_INSERT = "INSERT INTO results VALUES (?, ?, ?, ?, ?)"
-    SQL_DELETE = "DELETE from results WHERE host=? and environment=?"
-    SQL_SELECT = "SELECT time, result FROM results WHERE host=? AND test=? AND environment=? ORDER BY time ASC"
+    SQL_INSERT = "INSERT INTO results_performance VALUES (?, ?, ?, ?, ?)"
+    SQL_DELETE = "DELETE from results_performance WHERE host=? and environment=?"
+    SQL_SELECT = "SELECT time, result FROM results_performance WHERE host=? AND test=? AND environment=? ORDER BY time ASC"
 
     @classmethod
     def init(cls, user_dir, host=None, is_cloud=None):

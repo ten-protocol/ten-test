@@ -143,12 +143,12 @@ class TenRunnerPlugin():
                     account = web3.eth.account.from_key(fn())
                     persisted = nonce_db.get_latest_nonce(account.address, self.env)
                     tx_count = web3.eth.get_transaction_count(account.address)
-                    if (persisted is not None) and (persisted != tx_count-1) > 0:
+                    if (persisted is None) or (persisted != tx_count-1):
                         # persisted is the last persisted nonce, tx_count is the number of txs for this account
                         # as nonces started at zero, 1 tx count should mean last persisted was zero (one less)
-                        runner.log.warn("  Resetting persistence for %s, persisted %d, count %d", fn.__name__,
-                                        persisted, tx_count, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
-                        if (persisted > tx_count-1): nonce_db.delete_from(account.address, self.env, tx_count)
+                        runner.log.warn("  Resetting persistence for %s, persisted %s, count %d", fn.__name__,
+                                        str(persisted), tx_count, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+                        if (persisted is not None) and (persisted > tx_count-1): nonce_db.delete_from(account.address, self.env, tx_count)
                         nonce_db.insert(account.address, self.env, tx_count-1, 'RESET')
                 runner.log.info('')
 
