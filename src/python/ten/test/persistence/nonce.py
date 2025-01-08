@@ -9,7 +9,7 @@ class NoncePersistence:
                  "environment VARCHAR(64), " \
                  "nonce INTEGER, " \
                  "status VARCHAR(64))"
-    SQL_INSERT = "INSERT INTO nonces VALUES ?, ?, ?, ?)"
+    SQL_INSERT = "INSERT INTO nonces VALUES (?, ?, ?, ?)"
     SQL_UPDATE = "UPDATE nonces SET status=? WHERE account=? AND environment=? AND nonce=?"
     SQL_DELETE = "DELETE from nonces WHERE account=? AND environment=?"
     SQL_DELFRO = "DELETE from nonces WHERE account=? AND environment=? AND nonce>=?"
