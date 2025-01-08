@@ -1,8 +1,14 @@
 from ten.test.persistence import normalise
+from ten.test.persistence import get_connection
 
 
 class ContractPersistence:
-    """Abstracts the persistence of contract addresses into a local database. """
+    """Abstracts the persistence of contract addresses and params into a local database.
+
+    Since a deployed contract is a property of the environment, not the test runner, it should be sharable across
+    different test runners when running in the cloud, so the persistence is externalised into a mysql server under these
+    conditions.
+    """
 
     SQL_CREATE = "CREATE TABLE IF NOT EXISTS contract_details " \
                  "(name VARCHAR(64), " \
@@ -26,21 +32,21 @@ class ContractPersistence:
                  "ORDER BY address DESC LIMIT 1"
 
     @classmethod
-    def init(cls, host, dbconnection):
-        instance = ContractPersistence(host, dbconnection)
+    def init(cls, user_dir, host=None, is_cloud=None):
+        instance = ContractPersistence(user_dir, host, is_cloud)
         instance.create()
         return instance
 
-    def __init__(self, host, dbconnection):
-        """Instantiate an instance."""
+    def __init__(self, user_dir, host=None, is_cloud=None):
+        """Instantiate an instance (mysql server if on azure, sqlite3 if not)"""
         self.host = host
-        self.dbconnection = dbconnection
-        self.sqlins = normalise(self.SQL_INSERT, dbconnection.type)
-        self.sqldel = normalise(self.SQL_DELETE, dbconnection.type)
-        self.sqlsel = normalise(self.SQL_SELECT, dbconnection.type)
-        self.insprm = normalise(self.SQL_INSPRM, dbconnection.type)
-        self.delprm = normalise(self.SQL_DELPRM, dbconnection.type)
-        self.selprm = normalise(self.SQL_SELPRM, dbconnection.type)
+        self.dbconnection = get_connection(is_cloud, user_dir, 'ten-test.db')
+        self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
+        self.sqldel = normalise(self.SQL_DELETE, self.dbconnection.type)
+        self.sqlsel = normalise(self.SQL_SELECT, self.dbconnection.type)
+        self.insprm = normalise(self.SQL_INSPRM, self.dbconnection.type)
+        self.delprm = normalise(self.SQL_DELPRM, self.dbconnection.type)
+        self.selprm = normalise(self.SQL_SELPRM, self.dbconnection.type)
         self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
@@ -51,6 +57,7 @@ class ContractPersistence:
     def close(self):
         """Close the connection to the underlying persistence."""
         self.cursor.close()
+        self.dbconnection.connection.close()
 
     def delete_environment(self, environment):
         """Delete all stored contract details for a particular environment."""

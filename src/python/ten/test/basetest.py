@@ -32,15 +32,17 @@ class GenericNetworkTest(BaseTest):
         self.env = self.mode
         self.block_time = Properties().block_time_secs(self.env)
         self.log.info('Running test in thread %s', threading.currentThread().getName())
+        self.user_dir = runner.ten_runners.user_dir
+        self.machine_name = runner.ten_runners.machine_name
+        self.is_cloud_vm = runner.ten_runners.is_cloud_vm
 
-        # every test has its own connection to the dbs
-        self.dbconnection = get_connection(is_cloud_vm=runner.ten_runner.is_cloud_vm, db_dir=runner.ten_runner.user_dir)
-        self.rates_db = RatesPersistence(runner.ten_runner.machine_name, self.dbconnection)
-        self.nonce_db = NoncePersistence(runner.ten_runner.machine_name, self.dbconnection)
-        self.contract_db = ContractPersistence(runner.ten_runner.machine_name, self.dbconnection)
-        self.funds_db = FundsPersistence(runner.ten_runner.machine_name, self.dbconnection)
-        self.counts_db = CountsPersistence(runner.ten_runner.machine_name, self.dbconnection)
-        self.results_db = ResultsPersistence(runner.ten_runner.machine_name, self.dbconnection)
+        # every test has its own connection to the dbs)
+        self.rates_db = RatesPersistence(self.user_dir, self.machine_name, self.is_cloud_vm)
+        self.nonce_db = NoncePersistence(self.user_dir, self.machine_name, self.is_cloud_vm)
+        self.contract_db = ContractPersistence(self.user_dir, self.machine_name, self.is_cloud_vm)
+        self.funds_db = FundsPersistence(self.user_dir, self.machine_name, self.is_cloud_vm)
+        self.counts_db = CountsPersistence(self.user_dir, self.machine_name, self.is_cloud_vm)
+        self.results_db = ResultsPersistence(self.user_dir, self.machine_name, self.is_cloud_vm)
         self.addCleanupFunction(self.close_db)
 
         # every test has a unique connection for the funded account
@@ -79,7 +81,6 @@ class GenericNetworkTest(BaseTest):
         self.funds_db.close()
         self.counts_db.close()
         self.results_db.close()
-        self.dbconnection.connection.close()
 
     def drain_ephemeral_pks(self):
         """Drain any ephemeral accounts of their funds. """

@@ -1,41 +1,41 @@
 from ten.test.persistence import normalise
+from ten.test.persistence import get_local_connection
 
 
 class NoncePersistence:
     """Abstracts the persistence of nonces into a local database. """
 
-    SQL_CREATE = "CREATE TABLE IF NOT EXISTS nonces " \
+    SQL_CREATE = "CREATE TABLE IF NOT EXISTS nonce_db " \
                  "(account VARCHAR(64), " \
                  "environment VARCHAR(64), " \
                  "nonce INTEGER, " \
                  "status VARCHAR(64))"
-    SQL_INSERT = "INSERT INTO nonces VALUES (?, ?, ?, ?)"
-    SQL_UPDATE = "UPDATE nonces SET status=? WHERE account=? AND environment=? AND nonce=?"
-    SQL_DELETE = "DELETE from nonces WHERE account=? AND environment=?"
-    SQL_DELFRO = "DELETE from nonces WHERE account=? AND environment=? AND nonce>=?"
-    SQL_LATEST = "SELECT nonce FROM nonces WHERE account=? AND environment=? ORDER BY nonce DESC LIMIT 1"
-    SQL_DELENV = "DELETE from nonces WHERE environment=?"
-    SQL_ACCNTS = "SELECT DISTINCT account from nonces WHERE environment=?"
-    SQL_DELENT = "DELETE from nonces WHERE account=? AND environment=? AND nonce=?"
+    SQL_INSERT = "INSERT INTO nonce_db VALUES (?, ?, ?, ?)"
+    SQL_UPDATE = "UPDATE nonce_db SET status=? WHERE account=? AND environment=? AND nonce=?"
+    SQL_DELETE = "DELETE from nonce_db WHERE account=? AND environment=?"
+    SQL_DELFRO = "DELETE from nonce_db WHERE account=? AND environment=? AND nonce>=?"
+    SQL_LATEST = "SELECT nonce FROM nonce_db WHERE account=? AND environment=? ORDER BY nonce DESC LIMIT 1"
+    SQL_DELENV = "DELETE from nonce_db WHERE environment=?"
+    SQL_ACCNTS = "SELECT DISTINCT account from nonce_db WHERE environment=?"
+    SQL_DELENT = "DELETE from nonce_db WHERE account=? AND environment=? AND nonce=?"
 
     @classmethod
-    def init(cls, host, dbconnection):
-        instance = NoncePersistence(host, dbconnection)
+    def init(cls, user_dir, host=None, is_cloud=None):
+        instance = NoncePersistence(user_dir, host, is_cloud)
         instance.create()
         return instance
 
-    def __init__(self, host, dbconnection):
-        """Instantiate an instance."""
-        self.host = host
-        self.dbconnection = dbconnection
-        self.sqlins = normalise(self.SQL_INSERT, dbconnection.type)
-        self.sqlupd = normalise(self.SQL_UPDATE, dbconnection.type)
-        self.sqldel = normalise(self.SQL_DELETE, dbconnection.type)
-        self.delfro = normalise(self.SQL_DELFRO, dbconnection.type)
-        self.latest = normalise(self.SQL_LATEST, dbconnection.type)
-        self.delenv = normalise(self.SQL_DELENV, dbconnection.type)
-        self.accnts = normalise(self.SQL_ACCNTS, dbconnection.type)
-        self.delent = normalise(self.SQL_DELENT, dbconnection.type)
+    def __init__(self, user_dir, host=None, is_cloud=None):
+        """Instantiate an instance (always local)"""
+        self.dbconnection = get_local_connection(user_dir, 'nonce.db')
+        self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
+        self.sqlupd = normalise(self.SQL_UPDATE, self.dbconnection.type)
+        self.sqldel = normalise(self.SQL_DELETE, self.dbconnection.type)
+        self.delfro = normalise(self.SQL_DELFRO, self.dbconnection.type)
+        self.latest = normalise(self.SQL_LATEST, self.dbconnection.type)
+        self.delenv = normalise(self.SQL_DELENV, self.dbconnection.type)
+        self.accnts = normalise(self.SQL_ACCNTS, self.dbconnection.type)
+        self.delent = normalise(self.SQL_DELENT, self.dbconnection.type)
         self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
@@ -45,6 +45,7 @@ class NoncePersistence:
     def close(self):
         """Close the connection to the underlying persistence. """
         self.cursor.close()
+        self.dbconnection.connection.close()
 
     def get_next_nonce(self, test, web3, account, environment, persist_nonce=True, log=True):
         """Get the next nonce to use in a transaction.

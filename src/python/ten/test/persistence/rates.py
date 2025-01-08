@@ -1,8 +1,13 @@
 from ten.test.persistence import normalise
+from ten.test.persistence import get_connection
 
 
 class RatesPersistence:
-    """Abstracts the persistence of rates across cryptos into a local database. """
+    """Abstracts the persistence of rates across cryptos into a local database.
+
+    Since this is an absolute property, not one of the test runner, it should be sharable across different test runners
+    when running in the cloud, so the persistence is externalised into a mysql server under these conditions.
+    """
 
     SQL_CREATE = "CREATE TABLE IF NOT EXISTS rates " \
                  "(crypto VARCHAR(3), " \
@@ -15,28 +20,28 @@ class RatesPersistence:
     SQL_SELECT = "SELECT time, rate FROM rates WHERE crypto=? and currency=? ORDER BY time DESC LIMIT 1;"
 
     @classmethod
-    def init(cls, host, dbconnection):
-        instance = RatesPersistence(host, dbconnection)
+    def init(cls, user_dir, host=None, is_cloud=None):
+        instance = RatesPersistence(user_dir, host, is_cloud)
         instance.create()
         return instance
 
-    def __init__(self, host, dbconnection):
-        """Instantiate an instance."""
+    def __init__(self, user_dir, host=None, is_cloud=None):
+        """Instantiate an instance (mysql server if on azure, sqlite3 if not)"""
         self.host = host
-        self.dbconnection = dbconnection
-        self.sqlins = normalise(self.SQL_INSERT, dbconnection.type)
-        self.sqldel = normalise(self.SQL_DELETE, dbconnection.type)
-        self.sqlsel = normalise(self.SQL_SELECT, dbconnection.type)
+        self.dbconnection = get_connection(is_cloud, user_dir, 'ten-test.db')
+        self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
+        self.sqldel = normalise(self.SQL_DELETE, self.dbconnection.type)
+        self.sqlsel = normalise(self.SQL_SELECT, self.dbconnection.type)
         self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
         """Create the cursor to the underlying persistence."""
         self.cursor.execute(self.SQL_CREATE)
-        return self
 
     def close(self):
         """Close the connection to the underlying persistence."""
         self.cursor.close()
+        self.dbconnection.connection.close()
 
     def delete_crypto(self, crypto):
         """Delete all stored rates for a particular crypto."""

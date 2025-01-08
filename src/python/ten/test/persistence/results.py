@@ -1,10 +1,15 @@
 from ten.test.persistence import normalise
+from ten.test.persistence import get_connection
 
 
 class ResultsPersistence:
-    """Abstracts the persistence of performance results into a local database. """
+    """Abstracts the persistence of performance results into a local database.
 
-    SQL_CREATE = "CREATE TABLE IF NOT EXISTS results " \
+    Results are a property of the environment and the host that the test was run in. They are externalised so they can
+    be visualised outside the test infrastructure.
+    """
+
+    SQL_CREATE = "CREATE TABLE IF NOT EXISTS results_performance " \
                  "(host VARCHAR(64), " \
                  "test VARCHAR(64), " \
                  "environment VARCHAR(64), " \
@@ -16,18 +21,18 @@ class ResultsPersistence:
     SQL_SELECT = "SELECT time, result FROM results WHERE host=? AND test=? AND environment=? ORDER BY time ASC"
 
     @classmethod
-    def init(cls, host, dbconnection):
-        instance = ResultsPersistence(host, dbconnection)
+    def init(cls, user_dir, host=None, is_cloud=None):
+        instance = ResultsPersistence(user_dir, host, is_cloud)
         instance.create()
         return instance
 
-    def __init__(self, host, dbconnection):
-        """Instantiate an instance."""
+    def __init__(self, user_dir, host=None, is_cloud=None):
+        """Instantiate an instance (mysql server if on azure, sqlite3 if not)"""
         self.host = host
-        self.dbconnection = dbconnection
-        self.sqlins = normalise(self.SQL_INSERT, dbconnection.type)
-        self.sqldel = normalise(self.SQL_DELETE, dbconnection.type)
-        self.sqldel = normalise(self.SQL_SELECT, dbconnection.type)
+        self.dbconnection = get_connection(is_cloud, user_dir, 'ten-test.db')
+        self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
+        self.sqldel = normalise(self.SQL_DELETE, self.dbconnection.type)
+        self.sqldel = normalise(self.SQL_SELECT, self.dbconnection.type)
         self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
@@ -37,6 +42,7 @@ class ResultsPersistence:
     def close(self):
         """Close the connection to the underlying persistence."""
         self.cursor.close()
+        self.dbconnection.connection.close()
 
     def delete_environment(self, environment):
         """Delete all stored performance results for a particular environment."""

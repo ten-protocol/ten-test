@@ -15,7 +15,6 @@ from ten.test.persistence.counts import CountsPersistence
 from ten.test.persistence.results import ResultsPersistence
 from ten.test.persistence.contract import ContractPersistence
 from ten.test.utils.properties import Properties
-from ten.test.persistence import get_connection
 from ten.test.utils.cloud import is_cloud_vm
 
 
@@ -71,13 +70,13 @@ class TenRunnerPlugin():
         else:
             self.machine_name = socket.gethostname()
             runner.log.info('Running on local (%s)' % self.machine_name)
-        dbconnection = get_connection(self.is_cloud_vm, self.user_dir)
-        rates_db = RatesPersistence.init(self.machine_name, dbconnection)
-        nonce_db = NoncePersistence.init(self.machine_name, dbconnection)
-        contracts_db = ContractPersistence.init(self.machine_name, dbconnection)
-        funds_db = FundsPersistence.init(self.machine_name, dbconnection)
-        counts_db = CountsPersistence.init(self.machine_name, dbconnection)
-        results_db = ResultsPersistence.init(self.machine_name, dbconnection)
+
+        rates_db = RatesPersistence.init(self.user_dir, self.machine_name, self.is_cloud_vm)
+        nonce_db = NoncePersistence.init(self.user_dir, self.machine_name, self.is_cloud_vm)
+        contracts_db = ContractPersistence.init(self.user_dir, self.machine_name, self.is_cloud_vm)
+        funds_db = FundsPersistence.init(self.user_dir, self.machine_name, self.is_cloud_vm)
+        counts_db = CountsPersistence.init(self.user_dir, self.machine_name, self.is_cloud_vm)
+        results_db = ResultsPersistence.init(self.user_dir, self.machine_name, self.is_cloud_vm)
 
         eth_price = self.get_eth_price()
         if eth_price is not None:
@@ -171,7 +170,6 @@ class TenRunnerPlugin():
         funds_db.close()
         counts_db.close()
         results_db.close()
-        dbconnection.connection.close()
 
     def run_ganache(self, runner):
         """Run ganache for use by the tests. """
