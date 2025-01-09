@@ -32,7 +32,7 @@ class ResultsPersistence:
         self.dbconnection = get_connection(is_local_ten, is_cloud, user_dir, 'ten-test.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
         self.sqldel = normalise(self.SQL_DELETE, self.dbconnection.type)
-        self.sqldel = normalise(self.SQL_SELECT, self.dbconnection.type)
+        self.sqlsel = normalise(self.SQL_SELECT, self.dbconnection.type)
         self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
