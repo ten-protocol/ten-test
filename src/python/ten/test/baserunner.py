@@ -1,4 +1,4 @@
-import os, shutil, sys, json, requests, time
+import os, shutil, sys, json, requests, time, socket
 from collections import OrderedDict
 from web3 import Web3
 from pathlib import Path
@@ -15,6 +15,7 @@ from ten.test.persistence.counts import CountsPersistence
 from ten.test.persistence.results import ResultsPersistence
 from ten.test.persistence.contract import ContractPersistence
 from ten.test.utils.properties import Properties
+from ten.test.utils.cloud import is_cloud_vm
 
 
 class TenRunnerPlugin():
@@ -32,6 +33,10 @@ class TenRunnerPlugin():
         self.env = None
         self.NODE_HOST = None
         self.balances = OrderedDict()
+        self.cloud_metadata = is_cloud_vm()
+        self.is_cloud_vm = self.cloud_metadata is not None
+        self.user_dir = os.path.join(str(Path.home()), '.tentest')
+        if not os.path.exists(self.user_dir): os.makedirs(self.user_dir)
 
     def setup(self, runner):
         """Set up a runner plugin to start any processes required to execute the tests. """
@@ -58,21 +63,22 @@ class TenRunnerPlugin():
         if os.path.exists(runner.output): shutil.rmtree(runner.output)
         os.makedirs(runner.output)
 
-        # create the nonce db if it does not already exist, clean it out if using ganache
-        db_dir = os.path.join(str(Path.home()), '.tentest')
-        if not os.path.exists(db_dir): os.makedirs(db_dir)
-        rates_db = RatesPersistence(db_dir)
-        rates_db.create()
-        nonce_db = NoncePersistence(db_dir)
-        nonce_db.create()
-        contracts_db = ContractPersistence(db_dir)
-        contracts_db.create()
-        funds_db = FundsPersistence(db_dir)
-        funds_db.create()
-        counts_db = CountsPersistence(db_dir)
-        counts_db.create()
-        results_db = ResultsPersistence(db_dir)
-        results_db.create()
+        # get the machine name
+        if self.is_cloud_vm:
+            self.machine_name = self.cloud_metadata['compute']['name']
+            runner.log.info('Running on azure (%s, %s)' % (self.machine_name, self.cloud_metadata['compute']['location']))
+        else:
+            self.machine_name = socket.gethostname()
+            runner.log.info('Running on local (%s)' % self.machine_name)
+
+        # every test has its own connection to the dbs - always local sqlite when a local testnet,
+        # if running on azure and not a local testnet, then msql server
+        rates_db = RatesPersistence.init(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
+        nonce_db = NoncePersistence.init(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
+        contracts_db = ContractPersistence.init(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
+        funds_db = FundsPersistence.init(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
+        counts_db = CountsPersistence.init(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
+        results_db = ResultsPersistence.init(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
 
         eth_price = self.get_eth_price()
         if eth_price is not None:
@@ -139,12 +145,12 @@ class TenRunnerPlugin():
                     account = web3.eth.account.from_key(fn())
                     persisted = nonce_db.get_latest_nonce(account.address, self.env)
                     tx_count = web3.eth.get_transaction_count(account.address)
-                    if (persisted is not None) and (persisted != tx_count-1) > 0:
+                    if (persisted is None) or (persisted != tx_count-1):
                         # persisted is the last persisted nonce, tx_count is the number of txs for this account
                         # as nonces started at zero, 1 tx count should mean last persisted was zero (one less)
-                        runner.log.warn("  Resetting persistence for %s, persisted %d, count %d", fn.__name__,
-                                        persisted, tx_count, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
-                        if (persisted > tx_count-1): nonce_db.delete_from(account.address, self.env, tx_count)
+                        runner.log.warn("  Resetting persistence for %s, persisted %s, count %d", fn.__name__,
+                                        str(persisted), tx_count, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+                        if (persisted is not None) and (persisted > tx_count-1): nonce_db.delete_from(account.address, self.env, tx_count)
                         nonce_db.insert(account.address, self.env, tx_count-1, 'RESET')
                 runner.log.info('')
 
@@ -160,9 +166,12 @@ class TenRunnerPlugin():
             runner.cleanup()
             sys.exit(1)
 
+        rates_db.close()
         nonce_db.close()
         contracts_db.close()
         funds_db.close()
+        counts_db.close()
+        results_db.close()
 
     def run_ganache(self, runner):
         """Run ganache for use by the tests. """
@@ -306,6 +315,7 @@ class TenRunnerPlugin():
                 contracts = config["PublicSystemContracts"]
                 Properties.L2PublicCallbacks = self.__get_contract(contracts, "PublicCallbacks")
         elif 'error' in response.json():
+            runner.log.warn('Error getting contract address from ten_config')
             runner.log.error(response.json()['error']['message'])
 
     def __get_contract(self, contracts, key):

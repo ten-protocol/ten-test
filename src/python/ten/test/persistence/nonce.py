@@ -1,24 +1,42 @@
-import sqlite3, os
+from ten.test.persistence import normalise
+from ten.test.persistence import get_local_connection
 
 
 class NoncePersistence:
     """Abstracts the persistence of nonces into a local database. """
 
-    SQL_CREATE = "CREATE TABLE IF NOT EXISTS nonce_db (account TEXT, environment TEXT, nonce INTEGER, status STRING)"
+    SQL_CREATE = "CREATE TABLE IF NOT EXISTS nonce_db " \
+                 "(account VARCHAR(64), " \
+                 "environment VARCHAR(64), " \
+                 "nonce INTEGER, " \
+                 "status VARCHAR(64))"
     SQL_INSERT = "INSERT INTO nonce_db VALUES (?, ?, ?, ?)"
     SQL_UPDATE = "UPDATE nonce_db SET status=? WHERE account=? AND environment=? AND nonce=?"
     SQL_DELETE = "DELETE from nonce_db WHERE account=? AND environment=?"
     SQL_DELFRO = "DELETE from nonce_db WHERE account=? AND environment=? AND nonce>=?"
     SQL_LATEST = "SELECT nonce FROM nonce_db WHERE account=? AND environment=? ORDER BY nonce DESC LIMIT 1"
     SQL_DELENV = "DELETE from nonce_db WHERE environment=?"
-    SQL_ACCNTS = "SELECT DISTINCT account from nonce_db where environment=?"
+    SQL_ACCNTS = "SELECT DISTINCT account from nonce_db WHERE environment=?"
     SQL_DELENT = "DELETE from nonce_db WHERE account=? AND environment=? AND nonce=?"
 
-    def __init__(self, db_dir):
-        """Instantiate an instance. """
-        self.db = os.path.join(db_dir, 'nonce.db')
-        self.connection = sqlite3.connect(self.db)
-        self.cursor = self.connection.cursor()
+    @classmethod
+    def init(cls, is_local_ten, user_dir, host=None, is_cloud=None):
+        instance = NoncePersistence(is_local_ten, user_dir, host, is_cloud)
+        instance.create()
+        return instance
+
+    def __init__(self, is_local_ten, user_dir, host=None, is_cloud=None):
+        """Instantiate an instance."""
+        self.dbconnection = get_local_connection(user_dir, 'nonce.db')
+        self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
+        self.sqlupd = normalise(self.SQL_UPDATE, self.dbconnection.type)
+        self.sqldel = normalise(self.SQL_DELETE, self.dbconnection.type)
+        self.delfro = normalise(self.SQL_DELFRO, self.dbconnection.type)
+        self.latest = normalise(self.SQL_LATEST, self.dbconnection.type)
+        self.delenv = normalise(self.SQL_DELENV, self.dbconnection.type)
+        self.accnts = normalise(self.SQL_ACCNTS, self.dbconnection.type)
+        self.delent = normalise(self.SQL_DELENT, self.dbconnection.type)
+        self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
         """Create the cursor to the underlying persistence. """
@@ -26,7 +44,8 @@ class NoncePersistence:
 
     def close(self):
         """Close the connection to the underlying persistence. """
-        self.connection.close()
+        self.cursor.close()
+        self.dbconnection.connection.close()
 
     def get_next_nonce(self, test, web3, account, environment, persist_nonce=True, log=True):
         """Get the next nonce to use in a transaction.
@@ -42,7 +61,7 @@ class NoncePersistence:
         nonce = transaction_count
         if persist_nonce:
             nonce = 0 if persisted_nonce is None else persisted_nonce+1      # we have to believe the local store
-            test.nonce_db.insert(account, test.env, nonce)
+            self.insert(account, test.env, nonce)
             if log: test.log.info("Account %s count %d using nonce from persistence as %d", account, transaction_count, nonce)
         else:
             if log: test.log.info("Account %s using nonce from transaction count as %d", account, nonce)
@@ -50,42 +69,42 @@ class NoncePersistence:
 
     def insert(self, account, environment, nonce, status='PENDING'):
         """Insert a new nonce into the persistence. """
-        self.cursor.execute(self.SQL_INSERT, (account, environment, nonce, status))
-        self.connection.commit()
+        self.cursor.execute(self.sqlins, (account, environment, nonce, status))
+        self.dbconnection.connection.commit()
 
     def update(self, account, environment, nonce, status):
         """Update the status of a transaction for a given nonce into the persistence. """
-        self.cursor.execute(self.SQL_UPDATE, (status, account, environment, nonce))
-        self.connection.commit()
+        self.cursor.execute(self.sqlupd, (status, account, environment, nonce))
+        self.dbconnection.connection.commit()
 
     def delete(self, account, environment):
         """Delete all nonce entries in the persistence for a given account and environment. """
-        self.cursor.execute(self.SQL_DELETE, (account, environment))
-        self.connection.commit()
+        self.cursor.execute(self.sqldel, (account, environment))
+        self.dbconnection.connection.commit()
 
     def delete_from(self, account, environment, nonce):
         """Delete all nonce entries in the persistence for a given account and environment. """
-        self.cursor.execute(self.SQL_DELFRO, (account, environment, nonce))
-        self.connection.commit()
+        self.cursor.execute(self.delfro, (account, environment, nonce))
+        self.dbconnection.connection.commit()
 
     def delete_environment(self, environment):
         """Delete all nonce entries for all accounts for a given environment. """
-        self.cursor.execute(self.SQL_DELENV, (environment, ))
-        self.connection.commit()
+        self.cursor.execute(self.delenv, (environment, ))
+        self.dbconnection.connection.commit()
 
     def delete_entries(self, account, environment, nonce):
         """Delete all nonce entries in the persistence for a given account and environment and nonce. """
-        self.cursor.execute(self.SQL_DELENT, (account, environment, nonce))
-        self.connection.commit()
+        self.cursor.execute(self.delent, (account, environment, nonce))
+        self.dbconnection.connection.commit()
 
     def get_accounts(self, environment):
         """Return a list of all accounts with persisted values for a given environment. """
-        self.cursor.execute(self.SQL_ACCNTS, (environment, ))
+        self.cursor.execute(self.accnts, (environment))
         return self.cursor.fetchall()
 
     def get_latest_nonce(self, account, environment):
         """Get the latest nonce for a given account and environment. """
-        self.cursor.execute(self.SQL_LATEST, (account, environment))
+        self.cursor.execute(self.latest, (account, environment))
         try:
             result = self.cursor.fetchone()[0]
             return int(result)
