@@ -35,13 +35,14 @@ class GenericNetworkTest(BaseTest):
         self.machine_name = runner.ten_runner.machine_name
         self.is_cloud_vm = runner.ten_runner.is_cloud_vm
 
-        # every test has its own connection to the dbs)
-        self.rates_db = RatesPersistence(self.user_dir, self.machine_name, self.is_cloud_vm)
-        self.nonce_db = NoncePersistence(self.user_dir, self.machine_name, self.is_cloud_vm)
-        self.contract_db = ContractPersistence(self.user_dir, self.machine_name, self.is_cloud_vm)
-        self.funds_db = FundsPersistence(self.user_dir, self.machine_name, self.is_cloud_vm)
-        self.counts_db = CountsPersistence(self.user_dir, self.machine_name, self.is_cloud_vm)
-        self.results_db = ResultsPersistence(self.user_dir, self.machine_name, self.is_cloud_vm)
+        # every test has its own connection to the dbs - always local sqlite when a local testnet,
+        # if running on azure and not a local testnet, then msql server
+        self.rates_db = RatesPersistence(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
+        self.nonce_db = NoncePersistence(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
+        self.contract_db = ContractPersistence(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
+        self.funds_db = FundsPersistence(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
+        self.counts_db = CountsPersistence(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
+        self.results_db = ResultsPersistence(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
         self.addCleanupFunction(self.close_db)
 
         # every test has a unique connection for the funded account

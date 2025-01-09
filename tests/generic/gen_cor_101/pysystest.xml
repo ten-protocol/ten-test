@@ -16,8 +16,6 @@
             <mode>ten.sepolia</mode>
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
-            <mode>ten.local</mode>
-            <mode>ten.sim</mode>
             <mode>arbitrum.sepolia</mode>
             <mode>sepolia</mode>
         </modes>

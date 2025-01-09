@@ -20,13 +20,13 @@ class NoncePersistence:
     SQL_DELENT = "DELETE from nonce_db WHERE account=? AND environment=? AND nonce=?"
 
     @classmethod
-    def init(cls, user_dir, host=None, is_cloud=None):
-        instance = NoncePersistence(user_dir, host, is_cloud)
+    def init(cls, is_local_ten, user_dir, host=None, is_cloud=None):
+        instance = NoncePersistence(is_local_ten, user_dir, host, is_cloud)
         instance.create()
         return instance
 
-    def __init__(self, user_dir, host=None, is_cloud=None):
-        """Instantiate an instance (always local)"""
+    def __init__(self, is_local_ten, user_dir, host=None, is_cloud=None):
+        """Instantiate an instance."""
         self.dbconnection = get_local_connection(user_dir, 'nonce.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
         self.sqlupd = normalise(self.SQL_UPDATE, self.dbconnection.type)

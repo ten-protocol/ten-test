@@ -16,8 +16,8 @@ class ContractPersistence:
                  "address VARCHAR(64), " \
                  "abi MEDIUMTEXT, " \
                  "PRIMARY KEY (name, environment))"
-    SQL_INSERT = "INSERT OR REPLACE INTO contract_details VALUES (?, ?, ?, ?)"
-    SQL_DELETE = "DELETE from contract_details WHERE environment=?"
+    SQL_INSERT = "INSERT INTO contract_details VALUES (?, ?, ?, ?)"
+    SQL_DELETE = "DELETE FROM contract_details WHERE environment=?"
     SQL_SELECT = "SELECT address, abi FROM contract_details WHERE name=? AND environment=? ORDER BY name DESC LIMIT 1"
 
     SQL_CRTPRM = "CREATE TABLE IF NOT EXISTS contract_params " \
@@ -26,21 +26,21 @@ class ContractPersistence:
                  "param_key VARCHAR(64), " \
                  "param_val VARCHAR(64), " \
                  "PRIMARY KEY (address, environment, param_key))"
-    SQL_INSPRM = "INSERT OR REPLACE INTO contract_params VALUES (?, ?, ?, ?)"
-    SQL_DELPRM = "DELETE from contract_params WHERE environment=?"
+    SQL_INSPRM = "INSERT INTO contract_params VALUES (?, ?, ?, ?)"
+    SQL_DELPRM = "DELETE FROM contract_params WHERE environment=?"
     SQL_SELPRM = "SELECT param_val FROM contract_params WHERE address=? AND environment=? AND param_key=? " \
                  "ORDER BY address DESC LIMIT 1"
 
     @classmethod
-    def init(cls, user_dir, host=None, is_cloud=None):
-        instance = ContractPersistence(user_dir, host, is_cloud)
+    def init(cls, is_local_ten, user_dir, host=None, is_cloud=None):
+        instance = ContractPersistence(is_local_ten, user_dir, host, is_cloud)
         instance.create()
         return instance
 
-    def __init__(self, user_dir, host=None, is_cloud=None):
-        """Instantiate an instance (mysql server if on azure, sqlite3 if not)"""
+    def __init__(self, is_local_ten, user_dir, host=None, is_cloud=None):
+        """Instantiate an instance."""
         self.host = host
-        self.dbconnection = get_connection(is_cloud, user_dir, 'ten-test.db')
+        self.dbconnection = get_connection(is_local_ten, is_cloud, user_dir, 'ten-test.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
         self.sqldel = normalise(self.SQL_DELETE, self.dbconnection.type)
         self.sqlsel = normalise(self.SQL_SELECT, self.dbconnection.type)

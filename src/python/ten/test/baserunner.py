@@ -63,7 +63,7 @@ class TenRunnerPlugin():
         if os.path.exists(runner.output): shutil.rmtree(runner.output)
         os.makedirs(runner.output)
 
-        # set up the persistence layer based on if we are running in the cloud, or locally
+        # get the machine name
         if self.is_cloud_vm:
             self.machine_name = self.cloud_metadata['compute']['name']
             runner.log.info('Running on azure (%s, %s)' % (self.machine_name, self.cloud_metadata['compute']['location']))
@@ -71,12 +71,14 @@ class TenRunnerPlugin():
             self.machine_name = socket.gethostname()
             runner.log.info('Running on local (%s)' % self.machine_name)
 
-        rates_db = RatesPersistence.init(self.user_dir, self.machine_name, self.is_cloud_vm)
-        nonce_db = NoncePersistence.init(self.user_dir, self.machine_name, self.is_cloud_vm)
-        contracts_db = ContractPersistence.init(self.user_dir, self.machine_name, self.is_cloud_vm)
-        funds_db = FundsPersistence.init(self.user_dir, self.machine_name, self.is_cloud_vm)
-        counts_db = CountsPersistence.init(self.user_dir, self.machine_name, self.is_cloud_vm)
-        results_db = ResultsPersistence.init(self.user_dir, self.machine_name, self.is_cloud_vm)
+        # every test has its own connection to the dbs - always local sqlite when a local testnet,
+        # if running on azure and not a local testnet, then msql server
+        rates_db = RatesPersistence.init(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
+        nonce_db = NoncePersistence.init(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
+        contracts_db = ContractPersistence.init(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
+        funds_db = FundsPersistence.init(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
+        counts_db = CountsPersistence.init(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
+        results_db = ResultsPersistence.init(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
 
         eth_price = self.get_eth_price()
         if eth_price is not None:

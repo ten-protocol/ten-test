@@ -11,9 +11,9 @@ def normalise(statement, _type):
     return statement if _type != 'mysql' else statement.replace('?', '%s')
 
 
-def get_connection(is_cloud_vm, user_dir, db):
-    '''Get a connection to a db, remote if running in the cloud, local if not.'''
-    if is_cloud_vm:
+def get_connection(is_local_ten, is_cloud_vm, user_dir, db):
+    '''Get a connection to a db, mysql if running in the cloud and not local testnet, sqlite otherwise.'''
+    if not is_local_ten and is_cloud_vm:
         props = Properties()
         config = {
             'host': props.persistence_host(),

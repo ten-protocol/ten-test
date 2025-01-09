@@ -9,7 +9,7 @@ class PySysTest(TenNetworkTest):
         network = self.get_network_connection()
         web3_deploy, account_deploy = network.connect_account1(self)
         storage = Storage(self, web3_deploy, 0)
-        storage.get_or_deploy(network, account_deploy)
+        storage.deploy(network, account_deploy)
 
         # connect as an ephemeral test user and transact agains the contract
         pk = self.get_ephemeral_pk()
