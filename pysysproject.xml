@@ -20,8 +20,7 @@
             <property name="showOutputDir" value="false"/>
             <property name="showOutcomeReason" value="true"/>
         </writer>
-        <writer classname="pysys.writer.outcomes.JUnitXMLResultsWriter">
-            <property name="outputDir" value="reports"/>
+        <writer classname="ten.test.writer.results.PersistenceTestsWriter">
         </writer>
     </writers>
 

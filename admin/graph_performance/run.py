@@ -28,7 +28,7 @@ class PySysTest(TenNetworkTest):
 
     def epoch_to_fractional_doy(self, epoch_time):
         date = datetime.utcfromtimestamp(epoch_time)
-        start_of_year = datetime(date.year, 1, 1)
-        delta = date - start_of_year
+        start_of_records = datetime(2024, 1, 1)
+        delta = date - start_of_records
         fractional_doy = delta.days + (delta.seconds + delta.microseconds / 1e6) / 86400
         return fractional_doy

@@ -24,15 +24,15 @@ class CountsPersistence:
     SQL_SELHOR = "SELECT time, count FROM counts WHERE name=? and environment=? and time >= ? ORDER BY time DESC"
 
     @classmethod
-    def init(cls, is_local_ten, user_dir, host=None, is_cloud=None):
-        instance = CountsPersistence(is_local_ten, user_dir, host, is_cloud)
+    def init(cls, use_remote, user_dir, host):
+        instance = CountsPersistence(use_remote, user_dir, host)
         instance.create()
         return instance
 
-    def __init__(self, is_local_ten, user_dir, host=None, is_cloud=None):
+    def __init__(self, use_remote, user_dir, host):
         """Instantiate an instance."""
         self.host = host
-        self.dbconnection = get_connection(is_local_ten, is_cloud, user_dir, 'ten-test.db')
+        self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
         self.sqldel = normalise(self.SQL_DELETE, self.dbconnection.type)
         self.sqlthr = normalise(self.SQL_SELTHR, self.dbconnection.type)

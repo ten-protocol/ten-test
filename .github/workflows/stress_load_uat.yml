@@ -31,7 +31,7 @@ jobs:
       - name: 'Run load and perf tests'
         run: |
           cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ten.uat -i remote_load -c 8 
+          /usr/local/bin/pysys.py run -r -m ten.uat -i remote_load -c 8 
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v4

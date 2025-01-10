@@ -1,5 +1,5 @@
 from ten.test.persistence import normalise
-from ten.test.persistence import get_local_connection
+from ten.test.persistence import get_connection
 
 
 class NoncePersistence:
@@ -20,14 +20,15 @@ class NoncePersistence:
     SQL_DELENT = "DELETE from nonce_db WHERE account=? AND environment=? AND nonce=?"
 
     @classmethod
-    def init(cls, is_local_ten, user_dir, host=None, is_cloud=None):
-        instance = NoncePersistence(is_local_ten, user_dir, host, is_cloud)
+    def init(cls, use_remote, user_dir, host):
+        instance = NoncePersistence(use_remote, user_dir, host)
         instance.create()
         return instance
 
-    def __init__(self, is_local_ten, user_dir, host=None, is_cloud=None):
+    def __init__(self, use_remote, user_dir, host):
         """Instantiate an instance."""
-        self.dbconnection = get_local_connection(user_dir, 'nonce.db')
+        self.host = host
+        self.dbconnection = get_connection(use_remote, user_dir, 'nonce.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
         self.sqlupd = normalise(self.SQL_UPDATE, self.dbconnection.type)
         self.sqldel = normalise(self.SQL_DELETE, self.dbconnection.type)

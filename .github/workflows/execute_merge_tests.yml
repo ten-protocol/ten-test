@@ -97,7 +97,7 @@ jobs:
       - name: 'Run tests'
         run: |
           cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -m ten.local -e skip -e performance -e robustness
+          /usr/local/bin/pysys.py run -r -m ten.local -e skip -e performance -e robustness
 
       - name: 'Discord notification'
         if: success()

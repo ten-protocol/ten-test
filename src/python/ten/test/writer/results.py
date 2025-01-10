@@ -1,64 +1,35 @@
-import os
-from pysys.constants import SKIPPED
-from pysys.writer.outcomes import JUnitXMLResultsWriter
-from pysys.utils.logutils import stripANSIEscapeCodes
-from xml.dom.minidom import getDOMImplementation
+import uuid
+from pysys.writer import BaseResultsWriter
+from ten.test.persistence.results import OutomeResultsPersistence
 
+class PersistenceTestsWriter(BaseResultsWriter):
 
-class TestsWriter(JUnitXMLResultsWriter):
-    outputDir = None
+    def __init__(self, logfile=None, **kwargs):
+        super().__init__(logfile, **kwargs)
+        self.user_dir = None
+        self.machine_name = None
+        self.is_cloud_vm = None
+        self.outcomes_db = None
+
+    def setup(self, numTests=0, cycles=1, xargs=None, threads=0, testoutdir=u'', runner=None, **kwargs):
+        self.uuid = uuid.uuid4().hex
+        self.env = runner.ten_runner.env
+        self.user_dir = runner.ten_runner.user_dir
+        self.machine_name = runner.ten_runner.machine_name
+        self.is_cloud_vm = runner.ten_runner.is_cloud_vm
+        runner.log.info('Run uuid is %s' % self.uuid)
+
+        # use remote persistence if we are running in azure
+        self.outcomes_db = OutomeResultsPersistence.init(self.is_cloud_vm, self.user_dir, self.machine_name)
+
+    def cleanup(self, **kwargs):
+        self.outcomes_db.close()
 
     def processResult(self, testObj, **kwargs):
-        if "cycle" in kwargs:
-            if self.cycle != kwargs["cycle"]:
-                self.cycle = kwargs["cycle"]
-
-        impl = getDOMImplementation()
-        document = impl.createDocument(None, 'testsuite', None)
-        rootElement = document.documentElement
-        attr1 = document.createAttribute('name')
-        attr1.value = testObj.descriptor.id
-        attr2 = document.createAttribute('tests')
-        attr2.value='1'
-        attr3 = document.createAttribute('failures')
-        attr3.value = '%d'%(int)(testObj.getOutcome().isFailure())
-        attr4 = document.createAttribute('skipped')
-        attr4.value = '%d'%(int)(testObj.getOutcome() == SKIPPED)
-        attr5 = document.createAttribute('time')
-        attr5.value = '%s'%kwargs['testTime']
-        rootElement.setAttributeNode(attr1)
-        rootElement.setAttributeNode(attr2)
-        rootElement.setAttributeNode(attr3)
-        rootElement.setAttributeNode(attr4)
-        rootElement.setAttributeNode(attr5)
-
-        # add the testcase information
-        testcase = document.createElement('testcase')
-        attr1 = document.createAttribute('classname')
-        attr1.value = testObj.descriptor.classname
-        attr2 = document.createAttribute('name')
-        attr2.value = testObj.descriptor.id
-        attr3 = document.createAttribute('time')
-        attr3.value = '%s'%kwargs['testTime']
-        testcase.setAttributeNode(attr1)
-        testcase.setAttributeNode(attr2)
-        testcase.setAttributeNode(attr3)
-
-        # add in failure information if the test has failed
-        if (testObj.getOutcome().isFailure()):
-            failure = document.createElement('failure')
-            attr1 = document.createAttribute('message')
-            attr1.value = str(testObj.getOutcome())
-            failure.setAttributeNode(attr1)
-            failure.appendChild(document.createTextNode( testObj.getOutcomeReason() ))
-
-            stdout = document.createElement('system-out')
-            runLogOutput = stripANSIEscapeCodes(kwargs.get('runLogOutput',''))
-            stdout.appendChild(document.createTextNode(runLogOutput.replace('\r','').replace('\n', os.linesep)))
-
-            testcase.appendChild(failure)
-            testcase.appendChild(stdout)
-        rootElement.appendChild(testcase)
-
-        # write out the test result
-        self._writeXMLDocument(document, testObj, **kwargs)
+        self.outcomes_db.insert(self.uuid,
+                                testObj.descriptor.id,
+                                self.env,
+                                int(kwargs['testStart']),
+                                kwargs['testTime'],
+                                testObj.cost,
+                                str(testObj.getOutcome()))
