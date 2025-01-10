@@ -16,8 +16,7 @@ class OutomeResultsPersistence:
                  "environment VARCHAR(64), " \
                  "time INTEGER, " \
                  "duration REAL, " \
-                 "outcome VARCHAR(64), " \
-                 "PRIMARY KEY (host, test, environment, time))"
+                 "outcome VARCHAR(64))"
     SQL_INSERT = "INSERT INTO results_outcome VALUES (?, ?, ?, ?, ?, ?, ?)"
 
     @classmethod
