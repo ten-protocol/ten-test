@@ -10,7 +10,7 @@ class OutomeResultsPersistence:
     """
 
     SQL_CREATE = "CREATE TABLE IF NOT EXISTS results_outcome " \
-                 "(id VARCHAR(64), " \
+                 "(uuid VARCHAR(64), " \
                  "host VARCHAR(64), " \
                  "test VARCHAR(64), " \
                  "environment VARCHAR(64), " \
