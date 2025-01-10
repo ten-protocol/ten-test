@@ -2,7 +2,53 @@ from ten.test.persistence import normalise
 from ten.test.persistence import get_connection
 
 
-class ResultsPersistence:
+class OutomeResultsPersistence:
+    """Abstracts the persistence of test outcome results into a local database.
+
+    Results are a property of the host and environment. We persist any test runs that are made in the cloud, along
+    with the branch that it was run against. This just allows inspection of commonly failing tests.
+    """
+
+    SQL_CREATE = "CREATE TABLE IF NOT EXISTS results_outcome " \
+                 "(id VARCHAR(64), " \
+                 "host VARCHAR(64), " \
+                 "test VARCHAR(64), " \
+                 "environment VARCHAR(64), " \
+                 "time INTEGER, " \
+                 "duration INTEGER, " \
+                 "outcome VARCHAR(64), " \
+                 "PRIMARY KEY (host, test, environment, time))"
+    SQL_INSERT = "INSERT INTO results_outcome VALUES (?, ?, ?, ?, ?, ?, ?)"
+
+    @classmethod
+    def init(cls, use_remote, user_dir, host):
+        instance = OutomeResultsPersistence(use_remote, user_dir, host)
+        instance.create()
+        return instance
+
+    def __init__(self, use_remote, user_dir, host):
+        """Instantiate an instance."""
+        self.host = host
+        self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
+        self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
+        self.cursor = self.dbconnection.connection.cursor()
+
+    def create(self):
+        """Create the cursor to the underlying persistence."""
+        self.cursor.execute(self.SQL_CREATE)
+
+    def insert(self, uuid, test, environment, time, duration, outcome):
+        """Insert a new performance result into the persistence. """
+        self.cursor.execute(self.sqlins, (uuid, self.host, test, environment, time, duration, outcome))
+        self.dbconnection.connection.commit()
+
+    def close(self):
+        """Close the connection to the underlying persistence."""
+        self.cursor.close()
+        self.dbconnection.connection.close()
+
+
+class PerformanceResultsPersistence:
     """Abstracts the persistence of performance results into a local database.
 
     Results are a property of the environment and the host that the test was run in. They are externalised so they can
@@ -21,15 +67,15 @@ class ResultsPersistence:
     SQL_SELECT = "SELECT time, result FROM results_performance WHERE host=? AND test=? AND environment=? ORDER BY time ASC"
 
     @classmethod
-    def init(cls, is_local_ten, user_dir, host=None, is_cloud=None):
-        instance = ResultsPersistence(is_local_ten, user_dir, host, is_cloud)
+    def init(cls, use_remote, user_dir, host):
+        instance = PerformanceResultsPersistence(use_remote, user_dir, host)
         instance.create()
         return instance
 
-    def __init__(self, is_local_ten, user_dir, host=None, is_cloud=None):
+    def __init__(self, use_remote, user_dir, host):
         """Instantiate an instance."""
         self.host = host
-        self.dbconnection = get_connection(is_local_ten, is_cloud, user_dir, 'ten-test.db')
+        self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
         self.sqldel = normalise(self.SQL_DELETE, self.dbconnection.type)
         self.sqlsel = normalise(self.SQL_SELECT, self.dbconnection.type)

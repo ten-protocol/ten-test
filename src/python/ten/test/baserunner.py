@@ -12,7 +12,7 @@ from ten.test.persistence.rates import RatesPersistence
 from ten.test.persistence.nonce import NoncePersistence
 from ten.test.persistence.funds import FundsPersistence
 from ten.test.persistence.counts import CountsPersistence
-from ten.test.persistence.results import ResultsPersistence
+from ten.test.persistence.results import PerformanceResultsPersistence
 from ten.test.persistence.contract import ContractPersistence
 from ten.test.utils.properties import Properties
 from ten.test.utils.cloud import is_cloud_vm
@@ -71,14 +71,15 @@ class TenRunnerPlugin():
             self.machine_name = socket.gethostname()
             runner.log.info('Running on local (%s)' % self.machine_name)
 
-        # every test has its own connection to the dbs - always local sqlite when a local testnet,
-        # if running on azure and not a local testnet, then msql server
-        rates_db = RatesPersistence.init(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
-        nonce_db = NoncePersistence.init(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
-        contracts_db = ContractPersistence.init(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
-        funds_db = FundsPersistence.init(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
-        counts_db = CountsPersistence.init(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
-        results_db = ResultsPersistence.init(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
+        # every test has its own connection to the dbs - use a remote mysql persistence layer if we are running in
+        # azure, and it is not a local testnet. The exception for this is the nonce db where it is always local.
+        use_remote = (not self.is_local_ten() and self.is_cloud_vm)
+        rates_db = RatesPersistence.init(use_remote, self.user_dir, self.machine_name)
+        nonce_db = NoncePersistence.init(False, self.user_dir, self.machine_name)
+        contracts_db = ContractPersistence.init(use_remote, self.user_dir, self.machine_name)
+        funds_db = FundsPersistence.init(use_remote, self.user_dir, self.machine_name)
+        counts_db = CountsPersistence.init(use_remote, self.user_dir, self.machine_name)
+        results_db = PerformanceResultsPersistence.init(use_remote, self.user_dir, self.machine_name)
 
         eth_price = self.get_eth_price()
         if eth_price is not None:

@@ -9,7 +9,7 @@ from ten.test.persistence.rates import RatesPersistence
 from ten.test.persistence.nonce import NoncePersistence
 from ten.test.persistence.funds import FundsPersistence
 from ten.test.persistence.counts import CountsPersistence
-from ten.test.persistence.results import ResultsPersistence
+from ten.test.persistence.results import PerformanceResultsPersistence
 from ten.test.persistence.contract import ContractPersistence
 from ten.test.utils.properties import Properties
 from ten.test.networks.default import DefaultPostLondon
@@ -35,14 +35,15 @@ class GenericNetworkTest(BaseTest):
         self.machine_name = runner.ten_runner.machine_name
         self.is_cloud_vm = runner.ten_runner.is_cloud_vm
 
-        # every test has its own connection to the dbs - always local sqlite when a local testnet,
-        # if running on azure and not a local testnet, then msql server
-        self.rates_db = RatesPersistence(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
-        self.nonce_db = NoncePersistence(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
-        self.contract_db = ContractPersistence(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
-        self.funds_db = FundsPersistence(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
-        self.counts_db = CountsPersistence(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
-        self.results_db = ResultsPersistence(self.is_local_ten(), self.user_dir, self.machine_name, self.is_cloud_vm)
+        # every test has its own connection to the dbs - use a remote mysql persistence layer if we are running in
+        # azure, and it is not a local testnet. The exception for this is the nonce db where it is always local.
+        use_remote = (not self.is_local_ten() and self.is_cloud_vm)
+        self.rates_db = RatesPersistence(use_remote, self.user_dir, self.machine_name)
+        self.nonce_db = NoncePersistence(False, self.user_dir, self.machine_name)
+        self.contract_db = ContractPersistence(use_remote, self.user_dir, self.machine_name)
+        self.funds_db = FundsPersistence(use_remote, self.user_dir, self.machine_name)
+        self.counts_db = CountsPersistence(use_remote, self.user_dir, self.machine_name)
+        self.results_db = PerformanceResultsPersistence(use_remote, self.user_dir, self.machine_name)
         self.addCleanupFunction(self.close_db)
 
         # every test has a unique connection for the funded account
