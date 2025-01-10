@@ -31,4 +31,5 @@ class PersistenceTestsWriter(BaseResultsWriter):
                                 self.env,
                                 int(kwargs['testStart']),
                                 kwargs['testTime'],
+                                testObj.cost,
                                 str(testObj.getOutcome()))

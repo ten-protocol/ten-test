@@ -16,8 +16,9 @@ class OutomeResultsPersistence:
                  "environment VARCHAR(64), " \
                  "time INTEGER, " \
                  "duration REAL, " \
+                 "cost REAL, " \
                  "outcome VARCHAR(64))"
-    SQL_INSERT = "INSERT INTO results_outcome VALUES (?, ?, ?, ?, ?, ?, ?)"
+    SQL_INSERT = "INSERT INTO results_outcome VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
 
     @classmethod
     def init(cls, use_remote, user_dir, host):
@@ -36,9 +37,9 @@ class OutomeResultsPersistence:
         """Create the cursor to the underlying persistence."""
         self.cursor.execute(self.SQL_CREATE)
 
-    def insert(self, uuid, test, environment, time, duration, outcome):
+    def insert(self, uuid, test, environment, time, duration, cost, outcome):
         """Insert a new performance result into the persistence. """
-        self.cursor.execute(self.sqlins, (uuid, self.host, test, environment, time, duration, outcome))
+        self.cursor.execute(self.sqlins, (uuid, self.host, test, environment, time, duration, cost, outcome))
         self.dbconnection.connection.commit()
 
     def close(self):

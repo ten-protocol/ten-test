@@ -54,6 +54,7 @@ class GenericNetworkTest(BaseTest):
         self.ephemeral_pks = []
         self.transfer_costs = []
         self.average_transfer_cost = 21000000000000
+        self.cost = 0
         self.eth_price = self.rates_db.get_latest_rate('ETH', 'USD')
 
         for fn in Properties().accounts():
@@ -71,6 +72,7 @@ class GenericNetworkTest(BaseTest):
         self.log.info("  %s: %s%d WEI", 'Test cost', sign, delta, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
         self.log.info("  %s: %s%.9f ETH", 'Test cost', sign, Web3().from_wei(delta, 'ether'), extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
         if self.eth_price is not None:
+            self.cost = round(self.eth_price*float(Web3().from_wei((self.balance - balance), 'ether')), 3)
             change = float(Web3().from_wei(delta, 'ether'))
             self.log.info("  %s: %s%.3f USD", 'Test cost', sign, self.eth_price*change, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
 
