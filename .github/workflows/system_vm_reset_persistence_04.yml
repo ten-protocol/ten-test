@@ -26,11 +26,22 @@ jobs:
           go build -o ${{ github.workspace }}/ten-test/artifacts/wallet_extension/wallet_extension
           ls -l ${{ github.workspace }}/ten-test/artifacts
 
-      - name: 'Persistence reset'
+      - name: 'Persistence reset dev'
+        continue-on-error: true
         run: |
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.dev persistence_reset
+
+      - name: 'Persistence reset uat'
+        continue-on-error: true
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.uat persistence_reset
+
+      - name: 'Persistence reset sepolia'
+        continue-on-error: true
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.sepolia persistence_reset
 
       - name: 'Upload output'
