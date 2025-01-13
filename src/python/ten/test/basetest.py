@@ -39,7 +39,7 @@ class GenericNetworkTest(BaseTest):
         # azure, and it is not a local testnet. The exception for this is the nonce db where it is always local.
         use_remote = (not self.is_local_ten() and self.is_cloud_vm)
         self.rates_db = RatesPersistence(use_remote, self.user_dir, self.machine_name)
-        self.nonce_db = NoncePersistence(False, self.user_dir, self.machine_name)
+        self.nonce_db = NoncePersistence(use_remote, self.user_dir, self.machine_name)
         self.contract_db = ContractPersistence(use_remote, self.user_dir, self.machine_name)
         self.funds_db = FundsPersistence(use_remote, self.user_dir, self.machine_name)
         self.counts_db = CountsPersistence(use_remote, self.user_dir, self.machine_name)

@@ -5,19 +5,19 @@ from ten.test.persistence import get_connection
 class NoncePersistence:
     """Abstracts the persistence of nonces into a local database. """
 
-    SQL_CREATE = "CREATE TABLE IF NOT EXISTS nonce_db " \
+    SQL_CREATE = "CREATE TABLE IF NOT EXISTS nonces " \
                  "(account VARCHAR(64), " \
                  "environment VARCHAR(64), " \
                  "nonce INTEGER, " \
                  "status VARCHAR(64))"
-    SQL_INSERT = "INSERT INTO nonce_db VALUES (?, ?, ?, ?)"
-    SQL_UPDATE = "UPDATE nonce_db SET status=? WHERE account=? AND environment=? AND nonce=?"
-    SQL_DELETE = "DELETE from nonce_db WHERE account=? AND environment=?"
-    SQL_DELFRO = "DELETE from nonce_db WHERE account=? AND environment=? AND nonce>=?"
-    SQL_LATEST = "SELECT nonce FROM nonce_db WHERE account=? AND environment=? ORDER BY nonce DESC LIMIT 1"
-    SQL_DELENV = "DELETE from nonce_db WHERE environment=?"
-    SQL_ACCNTS = "SELECT DISTINCT account from nonce_db WHERE environment=?"
-    SQL_DELENT = "DELETE from nonce_db WHERE account=? AND environment=? AND nonce=?"
+    SQL_INSERT = "INSERT INTO nonces VALUES (?, ?, ?, ?)"
+    SQL_UPDATE = "UPDATE nonces SET status=? WHERE account=? AND environment=? AND nonce=?"
+    SQL_DELETE = "DELETE from nonces WHERE account=? AND environment=?"
+    SQL_DELFRO = "DELETE from nonces WHERE account=? AND environment=? AND nonce>=?"
+    SQL_LATEST = "SELECT nonce FROM nonces WHERE account=? AND environment=? ORDER BY nonce DESC LIMIT 1"
+    SQL_DELENV = "DELETE from nonces WHERE environment=?"
+    SQL_ACCNTS = "SELECT DISTINCT account from nonces WHERE environment=?"
+    SQL_DELENT = "DELETE from nonces WHERE account=? AND environment=? AND nonce=?"
 
     @classmethod
     def init(cls, use_remote, user_dir, host):
@@ -28,7 +28,7 @@ class NoncePersistence:
     def __init__(self, use_remote, user_dir, host):
         """Instantiate an instance."""
         self.host = host
-        self.dbconnection = get_connection(use_remote, user_dir, 'nonce.db')
+        self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
         self.sqlupd = normalise(self.SQL_UPDATE, self.dbconnection.type)
         self.sqldel = normalise(self.SQL_DELETE, self.dbconnection.type)

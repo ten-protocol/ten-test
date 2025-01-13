@@ -75,7 +75,7 @@ class TenRunnerPlugin():
         # azure, and it is not a local testnet. The exception for this is the nonce db where it is always local.
         use_remote = (not self.is_local_ten() and self.is_cloud_vm)
         rates_db = RatesPersistence.init(use_remote, self.user_dir, self.machine_name)
-        nonce_db = NoncePersistence.init(False, self.user_dir, self.machine_name)
+        nonce_db = NoncePersistence.init(use_remote, self.user_dir, self.machine_name)
         contracts_db = ContractPersistence.init(use_remote, self.user_dir, self.machine_name)
         funds_db = FundsPersistence.init(use_remote, self.user_dir, self.machine_name)
         counts_db = CountsPersistence.init(use_remote, self.user_dir, self.machine_name)
