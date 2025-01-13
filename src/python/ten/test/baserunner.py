@@ -120,12 +120,6 @@ class TenRunnerPlugin():
                 tx_count = web3.eth.get_transaction_count(account.address)
                 balance = web3.from_wei(web3.eth.get_balance(account.address), 'ether')
 
-                if tx_count == 0:
-                    runner.log.info('Funded key tx count is zero ... clearing persistence')
-                    for fn in Properties().accounts():
-                        account = web3.eth.account.from_key(fn())
-                        nonce_db.delete(account.address, self.env)
-
                 if balance < 200 and not self.is_sepolia_ten():
                     runner.log.info('Funded key balance below threshold ... making faucet call')
                     self.fund_eth_from_faucet_server(runner)
