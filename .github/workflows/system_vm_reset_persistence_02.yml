@@ -1,19 +1,9 @@
 #  system_vm_reset_persistence_01.yml# Reset the nonce persistence on sepolia-testnet
 #
-name: '[system] Reset gh-runner-02'
+name: '[system] Reset db gh-runner-02'
 run-name: Reset persistence on gh-runner-02
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        type: choice
-        description: Environment
-        required: true
-        default: ten.sepolia
-        options:
-          - ten.dev
-          - ten.uat
-          - ten.sepolia
 
 jobs:
   reset-persistence:
@@ -39,7 +29,9 @@ jobs:
       - name: 'Persistence reset'
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} persistence_reset
+          /usr/local/bin/pysys.py run -m ten.dev persistence_reset
+          /usr/local/bin/pysys.py run -m ten.uat persistence_reset
+          /usr/local/bin/pysys.py run -m ten.sepolia persistence_reset
 
       - name: 'Upload output'
         uses: actions/upload-artifact@v4

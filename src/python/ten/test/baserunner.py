@@ -75,7 +75,7 @@ class TenRunnerPlugin():
         # azure, and it is not a local testnet. The exception for this is the nonce db where it is always local.
         use_remote = (not self.is_local_ten() and self.is_cloud_vm)
         rates_db = RatesPersistence.init(use_remote, self.user_dir, self.machine_name)
-        nonce_db = NoncePersistence.init(False, self.user_dir, self.machine_name)
+        nonce_db = NoncePersistence.init(use_remote, self.user_dir, self.machine_name)
         contracts_db = ContractPersistence.init(use_remote, self.user_dir, self.machine_name)
         funds_db = FundsPersistence.init(use_remote, self.user_dir, self.machine_name)
         counts_db = CountsPersistence.init(use_remote, self.user_dir, self.machine_name)
@@ -119,11 +119,6 @@ class TenRunnerPlugin():
 
                 tx_count = web3.eth.get_transaction_count(account.address)
                 balance = web3.from_wei(web3.eth.get_balance(account.address), 'ether')
-
-                if tx_count == 0:
-                    runner.log.info('Funded key tx count is zero ... clearing persistence')
-                    nonce_db.delete_environment(self.env)
-                    contracts_db.delete_environment(self.env)
 
                 if balance < 200 and not self.is_sepolia_ten():
                     runner.log.info('Funded key balance below threshold ... making faucet call')
