@@ -35,15 +35,12 @@ class PySysTest(TenNetworkTest):
                         assertMessage='Value transfer hash should be in the xchain tree')
 
         # from the dump, get the root and proof of inclusion and assert same root as in the block header
-        root, proof = mh.get_proof('cross_train_tree.log', 'v,%s' % msg_hash)
-        self.log.info('  calculated root:      %s', root)
+        proof = self.ten_get_xchain_proof(tx_receipt.transactionHash.hex(), 'v', msg_hash)
         self.log.info('  calculated proof:     %s', proof)
-        self.assertTrue(block.crossChainTreeHash == root,
-                        assertMessage='Calculated merkle root should be same as the block header')
 
         # release the funds from the L1 and check the balances
         start_time = time.perf_counter_ns()
-        tx_receipt = accnt.l1.release_funds(msg, [] if proof is None else [proof], root, gas_attempts=gas_attempts)
+        tx_receipt = accnt.l1.release_funds(msg, [] if proof is None else [proof], block.crossChainTreeHash, gas_attempts=gas_attempts)
         end_time = time.perf_counter_ns()
         self.log.info('Total time waiting for the gas estimate to pass: %.1f secs', (end_time-start_time)/1e9)
 

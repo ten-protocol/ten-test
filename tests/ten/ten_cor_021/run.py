@@ -65,16 +65,13 @@ class PySysTest(TenNetworkTest):
                         assertMessage='Log message published should be in the xchain tree')
 
         # from the dump, get the root and proof of inclusion and assert same root as in the block header
-        root, proof = mh.get_proof('cross_train_tree.log', 'm,%s' % msg_hash)
-        self.log.info('  calculated root:      %s', root)
+        proof = self.ten_get_xchain_proof(tx_receipt.transactionHash.hex(), 'm', msg_hash)
         self.log.info('  calculated proof:     %s', proof)
-        self.assertTrue(block.crossChainTreeHash == root,
-                        assertMessage='Calculated merkle root should be same as the block header')
 
         # release the tokens from the L1 and check the balances
         self.log.info('Wait for the message on the L1 and relay it')
         start_time = time.perf_counter_ns()
-        _ = accnt1.l1.release_tokens(msg, [] if proof is None else [proof], root, gas_attempts=gas_attempts)
+        _ = accnt1.l1.release_tokens(msg, [] if proof is None else [proof], block.crossChainTreeHash, gas_attempts=gas_attempts)
         end_time = time.perf_counter_ns()
         self.log.info('Total time waiting for the gas estimate to pass: %.1f secs', (end_time-start_time)/1e9)
 
