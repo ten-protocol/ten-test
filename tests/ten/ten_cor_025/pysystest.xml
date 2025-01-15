@@ -6,7 +6,7 @@
         <purpose><![CDATA[
 Ensure the withdrawal of native funds can be performed when there are multiple entries in the xchain tree. In the test
 we attempt to ensure 4 value transfers are included in the xchain tree, and then release the funds for one of the
-transactions. 
+transactions.
 ]]>
         </purpose>
     </description>
