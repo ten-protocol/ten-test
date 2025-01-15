@@ -1,4 +1,4 @@
-import time,base64, ast
+import time, rlp
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.bridge import BridgeUser
 from ten.test.helpers.merkle_tree import MerkleTreeHelper
@@ -44,17 +44,26 @@ class PySysTest(TenNetworkTest):
 
         # get the root and proof of inclusion from the node
         self.log.info('Request proof and root from the node')
-        while proof is None:
-            time.sleep(2)
+        root, proof = None, None
+        start = time.time()
+        while root is None:
             proof, root = self.ten_get_xchain_proof('v', msg_hash)
-        self.log.info('  returned root:        %s', root)
-        self.log.info('  returned proof:       %s', proof)
+            if root is not None: break
+            if time.time() - start > 60:
+                raise TimeoutError('Timed out waiting for message to be verified')
+            time.sleep(2.0)
+        decoded_proof = rlp.decode(bytes.fromhex(proof[2:]))
+        proof = None if len(decoded_proof) == 0 else decoded_proof
+
+        self.log.info('Received proof and root from the node')
+        self.log.info('  returned root:         %s', root)
+        self.log.info('  returned proof:        %s', proof)
         self.assertTrue(root == block.crossChainTreeHash,
                         assertMessage='Returned root should be same as the crossChainTreeHash')
 
         # release the funds from the L1 and check the balances
         start_time = time.perf_counter_ns()
-        tx_receipt = accnt.l1.release_funds(msg, [] if proof is None else [proof], block.crossChainTreeHash, gas_attempts=gas_attempts)
+        tx_receipt = accnt.l1.release_funds(msg, [] if proof is None else [proof], root, gas_attempts=gas_attempts)
         end_time = time.perf_counter_ns()
         self.log.info('Total time waiting for the gas estimate to pass: %.1f secs', (end_time-start_time)/1e9)
 

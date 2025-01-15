@@ -28,6 +28,7 @@ RUN python3 -m pip install pysys==1.6.1
 RUN python3 -m pip install py-solc-x
 RUN python3 -m pip install numpy==1.24.4
 RUN python3 -m pip install mysql-connector-python==9.0.0
+RUN python3 -m pip install rlp==3.0.0
 
 RUN mkdir /home/ten-test
 RUN mkdir /home/go-ten

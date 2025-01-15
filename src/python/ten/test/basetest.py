@@ -486,10 +486,10 @@ class TenNetworkTest(GenericNetworkTest):
                 "params": [type, xchain_message],
                 "id": self.MSG_ID }
         response = self.post(data)
-        self.log.info(response.json())
         if 'result' in response.json():
             return response.json()['result']['Proof'], response.json()['result']['Root']
-        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        elif 'error' in response.json():
+            self.log.warn('Error getting proof, reason = %s', response.json()['error']['message'])
         return None, None
 
     def post(self, data, server=None):

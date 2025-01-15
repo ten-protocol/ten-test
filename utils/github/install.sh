@@ -25,6 +25,7 @@ python3 -m pip install solc-select
 python3 -m pip install py-solc-x
 python3 -m pip install numpy==1.24.4
 python3 -m pip install mysql-connector-python==9.0.0
+python3 -m pip install rlp==3.0.0
 snap install go --classic
 curl -fsSL https://get.docker.com -o get-docker.sh
 sh ./get-docker.sh
