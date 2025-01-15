@@ -1,4 +1,4 @@
-import time
+import time,base64, ast
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.bridge import BridgeUser
 from ten.test.helpers.merkle_tree import MerkleTreeHelper
@@ -35,8 +35,22 @@ class PySysTest(TenNetworkTest):
                         assertMessage='Value transfer hash should be in the xchain tree')
 
         # from the dump, get the root and proof of inclusion and assert same root as in the block header
-        proof = self.ten_get_xchain_proof(tx_receipt.transactionHash.hex(), 'v', msg_hash)
-        self.log.info('  calculated proof:     %s', proof)
+        self.log.info('Calculating proof and root from the xchain tree')
+        root, proof = mh.get_proof('cross_train_tree.log', 'v,%s' % msg_hash)
+        self.log.info('  calculated root:       %s', root)
+        self.log.info('  calculated proof:      %s', proof)
+        self.assertTrue(root == block.crossChainTreeHash,
+                        assertMessage='Calculated root should be same as the crossChainTreeHash')
+
+        # get the root and proof of inclusion from the node
+        self.log.info('Request proof and root from the node')
+        while proof is None:
+            time.sleep(2)
+            proof, root = self.ten_get_xchain_proof('v', msg_hash)
+        self.log.info('  returned root:        %s', root)
+        self.log.info('  returned proof:       %s', proof)
+        self.assertTrue(root == block.crossChainTreeHash,
+                        assertMessage='Returned root should be same as the crossChainTreeHash')
 
         # release the funds from the L1 and check the balances
         start_time = time.perf_counter_ns()
