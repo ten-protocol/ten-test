@@ -1,3 +1,4 @@
+import time, rlp
 from web3._utils.events import EventLogErrorFlags
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.bridge import BridgeUser
@@ -39,6 +40,33 @@ class PySysTest(TenNetworkTest):
         self.log.info('  merkle_root:           %s', block.crossChainTreeHash)
         self.assertTrue(msg_hash in [x[1] for x in decoded],
                         assertMessage='Value transfer has should be in the xchain tree')
+
+        # from the dump, get the root and proof of inclusion and assert same root as in the block header
+        self.log.info('Calculating proof and root from the xchain tree')
+        root, proof = mh.get_proof('cross_train_tree.log', 'v,%s' % msg_hash)
+        self.log.info('  calculated root:       %s', root)
+        self.log.info('  calculated proof:      %s', proof)
+        self.assertTrue(root == block.crossChainTreeHash,
+                        assertMessage='Calculated root should be same as the crossChainTreeHash')
+
+        # get the root and proof of inclusion from the node
+        self.log.info('Request proof and root from the node')
+        root, proof = None, None
+        start = time.time()
+        while root is None:
+            proof, root = self.ten_get_xchain_proof('v', msg_hash)
+            if root is not None: break
+            if time.time() - start > 60:
+                raise TimeoutError('Timed out waiting for message to be verified')
+            time.sleep(2.0)
+        decoded_proof = rlp.decode(bytes.fromhex(proof[2:]))
+        proof = None if len(decoded_proof) == 0 else decoded_proof
+
+        self.log.info('Received proof and root from the node')
+        self.log.info('  returned root:         %s', root)
+        self.log.info('  returned proof:        %s', proof)
+        self.assertTrue(root == block.crossChainTreeHash,
+                        assertMessage='Returned root should be same as the crossChainTreeHash')
 
     def create_signed(self, user, amount, gas_limit):
         nonce = user.l2.network.get_next_nonce(self, user.l2.web3, user.l2.account.address, True, False)
