@@ -54,7 +54,7 @@ class PySysTest(TenNetworkTest):
         self.log.info('Fees to send are %d' % accnt1.l2.send_erc20_fees())
         tx_receipt, log_msg = accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 2, dump_file='send_erc20.tx')
         mh = MerkleTreeHelper.create(self)
-        block, decoded = mh.dump_tree(accnt1.l2.web3, tx_receipt, 'cross_train_tree.log')
+        block, decoded = mh.dump_tree(accnt1.l2.web3, tx_receipt, 'xchain_tree.log')
         msg, msg_hash = mh.process_log_msg(log_msg)
 
         self.log.info('  log_msg_published:        %s', msg)
@@ -64,8 +64,8 @@ class PySysTest(TenNetworkTest):
         self.assertTrue(msg_hash in [x[1] for x in decoded],
                         assertMessage='Log message published should be in the xchain tree')
 
-        # from the dump, get the root and proof of inclusion and assert same root as in the block header
-        proof = self.ten_get_xchain_proof(tx_receipt.transactionHash.hex(), 'm', msg_hash)
+        # get the root and proof of inclusion from the node
+        proof = self.ten_get_xchain_proof('m', msg_hash)
         self.log.info('  calculated proof:     %s', proof)
 
         # release the tokens from the L1 and check the balances

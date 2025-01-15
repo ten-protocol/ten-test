@@ -25,5 +25,5 @@ program
         console.log('Root:', tree.root);
 
         const proof = tree.getProof(options.leaf_hash.split(','));
-        console.log('Proof:', proof[0]);
+        console.log('Proof:', ...proof);
     });
