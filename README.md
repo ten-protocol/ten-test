@@ -98,6 +98,7 @@ npm install ethers@5.7.2 --global
 npm install ethers6@npm:ethers@6.13.1 --global
 npm install commander@11.1.0 --global
 npm install @openzeppelin/merkle-tree@1.0.6 --global
+npm install @ethereumjs/rlp@5.0.2 --global
 
 pip3 install web3==6.13.0 
 pip3 install pysys==1.6.1

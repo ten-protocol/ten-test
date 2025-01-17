@@ -19,6 +19,7 @@ RUN npm install ethers@5.7.2 --global
 RUN npm install ethers6@npm:ethers@6.13.1 --global
 RUN npm install commander@11.1.0 --global
 RUN npm install @openzeppelin/merkle-tree@1.0.6 --global
+RUN npm install @ethereumjs/rlp@5.0.2 --global
 
 RUN apt install -y vim
 RUN apt install -y python3-pip

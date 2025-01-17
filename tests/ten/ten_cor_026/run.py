@@ -1,4 +1,5 @@
 import os
+from ten.test.utils.properties import Properties
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.bridge import EthereumBridge, L2MessageBus, Management
 
@@ -44,6 +45,9 @@ class PySysTest(TenNetworkTest):
 
     def client(self, l2_network, bridge_address, bridge_abi, bus_address, bus_abi, private_key,
                l1_network, management_address, management_abi, to, amount, timeout):
+        node_url = 'http://%s:%s' % (Properties().node_host(self.env, self.NODE_HOST),
+                                     Properties().node_port_http(self.env))
+
         stdout = os.path.join(self.output, 'client.out')
         stderr = os.path.join(self.output, 'client.err')
         script = os.path.join(self.input, 'client.js')
@@ -56,6 +60,7 @@ class PySysTest(TenNetworkTest):
         args.extend(['--l1_network', l1_network.connection_url()])
         args.extend(['--l1_management_address', management_address])
         args.extend(['--l1_management_abi', management_abi])
+        args.extend(['--node_url', node_url])
         args.extend(['--pk', private_key])
         args.extend(['--to', to])
         args.extend(['--amount', str(amount)])
