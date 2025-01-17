@@ -41,9 +41,9 @@ async function tenGetXchainProof(node_url, type, msgHash) {
         })
         const result = await response.json();
         if (result.result) {
-            console.log('Received root and proof:')
-            console.log('  Proof = ${result.result.Proof}')
-            console.log('  Root  = ${result.result.Root}')
+            console.log(`Received root and proof:`)
+            console.log(`  Proof = ${result.result.Proof}`)
+            console.log(`  Root  = ${result.result.Root}`)
             return [result.result.Proof, result.result.Root]
         } else if (result.error) {
             console.info(`Error getting proof, reason = ${result.error.message}`)
@@ -92,7 +92,7 @@ async function sendTransfer(provider, wallet, to, amount, bridge, bus) {
     console.log('Value transfer hash is in the xchain tree')
   }
 
-  return msgHash
+  return [msg, msgHash, block.crossChainTreeHash]
 }
 
 /** Utility function to wait for the root and proof to be established from the node */
@@ -120,7 +120,7 @@ async function waitForRootPublished(node_url, msgHash, interval = 5000, timeout 
     }
     await sleep(interval);
   }
-  return [msgHash, proof, root]
+  return proof
 }
 
 /** Logic on the L1 side to instruct the management contract to release funds */
@@ -167,17 +167,17 @@ var bridge_contract = new ethers.Contract(options.l2_bridge_address, bridge_abi,
 var bus_contract = new ethers.Contract(options.l2_bus_address, bus_abi, wallet)
 
 console.log('Starting transaction to send funds to the L1')
-sendTransfer(provider, wallet, options.to, options.amount, bridge_contract, bus_contract).then( msgHash => {
+sendTransfer(provider, wallet, options.to, options.amount, bridge_contract, bus_contract).then( (arg) => {
   var provider = new ethers.providers.JsonRpcProvider(options.l1_network)
   var wallet = new ethers.Wallet(options.pk, provider)
   var management_abi = JSON.parse(fs.readFileSync(options.l1_management_abi))
   var management_contract = new ethers.Contract(options.l1_management_address, management_abi, wallet)
 
   console.log('Waiting for the merkle tree root to be published on the L1')
-  waitForRootPublished(options.node_url, msgHash).then( (arg) => {
+  waitForRootPublished(options.node_url, arg[1]).then( (proof) => {
 
     console.log('Starting transaction to extract the native value L1')
-    extractNativeValue(provider, wallet, management_contract, arg[0], arg[1], arg[2]).then( () => {
+    extractNativeValue(provider, wallet, management_contract, arg[0], proof, arg[2]).then( () => {
       console.log(`Completed transactions`)
     })
   })
