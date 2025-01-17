@@ -1,4 +1,4 @@
-import os
+import os, re
 from ten.test.utils.properties import Properties
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.bridge import EthereumBridge, L2MessageBus, Management
@@ -32,8 +32,11 @@ class PySysTest(TenNetworkTest):
                     l1, management.address, management.abi_path, account_l1.address, transfer+fees, timeout)
         l1_after = web3_l1.eth.get_balance(account_l1.address)
         l2_after = web3_l2.eth.get_balance(account_l2.address)
+        l1_cost = self.get_cost()
         self.log.info('  l1_balance after:      %s', l1_after)
         self.log.info('  l2_balance after:      %s', l2_after)
+        self.log.info('  l1_cost:               %s', l1_cost)
+        self.log.info('  l1_delta (with cost):  %s', l1_after-l1_before+l1_cost)
 
         # validate the outcome
         expr_list = []
@@ -42,6 +45,10 @@ class PySysTest(TenNetworkTest):
         expr_list.append('Amount:.*%d' % transfer)
         self.assertOrderedGrep(file='client.out', exprList=expr_list)
         self.assertGrep(file='client.out', expr='Value transfer hash is in the xchain tree')
+
+        self.assertTrue(l1_after-l1_before+l1_cost == transfer,
+                        assertMessage='L1 balance should increase by transfer amount plus gas for releasing')
+
 
     def client(self, l2_network, bridge_address, bridge_abi, bus_address, bus_abi, private_key,
                l1_network, management_address, management_abi, to, amount, timeout):
@@ -68,3 +75,13 @@ class PySysTest(TenNetworkTest):
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Starting transaction to send funds to the L1', timeout=10)
         self.waitForGrep(file=stdout, expr='Completed transactions', timeout=timeout/1000)
+
+
+    def get_cost(self):
+        cost = None
+        regex = re.compile('L1 cost:       (?P<cost>.*)$', re.M)
+        with open(os.path.join(self.output, 'client.out'), 'r') as fp:
+            for line in fp.readlines():
+                result = regex.search(line)
+                if result is not None: cost = result.group('cost')
+        return int(cost)

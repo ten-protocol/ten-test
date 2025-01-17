@@ -59,12 +59,25 @@ async function tenGetXchainProof(node_url, type, msgHash) {
 async function sendTransfer(provider, wallet, to, amount, bridge, bus) {
   const gasPrice = await provider.getGasPrice();
   const estimatedGas = await bridge.estimateGas.sendNative(to, { value: amount } );
+  const currentNonce = await provider.getTransactionCount(wallet.address);
+  console.log(`  Nonce:         ${currentNonce}`)
 
-  // send the transaction and get the block it is included into
+  // send an initial transaction in that we wont follow up with
+  const tx0 = await bridge.populateTransaction.sendNative(to, {
+      value: amount,
+      gasPrice: gasPrice,
+      gasLimit: estimatedGas,
+      nonce: currentNonce}
+  )
+  const txResponse0 = await wallet.sendTransaction(tx0)
+
+  // send a second transaction, and process the xchain tree for this one
   const tx = await bridge.populateTransaction.sendNative(to, {
-    value: amount, gasPrice: gasPrice, gasLimit: estimatedGas
-  } )
-
+      value: amount,
+      gasPrice: gasPrice,
+      gasLimit: estimatedGas,
+      nonce: currentNonce + 1}
+  )
   const txResponse = await wallet.sendTransaction(tx)
   console.log(`Transaction sent:     ${txResponse.hash}`)
 
@@ -88,10 +101,12 @@ async function sendTransfer(provider, wallet, to, amount, bridge, bus) {
   console.log(`  XChain tree:   ${decoded}`)
   console.log(`  Merkle root:   ${block.crossChainTreeHash}`)
 
-  if (decoded[0][1] == msgHash) {
+  // the transaction xchain msg of interest should be the last in the decoded tree
+  if (decoded[decoded.length - 1][1] == msgHash) {
     console.log('Value transfer hash is in the xchain tree')
   }
 
+  // return the msg, its hash, and the xchain tree root hash
   return [msg, msgHash, block.crossChainTreeHash]
 }
 
@@ -106,9 +121,13 @@ async function waitForRootPublished(node_url, msgHash, interval = 5000, timeout 
        const result = await tenGetXchainProof(node_url, 'v', msgHash)
        root = result[1]
        if (root !== null) {
-           if (proof == null) { proof = [] }
+           if (result[0] == null) {
+             proof = []
+             console.log('Proof was null so setting to empty list')
+           }
            else {
                proof = decode(Buffer.from(result[0].slice(2), "hex"));
+               console.log(`  Decoded Proof  = ${proof}`)
            }
        }
     } catch (error) {
@@ -137,6 +156,9 @@ async function extractNativeValue(provider, wallet, management, msg, proof, root
 
   const txReceipt = await txResponse.wait();
   console.log(`Transaction received: ${txReceipt.transactionHash}`)
+
+  const l1_cost = parseInt(txReceipt.gasUsed) * parseInt(txReceipt.effectiveGasPrice)
+  console.log(`  L1 cost:       ${l1_cost}`)
 }
 
 commander

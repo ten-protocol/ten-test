@@ -5,7 +5,9 @@
         <title>Bridge: ethers withdraw native funds across the bridge using sendNative and ExtractNativeValue</title>
         <purpose><![CDATA[
 Hands over the transaction and processing of the send native call, and value transfer extraction, from python to
-an ethers client.
+an ethers client. The client sends two transactions in quick order to get a xchain tree with multiple leafs, and
+therefore a proof that is non null. One of the transactions is released and the test ensures the balance of the sender
+goes up as expected (including the costs on the L1 side).
 ]]>
         </purpose>
     </description>
