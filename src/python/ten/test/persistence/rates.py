@@ -49,18 +49,26 @@ class RatesPersistence:
         self.dbconnection.connection.commit()
 
     def insert_rates(self, crypto, currency, time, rate):
-        """Insert a new rate for a particular crypto and currency."""
-        self.cursor.execute(self.sqlins, (crypto, currency, time, str(rate)))
-        self.dbconnection.connection.commit()
+        """Insert a new rate for a particular crypto and currency.
+
+        Note rates are only inserted if they are newer than the last recorded by 1 hour.
+        """
+        last_time, _ = self.cursor.execute(self.sqlsel, (crypto, currency))
+        if last_time is not None and time > last_time + 3600:
+            try:
+                self.cursor.execute(self.sqlins, (crypto, currency, time, str(rate)))
+                self.dbconnection.connection.commit()
+            except:
+                pass # fail silently
 
     def get_latest_rate(self, crypto, currency):
         """Return the latest rate for the crypto and currency."""
         self.cursor.execute(self.sqlsel, (crypto, currency))
         try:
-            result = self.cursor.fetchone()[1]
-            return float(result)
+            result = self.cursor.fetchone()
+            return int(result[0]), float(result[1])
         except:
-            return None
+            return None, None
 
 
 
