@@ -55,7 +55,7 @@ class GenericNetworkTest(BaseTest):
         self.transfer_costs = []
         self.average_transfer_cost = 21000000000000
         self.cost = 0
-        self.eth_price = self.rates_db.get_latest_rate('ETH', 'USD')
+        _, self.eth_price = self.rates_db.get_latest_rate('ETH', 'USD')
 
         for fn in Properties().accounts():
             web3, account = self.network_funding.connect(self, fn(), check_funds=False, verbose=False)
