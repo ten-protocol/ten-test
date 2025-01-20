@@ -32,7 +32,7 @@ jobs:
   test-run:
     runs-on: [self-hosted, Linux, X64, all-testnets]
     steps:
-      - name: Set the variables
+      - name: Set the default version
         env:
           DEFAULT_VERSION: 'main'
         run: echo "VERSION=${{ github.event.inputs.release || env.DEFAULT_VERSION }}" >> $GITHUB_ENV
@@ -76,7 +76,7 @@ jobs:
           path: |
             ${{ github.workspace }}/ten-test/results_graphs.pdf
           if-no-files-found: ignore
-          retention-days: 1
+          retention-days: 4
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v4

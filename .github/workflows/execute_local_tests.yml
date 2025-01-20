@@ -90,13 +90,6 @@ jobs:
           cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -r -m ten.local -e skip -e performance -e robustness
 
-      - name: 'Run the performance summary'
-        if: always()
-        continue-on-error: true
-        run: |
-          cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.local graph_performance
-
       - name: 'Collate performance output'
         if: always()
         continue-on-error: true
@@ -113,7 +106,7 @@ jobs:
           path: |
             ${{ github.workspace }}/ten-test/results_graphs.pdf
           if-no-files-found: ignore
-          retention-days: 1
+          retention-days: 4
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v4
