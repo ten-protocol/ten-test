@@ -53,7 +53,7 @@ class RatesPersistence:
 
         Note rates are only inserted if they are newer than the last recorded by 1 hour.
         """
-        last_time, _ = self.cursor.get_latest_rate(crypto, currency)
+        last_time, _ = self.get_latest_rate(crypto, currency)
         if last_time is not None and time > last_time + 3600:
             try:
                 self.cursor.execute(self.sqlins, (crypto, currency, time, str(rate)))
