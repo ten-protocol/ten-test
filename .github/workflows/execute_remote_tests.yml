@@ -73,7 +73,7 @@ jobs:
           /usr/local/bin/pysys.py run -r -m ${{ github.event.inputs.environment }} ${{ env.XARGS }} ${{ github.event.inputs.arguments }}
 
       - name: 'Run the performance summary'
-        if: ${{ github.event.inputs.persist == 'true' }}
+        if: ${{ github.event.inputs.persist_performance == 'true' }}
         continue-on-error: true
         run: |
           cd ${{ github.workspace }}/ten-test/admin
