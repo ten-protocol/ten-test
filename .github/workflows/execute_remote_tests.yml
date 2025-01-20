@@ -30,7 +30,7 @@ on:
 
 jobs:
   test-run:
-    runs-on: [self-hosted, Linux, X64, local-testnets]
+    runs-on: [self-hosted, Linux, X64, all-testnets]
     steps:
       - name: Set the default version
         env:
