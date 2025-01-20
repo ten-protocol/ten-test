@@ -14,6 +14,7 @@ transactions.
     <classification>
         <groups inherit="true">
             <group>bridge</group>
+            <group>withdrawals</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

@@ -10,7 +10,7 @@ class PySysTest(TenNetworkTest):
     def execute(self):
         props = Properties()
         transfer = 4000000000000000
-        gas_attempts = 12 if self.is_local_ten() else 480 # 1min on a local, 40min otherwise
+        proof_timeout = 60 if self.is_local_ten() else 2400
 
         # create the bridge user
         accnt = BridgeUser(self, props.account1pk(), props.account1pk(), 'accnt1')
@@ -41,27 +41,15 @@ class PySysTest(TenNetworkTest):
 
         # get the root and proof of inclusion from the node
         self.log.info('Request proof and root from the node')
-        root, proof = None, None
-        start = time.time()
-        while root is None:
-            proof, root = self.ten_get_xchain_proof('v', msg_hash)
-            if root is not None: break
-            if time.time() - start > 60:
-                raise TimeoutError('Timed out waiting for message to be verified')
-            time.sleep(2.0)
-        proof = rlp.decode(bytes.fromhex(proof[2:]))
-
-        self.log.info('Received proof and root from the node')
+        root, proof = accnt.l2.wait_for_proof('v', msg_hash, proof_timeout)
         self.log.info('  returned root:         %s', root)
         self.log.info('  returned proof:        %s', [p.hex() for p in proof])
         self.assertTrue(root == block.crossChainTreeHash,
                         assertMessage='Returned root should be same as the crossChainTreeHash')
 
         # release the funds from the L1 and check the balances
-        start_time = time.perf_counter_ns()
-        tx_receipt = accnt.l1.release_funds(msg, proof, root, gas_attempts=gas_attempts)
-        end_time = time.perf_counter_ns()
-        self.log.info('Total time waiting for the gas estimate to pass: %.1f secs', (end_time-start_time)/1e9)
+        self.log.info('Relay the message on the L1 to release them')
+        tx_receipt = accnt.l1.release_funds(msg, proof, root)
 
         l1_cost = int(tx_receipt.gasUsed) * int(tx_receipt.effectiveGasPrice)
         l1_after = accnt.l1.web3.eth.get_balance(accnt.l1.account.address)

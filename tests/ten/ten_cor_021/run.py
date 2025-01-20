@@ -1,4 +1,3 @@
-import time, rlp
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.erc20 import MintedERC20Token
 from ten.test.utils.bridge import BridgeUser
@@ -12,7 +11,7 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         props = Properties()
-        gas_attempts = 12 if self.is_local_ten() else 480 # 1min on a local, 40min otherwise
+        proof_timeout = 60 if self.is_local_ten() else 2400
 
         # create the users for the test
         funded = BridgeUser(self, props.l1_funded_account_pk(self.env), props.account2pk(), 'funded')
@@ -69,28 +68,15 @@ class PySysTest(TenNetworkTest):
 
         # get the root and proof of inclusion from the node
         self.log.info('Request proof and root from the node')
-        root, proof = None, None
-        start = time.time()
-        while root is None:
-            proof, root = self.ten_get_xchain_proof('m', msg_hash)
-            if root is not None: break
-            if time.time() - start > 60:
-                raise TimeoutError('Timed out waiting for message to be verified')
-            time.sleep(2.0)
-        proof = rlp.decode(bytes.fromhex(proof[2:]))
-
-        self.log.info('Received proof and root from the node')
+        root, proof = accnt1.l2.wait_for_proof('m', msg_hash, proof_timeout)
         self.log.info('  returned root:         %s', root)
         self.log.info('  returned proof:        %s', [p.hex() for p in proof])
         self.assertTrue(root == block.crossChainTreeHash,
                         assertMessage='Returned root should be same as the crossChainTreeHash')
 
         # release the tokens from the L1 and check the balances
-        self.log.info('Wait for the message on the L1 and relay it')
-        start_time = time.perf_counter_ns()
-        _ = accnt1.l1.release_tokens(msg, proof, block.crossChainTreeHash, gas_attempts=gas_attempts)
-        end_time = time.perf_counter_ns()
-        self.log.info('Total time waiting for the gas estimate to pass: %.1f secs', (end_time-start_time)/1e9)
+        self.log.info('Relay the message on the L1 to release them')
+        _ = accnt1.l1.release_tokens(msg, proof, block.crossChainTreeHash)
 
         # print out the balances and perform test validation
         self.log.info('Print out token balances')

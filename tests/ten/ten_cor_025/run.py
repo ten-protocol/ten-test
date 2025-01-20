@@ -11,6 +11,7 @@ class PySysTest(TenNetworkTest):
     def execute(self):
         props = Properties()
         transfer = 2000000000000000
+        proof_timeout = 60 if self.is_local_ten() else 2400
 
         # create the bridge user
         accnt = BridgeUser(self, props.account1pk(), props.account1pk(), 'accnt1')
@@ -53,17 +54,7 @@ class PySysTest(TenNetworkTest):
 
         # get the root and proof of inclusion from the node
         self.log.info('Request proof and root from the node')
-        root, proof = None, None
-        start = time.time()
-        while root is None:
-            proof, root = self.ten_get_xchain_proof('v', msg_hash)
-            if root is not None: break
-            if time.time() - start > 60:
-                raise TimeoutError('Timed out waiting for message to be verified')
-            time.sleep(2.0)
-        proof = rlp.decode(bytes.fromhex(proof[2:]))
-
-        self.log.info('Received proof and root from the node')
+        root, proof = accnt.l2.wait_for_proof('v', msg_hash, proof_timeout)
         self.log.info('  returned root:         %s', root)
         self.log.info('  returned proof:        %s', [p.hex() for p in proof])
         self.assertTrue(root == block.crossChainTreeHash,
