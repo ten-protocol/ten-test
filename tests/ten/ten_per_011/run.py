@@ -73,7 +73,7 @@ class PySysTest(TenNetworkTest):
         self.graph_all_clients(throughput_4_clients)
 
         # persist the result (average of the last three clients)
-        if self.PERSIST_PERFORMANCE:
+        if self.PERSIST_PERF:
             self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()),
                                           '%.2f' % (sum(results[-3:]) / 3.0))
 
