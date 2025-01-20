@@ -74,8 +74,8 @@ class PySysTest(TenNetworkTest):
 
         # persist the result (average of the last three clients)
         if self.PERSIST_PERF:
-            self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()),
-                                          '%.2f' % (sum(results[-3:]) / 3.0))
+            self.log.info('Persisting performance result: %.3f' % (sum(results[-3:])/3.0))
+            self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()), '%.2f' % (sum(results[-3:]) / 3.0))
 
         # passed if no failures (though pdf output should be reviewed manually)
         self.addOutcome(PASSED)

@@ -110,4 +110,5 @@ class PySysTest(TenNetworkTest):
 
         # persist the result
         if self.PERSIST_PERF:
+            self.log.info('Persisting performance result: %s' % latency)
             self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()), latency)
