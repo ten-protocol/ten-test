@@ -15,11 +15,23 @@ on:
         description: 'Arguments to the pysys run'
         required: true
         default: '-e skip -e performance -e robustness'
+      persist_performance:
+        description: "Persist performance to the db"
+        type: choice
+        required: true
+        default: 'false'
+        options:
+          - true
+          - false
 
 jobs:
   test-run:
     runs-on: [self-hosted, Linux, X64, local-testnets]
     steps:
+      - name: Sets the xargs
+        run: echo "XARGS=-XPERSIST_PERF" >> $GITHUB_ENV
+        if: ${{ github.event.inputs.persist == 'true' }}
+
       - name: 'Check out ten-test'
         uses: actions/checkout@v3
         with:
@@ -82,7 +94,7 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -r -m ten.local ${{ github.event.inputs.arguments }}
+          /usr/local/bin/pysys.py run -r -m ten.local ${{ env.XARGS }} ${{ github.event.inputs.arguments }}
 
       - name: 'Run tests on schedule'
         if: ${{ github.event_name == 'schedule' }}
@@ -91,11 +103,11 @@ jobs:
           /usr/local/bin/pysys.py run -r -m ten.local -e skip -e performance -e robustness
 
       - name: 'Run the performance summary'
-        if: always()
+        if: ${{ github.event.inputs.persist == 'true' }}
         continue-on-error: true
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.local graph_performance
+          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} graph_performance
 
       - name: 'Collate performance output'
         if: always()
@@ -113,7 +125,7 @@ jobs:
           path: |
             ${{ github.workspace }}/ten-test/results_graphs.pdf
           if-no-files-found: ignore
-          retention-days: 1
+          retention-days: 4
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v4

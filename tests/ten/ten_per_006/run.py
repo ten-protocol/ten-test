@@ -64,7 +64,7 @@ class PySysTest(TenNetworkTest):
                 fp.write('%d %.2f\n' % (clients, throughput))
 
                 # persist the result
-                if clients == 4:
+                if clients == 4 and self.PERSIST_PERFORMANCE:
                     self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()), '%.2f' % throughput)
 
         # plot the summary graph

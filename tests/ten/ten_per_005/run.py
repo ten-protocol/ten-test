@@ -74,7 +74,8 @@ class PySysTest(TenNetworkTest):
                             str(self.mode), str(txs_sent), str(duration), '%d' % self.CLIENTS)
 
         # persist the result
-        self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()), float(txs_sent)/float(duration))
+        if self.PERSIST_PERFORMANCE:
+            self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()), float(txs_sent)/float(duration))
 
         # passed if no failures (though pdf output should be reviewed manually)
         self.addOutcome(PASSED)

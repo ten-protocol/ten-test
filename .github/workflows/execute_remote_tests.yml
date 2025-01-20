@@ -18,6 +18,14 @@ on:
         description: 'Arguments to the pysys run'
         required: true
         default: '-e skip -e performance'
+      persist_performance:
+        description: "Persist performance to the db"
+        type: choice
+        required: true
+        default: 'false'
+        options:
+          - true
+          - false
       release:
         type: choice
         description: 'The release version of testnet'
@@ -32,7 +40,11 @@ jobs:
   test-run:
     runs-on: [self-hosted, Linux, X64, all-testnets]
     steps:
-      - name: Set the variables
+      - name: Sets the xargs
+        run: echo "XARGS=-XPERSIST_PERF" >> $GITHUB_ENV
+        if: ${{ github.event.inputs.persist == 'true' }}
+
+      - name: Set the default version
         env:
           DEFAULT_VERSION: 'main'
         run: echo "VERSION=${{ github.event.inputs.release || env.DEFAULT_VERSION }}" >> $GITHUB_ENV
@@ -58,7 +70,14 @@ jobs:
       - name: 'Run tests'
         run: |
           cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -r -m ${{ github.event.inputs.environment }} ${{ github.event.inputs.arguments }}
+          /usr/local/bin/pysys.py run -r -m ${{ github.event.inputs.environment }} ${{ env.XARGS }} ${{ github.event.inputs.arguments }}
+
+      - name: 'Run the performance summary'
+        if: ${{ github.event.inputs.persist == 'true' }}
+        continue-on-error: true
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} graph_performance
 
       - name: 'Collate pdf output'
         if: always()
@@ -76,7 +95,7 @@ jobs:
           path: |
             ${{ github.workspace }}/ten-test/results_graphs.pdf
           if-no-files-found: ignore
-          retention-days: 1
+          retention-days: 4
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v4

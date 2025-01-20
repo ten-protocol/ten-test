@@ -63,7 +63,8 @@ class PySysTest(TenNetworkTest):
                             str(self.mode), str(txs_sent), str(duration), '%.3f' % average)
 
         # persist the result
-        self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()), average)
+        if self.PERSIST_PERFORMANCE:
+            self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()), average)
 
         # passed if no failures (though pdf output should be reviewed manually)
         self.addOutcome(PASSED)

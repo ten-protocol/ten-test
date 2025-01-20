@@ -24,6 +24,8 @@ class GenericNetworkTest(BaseTest):
     """The base test used by all tests cases, against any request environment. """
     MSG_ID = 1                      # global used for http message requests numbers
     NODE_HOST = None                # if not none overrides the node host from the properties file
+    PERSIST_PERF = False            # if true persist performance results to the db
+
 
     def __init__(self, descriptor, outsubdir, runner):
         """Call the parent constructor but set the mode to ten if non is set. """
