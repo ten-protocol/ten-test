@@ -30,7 +30,7 @@ jobs:
     steps:
       - name: Sets the xargs
         run: echo "XARGS=-XPERSIST_PERF" >> $GITHUB_ENV
-        if: ${{ github.event.inputs.persist == 'true' }}
+        if: ${{ github.event.inputs.persist_performance == 'true' }}
 
       - name: 'Check out ten-test'
         uses: actions/checkout@v3
