@@ -24,7 +24,7 @@ set multiplot layout 3,3 title ARG2." (page 1): ".ARG1 noenhanced scale 0.95,0.9
 
 @Y1MARGIN; @X1MARGIN; @NOXTICS; @YTICS;
 f1(x) = m*x + b
-fit f1(x) "ten_per_001.log" using 1:2 via m,b
+fit f1(x) "ten_per_001.log" using 1:2:3 via m,b
 set offsets graph 0.0, 0.0, 3, 3
 set title '{/Arial:Bold=10 ten\_per\_001}' offset 0,-2.5
 plot "ten_per_001.log" using 1:2 with linespoints lw 1 lc 11 pt 6 ps 0.5 notitle, \
@@ -32,7 +32,7 @@ plot "ten_per_001.log" using 1:2 with linespoints lw 1 lc 11 pt 6 ps 0.5 notitle
 
 @Y1MARGIN; @X2MARGIN; @NOXTICS; @YTICS;
 f2(x) = m*x + b
-fit f2(x) "ten_per_002.log" using 1:2 via m,b
+fit f2(x) "ten_per_002.log" using 1:2:3 via m,b
 set offsets graph 0.0, 0.0, 3, 3
 set ytics offset 3.6, 0
 set title '{/Arial:Bold=10 ten\_per\_002}' offset 0,-2.5
@@ -41,7 +41,7 @@ plot "ten_per_002.log" using 1:2 with linespoints lw 1 lc 11 pt 6 ps 0.5 notitle
 
 @Y1MARGIN; @X3MARGIN; @NOXTICS; @YTICS;
 f3(x) = m*x + b
-fit f3(x) "ten_per_003.log" using 1:2 via m,b
+fit f3(x) "ten_per_003.log" using 1:2:3 via m,b
 set offsets graph 0.0, 0.0, 3, 3
 set ytics offset 3.6, 0
 set title '{/Arial:Bold=10 ten\_per\_003}' offset 0,-2.5
@@ -50,7 +50,7 @@ plot "ten_per_003.log" using 1:2 with linespoints lw 1 lc 11 pt 6 ps 0.5 notitle
 
 @Y2MARGIN; @X1MARGIN; @NOXTICS; @YTICS;
 f4(x) = m*x + b
-fit f4(x) "ten_per_004.log" using 1:2 via m,b
+fit f4(x) "ten_per_004.log" using 1:2:3 via m,b
 set offsets graph 0.0, 0.0, 3, 3
 set ytics offset 0,0
 set title '{/Arial:Bold=10 ten\_per\_004}' offset 0,-2.5
@@ -59,7 +59,7 @@ plot "ten_per_004.log" using 1:2 with linespoints lw 1 lc 11 pt 6 ps 0.5 notitle
 
 @Y2MARGIN; @X2MARGIN; @NOXTICS; @YTICS;
 f5(x) = m*x + b
-fit f5(x) "ten_per_005.log" using 1:2 via m,b
+fit f5(x) "ten_per_005.log" using 1:2:3 via m,b
 set offsets graph 0.0, 0.0, 3, 3
 set ytics offset 3.6, 0
 set title '{/Arial:Bold=10 ten\_per\_005}' offset 0,-2.5
@@ -68,7 +68,7 @@ plot "ten_per_005.log" using 1:2 with linespoints lw 1 lc 11 pt 6 ps 0.5 notitle
 
 @Y2MARGIN; @X3MARGIN; @NOXTICS; @YTICS;
 f6(x) = m*x + b
-fit f6(x) "ten_per_006.log" using 1:2 via m,b
+fit f6(x) "ten_per_006.log" using 1:2:3 via m,b
 set offsets graph 0.0, 0.0, 0.01, 0.01
 set ytics offset 5.0, 0
 set title '{/Arial:Bold=10 ten\_per\_006}' offset 0,-2.5
@@ -77,7 +77,7 @@ plot "ten_per_006.log" using 1:2 with linespoints lw 1 lc 11 pt 6 ps 0.5 notitle
 
 @Y3MARGIN; @X1MARGIN; @XTICS; @YTICS;
 f7(x) = m*x + b
-fit f7(x) "ten_per_010.log" using 1:2 via m,b
+fit f7(x) "ten_per_010.log" using 1:2:3 via m,b
 set offsets graph 0.0, 0.0, 0.01, 0.01
 set ytics offset 0,0
 set title '{/Arial:Bold=10 ten\_per\_010}' offset 0,-2.5
@@ -86,7 +86,7 @@ plot "ten_per_010.log" using 1:2 with linespoints lw 1 lc 11 pt 6 ps 0.5 notitle
 
 @Y3MARGIN; @X2MARGIN; @XTICS; @YTICS;
 f8(x) = m*x + b
-fit f8(x) "ten_per_011.log" using 1:2 via m,b
+fit f8(x) "ten_per_011.log" using 1:2:3 via m,b
 set offsets graph 0.0, 0.0, 50, 50
 set ytics offset 4.5, 0
 set title '{/Arial:Bold=10 ten\_per\_011}' offset 0,-2.5
@@ -95,7 +95,7 @@ plot "ten_per_011.log" using 1:2 with linespoints lw 1 lc 11 pt 6 ps 0.5 notitle
 
 @Y3MARGIN; @X3MARGIN; @XTICS; @YTICS;
 f9(x) = m*x + b
-fit f9(x) "ten_per_012.log" using 1:2 via m,b
+fit f9(x) "ten_per_012.log" using 1:2:3 via m,b
 set offsets graph 0.0, 0.0, 10, 10
 set ytics offset 3.6, 0
 set title '{/Arial:Bold=10 ten\_per\_012}' offset 0,-2.5

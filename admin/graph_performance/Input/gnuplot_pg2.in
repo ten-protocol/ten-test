@@ -24,7 +24,7 @@ set multiplot layout 3,3 title ARG2." (page 2): ".ARG1 noenhanced scale 0.95,0.9
 
 @Y1MARGIN; @X1MARGIN; @NOXTICS; @YTICS;
 f1(x) = m*x + b
-fit f1(x) "ten_per_020.log" using 1:2 via m,b
+fit f1(x) "ten_per_020.log" using 1:2:3 via m,b
 set offsets graph 0.0, 0.0, 3, 3
 set title '{/Arial:Bold=10 ten\_per\_020}' offset 0,-2.5
 plot "ten_per_020.log" using 1:2 with linespoints lw 1 lc 11 pt 6 ps 0.5 notitle, \
@@ -32,7 +32,7 @@ plot "ten_per_020.log" using 1:2 with linespoints lw 1 lc 11 pt 6 ps 0.5 notitle
 
 @Y1MARGIN; @X2MARGIN; @NOXTICS; @YTICS;
 f2(x) = m*x + b
-fit f2(x) "ten_per_021.log" using 1:2 via m,b
+fit f2(x) "ten_per_021.log" using 1:2:3 via m,b
 set offsets graph 0.0, 0.0, 3, 3
 set ytics offset 3.6, 0
 set title '{/Arial:Bold=10 ten\_per\_021}' offset 0,-2.5
