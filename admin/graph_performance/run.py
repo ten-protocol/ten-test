@@ -1,4 +1,5 @@
 import os
+import numpy as np
 from datetime import datetime
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
@@ -12,8 +13,13 @@ class PySysTest(TenNetworkTest):
 
         for test in tests:
             with open(os.path.join(self.output, '%s.log' % test), 'w') as fp:
-                for entry in reversed(self.results_db.get_results(test=test, environment=self.env)):
-                    fp.write('%s %s\n' % (self.epoch_to_fractional_doy(entry[0]), entry[1]))
+                entries = self.results_db.get_results(test=test, environment=self.env)
+                weights = [1 - (i / (len(entries) - 1)) * (1 - 0.1) for i in range(len(entries))]
+                count = 0
+                for entry in reversed(entries):
+                    weight = weights[count]
+                    fp.write('%s %s %s\n' % (self.epoch_to_fractional_doy(entry[0]), entry[1], weight))
+                    count = count + 1
         try:
             self.graph()
         except Exception as e:
