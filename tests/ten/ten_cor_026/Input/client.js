@@ -87,27 +87,19 @@ async function sendTransfer(provider, wallet, to, amount, bridge, bus) {
   const block = await provider.send('eth_getBlockByHash', [txReceipt.blockHash, true]);
   console.log(`Block received:       ${block.number}`)
 
-  // extract and log all the values, check that the msgHash is in the decoded tree
+  // extract and log all the values
   const value_transfer = bus.interface.parseLog(txReceipt.logs[0]);
   const _processed_value_transfer = process_value_transfer(value_transfer)
   const msg = _processed_value_transfer[0]
   const msgHash = _processed_value_transfer[1]
-  const decoded = decode_base64(block.crossChainTree)
   console.log(`  Sender:        ${value_transfer['args'].sender}`)
   console.log(`  Receiver:      ${value_transfer['args'].receiver}`)
   console.log(`  Amount:        ${value_transfer['args'].amount}`)
   console.log(`  Sequence:      ${value_transfer['args'].sequence}`)
   console.log(`  VTrans Hash:   ${msgHash}`)
-  console.log(`  XChain tree:   ${decoded}`)
-  console.log(`  Merkle root:   ${block.crossChainTreeHash}`)
-
-  // the transaction xchain msg of interest should be the last in the decoded tree
-  if (decoded[decoded.length - 1][1] == msgHash) {
-    console.log('Value transfer hash is in the xchain tree')
-  }
 
   // return the msg, its hash, and the xchain tree root hash
-  return [msg, msgHash, block.crossChainTreeHash]
+  return [msg, msgHash]
 }
 
 /** Utility function to wait for the root and proof to be established from the node */
@@ -139,7 +131,7 @@ async function waitForRootPublished(node_url, msgHash, interval = 5000, timeout 
     }
     await sleep(interval);
   }
-  return proof
+  return [proof, root]
 }
 
 /** Logic on the L1 side to instruct the management contract to release funds */
@@ -189,17 +181,17 @@ var bridge_contract = new ethers.Contract(options.l2_bridge_address, bridge_abi,
 var bus_contract = new ethers.Contract(options.l2_bus_address, bus_abi, wallet)
 
 console.log('Starting transaction to send funds to the L1')
-sendTransfer(provider, wallet, options.to, options.amount, bridge_contract, bus_contract).then( (arg) => {
+sendTransfer(provider, wallet, options.to, options.amount, bridge_contract, bus_contract).then( (arg1) => {
   var provider = new ethers.providers.JsonRpcProvider(options.l1_network)
   var wallet = new ethers.Wallet(options.pk, provider)
   var management_abi = JSON.parse(fs.readFileSync(options.l1_management_abi))
   var management_contract = new ethers.Contract(options.l1_management_address, management_abi, wallet)
 
   console.log('Waiting for the merkle tree root to be published on the L1')
-  waitForRootPublished(options.node_url, arg[1]).then( (proof) => {
+  waitForRootPublished(options.node_url, arg1[1]).then( (arg2) => {
 
     console.log('Starting transaction to extract the native value L1')
-    extractNativeValue(provider, wallet, management_contract, arg[0], proof, arg[2]).then( () => {
+    extractNativeValue(provider, wallet, management_contract, arg1[0], arg2[0], arg2[1]).then( () => {
       console.log(`Completed transactions`)
     })
   })

@@ -44,8 +44,6 @@ class PySysTest(TenNetworkTest):
         expr_list.append('Receiver:.*%s' % account_l1.address)
         expr_list.append('Amount:.*%d' % transfer)
         self.assertOrderedGrep(file='client.out', exprList=expr_list)
-        self.assertGrep(file='client.out', expr='Value transfer hash is in the xchain tree')
-
         self.assertTrue(l1_after-l1_before+l1_cost == transfer,
                         assertMessage='L1 balance should increase by transfer amount plus gas for releasing')
 

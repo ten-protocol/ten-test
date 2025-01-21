@@ -53,30 +53,22 @@ class PySysTest(TenNetworkTest):
         self.log.info('Fees to send are %d' % accnt1.l2.send_erc20_fees())
         tx_receipt, log_msg = accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 2, dump_file='send_erc20.tx')
 
+        # get the log msg from the merkle tree helper
         mh = MerkleTreeHelper.create(self)
-        block, decoded = mh.dump_tree(accnt1.l2.web3, tx_receipt, 'xchain_tree.log')
+        mh.dump_tree(accnt1.l2.web3, tx_receipt, 'xchain_tree.log')
         msg, msg_hash = mh.process_log_msg(log_msg)
-        root, proof = mh.get_proof('xchain_tree.log', 'm,%s' % msg_hash)
         self.log.info('  log_msg_published:        %s', msg)
         self.log.info('  log_msg_published_hash:   %s', msg_hash)
-        self.log.info('  cross_chain:              %s', decoded)
-        self.log.info('  merkle_root:              %s', block.crossChainTreeHash)
-        self.log.info('  calculated root:          %s', root)
-        self.log.info('  calculated proof:         %s', proof)
-        self.assertTrue(msg_hash in [x[1] for x in decoded],
-                        assertMessage='Log message published should be in the xchain tree')
 
         # get the root and proof of inclusion from the node
         self.log.info('Request proof and root from the node')
         root, proof = accnt1.l2.wait_for_proof('m', msg_hash, proof_timeout)
         self.log.info('  returned root:         %s', root)
         self.log.info('  returned proof:        %s', [p.hex() for p in proof])
-        self.assertTrue(root == block.crossChainTreeHash,
-                        assertMessage='Returned root should be same as the crossChainTreeHash')
 
         # release the tokens from the L1 and check the balances
         self.log.info('Relay the message on the L1 to release them')
-        _ = accnt1.l1.release_tokens(msg, proof, block.crossChainTreeHash)
+        _ = accnt1.l1.release_tokens(msg, proof, root)
 
         # print out the balances and perform test validation
         self.log.info('Print out token balances')

@@ -15,6 +15,7 @@ goes up as expected (including the costs on the L1 side).
     <classification>
         <groups inherit="true">
             <group>bridge</group>
+            <group>withdrawals</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

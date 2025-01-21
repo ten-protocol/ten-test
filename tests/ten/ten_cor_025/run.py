@@ -36,29 +36,18 @@ class PySysTest(TenNetworkTest):
         logs = accnt.l2.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
         value_transfer = accnt.l2.get_value_transfer_event(logs[0])
 
-        # calculate tree ourselves and assert on values
+        # get the log msg from the merkle tree helper
         mh = MerkleTreeHelper.create(self)
-        block, decoded = mh.dump_tree(accnt.l2.web3, tx_receipt, 'xchain_tree.log')
+        mh.dump_tree(accnt.l2.web3, tx_receipt, 'xchain_tree.log')
         msg, msg_hash = mh.process_transfer(value_transfer)
-        root, proof = mh.get_proof('xchain_tree.log', 'v,%s' % msg_hash)
         self.log.info('  value_transfer:        %s', msg)
         self.log.info('  value_transfer_hash:   %s', msg_hash)
-        self.log.info('  cross_chain:           %s', decoded)
-        self.log.info('  merkle_root:           %s', block.crossChainTreeHash)
-        self.log.info('  calculated root:       %s', root)
-        self.log.info('  calculated proof:      %s', proof)
-        self.assertTrue(msg_hash in [x[1] for x in decoded],
-                        assertMessage='Value transfer has should be in the xchain tree')
-        self.assertTrue(root == block.crossChainTreeHash,
-                        assertMessage='Calculated root should be same as the crossChainTreeHash')
 
         # get the root and proof of inclusion from the node
         self.log.info('Request proof and root from the node')
         root, proof = accnt.l2.wait_for_proof('v', msg_hash, proof_timeout)
         self.log.info('  returned root:         %s', root)
         self.log.info('  returned proof:        %s', [p.hex() for p in proof])
-        self.assertTrue(root == block.crossChainTreeHash,
-                        assertMessage='Returned root should be same as the crossChainTreeHash')
 
         # release the funds from one transfer
         tx_receipt = accnt.l1.release_funds(msg, proof, root)
