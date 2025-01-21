@@ -470,8 +470,8 @@ class TenNetworkTest(GenericNetworkTest):
         data = {"jsonrpc": "2.0",
                 "method": "debug_eventLogRelevancy",
                 "params": [{
-                    "fromBlock":fromBlock,
-                    "toBlock":toBlock,
+                    "fromBlock": fromBlock,
+                    "toBlock": toBlock,
                     "address": address,
                     "topics": [signature]
                 }],
@@ -481,21 +481,18 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def obscuro_health(self):
-        """Get the debug_LogVisibility. """
-        data = {"jsonrpc": "2.0", "method": "ten_health", "id": self.MSG_ID }
-        response = self.post(data)
-        if 'result' in response.json(): return response.json()['result']
-        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
-        return None
-
-    def obscuro_config(self):
+    def ten_get_xchain_proof(self, type, xchain_message):
         """Get the obscuro_config. """
-        data = {"jsonrpc": "2.0", "method": "ten_config", "id": self.MSG_ID }
+        data = {"jsonrpc": "2.0",
+                "method": "ten_getCrossChainProof",
+                "params": [type, xchain_message],
+                "id": self.MSG_ID }
         response = self.post(data)
-        if 'result' in response.json(): return response.json()['result']
-        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
-        return None
+        if 'result' in response.json():
+            return response.json()['result']['Proof'], response.json()['result']['Root']
+        elif 'error' in response.json():
+            self.log.warn('Error getting proof, reason = %s', response.json()['error']['message'])
+        return None, None
 
     def post(self, data, server=None):
         """Post to the node host. """

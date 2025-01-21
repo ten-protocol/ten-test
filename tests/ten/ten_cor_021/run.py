@@ -1,4 +1,3 @@
-import time
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.erc20 import MintedERC20Token
 from ten.test.utils.bridge import BridgeUser
@@ -12,7 +11,7 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         props = Properties()
-        gas_attempts = 12 if self.is_local_ten() else 480 # 1min on a local, 40min otherwise
+        proof_timeout = 60 if self.is_local_ten() else 2400
 
         # create the users for the test
         funded = BridgeUser(self, props.l1_funded_account_pk(self.env), props.account2pk(), 'funded')
@@ -53,30 +52,23 @@ class PySysTest(TenNetworkTest):
         self.log.info('Send tokens to cross the bridge on the L2')
         self.log.info('Fees to send are %d' % accnt1.l2.send_erc20_fees())
         tx_receipt, log_msg = accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 2, dump_file='send_erc20.tx')
-        mh = MerkleTreeHelper.create(self)
-        block, decoded = mh.dump_tree(accnt1.l2.web3, tx_receipt, 'cross_train_tree.log')
-        msg, msg_hash = mh.process_log_msg(log_msg)
 
+        # get the log msg from the merkle tree helper
+        mh = MerkleTreeHelper.create(self)
+        mh.dump_tree(accnt1.l2.web3, tx_receipt, 'xchain_tree.log')
+        msg, msg_hash = mh.process_log_msg(log_msg)
         self.log.info('  log_msg_published:        %s', msg)
         self.log.info('  log_msg_published_hash:   %s', msg_hash)
-        self.log.info('  cross_chain:              %s', decoded)
-        self.log.info('  merkle_root:              %s', block.crossChainTreeHash)
-        self.assertTrue(msg_hash in [x[1] for x in decoded],
-                        assertMessage='Log message published should be in the xchain tree')
 
-        # from the dump, get the root and proof of inclusion and assert same root as in the block header
-        root, proof = mh.get_proof('cross_train_tree.log', 'm,%s' % msg_hash)
-        self.log.info('  calculated root:      %s', root)
-        self.log.info('  calculated proof:     %s', proof)
-        self.assertTrue(block.crossChainTreeHash == root,
-                        assertMessage='Calculated merkle root should be same as the block header')
+        # get the root and proof of inclusion from the node
+        self.log.info('Request proof and root from the node')
+        root, proof = accnt1.l2.wait_for_proof('m', msg_hash, proof_timeout)
+        self.log.info('  returned root:         %s', root)
+        self.log.info('  returned proof:        %s', [p.hex() for p in proof])
 
         # release the tokens from the L1 and check the balances
-        self.log.info('Wait for the message on the L1 and relay it')
-        start_time = time.perf_counter_ns()
-        _ = accnt1.l1.release_tokens(msg, [] if proof is None else [proof], root, gas_attempts=gas_attempts)
-        end_time = time.perf_counter_ns()
-        self.log.info('Total time waiting for the gas estimate to pass: %.1f secs', (end_time-start_time)/1e9)
+        self.log.info('Relay the message on the L1 to release them')
+        _ = accnt1.l1.release_tokens(msg, proof, root)
 
         # print out the balances and perform test validation
         self.log.info('Print out token balances')

@@ -98,6 +98,7 @@ npm install ethers@5.7.2 --global
 npm install ethers6@npm:ethers@6.13.1 --global
 npm install commander@11.1.0 --global
 npm install @openzeppelin/merkle-tree@1.0.6 --global
+npm install @ethereumjs/rlp@5.0.2 --global
 
 pip3 install web3==6.13.0 
 pip3 install pysys==1.6.1
@@ -105,6 +106,7 @@ pip3 install solc-select==1.0.4
 pip3 install py-solc-x==2.0.2
 pip3 install numpy==1.26.4
 pip3 install mysql-connector-python==9.0.0
+pip3 install rlp==3.0.0
 
 solc-select install 0.8.15
 solc-select use 0.8.15

@@ -85,5 +85,5 @@ class MerkleTreeHelper:
                 result1 = regex1.search(line)
                 result2 = regex2.search(line)
                 if result1 is not None: root = result1.group('root')
-                if result2 is not None: proof = result2.group('proof')
-        return root, None if proof=='undefined' else proof
+                if result2 is not None: proof = result2.group('proof').split()
+        return root, [] if proof=='undefined' else proof

@@ -1,4 +1,4 @@
-import time, os
+import time, os, rlp
 from web3._utils.events import EventLogErrorFlags
 from ten.test.contracts.erc20 import ERC20Token
 from ten.test.contracts.bridge import WrappedERC20
@@ -30,6 +30,21 @@ class BridgeDetails:
             if time.time() - start > timeout:
                 raise TimeoutError('Timed out waiting for message to be verified')
             time.sleep(1.0)
+
+    def wait_for_proof(self, msg_type, msg_hash, timeout):
+        start_time = time.perf_counter_ns()
+        root, proof = None, None
+        start = time.time()
+        while root is None:
+            proof, root = self.test.ten_get_xchain_proof(msg_type, msg_hash)
+            if root is not None: break
+            if time.time() - start > timeout:
+                raise TimeoutError('Timed out waiting for message to be verified')
+            time.sleep(2.0)
+        proof = rlp.decode(bytes.fromhex(proof[2:]))
+        end_time = time.perf_counter_ns()
+        self.test.log.info('Total time waiting for the proof: %.1f secs', (end_time-start_time)/1e9)
+        return root, proof
 
     @classmethod
     def get_cross_chain_message(cls, log):
@@ -169,21 +184,21 @@ class L1BridgeDetails(BridgeDetails):
                                            timeout=timeout)
         return tx_receipt
 
-    def release_tokens(self, msg, proof, root, timeout=60, gas_attempts=20):
+    def release_tokens(self, msg, proof, root, timeout=60):
         """Release tokens to an account. """
         tx_receipt = self.network.transact(self.test, self.web3,
                                            self.xchain.contract.functions.relayMessageWithProof(msg, proof, root),
                                            self.account, gas_limit=self.xchain.GAS_LIMIT, persist_nonce=False,
-                                           timeout=timeout, gas_attempts=gas_attempts)
+                                           timeout=timeout)
 
         return tx_receipt
 
-    def release_funds(self, msg, proof, root, timeout=60, gas_attempts=20):
+    def release_funds(self, msg, proof, root, timeout=60):
         """Release funds to an account. """
         tx_receipt = self.network.transact(self.test, self.web3,
                                        self.management.contract.functions.ExtractNativeValue(msg, proof, root),
                                        self.account, gas_limit=self.management.GAS_LIMIT, persist_nonce=False,
-                                       timeout=timeout, gas_attempts=gas_attempts)
+                                       timeout=timeout)
 
         return tx_receipt
 

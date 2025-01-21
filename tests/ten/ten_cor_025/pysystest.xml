@@ -2,11 +2,11 @@
 <pysystest type="auto">
 
     <description>
-        <title>Bridge: ensure multiple send native transactions are included in the same cross chain tree</title>
+        <title>Bridge: withdraw native funds with multiple transactions included in the cross chain tree</title>
         <purpose><![CDATA[
-At the moment the test just ensures multiple send native transactions are included in the same cross chain tree. We can
-then extract the transfer event of one of the send natives, get the msg hash, and confirm that it is in the decoded
-tree.
+Ensure the withdrawal of native funds can be performed when there are multiple entries in the xchain tree. In the test
+we attempt to ensure 4 value transfers are included in the xchain tree, and then release the funds for one of the
+transactions.
 ]]>
         </purpose>
     </description>
@@ -14,6 +14,7 @@ tree.
     <classification>
         <groups inherit="true">
             <group>bridge</group>
+            <group>withdrawals</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

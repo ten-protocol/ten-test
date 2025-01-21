@@ -19,6 +19,7 @@ RUN npm install ethers@5.7.2 --global
 RUN npm install ethers6@npm:ethers@6.13.1 --global
 RUN npm install commander@11.1.0 --global
 RUN npm install @openzeppelin/merkle-tree@1.0.6 --global
+RUN npm install @ethereumjs/rlp@5.0.2 --global
 
 RUN apt install -y vim
 RUN apt install -y python3-pip
@@ -28,6 +29,7 @@ RUN python3 -m pip install pysys==1.6.1
 RUN python3 -m pip install py-solc-x
 RUN python3 -m pip install numpy==1.24.4
 RUN python3 -m pip install mysql-connector-python==9.0.0
+RUN python3 -m pip install rlp==3.0.0
 
 RUN mkdir /home/ten-test
 RUN mkdir /home/go-ten
