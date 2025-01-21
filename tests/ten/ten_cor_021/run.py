@@ -51,30 +51,36 @@ class PySysTest(TenNetworkTest):
         accnt1.l2.approve_token(self.SYMB, accnt1.l2.bridge.address, 10)
         self.log.info('Send tokens to cross the bridge on the L2')
         self.log.info('Fees to send are %d' % accnt1.l2.send_erc20_fees())
-        tx_receipt, log_msg = accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 2, dump_file='send_erc20.tx')
+        accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 1, dump_file='send_erc20.tx')
+        accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 1, dump_file='send_erc20.tx')
+        _, log_msg1 = accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 1, dump_file='send_erc20.tx')
+        _, log_msg2 = accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 2, dump_file='send_erc20.tx')
 
         # get the log msg from the merkle tree helper
         mh = MerkleTreeHelper.create(self)
-        mh.dump_tree(accnt1.l2.web3, tx_receipt, 'xchain_tree.log')
-        msg, msg_hash = mh.process_log_msg(log_msg)
-        self.log.info('  log_msg_published:        %s', msg)
-        self.log.info('  log_msg_published_hash:   %s', msg_hash)
+        msg1, msg_hash1 = mh.process_log_msg(log_msg1)
+        msg2, msg_hash2 = mh.process_log_msg(log_msg2)
 
-        # get the root and proof of inclusion from the node
-        self.log.info('Request proof and root from the node')
-        root, proof = accnt1.l2.wait_for_proof('m', msg_hash, proof_timeout)
-        self.log.info('  returned root:         %s', root)
-        self.log.info('  returned proof:        %s', [p.hex() for p in proof])
+        self.log.info('Getting root and proof for third transaction')
+        root1, proof1 = accnt1.l2.wait_for_proof('m', msg_hash1, proof_timeout)
+        self.log.info('  Returned root:         %s', root1)
+        self.log.info('  Returned proof:        %s', [p.hex() for p in proof1])
+
+        self.log.info('Getting root and proof for fourth transaction')
+        root2, proof2 = accnt1.l2.wait_for_proof('m', msg_hash2, proof_timeout)
+        self.log.info('  Returned root:         %s', root2)
+        self.log.info('  Returned proof:        %s', [p.hex() for p in proof2])
 
         # release the tokens from the L1 and check the balances
         self.log.info('Relay the message on the L1 to release them')
-        _ = accnt1.l1.release_tokens(msg, proof, root)
+        _ = accnt1.l1.release_tokens(msg1, proof1, root1)
+        _ = accnt1.l1.release_tokens(msg2, proof2, root2)
 
         # print out the balances and perform test validation
         self.log.info('Print out token balances')
         balance_l1 = accnt1.l1.balance_for_token(self.SYMB)
         balance_l2 = accnt1.l2.balance_for_token(self.SYMB)
-        self.log.info('    Account1 ERC20 balance L1 = %d ', balance_l1)
-        self.log.info('    Account1 ERC20 balance L2 = %d ', balance_l2)
-        self.assertTrue(balance_l1 == 192)
-        self.assertTrue(balance_l2 == 8)
+        self.log.info('  Account1 ERC20 balance L1 = %d ', balance_l1)
+        self.log.info('  Account1 ERC20 balance L2 = %d ', balance_l2)
+        self.assertTrue(balance_l1 == 193)
+        self.assertTrue(balance_l2 == 5)
