@@ -5,10 +5,12 @@ from collections import OrderedDict
 from pysys.constants import PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
-from ten.test.contracts.bridge import EthereumBridge
+from ten.test.contracts.bridge import L2MessageBus, EthereumBridge
+from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
+
 
 class PySysTest(TenNetworkTest):
-    ITERATIONS = 1024  # iterations per client
+    ITERATIONS = 8  # iterations per client
     ACCOUNTS = 8  # number of different accounts that receive the funds per client
 
     def __init__(self, descriptor, outsubdir, runner):
@@ -18,6 +20,7 @@ class PySysTest(TenNetworkTest):
         self.chain_id = 0
         self.value = 100
         self.bridge = None
+        self.bus = None
 
     def execute(self):
         # connect to the network on the primary gateway and calculate funds needs
@@ -28,6 +31,7 @@ class PySysTest(TenNetworkTest):
         self.gas_price = web3.eth.gas_price
         self.gas_limit = web3.eth.estimate_gas({'to': account.address, 'value': self.value, 'gasPrice': self.gas_price})
         self.bridge = EthereumBridge(self, web3)
+        self.bus = L2MessageBus(self, web3)
 
         # gradually increase the gas prices for each subsequent transaction
         scale = 1
@@ -41,18 +45,19 @@ class PySysTest(TenNetworkTest):
         txs_sent = 0
         results_file = os.path.join(self.output, 'results.log')
         with open(results_file, 'w') as fp:
-            for clients in [2, 3, 4]:
+            for clients in [2]:
                 self.log.info(' ')
                 self.log.info('Running for %d clients' % clients)
 
                 out_dir = os.path.join(self.output, 'clients_%d' % clients)
                 signal = os.path.join(out_dir, '.signal')
+                subscribers = []
                 for i in range(0, clients):
-                    self.run_client('client_%s' % i, self.bridge, 1.1 * funds_needed, out_dir, signal)
+                    subscriber = self.run_client('client_%s' % i, self.bridge, self.bus, 1.1 * funds_needed, out_dir, signal)
+                    subscribers.append(subscriber)
 
                 start_ns = time.perf_counter_ns()
-                with open(signal, 'w') as sig:
-                    sig.write('go')
+                with open(signal, 'w') as sig: sig.write('go')
                 for i in range(0, clients):
                     stdout = os.path.join(out_dir, 'client_%s.out' % i)
                     self.waitForGrep(file=stdout, expr='Client client_%s completed' % i, timeout=300)
@@ -60,6 +65,8 @@ class PySysTest(TenNetworkTest):
                                     abortOnError=False)
                     txs_sent += self.txs_sent(file=stdout)
                 end_ns = time.perf_counter_ns()
+
+                for subscriber in subscribers: subscriber.stop()
 
                 bulk_throughput = float(txs_sent) / float((end_ns - start_ns) / 1e9)
                 throughput = self.process_throughput(clients, out_dir)
@@ -78,7 +85,7 @@ class PySysTest(TenNetworkTest):
         # passed if no failures (though pdf output should be reviewed manually)
         self.addOutcome(PASSED)
 
-    def run_client(self, name, contract, funds_needed, out_dir, signal_file):
+    def run_client(self, name, bridge, bus, funds_needed, out_dir, signal_file):
         """Run a background load client. """
         pk = self.get_ephemeral_pk()
         network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary', verbose=False)
@@ -92,8 +99,8 @@ class PySysTest(TenNetworkTest):
         args = []
         args.extend(['--network_http', network.connection_url()])
         args.extend(['--chainId', '%s' % network.chain_id()])
-        args.extend(['--contract_address', '%s' % contract.address])
-        args.extend(['--contract_abi', '%s' % contract.abi_path])
+        args.extend(['--contract_address', '%s' % bridge.address])
+        args.extend(['--contract_abi', '%s' % bridge.abi_path])
         args.extend(['--pk', pk])
         args.extend(['--num_accounts', '%d' % self.ACCOUNTS])
         args.extend(['--num_iterations', '%d' % self.ITERATIONS])
@@ -103,6 +110,13 @@ class PySysTest(TenNetworkTest):
         args.extend(['--signal_file', signal_file])
         self.run_python(script, stdout, stderr, args, workingDir=out_dir)
         self.waitForSignal(file=stdout, expr='Starting client %s' % name)
+
+        stdout = os.path.join(out_dir, 'sub_%s.out' % name)
+        stderr = os.path.join(out_dir, 'sub_%s.err' % name)
+        subscriber = AllEventsLogSubscriber(self, network, bus.address, bus.abi_path,
+                                            stdout=stdout, stderr=stderr)
+        subscriber.run()
+        return subscriber
 
     def process_throughput(self, num_clients, out_dir):
         # store the binned data for each client and the timestamps

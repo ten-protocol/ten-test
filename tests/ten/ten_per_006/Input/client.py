@@ -38,7 +38,6 @@ def run(name, chainId, web3, account, num_accounts, num_iterations, amount, gas_
         try:
             receipt = web3.eth.send_raw_transaction(tx[0].rawTransaction)
             receipts.append((receipt, tx[1]))
-            logging.info('Sent %d', tx[1])
         except Exception as e:
             logging.error('Error sending raw transaction', e)
             logging.warning('Continuing with smaller number of transactions ...')
@@ -49,7 +48,6 @@ def run(name, chainId, web3, account, num_accounts, num_iterations, amount, gas_
     for receipt in receipts:
         try:
             web3.eth.wait_for_transaction_receipt(receipt[0], timeout=30)
-            logging.info('Received tx receipt for %d' % receipt[1])
         except Exception as e:
             logging.error('Timedout waiting for %d' % receipt[1])
             logging.error(e)
