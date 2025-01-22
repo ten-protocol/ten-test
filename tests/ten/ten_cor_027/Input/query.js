@@ -23,6 +23,7 @@ function task() {
     log(`Log transfer sender = ${decoded_log.sender}`)
     log(`Log transfer receiver = ${decoded_log.receiver}`)
     log(`Log transfer amount = ${decoded_log.amount.toNumber()}`)
+    log(`Event log received`)
   });
 }
 
