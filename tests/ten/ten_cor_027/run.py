@@ -38,6 +38,8 @@ class PySysTest(TenNetworkTest):
         # send native from the L2 to the L1
         self.log.info('Send native from L2 to L1')
         accnt1.l2.send_native(accnt1.l1.account.address, transfer_back)
+        self.waitForGrep(file='query_l1.log', expr='Event log received', condition='==1', timeout=20)
+        self.waitForGrep(file='query_l2.log', expr='Event log received', condition='==1', timeout=20)
 
         # we should see the logs from both of the value transfer events
         expr_list = []
