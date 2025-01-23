@@ -21,8 +21,34 @@ YTICS = "set format y '%g'; unset ylabel"
 
 set multiplot layout 3,3 title ARG2." (page 2): ".ARG1 noenhanced scale 0.95,0.95
 
-
 @Y1MARGIN; @X1MARGIN; @NOXTICS; @YTICS;
+f7(x) = m*x + b
+fit f7(x) "ten_per_010.log" using 1:2:3 via m,b
+set offsets graph 0.0, 0.0, 0.01, 0.01
+set ytics offset 0,0
+set title '{/Arial:Bold=10 ten\_per\_010}' offset 0,-2.5
+plot "ten_per_010.log" using 1:2 with linespoints lw 1 lc 11 pt 6 ps 0.5 notitle, \
+      f7(x) w l lw 2 lc 7 notitle
+
+@Y1MARGIN; @X2MARGIN; @NOXTICS; @YTICS;
+f8(x) = m*x + b
+fit f8(x) "ten_per_011.log" using 1:2:3 via m,b
+set offsets graph 0.0, 0.0, 50, 50
+set ytics offset 4.5, 0
+set title '{/Arial:Bold=10 ten\_per\_011}' offset 0,-2.5
+plot "ten_per_011.log" using 1:2 with linespoints lw 1 lc 11 pt 6 ps 0.5 notitle, \
+      f8(x) w l lw 2 lc 7 notitle
+
+@Y1MARGIN; @X3MARGIN; @NOXTICS; @YTICS;
+f9(x) = m*x + b
+fit f9(x) "ten_per_012.log" using 1:2:3 via m,b
+set offsets graph 0.0, 0.0, 10, 10
+set ytics offset 3.6, 0
+set title '{/Arial:Bold=10 ten\_per\_012}' offset 0,-2.5
+plot "ten_per_012.log" using 1:2 with linespoints lw 1 lc 11 pt 6 ps 0.5 notitle, \
+      f9(x) w l lw 2 lc 7 notitle
+
+@Y2MARGIN; @X1MARGIN; @NOXTICS; @YTICS;
 f1(x) = m*x + b
 fit f1(x) "ten_per_020.log" using 1:2:3 via m,b
 set offsets graph 0.0, 0.0, 3, 3
@@ -30,7 +56,7 @@ set title '{/Arial:Bold=10 ten\_per\_020}' offset 0,-2.5
 plot "ten_per_020.log" using 1:2 with linespoints lw 1 lc 11 pt 6 ps 0.5 notitle, \
       f1(x) w l lw 2 lc 7 notitle
 
-@Y1MARGIN; @X2MARGIN; @NOXTICS; @YTICS;
+@Y2MARGIN; @X2MARGIN; @NOXTICS; @YTICS;
 f2(x) = m*x + b
 fit f2(x) "ten_per_021.log" using 1:2:3 via m,b
 set offsets graph 0.0, 0.0, 3, 3
