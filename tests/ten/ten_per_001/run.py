@@ -55,7 +55,7 @@ class PySysTest(TenNetworkTest):
         balance_before = web3_send.eth.get_balance(account_send.address)
         tx_hashes = []
         for signed_tx in signed_txs:
-            tx_hashes.append((network.send_transaction(self, web3_send, signed_txs[1], account_send, signed_txs[0], False, verbose=False), signed_txs[1]))
+            tx_hashes.append((network.send_transaction(self, web3_send, signed_tx[1], account_send, signed_tx[0], False, verbose=False), signed_tx[1]))
         balance_after_send = web3_send.eth.get_balance(account_send.address)
 
         self.log.info('Waiting for last transaction to be mined')
