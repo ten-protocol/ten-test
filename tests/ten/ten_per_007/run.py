@@ -10,51 +10,67 @@ from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
 class PySysTest(TenNetworkTest):
-    ITERATIONS = 8  # iterations per client
-    ACCOUNTS = 8  # number of different accounts that receive the funds per client
+    ITERATIONS = 1024      # iterations per client
+    ACCOUNTS = 8           # number of different accounts that receive the funds per client
 
     def __init__(self, descriptor, outsubdir, runner):
         super().__init__(descriptor, outsubdir, runner)
         self.gas_price = 0
-        self.gas_limit = 0
         self.chain_id = 0
-        self.value = 100
+        self.value = 10
         self.bridge = None
         self.bus = None
+        self.bridge_fees = None
+        self.transfer_gas = 0
+        self.withdraw_gas = 0
 
     def execute(self):
         # connect to the network on the primary gateway and calculate funds needs
         network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary', verbose=False)
         web3, _ = network.connect_account1(self)
+
+        # set up the bridge, bus, and fees necessary to run the test
         account = web3.eth.account.from_key(self.get_ephemeral_pk())
+        self.bus = L2MessageBus(self, web3)
+        self.bridge = EthereumBridge(self, web3)
         self.chain_id = network.chain_id()
         self.gas_price = web3.eth.gas_price
-        self.gas_limit = web3.eth.estimate_gas({'to': account.address, 'value': self.value, 'gasPrice': self.gas_price})
-        self.bridge = EthereumBridge(self, web3)
-        self.bus = L2MessageBus(self, web3)
 
-        # gradually increase the gas prices for each subsequent transaction
+        self.bridge_fees = self.bridge.contract.functions.valueTransferFee().call()
+        self.transfer_gas = web3.eth.estimate_gas({'to': account.address, 'value': self.value, 'gasPrice': self.gas_price})
+        target = self.bridge.contract.functions.sendNative(account.address)
+        params = {'value': self.value+self.bridge_fees, 'gasPrice': self.gas_price}
+        self.withdraw_gas = target.estimate_gas(params)
+        self.log.info('Fees for bridge withdrawals is %d' % self.bridge_fees)
+        self.log.info('Gas for value transfer is %d' % self.transfer_gas)
+        self.log.info('Gas for value withdraw is %d' % self.withdraw_gas)
+        self.log.info('Gas price is %d' % self.gas_price)
+
         scale = 1
         funds_needed = 0
-        increment = float(2.0 / self.ITERATIONS)
+        inc = float(2.0 / self.ITERATIONS)
+        m = max(self.transfer_gas, self.withdraw_gas)
         for i in range(0, self.ITERATIONS):
-            funds_needed = funds_needed + (self.gas_price * (int(scale * self.gas_limit)) + self.value)
-            scale = scale + increment
+            funds_needed = funds_needed + (self.gas_price * (int(scale * m)) + self.value)
+            scale = scale + inc
+        self.log.info('Funds needed are %d' % funds_needed)
 
         # run the clients and wait for their completion
         txs_sent = 0
         results_file = os.path.join(self.output, 'results.log')
         with open(results_file, 'w') as fp:
-            for clients in [2]:
+            for clients in [2, 3, 4]:
                 self.log.info(' ')
                 self.log.info('Running for %d clients' % clients)
-
                 out_dir = os.path.join(self.output, 'clients_%d' % clients)
                 signal = os.path.join(out_dir, '.signal')
-                subscribers = []
-                for i in range(0, clients):
-                    subscriber = self.run_client('client_%s' % i, self.bridge, self.bus, 1.1 * funds_needed, out_dir, signal)
-                    subscribers.append(subscriber)
+                for i in range(0, clients): self.run_client(network, 'client_%s' % i, funds_needed, out_dir, signal)
+
+                # sniff for the value transfer events so we know that withdrawals are happening
+                subscriber = AllEventsLogSubscriber(self, network, self.bus.address, self.bus.abi_path,
+                                                    stdout='sub_clients_%d.out' % clients,
+                                                    stderr='sub_clients_%d.err' % clients)
+                subscriber.run(log_event=False)
 
                 start_ns = time.perf_counter_ns()
                 with open(signal, 'w') as sig: sig.write('go')
@@ -66,7 +82,7 @@ class PySysTest(TenNetworkTest):
                     txs_sent += self.txs_sent(file=stdout)
                 end_ns = time.perf_counter_ns()
 
-                for subscriber in subscribers: subscriber.stop()
+                subscriber.stop()
 
                 bulk_throughput = float(txs_sent) / float((end_ns - start_ns) / 1e9)
                 throughput = self.process_throughput(clients, out_dir)
@@ -85,10 +101,9 @@ class PySysTest(TenNetworkTest):
         # passed if no failures (though pdf output should be reviewed manually)
         self.addOutcome(PASSED)
 
-    def run_client(self, name, bridge, bus, funds_needed, out_dir, signal_file):
+    def run_client(self, network, name, funds_needed, out_dir, signal_file):
         """Run a background load client. """
         pk = self.get_ephemeral_pk()
-        network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary', verbose=False)
         web3, account = network.connect(self, private_key=pk, check_funds=False)
         self.distribute_native(account, web3.from_wei(funds_needed, 'ether'))
 
@@ -97,26 +112,21 @@ class PySysTest(TenNetworkTest):
         stderr = os.path.join(out_dir, '%s.err' % name)
         script = os.path.join(self.input, 'client.py')
         args = []
+        args.extend(['--client_name', name])
         args.extend(['--network_http', network.connection_url()])
         args.extend(['--chainId', '%s' % network.chain_id()])
-        args.extend(['--contract_address', '%s' % bridge.address])
-        args.extend(['--contract_abi', '%s' % bridge.abi_path])
+        args.extend(['--bridge_address', '%s' % self.bridge.address])
+        args.extend(['--bridge_abi', '%s' % self.bridge.abi_path])
+        args.extend(['--bridge_fees', '%d' % self.bridge_fees])
         args.extend(['--pk', pk])
         args.extend(['--num_accounts', '%d' % self.ACCOUNTS])
         args.extend(['--num_iterations', '%d' % self.ITERATIONS])
-        args.extend(['--client_name', name])
         args.extend(['--amount', '%d' % self.value])
-        args.extend(['--gas_limit', '%d' % self.gas_limit])
+        args.extend(['--transfer_gas', '%d' % self.transfer_gas])
+        args.extend(['--withdraw_gas', '%d' % self.withdraw_gas])
         args.extend(['--signal_file', signal_file])
         self.run_python(script, stdout, stderr, args, workingDir=out_dir)
         self.waitForSignal(file=stdout, expr='Starting client %s' % name)
-
-        stdout = os.path.join(out_dir, 'sub_%s.out' % name)
-        stderr = os.path.join(out_dir, 'sub_%s.err' % name)
-        subscriber = AllEventsLogSubscriber(self, network, bus.address, bus.abi_path,
-                                            stdout=stdout, stderr=stderr)
-        subscriber.run()
-        return subscriber
 
     def process_throughput(self, num_clients, out_dir):
         # store the binned data for each client and the timestamps

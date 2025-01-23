@@ -33,22 +33,22 @@ def run(name, chainId, web3, sending_accounts, num_accounts, num_iterations, amo
 
     logging.info('Creating and signing %d transactions', num_iterations)
     gas_price = web3.eth.gas_price
-    txs = []
+    signed_txs = []
     for i in range(0, num_iterations):
-        tx = create_signed_tx(random.choice(sending_accounts), random.choice(accounts), amount, gas_price, gas_limit, chainId)
-        txs.append((tx, i))
+        signed_tx = create_signed_tx(random.choice(sending_accounts), random.choice(accounts), amount, gas_price, gas_limit, chainId)
+        signed_txs.append((signed_tx, i))
 
     logging.info('Bulk sending transactions to the network')
-    receipts = []
+    tx_hashes = []
     start_time = time.perf_counter()
-    for tx in txs:
+    for signed_tx in signed_txs:
         try:
-            receipts.append((web3.eth.send_raw_transaction(tx[0].rawTransaction), tx[1]))
+            tx_hashes.append((web3.eth.send_raw_transaction(signed_tx[0].rawTransaction), signed_tx[1]))
         except Exception as e:
             logging.error('Error sending raw transaction', e)
             logging.warning('Continuing with smaller number of transactions ...')
             break
-    logging.info('Number of transactions sent = %d', len(receipts))
+    logging.info('Number of transactions sent = %d', len(tx_hashes))
 
     end_time = time.perf_counter()
     duration = end_time - start_time
@@ -56,21 +56,21 @@ def run(name, chainId, web3, sending_accounts, num_accounts, num_iterations, amo
 
     logging.info('Waiting for last transaction')
     start_time = time.perf_counter()
-    web3.eth.wait_for_transaction_receipt(receipts[-1][0], timeout=600)
+    web3.eth.wait_for_transaction_receipt(tx_hashes[-1][0], timeout=600)
     end_time = time.perf_counter()
     logging.info('Time to wait for last transaction was %.4f', (end_time - start_time))
 
     logging.info('Requesting all transaction receipts')
     times = []
     with open('%s.log' % name, 'w') as fp:
-        for receipt in receipts:
+        for tx_hash in tx_hashes:
             start_time = time.perf_counter()
-            web3.eth.wait_for_transaction_receipt(receipt[0], timeout=30)
+            web3.eth.wait_for_transaction_receipt(tx_hash[0], timeout=30)
             end_time = time.perf_counter()
             times.append((end_time - start_time))
-            block_number_deploy = web3.eth.get_transaction(receipt[0]).blockNumber
+            block_number_deploy = web3.eth.get_transaction(tx_hash[0]).blockNumber
             timestamp = int(web3.eth.get_block(block_number_deploy).timestamp)
-            fp.write('%d %d %d %.4f\n' % (receipt[1], block_number_deploy, timestamp, (end_time - start_time)))
+            fp.write('%d %d %d %.4f\n' % (tx_hash[1], block_number_deploy, timestamp, (end_time - start_time)))
     logging.info('Average time to wait for transaction receipt was %.4f', (sum(times) / float(len(times))))
 
     for account in nonces.keys():
@@ -79,16 +79,17 @@ def run(name, chainId, web3, sending_accounts, num_accounts, num_iterations, amo
     logging.info('Client %s completed', name)
     logging.shutdown()
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='event_listener')
-    parser.add_argument('-u', '--network_http', help='Connection URL')
-    parser.add_argument('-c', '--chainId', help='The network chain Id')
-    parser.add_argument('-p', '--pk_file', help='A file containing a list of PKs to use')
-    parser.add_argument('-a', '--num_accounts', help='Number of accounts to send funds to')
-    parser.add_argument('-i', '--num_iterations', help='Number of iterations')
-    parser.add_argument('-n', '--client_name', help='The logical name of the client')
-    parser.add_argument('-x', '--amount', help='The amount to send in wei')
-    parser.add_argument('-y', '--gas_limit', help='The gas limit')
+    parser.add_argument('--network_http', help='Connection URL')
+    parser.add_argument('--chainId', help='The network chain Id')
+    parser.add_argument('--pk_file', help='A file containing a list of PKs to use')
+    parser.add_argument('--num_accounts', help='Number of accounts to send funds to')
+    parser.add_argument('--num_iterations', help='Number of iterations')
+    parser.add_argument('--client_name', help='The logical name of the client')
+    parser.add_argument('--amount', help='The amount to send in wei')
+    parser.add_argument('--gas_limit', help='The gas limit')
     args = parser.parse_args()
 
     web3 = Web3(Web3.HTTPProvider(args.network_http))

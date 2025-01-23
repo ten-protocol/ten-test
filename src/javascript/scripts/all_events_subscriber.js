@@ -14,13 +14,15 @@ function subscribe() {
       if (error) {
         console.log('Error returned:', error)
       } else {
-        console.log('Received event:', result.event);
-        console.log('Full event:', result);
+        console.log('Received event:', result.event)
+        if (options.log_event) {
+          console.log('Full event:', result)
+        }
       }
     }
   )
   .on('connected', function(subscriptionId){
-      console.log('Subscription confirmed with id:', subscriptionId);
+      console.log('Subscription confirmed with id:', subscriptionId)
   })
 }
 
@@ -30,6 +32,7 @@ commander
   .option('--network_ws <value>', 'Web socket connection URL to the network')
   .option('--contract_address <value>', 'Contract address')
   .option('--contract_abi <value>', 'Contract ABI file')
+  .option('--log_event', 'Log the full event', false)
   .parse(process.argv)
 
 const options = commander.opts()

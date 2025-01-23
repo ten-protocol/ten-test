@@ -15,13 +15,14 @@ class AllEventsLogSubscriber:
         self.stderr = os.path.join(test.output, stderr)
         self.script = os.path.join(PROJECT.root, 'src', 'javascript', 'scripts', 'all_events_subscriber.js')
 
-    def run(self, pk_to_register=None):
+    def run(self, pk_to_register=None, log_event=True):
         """Run the javascript client event log subscriber."""
         args = []
         args.extend(['--network_ws', self.network.connection_url(web_socket=True)])
         args.extend(['--contract_address', self.contract_address])
         args.extend(['--contract_abi', self.contract_abi])
         if pk_to_register: self.network.connect(self.test, private_key=pk_to_register)
+        if log_event: args.append('--log_event')
         self.hprocess = self.test.run_javascript(self.script, self.stdout, self.stderr, args)
         self.test.waitForGrep(file=self.stdout, expr='Subscription confirmed with id:', timeout=30)
 

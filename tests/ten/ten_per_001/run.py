@@ -47,15 +47,15 @@ class PySysTest(TenNetworkTest):
         # bulk load transactions, and wait for the last
         self.log.info('')
         self.log.info('Creating and signing %d transactions', self.ITERATIONS)
-        txs = []
+        signed_txs = []
         for nonce in range(0, self.ITERATIONS):
-            txs.append((self.create_signed_tx(network, account_send, nonce, account_recv.address), nonce))
+            signed_txs.append((self.create_signed_tx(network, account_send, nonce, account_recv.address), nonce))
 
         self.log.info('Bulk sending transactions to the network')
         balance_before = web3_send.eth.get_balance(account_send.address)
         tx_hashes = []
-        for tx in txs:
-            tx_hashes.append((network.send_transaction(self, web3_send, tx[1], account_send, tx[0], False, verbose=False), tx[1]))
+        for signed_tx in signed_txs:
+            tx_hashes.append((network.send_transaction(self, web3_send, signed_txs[1], account_send, signed_txs[0], False, verbose=False), signed_txs[1]))
         balance_after_send = web3_send.eth.get_balance(account_send.address)
 
         self.log.info('Waiting for last transaction to be mined')

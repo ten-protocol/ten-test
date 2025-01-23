@@ -1,7 +1,7 @@
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.bridge import BridgeUser
-from ten.test.helpers.merkle_tree import MerkleTreeHelper
 from ten.test.utils.properties import Properties
+from ten.test.helpers.merkle_tree import MerkleTreeHelper
 from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 class PySysTest(TenNetworkTest):

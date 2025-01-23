@@ -30,48 +30,48 @@ def run(name, chainId, web3, account, contract, num_iterations, gas_limit):
     logging.info('Creating and signing %d transactions', num_iterations)
     gas_price = web3.eth.gas_price
 
-    txs = []
+    signed_txs = []
     for i in range(0, num_iterations):
-        tx = create_signed_tx(name, account, i, contract, gas_price, gas_limit, chainId)
-        txs.append((tx, i))
+        signed_tx = create_signed_tx(name, account, i, contract, gas_price, gas_limit, chainId)
+        signed_txs.append((signed_tx, i))
 
     logging.info('Bulk sending transactions to the network')
-    stats = [0,0]
-    receipts = []
-    for tx in txs:
+    tx_hashes = []
+    for tx in signed_txs:
         try:
-            receipts.append((web3.eth.send_raw_transaction(tx[0].rawTransaction), tx[1]))
+            tx_hashes.append((web3.eth.send_raw_transaction(tx[0].rawTransaction), tx[1]))
         except Exception as e:
             logging.error('Error sending raw transaction', e)
             logging.warning('Continuing with smaller number of transactions ...')
             break
-    logging.info('Number of transactions sent = %d', len(receipts))
+    logging.info('Number of transactions sent = %d', len(tx_hashes))
 
-    for receipt in tenths(receipts):
-        logging.info('Waiting for transaction receipt number  %s', receipt[1])
-        web3.eth.wait_for_transaction_receipt(receipt[0], timeout=900)
+    for tx_hash in tenths(tx_hashes):
+        logging.info('Waiting for transaction receipt number  %s', tx_hash[1])
+        web3.eth.wait_for_transaction_receipt(tx_hash[0], timeout=900)
     logging.info('Retrieved value for %s is %d', name, contract.functions.getItem(name).call())
 
     logging.info('Constructing binned data from the transaction receipts')
     with open('%s.log' % name, 'w') as fp:
-        for receipt in receipts:
-            block_number = web3.eth.get_transaction(receipt[0]).blockNumber
+        for tx_hash in tx_hashes:
+            block_number = web3.eth.get_transaction(tx_hash[0]).blockNumber
             timestamp = int(web3.eth.get_block(block_number).timestamp)
-            fp.write('%d %d %d\n' % (receipt[1], timestamp, block_number))
+            fp.write('%d %d %d\n' % (tx_hash[1], timestamp, block_number))
 
     logging.info('Client %s completed', name)
     logging.shutdown()
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='storage_client')
-    parser.add_argument('-u', '--network_http', help='Connection URL')
-    parser.add_argument('-c', '--chainId', help='The network chain Id')
-    parser.add_argument('-p', '--pk', help='The accounts private key')
-    parser.add_argument('-a', '--contract_address', help='Address of the contract')
-    parser.add_argument('-b', '--contract_abi', help='Abi of the contract')
-    parser.add_argument('-i', '--num_iterations', help='Number of iterations')
-    parser.add_argument('-n', '--client_name', help='The logical name of the client')
-    parser.add_argument('-y', '--gas_limit', help='The gas limit')
+    parser.add_argument('--network_http', help='Connection URL')
+    parser.add_argument('--chainId', help='The network chain Id')
+    parser.add_argument('--pk', help='The accounts private key')
+    parser.add_argument('--contract_address', help='Address of the contract')
+    parser.add_argument('--contract_abi', help='Abi of the contract')
+    parser.add_argument('--num_iterations', help='Number of iterations')
+    parser.add_argument('--client_name', help='The logical name of the client')
+    parser.add_argument('--gas_limit', help='The gas limit')
     args = parser.parse_args()
 
     web3 = Web3(Web3.HTTPProvider(args.network_http))
