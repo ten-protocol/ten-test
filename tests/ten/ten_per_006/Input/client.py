@@ -5,64 +5,63 @@ import logging, random, argparse, sys
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', stream=sys.stdout, level=logging.INFO)
 
 
-def create_signed_tx(account, nonce, address, value, gas_price, gas_limit, chain_id):
+def create_signed_tx(account, nonce, address, value, gas_price, transfer_gas, chain_id):
     """Create a signed transaction to transfer funds to an address. """
     tx = {'nonce': nonce,
           'to': address,
           'value': value,
-          'gas': gas_limit,
+          'gas': transfer_gas,
           'gasPrice': gas_price,
           'chainId': chain_id
           }
     return account.sign_transaction(tx)
 
 
-def run(name, chainId, web3, account, num_accounts, num_iterations, amount, gas_limit):
+def run(name, chainId, web3, account, num_accounts, num_iterations, amount, transfer_gas):
     """Run a loop of bulk loading transactions into the mempool, draining, and collating results. """
     accounts = [Web3().eth.account.from_key(x).address for x in [secrets.token_hex() for y in range(0, num_accounts)]]
 
     logging.info('Creating and signing %d transactions', num_iterations)
     gas_price = web3.eth.gas_price
 
-    txs = []
+    signed_txs = []
     scale = 1
     increment = float(2.0 / num_iterations)
     for i in range(0, num_iterations):
-        tx = create_signed_tx(account, i, random.choice(accounts), amount, int(scale*gas_price), gas_limit, chainId)
-        txs.append((tx, i))
+        signed_tx = create_signed_tx(account, i, random.choice(accounts), amount, int(scale*gas_price), transfer_gas, chainId)
+        signed_txs.append((signed_tx, i))
         scale = scale + increment
 
     logging.info('Bulk sending transactions to the network')
-    receipts = []
-    for tx in txs:
+    tx_hashes = []
+    for signed_tx in signed_txs:
         try:
-            receipt = web3.eth.send_raw_transaction(tx[0].rawTransaction)
-            receipts.append((receipt, tx[1]))
-            logging.info('Sent %d', tx[1])
+            receipt = web3.eth.send_raw_transaction(signed_tx[0].rawTransaction)
+            tx_hashes.append((receipt, signed_tx[1]))
         except Exception as e:
             logging.error('Error sending raw transaction', e)
             logging.warning('Continuing with smaller number of transactions ...')
             break
-    logging.info('Number of transactions sent = %d', len(receipts))
+    logging.info('Number of transactions sent = %d', len(tx_hashes))
 
     logging.info('Waiting for transactions')
-    for receipt in receipts:
+    for tx_hash in tx_hashes:
         try:
-            web3.eth.wait_for_transaction_receipt(receipt[0], timeout=30)
-            logging.info('Received tx receipt for %d' % receipt[1])
+            web3.eth.wait_for_transaction_receipt(tx_hash[0], timeout=30)
         except Exception as e:
-            logging.error('Timedout waiting for %d' % receipt[1])
+            logging.error('Timedout waiting for %d' % tx_hash[1])
             logging.error(e)
 
     logging.info('Logging the timestamps of each transaction')
     with open('%s_throughput.log' % name, 'w') as fp:
-        for receipt in receipts:
-            block_number_deploy = web3.eth.get_transaction(receipt[0]).blockNumber
+        for tx_hash in tx_hashes:
+            block_number_deploy = web3.eth.get_transaction(tx_hash[0]).blockNumber
             timestamp = int(web3.eth.get_block(block_number_deploy).timestamp)
             fp.write('%d\n' % timestamp)
 
     logging.info('Client %s completed', name)
     logging.shutdown()
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='event_listener')
@@ -73,7 +72,7 @@ if __name__ == "__main__":
     parser.add_argument('-i', '--num_iterations', help='Number of iterations')
     parser.add_argument('-n', '--client_name', help='The logical name of the client')
     parser.add_argument('-x', '--amount', help='The amount to send in wei')
-    parser.add_argument('-y', '--gas_limit', help='The gas limit')
+    parser.add_argument('-y', '--transfer_gas', help='The gas limit')
     parser.add_argument('-s', '--signal_file', help='Poll for this file to initiate sending')
     args = parser.parse_args()
 
@@ -84,5 +83,5 @@ if __name__ == "__main__":
     logging.info('Starting client %s', name)
     while not os.path.exists(args.signal_file): time.sleep(0.1)
     logging.info('Signal seen ... running client %s', name)
-    run(name, int(args.chainId), web3, account, int(args.num_accounts), int(args.num_iterations), int(args.amount), int(args.gas_limit))
+    run(name, int(args.chainId), web3, account, int(args.num_accounts), int(args.num_iterations), int(args.amount), int(args.transfer_gas))
 

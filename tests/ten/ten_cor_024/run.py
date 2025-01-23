@@ -1,9 +1,8 @@
-import time, rlp
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.bridge import BridgeUser
-from ten.test.helpers.merkle_tree import MerkleTreeHelper
 from ten.test.utils.properties import Properties
-
+from ten.test.helpers.merkle_tree import MerkleTreeHelper
+from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 class PySysTest(TenNetworkTest):
 
@@ -12,10 +11,13 @@ class PySysTest(TenNetworkTest):
         transfer = 4000000000000000
         proof_timeout = 60 if self.is_local_ten() else 2400
 
-        # create the bridge user
+        # create the bridge user and subscribe for value transfer events
         accnt = BridgeUser(self, props.account1pk(), props.account1pk(), 'accnt1')
         l1_before = accnt.l1.web3.eth.get_balance(accnt.l1.account.address)
         l2_before = accnt.l2.web3.eth.get_balance(accnt.l2.account.address)
+
+        subscriber = AllEventsLogSubscriber(self, accnt.l2.network, accnt.l2.bus.address, accnt.l2.bus.abi_path)
+        subscriber.run()
 
         # send funds from the L2 to the L1
         self.log.info('Send native from L2 to L1')

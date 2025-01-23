@@ -41,6 +41,12 @@ function unsubscribe() {
   })
 }
 
+function stop() {
+  subscription.unsubscribe(function(error, success){
+    throw new Error('Subscriber terminated');
+  })
+}
+
 function startServer(){
   const server = http.createServer(
     function(request, response) {
@@ -54,6 +60,8 @@ function startServer(){
             subscribe()
           } else if (body == 'UNSUBSCRIBE'){
             unsubscribe()
+          } else if (body == 'STOP'){
+            stop()
           }
           response.writeHead(200, {'Content-Type': 'text/plain'})
           response.end('post received')

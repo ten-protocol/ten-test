@@ -15,15 +15,20 @@ class AllEventsLogSubscriber:
         self.stderr = os.path.join(test.output, stderr)
         self.script = os.path.join(PROJECT.root, 'src', 'javascript', 'scripts', 'all_events_subscriber.js')
 
-    def run(self, pk_to_register=None):
+    def run(self, pk_to_register=None, log_event=True):
         """Run the javascript client event log subscriber."""
         args = []
         args.extend(['--network_ws', self.network.connection_url(web_socket=True)])
         args.extend(['--contract_address', self.contract_address])
         args.extend(['--contract_abi', self.contract_abi])
         if pk_to_register: self.network.connect(self.test, private_key=pk_to_register)
-        self.test.run_javascript(self.script, self.stdout, self.stderr, args)
+        if log_event: args.append('--log_event')
+        self.hprocess = self.test.run_javascript(self.script, self.stdout, self.stderr, args)
         self.test.waitForGrep(file=self.stdout, expr='Subscription confirmed with id:', timeout=30)
+
+    def stop(self):
+        """Stop the event log subscriber."""
+        self.hprocess.stop()
 
 
 class FilterLogSubscriber:
@@ -64,3 +69,8 @@ class FilterLogSubscriber:
         """Request the subscriber to unsubscribe for logs."""
         requests.post('http://127.0.0.1:%d' % self.port, data='UNSUBSCRIBE', headers={'Content-Type': 'text/plain'})
         self.test.waitForGrep(file=self.stdout, expr='Unsubscribed for event logs', timeout=30)
+
+    def stop(self):
+        """Request the subscriber to exit."""
+        requests.post('http://127.0.0.1:%d' % self.port, data='STOP', headers={'Content-Type': 'text/plain'})
+        self.test.waitForGrep(file=self.stderr, expr='Subscriber terminated', timeout=30)
