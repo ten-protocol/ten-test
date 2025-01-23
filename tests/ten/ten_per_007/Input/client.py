@@ -31,6 +31,14 @@ def create_signed_tx(account, nonce, address, value, gas_price, transfer_gas, ch
     return account.sign_transaction(tx)
 
 
+def tenths(list):
+    every_tenth = list[9::10]
+    last_element = list[-1]
+    if last_element not in every_tenth:
+        return every_tenth + [last_element]
+    return every_tenth
+
+
 def run(name, chain_id, web3, account, contract, num_accounts, num_iterations, amount, transfer_gas, withdraw_gas, fees):
     """Run a loop of bulk loading transactions into the mempool, draining, and collating results. """
     accounts = [Web3().eth.account.from_key(x).address for x in [secrets.token_hex() for y in range(0, num_accounts)]]
@@ -65,9 +73,9 @@ def run(name, chain_id, web3, account, contract, num_accounts, num_iterations, a
     logging.info('Number of withdrawals were  = %d', withdrawals)
 
     logging.info('Waiting for transactions')
-    for tx_hash in tx_hashes:
+    for tx_hash in tenths(tx_hashes):
         try:
-            web3.eth.wait_for_transaction_receipt(tx_hash[0], timeout=30)
+            web3.eth.wait_for_transaction_receipt(tx_hash[0], timeout=900)
         except Exception as e:
             logging.error('Timed out waiting for %d' % tx_hash[1])
             logging.error(e)
