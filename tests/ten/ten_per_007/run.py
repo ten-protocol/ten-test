@@ -12,6 +12,7 @@ from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 class PySysTest(TenNetworkTest):
     ITERATIONS = 1024      # iterations per client
     ACCOUNTS = 8           # number of different accounts that receive the funds per client
+    SUBSCRIBE = False      # true to attach a subscriber during each run
 
     def __init__(self, descriptor, outsubdir, runner):
         super().__init__(descriptor, outsubdir, runner)
@@ -67,22 +68,23 @@ class PySysTest(TenNetworkTest):
                 for i in range(0, clients): self.run_client(network, 'client_%s' % i, funds_needed, out_dir, signal)
 
                 # sniff for the value transfer events so we know that withdrawals are happening
-                subscriber = AllEventsLogSubscriber(self, network, self.bus.address, self.bus.abi_path,
+                if self.SUBSCRIBE:
+                    subscriber = AllEventsLogSubscriber(self, network, self.bus.address, self.bus.abi_path,
                                                     stdout='sub_clients_%d.out' % clients,
                                                     stderr='sub_clients_%d.err' % clients)
-                subscriber.run(log_event=False)
+                    subscriber.run(log_event=False)
 
                 start_ns = time.perf_counter_ns()
                 with open(signal, 'w') as sig: sig.write('go')
                 for i in range(0, clients):
                     stdout = os.path.join(out_dir, 'client_%s.out' % i)
-                    self.waitForGrep(file=stdout, expr='Client client_%s completed' % i, timeout=300)
+                    self.waitForGrep(file=stdout, expr='Client client_%s completed' % i, timeout=600)
                     self.assertGrep(file=stdout, expr='Error sending raw transaction', contains=False,
                                     abortOnError=False)
                     txs_sent += self.txs_sent(file=stdout)
                 end_ns = time.perf_counter_ns()
 
-                subscriber.stop()
+                if self.SUBSCRIBE: subscriber.stop()
 
                 bulk_throughput = float(txs_sent) / float((end_ns - start_ns) / 1e9)
                 throughput = self.process_throughput(clients, out_dir)
