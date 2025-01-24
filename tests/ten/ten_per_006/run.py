@@ -93,7 +93,7 @@ class PySysTest(TenNetworkTest):
         args.extend(['--num_iterations', '%d' % self.ITERATIONS])
         args.extend(['--client_name', name])
         args.extend(['--amount', '%d' % self.value])
-        args.extend(['--gas_limit', '%d' % self.gas_limit])
+        args.extend(['--transfer_gas', '%d' % self.gas_limit])
         args.extend(['--signal_file', signal_file])
         self.run_python(script, stdout, stderr, args, workingDir=out_dir)
         self.waitForSignal(file=stdout, expr='Starting client %s' % name)
