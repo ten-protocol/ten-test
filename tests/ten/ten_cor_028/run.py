@@ -19,27 +19,19 @@ class PySysTest(TenNetworkTest):
         funded = BridgeUser(self, props.l1_funded_account_pk(self.env), props.account2pk(), 'funded')
         accnt1 = BridgeUser(self, props.account1pk(), props.account1pk(), 'accnt1')
 
-        # deploy the ERC20 token, update l1 details of the wrapped token, distribute tokens
+        # ddeploy the token, approve and send some over to the L2
         self.log.info('Deploy the ERC20 token on the L1')
         token = MintedERC20Token(self, funded.l1.web3, self.NAME, self.SYMB, 10000)
         token.deploy(funded.l1.network, funded.l1.account, persist_nonce=False)
         funded.l1.add_token_contract(token.address, self.NAME, self.SYMB)
         accnt1.l1.add_token_contract(token.address, self.NAME, self.SYMB)
-
-        self.log.info('Transfer and approve tokens on the L1')
         funded.l1.transfer_token(self.SYMB, accnt1.l1.account.address, 200)
         accnt1.l1.approve_token(self.SYMB, accnt1.l1.bridge.address, 100)
-
-        # whitelist, relay the token, update l2 details of the wrapped token
-        self.log.info('Whitelist and relaying the token')
         _, xchain_msg = funded.l1.white_list_token(self.SYMB)
         accnt1.l2.wait_for_message(xchain_msg)
         _, l2_token_address = accnt1.l2.relay_whitelist_message(xchain_msg)
         funded.l2.set_token_contract(l2_token_address, self.NAME, self.SYMB)
         accnt1.l2.set_token_contract(l2_token_address, self.NAME, self.SYMB)
-
-        # send tokens across the bridge, and wait for it to be verified as finalised on L2, and then relay
-        self.log.info('Send tokens on the L1 to cross the bridge')
         _, xchain_msg = accnt1.l1.send_erc20(self.SYMB, accnt1.l2.account.address, 10)
         accnt1.l2.wait_for_message(xchain_msg)
         accnt1.l2.relay_message(xchain_msg)
@@ -78,6 +70,7 @@ class PySysTest(TenNetworkTest):
         mh = MerkleTreeHelper.create(self)
         msg1, msg_hash1 = mh.process_log_msg(log_msg1)
         msg2, msg_hash2 = mh.process_log_msg(log_msg2)
+        msg3, msg_hash3 = mh.process_transfer(value_transfer)
 
         self.log.info('Getting root and proof for first token withdrawal')
         root1, proof1 = accnt1.l2.wait_for_proof('m', msg_hash1, proof_timeout)
@@ -88,6 +81,11 @@ class PySysTest(TenNetworkTest):
         root2, proof2 = accnt1.l2.wait_for_proof('m', msg_hash2, proof_timeout)
         self.log.info('  Returned root:         %s', root2)
         self.log.info('  Returned proof:        %s', [p.hex() for p in proof2])
+
+        self.log.info('Getting root and proof for value transfer')
+        root, proof = accnt1.l2.wait_for_proof('v', msg_hash3, proof_timeout)
+        self.log.info('  returned root:         %s', root)
+        self.log.info('  returned proof:        %s', [p.hex() for p in proof])
 
         # release the tokens from the L1 and check the balances
         self.log.info('Relay the message on the L1 to release them')
