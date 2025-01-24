@@ -56,9 +56,11 @@ async function sendTransaction(key, value) {
        }
   })
 
-  // set the start time before immediately sending the signed transaction
-  start_time = process.hrtime.bigint()
-  web3.eth.sendSignedTransaction(signed_tx.rawTransaction)
+  // pause, then set the start time before immediately sending the signed transaction
+  setTimeout(() => {
+      start_time = process.hrtime.bigint()
+      web3.eth.sendSignedTransaction(signed_tx.rawTransaction)
+   }, 50);
 }
 
 commander
