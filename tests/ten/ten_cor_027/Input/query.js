@@ -9,7 +9,6 @@ function log(data) {
 }
 
 function task() {
-  log(`Starting task ...`)
   filter = {
     address: options.bus_address,
     topics: [
@@ -25,6 +24,8 @@ function task() {
     log(`Log transfer amount = ${decoded_log.amount.toNumber()}`)
     log(`Event log received`)
   });
+
+  log(`Started task ...`)
 }
 
 commander

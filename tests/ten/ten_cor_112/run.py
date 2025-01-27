@@ -26,7 +26,8 @@ class PySysTest(TenNetworkTest):
         args.extend(['--contract_abi', '%s' % storage.abi_path])
         args.extend(['--log_file', '%s' % logout])
         self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=logout, expr='Starting task ...', timeout=10)
+        self.waitForGrep(file=logout, expr='Started task ...', timeout=10)
+        self.wait(float(self.block_time) * 1.1)
 
         for i in range(0, 5): self.transact(storage, web3, network, account, i)
         self.wait(float(self.block_time) * 1.1)

@@ -9,7 +9,6 @@ function log(data) {
 }
 
 function task() {
-  log('Starting task ...')
   contract.events.Stored({fromBlock:'latest'},
     function(error, result) {
       if (error) {
@@ -20,6 +19,7 @@ function task() {
       }
     }
   )
+  log('Started task ...')
 }
 
 commander

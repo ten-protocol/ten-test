@@ -21,6 +21,7 @@ class PySysTest(TenNetworkTest):
         # run the subscribers
         self.run_client(accnt1.l1, 'l1')
         self.run_client(accnt1.l2, 'l2')
+        self.wait(float(self.block_time)*1.1)
 
         # subscribe for the deposit event
         subscriber = FilterLogSubscriber(self, accnt1.l2.network)
@@ -29,6 +30,7 @@ class PySysTest(TenNetworkTest):
             filter_topics=[accnt1.l2.web3.keccak(text='NativeDeposit(address,uint256)').hex(), '0x'+filter_address]
         )
         subscriber.subscribe()
+        self.wait(float(self.block_time)*1.1)
 
         # send native from the L1 to the L2, wait for the deposit event amount to be seen
         self.log.info('Send native and wait for the deposit event on the L2')
@@ -68,4 +70,4 @@ class PySysTest(TenNetworkTest):
         args.extend(['--receiver_address', '%s' % layer.account.address])
         args.extend(['--log_file', '%s' % logout])
         self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=logout, expr='Starting task ...', timeout=10)
+        self.waitForGrep(file=logout, expr='Started task ...', timeout=10)

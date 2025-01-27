@@ -20,6 +20,7 @@ class PySysTest(TenNetworkTest):
         # subscribe for CallerIndexedAddress events
         self.subscribe(relevancy_two_phase, network, 'relevancy_two_phase')
         self.subscribe(relevancy_normal, network, 'relevancy_normal')
+        self.wait(float(self.block_time) * 1.1)
 
         # perform some transactions on both contracts
         for i in range(0, 5): self.transact(relevancy_two_phase, web3, network, account)
@@ -50,4 +51,4 @@ class PySysTest(TenNetworkTest):
         args.extend(['--contract_abi', '%s' % relevancy.abi_path])
         args.extend(['--log_file', '%s' % logout])
         self.run_javascript(script, stdout, stderr, args)
-        self.waitForGrep(file=logout, expr='Starting task ...', timeout=10)
+        self.waitForGrep(file=logout, expr='Started task ...', timeout=10)
