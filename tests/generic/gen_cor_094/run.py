@@ -25,6 +25,7 @@ class PySysTest(GenericNetworkTest):
             filter_topics=[web3.keccak(text='StructEvent(uint256,(uint256,string,address))').hex()],
         )
         subscriber.subscribe()
+        self.wait(float(self.block_time) * 1.1)
 
         # transact
         network.transact(self, web3, emitter.contract.functions.emitStructEvent(int(2), rstr()), account, emitter.GAS_LIMIT)
