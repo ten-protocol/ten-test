@@ -1,4 +1,3 @@
-import time, rlp
 from web3._utils.events import EventLogErrorFlags
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.bridge import BridgeUser
@@ -17,7 +16,7 @@ class PySysTest(TenNetworkTest):
         accnt = BridgeUser(self, props.account1pk(), props.account1pk(), 'accnt1')
         l1_before = accnt.l1.web3.eth.get_balance(accnt.l1.account.address)
 
-        # send two transactions in quick succession, store details for the second one
+        # send four transactions in quick succession, store details for the second one
         params = {'from': accnt.l2.account.address,
                   'chainId': accnt.l2.web3.eth.chain_id,
                   'gasPrice': accnt.l2.web3.eth.gas_price,

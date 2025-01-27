@@ -51,10 +51,10 @@ class PySysTest(TenNetworkTest):
         accnt1.l2.approve_token(self.SYMB, accnt1.l2.bridge.address, 10)
         self.log.info('Send tokens to cross the bridge on the L2')
         self.log.info('Fees to send are %d' % accnt1.l2.send_erc20_fees())
-        accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 1, dump_file='send_erc20.tx')
-        accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 1, dump_file='send_erc20.tx')
-        _, log_msg1 = accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 1, dump_file='send_erc20.tx')
-        _, log_msg2 = accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 2, dump_file='send_erc20.tx')
+        accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 1, dump_file='send1_erc20.tx')
+        accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 1, dump_file='send2_erc20.tx')
+        _, log_msg1 = accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 1, dump_file='send3_erc20.tx')
+        _, log_msg2 = accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 2, dump_file='send4_erc20.tx')
 
         # get the log msg from the merkle tree helper
         mh = MerkleTreeHelper.create(self)
