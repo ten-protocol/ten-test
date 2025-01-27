@@ -48,7 +48,7 @@ class PySysTest(TenNetworkTest):
         params = {'from': accnt1.l2.account.address,
                   'chainId': accnt1.l2.web3.eth.chain_id,
                   'gasPrice': accnt1.l2.web3.eth.gas_price,
-                  'value':transfer}
+                  'value':transfer+int(accnt1.l2.send_native_fees())}
         gas_limit = accnt1.l2.bridge.contract.functions.sendNative(accnt1.l1.account.address).estimate_gas(params)
         nonce1, tx_sign1 = self.create_signed(accnt1, transfer, gas_limit)
         nonce2, tx_sign2 = self.create_signed(accnt1, transfer, gas_limit)
@@ -70,6 +70,7 @@ class PySysTest(TenNetworkTest):
 
         # get the log msg from the merkle tree helper
         mh = MerkleTreeHelper.create(self)
+        mh.dump_tree(accnt1.l2.web3, tx_receipt, 'cross_train_tree.log')
         msg1, msg_hash1 = mh.process_log_msg(log_msg1)
         msg2, msg_hash2 = mh.process_log_msg(log_msg2)
         msg3, msg_hash3 = mh.process_transfer(value_transfer)
@@ -93,7 +94,10 @@ class PySysTest(TenNetworkTest):
         self.log.info('Relay the message on the L1 to release them')
         _ = accnt1.l1.release_tokens(msg1, proof1, root1)
         _ = accnt1.l1.release_tokens(msg2, proof2, root2)
-        _ = accnt1.l1.release_funds(msg3, proof3, root3)
+        l1_balance_before = accnt1.l1.web3.eth.get_balance(accnt1.l1.account.address)
+        tx_receipt = accnt1.l1.release_funds(msg3, proof3, root3)
+        l1_balance_after = accnt1.l1.web3.eth.get_balance(accnt1.l1.account.address)
+        l1_release_cost = int(tx_receipt['cumulativeGasUsed']) * int(tx_receipt['effectiveGasPrice'])
 
         # print out the balances and perform test validation
         self.log.info('Print out token balances')
@@ -101,8 +105,14 @@ class PySysTest(TenNetworkTest):
         balance_l2 = accnt1.l2.balance_for_token(self.SYMB)
         self.log.info('  Account1 ERC20 balance L1 = %d ', balance_l1)
         self.log.info('  Account1 ERC20 balance L2 = %d ', balance_l2)
-        self.assertTrue(balance_l1 == 197)
-        self.assertTrue(balance_l2 == 2)
+        self.assertTrue(balance_l1 == 193)
+        self.assertTrue(balance_l2 == 7)
+
+        self.log.info('Print out native balances')
+        self.log.info('   L1 before: %d', l1_balance_before)
+        self.log.info('   L1 after:  %d', l1_balance_after)
+        self.log.info('   L1 diff:   %d', (l1_balance_after+l1_release_cost-l1_balance_before))
+        self.assertTrue((l1_balance_after+l1_release_cost-l1_balance_before) == transfer)
 
     def create_signed(self, user, amount, gas_limit):
         nonce = user.l2.network.get_next_nonce(self, user.l2.web3, user.l2.account.address, True, False)
