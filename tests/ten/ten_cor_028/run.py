@@ -19,7 +19,7 @@ class PySysTest(TenNetworkTest):
         funded = BridgeUser(self, props.l1_funded_account_pk(self.env), props.account2pk(), 'funded')
         accnt1 = BridgeUser(self, props.account1pk(), props.account1pk(), 'accnt1')
 
-        # ddeploy the token, approve and send some over to the L2
+        # deploy the token, distribute and whitelist
         self.log.info('Deploy the ERC20 token on the L1')
         token = MintedERC20Token(self, funded.l1.web3, self.NAME, self.SYMB, 10000)
         token.deploy(funded.l1.network, funded.l1.account, persist_nonce=False)
@@ -30,6 +30,8 @@ class PySysTest(TenNetworkTest):
         _, xchain_msg = funded.l1.white_list_token(self.SYMB)
         accnt1.l2.wait_for_message(xchain_msg)
         _, l2_token_address = accnt1.l2.relay_whitelist_message(xchain_msg)
+
+        # send some tokens over the bridge L1 to L2
         funded.l2.set_token_contract(l2_token_address, self.NAME, self.SYMB)
         accnt1.l2.set_token_contract(l2_token_address, self.NAME, self.SYMB)
         _, xchain_msg = accnt1.l1.send_erc20(self.SYMB, accnt1.l2.account.address, 10)
@@ -42,7 +44,7 @@ class PySysTest(TenNetworkTest):
         self.log.info('Approve the bridge to spend tokens on the L2')
         accnt1.l2.approve_token(self.SYMB, accnt1.l2.bridge.address, 10)
 
-        # send four value transfer transactions in quick succession, store details for the second one
+        # create some value transfer transactions but don't send yet
         params = {'from': accnt1.l2.account.address,
                   'chainId': accnt1.l2.web3.eth.chain_id,
                   'gasPrice': accnt1.l2.web3.eth.gas_price,
@@ -53,14 +55,14 @@ class PySysTest(TenNetworkTest):
         nonce3, tx_sign3 = self.create_signed(accnt1, transfer, gas_limit)
         nonce4, tx_sign4 = self.create_signed(accnt1, transfer, gas_limit)
 
-        # withdraw funds and tokens
+        # perform some token and value transfer withdrawals
         self.log.info('Withdraw funds and tokens')
         self.send_tx(accnt1, nonce1, tx_sign1)
         self.send_tx(accnt1, nonce2, tx_sign2)
         self.send_tx(accnt1, nonce3, tx_sign3)
         tx_hash = self.send_tx(accnt1, nonce4, tx_sign4)
         _, log_msg1 = accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 1, dump_file='send1_erc20.tx')
-        _, log_msg2 = accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 1, dump_file='send2_erc20.tx')
+        _, log_msg2 = accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 2, dump_file='send2_erc20.tx')
 
         tx_receipt = self.wait_tx(accnt1, nonce4, tx_hash)
         logs = accnt1.l2.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
@@ -83,14 +85,15 @@ class PySysTest(TenNetworkTest):
         self.log.info('  Returned proof:        %s', [p.hex() for p in proof2])
 
         self.log.info('Getting root and proof for value transfer')
-        root, proof = accnt1.l2.wait_for_proof('v', msg_hash3, proof_timeout)
-        self.log.info('  returned root:         %s', root)
-        self.log.info('  returned proof:        %s', [p.hex() for p in proof])
+        root3, proof3 = accnt1.l2.wait_for_proof('v', msg_hash3, proof_timeout)
+        self.log.info('  returned root:         %s', root3)
+        self.log.info('  returned proof:        %s', [p.hex() for p in proof3])
 
-        # release the tokens from the L1 and check the balances
+        # release the tokens and native funds from the L1 and check the balances
         self.log.info('Relay the message on the L1 to release them')
         _ = accnt1.l1.release_tokens(msg1, proof1, root1)
         _ = accnt1.l1.release_tokens(msg2, proof2, root2)
+        _ = accnt1.l1.release_funds(msg3, proof3, root3)
 
         # print out the balances and perform test validation
         self.log.info('Print out token balances')
@@ -98,7 +101,7 @@ class PySysTest(TenNetworkTest):
         balance_l2 = accnt1.l2.balance_for_token(self.SYMB)
         self.log.info('  Account1 ERC20 balance L1 = %d ', balance_l1)
         self.log.info('  Account1 ERC20 balance L2 = %d ', balance_l2)
-        self.assertTrue(balance_l1 == 198)
+        self.assertTrue(balance_l1 == 197)
         self.assertTrue(balance_l2 == 2)
 
     def create_signed(self, user, amount, gas_limit):
