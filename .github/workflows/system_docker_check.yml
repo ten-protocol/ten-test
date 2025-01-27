@@ -24,6 +24,8 @@ jobs:
           for i in `docker volume ls --filter dangling=true -q`; do docker volume rm $i; done
 
       - name: 'Build and start up testnet'
+        env:
+          DOCKER_API_VERSION: "1.45"
         run: |
           cd ${{ github.workspace }}/go-ten/testnet
           ./testnet-local-build_images.sh 

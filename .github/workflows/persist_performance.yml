@@ -39,6 +39,8 @@ jobs:
 
       - name: 'Build docker containers and start testnet'
         if:  ${{ github.event.inputs.environment == 'ten.local' }}
+        env:
+          DOCKER_API_VERSION: "1.45"
         run: |
           cd ${{ github.workspace }}/go-ten
           ./testnet/testnet-local-build_images.sh 
