@@ -9,8 +9,8 @@ function log(data) {
 }
 
 function task() {
-  log('Starting task ...')
   task1(0)
+  log('Started task ...')
 }
 
 function task1(from) {
