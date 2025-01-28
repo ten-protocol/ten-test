@@ -207,7 +207,7 @@ class TenRunnerPlugin():
         hprocess = runner.startProcess(command=os.path.join(PROJECT.root, 'artifacts', 'wallet_extension', 'wallet_extension'),
                                        displayName='wallet_extension', workingDir=runner.output, environs=os.environ,
                                        quiet=True, arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
-        runner.waitForSignal(stdout, expr='Wallet extension started', timeout=30)
+        runner.waitForSignal(stdout, expr='TEN gateway started', timeout=30)
         return hprocess, port
 
     def is_ten(self):
