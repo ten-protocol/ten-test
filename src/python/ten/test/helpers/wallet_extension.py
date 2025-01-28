@@ -56,5 +56,5 @@ class WalletExtension:
         hprocess = self.test.startProcess(command=self.binary, displayName='wallet_extension',
                                           workingDir=self.test.output, environs=os.environ, quiet=True,
                                           arguments=arguments, stdout=self.stdout, stderr=self.stderr, state=BACKGROUND)
-        self.test.waitForSignal(self.stdout, expr='Wallet extension started', timeout=30)
+        self.test.waitForSignal(self.stdout, expr='TEN gateway started', timeout=30)
         return hprocess
