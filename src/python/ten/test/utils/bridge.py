@@ -32,6 +32,7 @@ class BridgeDetails:
             time.sleep(1.0)
 
     def wait_for_proof(self, msg_type, msg_hash, timeout):
+        wait_period = 2 if self.test.is_local_ten() else 30
         start_time = time.perf_counter_ns()
         root, proof = None, None
         start = time.time()
@@ -40,7 +41,7 @@ class BridgeDetails:
             if root is not None: break
             if time.time() - start > timeout:
                 raise TimeoutError('Timed out waiting for message to be verified')
-            time.sleep(2.0)
+            time.sleep(wait_period)
         proof = rlp.decode(bytes.fromhex(proof[2:]))
         end_time = time.perf_counter_ns()
         self.test.log.info('Total time waiting for the proof: %.1f secs', (end_time-start_time)/1e9)
