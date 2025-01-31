@@ -7,7 +7,7 @@ from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
 from ten.test.persistence.rates import RatesPersistence
 from ten.test.persistence.nonce import NoncePersistence
-from ten.test.persistence.funds import FundsPersistence
+from ten.test.persistence.funds import FundsPersistence, PandLPersistence
 from ten.test.persistence.counts import CountsPersistence
 from ten.test.persistence.results import PerformanceResultsPersistence
 from ten.test.persistence.contract import ContractPersistence
@@ -44,6 +44,7 @@ class GenericNetworkTest(BaseTest):
         self.nonce_db = NoncePersistence(use_remote, self.user_dir, self.machine_name)
         self.contract_db = ContractPersistence(use_remote, self.user_dir, self.machine_name)
         self.funds_db = FundsPersistence(use_remote, self.user_dir, self.machine_name)
+        self.pandl_db = PandLPersistence(use_remote, self.user_dir, self.machine_name)
         self.counts_db = CountsPersistence(use_remote, self.user_dir, self.machine_name)
         self.results_db = PerformanceResultsPersistence(use_remote, self.user_dir, self.machine_name)
         self.addCleanupFunction(self.close_db)
@@ -85,6 +86,7 @@ class GenericNetworkTest(BaseTest):
         self.nonce_db.close()
         self.contract_db.close()
         self.funds_db.close()
+        self.pandl_db.close()
         self.counts_db.close()
         self.results_db.close()
 

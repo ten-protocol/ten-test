@@ -10,9 +10,6 @@ from ten.test.utils.gnuplot import GnuplotHelper
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        self.execute_run()
-
-    def execute_run(self):
         current_time = int(time.time())
 
         l1_network = self.get_l1_network_connection(self.env)
@@ -37,14 +34,9 @@ class PySysTest(TenNetworkTest):
             for entry in reversed(self.funds_db.get_funds(name='GasPayment', environment=self.env)):
                 fp.write('%s %s\n' % (entry[0],  entry[1]))
 
-        self.graph()
+        self.graph(current_time)
 
-    def execute_graph(self):
-        shutil.copy(os.path.join(self.input, 'gas_payment.log'), os.path.join(self.output, 'gas_payment.log'))
-        shutil.copy(os.path.join(self.input, 'sequencer_funds.log'), os.path.join(self.output, 'sequencer_funds.log'))
-        self.graph()
-
-    def graph(self):
+    def graph(self, current_time):
         dict = OrderedDict()
 
         last_value = 0
@@ -80,6 +72,8 @@ class PySysTest(TenNetworkTest):
                 gas_payment_diff = dict[t][1] - gas_payment_start
                 pandl = gas_payment_diff + sequencer_diff
                 fp.write('%d %d %d %d\n' % (t, sequencer_diff, gas_payment_diff, pandl))
+                if t == current_time:
+                    self.pandl_db.insert_pandl(self.env, t, sequencer_diff/1e18, gas_payment_diff/1e18, pandl/1e18)
 
         branch = GnuplotHelper.buildInfo().branch
         date = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
