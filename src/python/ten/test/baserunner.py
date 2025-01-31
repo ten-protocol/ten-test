@@ -10,7 +10,7 @@ from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
 from ten.test.persistence.rates import RatesPersistence
 from ten.test.persistence.nonce import NoncePersistence
-from ten.test.persistence.funds import FundsPersistence
+from ten.test.persistence.funds import FundsPersistence, PandLPersistence
 from ten.test.persistence.counts import CountsPersistence
 from ten.test.persistence.results import PerformanceResultsPersistence
 from ten.test.persistence.contract import ContractPersistence
@@ -78,6 +78,7 @@ class TenRunnerPlugin():
         nonce_db = NoncePersistence.init(use_remote, self.user_dir, self.machine_name)
         contracts_db = ContractPersistence.init(use_remote, self.user_dir, self.machine_name)
         funds_db = FundsPersistence.init(use_remote, self.user_dir, self.machine_name)
+        pandl_db = PandLPersistence(use_remote, self.user_dir, self.machine_name)
         counts_db = CountsPersistence.init(use_remote, self.user_dir, self.machine_name)
         results_db = PerformanceResultsPersistence.init(use_remote, self.user_dir, self.machine_name)
 
@@ -166,6 +167,7 @@ class TenRunnerPlugin():
         nonce_db.close()
         contracts_db.close()
         funds_db.close()
+        pandl_db.close()
         counts_db.close()
         results_db.close()
 
