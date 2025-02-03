@@ -20,6 +20,10 @@ jobs:
   test-run:
     runs-on: [self-hosted, Linux, X64, local-testnets]
     steps:
+      - name: 'Remove go-ten'
+        run:
+          rm -rf ${{ github.workspace }}/go-ten
+
       - name: 'Check out ten-test'
         uses: actions/checkout@v3
         with:
