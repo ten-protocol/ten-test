@@ -59,6 +59,7 @@ class PySysTest(TenNetworkTest):
         while (l1_after <= l1_before):
             l1_after = accnt.l1.web3.eth.get_balance(accnt.l1.account.address)
             if time.time() - start > 30: raise TimeoutError('Timed out waiting for L1 balance to increase')
+            self.log.info('Waiting for L1 balance to increase')
             time.sleep(1.0)
 
         self.log.info('  l1_balance before:     %s', l1_before)
