@@ -1,3 +1,4 @@
+import time
 from web3._utils.events import EventLogErrorFlags
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.bridge import BridgeUser
@@ -52,6 +53,14 @@ class PySysTest(TenNetworkTest):
         tx_receipt = accnt.l1.release_funds(msg, proof, root)
         l1_cost = int(tx_receipt.gasUsed) * int(tx_receipt.effectiveGasPrice)
         l1_after = accnt.l1.web3.eth.get_balance(accnt.l1.account.address)
+
+        # wait for the L1 balance to go up
+        start = time.time()
+        while (l1_after <= l1_before):
+            l1_after = accnt.l1.web3.eth.get_balance(accnt.l1.account.address)
+            if time.time() - start > 30: raise TimeoutError('Timed out waiting for L1 balance to increase')
+            time.sleep(1.0)
+
         self.log.info('  l1_balance before:     %s', l1_before)
         self.log.info('  l1_balance after:      %s', l1_after)
         self.log.info('  l1_cost:               %s', l1_cost)
