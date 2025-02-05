@@ -4,9 +4,12 @@ from ten.test.contracts.storage import Storage, KeyStorage
 from ten.test.contracts.game import Game
 from ten.test.contracts.calldata import CallData
 
+
 class PySysTest(TenNetworkTest):
 
     def execute(self):
+        self.run_time = int(time.time())
+
         # connect to network
         network = self.get_network_connection()
         web3, acnt = network.connect_account1(self)
@@ -61,5 +64,5 @@ class PySysTest(TenNetworkTest):
                                          contract.GAS_LIMIT))
 
     def store_cost(self, name, receipt):
-        self.txcosts_db.insert(name, self.env, int(time.time()), receipt.effectiveGasPrice, receipt.gasUsed)
+        self.txcosts_db.insert(name, self.env, self.run_time, receipt.effectiveGasPrice, receipt.gasUsed)
 
