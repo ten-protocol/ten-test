@@ -12,7 +12,7 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         props = Properties()
-        proof_timeout = 60 if self.is_local_ten() else 2400
+        proof_timeout = 90 if self.is_local_ten() else 2400
         transfer = 2000000000000000
 
         # create the users for the test

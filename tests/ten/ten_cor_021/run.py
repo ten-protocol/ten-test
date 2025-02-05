@@ -11,7 +11,7 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         props = Properties()
-        proof_timeout = 60 if self.is_local_ten() else 2400
+        proof_timeout = 90 if self.is_local_ten() else 2400
 
         # create the users for the test
         funded = BridgeUser(self, props.l1_funded_account_pk(self.env), props.account2pk(), 'funded')

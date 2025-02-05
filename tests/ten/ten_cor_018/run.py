@@ -14,5 +14,5 @@ class PySysTest(TenNetworkTest):
         storage.deploy(network, account)
 
         # get the receipt sort the fields
-        tx_receipt = network.transact(self, web3, storage.contract.functions.store(1), account, storage.GAS_LIMIT)
+        storage_tx_receipt = network.transact(self, web3, storage.contract.functions.store(1), account, storage.GAS_LIMIT)
 
