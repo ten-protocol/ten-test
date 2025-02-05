@@ -2,6 +2,56 @@ from ten.test.persistence import normalise
 from ten.test.persistence import get_connection
 
 
+class TxCostResultsPersistence:
+    """Abstracts the persistence of transaction costs into a local database.
+
+    We persist any test runs that are made in the cloud, along with the branch that it was run against. This just
+    allows inspection of commonly failing tests.
+    """
+
+    SQL_CREATE = "CREATE TABLE IF NOT EXISTS tx_costs " \
+                 "(name VARCHAR(64), " \
+                 "environment VARCHAR(64), " \
+                 "time INTEGER, " \
+                 "gasprice REAL, " \
+                 "gasused REAL)"
+    SQL_INSERT = "INSERT INTO tx_costs VALUES (?, ?, ?, ?, ?)"
+    SQL_SELECT = "SELECT time, gasprice, gasused FROM tx_costs WHERE name=? AND environment=? ORDER BY time ASC"
+
+    @classmethod
+    def init(cls, use_remote, user_dir, host):
+        instance = TxCostResultsPersistence(use_remote, user_dir, host)
+        instance.create()
+        return instance
+
+    def __init__(self, use_remote, user_dir, host):
+        """Instantiate an instance."""
+        self.host = host
+        self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
+        self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
+        self.sqlsel = normalise(self.SQL_SELECT, self.dbconnection.type)
+        self.cursor = self.dbconnection.connection.cursor()
+
+    def create(self):
+        """Create the cursor to the underlying persistence."""
+        self.cursor.execute(self.SQL_CREATE)
+
+    def insert(self, name, environment, time, gasprice, gasused):
+        """Insert a new performance result into the persistence. """
+        self.cursor.execute(self.sqlins, (name, environment, time, gasprice, gasused))
+        self.dbconnection.connection.commit()
+
+    def close(self):
+        """Close the connection to the underlying persistence."""
+        self.cursor.close()
+        self.dbconnection.connection.close()
+
+    def get_results(self, name, environment):
+        """Return the performance results for a particular test and environment. """
+        self.cursor.execute(self.sqlsel, (self.host, name, environment))
+        return self.cursor.fetchall()
+
+
 class OutomeResultsPersistence:
     """Abstracts the persistence of test outcome results into a local database.
 

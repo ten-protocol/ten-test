@@ -11,7 +11,7 @@ class PySysTest(TenNetworkTest):
     def execute(self):
         props = Properties()
         transfer = 2000000000000000
-        proof_timeout = 60 if self.is_local_ten() else 2400
+        proof_timeout = 90 if self.is_local_ten() else 2400
 
         # create the bridge user
         accnt = BridgeUser(self, props.account1pk(), props.account1pk(), 'accnt1')

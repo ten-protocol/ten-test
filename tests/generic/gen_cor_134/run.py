@@ -1,6 +1,5 @@
 from pysys.constants import FAILED, PASSED
 from ten.test.basetest import TenNetworkTest
-from ten.test.utils.properties import Properties
 from ten.test.contracts.calldata import CallData
 
 
@@ -13,7 +12,7 @@ class PySysTest(TenNetworkTest):
         self.distribute_native(account, network.ETH_ALLOC)
 
         # deploy the contract
-        calldata = CallData(self, web3, Properties().L2PublicCallbacks)
+        calldata = CallData(self, web3)
         calldata.deploy(network, account)
 
         # transact (the first should be rejected so we just check later ones go through)

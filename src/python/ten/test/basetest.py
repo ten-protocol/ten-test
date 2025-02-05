@@ -7,9 +7,9 @@ from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
 from ten.test.persistence.rates import RatesPersistence
 from ten.test.persistence.nonce import NoncePersistence
-from ten.test.persistence.funds import FundsPersistence, PandLPersistence
 from ten.test.persistence.counts import CountsPersistence
-from ten.test.persistence.results import PerformanceResultsPersistence
+from ten.test.persistence.funds import FundsPersistence, PandLPersistence
+from ten.test.persistence.results import PerformanceResultsPersistence, TxCostResultsPersistence
 from ten.test.persistence.contract import ContractPersistence
 from ten.test.utils.properties import Properties
 from ten.test.networks.default import DefaultPostLondon
@@ -36,6 +36,7 @@ class GenericNetworkTest(BaseTest):
         self.user_dir = runner.ten_runner.user_dir
         self.machine_name = runner.ten_runner.machine_name
         self.is_cloud_vm = runner.ten_runner.is_cloud_vm
+        if hasattr(runner, 'uuid'): self.log.info('Running as job uuid %s', runner.uuid)
 
         # every test has its own connection to the dbs - use a remote mysql persistence layer if we are running in
         # azure, and it is not a local testnet. The exception for this is the nonce db where it is always local.
@@ -47,6 +48,7 @@ class GenericNetworkTest(BaseTest):
         self.pandl_db = PandLPersistence(use_remote, self.user_dir, self.machine_name)
         self.counts_db = CountsPersistence(use_remote, self.user_dir, self.machine_name)
         self.results_db = PerformanceResultsPersistence(use_remote, self.user_dir, self.machine_name)
+        self.txcosts_db = TxCostResultsPersistence(use_remote, self.user_dir, self.machine_name)
         self.addCleanupFunction(self.close_db)
 
         # every test has a unique connection for the funded account
@@ -89,6 +91,7 @@ class GenericNetworkTest(BaseTest):
         self.pandl_db.close()
         self.counts_db.close()
         self.results_db.close()
+        self.txcosts_db.close()
 
     def drain_ephemeral_pks(self):
         """Drain any ephemeral accounts of their funds. """
