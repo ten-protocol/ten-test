@@ -2,6 +2,7 @@ import uuid
 from pysys.writer import BaseResultsWriter
 from ten.test.persistence.results import OutomeResultsPersistence
 
+
 class PersistenceTestsWriter(BaseResultsWriter):
 
     def __init__(self, logfile=None, **kwargs):
@@ -18,6 +19,7 @@ class PersistenceTestsWriter(BaseResultsWriter):
         self.machine_name = runner.ten_runner.machine_name
         self.is_cloud_vm = runner.ten_runner.is_cloud_vm
         runner.log.info('Run uuid is %s' % self.uuid)
+        runner.uuid = self.uuid
 
         # use remote persistence if we are running in azure
         self.outcomes_db = OutomeResultsPersistence.init(self.is_cloud_vm, self.user_dir, self.machine_name)

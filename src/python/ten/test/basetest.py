@@ -36,6 +36,7 @@ class GenericNetworkTest(BaseTest):
         self.user_dir = runner.ten_runner.user_dir
         self.machine_name = runner.ten_runner.machine_name
         self.is_cloud_vm = runner.ten_runner.is_cloud_vm
+        if hasattr(runner, 'uuid'): self.log.info('Running as job uuid %s', runner.uuid)
 
         # every test has its own connection to the dbs - use a remote mysql persistence layer if we are running in
         # azure, and it is not a local testnet. The exception for this is the nonce db where it is always local.
