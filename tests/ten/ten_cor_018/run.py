@@ -13,6 +13,7 @@ class PySysTest(TenNetworkTest):
         # connect to network
         network = self.get_network_connection()
         web3, acnt = network.connect_account1(self)
+        _, acnt2 = network.connect_account2(self)
 
         self.log.info('')
         self.log.info('Deploy the Storage contract and transact')
@@ -62,6 +63,13 @@ class PySysTest(TenNetworkTest):
                                          web3,contract.contract.functions.processLargeData([i for i in range(20)]),
                                          acnt,
                                          contract.GAS_LIMIT))
+
+        self.log.info('')
+        self.log.info('Perform a native funds transfer')
+        tx = {'to': acnt2.address, 'value': 1000, 'gasPrice': web3.eth.gas_price}
+        tx['gas'] = web3.eth.estimate_gas(tx)
+        self.store_cost('Native.transfer', network.tx(self, web3, tx, acnt, txstr='value transfer'))
+
 
     def store_cost(self, name, receipt):
         self.txcosts_db.insert(name, self.env, self.run_time, receipt.effectiveGasPrice, receipt.gasUsed)
