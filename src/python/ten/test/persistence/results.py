@@ -13,9 +13,10 @@ class TxCostResultsPersistence:
                  "(name VARCHAR(64), " \
                  "environment VARCHAR(64), " \
                  "time INTEGER, " \
-                 "cost REAL)"
-    SQL_INSERT = "INSERT INTO tx_costs VALUES (?, ?, ?, ?)"
-    SQL_SELECT = "SELECT time, cost FROM tx_costs WHERE name=? AND environment=? ORDER BY time ASC"
+                 "gasprice REAL, " \
+                 "gasused REAL)"
+    SQL_INSERT = "INSERT INTO tx_costs VALUES (?, ?, ?, ?, ?)"
+    SQL_SELECT = "SELECT time, gasprice, gasused FROM tx_costs WHERE name=? AND environment=? ORDER BY time ASC"
 
     @classmethod
     def init(cls, use_remote, user_dir, host):
@@ -35,9 +36,9 @@ class TxCostResultsPersistence:
         """Create the cursor to the underlying persistence."""
         self.cursor.execute(self.SQL_CREATE)
 
-    def insert(self, name, environment, time, cost):
+    def insert(self, name, environment, time, gasprice, gasused):
         """Insert a new performance result into the persistence. """
-        self.cursor.execute(self.sqlins, (name, environment, time, cost))
+        self.cursor.execute(self.sqlins, (name, environment, time, gasprice, gasused))
         self.dbconnection.connection.commit()
 
     def close(self):

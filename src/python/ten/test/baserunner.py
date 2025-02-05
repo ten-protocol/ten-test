@@ -10,9 +10,9 @@ from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
 from ten.test.persistence.rates import RatesPersistence
 from ten.test.persistence.nonce import NoncePersistence
-from ten.test.persistence.funds import FundsPersistence, PandLPersistence
 from ten.test.persistence.counts import CountsPersistence
-from ten.test.persistence.results import PerformanceResultsPersistence
+from ten.test.persistence.funds import FundsPersistence, PandLPersistence
+from ten.test.persistence.results import PerformanceResultsPersistence, TxCostResultsPersistence
 from ten.test.persistence.contract import ContractPersistence
 from ten.test.utils.properties import Properties
 from ten.test.utils.cloud import is_cloud_vm
@@ -81,6 +81,7 @@ class TenRunnerPlugin():
         pandl_db = PandLPersistence(use_remote, self.user_dir, self.machine_name)
         counts_db = CountsPersistence.init(use_remote, self.user_dir, self.machine_name)
         results_db = PerformanceResultsPersistence.init(use_remote, self.user_dir, self.machine_name)
+        txcosts_db = TxCostResultsPersistence.init(use_remote, self.user_dir, self.machine_name)
 
         eth_price = self.get_eth_price()
         if eth_price is not None:
@@ -170,6 +171,7 @@ class TenRunnerPlugin():
         pandl_db.close()
         counts_db.close()
         results_db.close()
+        txcosts_db.close()
 
     def run_ganache(self, runner):
         """Run ganache for use by the tests. """
