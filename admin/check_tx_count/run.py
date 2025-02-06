@@ -18,7 +18,7 @@ class PySysTest(TenNetworkTest):
         sequencer_count = web3.eth.get_transaction_count(sequencer_address)
         self.log.info('Sequencer tx count %d', sequencer_count)
         self.counts_db.insert_count('Sequencer', sequencer_address, self.env, current_time, sequencer_count)
-        entries = self.counts_db.get_last_hour('Sequencer', self.env, current_time - 7200)
+        entries = self.counts_db.get_last_hour('Sequencer', sequencer_address, self.env, current_time - 7200)
 
         # make sure we have at least 2 entries recorded within the last two hours
         if len(entries) >= 2:

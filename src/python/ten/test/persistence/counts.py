@@ -20,8 +20,8 @@ class CountsPersistence:
                  "PRIMARY KEY (name, environment, time))"
     SQL_INSERT = "INSERT INTO counts VALUES (?, ?, ?, ?, ?)"
     SQL_DELETE = "DELETE from counts WHERE environment=?"
-    SQL_SELTHR = "SELECT time, count FROM counts WHERE name=? and environment=? ORDER BY time DESC LIMIT 3"
-    SQL_SELHOR = "SELECT time, count FROM counts WHERE name=? and environment=? and time >= ? ORDER BY time DESC"
+    SQL_SELTHR = "SELECT time, count FROM counts WHERE name=? AND address = ? AND environment=? ORDER BY time DESC LIMIT 3"
+    SQL_SELHOR = "SELECT time, count FROM counts WHERE name=? AND address = ? AND environment=? and time >= ? ORDER BY time DESC"
 
     @classmethod
     def init(cls, use_remote, user_dir, host):
@@ -58,12 +58,12 @@ class CountsPersistence:
         self.cursor.execute(self.sqlins, (name, address, environment, time, str(count)))
         self.dbconnection.connection.commit()
 
-    def get_last_three_counts(self, name, environment):
+    def get_last_three_counts(self, name, address, environment):
         """Return the transaction count with time for a particular logical account."""
-        self.cursor.execute(self.sqlthr, (name, environment))
+        self.cursor.execute(self.sqlthr, (name, address, environment))
         return self.cursor.fetchall()
 
-    def get_last_hour(self, name, environment, time):
+    def get_last_hour(self, name, address, environment, time):
         """Return the transaction count with time for a particular logical account."""
-        self.cursor.execute(self.sqlhor, (name, environment, time))
+        self.cursor.execute(self.sqlhor, (name, address, environment, time))
         return self.cursor.fetchall()
