@@ -162,7 +162,7 @@ class DefaultPostLondon:
                     time.sleep(5)
 
         if verbose:
-            self.log.info('Gas %d, base fee %d WEI, cost %d WEI, balance %.18f ETH',
+            self.log.info('Gas estimate %d, base fee %d WEI, cost %d WEI, balance %.18f ETH',
                           gas_estimate, base_fee_per_gas, web3.from_wei(base_fee_per_gas*gas_estimate, 'wei'),
                           web3.from_wei(balance, 'ether'))
 
@@ -196,7 +196,9 @@ class DefaultPostLondon:
             tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash, timeout=timeout)
 
             if tx_receipt.status == 1:
-                if verbose: self.log.info('Transaction receipt block hash %s', tx_receipt.blockHash.hex())
+                if verbose:
+                    self.log.info('Transaction receipt block hash %s', tx_receipt.blockHash.hex())
+                    self.log.info('Transaction receipt gas used %s', tx_receipt.gasUsed)
                 if persist_nonce: test.nonce_db.update(address, test.env, nonce, 'CONFIRMED')
             else:
                 self.log.error('Transaction receipt failed')
@@ -258,7 +260,7 @@ class DefaultPreLondon(DefaultPostLondon):
                     time.sleep(5)
 
         if verbose:
-            self.log.info('Gas %d, price %d WEI, cost %d WEI, balance %.18F ETH',
+            self.log.info('Gas estimate %d, price %d WEI, cost %d WEI, balance %.18F ETH',
                           gas_estimate, gas_price, web3.from_wei(gas_price*gas_estimate, 'wei'),
                           web3.from_wei(balance, 'ether'))
 
