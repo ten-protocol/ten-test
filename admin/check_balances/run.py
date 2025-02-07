@@ -32,9 +32,10 @@ class PySysTest(TenNetworkTest):
         self.log.info('Deployer account %s balance %.9f ETH', deployer_address, deployer_balance)
 
         faucet_address = Properties().l2_faucet_address(key='ten.sepolia')
-        faucet_balance = web3.from_wei(self.get_faucet_balance(), 'ether')
-        self.log.info('Faucet balance %.9f ETH', faucet_balance)
-        self.funds_db.insert_funds('Faucet', faucet_address, self.env, current_time, faucet_balance)
+        faucet_balance_wei = self.get_faucet_balance()
+        faucet_balance_eth = web3.from_wei(faucet_balance_wei, 'ether')
+        self.log.info('Faucet balance %.9f ETH', faucet_balance_eth)
+        self.funds_db.insert_funds('Faucet', faucet_address, self.env, current_time, faucet_balance_wei)
 
         self.assertTrue(sequencer_balance >= self.L1_THRESHOLD,
                         assertMessage='L1 Sequencer balance is below threshold %s' % self.L1_THRESHOLD)
@@ -44,7 +45,7 @@ class PySysTest(TenNetworkTest):
                         assertMessage='L1 Validator2 balance is below threshold %s' % self.L1_THRESHOLD)
         self.assertTrue(deployer_balance >= self.L1_THRESHOLD, 
                         assertMessage='L1 Deployer balance is below threshold %s' % self.L1_THRESHOLD)
-        self.assertTrue(faucet_balance >= self.L2_THRESHOLD,
+        self.assertTrue(faucet_balance_eth >= self.L2_THRESHOLD,
                         assertMessage='L2 Faucet balance is below threshold %s' % self.L2_THRESHOLD)
 
     def get_faucet_balance(self):
