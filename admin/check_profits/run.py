@@ -1,4 +1,4 @@
-import time, os, shutil
+import time, os
 from web3 import Web3
 from datetime import datetime
 from collections import OrderedDict
