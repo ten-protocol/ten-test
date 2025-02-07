@@ -1,4 +1,3 @@
-import os
 from pysys.constants import *
 from collections import namedtuple
 from ten.test.utils.properties import Properties

@@ -43,6 +43,7 @@ class DefaultPostLondon:
         self.PORT = props.port_http('default')
         self.WS_PORT = props.port_ws('default')
         self.CHAIN_ID = props.chain_id('default')
+        self.last_tx = (None, None, None, None)
 
     def chain_id(self):
         """Return the network chain id."""
@@ -94,6 +95,7 @@ class DefaultPostLondon:
         Note that the nonce and chainId will automatically be added into the transaction dictionary in this method
         and therefore do not need to be supplied by the caller. If they are supplied, they will be overwritten.
         """
+        self.last_tx = (None, None, None, None)
         if verbose:
             txstr = kwargs['txstr'] if 'txstr' in kwargs else ""
             self.log.info('Account %s performing transaction %s', account.address, txstr, extra=BaseLogFormatter.tag(LOG_WARN, 1))
@@ -115,6 +117,7 @@ class DefaultPostLondon:
         transaction dictionary using build_transaction on the target. The nonce will automatically be added during this
         process.
         """
+        self.last_tx = (None, None, None, None)
         txstr = kwargs['txstr'] if 'txstr' in kwargs else fullname(target)
         self.log.info('Account %s performing transaction %s', account.address, txstr, extra=BaseLogFormatter.tag(LOG_WARN, 1))
         nonce = self.get_next_nonce(test, web3, account.address, persist_nonce, verbose)
