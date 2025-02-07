@@ -26,13 +26,14 @@
         "type": "mysql",
         "uid": "aebcvqtczlekgd"
       },
+      "description": "Shows test failure rates on the selected environment.",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
           "custom": {
-            "align": "auto",
+            "align": "left",
             "cellOptions": {
               "type": "color-text"
             },
@@ -46,14 +47,6 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "#EAB839",
-                "value": 5
-              },
-              {
-                "color": "red",
-                "value": 10
               }
             ]
           }
@@ -61,7 +54,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 18,
+        "h": 13,
         "w": 9,
         "x": 0,
         "y": 0
@@ -91,7 +84,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT test, environment, count(*) as num_fails from results_outcome where environment='${environment}' and outcome!='PASSED' group by test order by num_fails desc;\n\n",
+          "rawSql": "SELECT \n  test, \n  COUNT(CASE WHEN outcome IN ('FAILED', 'TIMEDOUT', 'DUMPEDCORE', 'BLOCKED') THEN 1 END) AS num_fails,\n  COUNT(*) AS total_runs\nFROM results_outcome\nWHERE environment = '${environment}'\nGROUP BY test\nHAVING COUNT(CASE WHEN outcome IN ('FAILED', 'TIMEDOUT', 'DUMPEDCORE', 'BLOCKED') THEN 1 END) > 0\nORDER BY num_fails DESC;\n\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -113,7 +106,7 @@
           "table": "results_outcome"
         }
       ],
-      "title": "Test failure rates",
+      "title": "Test Failure Rates",
       "type": "table"
     },
     {
@@ -841,6 +834,124 @@
         "type": "mysql",
         "uid": "aebcvqtczlekgd"
       },
+      "description": "Shows the results for a given run on the selected environment. ",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "transparent",
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "applyToRow": false,
+              "mode": "basic",
+              "type": "color-background"
+            },
+            "filterable": false,
+            "inspect": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "BLOCKED": {
+                  "color": "#dc8a93",
+                  "index": 1
+                },
+                "DUMPEDCORE": {
+                  "color": "#dc8a93",
+                  "index": 3
+                },
+                "FAILED": {
+                  "color": "#dc8a93",
+                  "index": 4
+                },
+                "PASSED": {
+                  "color": "#c2d9bf",
+                  "index": 0
+                },
+                "TIMED OUT": {
+                  "color": "#dc8a93",
+                  "index": 2
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 23,
+        "w": 9,
+        "x": 0,
+        "y": 13
+      },
+      "id": 14,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": [
+            "cost",
+            "duration"
+          ],
+          "reducer": [
+            "sum"
+          ],
+          "show": true
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "dataset": "mysql",
+          "datasource": {
+            "type": "mysql",
+            "uid": "aebcvqtczlekgd"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "select test, duration, cost, outcome from results_outcome where environment='${environment}' and uuid='${run_uuid}';",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Run UUID Results",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "aebcvqtczlekgd"
+      },
       "description": "TPS: rates for balance transfer, increasing clients, includes xchain messages",
       "fieldConfig": {
         "defaults": {
@@ -1559,7 +1670,9 @@
   ],
   "preload": true,
   "schemaVersion": 40,
-  "tags": [],
+  "tags": [
+    "tests"
+  ],
   "templating": {
     "list": [
       {
@@ -1581,6 +1694,23 @@
         "regex": "",
         "sort": 4,
         "type": "query"
+      },
+      {
+        "current": {
+          "text": "fad24a12f66744b9beedb1f10f88f788",
+          "value": "fad24a12f66744b9beedb1f10f88f788"
+        },
+        "datasource": {
+          "type": "mysql",
+          "uid": "aebcvqtczlekgd"
+        },
+        "definition": "SELECT distinct(uuid) from (SELECT distinct(uuid), time FROM results_outcome WHERE environment = '${environment}' ORDER BY time DESC) AS subquery;",
+        "name": "run_uuid",
+        "options": [],
+        "query": "SELECT distinct(uuid) from (SELECT distinct(uuid), time FROM results_outcome WHERE environment = '${environment}' ORDER BY time DESC) AS subquery;",
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
       }
     ]
   },
@@ -1590,8 +1720,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "E2E test results",
+  "title": "E2E Test Dashboard",
   "uid": "bebd5gi310t1ca",
-  "version": 37,
+  "version": 60,
   "weekStart": ""
 }
