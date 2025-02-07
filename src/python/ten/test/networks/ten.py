@@ -199,6 +199,7 @@ class Ten(DefaultPreLondon):
         Note that the nonce and chainId will automatically be added into the transaction dictionary in this method
         and therefore do not need to be supplied by the caller. If they are supplied, they will be overwritten.
         """
+        self.last_tx = (None, None, None, None, None)
         txstr = kwargs['txstr'] if 'txstr' in kwargs else ""
         self.log.info('Account %s performing transaction %s', address, txstr, extra=BaseLogFormatter.tag(LOG_WARN, 1))
         nonce = self.get_next_nonce(test, web3, address, persist_nonce, verbose)
@@ -218,6 +219,7 @@ class Ten(DefaultPreLondon):
         transaction dictionary using build_transaction on the target. The nonce will automatically be added during this
         process. Ten supports unsigned transactions when using session keys.
         """
+        self.last_tx = (None, None, None, None, None)
         txstr = kwargs['txstr'] if 'txstr' in kwargs else fullname(target)
         self.log.info('Account %s performing transaction %s', address, txstr, extra=BaseLogFormatter.tag(LOG_WARN, 1))
         nonce = self.get_next_nonce(test, web3, address, persist_nonce, verbose)

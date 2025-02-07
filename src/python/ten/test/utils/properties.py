@@ -128,6 +128,9 @@ class Properties:
     # L1 deployment address
     def l1_deployer_address(self, key): return self.get('env.'+key, 'L1DeployerAddress')
 
+    # L2 faucet address
+    def l2_faucet_address(self, key): return self.get('env.' + key, 'L2FaucetAddress')
+
     # network connection properties
     def host_http(self, key):
         if os.getenv('PRIMARY_HOST_HTTP'): return os.getenv('PRIMARY_HOST_HTTP')     # override for different gateway
