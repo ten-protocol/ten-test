@@ -50,12 +50,13 @@ class DefaultContract:
 
         self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor(*self.args)
 
-    def deploy(self, network, account, persist_nonce=True, timeout=60):
+    def deploy(self, network, account, persist_nonce=True, timeout=60, store=False):
         """Deploy using the given account."""
         self.test.log.info('Deploying %s contract', self.CONTRACT, extra=BaseLogFormatter.tag(LOG_WARN, 0))
         self.account = account
         tx_receipt = network.transact(self.test, self.web3, self.contract, account,
-                                      self.GAS_LIMIT, persist_nonce, timeout=timeout, txstr=fullname(self.contract))
+                                      self.GAS_LIMIT, persist_nonce, timeout=timeout,
+                                      txstr=fullname(self.contract), store=store)
         self.address = tx_receipt.contractAddress
         self.contract = self.web3.eth.contract(address=self.address, abi=self.abi)
         self.test.log.info('Contract %s deployed at %s', self.CONTRACT, tx_receipt.contractAddress, extra=BaseLogFormatter.tag(LOG_WARN, 0))

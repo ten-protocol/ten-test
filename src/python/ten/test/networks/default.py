@@ -43,7 +43,7 @@ class DefaultPostLondon:
         self.PORT = props.port_http('default')
         self.WS_PORT = props.port_ws('default')
         self.CHAIN_ID = props.chain_id('default')
-        self.last_tx = (None, None, None, None)
+        self.last_tx = (None, None, None, None, None)  # tuple as (estimate, tx, tx_sign, tx_hash, tx_recp)
 
     def chain_id(self):
         """Return the network chain id."""
@@ -95,7 +95,7 @@ class DefaultPostLondon:
         Note that the nonce and chainId will automatically be added into the transaction dictionary in this method
         and therefore do not need to be supplied by the caller. If they are supplied, they will be overwritten.
         """
-        self.last_tx = (None, None, None, None)
+        self.last_tx = (None, None, None, None, None)
         if verbose:
             txstr = kwargs['txstr'] if 'txstr' in kwargs else ""
             self.log.info('Account %s performing transaction %s', account.address, txstr, extra=BaseLogFormatter.tag(LOG_WARN, 1))
@@ -117,7 +117,7 @@ class DefaultPostLondon:
         transaction dictionary using build_transaction on the target. The nonce will automatically be added during this
         process.
         """
-        self.last_tx = (None, None, None, None)
+        self.last_tx = (None, None, None, None, None)
         txstr = kwargs['txstr'] if 'txstr' in kwargs else fullname(target)
         self.log.info('Account %s performing transaction %s', account.address, txstr, extra=BaseLogFormatter.tag(LOG_WARN, 1))
         nonce = self.get_next_nonce(test, web3, account.address, persist_nonce, verbose)
@@ -128,6 +128,7 @@ class DefaultPostLondon:
         if tx_recp.status != 1:
             self.replay_transaction(web3, tx, tx_recp)
             test.addOutcome(FAILED, abortOnError=True)
+        if 'store' in kwargs: self.last_tx = (self.last_tx[0],) + (tx, tx_sign, tx_hash, tx_recp)
         return tx_recp
 
     def get_next_nonce(self, test, web3, address, persist_nonce, verbose=True):
@@ -171,6 +172,7 @@ class DefaultPostLondon:
 
         params['gas'] = int(1.1*gas_estimate)
         build_tx = target.build_transaction(params)
+        if 'store' in kwargs: self.last_tx = (gas_estimate, None, None, None, None)
         return build_tx
 
     def sign_transaction(self, test, tx, nonce, account, persist_nonce):
@@ -269,4 +271,5 @@ class DefaultPreLondon(DefaultPostLondon):
 
         params['gas'] = int(1.1*gas_estimate)
         build_tx = target.build_transaction(params)
+        if 'store' in kwargs: self.last_tx = (gas_estimate, None, None, None, None)
         return build_tx
