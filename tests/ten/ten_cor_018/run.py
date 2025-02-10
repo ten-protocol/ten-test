@@ -12,7 +12,7 @@ class PySysTest(TenNetworkTest):
 
         # connect to network
         network_l1 = self.get_l1_network_connection()
-        web3_l1, _ = network_l1.connect_account1(self)
+        web3_l1, _ = network_l1.connect_account1(self, check_funds=False)
         l1gasprice = web3_l1.eth.gas_price
 
         network = self.get_network_connection()
