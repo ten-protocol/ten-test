@@ -11,9 +11,17 @@ class PySysTest(TenNetworkTest):
         run_time = int(time.time())
 
         # connect to network
+        network_l1 = self.get_l1_network_connection()
+        web3_l1, _ = network_l1.connect_account1(self)
+        l1gasprice = web3_l1.eth.gas_price
+
         network = self.get_network_connection()
         web3, acnt = network.connect_account1(self)
         _, acnt2 = network.connect_account2(self)
+        l2gasprice = web3.eth.gas_price
+
+        # persist the l1 and l2 gas price for reference
+        self.gas_db.insert(self.env, run_time, l1gasprice, l2gasprice)
 
         # the contracts to be deployed and measured
         storage = Storage(self, web3, 100)

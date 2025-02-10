@@ -8,7 +8,7 @@ from pysys.utils.logutils import BaseLogFormatter
 from ten.test.persistence.rates import RatesPersistence
 from ten.test.persistence.nonce import NoncePersistence
 from ten.test.persistence.counts import CountsPersistence
-from ten.test.persistence.funds import FundsPersistence, PandLPersistence
+from ten.test.persistence.funds import FundsPersistence, PandLPersistence, GasPricePersistence
 from ten.test.persistence.results import PerformanceResultsPersistence, TxCostResultsPersistence
 from ten.test.persistence.contract import ContractPersistence
 from ten.test.utils.properties import Properties
@@ -46,6 +46,7 @@ class GenericNetworkTest(BaseTest):
         self.contract_db = ContractPersistence(use_remote, self.user_dir, self.machine_name)
         self.funds_db = FundsPersistence(use_remote, self.user_dir, self.machine_name)
         self.pandl_db = PandLPersistence(use_remote, self.user_dir, self.machine_name)
+        self.gas_db = GasPricePersistence(use_remote, self.user_dir, self.machine_name)
         self.counts_db = CountsPersistence(use_remote, self.user_dir, self.machine_name)
         self.results_db = PerformanceResultsPersistence(use_remote, self.user_dir, self.machine_name)
         self.txcosts_db = TxCostResultsPersistence(use_remote, self.user_dir, self.machine_name)
@@ -89,6 +90,7 @@ class GenericNetworkTest(BaseTest):
         self.contract_db.close()
         self.funds_db.close()
         self.pandl_db.close()
+        self.gas_db.close()
         self.counts_db.close()
         self.results_db.close()
         self.txcosts_db.close()
