@@ -2,6 +2,48 @@ from ten.test.persistence import normalise
 from ten.test.persistence import get_connection
 
 
+class GasPricePersistence:
+    """Abstracts the persistence of gas prices across the l1 and l2 into a local database.
+
+    Since this is an absolute property, not one of the test runner, it should be sharable across different test runners
+    when running in the cloud, so the persistence is externalised into a mysql server under these conditions.
+    """
+
+    SQL_CREATE = "CREATE TABLE IF NOT EXISTS gas_prices " \
+                 "(environment VARCHAR(64), " \
+                 "time INTEGER, " \
+                 "l1gasprice REAL, " \
+                 "l2gasprice REAL) "
+    SQL_INSERT = "INSERT INTO gas_prices VALUES (?, ?, ?, ?);"
+
+    @classmethod
+    def init(cls, use_remote, user_dir, host):
+        instance = GasPricePersistence(use_remote, user_dir, host)
+        instance.create()
+        return instance
+
+    def __init__(self, use_remote, user_dir, host):
+        """Instantiate an instance."""
+        self.host = host
+        self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
+        self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
+        self.cursor = self.dbconnection.connection.cursor()
+
+    def create(self):
+        """Create the cursor to the underlying persistence."""
+        self.cursor.execute(self.SQL_CREATE)
+
+    def close(self):
+        """Close the connection to the underlying persistence."""
+        self.cursor.close()
+        self.dbconnection.connection.close()
+
+    def insert(self, environment, time, l1gasprice, l2gasprice):
+        """Insert new values for a particular environment."""
+        self.cursor.execute(self.sqlins, (environment, time, l1gasprice, l2gasprice))
+        self.dbconnection.connection.commit()
+
+
 class PandLPersistence:
     """Abstracts the persistence of profit and loss into a local database.
 
