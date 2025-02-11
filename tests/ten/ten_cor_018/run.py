@@ -8,12 +8,12 @@ from ten.test.contracts.calldata import CallData
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        run_time = int(time.time())
+        _time = int(time.time())
 
-        # connect to network
-        network_l1 = self.get_l1_network_connection()
-        web3_l1, _ = network_l1.connect_account1(self, check_funds=False)
-        l1gasprice = web3_l1.eth.gas_price
+        # connect to the L1 and L2 networks
+        network = self.get_l1_network_connection()
+        web3, _ = network.connect_account1(self, check_funds=False)
+        l1gasprice = web3.eth.gas_price
 
         network = self.get_network_connection()
         web3, acnt = network.connect_account1(self)
@@ -21,7 +21,7 @@ class PySysTest(TenNetworkTest):
         l2gasprice = web3.eth.gas_price
 
         # persist the l1 and l2 gas price for reference
-        self.gas_db.insert(self.env, run_time, l1gasprice, l2gasprice)
+        self.gas_db.insert(self.env, _time, l1gasprice, l2gasprice)
 
         # the contracts to be deployed and measured
         storage = Storage(self, web3, 100)
@@ -32,37 +32,28 @@ class PySysTest(TenNetworkTest):
         # the storage contract
         self.log.info('')
         self.log.info('Deploy the Storage contract and transact')
-        storage.deploy(network, acnt, store=True)
-        self.store_cost('Storage.deploy', run_time, network)
-        network.transact(self, web3, storage.contract.functions.store(1), acnt, storage.GAS_LIMIT, store=True)
-        self.store_cost('Storage.store', run_time, network)
+        self.store_dp('Storage.deploy', _time, network, web3, storage, acnt)
+        self.store_tx('Storage.store', _time, network, web3, storage.contract.functions.store(1), acnt, storage.GAS_LIMIT)
 
         # the key storage contract
         self.log.info('')
         self.log.info('Deploy the KeyStorage contract and transact')
-        keystore.deploy(network, acnt, store=True)
-        self.store_cost('KeyStorage.deploy', run_time, network)
-        network.transact(self, web3, keystore.contract.functions.storeItem(100), acnt, keystore.GAS_LIMIT, store=True)
-        self.store_cost('KeyStorage.storeItem', run_time, network)
-        network.transact(self, web3, keystore.contract.functions.setItem('k1', 101), acnt, keystore.GAS_LIMIT, store=True)
-        self.store_cost('KeyStorage.setItem', run_time, network)
+        self.store_dp('KeyStorage.deploy', _time, network, web3, keystore, acnt)
+        self.store_tx('KeyStorage.storeItem', _time, network, web3, keystore.contract.functions.storeItem(100), acnt, keystore.GAS_LIMIT)
+        self.store_tx('KeyStorage.setItem', _time, network, web3, keystore.contract.functions.setItem('k1', 101), acnt, keystore.GAS_LIMIT)
 
         # the guessing game contract
         self.log.info('')
         self.log.info('Deploy the Game contract and transact')
-        guessgame.deploy(network, acnt, store=True)
-        self.store_cost('Game.deploy', run_time, network)
-        network.transact(self, web3, guessgame.contract.functions.guess(5), acnt, guessgame.GAS_LIMIT, store=True)
-        self.store_cost('Game.guess', run_time, network)
+        self.store_dp('Game.deploy', _time, network, web3, guessgame, acnt)
+        self.store_tx('Game.guess', _time, network, web3, guessgame.contract.functions.guess(5), acnt, guessgame.GAS_LIMIT)
 
         # the call data contract
         self.log.info('')
         self.log.info('Deploy the CallData contract and transact')
-        calldata.deploy(network, acnt, store=True)
-        self.store_cost('CallData.deploy', run_time, network)
-        network.transact(self, web3,calldata.contract.functions.processLargeData([i for i in range(20)]),
-                         acnt, calldata.GAS_LIMIT, store=True)
-        self.store_cost('CallData.processLargeData', run_time, network)
+        self.store_dp('CallData.deploy', _time, network, web3, calldata, acnt)
+        self.store_tx('CallData.processLargeData', _time, network, web3,
+                      calldata.contract.functions.processLargeData([i for i in range(20)]), acnt, calldata.GAS_LIMIT)
 
         # a native funds transfer
         self.log.info('')
@@ -70,11 +61,25 @@ class PySysTest(TenNetworkTest):
         tx = {'to': acnt2.address, 'value': 1000, 'gasPrice': web3.eth.gas_price}
         tx['gas'] = web3.eth.estimate_gas(tx)
         receipt = network.tx(self, web3, tx, acnt, txstr='value transfer')
-        self.txcosts_db.insert('Native.transfer', self.env, run_time, receipt.effectiveGasPrice, receipt.gasUsed, tx['gas'])
+        self.txcosts_db.insert('Native.transfer', self.env, _time, receipt.effectiveGasPrice, receipt.gasUsed, tx['gas'])
 
-    def store_cost(self, name, run_time, network):
+    def store_dp(self, name, run_time, network, web3, contract, account):
+        before = web3.eth.get_balance(account.address)
+        contract.deploy(network, account, store=True)
+        after = web3.eth.get_balance(account.address)
+        self.store_cost(name, run_time, network, before, after)
+
+    def store_tx(self, name, run_time, network, web3, target, account, gas_limit):
+        before = web3.eth.get_balance(account.address)
+        network.transact(self, web3, target, account, gas_limit, store=True)
+        after = web3.eth.get_balance(account.address)
+        self.store_cost(name, run_time, network, before, after)
+
+    def store_cost(self, name, run_time, network, balance_before, balance_after):
         estimate = network.last_tx[0]
         gas_price = network.last_tx[4].effectiveGasPrice
         gas_used = network.last_tx[4].gasUsed
+        self.log.info('Computed cost:      %d' % (gas_used*gas_price))
+        self.log.info('Balance difference: %d' % (balance_before - balance_after))
         self.txcosts_db.insert(name, self.env, run_time, gas_price, gas_used, estimate)
 
