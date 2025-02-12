@@ -66,6 +66,7 @@ class PySysTest(TenNetworkTest):
 
         self.addOutcome(PASSED)
 
+        
     def store_dp(self, name, run_time, network, web3, contract, account):
         before = web3.eth.get_balance(account.address)
         contract.deploy(network, account, store=True)
