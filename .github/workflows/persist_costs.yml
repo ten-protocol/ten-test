@@ -1,10 +1,10 @@
 # Builds a local testnet and runs a set of tests
 #
 name: '[execute] Persist tx costs'
-run-name: Persist tx costs (${{ github.event_name }} ${{ github.event.inputs.environment }} )
+run-name: Persist transaction costs (${{ github.event_name }} ${{ github.event.inputs.environment }} )
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 */12 * * *'
   workflow_dispatch:
     inputs:
       environment:
