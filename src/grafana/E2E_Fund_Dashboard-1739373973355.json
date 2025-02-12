@@ -425,7 +425,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "GasPayment"
+              "options": "sequencer"
             },
             "properties": [
               {
@@ -440,7 +440,26 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "ProfitAndLoss"
+              "options": "gas_payment"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-yellow",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "profit_and_loss"
             },
             "properties": [
               {
@@ -452,22 +471,7 @@
               },
               {
                 "id": "custom.lineWidth",
-                "value": 5
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "ProfitAndLoss"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "dark-red",
-                  "mode": "fixed"
-                }
+                "value": 4
               }
             ]
           }
@@ -503,7 +507,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time, \n  seq_diff as Sequencer,\n  gas_diff as GasPayment,\n  pandl as ProfitAndLoss\nFROM\n  pandl\nWHERE\n  environment = 'ten.sepolia'\nORDER BY\n  time DESC;\n",
+          "rawSql": "SELECT\n  time, \n  seq_diff as sequencer,\n  gas_diff as gas_payment,\n  pandl as profit_and_loss\nFROM\n  pandl\nWHERE\n  environment = 'ten.sepolia'\nORDER BY\n  time DESC;\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -535,13 +539,13 @@
     "list": []
   },
   "time": {
-    "from": "now-1y",
+    "from": "now-7d",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "E2E Fund Dashboard",
   "uid": "aebn8u5dbwkqoe",
-  "version": 19,
+  "version": 21,
   "weekStart": ""
 }
