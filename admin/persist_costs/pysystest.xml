@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Tx costs: store and compare tx costs on TEN</title>
+        <title>Persist costs for a range of transactions</title>
         <purpose><![CDATA[
 ]]>
         </purpose>
@@ -10,14 +10,12 @@
 
     <classification>
         <groups inherit="true">
-            <group>health</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
-            <mode>ten.local</mode>
-            <mode>ten.sim</mode>
+            <mode>arbitrum.sepolia</mode>
         </modes>
     </classification>
 

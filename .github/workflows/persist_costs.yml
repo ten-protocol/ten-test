@@ -1,0 +1,77 @@
+# Builds a local testnet and runs a set of tests
+#
+name: '[execute] Persist tx costs'
+run-name: Persist tx costs (${{ github.event_name }} ${{ github.event.inputs.environment }} )
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: Environment
+        required: true
+        default: ten.uat
+        options:
+          - ten.uat
+          - ten.sepolia
+          - arbitrum.sepolia
+
+jobs:
+  test-run:
+    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-01]
+    steps:
+      - name: 'Check out ten-test'
+        uses: actions/checkout@v3
+        with:
+          path: ./ten-test
+
+      - name: 'Check out go-ten code'
+        uses: actions/checkout@v3
+        with:
+          repository: ten-protocol/go-ten
+          path: ./go-ten
+
+      - name: 'Build required artifacts for running tests'
+        run: |
+          cd ${{ github.workspace }}/ten-test
+          ./get_artifacts.sh  
+
+      - name: 'Run on schedule (ten.uat)'
+        if: ${{ github.event_name == 'schedule' }}
+        continue-on-error: true
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -r -m ten.uat persist_costs
+
+      - name: 'Run on schedule (ten.sepolia)'
+        if: ${{ github.event_name == 'schedule' }}
+        continue-on-error: true
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -r -m ten.sepolia persist_costs
+
+      - name: 'Run on schedule (arbitrum.sepolia)'
+        if: ${{ github.event_name == 'schedule' }}
+        continue-on-error: true
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -r -m arbitrum.sepolia persist_costs
+
+      - name: 'Run on dispatch'
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        continue-on-error: true
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -r -m ${{ github.event.inputs.environment }} persist_costs
+
+      - name: 'Upload testcase output'
+        uses: actions/upload-artifact@v4
+        if: failure()
+        continue-on-error: true
+        with:
+          name: test-artifact
+          path: |
+            ${{ github.workspace }}/ten-test/**/Output
+            !${{ github.workspace }}/ten-test/**/node_modules
+          retention-days: 1
