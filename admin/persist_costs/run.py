@@ -64,9 +64,9 @@ class PySysTest(TenNetworkTest):
         receipt = network.tx(self, web3, tx, acnt, txstr='value transfer')
         self.txcosts_db.insert('Native.transfer', self.env, _time, receipt.effectiveGasPrice, receipt.gasUsed, tx['gas'])
 
+        # pass if no errors
         self.addOutcome(PASSED)
 
-        
     def store_dp(self, name, run_time, network, web3, contract, account):
         before = web3.eth.get_balance(account.address)
         contract.deploy(network, account, store=True)
@@ -86,4 +86,3 @@ class PySysTest(TenNetworkTest):
         self.log.info('Computed cost:      %d' % (gas_used*gas_price))
         self.log.info('Balance difference: %d' % (balance_before - balance_after))
         self.txcosts_db.insert(name, self.env, run_time, gas_price, gas_used, estimate)
-
