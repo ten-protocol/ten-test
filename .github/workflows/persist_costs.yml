@@ -1,6 +1,6 @@
 # Builds a local testnet and runs a set of tests
 #
-name: '[execute] Persist tx costs'
+name: '[execute] Persist transaction costs'
 run-name: Persist transaction costs (${{ github.event_name }} ${{ github.event.inputs.environment }} )
 on:
   schedule:
