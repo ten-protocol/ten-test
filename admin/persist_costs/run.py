@@ -1,4 +1,5 @@
 import time
+from pysys.constants import PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.storage import Storage, KeyStorage
 from ten.test.contracts.game import Game
@@ -62,6 +63,8 @@ class PySysTest(TenNetworkTest):
         tx['gas'] = web3.eth.estimate_gas(tx)
         receipt = network.tx(self, web3, tx, acnt, txstr='value transfer')
         self.txcosts_db.insert('Native.transfer', self.env, _time, receipt.effectiveGasPrice, receipt.gasUsed, tx['gas'])
+
+        self.addOutcome(PASSED)
 
     def store_dp(self, name, run_time, network, web3, contract, account):
         before = web3.eth.get_balance(account.address)

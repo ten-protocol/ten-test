@@ -37,20 +37,6 @@ jobs:
           cd ${{ github.workspace }}/ten-test
           ./get_artifacts.sh  
 
-      - name: 'Run on schedule (ten.uat)'
-        if: ${{ github.event_name == 'schedule' }}
-        continue-on-error: true
-        run: |
-          cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -r -m ten.uat persist_costs
-
-      - name: 'Run on schedule (ten.sepolia)'
-        if: ${{ github.event_name == 'schedule' }}
-        continue-on-error: true
-        run: |
-          cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -r -m ten.sepolia persist_costs
-
       - name: 'Run on schedule (arbitrum.sepolia)'
         if: ${{ github.event_name == 'schedule' }}
         continue-on-error: true
