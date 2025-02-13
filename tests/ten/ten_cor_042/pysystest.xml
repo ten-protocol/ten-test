@@ -21,9 +21,6 @@ by a value of 3. In fact it doesn't and there is no correlation i.e. it is cheap
             <mode>ten.dev</mode>
             <mode>ten.local</mode>
             <mode>ten.sim</mode>
-            <mode>arbitrum.sepolia</mode>
-            <mode>ganache</mode>
-            <mode>sepolia</mode>
         </modes>
     </classification>
 

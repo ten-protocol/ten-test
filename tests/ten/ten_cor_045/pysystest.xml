@@ -2,11 +2,8 @@
 <pysystest type="auto">
 
     <description>
-        <title>Gas: cost of multiplication</title>
+        <title>Gas: gasUsed times gasPrice should equate to balance change</title>
         <purpose><![CDATA[
-Checks the cost of addition in transactions that perform a different number of multiplications. Note the cost of an
-addition should be 5 gas, so performing once multiplication should be more expensive than performing one addition,
-though this is not seen?
 ]]>
         </purpose>
     </description>
