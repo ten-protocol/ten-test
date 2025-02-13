@@ -8,15 +8,12 @@ Uses a storage contract which supports refunds of gas. When a contract is called
 the callback id is mapped to the account making the transaction. When the callback is executed, a handleRefund is also
 invoked to add residual funds to the contract that from the callback id can be mapped to the account and stored locally.
 These funds can then be returned to the account on request.
-
-Skipped due to https://github.com/ten-protocol/ten-internal/issues/4358 (handleRefund doesn't seem to be called)
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>callbacks</group>
         </groups>
         <modes inherit="true">
