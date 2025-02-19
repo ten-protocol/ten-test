@@ -1,0 +1,46 @@
+# Check key balances on uat-testnet to determine profits
+#
+name: '[inspect] Check uat profits'
+run-name: Check uat-testnet profits
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-check:
+    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-02]
+    steps:
+      - name: 'Check out ten-test'
+        uses: actions/checkout@v3
+        with:
+          path: ./ten-test
+
+      - name: 'Check out go-ten code'
+        uses: actions/checkout@v3
+        with:
+          repository: ten-protocol/go-ten
+          path: ./go-ten
+          ref: 'releases/v1.0'
+
+      - name: 'Build required artifacts for running tests'
+        run: |
+          cd ${{ github.workspace }}/ten-test
+          ./get_artifacts.sh
+          ls -l ${{ github.workspace }}/ten-test/artifacts   
+
+      - name: 'Run funds check'
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ten.uat check_profits
+
+      - name: 'Upload performance output'
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: profits-artifact
+          path: |
+            ${{ github.workspace }}/ten-test/admin/check_profits/Output/linux/profits.pdf
+            ${{ github.workspace }}/ten-test/admin/check_profits/Output/linux/profits.log
+          if-no-files-found: ignore
+          retention-days: 1

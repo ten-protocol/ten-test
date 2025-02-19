@@ -1,4 +1,4 @@
-# Check key balances on sepolia-testnet
+# Check key balances on uat-testnet
 #
 name: '[inspect] Check uat funds'
 run-name: Check uat testnet funds
