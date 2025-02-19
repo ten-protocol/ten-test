@@ -15,23 +15,23 @@ class PySysTest(TenNetworkTest):
         url = network.connection_url()
         web3 = Web3(Web3.HTTPProvider(url))
 
-        sequencer_address = Properties().sequencer_address(key='ten.sepolia')
+        sequencer_address = Properties().sequencer_address(key=self.env)
         sequencer_balance = web3.from_wei(web3.eth.get_balance(sequencer_address), 'ether')
         self.log.info('Sequencer account %s balance %.9f ETH', sequencer_address, sequencer_balance)
 
-        validator1_address = Properties().validator1_address(key='ten.sepolia')
+        validator1_address = Properties().validator1_address(key=self.env)
         validator1_balance = web3.from_wei(web3.eth.get_balance(validator1_address), 'ether')
         self.log.info('Validator 1 account %s balance %.9f ETH', validator1_address, validator1_balance)
 
-        validator2_address = Properties().validator2_address(key='ten.sepolia')
+        validator2_address = Properties().validator2_address(key=self.env)
         validator2_balance = web3.from_wei(web3.eth.get_balance(validator2_address), 'ether')
         self.log.info('Validator 2 account %s balance %.9f ETH', validator2_address, validator2_balance)
 
-        deployer_address = Properties().l1_deployer_address(key='ten.sepolia')
+        deployer_address = Properties().l1_deployer_address(key=self.env)
         deployer_balance = web3.from_wei(web3.eth.get_balance(deployer_address), 'ether')
         self.log.info('Deployer account %s balance %.9f ETH', deployer_address, deployer_balance)
 
-        faucet_address = Properties().l2_faucet_address(key='ten.sepolia')
+        faucet_address = Properties().l2_faucet_address(key=self.env)
         faucet_balance_wei = self.get_faucet_balance()
         faucet_balance_eth = web3.from_wei(faucet_balance_wei, 'ether')
         self.log.info('Faucet balance %.9f ETH', faucet_balance_eth)
