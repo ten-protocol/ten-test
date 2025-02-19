@@ -1,7 +1,7 @@
 # Check key balances on sepolia-testnet
 #
-name: '[inspect] Check sepolia funds'
-run-name: Check sepolia-testnet funds
+name: '[inspect] Check UAT funds'
+run-name: Check UAT testnet funds
 on:
   schedule:
     - cron: '*/30 * * * *'
@@ -21,7 +21,6 @@ jobs:
         with:
           repository: ten-protocol/go-ten
           path: ./go-ten
-          ref: 'releases/v1.0'
 
       - name: 'Build required artifacts for running tests'
         run: |
@@ -32,16 +31,16 @@ jobs:
       - name: 'Run funds check'
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.sepolia check_balances
+          /usr/local/bin/pysys.py run -m ten.uat check_balances
 
       - name: 'Discord notification on failure'
         if: failure()
         uses: sarisia/actions-status-discord@v1
         with:
-          webhook: ${{ secrets.TESTNET_HEALTH_WEBHOOK }}
-          title: "Sepolia funds check failed"
-          description: "Sepolia funds check run on schedule"
-          content: "Please investigate <@814873419207409685> <@92361563276591104> <@920586981581393983> <@921049923414261821> <@1034771491436363797> <@639076633994592256>  <@1275573709910052947> <@398020680966471680> <@216439743947341824>"
+          webhook: ${{ secrets.UAT_TESTNET_HEALTH_WEBHOOK }}
+          title: "UAT-testnet funds check failed"
+          description: "UAT-testnet funds check run on schedule"
+          content: "Please investigate"
           avatar_url: ${{ secrets.AVATAR_URL }}
 
 

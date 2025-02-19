@@ -285,10 +285,10 @@ class GenericNetworkTest(BaseTest):
 
     def get_l1_network_connection(self, name='primary_l1_connection', **kwargs):
         """Get the layer 1 network connection used by a layer 2."""
-        if self.is_ten() and self.env != 'ten.sepolia':
-            return TenL1Geth(self, name, **kwargs)
-        elif self.is_ten() and self.env == 'ten.sepolia':
-            return TenL1Sepolia(self, name, **kwargs)
+        if self.is_ten():
+            if self.env == 'ten.sepolia': return TenL1Sepolia(self, name, **kwargs)
+            if self.env == 'ten.uat': return TenL1Sepolia(self, name, **kwargs)
+            else: return TenL1Geth(self, name, **kwargs)
         elif self.env == 'arbitrum.sepolia':
             return ArbitrumL1Sepolia(self, name, **kwargs)
         return DefaultPostLondon(self, name, **kwargs)
