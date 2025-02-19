@@ -1,7 +1,7 @@
 # Check key balances on sepolia-testnet
 #
-name: '[inspect] Check UAT funds'
-run-name: Check UAT testnet funds
+name: '[inspect] Check uat funds'
+run-name: Check uat testnet funds
 on:
   schedule:
     - cron: '*/30 * * * *'
