@@ -14,7 +14,7 @@ class PySysTest(TenNetworkTest):
 
         l1_network = self.get_l1_network_connection(self.env)
         web3_sequencer = Web3(Web3.HTTPProvider(l1_network.connection_url()))
-        sequencer_address = Properties().sequencer_address(key='ten.sepolia')
+        sequencer_address = Properties().sequencer_address(key=self.env)
         sequencer_balance = web3_sequencer.eth.get_balance(sequencer_address)
         self.log.info('Sequencer balance %.9f ETH', web3_sequencer.from_wei(sequencer_balance, 'ether'))
         self.funds_db.insert_funds('Sequencer', sequencer_address, self.env, current_time, sequencer_balance)
