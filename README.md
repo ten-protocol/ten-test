@@ -31,6 +31,7 @@ The top level structure of the project is as below;
 ├── admin                # Used for administering the Ten testnet 
 ├── artifacts            # Directory to store artifacts for running Ten tests
 ├── src                  # The source root for all test code
+│    ├── grafana         # Export of the grafana dashboards
 │    ├── javascript      # A library of javascript client tooling
 │    ├── python          # The python source root for pysys extensions
 │    └── solidity        # A library of smart contracts 
@@ -40,8 +41,7 @@ The top level structure of the project is as below;
 └── utils                # The project utils root for utilities used by the tests
      ├── docker          # Docker build and run files
      ├── github          # Azure VM github self hosted running build files
-     ├── release         # Utilitiy scripts for making a new release of go-ten
-     └── testnet         # Utilities for building and interacting with a local testnet
+     └── release         # Utilitiy scripts for making a new release of go-ten
 ```
 
 The [.default.properties](./.default.properties) file contains properties for running the tests that are common to any 
