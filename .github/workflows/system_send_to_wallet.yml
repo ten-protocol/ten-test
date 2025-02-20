@@ -26,7 +26,14 @@ jobs:
         with:
           path: ./ten-test
 
-      - name: 'Send funds'
+      - name: 'Send funds on uat'
+        if:  ${{ github.event.inputs.environment == 'ten.uat' }}
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} -XSEND_PK=${{ secrets.ACCOUNT_PK_WORKER_UAT}} -XRECV_AD=${{ secrets.ACCOUNT_GNOSIS_TESTNET }} drain_balance 
+
+      - name: 'Send funds on sepolia'
+        if:  ${{ github.event.inputs.environment == 'ten.sepolia' }}
         run: |
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} -XSEND_PK=${{ secrets.ACCOUNT_PK_WORKER}} -XRECV_AD=${{ secrets.ACCOUNT_GNOSIS_TESTNET }} drain_balance 
