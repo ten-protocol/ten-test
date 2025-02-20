@@ -9,7 +9,14 @@ on:
         description: 'The amount in ETH to leave in the deployer account'
         required: true
         default: 10
-
+      environment:
+        type: choice
+        description: Environment
+        required: true
+        default: ten.sepolia
+        options:
+          - ten.uat
+          - ten.sepolia
 jobs:
   run-check:
     runs-on: [self-hosted, Linux, X64, all-testnets]
@@ -22,7 +29,7 @@ jobs:
       - name: 'Send funds'
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.sepolia -XSEND_PK=${{ secrets.ACCOUNT_PK_WORKER}} -XRECV_AD=${{ secrets.ACCOUNT_GNOSIS_TESTNET }} drain_balance 
+          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} -XSEND_PK=${{ secrets.ACCOUNT_PK_WORKER}} -XRECV_AD=${{ secrets.ACCOUNT_GNOSIS_TESTNET }} drain_balance 
 
  
 
