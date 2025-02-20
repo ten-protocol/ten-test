@@ -77,6 +77,12 @@ class Properties:
             raise FileNotFoundException('npx binary not found at default location %s' % path)
         return path
 
+    def docker_binary(self):
+        path = self.get('binaries.%s' % PLATFORM, 'docker')
+        if not os.path.exists(path):
+            raise FileNotFoundException('docker binary not found at default location %s' % path)
+        return path
+
     # persistence
     def persistence_host(self): return self.get('persistence.db', 'host')
     def persistence_user(self): return self.get('persistence.db', 'user')
