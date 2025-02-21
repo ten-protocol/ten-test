@@ -4,7 +4,7 @@ name: '[execute] Persist tx costs'
 run-name: Persist tx costs (${{ github.event_name }} ${{ github.event.inputs.environment }} )
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 */2 * * *'
   workflow_dispatch:
     inputs:
       environment:
@@ -43,6 +43,20 @@ jobs:
         run: |
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -r -m arbitrum.sepolia persist_costs
+
+      - name: 'Run on schedule (ten.sepolia)'
+        if: ${{ github.event_name == 'schedule' }}
+        continue-on-error: true
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -r -m ten.sepolia persist_costs
+
+      - name: 'Run on schedule (ten.uat)'
+        if: ${{ github.event_name == 'schedule' }}
+        continue-on-error: true
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -r -m ten.uat persist_costs
 
       - name: 'Run on dispatch'
         if: ${{ github.event_name == 'workflow_dispatch' }}
