@@ -25,9 +25,7 @@ class PySysTest(TenNetworkTest):
         except ValueError as error:
             self.log.warn('Unable to perform transaction')
 
-        DockerHelper.container_start(self, 'validator-enclave-0')
-        DockerHelper.container_logs(self, 'validator-enclave-0')
-        self.wait(20.0)
+        DockerHelper.container_start(self, 'validator-enclave-0', search_msg='Server started.')
         try:
             network.transact(self, web3, storage.contract.functions.store(3), account, storage.GAS_LIMIT)
             value = storage.contract.functions.retrieve().call()
