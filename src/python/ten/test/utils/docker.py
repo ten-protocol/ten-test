@@ -3,16 +3,6 @@ from pysys.constants import FOREGROUND
 from ten.test.utils.properties import Properties
 
 
-def count_string_in_file(filename, search_string):
-    try:
-        with open(filename, 'r') as file:
-            content = file.read()
-            count = content.count(search_string)
-        return count
-    except FileNotFoundError:
-        return None
-
-
 class DockerHelper:
 
     @classmethod
@@ -40,25 +30,24 @@ class DockerHelper:
                           ignoreExitStatus=True, quiet=True)
 
     @classmethod
-    def container_start(cls, test, name, search_msg):
+    def container_start(cls, test, name, timeout=60):
         stdout = os.path.join(test.output, 'docker_start_%s'%name+'.out')
         stderr = os.path.join(test.output, 'docker_start_%s'%name+'.err')
         id = cls.container_id(test, name)
-
-        log = cls.container_logs(test, name)
-        restarts = count_string_in_file(log, search_msg)
-        test.log.info('Starting container %s with id %s (previous restarts %d)' % (name, id, restarts))
+        test.log.info('Starting container %s with id %s' % (name, id))
 
         arguments = ['start', id]
         test.startProcess(command=Properties().docker_binary(), displayName='docker-start', workingDir=test.output,
                           arguments=arguments, stdout=stdout, stderr=stderr, state=FOREGROUND,
                           ignoreExitStatus=True, quiet=True)
 
+        test.log.info('Waiting for network to be healthy ...')
         start = time.time()
-        while (count_string_in_file(cls.container_logs(test, name), search_msg) != restarts+1):
-            if (time.time() - start) > 30:
-                raise TimeoutError('Timed out waiting for the container to be restarted')
-            test.log.info('Waiting for the container to be restarted')
+        while True:
+            if (time.time() - start) > timeout: raise TimeoutError('Timed out waiting for the network to be healthy')
+            ret = test.ten_health()
+            test.log.info('Reported health status is %s' % ret['OverallHealth'])
+            if ret['OverallHealth']: break
             time.sleep(2.0)
 
     @classmethod

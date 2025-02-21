@@ -490,6 +490,14 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
+    def ten_health(self):
+        """Get the ten health status."""
+        data = {"jsonrpc": "2.0", "method": "ten_health", "id": self.MSG_ID}
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
     def ten_get_xchain_proof(self, type, xchain_message):
         """Get the obscuro_config. """
         data = {"jsonrpc": "2.0",
