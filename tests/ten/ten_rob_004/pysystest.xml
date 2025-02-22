@@ -2,8 +2,10 @@
 <pysystest type="auto">
 
     <description>
-        <title>Stress: kill enclave whilst the network is running tx load (local only)</title>
+        <title>Stress: stop validator enclave and restart (local only)</title>
         <purpose><![CDATA[
+Stops the validator enclave using docker stop, tries to transact, then starts the enclave, waits for the status
+to be healthy and then transacts again.
 ]]>
         </purpose>
     </description>

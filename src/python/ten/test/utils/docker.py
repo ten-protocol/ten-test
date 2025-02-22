@@ -1,4 +1,4 @@
-import os, time
+import os
 from pysys.constants import FOREGROUND
 from ten.test.utils.properties import Properties
 
@@ -41,14 +41,6 @@ class DockerHelper:
                           arguments=arguments, stdout=stdout, stderr=stderr, state=FOREGROUND,
                           ignoreExitStatus=True, quiet=True)
 
-        test.log.info('Waiting for network to be healthy ...')
-        start = time.time()
-        while True:
-            if (time.time() - start) > timeout: raise TimeoutError('Timed out waiting for the network to be healthy')
-            ret = test.ten_health()
-            test.log.info('Reported health status is %s' % ret['OverallHealth'])
-            if ret['OverallHealth']: break
-            time.sleep(2.0)
 
     @classmethod
     def container_logs(cls, test, name):

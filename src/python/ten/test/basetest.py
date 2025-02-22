@@ -1,8 +1,9 @@
-import os, copy, sys, json, secrets, re
+import os, copy, sys, json
+import time, secrets, re
 import threading, requests
 from web3 import Web3
 from pysys.basetest import BaseTest
-from pysys.constants import PROJECT, BACKGROUND, FAILED
+from pysys.constants import PROJECT, BACKGROUND, FAILED, TIMEDOUT
 from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
 from ten.test.persistence.rates import RatesPersistence
@@ -300,6 +301,17 @@ class TenNetworkTest(GenericNetworkTest):
     Test class specific for the Ten Network. Provides utilities for funding native ETH and ERC20 tokens in the layer1 and
     layer2 of an Ten Network.
     """
+
+    def wait_for_network(self, timeout=60):
+        self.log.info('Waiting for network to be healthy ...')
+        start = time.time()
+        while True:
+            if (time.time() - start) > timeout:
+                self.addOutcome(TIMEDOUT, 'Timed out waiting %d secs for network to be healthy'%timeout, abortOnError=True)
+            ret = self.ten_health()
+            self.log.info('Reported health status is %s' % ret['OverallHealth'])
+            if ret['OverallHealth']: break
+            time.sleep(2.0)
 
     def scan_get_latest_transactions(self, num):
         """Return the last x number of L2 transactions. @todo """
