@@ -7,6 +7,7 @@ class DockerHelper:
 
     @classmethod
     def container_id(cls, test, name):
+        """Get a docker container id by name. """
         stdout = os.path.join(test.output, 'docker_cntid_%s'%name+'.out')
         stderr = os.path.join(test.output, 'docker_cntid_%s'%name+'.err')
 
@@ -18,19 +19,25 @@ class DockerHelper:
         with open(stdout, 'r') as fp: return fp.readline().strip()
 
     @classmethod
-    def container_stop(cls, test, name):
+    def container_stop(cls, test, name, time=10):
+        """Stop a docker container by name.
+
+        Sends a SIGTERM to gracefully stop the container. If the container does not stop within the time period
+        supplied, a SIGKILL is then sent. To immediately send a SIGKILL, set time to zero.
+        """
         stdout = os.path.join(test.output, 'docker_stop_%s'%name+'.out')
         stderr = os.path.join(test.output, 'docker_stop_%s'%name+'.err')
         id = cls.container_id(test, name)
         test.log.info('Stopping container %s with id %s' % (name, id))
 
-        arguments = ['stop', id]
+        arguments = ['stop', '--time=%d' % time, id]
         test.startProcess(command=Properties().docker_binary(), displayName='docker-stop', workingDir=test.output,
                           arguments=arguments, stdout=stdout, stderr=stderr, state=FOREGROUND,
                           ignoreExitStatus=True, quiet=True)
 
     @classmethod
-    def container_start(cls, test, name, timeout=60):
+    def container_start(cls, test, name):
+        """Start a docker container by name. """
         stdout = os.path.join(test.output, 'docker_start_%s'%name+'.out')
         stderr = os.path.join(test.output, 'docker_start_%s'%name+'.err')
         id = cls.container_id(test, name)
@@ -41,9 +48,9 @@ class DockerHelper:
                           arguments=arguments, stdout=stdout, stderr=stderr, state=FOREGROUND,
                           ignoreExitStatus=True, quiet=True)
 
-
     @classmethod
     def container_logs(cls, test, name):
+        """Get the docker logs to stdout and stderr by name. """
         stdout = os.path.join(test.output, 'docker_logs_%s'%name+'.out')
         stderr = os.path.join(test.output, 'docker_logs_%s'%name+'.err')
         id = cls.container_id(test, name)

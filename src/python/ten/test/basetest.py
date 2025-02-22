@@ -309,8 +309,10 @@ class TenNetworkTest(GenericNetworkTest):
             if (time.time() - start) > timeout:
                 self.addOutcome(TIMEDOUT, 'Timed out waiting %d secs for network to be healthy'%timeout, abortOnError=True)
             ret = self.ten_health()
-            self.log.info('Reported health status is %s' % ret['OverallHealth'])
-            if ret['OverallHealth']: break
+            if ret['OverallHealth']:
+                self.log.info('Network is healthy after %d secs'%(time.time() - start))
+                break
+            else: self.log.info('Reported health status is false ... waiting')
             time.sleep(2.0)
 
     def scan_get_latest_transactions(self, num):
