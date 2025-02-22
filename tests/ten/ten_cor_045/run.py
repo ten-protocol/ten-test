@@ -1,4 +1,3 @@
-from pysys.constants import PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.storage import Storage, KeyStorage
 from ten.test.contracts.game import Game

@@ -1,8 +1,9 @@
-import os, copy, sys, json, secrets, re
+import os, copy, sys, json
+import time, secrets, re
 import threading, requests
 from web3 import Web3
 from pysys.basetest import BaseTest
-from pysys.constants import PROJECT, BACKGROUND, FAILED
+from pysys.constants import PROJECT, BACKGROUND, FAILED, TIMEDOUT
 from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
 from ten.test.persistence.rates import RatesPersistence
@@ -301,6 +302,19 @@ class TenNetworkTest(GenericNetworkTest):
     layer2 of an Ten Network.
     """
 
+    def wait_for_network(self, timeout=60):
+        self.log.info('Waiting for network to be healthy ...')
+        start = time.time()
+        while True:
+            if (time.time() - start) > timeout:
+                self.addOutcome(TIMEDOUT, 'Timed out waiting %d secs for network to be healthy'%timeout, abortOnError=True)
+            ret = self.ten_health()
+            if ret['OverallHealth']:
+                self.log.info('Network is healthy after %d secs'%(time.time() - start))
+                break
+            else: self.log.info('Reported health status is false ... waiting')
+            time.sleep(2.0)
+
     def scan_get_latest_transactions(self, num):
         """Return the last x number of L2 transactions. @todo """
         data = {"jsonrpc": "2.0", "method": "scan_getLatestTransactions", "params": [num], "id": self.MSG_ID }
@@ -486,6 +500,14 @@ class TenNetworkTest(GenericNetworkTest):
                 }],
                 "id": self.MSG_ID }
         response = self.post(data, server=url)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    def ten_health(self):
+        """Get the ten health status."""
+        data = {"jsonrpc": "2.0", "method": "ten_health", "id": self.MSG_ID}
+        response = self.post(data)
         if 'result' in response.json(): return response.json()['result']
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None

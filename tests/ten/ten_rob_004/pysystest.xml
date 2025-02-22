@@ -2,20 +2,20 @@
 <pysystest type="auto">
 
     <description>
-        <title>Persist costs for a range of transactions</title>
+        <title>Stress: stop validator enclave and restart (local only)</title>
         <purpose><![CDATA[
+Stops the validator enclave using docker stop, tries to transact, then starts the enclave, waits for the status
+to be healthy and then transacts again.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
+            <group>robustness</group>
         </groups>
         <modes inherit="true">
-            <mode>ten.sepolia</mode>
-            <mode>ten.uat</mode>
-            <mode>ten.dev</mode>
-            <mode>arbitrum.sepolia</mode>
+            <mode>ten.local</mode>
         </modes>
     </classification>
 
