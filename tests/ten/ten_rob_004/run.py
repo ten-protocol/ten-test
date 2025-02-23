@@ -37,14 +37,22 @@ class PySysTest(TenNetworkTest):
         value = storage.contract.functions.retrieve().call()
         self.assertTrue(value == 2, assertMessage='Retrieved value should be 2')
 
+        # sigint stop and restart
+        self.run_stop(network, web3, storage, account, value=10, time=10)
+
+        # sigkill stop and restart
+        self.run_stop(network, web3, storage, account, value=20, time=0)
+
+
+    def run_stop(self, network, web3, storage, account, value, time):
         log = DockerHelper.container_logs(self, 'validator-enclave-0')
         self.log.info('Container has previous restarts %d' % count(log, 'Server started.'))
 
         # stop the container and true to transact
-        DockerHelper.container_stop(self, 'validator-enclave-0')
+        DockerHelper.container_stop(self, 'validator-enclave-0', time=time)
         self.assertTrue(self.ten_health()['OverallHealth'] == False, assertMessage='Health should be false')
         try:
-            network.transact(self, web3, storage.contract.functions.store(3), account, storage.GAS_LIMIT)
+            network.transact(self, web3, storage.contract.functions.store(value), account, storage.GAS_LIMIT)
             self.addOutcome(FAILED)
         except Exception as e:
             self.assertTrue(isinstance(e, ValueError), assertMessage='ValueError should be thrown')
@@ -52,8 +60,8 @@ class PySysTest(TenNetworkTest):
         # start the container, wait for it to be active and then transact again
         DockerHelper.container_start(self, 'validator-enclave-0')
         self.wait_for_network(timeout=60)
-        network.transact(self, web3, storage.contract.functions.store(3), account, storage.GAS_LIMIT)
+        network.transact(self, web3, storage.contract.functions.store(value), account, storage.GAS_LIMIT)
         value = storage.contract.functions.retrieve().call()
-        self.assertTrue(value == 3, assertMessage='Retrieved value should be 3')
+        self.assertTrue(value == value, assertMessage='Retrieved value should be %d' % value)
 
 

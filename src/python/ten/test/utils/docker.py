@@ -28,7 +28,7 @@ class DockerHelper:
         stdout = os.path.join(test.output, 'docker_stop_%s'%name+'.out')
         stderr = os.path.join(test.output, 'docker_stop_%s'%name+'.err')
         id = cls.container_id(test, name)
-        test.log.info('Stopping container %s with id %s' % (name, id))
+        test.log.info('Stopping container %s with id %s, time %d' % (name, id, time))
 
         arguments = ['stop', '--time=%d' % time, id]
         test.startProcess(command=Properties().docker_binary(), displayName='docker-stop', workingDir=test.output,
