@@ -5,7 +5,8 @@
         <title>Stress: stop validator enclave and restart (local only)</title>
         <purpose><![CDATA[
 Stops the validator enclave using docker stop, tries to transact, then starts the enclave, waits for the status
-to be healthy and then transacts again.
+to be healthy and then transacts again. This is performed twice, the first as a soft kill (SIGINT) and the second
+as a hard kill (SIGKILL). 
 ]]>
         </purpose>
     </description>
