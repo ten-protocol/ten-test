@@ -53,6 +53,44 @@ class TxCostResultsPersistence:
         return self.cursor.fetchall()
 
 
+class RunTypePersistence:
+    """Abstracts the persistence of a test run type for a given UUID into a local database.
+
+    """
+
+    SQL_CREATE = "CREATE TABLE IF NOT EXISTS results_type " \
+                 "(uuid VARCHAR(64), " \
+                 "type VARCHAR(64))"
+    SQL_INSERT = "INSERT INTO results_type VALUES (?, ?)"
+
+    @classmethod
+    def init(cls, use_remote, user_dir, host):
+        instance = RunTypePersistence(use_remote, user_dir, host)
+        instance.create()
+        return instance
+
+    def __init__(self, use_remote, user_dir, host):
+        """Instantiate an instance."""
+        self.host = host
+        self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
+        self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
+        self.cursor = self.dbconnection.connection.cursor()
+
+    def create(self):
+        """Create the cursor to the underlying persistence."""
+        self.cursor.execute(self.SQL_CREATE)
+
+    def insert(self, uuid, type):
+        """Insert a new run into the persistence. """
+        self.cursor.execute(self.sqlins, (uuid, type))
+        self.dbconnection.connection.commit()
+
+    def close(self):
+        """Close the connection to the underlying persistence."""
+        self.cursor.close()
+        self.dbconnection.connection.close()
+
+
 class OutomeResultsPersistence:
     """Abstracts the persistence of test outcome results into a local database.
 

@@ -119,8 +119,6 @@ class TenRunnerPlugin():
                 runner.addCleanupFunction(lambda: self.__print_cost(runner,
                                                                     '%s/v1/authenticate/?token=%s' % (gateway_url, user_id),
                                                                     web3, user_id, eth_price))
-
-                tx_count = web3.eth.get_transaction_count(account.address)
                 balance = web3.from_wei(web3.eth.get_balance(account.address), 'ether')
 
                 if balance < 200 and not self.is_sepolia_ten():
