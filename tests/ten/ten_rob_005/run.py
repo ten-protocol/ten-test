@@ -43,13 +43,12 @@ class PySysTest(TenNetworkTest):
         self.log.info('Performing SIGKILL test')
         self.run_stop(network, web3, storage, account, value=20, time=0)
 
-
     def run_stop(self, network, web3, storage, account, value, time):
-        log = DockerHelper.container_logs(self, 'validator-enclave-0')
+        log = DockerHelper.container_logs(self, 'validator-host')
         self.log.info('Container has previous restarts %d' % count(log, 'Server started.'))
 
         # stop the container and true to transact
-        DockerHelper.container_stop(self, 'validator-enclave-0', time=time)
+        DockerHelper.container_stop(self, 'validator-host', time=time)
         self.assertTrue(not self.ten_health(), assertMessage='Health should be false')
         try:
             network.transact(self, web3, storage.contract.functions.store(value), account, storage.GAS_LIMIT)
@@ -59,10 +58,8 @@ class PySysTest(TenNetworkTest):
             self.assertTrue(isinstance(e, ValueError), assertMessage='ValueError should be thrown')
 
         # start the container, wait for it to be active and then transact again
-        DockerHelper.container_start(self, 'validator-enclave-0')
+        DockerHelper.container_start(self, 'validator-host')
         self.wait_for_network(timeout=60)
         network.transact(self, web3, storage.contract.functions.store(value), account, storage.GAS_LIMIT)
         value = storage.contract.functions.retrieve().call()
         self.assertTrue(value == value, assertMessage='Retrieved value should be %d' % value)
-
-

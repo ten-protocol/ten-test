@@ -308,8 +308,7 @@ class TenNetworkTest(GenericNetworkTest):
         while True:
             if (time.time() - start) > timeout:
                 self.addOutcome(TIMEDOUT, 'Timed out waiting %d secs for network to be healthy'%timeout, abortOnError=True)
-            ret = self.ten_health()
-            if ret['OverallHealth']:
+            if self.ten_health():
                 self.log.info('Network is healthy after %d secs'%(time.time() - start))
                 break
             else: self.log.info('Reported health status is false ... waiting')
@@ -504,13 +503,22 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def ten_health(self):
+    def ten_health(self, dump_to=None):
         """Get the ten health status."""
         data = {"jsonrpc": "2.0", "method": "ten_health", "id": self.MSG_ID}
-        response = self.post(data)
-        if 'result' in response.json(): return response.json()['result']
-        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
-        return None
+        try:
+            response = self.post(data)
+            if 'result' in response.json():
+                if (dump_to is not None) and not response.json()['result']['OverallHealth']:
+                    with open(os.path.join(self.output, dump_to), 'w') as file:
+                        json.dump(response.json()['result'], file, indent=4)
+                return response.json()['result']['OverallHealth']
+            elif 'error' in response.json():
+                self.log.warn(response.json()['error']['message'])
+                return False
+        except Exception as e:
+            self.log.warn('Unable to get health status from the network')
+        return False
 
     def ten_get_xchain_proof(self, type, xchain_message):
         """Get the obscuro_config. """
