@@ -63,7 +63,7 @@ class NoncePersistence:
         if persist_nonce:
             nonce = 0 if persisted_nonce is None else persisted_nonce+1      # we have to believe the local store
             self.insert(account, test.env, nonce)
-            if log: test.log.info("Account %s count %d using nonce from persistence as %d", account, transaction_count, nonce)
+            if log: test.log.info("Account %s tx count %d, next nonce from persistence %d (expect same)", account, transaction_count, nonce)
         else:
             if log: test.log.info("Account %s using nonce from transaction count as %d", account, nonce)
         return nonce
