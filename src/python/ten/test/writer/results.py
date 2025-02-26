@@ -16,7 +16,7 @@ class PersistenceTestsWriter(BaseResultsWriter):
         self.uuid = uuid.uuid4().hex
         self.env = runner.ten_runner.env
         self.user_dir = runner.ten_runner.user_dir
-        self.run_type = runner.getXArg('RUN_TYPE', None)
+        self.run_type = runner.xargs.get('RUN_TYPE', None)
         self.machine_name = runner.ten_runner.machine_name
         self.is_cloud_vm = runner.ten_runner.is_cloud_vm
         runner.log.info('Run uuid is %s' % self.uuid)
