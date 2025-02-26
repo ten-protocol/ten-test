@@ -60,8 +60,9 @@ class RunTypePersistence:
 
     SQL_CREATE = "CREATE TABLE IF NOT EXISTS results_type " \
                  "(uuid VARCHAR(64), " \
-                 "type VARCHAR(64))"
-    SQL_INSERT = "INSERT INTO results_type VALUES (?, ?)"
+                 "type VARCHAR(64)," \
+                 "time INTEGER)"
+    SQL_INSERT = "INSERT INTO results_type VALUES (?, ?, ?)"
 
     @classmethod
     def init(cls, use_remote, user_dir, host):
@@ -80,9 +81,9 @@ class RunTypePersistence:
         """Create the cursor to the underlying persistence."""
         self.cursor.execute(self.SQL_CREATE)
 
-    def insert(self, uuid, type):
+    def insert(self, uuid, type, time):
         """Insert a new run into the persistence. """
-        self.cursor.execute(self.sqlins, (uuid, type))
+        self.cursor.execute(self.sqlins, (uuid, type, time))
         self.dbconnection.connection.commit()
 
     def close(self):

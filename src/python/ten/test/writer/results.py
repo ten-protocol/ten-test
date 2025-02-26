@@ -1,4 +1,4 @@
-import uuid
+import uuid, time
 from pysys.writer import BaseResultsWriter
 from ten.test.persistence.results import OutomeResultsPersistence, RunTypePersistence
 
@@ -27,7 +27,7 @@ class PersistenceTestsWriter(BaseResultsWriter):
         self.outcomes_db = OutomeResultsPersistence.init(self.is_cloud_vm, self.user_dir, self.machine_name)
         if self.run_type is not None:
             runtype_db = RunTypePersistence.init(self.is_cloud_vm, self.user_dir, self.machine_name)
-            runtype_db.insert(self.uuid, self.run_type)
+            runtype_db.insert(self.uuid, self.run_type, int(time.time()))
             runtype_db.close()
 
     def cleanup(self, **kwargs):
