@@ -82,7 +82,7 @@ class RunTypePersistence:
 
     def insert(self, uuid, type):
         """Insert a new run into the persistence. """
-        self.cursor.execute(self.sqlins, (uuid, self.host, type))
+        self.cursor.execute(self.sqlins, (uuid, type))
         self.dbconnection.connection.commit()
 
     def close(self):
