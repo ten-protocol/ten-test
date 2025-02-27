@@ -35,8 +35,8 @@ class OptimismL1Sepolia(Sepolia):
 
 class OptimismSepolia(DefaultPreLondon):
     """An Optimism sepolia connection giving access to the underlying network."""
-    ETH_LIMIT = 0.01
-    ETH_ALLOC = 0.02
+    ETH_LIMIT = 0.02
+    ETH_ALLOC = 0.05
     ETH_ALLOC_EPHEMERAL = 0.001
 
     def __init__(self, test, name=None, **kwargs):
