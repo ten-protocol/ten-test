@@ -4,8 +4,8 @@ from ten.test.networks.default import DefaultPreLondon
 from ten.test.networks.sepolia import Sepolia
 
 
-class ArbitrumL1Sepolia(Sepolia):
-    """The Arbitrum L1 Sepolia implementation connection. """
+class OptimismL1Sepolia(Sepolia):
+    """The Optimism L1 Sepolia implementation connection. """
     ETH_LIMIT = 0.02
     ETH_ALLOC = 0.05
     ETH_ALLOC_EPHEMERAL = 0.005
@@ -33,8 +33,8 @@ class ArbitrumL1Sepolia(Sepolia):
         return web3, account
 
 
-class ArbitrumSepolia(DefaultPreLondon):
-    """An Arbitrum sepolia connection giving access to the underlying network."""
+class OptimismSepolia(DefaultPreLondon):
+    """An Optimism sepolia connection giving access to the underlying network."""
     ETH_LIMIT = 0.01
     ETH_ALLOC = 0.02
     ETH_ALLOC_EPHEMERAL = 0.001
@@ -42,11 +42,9 @@ class ArbitrumSepolia(DefaultPreLondon):
     def __init__(self, test, name=None, **kwargs):
         super().__init__(test, name, **kwargs)
         props = Properties()
-        self.HOST = props.host_http('arbitrum.sepolia')
-        self.WS_HOST = props.host_ws('arbitrum.sepolia')
-        self.PORT = props.port_http('arbitrum.sepolia')
-        self.WS_PORT = props.port_ws('arbitrum.sepolia')
-        self.CHAIN_ID = props.chain_id('arbitrum.sepolia')
+        self.HOST = props.host_http('optimism.sepolia')
+        self.WS_HOST = props.host_ws('optimism.sepolia')
+        self.PORT = props.port_http('optimism.sepolia')
+        self.WS_PORT = props.port_ws('optimism.sepolia')
+        self.CHAIN_ID = props.chain_id('optimism.sepolia')
 
-    def connection_url(self, web_socket=False):
-        return '%s/%s' % (self.HOST if not web_socket else self.WS_HOST, Properties().arbitrumSepoliaAPIKey())

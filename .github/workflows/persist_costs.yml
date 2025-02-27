@@ -16,6 +16,7 @@ on:
           - ten.uat
           - ten.sepolia
           - arbitrum.sepolia
+          - optimism.sepolia
 
 jobs:
   test-run:
@@ -43,6 +44,13 @@ jobs:
         run: |
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -r -m arbitrum.sepolia persist_costs
+
+      - name: 'Run on schedule (optimism.sepolia)'
+        if: ${{ github.event_name == 'schedule' }}
+        continue-on-error: true
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -r -m optimism.sepolia persist_costs
 
       - name: 'Run on schedule (ten.sepolia)'
         if: ${{ github.event_name == 'schedule' }}

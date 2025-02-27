@@ -16,8 +16,9 @@ from ten.test.utils.properties import Properties
 from ten.test.networks.default import DefaultPostLondon
 from ten.test.networks.ganache import Ganache
 from ten.test.networks.goerli import Goerli
-from ten.test.networks.arbitrum import ArbitrumSepolia, ArbitrumL1Sepolia
 from ten.test.networks.sepolia import Sepolia
+from ten.test.networks.optimism import OptimismSepolia, OptimismL1Sepolia
+from ten.test.networks.arbitrum import ArbitrumSepolia, ArbitrumL1Sepolia
 from ten.test.networks.ten import Ten, TenL1Geth, TenL1Sepolia
 
 
@@ -279,6 +280,8 @@ class GenericNetworkTest(BaseTest):
             return Ganache(self, name, **kwargs)
         elif self.env == 'arbitrum.sepolia':
             return ArbitrumSepolia(self, name, **kwargs)
+        elif self.env == 'optimism.sepolia':
+            return OptimismSepolia(self, name, **kwargs)
         elif self.env == 'sepolia':
             return Sepolia(self, name, **kwargs)
 
@@ -292,6 +295,8 @@ class GenericNetworkTest(BaseTest):
             else: return TenL1Geth(self, name, **kwargs)
         elif self.env == 'arbitrum.sepolia':
             return ArbitrumL1Sepolia(self, name, **kwargs)
+        elif self.env == 'optimism.sepolia':
+            return OptimismL1Sepolia(self, name, **kwargs)
         return DefaultPostLondon(self, name, **kwargs)
 
 
