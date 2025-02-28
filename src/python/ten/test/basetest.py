@@ -187,8 +187,10 @@ class GenericNetworkTest(BaseTest):
 
         tx = {'to': account.address, 'value': web3_pk.to_wei(amount, 'ether'), 'gasPrice': web3_pk.eth.gas_price}
         estimate_gas = web3_pk.eth.estimate_gas(tx)
-        if verbose: self.log.info('Gas estimate for distribute native is %d', estimate_gas)
         tx['gas'] = 2*estimate_gas
+        if verbose:
+            self.log.info('Gas estimate for distribute native is %d', estimate_gas)
+            self.log.info('Gas supplied for distribute native is %d', tx['gas'])
 
         if verbose: self.log.info('Sending %.9f ETH to account %s', amount, account.address)
         self.network_funding.tx(self, web3_pk, tx, account_pk, verbose=verbose, txstr='value transfer')
