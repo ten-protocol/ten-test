@@ -28,7 +28,7 @@ class PySysTest(TenNetworkTest):
         params = {'nonce': nonce,
                   'chainId': web3.eth.chain_id,
                   'gasPrice': web3.eth.gas_price}
-        params['gas'] = int(1.1 * target.estimate_gas(params))
+        params['gas'] = target.estimate_gas(params)
         build_tx = target.build_transaction(params)
 
         # sign, send and wait

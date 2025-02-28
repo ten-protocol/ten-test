@@ -28,8 +28,7 @@ class PySysTest(TenNetworkTest):
         self.log.info('Balance before:   %d' % balance_before)
         target = storage.contract.functions.store(num)
         params = {'gasPrice': web3.eth.gas_price, 'value': web3.to_wei(0.01, 'ether')}
-        gas_estimate = target.estimate_gas(params)
-        params['gas'] = int(1.1*gas_estimate)
+        params['gas'] = target.estimate_gas(params)
         build_tx = target.build_transaction(params)
         tx_receipt = network.tx(self, web3, build_tx, account)
         gas_used = int(tx_receipt['gasUsed'])

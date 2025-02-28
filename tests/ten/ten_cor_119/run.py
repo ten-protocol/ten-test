@@ -46,7 +46,7 @@ class PySysTest(TenNetworkTest):
         target = storage.contract.functions.store(num)
         params = {'gasPrice': web3.eth.gas_price, 'value': web3.to_wei(0.001, 'ether')}
         gas_estimate = target.estimate_gas(params)
-        params['gas'] = int(1.1 * gas_estimate)
+        params['gas'] = gas_estimate
         build_tx = target.build_transaction(params)
         tx_receipt = network.tx(self, web3, build_tx, account, txstr='StorageTwoPhaseWithRefund.store(%d)'%num)
         return gas_estimate, int(tx_receipt['gasUsed']), int(tx_receipt['effectiveGasPrice'])
