@@ -121,7 +121,7 @@ class TenRunnerPlugin():
                                                                     web3, user_id, eth_price))
                 balance = web3.from_wei(web3.eth.get_balance(account.address), 'ether')
 
-                if balance < 200 and not self.is_sepolia_ten():
+                if balance < 200 and not (self.is_sepolia_ten() or self.is_uat_ten()):
                     runner.log.info('Funded key balance below threshold ... making faucet call')
                     self.fund_eth_from_faucet_server(runner)
                     self.fund_eth_from_faucet_server(runner)
@@ -225,6 +225,10 @@ class TenRunnerPlugin():
     def is_sepolia_ten(self):
         """Return true if we are running against a sepolia Ten network. """
         return self.env in ['ten.sepolia']
+
+    def is_uat_ten(self):
+        """Return true if we are running against a sepolia Ten network. """
+        return self.env in ['ten.uat']
 
     def fund_eth_from_faucet_server(self, runner):
         """Allocates native ETH to a users account from the faucet server. """
