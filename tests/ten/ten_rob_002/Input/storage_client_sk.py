@@ -14,7 +14,7 @@ def store_value(value, web3, address, contract):
         'gasPrice': gas_price
     }
     gas_estimate = contract.functions.store(value).estimate_gas(params)
-    params['gas'] = int(1.1*gas_estimate)
+    params['gas'] = gas_estimate
 
     logging.info('Account Balance: %d', web3.eth.get_balance(address))
     logging.info('Cost Estimate:   %d', gas_estimate*gas_price)
