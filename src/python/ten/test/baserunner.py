@@ -121,7 +121,7 @@ class TenRunnerPlugin():
                                                                     web3, user_id, eth_price))
                 balance = web3.from_wei(web3.eth.get_balance(account.address), 'ether')
 
-                if balance < 200 and not (self.is_sepolia_ten() or self.is_uat_ten()):
+                if balance < 200 and Properties().l1_abstraction(self.env) == 'TenL1Geth':
                     runner.log.info('Funded key balance below threshold ... making faucet call')
                     self.fund_eth_from_faucet_server(runner)
                     self.fund_eth_from_faucet_server(runner)
