@@ -290,9 +290,8 @@ class GenericNetworkTest(BaseTest):
     def get_l1_network_connection(self, name='primary_l1_connection', **kwargs):
         """Get the layer 1 network connection used by a layer 2."""
         if self.is_ten():
-            if self.env == 'ten.sepolia': return TenL1Sepolia(self, name, **kwargs)
-            if self.env == 'ten.uat': return TenL1Sepolia(self, name, **kwargs)
-            else: return TenL1Geth(self, name, **kwargs)
+            cls = globals().get(Properties().l1_abstraction(self.env))
+            return cls(self, name, **kwargs)
         elif self.env == 'arbitrum.sepolia':
             return ArbitrumL1Sepolia(self, name, **kwargs)
         elif self.env == 'optimism.sepolia':

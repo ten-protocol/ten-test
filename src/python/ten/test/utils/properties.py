@@ -158,6 +158,9 @@ class Properties:
         if node_host is not None: return node_host
         return self.get('env.'+key, 'L2NodeHost')
 
+    def l1_abstraction(self, key):
+        return self.get('env.'+key, 'L1Abstraction')
+
     def l1_host_http(self, key):
         return self.get('env.'+key, 'L1NodeHostHTTP')
 
