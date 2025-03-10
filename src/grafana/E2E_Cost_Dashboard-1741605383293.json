@@ -55,7 +55,7 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "auto",
+            "showPoints": "never",
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -170,7 +170,7 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "auto",
+            "showPoints": "never",
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -400,7 +400,7 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "auto",
+            "showPoints": "never",
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -429,7 +429,7 @@
       },
       "gridPos": {
         "h": 14,
-        "w": 10,
+        "w": 8,
         "x": 0,
         "y": 15
       },
@@ -544,8 +544,8 @@
       },
       "gridPos": {
         "h": 14,
-        "w": 11,
-        "x": 10,
+        "w": 8,
+        "x": 8,
         "y": 15
       },
       "id": 5,
@@ -651,21 +651,168 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "dataset": "mysql",
+          "datasource": {
+            "type": "mysql",
+            "uid": "aebcvqtczlekgd"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \n    t.time, \n    (t.gasprice * t.gasused * r.rate / 1e18) AS optimism_sepolia\nFROM \n    tx_costs t\nJOIN \n    (SELECT rate FROM rates WHERE currency = 'USD' ORDER BY time DESC LIMIT 1) r\nON 1=1 -- cross join\nWHERE \n    t.name = '${interaction}' \n    AND t.environment = 'optimism.sepolia';",
+          "refId": "D",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
-      "title": "USD Cost comparison for  ${interaction}",
+      "title": "USD Cost comparison all networks  ${interaction}",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "aebcvqtczlekgd"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": true,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 5,
+        "x": 16,
+        "y": 15
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "dataset": "mysql",
+          "datasource": {
+            "type": "mysql",
+            "uid": "aebcvqtczlekgd"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "select time, (l1blobprice/1e9) AS l1_Blob_price from gas_prices where environment='${environment}'; ",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "L1 Blob Price GWEI (${environment})",
       "type": "timeseries"
     }
   ],
   "preload": false,
   "schemaVersion": 40,
-  "tags": [],
+  "tags": [
+    "e2e-tests"
+  ],
   "templating": {
     "list": [
       {
         "current": {
-          "text": "ten.sepolia",
-          "value": "ten.sepolia"
+          "text": "ten.uat",
+          "value": "ten.uat"
         },
         "datasource": {
           "type": "mysql",
@@ -681,8 +828,8 @@
       },
       {
         "current": {
-          "text": "KeyStorage.deploy",
-          "value": "KeyStorage.deploy"
+          "text": "Storage.deploy",
+          "value": "Storage.deploy"
         },
         "datasource": {
           "type": "mysql",
@@ -699,13 +846,13 @@
     ]
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "E2E Cost Dashboard",
   "uid": "bec5dsozt1j40b",
-  "version": 45,
+  "version": 52,
   "weekStart": ""
 }

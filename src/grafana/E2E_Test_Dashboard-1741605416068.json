@@ -1671,7 +1671,7 @@
   "preload": true,
   "schemaVersion": 40,
   "tags": [
-    "tests"
+    "e2e-tests"
   ],
   "templating": {
     "list": [
@@ -1722,6 +1722,6 @@
   "timezone": "browser",
   "title": "E2E Test Dashboard",
   "uid": "bebd5gi310t1ca",
-  "version": 60,
+  "version": 61,
   "weekStart": ""
 }

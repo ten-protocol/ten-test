@@ -111,7 +111,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time, \n  balance / 1000000000000000000\nFROM\n  funds\nWHERE\n  name = 'Faucet'\n  and environment = 'ten.sepolia'\n  AND balance IS NOT NULL\nORDER BY\n  time DESC;\n",
+          "rawSql": "SELECT\n  time, \n  balance / 1000000000000000000\nFROM\n  funds\nWHERE\n  name = 'Faucet'\n  and environment = '${environment}'\n  AND balance IS NOT NULL\nORDER BY\n  time DESC;\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -225,7 +225,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time, \n  balance / 1000000000000000000\nFROM\n  funds\nWHERE\n  name = 'Sequencer'\n  and environment = 'ten.sepolia'\n  AND balance IS NOT NULL\nORDER BY\n  time DESC;\n",
+          "rawSql": "SELECT\n  time, \n  balance / 1000000000000000000\nFROM\n  funds\nWHERE\n  name = 'Sequencer'\n  and environment = '${environment}'\n  AND balance IS NOT NULL\nORDER BY\n  time DESC;\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -339,7 +339,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time, \n  balance / 1000000000000000000\nFROM\n  funds\nWHERE\n  name = 'GasPayment'\n  and environment = 'ten.sepolia'\n  AND balance IS NOT NULL\nORDER BY\n  time DESC;\n",
+          "rawSql": "SELECT\n  time, \n  balance / 1000000000000000000\nFROM\n  funds\nWHERE\n  name = 'GasPayment'\n  and environment = '${environment}'\n  AND balance IS NOT NULL\nORDER BY\n  time DESC;\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -507,7 +507,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time, \n  seq_diff as sequencer,\n  gas_diff as gas_payment,\n  pandl as profit_and_loss\nFROM\n  pandl\nWHERE\n  environment = 'ten.sepolia'\nORDER BY\n  time DESC;\n",
+          "rawSql": "SELECT\n  time, \n  seq_diff as sequencer,\n  gas_diff as gas_payment,\n  pandl as profit_and_loss\nFROM\n  pandl\nWHERE\n  environment = '${environment}'\nORDER BY\n  time DESC;\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -534,18 +534,38 @@
   ],
   "preload": false,
   "schemaVersion": 40,
-  "tags": [],
+  "tags": [
+    "e2e-tests"
+  ],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {
+          "text": "ten.sepolia",
+          "value": "ten.sepolia"
+        },
+        "datasource": {
+          "type": "mysql",
+          "uid": "aebcvqtczlekgd"
+        },
+        "definition": "select distinct(environment) from funds;",
+        "name": "environment",
+        "options": [],
+        "query": "select distinct(environment) from funds;",
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      }
+    ]
   },
   "time": {
-    "from": "now-7d",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "E2E Fund Dashboard",
   "uid": "aebn8u5dbwkqoe",
-  "version": 21,
+  "version": 25,
   "weekStart": ""
 }
