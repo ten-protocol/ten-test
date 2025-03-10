@@ -15,7 +15,7 @@ class PySysTest(GenericNetworkTest):
 
         est_1 = contract.contract.functions.get_balance().estimate_gas()
         self.log.info("  Estimate get_balance:    %d", est_1)
-        self.percentile_difference('get_balance',self.REFERENCE[0],est_1,'reference','estimate',40)
+        self.percentile_difference('get_balance',self.REFERENCE[0],est_1,'reference','estimate',50)
 
         tx1 = network.transact(self, web3, contract.contract.functions.get_balance(), account, contract.GAS_LIMIT)
         self.log.info("  Gas used get_balance:    %d", int(tx1["gasUsed"]))

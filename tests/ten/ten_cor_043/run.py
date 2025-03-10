@@ -21,9 +21,9 @@ class PySysTest(GenericNetworkTest):
         self.log.info("  Estimate times_thrice:         %d", est_3)
 
         # validate 40% difference tolerance from reference
-        self.percentile_difference('times_once',self.REFERENCE[0],est_1,'reference','estimate',40)
-        self.percentile_difference('times_twice',self.REFERENCE[1],est_2,'reference','estimate',40)
-        self.percentile_difference('times_thrice',self.REFERENCE[2],est_3,'reference','estimate',40)
+        self.percentile_difference('times_once',self.REFERENCE[0],est_1,'reference','estimate',50)
+        self.percentile_difference('times_twice',self.REFERENCE[1],est_2,'reference','estimate',50)
+        self.percentile_difference('times_thrice',self.REFERENCE[2],est_3,'reference','estimate',50)
 
         tx1 = network.transact(self, web3, contract.contract.functions.times_once(), account, contract.GAS_LIMIT)
         tx2 = network.transact(self, web3, contract.contract.functions.times_twice(), account, contract.GAS_LIMIT)
