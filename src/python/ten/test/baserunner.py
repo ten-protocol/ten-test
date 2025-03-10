@@ -156,12 +156,9 @@ class TenRunnerPlugin():
                 hprocess = self.run_ganache(runner)
                 runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
 
-        except AbortExecution as e:
-            runner.log.info('Error executing runner plugin startup actions %s', e)
-            runner.log.info('See contents of the .runner directory in the project root for any process output')
-            runner.log.info('Exiting ...')
+        except Exception as e:
+            runner.log.warn('Error executing runner plugin startup actions %s', e)
             runner.cleanup()
-            sys.exit(1)
 
         rates_db.close()
         nonce_db.close()
