@@ -1,0 +1,474 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 18,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "uid": "aebcvqtczlekgd"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-RdYlGr"
+          },
+          "custom": {
+            "fillOpacity": 100,
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineWidth": 1,
+            "spanNulls": false
+          },
+          "fieldMinMax": false,
+          "mappings": [
+            {
+              "options": {
+                "DOWN": {
+                  "color": "red",
+                  "index": 1
+                },
+                "UP": {
+                  "color": "green",
+                  "index": 0
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "bool"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 19,
+        "x": 0,
+        "y": 0
+      },
+      "id": 15,
+      "maxDataPoints": 100,
+      "options": {
+        "alignValue": "center",
+        "legend": {
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": false
+        },
+        "mergeValues": true,
+        "rowHeight": 0.84,
+        "showValue": "always",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "dataset": "mysql",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT time, \n       CASE \n           WHEN outcome = TRUE THEN 'UP'\n           ELSE 'DOWN'\n       END AS 'primary'\nFROM results_type\nWHERE type = 'health' \n  AND environment = '${environment}'  \n  AND outcome is not NULL \nORDER BY time DESC;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "dataset": "mysql",
+          "datasource": {
+            "type": "mysql",
+            "uid": "aebcvqtczlekgd"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT time, \n       CASE \n           WHEN outcome = TRUE THEN 'UP'\n           ELSE 'DOWN'\n       END AS 'dexynth'\nFROM results_type\nWHERE type = 'health-dexynth' \n  AND environment = '${environment}'  \n  AND outcome is not NULL \nORDER BY time DESC;",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Health Status Timeline",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [],
+            "fields": {}
+          }
+        }
+      ],
+      "type": "state-timeline"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "aebcvqtczlekgd"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "transparent",
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "type": "color-background"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "DOWN": {
+                  "color": "light-red",
+                  "index": 1
+                },
+                "UP": {
+                  "color": "light-green",
+                  "index": 0
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "uuid"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 297
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "time"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 177
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 10,
+        "x": 0,
+        "y": 14
+      },
+      "id": 17,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": [],
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "time"
+          }
+        ]
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "dataset": "mysql",
+          "datasource": {
+            "type": "mysql",
+            "uid": "aebcvqtczlekgd"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT time, \n       uuid, \n       CASE \n           WHEN type = 'health' THEN 'primary'\n           WHEN type = 'health-dexynth' THEN 'dexynth'\n       END AS 'system',\n       CASE \n           WHEN outcome = TRUE THEN 'UP'\n           ELSE 'DOWN'\n       END AS 'status'\nFROM results_type \nWHERE type in ('health', 'health-dexynth') \n  AND outcome is not NULL \nORDER BY time DESC;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Health Test Runs",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "aebcvqtczlekgd"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "transparent",
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "applyToRow": false,
+              "mode": "basic",
+              "type": "color-background"
+            },
+            "filterable": false,
+            "inspect": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "BLOCKED": {
+                  "color": "light-red",
+                  "index": 1
+                },
+                "DUMPEDCORE": {
+                  "color": "light-red",
+                  "index": 3
+                },
+                "FAILED": {
+                  "color": "light-red",
+                  "index": 4
+                },
+                "PASSED": {
+                  "color": "light-green",
+                  "index": 0
+                },
+                "TIMED OUT": {
+                  "color": "light-red",
+                  "index": 2
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 9,
+        "x": 10,
+        "y": 14
+      },
+      "id": 14,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": [
+            "cost",
+            "duration"
+          ],
+          "reducer": [
+            "sum"
+          ],
+          "show": true
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "dataset": "mysql",
+          "datasource": {
+            "type": "mysql",
+            "uid": "aebcvqtczlekgd"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n    test, \n    duration, \n    cost, \n    outcome as 'result'\nFROM results_outcome \nWHERE environment='${environment}' \nAND uuid='${run_uuid}';",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Health Test Run Results  (${run_uuid})",
+      "type": "table"
+    }
+  ],
+  "preload": true,
+  "schemaVersion": 40,
+  "tags": [
+    "health",
+    "e2e-tests"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "ten.sepolia",
+          "value": "ten.sepolia"
+        },
+        "datasource": {
+          "type": "mysql",
+          "uid": "aebcvqtczlekgd"
+        },
+        "definition": "SELECT distinct environment from results_type;",
+        "description": "",
+        "label": "environment",
+        "name": "environment",
+        "options": [],
+        "query": "SELECT distinct environment from results_type;",
+        "refresh": 1,
+        "regex": "",
+        "sort": 4,
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": "70ee8c78d2bd444888419cc9842a1862",
+          "value": "70ee8c78d2bd444888419cc9842a1862"
+        },
+        "datasource": {
+          "type": "mysql",
+          "uid": "aebcvqtczlekgd"
+        },
+        "definition": "SELECT distinct(uuid) from (SELECT distinct(uuid), time FROM results_type WHERE type='health' AND environment = '${environment}' ORDER BY time DESC) AS subquery;",
+        "name": "run_uuid",
+        "options": [],
+        "query": "SELECT distinct(uuid) from (SELECT distinct(uuid), time FROM results_type WHERE type='health' AND environment = '${environment}' ORDER BY time DESC) AS subquery;",
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "E2E Health Dashboard",
+  "uid": "eee8cl0gasqo0f",
+  "version": 60,
+  "weekStart": ""
+}
