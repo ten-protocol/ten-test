@@ -18,13 +18,39 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 17,
+  "id": 2,
   "links": [],
   "panels": [
     {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 21,
+        "x": 0,
+        "y": 0
+      },
+      "id": 7,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "## Transaction Costs On Various Networks ",
+        "mode": "markdown"
+      },
+      "pluginVersion": "11.5.2",
+      "title": "",
+      "transparent": true,
+      "type": "text"
+    },
+    {
       "datasource": {
         "type": "mysql",
-        "uid": "aebcvqtczlekgd"
+        "uid": "feflof5m4nta8d"
       },
       "fieldConfig": {
         "defaults": {
@@ -86,7 +112,7 @@
         "h": 15,
         "w": 8,
         "x": 0,
-        "y": 0
+        "y": 2
       },
       "id": 1,
       "options": {
@@ -97,17 +123,18 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.4.0",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "dataset": "mysql",
           "datasource": {
             "type": "mysql",
-            "uid": "aebcvqtczlekgd"
+            "uid": "feflof5m4nta8d"
           },
           "editorMode": "code",
           "format": "table",
@@ -139,7 +166,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "aebcvqtczlekgd"
+        "uid": "feflof5m4nta8d"
       },
       "fieldConfig": {
         "defaults": {
@@ -201,7 +228,7 @@
         "h": 15,
         "w": 8,
         "x": 8,
-        "y": 0
+        "y": 2
       },
       "id": 2,
       "options": {
@@ -212,17 +239,18 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.4.0",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "dataset": "mysql",
           "datasource": {
             "type": "mysql",
-            "uid": "aebcvqtczlekgd"
+            "uid": "feflof5m4nta8d"
           },
           "editorMode": "code",
           "format": "table",
@@ -254,7 +282,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "aebcvqtczlekgd"
+        "uid": "feflof5m4nta8d"
       },
       "fieldConfig": {
         "defaults": {
@@ -316,7 +344,7 @@
         "h": 15,
         "w": 5,
         "x": 16,
-        "y": 0
+        "y": 2
       },
       "id": 4,
       "options": {
@@ -327,17 +355,18 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.4.0",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "dataset": "mysql",
           "datasource": {
             "type": "mysql",
-            "uid": "aebcvqtczlekgd"
+            "uid": "feflof5m4nta8d"
           },
           "editorMode": "code",
           "format": "table",
@@ -369,7 +398,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "aebcvqtczlekgd"
+        "uid": "feflof5m4nta8d"
       },
       "fieldConfig": {
         "defaults": {
@@ -431,7 +460,7 @@
         "h": 14,
         "w": 8,
         "x": 0,
-        "y": 15
+        "y": 17
       },
       "id": 3,
       "options": {
@@ -442,17 +471,18 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.4.0",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "dataset": "mysql",
           "datasource": {
             "type": "mysql",
-            "uid": "aebcvqtczlekgd"
+            "uid": "feflof5m4nta8d"
           },
           "editorMode": "code",
           "format": "table",
@@ -484,7 +514,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "aebcvqtczlekgd"
+        "uid": "feflof5m4nta8d"
       },
       "fieldConfig": {
         "defaults": {
@@ -546,7 +576,7 @@
         "h": 14,
         "w": 8,
         "x": 8,
-        "y": 15
+        "y": 17
       },
       "id": 5,
       "options": {
@@ -557,17 +587,18 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.4.0",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "dataset": "mysql",
           "datasource": {
             "type": "mysql",
-            "uid": "aebcvqtczlekgd"
+            "uid": "feflof5m4nta8d"
           },
           "editorMode": "code",
           "format": "table",
@@ -596,7 +627,7 @@
           "dataset": "mysql",
           "datasource": {
             "type": "mysql",
-            "uid": "aebcvqtczlekgd"
+            "uid": "feflof5m4nta8d"
           },
           "editorMode": "code",
           "format": "table",
@@ -626,7 +657,7 @@
           "dataset": "mysql",
           "datasource": {
             "type": "mysql",
-            "uid": "aebcvqtczlekgd"
+            "uid": "feflof5m4nta8d"
           },
           "editorMode": "code",
           "format": "table",
@@ -656,7 +687,7 @@
           "dataset": "mysql",
           "datasource": {
             "type": "mysql",
-            "uid": "aebcvqtczlekgd"
+            "uid": "feflof5m4nta8d"
           },
           "editorMode": "code",
           "format": "table",
@@ -689,7 +720,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "aebcvqtczlekgd"
+        "uid": "feflof5m4nta8d"
       },
       "fieldConfig": {
         "defaults": {
@@ -751,7 +782,7 @@
         "h": 14,
         "w": 5,
         "x": 16,
-        "y": 15
+        "y": 17
       },
       "id": 6,
       "options": {
@@ -762,17 +793,18 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.4.0",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "dataset": "mysql",
           "datasource": {
             "type": "mysql",
-            "uid": "aebcvqtczlekgd"
+            "uid": "feflof5m4nta8d"
           },
           "editorMode": "code",
           "format": "table",
@@ -805,18 +837,19 @@
   "preload": false,
   "schemaVersion": 40,
   "tags": [
-    "e2e-tests"
+    "e2e-tests",
+    "health"
   ],
   "templating": {
     "list": [
       {
         "current": {
-          "text": "ten.uat",
-          "value": "ten.uat"
+          "text": "ten.sepolia",
+          "value": "ten.sepolia"
         },
         "datasource": {
           "type": "mysql",
-          "uid": "aebcvqtczlekgd"
+          "uid": "feflof5m4nta8d"
         },
         "definition": "SELECT distinct environment from tx_costs;",
         "name": "environment",
@@ -833,7 +866,7 @@
         },
         "datasource": {
           "type": "mysql",
-          "uid": "aebcvqtczlekgd"
+          "uid": "feflof5m4nta8d"
         },
         "definition": "select distinct name from tx_costs; ",
         "name": "interaction",
@@ -846,13 +879,13 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-2d",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "E2E Cost Dashboard",
+  "title": "Testnet Costs",
   "uid": "bec5dsozt1j40b",
-  "version": 52,
+  "version": 8,
   "weekStart": ""
 }

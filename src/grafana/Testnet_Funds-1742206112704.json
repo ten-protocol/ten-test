@@ -18,13 +18,39 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 15,
+  "id": 3,
   "links": [],
   "panels": [
     {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 21,
+        "x": 0,
+        "y": 0
+      },
+      "id": 6,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "## Account Funds and Overall Profit And Loss",
+        "mode": "markdown"
+      },
+      "pluginVersion": "11.5.2",
+      "title": "",
+      "transparent": true,
+      "type": "text"
+    },
+    {
       "datasource": {
         "type": "mysql",
-        "uid": "aebcvqtczlekgd"
+        "uid": "feflof5m4nta8d"
       },
       "fieldConfig": {
         "defaults": {
@@ -85,7 +111,7 @@
         "h": 13,
         "w": 7,
         "x": 0,
-        "y": 0
+        "y": 2
       },
       "id": 5,
       "options": {
@@ -96,17 +122,18 @@
           "showLegend": false
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.4.0",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "dataset": "mysql",
           "datasource": {
             "type": "mysql",
-            "uid": "aebcvqtczlekgd"
+            "uid": "feflof5m4nta8d"
           },
           "editorMode": "code",
           "format": "table",
@@ -138,7 +165,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "aebcvqtczlekgd"
+        "uid": "feflof5m4nta8d"
       },
       "fieldConfig": {
         "defaults": {
@@ -199,7 +226,7 @@
         "h": 13,
         "w": 7,
         "x": 7,
-        "y": 0
+        "y": 2
       },
       "id": 3,
       "options": {
@@ -210,17 +237,18 @@
           "showLegend": false
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.4.0",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "dataset": "mysql",
           "datasource": {
             "type": "mysql",
-            "uid": "aebcvqtczlekgd"
+            "uid": "feflof5m4nta8d"
           },
           "editorMode": "code",
           "format": "table",
@@ -252,7 +280,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "aebcvqtczlekgd"
+        "uid": "feflof5m4nta8d"
       },
       "fieldConfig": {
         "defaults": {
@@ -313,7 +341,7 @@
         "h": 13,
         "w": 7,
         "x": 14,
-        "y": 0
+        "y": 2
       },
       "id": 2,
       "options": {
@@ -324,17 +352,18 @@
           "showLegend": false
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.4.0",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "dataset": "mysql",
           "datasource": {
             "type": "mysql",
-            "uid": "aebcvqtczlekgd"
+            "uid": "feflof5m4nta8d"
           },
           "editorMode": "code",
           "format": "table",
@@ -366,7 +395,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "aebcvqtczlekgd"
+        "uid": "feflof5m4nta8d"
       },
       "fieldConfig": {
         "defaults": {
@@ -481,7 +510,7 @@
         "h": 12,
         "w": 21,
         "x": 0,
-        "y": 13
+        "y": 15
       },
       "id": 4,
       "options": {
@@ -492,17 +521,18 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.4.0",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "dataset": "mysql",
           "datasource": {
             "type": "mysql",
-            "uid": "aebcvqtczlekgd"
+            "uid": "feflof5m4nta8d"
           },
           "editorMode": "code",
           "format": "table",
@@ -535,7 +565,8 @@
   "preload": false,
   "schemaVersion": 40,
   "tags": [
-    "e2e-tests"
+    "e2e-tests",
+    "health"
   ],
   "templating": {
     "list": [
@@ -546,7 +577,7 @@
         },
         "datasource": {
           "type": "mysql",
-          "uid": "aebcvqtczlekgd"
+          "uid": "feflof5m4nta8d"
         },
         "definition": "select distinct(environment) from funds;",
         "name": "environment",
@@ -559,13 +590,13 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-6M",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "E2E Fund Dashboard",
+  "title": "Testnet Funds",
   "uid": "aebn8u5dbwkqoe",
-  "version": 25,
+  "version": 10,
   "weekStart": ""
 }
