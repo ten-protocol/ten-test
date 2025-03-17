@@ -419,7 +419,7 @@ class TenNetworkTest(GenericNetworkTest):
         json_str = byte_str.decode('utf-8')
         return json.loads(json_str)
 
-    def scan_list_personal_transactions(self, url, address, offset=0, size=10):
+    def scan_list_personal_transactions(self, url, address, offset=0, size=10, return_error=False):
         """List personal transactions using.
 
         Note that listing personal transactions goes via a call to getStorageAt, where the first argument is an
@@ -432,7 +432,9 @@ class TenNetworkTest(GenericNetworkTest):
                 "id": self.MSG_ID }
         response = self.post(data, url)
         if 'result' in response.json(): return self.json_hex_to_obj(response.json()['result'])
-        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        elif 'error' in response.json():
+            if return_error: return response.json()['error']
+            else: self.log.error(response.json()['error']['message'])
         return None
 
     def scan_get_transaction(self):
