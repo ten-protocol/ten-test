@@ -39,7 +39,7 @@ class PySysTest(TenNetworkTest):
         self.wait(float(self.block_time)*1.1)
 
         # wait and assert that all accounts receive their own events
-        self.waitForGrep(file='subscriber.out', expr='Received event: CallerIndexedAddress', timeout=90)
+        self.waitForGrep(file='subscriber.out', expr='Received event: CallerIndexedAddress', condition='==4', timeout=30)
         self.assertLineCount(file='subscriber.out', expr='Received event: CallerIndexedAddress', condition='==4')
 
 
