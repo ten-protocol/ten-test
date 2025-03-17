@@ -1,5 +1,8 @@
-import json, os
-from pysys.constants import FAILED
+from web3.exceptions import TimeExhausted
+from pysys.constants import *
+from ten.test.utils import fullname
+from pysys.constants import LOG_WARN
+from pysys.utils.logutils import BaseLogFormatter
 from ten.test.utils.docker import DockerHelper
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.storage import Storage
@@ -51,7 +54,18 @@ class PySysTest(TenNetworkTest):
         DockerHelper.container_stop(self, 'sequencer-enclave-0', time=time)
         self.assertTrue(not self.ten_health(), assertMessage='Health should be false')
         try:
-            network.transact(self, web3, storage.contract.functions.store(value), account, storage.GAS_LIMIT)
+            target = storage.contract.functions.store(value)
+            self.log.info('Account %s performing transaction %s', account.address, fullname(target), extra=BaseLogFormatter.tag(LOG_WARN, 1))
+            nonce = network.get_next_nonce(self, web3, account.address, False)
+            tx = network.build_transaction(self, web3, target, nonce, account.address, storage.GAS_LIMIT)
+            tx_sign = network.sign_transaction(self, tx, nonce, account, False)
+            tx_hash = network.send_transaction(self, web3, nonce, account.address, tx_sign, False)
+            tx_recp = network.wait_for_transaction(self, web3, nonce, account.address, tx_hash, False)
+            self.addOutcome(FAILED)
+        except TimeExhausted as e:
+            self.log.warn('Exception: %s' % e)
+            self.assertTrue(isinstance(e, ValueError), assertMessage='TimeExhausted should be thrown')
+
             self.addOutcome(FAILED)
         except Exception as e:
             self.log.warn('Exception: %s' % e)
