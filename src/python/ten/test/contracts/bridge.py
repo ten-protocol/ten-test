@@ -3,15 +3,15 @@ from pysys.constants import *
 from ten.test.utils.properties import Properties
 
 
-class Management:
+class CrossChainManagement:
     GAS_LIMIT = 3_000_000
 
     def __init__(self, test, web3):
         self.test = test
         self.web3 = web3
-        self.address = Properties().l1_management_address()
-        self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'management', 'ManagementContract.sol',
-                                     'ManagementContract.json')
+        self.address = Properties().l1_cross_chain_management_address()
+        self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'management', 'CrossChain.sol',
+                                     'CrossChain.json')
         with open(self.abi_path, 'r') as fp:
             self.abi = json.load(fp)
         self.contract = self.web3.eth.contract(address=self.address, abi=self.abi)

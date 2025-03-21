@@ -1,7 +1,7 @@
 import os, re
 from ten.test.utils.properties import Properties
 from ten.test.basetest import TenNetworkTest
-from ten.test.contracts.bridge import EthereumBridge, L2MessageBus, Management
+from ten.test.contracts.bridge import EthereumBridge, L2MessageBus
 
 
 class PySysTest(TenNetworkTest):

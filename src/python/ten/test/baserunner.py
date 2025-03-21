@@ -1,4 +1,5 @@
 import os, shutil, sys, json, requests, time, socket
+from web3 import Web3
 from collections import OrderedDict
 from web3 import Web3
 from pathlib import Path
@@ -303,15 +304,13 @@ class TenRunnerPlugin():
         response = self.post(runner, data)
         if 'result' in response.json():
             config = response.json()['result']
-            Properties.L1ManagementAddress = config["ManagementContractAddress"]
-            Properties.L1MessageBusAddress = config["MessageBusAddress"]
-            Properties.L2MessageBusAddress = config["L2MessageBusAddress"]
-            if "ImportantContracts" in config:
-                contracts = config["ImportantContracts"]
-                Properties.L1BridgeAddress = self.__get_contract(contracts, "L1Bridge")
-                Properties.L2BridgeAddress = self.__get_contract(contracts, "L2Bridge")
-                Properties.L1CrossChainMessengerAddress = self.__get_contract(contracts, "L1CrossChainMessenger")
-                Properties.L2CrossChainMessengerAddress = self.__get_contract(contracts, "L2CrossChainMessenger")
+            Properties.L1MessageBusAddress = Web3.to_checksum_address(config["L1MessageBus"])
+            Properties.L2MessageBusAddress = Web3.to_checksum_address(config["L2MessageBus"])
+            Properties.L1BridgeAddress = Web3.to_checksum_address(config["L1Bridge"])
+            Properties.L2BridgeAddress = Web3.to_checksum_address(config["L2Bridge"])
+            Properties.L1CrossChainManagementAddress = Web3.to_checksum_address(config["CrossChain"])
+            Properties.L1CrossChainMessengerAddress = Web3.to_checksum_address(config["L1CrossChainMessenger"])
+            Properties.L2CrossChainMessengerAddress = Web3.to_checksum_address(config["L2CrossChainMessenger"])
             if "PublicSystemContracts" in config:
                 contracts = config["PublicSystemContracts"]
                 Properties.L2PublicCallbacks = self.__get_contract(contracts, "PublicCallbacks")

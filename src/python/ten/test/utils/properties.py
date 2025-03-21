@@ -7,7 +7,7 @@ from ten.test.utils.threading import thread_num
 
 class Properties:
     """Used as a holding class for properties."""
-    L1ManagementAddress = None
+    L1CrossChainManagementAddress = None
     L1BridgeAddress = None
     L1MessageBusAddress = None
     L1CrossChainMessengerAddress = None
@@ -186,8 +186,8 @@ class Properties:
     def l1_funded_account_pk(self, key):
         return self.get('env.'+key, 'L1FundedAccountPK')
 
-    def l1_management_address(self):
-        return self.L1ManagementAddress
+    def l1_cross_chain_management_address(self):
+        return self.L1CrossChainManagementAddress
 
     def l1_bridge_address(self):
         return self.L1BridgeAddress
