@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Bridge: send native funds and tokens in single xchain message</title>
+        <title>Bridge: send and withdraw native funds and tokens in single xchain message</title>
         <purpose><![CDATA[
 Attempts to perform both ERC20 token withdrawals and native funds withdrawal in the same xchain message, and validates
 that the withdrawals take place.
