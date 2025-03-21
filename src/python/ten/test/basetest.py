@@ -19,7 +19,7 @@ from ten.test.networks.goerli import Goerli
 from ten.test.networks.sepolia import Sepolia
 from ten.test.networks.optimism import OptimismSepolia, OptimismL1Sepolia
 from ten.test.networks.arbitrum import ArbitrumSepolia, ArbitrumL1Sepolia
-from ten.test.networks.ten import Ten
+from ten.test.networks.ten import Ten, TenL1Geth
 
 
 class GenericNetworkTest(BaseTest):
@@ -290,6 +290,7 @@ class GenericNetworkTest(BaseTest):
     def get_l1_network_connection(self, name='primary_l1_connection', **kwargs):
         """Get the layer 1 network connection used by a layer 2."""
         if self.is_ten():
+
             cls = globals().get(Properties().l1_abstraction(self.env))
             return cls(self, name, **kwargs)
         elif self.env == 'arbitrum.sepolia':

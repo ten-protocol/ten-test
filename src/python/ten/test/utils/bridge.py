@@ -2,7 +2,7 @@ import time, os, rlp
 from web3._utils.events import EventLogErrorFlags
 from ten.test.contracts.erc20 import ERC20Token
 from ten.test.contracts.bridge import WrappedERC20
-from ten.test.contracts.bridge import TenBridge, EthereumBridge, Management
+from ten.test.contracts.bridge import TenBridge, EthereumBridge, CrossChainManagement
 from ten.test.contracts.bridge import L1MessageBus, L2MessageBus, L1CrossChainMessenger, L2CrossChainMessenger
 from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 from ten.test.utils.properties import Properties
@@ -82,7 +82,7 @@ class L1BridgeDetails(BridgeDetails):
         bridge = TenBridge(test, web3)
         bus = L1MessageBus(test, web3)
         xchain = L1CrossChainMessenger(test, web3)
-        self.management = Management(test, web3)
+        self.management = CrossChainManagement(test, web3)
         super().__init__(test, web3, account, network, bridge, bus, xchain, name)
         self.tokens = {}
 
@@ -160,7 +160,7 @@ class L1BridgeDetails(BridgeDetails):
             }
         )
         tx_receipt = self.network.tx(self.test, self.web3, build_tx, self.account, persist_nonce=False, timeout=timeout, txstr='sendNative(%d)'%amount)
-
+        self.network.dump(tx_receipt, 'send_native_tx.log')
         value_transfer = self.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Discard)
         return tx_receipt, self.get_value_transfer_event(value_transfer[0])
 
