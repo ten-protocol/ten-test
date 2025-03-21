@@ -10,9 +10,9 @@ class PySysTest(TenNetworkTest):
         network = self.get_l1_network_connection()
         web3, account = network.connect_account1(self)
 
-        self.check_has_code('L1ManagementAddress', props.L1ManagementAddress, web3)
         self.check_has_code('L1BridgeAddress', props.L1BridgeAddress, web3)
         self.check_has_code('L1MessageBusAddress', props.L1MessageBusAddress, web3)
+        self.check_has_code('L1ManagementAddress', props.L1CrossChainManagementAddress, web3)
         self.check_has_code('L1CrossChainMessengerAddress', props.L1CrossChainMessengerAddress, web3)
 
         network = self.get_network_connection()
