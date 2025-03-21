@@ -7,7 +7,10 @@ from ten.test.utils.threading import thread_num
 
 class Properties:
     """Used as a holding class for properties."""
-    L1ManagementAddress = None
+    L1NetworkConfigAddress = None   # used to be L1ManagementAddress
+    L1EnclaveRegistryAddress = None
+    L1RollupContractAddress = None
+    L1CrossChainAddress = None
     L1BridgeAddress = None
     L1MessageBusAddress = None
     L1CrossChainMessengerAddress = None

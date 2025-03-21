@@ -303,15 +303,16 @@ class TenRunnerPlugin():
         response = self.post(runner, data)
         if 'result' in response.json():
             config = response.json()['result']
-            Properties.L1ManagementAddress = config["ManagementContractAddress"]
-            Properties.L1MessageBusAddress = config["MessageBusAddress"]
-            Properties.L2MessageBusAddress = config["L2MessageBusAddress"]
-            if "ImportantContracts" in config:
-                contracts = config["ImportantContracts"]
-                Properties.L1BridgeAddress = self.__get_contract(contracts, "L1Bridge")
-                Properties.L2BridgeAddress = self.__get_contract(contracts, "L2Bridge")
-                Properties.L1CrossChainMessengerAddress = self.__get_contract(contracts, "L1CrossChainMessenger")
-                Properties.L2CrossChainMessengerAddress = self.__get_contract(contracts, "L2CrossChainMessenger")
+            Properties.L1NetworkConfigAddress = config["NetworkConfigAddress"]
+            Properties.L1EnclaveRegistryAddress = config["EnclaveRegistry"]
+            Properties.L1RollupContractAddress = config["RollupContract"]
+            Properties.L1CrossChainAddress = config["CrossChain"]
+            Properties.L1MessageBusAddress = config["L1MessageBus"]
+            Properties.L2MessageBusAddress = config["L2MessageBus"]
+            Properties.L1BridgeAddress = config["L1Bridge"]
+            Properties.L2BridgeAddress = config["L2Bridge"]
+            Properties.L1CrossChainMessengerAddress = config["L1CrossChainMessenger"]
+            Properties.L2CrossChainMessengerAddress = config["L2CrossChainMessenger"]
             if "PublicSystemContracts" in config:
                 contracts = config["PublicSystemContracts"]
                 Properties.L2PublicCallbacks = self.__get_contract(contracts, "PublicCallbacks")
