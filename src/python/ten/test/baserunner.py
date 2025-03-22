@@ -103,8 +103,11 @@ class TenRunnerPlugin():
 
         try:
             if self.is_ten():
-                runner.log.info('Getting and setting the Ten contract addresses')
-                self.__set_contract_addresses(runner)
+                try:
+                    runner.log.info('Getting and setting the Ten contract addresses')
+                    self.__set_contract_addresses(runner)
+                except:
+                    runner.log.info('Error setting the Ten contract addresses')
 
                 props = Properties()
                 account = Web3().eth.account.from_key(props.fundacntpk())
