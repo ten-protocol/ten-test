@@ -27,4 +27,4 @@ class PySysTest(GenericNetworkTest):
         # get the new block number
         block_number_deploy = web3.eth.get_block_number()
         self.log.info('Block number is %d', block_number_deploy)
-        self.assertTrue(block_number_deploy > block_number_initial)
+        self.assertTrue(block_number_deploy > block_number_initial, assertMessage='Block number should increase')
