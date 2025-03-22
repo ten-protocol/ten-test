@@ -13,7 +13,7 @@ class GasPricePersistence:
                  "(environment VARCHAR(64), " \
                  "time INTEGER, " \
                  "l1gasprice REAL, " \
-                 "l2gasprice REAL), " \
+                 "l2gasprice REAL, " \
                  "l1blobprice REAL)"
     SQL_INSERT = "INSERT INTO gas_prices VALUES (?, ?, ?, ?, ?);"
 
