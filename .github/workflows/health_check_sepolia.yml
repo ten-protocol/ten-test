@@ -15,6 +15,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           path: ./ten-test
+          ref: 'releases/v1.0'
 
       - name: 'Check out go-ten code'
         uses: actions/checkout@v3
