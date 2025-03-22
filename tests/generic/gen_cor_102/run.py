@@ -20,7 +20,7 @@ class PySysTest(GenericNetworkTest):
         gas_price = web3.eth.gas_price
         params = {'from': account.address, 'chainId': chain_id, 'gasPrice': gas_price}
         gas_limit = contract.contract.functions.setItem("1", 1).estimate_gas(params)
-        funds_needed = 1.1 * (gas_price * gas_limit)
+        funds_needed = 2 * (gas_price * gas_limit)
 
         self.client(network, contract, 'meaning_of_life', 42, web3.from_wei(funds_needed, 'ether'))
         value_after = contract.contract.functions.getItem('meaning_of_life').call()
