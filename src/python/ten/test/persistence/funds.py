@@ -13,8 +13,9 @@ class GasPricePersistence:
                  "(environment VARCHAR(64), " \
                  "time INTEGER, " \
                  "l1gasprice REAL, " \
-                 "l2gasprice REAL) "
-    SQL_INSERT = "INSERT INTO gas_prices VALUES (?, ?, ?, ?);"
+                 "l2gasprice REAL) " \
+                 "l1blobprice REAL)"
+    SQL_INSERT = "INSERT INTO gas_prices VALUES (?, ?, ?, ?, ?);"
 
     @classmethod
     def init(cls, use_remote, user_dir, host):
@@ -38,9 +39,9 @@ class GasPricePersistence:
         self.cursor.close()
         self.dbconnection.connection.close()
 
-    def insert(self, environment, time, l1gasprice, l2gasprice):
+    def insert(self, environment, time, l1gasprice, l2gasprice, l1blobprice):
         """Insert new values for a particular environment."""
-        self.cursor.execute(self.sqlins, (environment, time, l1gasprice, l2gasprice))
+        self.cursor.execute(self.sqlins, (environment, time, l1gasprice, l2gasprice, l1blobprice))
         self.dbconnection.connection.commit()
 
 

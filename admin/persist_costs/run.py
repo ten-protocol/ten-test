@@ -9,20 +9,21 @@ from ten.test.contracts.calldata import CallData
 class PySysTest(TenNetworkTest):
 
     def execute(self):
+        l1blobprice = 0
         _time = int(time.time())
 
-        # connect to the L1 and L2 networks
-        network = self.get_l1_network_connection()
-        web3, _ = network.connect_account1(self, check_funds=False)
-        l1gasprice = web3.eth.gas_price
+        # connect to the L1 network and get the l1 gas and blob price
+        self.log.info('Getting and persisting the L1 and L2 gas and blob prices')
+        l1web3, _ = self.get_l1_network_connection().connect_account1(self, check_funds=False)
+        l2web3, _ = self.get_network_connection().connect_account1(self, check_funds=False)
+        try: l1blobprice = int(l1web3.eth.get_block('latest').excessBlobGas, 16)
+        except: pass
+        self.gas_db.insert(self.env, _time, l1web3.eth.gas_price, l2web3.eth.gas_price, l1blobprice)
 
+        # connect to the L2 network ready to deploy contracts
         network = self.get_network_connection()
         web3, acnt = network.connect_account1(self)
         _, acnt2 = network.connect_account2(self)
-        l2gasprice = web3.eth.gas_price
-
-        # persist the l1 and l2 gas price for reference
-        self.gas_db.insert(self.env, _time, l1gasprice, l2gasprice)
 
         # the contracts to be deployed and measured
         storage = Storage(self, web3, 100)
