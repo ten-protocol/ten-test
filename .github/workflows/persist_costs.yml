@@ -59,12 +59,12 @@ jobs:
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -r -m ten.sepolia persist_costs
 
-      - name: 'Run on schedule (ten.uat)'
-        if: ${{ github.event_name == 'schedule' }}
-        continue-on-error: true
-        run: |
-          cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -r -m ten.uat persist_costs
+#      - name: 'Run on schedule (ten.uat)'
+#        if: ${{ github.event_name == 'schedule' }}
+#        continue-on-error: true
+#        run: |
+#          cd ${{ github.workspace }}/ten-test/admin
+#          /usr/local/bin/pysys.py run -r -m ten.uat persist_costs
 
       - name: 'Run on dispatch'
         if: ${{ github.event_name == 'workflow_dispatch' }}
