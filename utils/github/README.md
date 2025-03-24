@@ -39,6 +39,10 @@ sudo tar -C /usr/local -xzf go1.21.13.linux-amd64.tar.gz
 sudo ln -s /usr/local/go/bin/go /usr/local/bin/go 
 ```
 
+Note also you may want to resize the VM in the Azure portal for it's intended use, i.e. if running local testnet tests
+on the runner use `Standard D8as v4 (8 vcpus, 32 GiB memory)`, and for running remote tests use
+`Standard D4as v4 (4 vcpus, 16 GiB memory)`. The default is `Standard D4as v4`.
+
 ## Configure the runner
 Go to the [runners](https://github.com/ten-protocol/ten-test/settings/actions/runners) section of the `ten-test`
 repo and click on new runner. Follow the commands there to install and run the new runner. 
