@@ -1,7 +1,7 @@
 import os, re
 from ten.test.utils.properties import Properties
 from ten.test.basetest import TenNetworkTest
-from ten.test.contracts.bridge import EthereumBridge, L2MessageBus
+from ten.test.contracts.bridge import EthereumBridge, L2MessageBus, CrossChainManagement
 
 
 class PySysTest(TenNetworkTest):
@@ -22,7 +22,7 @@ class PySysTest(TenNetworkTest):
         self.log.info('  l2_balance before:     %s', l2_before)
 
         # the relevant contracts on the l1 and l2 networks
-        management = Management(self, web3_l1)
+        management = CrossChainManagement(self, web3_l1)
         bridge = EthereumBridge(self, web3_l2)
         bus = L2MessageBus(self, web3_l2)
         fees = bridge.contract.functions.valueTransferFee().call()
