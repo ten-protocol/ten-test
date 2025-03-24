@@ -197,7 +197,7 @@ class L1BridgeDetails(BridgeDetails):
     def release_funds(self, msg, proof, root, timeout=60):
         """Release funds to an account. """
         tx_receipt = self.network.transact(self.test, self.web3,
-                                       self.management.contract.functions.ExtractNativeValue(msg, proof, root),
+                                       self.management.contract.functions.extractNativeValue(msg, proof, root),
                                        self.account, gas_limit=self.management.GAS_LIMIT, persist_nonce=False,
                                        timeout=timeout)
 

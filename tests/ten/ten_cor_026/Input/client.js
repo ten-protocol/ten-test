@@ -137,9 +137,9 @@ async function waitForRootPublished(node_url, msgHash, interval = 5000, timeout 
 /** Logic on the L1 side to instruct the management contract to release funds */
 async function extractNativeValue(provider, wallet, management, msg, proof, root) {
   const gasPrice = await provider.getGasPrice();
-  let gas_estimate = await management.estimateGas.ExtractNativeValue(msg, proof, root, {} )
+  let gas_estimate = await management.estimateGas.extractNativeValue(msg, proof, root, {} )
 
-  const tx = await management.populateTransaction.ExtractNativeValue(msg, proof, root, {
+  const tx = await management.populateTransaction.extractNativeValue(msg, proof, root, {
     gasPrice: gasPrice, gasLimit: gas_estimate
   } )
 
