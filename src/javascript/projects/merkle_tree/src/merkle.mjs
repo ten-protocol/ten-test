@@ -7,13 +7,13 @@ const program = new Command();
 program
   .version('1.0.0', '-v, --version')
   .usage('[OPTIONS]...')
-  .option('--dump_file <value>', 'Input file containing the leafs')
-  .option('--leaf_hash <value>', 'The leaf used for the proof')
+  .option('--file <value>', 'Input file containing the leafs')
+  .option('--leaf <value>', 'The leaf used for the proof')
   .parse(process.argv)
 
   const options = program.opts()
 
-  fs.readFile(options.dump_file, 'utf8', (err, data) => {
+  fs.readFile(options.file, 'utf8', (err, data) => {
         if (err) {
             console.error(err);
             return;
@@ -24,6 +24,6 @@ program
         const tree = StandardMerkleTree.of(result, ["string", "bytes32"]);
         console.log('Root:', tree.root);
 
-        const proof = tree.getProof(options.leaf_hash.split(','));
+        const proof = tree.getProof(options.leaf.split(','));
         console.log('Proof:', ...proof);
     });

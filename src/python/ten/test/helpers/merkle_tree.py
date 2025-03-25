@@ -59,11 +59,11 @@ class MerkleTreeHelper:
             for entry in decoded: fp.write('%s,%s\n' % (entry[0], entry[1]))
         return block, decoded
 
-    def get_proof(self, dump_file, leaf_hash):
+    def get_proof(self, dump_file, leaf):
         """From a cross chain tree dump file, construct the merkle tree and obtain a proof of leaf entry.
 
         The method spawns a javascript process to read in the dump file containing the value transfer events and cross
-        chain messages, to independently contstruct the tree, and then to obtain a proof of a leaf inclusion.
+        chain messages, to independently construct the tree, and then to obtain a proof of a leaf inclusion.
         """
         project = os.path.join(self.test.output, 'project')
         shutil.copytree(os.path.join(PROJECT.root,'src','javascript','projects','merkle_tree'), project)
@@ -71,8 +71,8 @@ class MerkleTreeHelper:
         stdout = os.path.join(self.test.output, 'merkle.out')
         stderr = os.path.join(self.test.output, 'merkle.err')
         script = os.path.join(project, 'src/merkle.mjs')
-        args = ['--dump_file', os.path.join(self.test.output, dump_file)]
-        args.extend(['--leaf_hash', leaf_hash])
+        args = ['--file', os.path.join(self.test.output, dump_file)]
+        args.extend(['--leaf', leaf])
         self.test.run_javascript(script, stdout, stderr, args)
         self.test.waitForGrep(os.path.join(self.test.output, 'merkle.out'), expr='Proof:')
 
