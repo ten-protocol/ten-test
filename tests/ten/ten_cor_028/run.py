@@ -68,51 +68,63 @@ class PySysTest(TenNetworkTest):
         logs = accnt1.l2.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
         value_transfer = accnt1.l2.get_value_transfer_event(logs[0])
 
-        # get the log msg from the merkle tree helper
+        # get the value transfer from the merkle tree helper
         mh = MerkleTreeHelper.create(self)
-        mh.dump_tree(accnt1.l2.web3, tx_receipt, 'cross_train_tree.log')
+        block, decoded = mh.dump_tree(accnt1.l2.web3, tx_receipt, 'xchain_tree.log')
         msg1, msg_hash1 = mh.process_log_msg(log_msg1)
         msg2, msg_hash2 = mh.process_log_msg(log_msg2)
         msg3, msg_hash3 = mh.process_transfer(value_transfer)
 
-        self.log.info('Getting root and proof for first token withdrawal')
-        root1, proof1 = accnt1.l2.wait_for_proof('m', msg_hash1, proof_timeout)
-        self.log.info('  Returned root:         %s', root1)
-        self.log.info('  Returned proof:        %s', [p.hex() for p in proof1])
+        self.log.info('  value_transfer:        %s', msg3)
+        self.log.info('  value_transfer_hash:   %s', msg_hash3)
+        self.log.info('  decoded_cross_chain:   %s', decoded)
+        self.log.info('  block_merkle_root:     %s', block.crossChainTreeHash)
+        self.assertTrue(msg_hash3 in [x[1] for x in decoded], assertMessage='Value transfer should be in the xchain tree')
 
-        self.log.info('Getting root and proof for second token withdrawal')
-        root2, proof2 = accnt1.l2.wait_for_proof('m', msg_hash2, proof_timeout)
-        self.log.info('  Returned root:         %s', root2)
-        self.log.info('  Returned proof:        %s', [p.hex() for p in proof2])
+        mh_root, mh_proof = mh.get_proof('xchain_tree.log', 'v,%s' % msg_hash3)
+        self.log.info('  calculated root:       %s', mh_root)
+        self.assertTrue(block.crossChainTreeHash == mh_root, assertMessage='Calculated merkle root should be same as the block header')
 
-        self.log.info('Getting root and proof for value transfer')
-        root3, proof3 = accnt1.l2.wait_for_proof('v', msg_hash3, proof_timeout)
-        self.log.info('  returned root:         %s', root3)
-        self.log.info('  returned proof:        %s', [p.hex() for p in proof3])
+        # if a local testnet wait for the xchain message on the L1 and release the funds
+        if self.is_local_ten():
+            self.log.info('Getting root and proof for first token withdrawal')
+            root1, proof1 = accnt1.l2.wait_for_proof('m', msg_hash1, proof_timeout)
+            self.log.info('  Returned root:         %s', root1)
+            self.log.info('  Returned proof:        %s', [p.hex() for p in proof1])
 
-        # release the tokens and native funds from the L1 and check the balances
-        self.log.info('Relay the message on the L1 to release them')
-        _ = accnt1.l1.release_tokens(msg1, proof1, root1)
-        _ = accnt1.l1.release_tokens(msg2, proof2, root2)
-        l1_balance_before = accnt1.l1.web3.eth.get_balance(accnt1.l1.account.address)
-        tx_receipt = accnt1.l1.release_funds(msg3, proof3, root3)
-        l1_balance_after = accnt1.l1.web3.eth.get_balance(accnt1.l1.account.address)
-        l1_release_cost = int(tx_receipt['cumulativeGasUsed']) * int(tx_receipt['effectiveGasPrice'])
+            self.log.info('Getting root and proof for second token withdrawal')
+            root2, proof2 = accnt1.l2.wait_for_proof('m', msg_hash2, proof_timeout)
+            self.log.info('  Returned root:         %s', root2)
+            self.log.info('  Returned proof:        %s', [p.hex() for p in proof2])
 
-        # print out the balances and perform test validation
-        self.log.info('Print out token balances')
-        balance_l1 = accnt1.l1.balance_for_token(self.SYMB)
-        balance_l2 = accnt1.l2.balance_for_token(self.SYMB)
-        self.log.info('  Account1 ERC20 balance L1 = %d ', balance_l1)
-        self.log.info('  Account1 ERC20 balance L2 = %d ', balance_l2)
-        self.assertTrue(balance_l1 == 193)
-        self.assertTrue(balance_l2 == 7)
+            self.log.info('Getting root and proof for value transfer')
+            root3, proof3 = accnt1.l2.wait_for_proof('v', msg_hash3, proof_timeout)
+            self.log.info('  returned root:         %s', root3)
+            self.log.info('  returned proof:        %s', [p.hex() for p in proof3])
 
-        self.log.info('Print out native balances')
-        self.log.info('   L1 before: %d', l1_balance_before)
-        self.log.info('   L1 after:  %d', l1_balance_after)
-        self.log.info('   L1 diff:   %d', (l1_balance_after+l1_release_cost-l1_balance_before))
-        self.assertTrue((l1_balance_after+l1_release_cost-l1_balance_before) == transfer)
+            # release the tokens and native funds from the L1 and check the balances
+            self.log.info('Relay the message on the L1 to release them')
+            _ = accnt1.l1.release_tokens(msg1, proof1, root1)
+            _ = accnt1.l1.release_tokens(msg2, proof2, root2)
+            l1_balance_before = accnt1.l1.web3.eth.get_balance(accnt1.l1.account.address)
+            tx_receipt = accnt1.l1.release_funds(msg3, proof3, root3)
+            l1_balance_after = accnt1.l1.web3.eth.get_balance(accnt1.l1.account.address)
+            l1_release_cost = int(tx_receipt['cumulativeGasUsed']) * int(tx_receipt['effectiveGasPrice'])
+
+            # print out the balances and perform test validation
+            self.log.info('Print out token balances')
+            balance_l1 = accnt1.l1.balance_for_token(self.SYMB)
+            balance_l2 = accnt1.l2.balance_for_token(self.SYMB)
+            self.log.info('  Account1 ERC20 balance L1 = %d ', balance_l1)
+            self.log.info('  Account1 ERC20 balance L2 = %d ', balance_l2)
+            self.assertTrue(balance_l1 == 193)
+            self.assertTrue(balance_l2 == 7)
+
+            self.log.info('Print out native balances')
+            self.log.info('   L1 before: %d', l1_balance_before)
+            self.log.info('   L1 after:  %d', l1_balance_after)
+            self.log.info('   L1 diff:   %d', (l1_balance_after+l1_release_cost-l1_balance_before))
+            self.assertTrue((l1_balance_after+l1_release_cost-l1_balance_before) == transfer)
 
     def create_signed(self, user, amount, gas_limit):
         nonce = user.l2.network.get_next_nonce(self, user.l2.web3, user.l2.account.address, True, False)
