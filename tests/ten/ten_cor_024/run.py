@@ -32,12 +32,12 @@ class PySysTest(TenNetworkTest):
         self.log.info('  value_transfer:        %s', msg)
         self.log.info('  value_transfer_hash:   %s', msg_hash)
         self.log.info('  decoded_cross_chain:   %s', decoded)
-        self.log.info('  merkle_root:           %s', block.crossChainTreeHash)
+        self.log.info('  block_merkle_root:     %s', block.crossChainTreeHash)
         self.assertTrue(msg_hash in [x[1] for x in decoded], assertMessage='Value transfer should be in the xchain tree')
 
-        root, _ = mh.get_proof('xchain_tree.log', 'v,%s' % msg_hash)
-        self.log.info('  calculated root:       %s', root)
-        self.assertTrue(block.crossChainTreeHash == root, assertMessage='Calculated merkle root should be same as the block header')
+        mh_root, mh_proof = mh.get_proof('xchain_tree.log', 'v,%s' % msg_hash)
+        self.log.info('  calculated root:       %s', mh_root)
+        self.assertTrue(block.crossChainTreeHash == mh_root, assertMessage='Calculated merkle root should be same as the block header')
 
         # if a local testnet wait for the xchain message on the L1 and release the funds
         if self.is_local_ten():
