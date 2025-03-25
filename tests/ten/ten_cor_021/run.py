@@ -11,7 +11,7 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         props = Properties()
-        proof_timeout = 90 if self.is_local_ten() else 2400
+        proof_timeout = 90
 
         # create the users for the test
         funded = BridgeUser(self, props.l1_funded_account_pk(self.env), props.account2pk(), 'funded')
@@ -62,14 +62,14 @@ class PySysTest(TenNetworkTest):
         msg2, msg_hash2 = mh.process_log_msg(log_msg2)
 
         # for the first transaction, confirm the tree structure and reported root
-        block, decoded = mh.dump_tree(accnt1.l2.web3, tx_receipt1, 'cross_train_tree.log')
-        self.log.info('  value_transfer:        %s', msg1)
-        self.log.info('  value_transfer_hash:   %s', msg_hash1)
+        block, decoded = mh.dump_tree(accnt1.l2.web3, tx_receipt1, 'xchain_tree.log')
+        self.log.info('  log_message:           %s', msg1)
+        self.log.info('  log_message_hash:      %s', msg_hash1)
         self.log.info('  decoded_cross_chain:   %s', decoded)
         self.log.info('  merkle_root:           %s', block.crossChainTreeHash)
         self.assertTrue(msg_hash1 in [x[1] for x in decoded], assertMessage='Log message should be in the xchain tree')
 
-        root, _ = mh.get_proof('cross_train_tree.log', 'm,%s' % msg_hash1)
+        root, _ = mh.get_proof('xchain_tree.log', 'm,%s' % msg_hash1)
         self.log.info('  calculated root:       %s', root)
         self.assertTrue(block.crossChainTreeHash == root, assertMessage='Calculated merkle root should be same as the block header')
 
