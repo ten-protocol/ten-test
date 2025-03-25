@@ -18,9 +18,6 @@ goes up as expected (including the costs on the L1 side).
             <group>withdrawals</group>
         </groups>
         <modes inherit="true">
-            <mode>ten.sepolia</mode>
-            <mode>ten.uat</mode>
-            <mode>ten.dev</mode>
             <mode>ten.local</mode>
         </modes>
     </classification>
