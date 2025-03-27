@@ -48,7 +48,7 @@ class PySysTest(TenNetworkTest):
         log = DockerHelper.container_logs(self, 'validator-enclave-0')
         self.log.info('Container has previous restarts %d' % count(log, 'Server started.'))
 
-        # stop the container and true to transact
+        # stop the container and transact
         DockerHelper.container_stop(self, 'validator-enclave-0', time=time)
         self.assertTrue(not self.ten_health(), assertMessage='Health should be false')
         try:

@@ -10,7 +10,6 @@
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>robustness</group>
             <group>kill</group>
         </groups>
