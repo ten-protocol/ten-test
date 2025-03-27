@@ -10,7 +10,7 @@ class CrossChainManagement:
         self.test = test
         self.web3 = web3
         self.address = Properties().l1_cross_chain_management_address()
-        self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'management', 'CrossChain.sol',
+        self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'l1_management', 'contracts', 'CrossChain.sol',
                                      'CrossChain.json')
         with open(self.abi_path, 'r') as fp:
             self.abi = json.load(fp)
@@ -24,7 +24,7 @@ class L1MessageBus:
         self.test = test
         self.web3 = web3
         self.address = Properties().l1_message_bus_address()
-        self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'cross_chain_messaging', 'common'
+        self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'cross_chain_messaging', 'common',
                                      'MessageBus.sol', 'MessageBus.json')
         with open(self.abi_path, 'r') as fp:
             self.abi = json.load(fp)
