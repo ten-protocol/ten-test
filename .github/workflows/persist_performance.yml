@@ -62,12 +62,12 @@ jobs:
           cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -r -m ${{ github.event.inputs.environment }} -XPERSIST_PERF -i performance
 
-      - name: 'Run the performance summary'
-        if: always()
-        continue-on-error: true
-        run: |
-          cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} graph_performance
+#      - name: 'Run the performance summary'
+#        if: always()
+#        continue-on-error: true
+#        run: |
+#          cd ${{ github.workspace }}/ten-test/admin
+#          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} graph_performance
 
       - name: 'Collate performance output'
         if: always()
