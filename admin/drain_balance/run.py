@@ -27,7 +27,7 @@ class PySysTest(TenNetworkTest):
 
     def send(self, network, web3, account, address, amount):
         gas_price = web3.eth.gas_price
-        gas_estimate = web3.eth.estimate_gas({'to': address, 'value': amount, 'gasPrice': gas_price})
+        gas_estimate = web3.eth.estimate_gas({'to': address, 'value': amount, 'gasPrice': gas_price, 'chainId': web3.eth.chain_id})
         self.log.info('Gas price   : %d WEI', gas_price)
         self.log.info('Gas estimate: %d WEI', gas_estimate)
         self.log.info('Total Cost  : %.9f ETH', web3.from_wei(gas_price*gas_estimate, 'ether'))
@@ -35,7 +35,8 @@ class PySysTest(TenNetworkTest):
             'to': address,
             'value': amount-gas_estimate,
             'gas': gas_estimate,
-            'gasPrice': web3.eth.gas_price
+            'gasPrice': web3.eth.gas_price,
+            'chainId': web3.eth.chain_id
         }
         return network.tx(self, web3, tx, account, persist_nonce=False, timeout=120, txstr='value transfer')
 

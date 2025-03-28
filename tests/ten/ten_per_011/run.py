@@ -20,7 +20,7 @@ class PySysTest(TenNetworkTest):
         storage.deploy(network, account)
 
         gas_price = web3.eth.gas_price
-        params = {'from': account.address, 'chainId': web3.eth.chain_id, 'gasPrice': gas_price}
+        params = {'from': account.address, 'chainId': web3.eth.chain_id, 'gasPrice': gas_price, 'chainId': web3.eth.chain_id}
         gas_limit = storage.contract.functions.store(1).estimate_gas(params)
         funds_needed = 1.1 * self.ITERATIONS * (gas_price*gas_limit)
 

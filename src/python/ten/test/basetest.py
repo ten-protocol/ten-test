@@ -185,7 +185,8 @@ class GenericNetworkTest(BaseTest):
         web3_pk, account_pk = self.network_funding.connect(self, Properties().fundacntpk(), check_funds=False, verbose=verbose)
         balance_before = web3_pk.eth.get_balance(account_pk.address)
 
-        tx = {'to': account.address, 'value': web3_pk.to_wei(amount, 'ether'), 'gasPrice': web3_pk.eth.gas_price}
+        tx = {'to': account.address, 'value': web3_pk.to_wei(amount, 'ether'), 'gasPrice': web3_pk.eth.gas_price,
+              'chainId': web3_pk.eth.chain_id}
         tx['gas'] = web3_pk.eth.estimate_gas(tx)
         if verbose: self.log.info('Gas supplied for distribute native is %d', tx['gas'])
 
@@ -235,7 +236,7 @@ class GenericNetworkTest(BaseTest):
         """
         web3_pk, account_pk = network.connect(self, pk, check_funds=False)
 
-        tx = {'to': account.address, 'value': web3_pk.to_wei(amount, 'ether'), 'gasPrice': web3_pk.eth.gas_price}
+        tx = {'to': account.address, 'value': web3_pk.to_wei(amount, 'ether'), 'gasPrice': web3_pk.eth.gas_price, 'chainId': web3_pk.eth.chain_id}
         if gas_limit is not None: tx['gas'] = gas_limit
         else: tx['gas'] = web3_pk.eth.estimate_gas(tx)
         self.log.info('Gas estimate for fund native is %d', tx['gas'])

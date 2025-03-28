@@ -40,7 +40,7 @@ class PySysTest(TenNetworkTest):
         self.bridge_fees = self.bridge.contract.functions.valueTransferFee().call()
         self.transfer_gas = web3.eth.estimate_gas({'to': account.address, 'value': self.value, 'gasPrice': self.gas_price})
         target = self.bridge.contract.functions.sendNative(account.address)
-        params = {'value': self.value+self.bridge_fees, 'gasPrice': self.gas_price}
+        params = {'value': self.value+self.bridge_fees, 'gasPrice': self.gas_price, 'chainId': web3.eth.chain_id}
         self.withdraw_gas = target.estimate_gas(params)
         self.log.info('Fees for bridge withdrawals is %d' % self.bridge_fees)
         self.log.info('Gas for value transfer is %d' % self.transfer_gas)

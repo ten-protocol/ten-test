@@ -52,7 +52,7 @@ class PySysTest(TenNetworkTest):
         self.log.info('')
         self.log.info('Perform a native funds transfer')
         before = web3.eth.get_balance(acnt.address)
-        tx = {'to': acnt2.address, 'value': 1000, 'gasPrice': web3.eth.gas_price}
+        tx = {'to': acnt2.address, 'value': 1000, 'gasPrice': web3.eth.gas_price, 'chainId': web3.eth.chain_id}
         tx['gas'] = web3.eth.estimate_gas(tx)
         receipt = network.tx(self, web3, tx, acnt, txstr='value transfer')
         after = web3.eth.get_balance(acnt.address)

@@ -19,7 +19,7 @@ class PySysTest(GenericNetworkTest):
         # determine how much will it cost in wei to transfer funds regardless of the amount, give the sender
         # just enough funds for the cost with no residual for the amount to actually be sent
         gas_price = web3.eth.gas_price
-        tx = {'to': account_recv.address, 'value': 1, 'gasPrice': gas_price}
+        tx = {'to': account_recv.address, 'value': 1, 'gasPrice': gas_price, 'chainId': web3.eth.chain_id}
         gas_estimate = web3.eth.estimate_gas(tx)
         transfer_cost = gas_estimate * gas_price
         self.log.info('Transfer cost:     %d', transfer_cost)

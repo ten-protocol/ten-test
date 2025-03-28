@@ -17,7 +17,7 @@ class PySysTest(TenNetworkTest):
 
         self.log.info('  Balance of session key: %d' % web3.eth.get_balance(sk))
         self.log.info('  Balance of account1:    %d' % web3.eth.get_balance(account.address))
-        tx = {'to': sk, 'value': web3.to_wei(0.01, 'ether'), 'gasPrice': web3.eth.gas_price}
+        tx = {'to': sk, 'value': web3.to_wei(0.01, 'ether'), 'gasPrice': web3.eth.gas_price, 'chainId': web3.eth.chain_id}
         tx['gas'] = web3.eth.estimate_gas(tx)
         network.tx(self, web3, tx, account)
         balance_before = web3.eth.get_balance(sk)
@@ -61,7 +61,7 @@ class PySysTest(TenNetworkTest):
         self.assertTrue(balance_after2 < balance_after1)
 
         # return the funds and deactivate
-        tx = {'to': account.address, 'gasPrice': web3.eth.gas_price}
+        tx = {'to': account.address, 'gasPrice': web3.eth.gas_price, 'chainId': web3.eth.chain_id}
         tx['gas'] = web3.eth.estimate_gas(tx)
         tx['value'] = balance_after2 - (tx['gas']*web3.eth.gas_price)
         self.log.info('  Expected gas cost: %d', tx['gas'])

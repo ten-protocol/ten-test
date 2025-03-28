@@ -15,7 +15,7 @@ class PySysTest(TenNetworkTest):
 
         # get a session key for this userid and fund it
         sk = self.get_session_key(network.connection_url())
-        tx = {'to': sk, 'value': web3.to_wei(0.01, 'ether'), 'gasPrice': web3.eth.gas_price}
+        tx = {'to': sk, 'value': web3.to_wei(0.01, 'ether'), 'gasPrice': web3.eth.gas_price, 'chainId': web3.eth.chain_id}
         tx['gas'] = web3.eth.estimate_gas(tx)
         network.tx(self, web3, tx, account)
         self.log.info('  Session key: %s' % sk)
@@ -31,7 +31,7 @@ class PySysTest(TenNetworkTest):
         self.get_logs(network, game, block_number)
 
         # return the funds and deactivate
-        tx = {'to': account.address, 'gasPrice': web3.eth.gas_price}
+        tx = {'to': account.address, 'gasPrice': web3.eth.gas_price, 'chainId': web3.eth.chain_id}
         tx['gas'] = web3.eth.estimate_gas(tx)
         tx['value'] = web3.eth.get_balance(sk) - (tx['gas'] * web3.eth.gas_price)
         network.tx_unsigned(self, web3, tx, sk)

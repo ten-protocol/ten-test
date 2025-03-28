@@ -156,7 +156,8 @@ class L1BridgeDetails(BridgeDetails):
             {
                 'gas': 4*21000,
                 'gasPrice': self.web3.eth.gas_price,
-                'value': amount
+                'value': amount,
+                'chainId': self.web3.eth.chain_id
             }
         )
         tx_receipt = self.network.tx(self.test, self.web3, build_tx, self.account, persist_nonce=False, timeout=timeout, txstr='sendNative(%d)'%amount)
@@ -171,6 +172,7 @@ class L1BridgeDetails(BridgeDetails):
             'value': amount,
             'gas': 4*21000,
             'gasPrice': self.web3.eth.gas_price,
+            'chainId': self.web3.eth.chain_id
         }
         tx_receipt = self.network.tx(self.test, self.web3, tx, self.account, persist_nonce=False, timeout=timeout, txstr='value transfer')
 
@@ -275,7 +277,7 @@ class L2BridgeDetails(BridgeDetails):
     def send_native(self, address, amount, timeout=60, dump_file=None):
         """Send native currency across the bridge."""
         target = self.bridge.contract.functions.sendNative(address)
-        params = {'gasPrice': self.web3.eth.gas_price, 'value': amount + int(self.send_native_fees())}
+        params = {'gasPrice': self.web3.eth.gas_price, 'value': amount + int(self.send_native_fees()), 'chainId': self.web3.eth.chain_id}
         params['gas'] = target.estimate_gas(params)
         build_tx = target.build_transaction(params)
 

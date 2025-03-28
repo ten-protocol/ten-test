@@ -27,7 +27,8 @@ class PySysTest(TenNetworkTest):
         nonce = web3.eth.get_transaction_count(account.address)
         params = {'nonce': nonce,
                   'chainId': web3.eth.chain_id,
-                  'gasPrice': web3.eth.gas_price}
+                  'gasPrice': web3.eth.gas_price,
+                  'chainId': web3.eth.chain_id}
         params['gas'] = target.estimate_gas(params)
         build_tx = target.build_transaction(params)
 

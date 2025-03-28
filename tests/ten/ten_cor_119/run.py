@@ -44,7 +44,7 @@ class PySysTest(TenNetworkTest):
 
     def transact(self, storage, web3, network, account, num):
         target = storage.contract.functions.store(num)
-        params = {'gasPrice': web3.eth.gas_price, 'value': web3.to_wei(0.001, 'ether')}
+        params = {'gasPrice': web3.eth.gas_price, 'value': web3.to_wei(0.001, 'ether'), 'chainId': web3.eth.chain_id}
         gas_estimate = target.estimate_gas(params)
         params['gas'] = gas_estimate
         build_tx = target.build_transaction(params)

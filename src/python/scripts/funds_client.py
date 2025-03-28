@@ -16,7 +16,8 @@ def transfer_value(web3, account, recipient):
         'nonce': nonce,
         'to': recipient,
         'value': 1,
-        'gasPrice': gas_price
+        'gasPrice': gas_price,
+        'chainId': web3.eth.chain_id
     }
     gas_estimate = web3.eth.estimate_gas(tx)
     tx['gas'] = gas_estimate

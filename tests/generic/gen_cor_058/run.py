@@ -38,6 +38,7 @@ class PySysTest(TenNetworkTest):
             'to': address,
             'value': amount,
             'gas': 72000,
-            'gasPrice': web3.eth.gas_price
+            'gasPrice': web3.eth.gas_price,
+            'chainId': web3.eth.chain_id
         }
         return network.tx(self, web3, tx, account)

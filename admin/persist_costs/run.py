@@ -60,7 +60,7 @@ class PySysTest(TenNetworkTest):
         # a native funds transfer
         self.log.info('')
         self.log.info('Perform a native funds transfer')
-        tx = {'to': acnt2.address, 'value': 1000, 'gasPrice': web3.eth.gas_price}
+        tx = {'to': acnt2.address, 'value': 1000, 'gasPrice': web3.eth.gas_price, 'chainId': web3.eth.chain_id}
         tx['gas'] = web3.eth.estimate_gas(tx)
         receipt = network.tx(self, web3, tx, acnt, txstr='value transfer')
         self.txcosts_db.insert('Native.transfer', self.env, _time, receipt.effectiveGasPrice, receipt.gasUsed, tx['gas'])
