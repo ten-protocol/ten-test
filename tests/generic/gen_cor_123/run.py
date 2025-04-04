@@ -83,5 +83,6 @@ class PySysTest(GenericNetworkTest):
 
     def get_token(self, network):
         if self.is_ten(): return network.ID
-        if self.mode == 'sepolia': return Properties().sepoliaAPIKey()
+        if self.mode == 'sepolia': return ''
+#         if self.mode == 'sepolia': return Properties().sepoliaAPIKey()
         return ''
