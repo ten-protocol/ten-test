@@ -162,22 +162,22 @@ class L1BridgeDetails(BridgeDetails):
         )
         tx_receipt = self.network.tx(self.test, self.web3, build_tx, self.account, persist_nonce=False, timeout=timeout, txstr='sendNative(%d)'%amount)
         self.network.dump(tx_receipt, 'send_native_tx.log')
-        value_transfer = self.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Discard)
+        value_transfer = self.bridge.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Discard)
         return tx_receipt, self.get_value_transfer_event(value_transfer[0])
 
-    def send_to_msg_bus(self, amount, timeout=60):
-        """Send native currency across the bridge."""
-        tx = {
-            'to': Properties().l1_message_bus_address(),
-            'value': amount,
-            'gas': 4*21000,
-            'gasPrice': self.web3.eth.gas_price,
-            'chainId': self.web3.eth.chain_id
-        }
-        tx_receipt = self.network.tx(self.test, self.web3, tx, self.account, persist_nonce=False, timeout=timeout, txstr='value transfer')
+    # def send_to_msg_bus(self, amount, timeout=60):
+    #     """Send native currency across the bridge."""
+    #     tx = {
+    #         'to': Properties().l1_message_bus_address(),
+    #         'value': amount,
+    #         'gas': 4*21000,
+    #         'gasPrice': self.web3.eth.gas_price,
+    #         'chainId': self.web3.eth.chain_id
+    #     }
+    #     tx_receipt = self.network.tx(self.test, self.web3, tx, self.account, persist_nonce=False, timeout=timeout, txstr='value transfer')
 
-        logs = self.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Discard)
-        return tx_receipt, logs
+    #     logs = self.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Discard)
+    #     return tx_receipt, logs
 
     def relay_message(self, xchain_msg, timeout=60):
         """Relay a cross chain message. """
