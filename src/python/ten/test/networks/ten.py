@@ -148,7 +148,7 @@ class Ten(DefaultPreLondon):
         if verbose: self.log.info('Account %s connected to %s (%.9f ETH), wss=%s', account.address, self.__class__.__name__, balance, web_socket)
 
         if check_funds and balance < self.ETH_LIMIT:
-            if verbose: self.log3.info('Account %s balance is below threshold %s ... need to distribute funds', account.address, self.ETH_LIMIT)
+            if verbose: self.log.info('Account %s balance is below threshold %s ... need to distribute funds', account.address, self.ETH_LIMIT)
             test.distribute_native(account, self.ETH_ALLOC)
             if verbose:
                 balance = web3.from_wei(web3.eth.get_balance(account.address), 'ether')
