@@ -32,8 +32,8 @@ commander
   .version('1.0.0', '-v, --version')
   .usage('[OPTIONS]...')
   .option('--network_ws <value>', 'Web socket connection URL to the network')
-  .option('--bus_address <value>', 'Contract address')
-  .option('--bus_abi <value>', 'Contract ABI file')
+  .option('--bridge_address <value>', 'Contract address')
+  .option('--bridge_abi <value>', 'Contract ABI file')
   .option('--sender_address <value>', 'Address of the sender')
   .option('--receiver_address <value>', 'Address of the received')
   .option('--log_file <value>', 'The output file to write to')
@@ -46,9 +46,9 @@ const provider = new ethers.providers.WebSocketProvider(options.network_ws)
 const sender = ethers.utils.hexZeroPad(options.sender_address, 32);
 const receiver = ethers.utils.hexZeroPad(options.receiver_address, 32);
 
-var json = fs.readFileSync(options.bus_abi)
+var json = fs.readFileSync(options.bridge_abi)
 var abi = JSON.parse(json)
-const contract = new ethers.Contract(options.bus_address, abi, provider)
+const contract = new ethers.Contract(options.bridge_address, abi, provider)
 const interface = new ethers.utils.Interface(abi)
 task()
 
