@@ -162,7 +162,7 @@ class Ten(DefaultPreLondon):
         return None
 
     def __register(self, test, account):
-        domain = {'name': 'Ten', 'version': '1.0', 'chainId': Properties().chain_id(test.env)}
+        domain = {'name': 'Ten', 'version': '1.0', 'chainId': Properties().chain_id(test.env), 'verifyingContract': '0x0000000000000000000000000000000000000000'}
         types = {
             'Authentication': [
                 {'name': 'Encryption Token', 'type': 'address'},
