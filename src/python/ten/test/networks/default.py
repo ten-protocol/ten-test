@@ -66,6 +66,7 @@ class DefaultPostLondon:
         if verbose: self.log.info('Account %s connected to %s (%.9f ETH), wss=%s', account.address, self.__class__.__name__, balance, web_socket)
 
         if check_funds and balance < self.ETH_LIMIT:
+            self.log.info("HERE2")
             if verbose: self.log.info('Account %s balance is below threshold %s ... need to distribute funds', account.address, self.ETH_LIMIT)
             test.distribute_native(account, self.ETH_ALLOC)
             if verbose:

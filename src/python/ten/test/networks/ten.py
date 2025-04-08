@@ -42,6 +42,7 @@ class TenL1Sepolia(Sepolia):
         if verbose: self.log.info('Account %s connected to %s (%.9f ETH)', account.address, self.__class__.__name__, balance)
 
         if check_funds and balance < self.ETH_LIMIT:
+            self.log.info("HERE1")
             if verbose: self.log.info('Account %s balance is below threshold %s ... need to distribute funds', account.address, self.ETH_LIMIT)
             test.fund_native(self, account, self.ETH_ALLOC, Properties().l1_funded_account_pk(test.env), persist_nonce=False)
             if verbose:
@@ -76,6 +77,7 @@ class TenL1Geth(Geth):
         if verbose: self.log.info('Account %s connected to %s (%.9f ETH)', account.address, self.__class__.__name__, balance)
 
         if check_funds and balance < self.ETH_LIMIT:
+            self.log.info("HERE3")
             if verbose: self.log.info('Account %s balance is below threshold %s ... need to distribute funds', account.address, self.ETH_LIMIT)
             test.fund_native(self, account, self.ETH_ALLOC, Properties().l1_funded_account_pk(test.env),
                              persist_nonce=False, gas_limit=21000)
@@ -148,6 +150,7 @@ class Ten(DefaultPreLondon):
         if verbose: self.log.info('Account %s connected to %s (%.9f ETH), wss=%s', account.address, self.__class__.__name__, balance, web_socket)
 
         if check_funds and balance < self.ETH_LIMIT:
+            self.log.info("HERE4")
             if verbose: self.log.info('Account %s balance is below threshold %s ... need to distribute funds', account.address, self.ETH_LIMIT)
             test.distribute_native(account, self.ETH_ALLOC)
             if verbose:
