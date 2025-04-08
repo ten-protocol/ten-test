@@ -6,7 +6,6 @@ from ten.test.utils.properties import Properties
 
 
 class PySysTest(TenNetworkTest):
-
     def execute(self):
         props = Properties()
         transfer = 1000

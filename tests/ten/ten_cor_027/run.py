@@ -64,8 +64,8 @@ class PySysTest(TenNetworkTest):
         script = os.path.join(self.input, 'query.js')
         args = []
         args.extend(['--network_ws', layer.network.connection_url(web_socket=True)])
-        args.extend(['--bus_address', '%s' % layer.bus.address])
-        args.extend(['--bus_abi', '%s' % layer.bus.abi_path])
+        args.extend(['--bridge_address', '%s' % layer.bridge.address])
+        args.extend(['--bridge_abi', '%s' % layer.bridge.abi_path])
         args.extend(['--sender_address', '%s' % layer.bridge.address])
         args.extend(['--receiver_address', '%s' % layer.account.address])
         args.extend(['--log_file', '%s' % logout])

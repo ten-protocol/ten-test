@@ -65,7 +65,7 @@ class PySysTest(TenNetworkTest):
         _, log_msg2 = accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 2, dump_file='send2_erc20.tx')
 
         tx_receipt = self.wait_tx(accnt1, nonce4, tx_hash)
-        logs = accnt1.l2.bus.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
+        logs = accnt1.l2.bridge.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
         value_transfer = accnt1.l2.get_value_transfer_event(logs[0])
 
         # get the value transfer from the merkle tree helper
