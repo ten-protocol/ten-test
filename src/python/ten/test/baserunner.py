@@ -285,7 +285,7 @@ class TenRunnerPlugin():
 
     def __register(self, account, url, user_id):
         """Authenticate a user against the token. """
-        domain = {'name': 'Ten', 'version': '1.0', 'chainId': Properties().chain_id(self.env)}
+        domain = {'name': 'Ten', 'version': '1.0', 'chainId': Properties().chain_id(self.env), 'verifyingContract': '0x0000000000000000000000000000000000000000'}
         types = {
             'Authentication': [
                 {'name': 'Encryption Token', 'type': 'address'},

@@ -14,7 +14,7 @@ def join(host, port):
 
 
 def register(chainId, account, host, port, user_id):
-    domain = {'name': 'Ten', 'version': '1.0', 'chainId': chainId}
+    domain = {'name': 'Ten', 'version': '1.0', 'chainId': chainId, 'verifyingContract': '0x0000000000000000000000000000000000000000'}
     types = {
         'Authentication': [
             {'name': 'Encryption Token', 'type': 'address'},

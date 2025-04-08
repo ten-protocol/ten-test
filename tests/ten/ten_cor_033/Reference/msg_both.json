@@ -2,7 +2,8 @@
     "domain": {
         "chainId": "0x1bb",
         "name": "Ten",
-        "version": "1.0"
+        "version": "1.0",
+        "verifyingContract": "0x0000000000000000000000000000000000000000"
     },
     "message": {
         "Encryption Token": "<token>"

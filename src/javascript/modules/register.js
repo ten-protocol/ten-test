@@ -23,7 +23,12 @@ async function join(url) {
 async function sign(account, token) {
     console.log('Signing message for registration ' + account.address)
     let wallet = new ethers.Wallet(account.privateKey)
-    let domain = {name: "Ten", version: "1.0", chainId: 443,}
+    let domain = {
+        name: "Ten",
+        version: "1.0",
+        chainId: 443,
+        verifyingContract: "0x0000000000000000000000000000000000000000"
+    };
     let types = {Authentication: [{name: "Encryption Token", type: "address"},],};
     let message = {"Encryption Token": "0x" + token};
     let signed_msg = await wallet._signTypedData(domain, types, message)
