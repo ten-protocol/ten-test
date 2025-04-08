@@ -10,7 +10,7 @@ function log(data) {
 
 function task() {
   filter = {
-    address: options.bus_address,
+    address: options.bridge_address,
     topics: [
       ethers.utils.id('ValueTransfer(address,address,uint256,uint64)'),
       sender,
