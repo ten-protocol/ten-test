@@ -43,17 +43,13 @@ class PySysTest(TenNetworkTest):
         self.waitForGrep(file='query_l1.log', expr='Event log received', condition='==1', timeout=20)
         self.waitForGrep(file='query_l2.log', expr='Event log received', condition='==1', timeout=20)
 
-        # we should see the logs from both of the value transfer events
+        # we should see the logs from both of the log message published events
         expr_list = []
-        expr_list.append('Log transfer sender = %s' % accnt1.l1.bridge.address)
-        expr_list.append('Log transfer receiver = %s' % accnt1.l1.account.address)
-        expr_list.append('Log transfer amount = %d' % transfer)
+        expr_list.append('Decoded log = %s' % accnt1.l1.bridge.address)
         self.assertOrderedGrep(file='query_l1.log', exprList=expr_list)
 
         expr_list = []
-        expr_list.append('Log transfer sender = %s' % accnt1.l2.bridge.address)
-        expr_list.append('Log transfer receiver = %s' % accnt1.l2.account.address)
-        expr_list.append('Log transfer amount = %d' % transfer_back)
+        expr_list.append('Decoded log = %s' % accnt1.l2.bridge.address)
         self.assertOrderedGrep(file='query_l2.log', exprList=expr_list)
 
     def run_client(self, layer, id):
@@ -64,10 +60,8 @@ class PySysTest(TenNetworkTest):
         script = os.path.join(self.input, 'query.js')
         args = []
         args.extend(['--network_ws', layer.network.connection_url(web_socket=True)])
-        args.extend(['--bridge_address', '%s' % layer.bridge.address])
-        args.extend(['--bridge_abi', '%s' % layer.bridge.abi_path])
-        args.extend(['--sender_address', '%s' % layer.bridge.address])
-        args.extend(['--receiver_address', '%s' % layer.account.address])
+        args.extend(['--address', '%s' % layer.bus.address])
+        args.extend(['--abi', '%s' % layer.bus.abi_path])
         args.extend(['--log_file', '%s' % logout])
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=logout, expr='Started task ...', timeout=10)

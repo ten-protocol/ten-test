@@ -65,15 +65,16 @@ class PySysTest(TenNetworkTest):
         _, log_msg2 = accnt1.l2.send_erc20(self.SYMB, accnt1.l1.account.address, 2, dump_file='send2_erc20.tx')
 
         tx_receipt = self.wait_tx(accnt1, nonce4, tx_hash)
-        logs = accnt1.l2.bridge.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Ignore)
-        value_transfer = accnt1.l2.get_value_transfer_event(logs[0])
+
+        logs = accnt1.l2.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Discard)
+        log_msg3 = accnt1.l2.get_cross_chain_message(logs[0])
 
         # get the value transfer from the merkle tree helper
         mh = MerkleTreeHelper.create(self)
         block, decoded = mh.dump_tree(accnt1.l2.web3, tx_receipt, 'xchain_tree.log')
         msg1, msg_hash1 = mh.process_log_msg(log_msg1)
         msg2, msg_hash2 = mh.process_log_msg(log_msg2)
-        msg3, msg_hash3 = mh.process_transfer(value_transfer)
+        msg3, msg_hash3 = mh.process_log_msg(log_msg3)
 
         self.log.info('  value_transfer:        %s', msg3)
         self.log.info('  value_transfer_hash:   %s', msg_hash3)
@@ -81,7 +82,7 @@ class PySysTest(TenNetworkTest):
         self.log.info('  block_merkle_root:     %s', block.crossChainTreeHash)
         self.assertTrue(msg_hash3 in [x[1] for x in decoded], assertMessage='Value transfer should be in the xchain tree')
 
-        mh_root, mh_proof = mh.get_proof('xchain_tree.log', 'v,%s' % msg_hash3)
+        mh_root, mh_proof = mh.get_proof('xchain_tree.log', 'm,%s' % msg_hash3)
         self.log.info('  calculated root:       %s', mh_root)
         self.assertTrue(block.crossChainTreeHash == mh_root, assertMessage='Calculated merkle root should be same as the block header')
 
@@ -98,7 +99,7 @@ class PySysTest(TenNetworkTest):
             self.log.info('  Returned proof:        %s', [p.hex() for p in proof2])
 
             self.log.info('Getting root and proof for value transfer')
-            root3, proof3 = accnt1.l2.wait_for_proof('v', msg_hash3, proof_timeout)
+            root3, proof3 = accnt1.l2.wait_for_proof('m', msg_hash3, proof_timeout)
             self.log.info('  returned root:         %s', root3)
             self.log.info('  returned proof:        %s', [p.hex() for p in proof3])
 

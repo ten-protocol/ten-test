@@ -22,20 +22,20 @@ class PySysTest(TenNetworkTest):
         # send funds from the L2 to the L1
         self.log.info('Send native from L2 to L1')
         self.log.info('Fees to send are %d' % accnt.l2.send_native_fees())
-        tx_receipt, value_transfer = accnt.l2.send_native(accnt.l1.account.address, transfer, dump_file='send_native.tx')
+        tx_receipt, log_message = accnt.l2.send_native(accnt.l1.account.address, transfer, dump_file='send_native.tx')
         l2_cost = int(tx_receipt.gasUsed) * accnt.l2.web3.eth.gas_price
 
         # get the log msg from the merkle tree helper
         mh = MerkleTreeHelper.create(self)
         block, decoded = mh.dump_tree(accnt.l2.web3, tx_receipt, 'xchain_tree.log')
-        msg, msg_hash = mh.process_transfer(value_transfer)
+        msg, msg_hash = mh.process_log_msg(log_message)
         self.log.info('  value_transfer:        %s', msg)
         self.log.info('  value_transfer_hash:   %s', msg_hash)
         self.log.info('  decoded_cross_chain:   %s', decoded)
         self.log.info('  block_merkle_root:     %s', block.crossChainTreeHash)
-        self.assertTrue(msg_hash in [x[1] for x in decoded], assertMessage='Value transfer should be in the xchain tree')
+        self.assertTrue(msg_hash in [x[1] for x in decoded], assertMessage='Log message should be in the xchain tree')
 
-        mh_root, mh_proof = mh.get_proof('xchain_tree.log', 'v,%s' % msg_hash)
+        mh_root, mh_proof = mh.get_proof('xchain_tree.log', 'm,%s' % msg_hash)
         self.log.info('  calculated root:       %s', mh_root)
         self.assertTrue(block.crossChainTreeHash == mh_root, assertMessage='Calculated merkle root should be same as the block header')
 
@@ -43,7 +43,7 @@ class PySysTest(TenNetworkTest):
         if self.is_local_ten():
             # get the root and proof of inclusion from the node
             self.log.info('Request proof and root from the node')
-            root, proof = accnt.l2.wait_for_proof('v', msg_hash, proof_timeout)
+            root, proof = accnt.l2.wait_for_proof('m', msg_hash, proof_timeout)
             self.log.info('  returned root:         %s', root)
             self.log.info('  returned proof:        %s', [p.hex() for p in proof])
 

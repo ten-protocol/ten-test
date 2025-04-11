@@ -7,7 +7,6 @@ from ten.test.contracts.bridge import L1MessageBus, L2MessageBus, L1CrossChainMe
 from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 from ten.test.utils.properties import Properties
 
-
 class BridgeDetails:
 
     def __init__(self, test, web3, account, network, bridge, bus, xchain, name):
@@ -162,8 +161,8 @@ class L1BridgeDetails(BridgeDetails):
         )
         tx_receipt = self.network.tx(self.test, self.web3, build_tx, self.account, persist_nonce=False, timeout=timeout, txstr='sendNative(%d)'%amount)
         self.network.dump(tx_receipt, 'send_native_tx.log')
-        value_transfer = self.bridge.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Discard)
-        return tx_receipt, self.get_value_transfer_event(value_transfer[0])
+        logs = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Discard)
+        return tx_receipt, self.get_cross_chain_message(logs[0])
 
     def relay_message(self, xchain_msg, timeout=60):
         """Relay a cross chain message. """
@@ -185,9 +184,9 @@ class L1BridgeDetails(BridgeDetails):
     def release_funds(self, msg, proof, root, timeout=60):
         """Release funds to an account. """
         tx_receipt = self.network.transact(self.test, self.web3,
-                                       self.management.contract.functions.extractNativeValue(msg, proof, root),
-                                       self.account, gas_limit=self.management.GAS_LIMIT, persist_nonce=False,
-                                       timeout=timeout)
+                                           self.xchain.contract.functions.relayMessageWithProof(msg, proof, root),
+                                           self.account, gas_limit=self.management.GAS_LIMIT, persist_nonce=False,
+                                           timeout=timeout)
 
         return tx_receipt
 
@@ -270,8 +269,8 @@ class L2BridgeDetails(BridgeDetails):
         tx_receipt = self.network.tx(self.test, self.web3, build_tx, self.account, timeout=timeout, txstr='sendNative(%d)'%amount)
         if dump_file: self.network.dump(tx_receipt, os.path.join(self.test.output, dump_file))
 
-        value_transfer = self.bridge.contract.events.ValueTransfer().process_receipt(tx_receipt, EventLogErrorFlags.Discard)
-        return tx_receipt, self.get_value_transfer_event(value_transfer[0])
+        logs = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Discard)
+        return tx_receipt, self.get_cross_chain_message(logs[0])
 
     def relay_message(self, xchain_msg, timeout=60, dump_file=None):
         """Relay a cross chain message. """
