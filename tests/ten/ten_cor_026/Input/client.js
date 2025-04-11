@@ -19,11 +19,11 @@ function decode_base64(base64String) {
 }
 
 /**  Process a value transfer event extracted from a tx receipt */
-function process_log_message(value_transfer) {
-  const abiTypes = ['address', 'address', 'uint256', 'uint64'];
+function process_log_message(log_message) {
+  const abiTypes = ['address', 'uint64', 'uint32', 'uint32', 'bytes', 'uint8']
   const msg = [
-    value_transfer['args'].sender, value_transfer['args'].receiver,
-    value_transfer['args'].amount.toString(), value_transfer['args'].sequence.toString()
+    log_message['args'].sender, log_message['args'].sequence, log_message['args'].nonce,
+    log_message['args'].topic, log_message['args'].payload, log_message['args'].consistencyLevel
   ]
   const abiCoder = new ethers.utils.AbiCoder()
   const encodedMsg = abiCoder.encode(abiTypes, msg)
@@ -92,9 +92,10 @@ async function sendTransfer(provider, wallet, to, amount, bridge, bus) {
   const _processed_log_message = process_log_message(log_message)
   const msg = _processed_log_message[0]
   const msgHash = _processed_log_message[1]
-  console.log(`  VTrans Hash:   ${msgHash}`)
+  console.log(`  LogMsg Msg:    ${msg}`)
+  console.log(`  LogMsg Hash:   ${msgHash}`)
 
-  // return the msg, its hash, and the xchain tree root hash
+  // return the msg, and its hash
   return [msg, msgHash]
 }
 
@@ -106,7 +107,7 @@ async function waitForRootPublished(node_url, msgHash, interval = 5000, timeout 
 
   while (root === null) {
     try {
-       const result = await tenGetXchainProof(node_url, 'v', msgHash)
+       const result = await tenGetXchainProof(node_url, 'm', msgHash)
        root = result[1]
        if (root !== null) {
            if (result[0] == null) {
@@ -122,7 +123,7 @@ async function waitForRootPublished(node_url, msgHash, interval = 5000, timeout 
       console.log(`waitForRootPublished error : ${error}`)
     }
     if (Date.now() - startTime >= timeout) {
-      console.log(`Timed out waiting for for the root to be published`)
+      console.log(`Timed out waiting for the root to be published`)
       break
     }
     await sleep(interval);
@@ -131,11 +132,11 @@ async function waitForRootPublished(node_url, msgHash, interval = 5000, timeout 
 }
 
 /** Logic on the L1 side to instruct the management contract to release funds */
-async function extractNativeValue(provider, wallet, management, msg, proof, root) {
+async function relayMessageWithProof(provider, wallet, xchain, msg, proof, root) {
   const gasPrice = await provider.getGasPrice();
-  let gas_estimate = await management.estimateGas.extractNativeValue(msg, proof, root, {} )
+  let gas_estimate = await xchain.estimateGas.relayMessageWithProof(msg, proof, root, {} )
 
-  const tx = await management.populateTransaction.extractNativeValue(msg, proof, root, {
+  const tx = await xchain.populateTransaction.relayMessageWithProof(msg, proof, root, {
     gasPrice: gasPrice, gasLimit: gas_estimate
   } )
 
@@ -158,8 +159,8 @@ commander
   .option('--l2_bus_address <value>', 'Contract address for the L2 Message Bus')
   .option('--l2_bus_abi <value>', 'Contract ABI file for the L2 Message Bus')
   .option('--l1_network <value>', 'Connection URL to the L1 network')
-  .option('--l1_management_address <value>', 'Contract address for the L1 Management Contract')
-  .option('--l1_management_abi <value>', 'Contract ABI file for the L1 Management Contract')
+  .option('--l1_xchain_address <value>', 'Contract address for the L1 Xchain Contract')
+  .option('--l1_xchain_abi <value>', 'Contract ABI file for the L1 Xchain Contract')
   .option('--node_url <value>', 'The node url to make RPC calls against')
   .option('--pk <value>', 'The account private key')
   .option('--to <value>', 'The address to transfer to')
@@ -180,14 +181,14 @@ console.log('Starting transaction to send funds to the L1')
 sendTransfer(provider, wallet, options.to, options.amount, bridge_contract, bus_contract).then( (arg1) => {
   var provider = new ethers.providers.JsonRpcProvider(options.l1_network)
   var wallet = new ethers.Wallet(options.pk, provider)
-  var management_abi = JSON.parse(fs.readFileSync(options.l1_management_abi))
-  var management_contract = new ethers.Contract(options.l1_management_address, management_abi, wallet)
+  var xchain_abi = JSON.parse(fs.readFileSync(options.l1_xchain_abi))
+  var xchain_contract = new ethers.Contract(options.l1_xchain_address, xchain_abi, wallet)
 
   console.log('Waiting for the merkle tree root to be published on the L1')
   waitForRootPublished(options.node_url, arg1[1]).then( (arg2) => {
 
     console.log('Starting transaction to extract the native value L1')
-    extractNativeValue(provider, wallet, management_contract, arg1[0], arg2[0], arg2[1]).then( () => {
+    relayMessageWithProof(provider, wallet, xchain_contract, arg1[0], arg2[0], arg2[1]).then( () => {
       console.log(`Completed transactions`)
     })
   })
