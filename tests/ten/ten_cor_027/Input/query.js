@@ -11,17 +11,11 @@ function log(data) {
 function task() {
   filter = {
     address: options.bridge_address,
-    topics: [
-      ethers.utils.id('ValueTransfer(address,address,uint256,uint64)'),
-      sender,
-      receiver
-    ]
+    topics: [ ethers.utils.id('LogMessagePublished(address,uint64,uint32,uint32,bytes,uint8)') ]
   }
   provider.on(filter, (result) => {
-    decoded_log = interface.decodeEventLog('ValueTransfer', result.data, result.topics)
-    log(`Log transfer sender = ${decoded_log.sender}`)
-    log(`Log transfer receiver = ${decoded_log.receiver}`)
-    log(`Log transfer amount = ${decoded_log.amount.toNumber()}`)
+    decoded_log = interface.decodeEventLog('LogMessagePublished', result.data, result.topics)
+    log(`Decoded log = ${decoded_log}`)
     log(`Event log received`)
   });
 
@@ -32,10 +26,8 @@ commander
   .version('1.0.0', '-v, --version')
   .usage('[OPTIONS]...')
   .option('--network_ws <value>', 'Web socket connection URL to the network')
-  .option('--bridge_address <value>', 'Contract address')
-  .option('--bridge_abi <value>', 'Contract ABI file')
-  .option('--sender_address <value>', 'Address of the sender')
-  .option('--receiver_address <value>', 'Address of the received')
+  .option('--address <value>', 'Contract address')
+  .option('--abi <value>', 'Contract ABI file')
   .option('--log_file <value>', 'The output file to write to')
   .parse(process.argv)
 
@@ -43,13 +35,10 @@ commander
 const options = commander.opts()
 const provider = new ethers.providers.WebSocketProvider(options.network_ws)
 
-const sender = ethers.utils.hexZeroPad(options.sender_address, 32);
-const receiver = ethers.utils.hexZeroPad(options.receiver_address, 32);
-
-var json = fs.readFileSync(options.bridge_abi)
-var abi = JSON.parse(json)
-const contract = new ethers.Contract(options.bridge_address, abi, provider)
-const interface = new ethers.utils.Interface(abi)
+var json = fs.readFileSync(options.abi)
+var _abi = JSON.parse(json)
+const contract = new ethers.Contract(options.address, _abi, provider)
+const interface = new ethers.utils.Interface(_abi)
 task()
 
 

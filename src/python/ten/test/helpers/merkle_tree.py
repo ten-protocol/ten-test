@@ -38,13 +38,6 @@ class MerkleTreeHelper:
         msg_hash = Web3.keccak(encode(abi_types, msg)).hex()
         return msg, msg_hash
 
-    def process_transfer(self, value_transfer):
-        """Return the msg and hash of the value transfer event, as stored in the cross chain tree. """
-        abi_types = ['address', 'address', 'uint256', 'uint64']
-        msg = [value_transfer['sender'], value_transfer['receiver'], value_transfer['amount'], value_transfer['sequence']]
-        msg_hash = Web3.keccak(encode(abi_types, msg)).hex()
-        return msg, msg_hash
-
     def dump_tree(self, web3, tx_receipt, dump_file):
         """From a transaction receipt, extract block and the cross chain tree, decode it and dump to file.
 

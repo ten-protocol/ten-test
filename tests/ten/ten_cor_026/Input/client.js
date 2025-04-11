@@ -19,7 +19,7 @@ function decode_base64(base64String) {
 }
 
 /**  Process a value transfer event extracted from a tx receipt */
-function process_value_transfer(value_transfer) {
+function process_log_message(value_transfer) {
   const abiTypes = ['address', 'address', 'uint256', 'uint64'];
   const msg = [
     value_transfer['args'].sender, value_transfer['args'].receiver,
@@ -88,14 +88,10 @@ async function sendTransfer(provider, wallet, to, amount, bridge, bus) {
   console.log(`Block received:       ${block.number}`)
 
   // extract and log all the values
-  const value_transfer = bus.interface.parseLog(txReceipt.logs[0]);
-  const _processed_value_transfer = process_value_transfer(value_transfer)
-  const msg = _processed_value_transfer[0]
-  const msgHash = _processed_value_transfer[1]
-  console.log(`  Sender:        ${value_transfer['args'].sender}`)
-  console.log(`  Receiver:      ${value_transfer['args'].receiver}`)
-  console.log(`  Amount:        ${value_transfer['args'].amount}`)
-  console.log(`  Sequence:      ${value_transfer['args'].sequence}`)
+  const log_message = bus.interface.parseLog(txReceipt.logs[0]);
+  const _processed_log_message = process_log_message(log_message)
+  const msg = _processed_log_message[0]
+  const msgHash = _processed_log_message[1]
   console.log(`  VTrans Hash:   ${msgHash}`)
 
   // return the msg, its hash, and the xchain tree root hash

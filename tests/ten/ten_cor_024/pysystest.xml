@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Bridge: withdraw native funds across the bridge using sendNative and ExtractNativeValue</title>
+        <title>Bridge: withdraw native funds across the bridge using sendNative and relayMessageWithProof</title>
         <purpose><![CDATA[
 Uses a non-ephemeral account to send ETH from the L2 to the L1. This is initiated by a sendNative call to the
 Ethereum Bridge, for which the transaction receipt is used to get the block number on the L2 so that the xchain
