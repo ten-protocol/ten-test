@@ -10,15 +10,13 @@
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>persistence</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
-            <mode>arbitrum.sepolia</mode>
-            <mode>sepolia</mode>
+            <mode>ten.local</mode>
         </modes>
     </classification>
 
