@@ -14,7 +14,7 @@ class PySysTest(GenericNetworkTest):
         storage.get_or_deploy(network, account, persist_nonce=True)
 
         # retrieve the current value
-        expected = storage.get_persisted_param('value', 0)
+        expected = int(storage.get_persisted_param('value', 0))
         actual = storage.contract.functions.retrieve().call()
         self.log.info('Last persisted value is stored as %d', expected)
         self.log.info('Current retrieved value is %d', actual)

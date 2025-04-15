@@ -14,13 +14,16 @@ class PySysTest(GenericNetworkTest):
         storage.get_or_deploy(network, account, persist_nonce=True)
 
         # retrieve the current value
-        value = storage.contract.functions.getItem('key').call()
-        self.log.info('Call shows value %d', value)
+        expected = int(storage.get_persisted_param('key', 0))
+        actual = storage.contract.functions.getItem('key').call()
+        self.log.info('Last persisted value is stored as %d', expected)
+        self.log.info('Current retrieved value is %d', actual)
+        self.assertTrue(expected == actual)
 
         # set the value via a transaction and retrieve the new value
-        network.transact(self, web3, storage.contract.functions.setItem('key', value+1), account, KeyStorage.GAS_LIMIT)
+        network.transact(self, web3, storage.contract.functions.setItem('key', actual+1), account, KeyStorage.GAS_LIMIT)
         self.wait(float(self.block_time) * 2.0)
 
         value_after = storage.contract.functions.getItem('key').call()
         self.log.info('Call shows value %d', value_after)
-        self.assertTrue(value_after == value + 1)
+        self.assertTrue(value_after == actual + 1)

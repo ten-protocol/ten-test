@@ -5,7 +5,6 @@ from ten.test.contracts.bridge import WrappedERC20
 from ten.test.contracts.bridge import TenBridge, EthereumBridge, CrossChainManagement
 from ten.test.contracts.bridge import L1MessageBus, L2MessageBus, L1CrossChainMessenger, L2CrossChainMessenger
 from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
-from ten.test.utils.properties import Properties
 
 class BridgeDetails:
 
@@ -25,7 +24,9 @@ class BridgeDetails:
         start = time.time()
         while True:
             ret = self.bus.contract.functions.verifyMessageFinalized(xchain_msg).call()
-            if ret: break
+            if ret:
+                self.test.log.info('Message is verified as finalized')
+                break
             if time.time() - start > timeout:
                 raise TimeoutError('Timed out waiting for message to be verified')
             time.sleep(1.0)

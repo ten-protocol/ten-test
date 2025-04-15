@@ -155,8 +155,15 @@ class TenRunnerPlugin():
                         nonce_db.insert(account.address, self.env, tx_count-1, 'RESET')
                 runner.log.info('')
 
+                if self.is_local_ten(): contracts_db.delete_environment(self.env)
+                else:
+                    account = web3.eth.account.from_key(Properties().fundacntpk())
+                    tx_count = web3.eth.get_transaction_count(account.address)
+                    if tx_count == 0: contracts_db.delete_environment(self.env)
+
             elif self.env == 'ganache':
                 nonce_db.delete_environment('ganache')
+                contracts_db.delete_environment('ganache')
                 hprocess = self.run_ganache(runner)
                 runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
 

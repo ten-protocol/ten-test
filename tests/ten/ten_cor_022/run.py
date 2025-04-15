@@ -15,18 +15,10 @@ class PySysTest(TenNetworkTest):
         l1_balance_before = accnt1.l1.web3.eth.get_balance(accnt1.l1.account.address)
         l2_balance_before = accnt1.l2.web3.eth.get_balance(accnt1.l2.account.address)
 
-        # subscribe for the deposit event
-        subscriber = FilterLogSubscriber(self, accnt1.l2.network)
-        filter_address = '0'*24 + accnt1.l2.account.address.lower().strip().replace('0x', '')
-        subscriber.run(
-            filter_topics=[accnt1.l2.web3.keccak(text='NativeDeposit(address,uint256)').hex(), '0x'+filter_address]
-        )
-        subscriber.subscribe()
-
-        # send native from the L1 to the L2, wait for the deposit event amount to be seen
-        self.log.info('Send native and wait for the deposit event on the L2')
-        tx_receipt, _ = accnt1.l1.send_native(accnt1.l2.account.address, transfer)
-        self.waitForGrep('subscriber.out', expr='data:.*03e8', timeout=20)
+        # send native from the L1 to the L2, wait for the xchain msg on the l2
+        self.log.info('Send native and wait for the xchain message on the L2')
+        tx_receipt, xchain_msg = accnt1.l1.send_native(accnt1.l2.account.address, transfer)
+        accnt1.l2.wait_for_message(xchain_msg)
 
         l1_balance_after = accnt1.l1.web3.eth.get_balance(accnt1.l1.account.address)
         l2_balance_after = accnt1.l2.web3.eth.get_balance(accnt1.l2.account.address)

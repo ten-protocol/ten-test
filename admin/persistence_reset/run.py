@@ -1,5 +1,3 @@
-from pysys.constants import LOG_TRACEBACK
-from pysys.utils.logutils import BaseLogFormatter
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 

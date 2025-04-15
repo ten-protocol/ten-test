@@ -11,27 +11,25 @@ class ContractPersistence:
     """
 
     SQL_CREATE = "CREATE TABLE IF NOT EXISTS contract_details " \
-                 "(host VARCHAR(64), " \
-                 "name VARCHAR(64), " \
+                 "(name VARCHAR(64), " \
                  "environment VARCHAR(64), " \
                  "address VARCHAR(64), " \
                  "abi MEDIUMTEXT, " \
-                 "PRIMARY KEY (host, name, environment))"
-    SQL_INSERT = "INSERT INTO contract_details VALUES (?, ?, ?, ?, ?)"
-    SQL_DELETE = "DELETE FROM contract_details WHERE host=? AND environment=?"
-    SQL_SELECT = "SELECT address, abi FROM contract_details WHERE host=? AND name=? AND environment=? ORDER BY name DESC LIMIT 1"
+                 "PRIMARY KEY (name, environment))"
+    SQL_INSERT = "INSERT INTO contract_details VALUES (?, ?, ?, ?)"
+    SQL_DELETE = "DELETE FROM contract_details WHERE environment=?"
+    SQL_SELECT = "SELECT address, abi FROM contract_details WHERE name=? AND environment=? ORDER BY name DESC LIMIT 1"
 
     SQL_CRTPRM = "CREATE TABLE IF NOT EXISTS contract_params " \
-                 "(host VARCHAR(64), " \
-                 "address VARCHAR(64), " \
+                 "(address VARCHAR(64), " \
                  "environment VARCHAR(64), " \
                  "param_key VARCHAR(64), " \
                  "param_val VARCHAR(64), " \
-                 "PRIMARY KEY (host, address, environment, param_key))"
-    SQL_INSPRM = "INSERT INTO contract_params VALUES (?, ?, ?, ?, ?)"
-    SQL_DELPRM = "DELETE FROM contract_params WHERE host=? AND environment=?"
-    SQL_DELPMS = "DELETE FROM contract_params WHERE host=? AND address=? AND environment=? AND param_key=?"
-    SQL_SELPRM = "SELECT param_val FROM contract_params WHERE host=? AND address=? AND environment=? AND param_key=? " \
+                 "PRIMARY KEY (address, environment, param_key))"
+    SQL_INSPRM = "INSERT INTO contract_params VALUES (?, ?, ?, ?)"
+    SQL_DELPRM = "DELETE FROM contract_params WHERE environment=?"
+    SQL_DELPMS = "DELETE FROM contract_params WHERE address=? AND environment=? AND param_key=?"
+    SQL_SELPRM = "SELECT param_val FROM contract_params WHERE address=? AND environment=? AND param_key=? " \
                  "ORDER BY address DESC LIMIT 1"
 
     @classmethod
@@ -71,26 +69,26 @@ class ContractPersistence:
 
     def insert_contract(self, name, environment, address, abi):
         """Insert a new contract into the persistence. """
-        self.cursor.execute(self.sqlins, (self.host, name, environment, address, abi))
+        self.cursor.execute(self.sqlins, (name, environment, address, abi))
         self.dbconnection.connection.commit()
 
     def get_contract(self, name, environment):
         """Return the address and abi for a particular deployed contract. """
-        self.cursor.execute(self.sqlsel, (self.host, name, environment))
+        self.cursor.execute(self.sqlsel, (name, environment))
         cursor = self.cursor.fetchall()
         if len(cursor) > 0: return cursor[0][0], cursor[0][1]
         return None, None
 
     def insert_param(self, address, environment, key, value):
         """Insert a parameter for a named contract. """
-        self.cursor.execute(self.delpms, (self.host, address, environment, key))
+        self.cursor.execute(self.delpms, (address, environment, key))
         self.dbconnection.connection.commit()
-        self.cursor.execute(self.insprm, (self.host, address, environment, key, value))
+        self.cursor.execute(self.insprm, (address, environment, key, value))
         self.dbconnection.connection.commit()
 
     def get_param(self, address, environment, key):
         """Return the address and abi for a particular deployed contract. """
-        self.cursor.execute(self.selprm, (self.host, address, environment, key))
+        self.cursor.execute(self.selprm, (address, environment, key))
         cursor = self.cursor.fetchall()
         if len(cursor) > 0: return cursor[0][0]
         return None
