@@ -23,19 +23,10 @@ class PySysTest(TenNetworkTest):
         self.run_client(accnt1.l2, 'l2')
         self.wait(float(self.block_time)*1.1)
 
-        # subscribe for the deposit event
-        subscriber = FilterLogSubscriber(self, accnt1.l2.network)
-        filter_address = '0'*24 + accnt1.l2.account.address.lower().strip().replace('0x', '')
-        subscriber.run(
-            filter_topics=[accnt1.l2.web3.keccak(text='NativeDeposit(address,uint256)').hex(), '0x'+filter_address]
-        )
-        subscriber.subscribe()
-        self.wait(float(self.block_time)*1.1)
-
-        # send native from the L1 to the L2, wait for the deposit event amount to be seen
-        self.log.info('Send native and wait for the deposit event on the L2')
-        _, _ = accnt1.l1.send_native(accnt1.l2.account.address, transfer)
-        self.waitForGrep('subscriber.out', expr='data:.*03f2', timeout=20)
+        # send native from the L1 to the L2, wait for the xchain message on the L2
+        self.log.info('Send native and wait for the xchain message on the L2')
+        _, xchain_msg = accnt1.l1.send_native(accnt1.l2.account.address, transfer)
+        accnt1.l2.wait_for_message(xchain_msg)
 
         # send native from the L2 to the L1
         self.log.info('Send native from L2 to L1')
