@@ -63,8 +63,8 @@ class ContractPersistence:
 
     def delete_environment(self, environment):
         """Delete all stored contract details for a particular environment."""
-        self.cursor.execute(self.sqldel, (self.host, environment))
-        self.cursor.execute(self.delprm, (self.host, environment))
+        self.cursor.execute(self.sqldel, (environment,))
+        self.cursor.execute(self.delprm, (environment,))
         self.dbconnection.connection.commit()
 
     def insert_contract(self, name, environment, address, abi):

@@ -1,5 +1,4 @@
-import os, shutil, sys, json, requests, time, socket
-from web3 import Web3
+import os, shutil, sys, json, requests, time, socket, traceback
 from collections import OrderedDict
 from web3 import Web3
 from pathlib import Path
@@ -169,6 +168,7 @@ class TenRunnerPlugin():
 
         except Exception as e:
             runner.log.warn('Error executing runner plugin startup actions %s', e)
+            traceback.print_exc()
             runner.cleanup()
 
         rates_db.close()
