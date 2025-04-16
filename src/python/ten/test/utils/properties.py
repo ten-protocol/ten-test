@@ -179,6 +179,12 @@ class Properties:
     def node_port_ws(self, key):
         return int(self.get('env.'+key, 'L2NodePortWS'))
 
+    def sequencer_port_http(self, key):
+        return int(self.get('env.'+key, 'L2SequencerPortHTTP'))
+
+    def sequencer_port_ws(self, key):
+        return int(self.get('env.'+key, 'L2SequencerPortWS'))
+
     def faucet_url(self, key):
         if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'FaucetURLDockerNetwork')
         return self.get('env.'+key, 'FaucetURL')
