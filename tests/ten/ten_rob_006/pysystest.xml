@@ -12,7 +12,6 @@
         <groups inherit="true">
             <group>robustness</group>
             <group>kill</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.local</mode>

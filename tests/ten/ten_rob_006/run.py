@@ -50,7 +50,7 @@ class PySysTest(TenNetworkTest):
 
         # stop the container
         DockerHelper.container_stop(self, 'sequencer-enclave-0', time=time)
-        self.wait(5)
+        self.wait_for_stopped()
 
         # start the container, wait for it to be active and then transact
         DockerHelper.container_start(self, 'sequencer-enclave-0')
@@ -64,11 +64,22 @@ class PySysTest(TenNetworkTest):
         start = time.time()
         while True:
             if (time.time() - start) > timeout:
-                self.addOutcome(TIMEDOUT, 'Timed out waiting %d secs for network to be healthy'%timeout, abortOnError=True)
+                self.addOutcome(TIMEDOUT, 'Timed out waiting %d secs for enclave to become active'%timeout, abortOnError=True)
             stdout, stderr = DockerHelper.container_logs(self, 'sequencer-enclave-0')
             _num_restarts = count(stderr, 'Enclave is now active sequencer')
             if _num_restarts >= restarts+1:
                 self.log.info('Server is running after %d secs'%(time.time() - start))
                 break
-            else: self.log.info('Server has not yet restarted ... waiting')
+            else: self.log.info('Enclave is not yet active ... waiting')
             time.sleep(3.0)
+
+    def wait_for_stopped(self, timeout=20):
+        start = time.time()
+        while True:
+            time.sleep(1.0)
+            if (time.time() - start) > timeout:
+                self.addOutcome(TIMEDOUT, 'Timed out waiting %d secs for container to be stopped'%timeout, abortOnError=True)
+            if not DockerHelper.container_running(self, 'sequencer-enclave-0'):
+                self.log.info('Enclave is not running after %d secs'%(time.time() - start))
+                break
+            else: self.log.info('Enclave is still running ... waiting')

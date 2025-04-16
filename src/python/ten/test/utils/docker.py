@@ -60,3 +60,14 @@ class DockerHelper:
                           arguments=arguments, stdout=stdout, stderr=stderr, state=FOREGROUND,
                           ignoreExitStatus=True, quiet=True)
         return stdout, stderr
+
+    @classmethod
+    def container_running(cls, test, name):
+        stdout = os.path.join(test.output, 'docker_inspect_%s'%name+'.out')
+        stderr = os.path.join(test.output, 'docker_inspect_%s'%name+'.err')
+        arguments = ['inspect', '-f', '\'{{.State.Running}}\'', name]
+        test.startProcess(command=Properties().docker_binary(), displayName='docker-inspect', workingDir=test.output,
+                          arguments=arguments, stdout=stdout, stderr=stderr, state=FOREGROUND,
+                          ignoreExitStatus=True, quiet=True)
+        with open(stdout, 'r') as file: running = file.readline()
+        return ('true' in running)
