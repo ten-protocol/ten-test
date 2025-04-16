@@ -59,4 +59,4 @@ class DockerHelper:
         test.startProcess(command=Properties().docker_binary(), displayName='docker-start', workingDir=test.output,
                           arguments=arguments, stdout=stdout, stderr=stderr, state=FOREGROUND,
                           ignoreExitStatus=True, quiet=True)
-        return stdout
+        return stdout, stderr
