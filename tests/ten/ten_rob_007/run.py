@@ -50,7 +50,7 @@ class PySysTest(TenNetworkTest):
 
         # stop the container
         DockerHelper.container_stop(self, 'sequencer-host', time=time)
-        self.wait(5)
+        self.wait_for_stopped()
 
         # start the container, wait for it to be active and then transact
         DockerHelper.container_start(self, 'sequencer-host')
@@ -75,3 +75,14 @@ class PySysTest(TenNetworkTest):
                 break
             else: self.log.info('Server has not yet restarted ... waiting')
             time.sleep(3.0)
+
+    def wait_for_stopped(self, timeout=20):
+        start = time.time()
+        while True:
+            time.sleep(1.0)
+            if (time.time() - start) > timeout:
+                self.addOutcome(TIMEDOUT, 'Timed out waiting %d secs for container to be stopped'%timeout, abortOnError=True)
+            if not DockerHelper.container_running(self, 'sequencer-host'):
+                self.log.info('Sequencer host is not running after %d secs'%(time.time() - start))
+                break
+            else: self.log.info('Sequencer host is still running ... waiting')
