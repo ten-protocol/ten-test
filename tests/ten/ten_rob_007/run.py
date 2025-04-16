@@ -22,6 +22,10 @@ class PySysTest(TenNetworkTest):
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
+        # check the network is actually reporting itself as healthy
+        if self.ten_health(dump_to='health.out'): self.log.info('Network reports itself to be healthy')
+        else: self.log.warn('Network reports itself to NOT be healthy')
+
         # deploy the contract
         storage = Storage(self, web3, 100)
         storage.deploy(network, account)
@@ -51,7 +55,6 @@ class PySysTest(TenNetworkTest):
         # start the container, wait for it to be active and then transact
         DockerHelper.container_start(self, 'sequencer-host')
         self.wait_for_started(restarts)
-        self.wait(20)
 
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)

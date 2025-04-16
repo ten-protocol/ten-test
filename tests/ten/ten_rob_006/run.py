@@ -22,6 +22,10 @@ class PySysTest(TenNetworkTest):
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
+        # check the network is actually reporting itself as healthy
+        if self.ten_health(dump_to='health.out'): self.log.info('Network reports itself to be healthy')
+        else: self.log.warn('Network reports itself to NOT be healthy')
+
         # deploy the contract
         storage = Storage(self, web3, 100)
         storage.deploy(network, account)
@@ -42,7 +46,7 @@ class PySysTest(TenNetworkTest):
     def run_stop(self, network, web3, storage, account, value, time):
         stdout, stderr = DockerHelper.container_logs(self, 'sequencer-enclave-0')
         restarts = count(stderr, 'Enclave is now active sequencer')
-        self.log.info('Container has previous restarts %d' % restarts)
+        self.log.info('Enclave has become active sequencer %d times' % restarts)
 
         # stop the container
         DockerHelper.container_stop(self, 'sequencer-enclave-0', time=time)
