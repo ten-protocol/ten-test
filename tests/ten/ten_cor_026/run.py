@@ -45,8 +45,8 @@ class PySysTest(TenNetworkTest):
 
     def client(self, l2_network, bridge_address, bridge_abi, bus_address, bus_abi, private_key,
                l1_network, xchain_address, xchain_abi, to, amount, timeout):
-        node_url = 'http://%s:%s' % (Properties().node_host(self.env, self.NODE_HOST),
-                                     Properties().node_port_http(self.env))
+        node_url = 'http://%s:%s' % (Properties().validator_host(self.env, self.NODE_HOST),
+                                     Properties().validator_port_http(self.env))
 
         stdout = os.path.join(self.output, 'client.out')
         stderr = os.path.join(self.output, 'client.err')

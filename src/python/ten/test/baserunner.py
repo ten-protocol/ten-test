@@ -208,9 +208,9 @@ class TenRunnerPlugin():
 
         props = Properties()
         arguments = []
-        arguments.extend(('--nodeHost', Properties().node_host(self.env, self.NODE_HOST)))
-        arguments.extend(('--nodePortHTTP', str(props.node_port_http(self.env))))
-        arguments.extend(('--nodePortWS', str(props.node_port_ws(self.env))))
+        arguments.extend(('--nodeHost', Properties().validator_host(self.env, self.NODE_HOST)))
+        arguments.extend(('--nodePortHTTP', str(props.validator_port_http(self.env))))
+        arguments.extend(('--nodePortWS', str(props.validator_port_ws(self.env))))
         arguments.extend(('--port', str(port)))
         arguments.extend(('--portWS', str(runner.getNextAvailableTCPPort())))
         arguments.extend(('--logPath', os.path.join(runner.output, 'wallet_logs.txt')))
@@ -333,5 +333,5 @@ class TenRunnerPlugin():
 
     def post(self, runner, data):
         self.MSG_ID += 1
-        server = 'http://%s:%s' % (Properties().node_host(self.env, self.NODE_HOST), Properties().node_port_http(self.env))
+        server = 'http://%s:%s' % (Properties().validator_host(self.env, self.NODE_HOST), Properties().validator_port_http(self.env))
         return requests.post(server, json=data)

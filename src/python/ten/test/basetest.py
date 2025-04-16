@@ -545,7 +545,7 @@ class TenNetworkTest(GenericNetworkTest):
         """Post to the node host. """
         self.MSG_ID += 1
         if not server:
-            server = 'http://%s:%s' % (Properties().node_host(self.env, self.NODE_HOST), Properties().node_port_http(self.env))
+            server = 'http://%s:%s' % (Properties().validator_host(self.env, self.NODE_HOST), Properties().validator_port_http(self.env))
         return requests.post(server, json=data)
 
     def ratio_failures(self, file, threshold=0.05):
