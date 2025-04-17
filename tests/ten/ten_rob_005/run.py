@@ -23,7 +23,7 @@ class PySysTest(TenNetworkTest):
         web3, account = network.connect_account1(self)
 
         # check the network is actually reporting itself as healthy
-        if not self.ten_health(dump_to='health.out'):
+        if not self.validator_health(dump_to='health.out'):
             self.abort(FAILED, outcomeReason='Network is not healthy at start of test')
 
         # deploy the contract
@@ -49,7 +49,7 @@ class PySysTest(TenNetworkTest):
 
         # stop the container and transact
         DockerHelper.container_stop(self, 'validator-host', time=time)
-        self.assertTrue(not self.ten_health(), assertMessage='Health should be false')
+        self.assertTrue(not self.validator_health(), assertMessage='Health should be false')
         try:
             network.transact(self, web3, storage.contract.functions.store(value), account, storage.GAS_LIMIT)
             self.addOutcome(FAILED)
