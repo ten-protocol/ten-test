@@ -72,7 +72,7 @@ class TenRunnerPlugin():
             runner.log.info('Running on local (%s)' % self.machine_name)
 
         # every test has its own connection to the dbs - use a remote mysql persistence layer if we are running in
-        # azure, and it is not a local testnet. The exception for this is the nonce db where it is always local.
+        # azure, and it is not a local testnet.
         use_remote = (not self.is_local_ten() and self.is_cloud_vm)
         rates_db = RatesPersistence.init(use_remote, self.user_dir, self.machine_name)
         nonce_db = NoncePersistence.init(use_remote, self.user_dir, self.machine_name)

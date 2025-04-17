@@ -3,6 +3,8 @@
 name: '[execute] Persist performance'
 run-name: Run performance tests (${{ github.event.inputs.environment }})
 on:
+  schedule:
+    - cron: '0 4 * * *'
   workflow_dispatch:
     inputs:
       environment:
@@ -57,7 +59,14 @@ jobs:
           cd ${{ github.workspace }}/ten-test
           ./get_artifacts.sh  
 
-      - name: 'Run performance tests'
+      - name: 'Run performance tests against a local testnet on schedule'
+        if: ${{ github.event_name == 'schedule' }}
+        run: |
+          cd ${{ github.workspace }}/ten-test/tests
+          /usr/local/bin/pysys.py run -r -m ten.local -XPERSIST_PERF -i performance
+
+      - name: 'Run performance tests on workflow dispatch'
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -r -m ${{ github.event.inputs.environment }} -XPERSIST_PERF -i performance
