@@ -22,7 +22,7 @@ class WalletExtension:
         self.verbose = verbose
 
         props = Properties()
-        self.node_host = node_host if node_host is not None else props.validator_host(test.env, test.NODE_HOST)
+        self.node_host = node_host if node_host is not None else props.validator_host(test.env)
         self.node_port_http = node_port_http if node_port_http is not None else props.validator_port_http(self.test.env)
         self.node_port_ws = node_port_ws if node_port_ws is not None else props.validator_port_ws(self.test.env)
 

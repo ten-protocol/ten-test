@@ -23,7 +23,7 @@ class PySysTest(TenNetworkTest):
         web3, account = network.connect_account1(self)
 
         # check the network is actually reporting itself as healthy
-        if self.ten_health(dump_to='health.out'): self.log.info('Network reports itself to be healthy')
+        if self.validator_health(dump_to='health.out'): self.log.info('Network reports itself to be healthy')
         else: self.log.warn('Network reports itself to NOT be healthy')
 
         # deploy the contract

@@ -25,7 +25,6 @@ from ten.test.networks.ten import Ten, TenL1Geth, TenL1Sepolia
 class GenericNetworkTest(BaseTest):
     """The base test used by all tests cases, against any request environment. """
     MSG_ID = 1                      # global used for http message requests numbers
-    NODE_HOST = None                # if not none overrides the node host from the properties file
     PERSIST_PERF = False            # if true persist performance results to the db
 
 
@@ -314,7 +313,7 @@ class TenNetworkTest(GenericNetworkTest):
         while True:
             if (time.time() - start) > timeout:
                 self.addOutcome(TIMEDOUT, 'Timed out waiting %d secs for network to be healthy'%timeout, abortOnError=True)
-            if self.ten_health():
+            if self.validator_health():
                 self.log.info('Network is healthy after %d secs'%(time.time() - start))
                 break
             else: self.log.info('Reported health status is false ... waiting')
@@ -511,11 +510,11 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def ten_health(self, dump_to=None):
-        """Get the ten health status."""
+    def node_health(self, url, dump_to=None):
+        """Get the validator health status."""
         data = {"jsonrpc": "2.0", "method": "ten_health", "id": self.MSG_ID}
         try:
-            response = self.post(data)
+            response = self.post(data, server=url)
             if 'result' in response.json():
                 if (dump_to is not None) and not response.json()['result']['OverallHealth']:
                     with open(os.path.join(self.output, dump_to), 'w') as file:
@@ -527,6 +526,16 @@ class TenNetworkTest(GenericNetworkTest):
         except Exception as e:
             self.log.warn('Unable to get health status from the network')
         return False
+
+    def validator_health(self, dump_to=None):
+        """Get the validator health status."""
+        url = 'http://%s:%s' % (Properties().validator_host(self.env), Properties().sequencer_port_http(self.env))
+        return self.node_health(url)
+
+    def sequencer_health(self, dump_to=None):
+        """Get the sequencer health status."""
+        url = 'http://%s:%s' % (Properties().sequencer_host(self.env), Properties().sequencer_port_http(self.env))
+        return self.node_health(url)
 
     def ten_get_xchain_proof(self, type, xchain_message):
         """Get the obscuro_config. """
@@ -545,7 +554,7 @@ class TenNetworkTest(GenericNetworkTest):
         """Post to the node host. """
         self.MSG_ID += 1
         if not server:
-            server = 'http://%s:%s' % (Properties().validator_host(self.env, self.NODE_HOST), Properties().validator_port_http(self.env))
+            server = 'http://%s:%s' % (Properties().validator_host(self.env), Properties().validator_port_http(self.env))
         return requests.post(server, json=data)
 
     def ratio_failures(self, file, threshold=0.05):

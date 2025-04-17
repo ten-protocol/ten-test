@@ -31,7 +31,6 @@ class TenRunnerPlugin():
     def __init__(self):
         """Constructor. """
         self.env = None
-        self.NODE_HOST = None
         self.balances = OrderedDict()
         self.cloud_metadata = is_cloud_vm()
         self.is_cloud_vm = self.cloud_metadata is not None
@@ -54,8 +53,6 @@ class TenRunnerPlugin():
             sys.exit()
 
         self.env = runner.mode
-        self.NODE_HOST = runner.getXArg('NODE_HOST', '')
-        if self.NODE_HOST == '': self.NODE_HOST = None
         runner.output = os.path.join(PROJECT.root, '.runner')
         runner.log.info('Runner is executing against environment %s', self.env)
 
@@ -208,7 +205,7 @@ class TenRunnerPlugin():
 
         props = Properties()
         arguments = []
-        arguments.extend(('--nodeHost', Properties().validator_host(self.env, self.NODE_HOST)))
+        arguments.extend(('--nodeHost', Properties().validator_host(self.env)))
         arguments.extend(('--nodePortHTTP', str(props.validator_port_http(self.env))))
         arguments.extend(('--nodePortWS', str(props.validator_port_ws(self.env))))
         arguments.extend(('--port', str(port)))
@@ -333,5 +330,5 @@ class TenRunnerPlugin():
 
     def post(self, runner, data):
         self.MSG_ID += 1
-        server = 'http://%s:%s' % (Properties().validator_host(self.env, self.NODE_HOST), Properties().validator_port_http(self.env))
+        server = 'http://%s:%s' % (Properties().validator_host(self.env), Properties().validator_port_http(self.env))
         return requests.post(server, json=data)

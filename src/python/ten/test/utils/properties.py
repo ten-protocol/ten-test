@@ -143,18 +143,16 @@ class Properties:
         if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'FaucetHostHTTPDockerNetwork')
         return self.get('env.'+key, 'FaucetHostHTTP')
 
-    def validator_host(self, key, node_host):
+    def validator_host(self, key):
         if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'ValidatorHostDockerNetwork')
-        if node_host is not None: return node_host
         return self.get('env.'+key, 'ValidatorHost')
 
     def validator_port_http(self, key): return int(self.get('env.'+key, 'ValidatorPortHTTP'))
 
     def validator_port_ws(self, key): return int(self.get('env.'+key, 'ValidatorPortWS'))
 
-    def sequencer_host(self, key, node_host):
+    def sequencer_host(self, key):
         if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'SequencerHostDockerNetwork')
-        if node_host is not None: return node_host
         return self.get('env.'+key, 'SequencerHost')
 
     def sequencer_port_http(self, key): return int(self.get('env.'+key, 'SequencerPortHTTP'))
