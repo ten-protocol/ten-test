@@ -241,7 +241,7 @@ class TenRunnerPlugin():
     def fund_eth_from_faucet_server(self, runner):
         """Allocates native ETH to a users account from the faucet server. """
         account = Web3().eth.account.from_key(Properties().fundacntpk())
-        url = '%s/fund/eth' % Properties().faucet_url(self.env)
+        url = '%s/fund/eth' % Properties().faucet_host(self.env)
         runner.log.info('Running request on %s', url)
         runner.log.info('Running for user address %s', account.address)
         headers = {'Content-Type': 'application/json'}
