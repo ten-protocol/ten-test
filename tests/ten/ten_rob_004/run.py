@@ -1,5 +1,5 @@
-import json, os
-from pysys.constants import FAILED
+import time
+from pysys.constants import *
 from ten.test.utils.docker import DockerHelper
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.storage import Storage
@@ -47,8 +47,9 @@ class PySysTest(TenNetworkTest):
         stdout, _ = DockerHelper.container_logs(self, 'validator-enclave-0')
         self.log.info('Container has previous restarts %d' % count(stdout, 'Server started.'))
 
-        # stop the container and transact
+        # stop the container, wait for it to be stopped then try to transact
         DockerHelper.container_stop(self, 'validator-enclave-0', time=time)
+        self.wait_for_stopped()
         self.assertTrue(not self.validator_health(), assertMessage='Health should be false')
         try:
             network.transact(self, web3, storage.contract.functions.store(value), account, storage.GAS_LIMIT)
@@ -64,4 +65,13 @@ class PySysTest(TenNetworkTest):
         value = storage.contract.functions.retrieve().call()
         self.assertTrue(value == value, assertMessage='Retrieved value should be %d' % value)
 
-
+    def wait_for_stopped(self, timeout=20):
+        start = time.time()
+        while True:
+            time.sleep(1.0)
+            if (time.time() - start) > timeout:
+                self.addOutcome(TIMEDOUT, 'Timed out waiting %d secs for container to be stopped'%timeout, abortOnError=True)
+            if not DockerHelper.container_running(self, 'validator-enclave-0'):
+                self.log.info('Validator enclave is not running after %d secs'%(time.time() - start))
+                break
+            else: self.log.info('Validator enclave is still running ... waiting')

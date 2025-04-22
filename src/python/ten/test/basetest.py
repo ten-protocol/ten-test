@@ -504,7 +504,7 @@ class TenNetworkTest(GenericNetworkTest):
         try:
             response = self.post(data, server=url)
             if 'result' in response.json():
-                if (dump_to is not None) and not response.json()['result']['OverallHealth']:
+                if dump_to is not None:
                     with open(os.path.join(self.output, dump_to), 'w') as file:
                         json.dump(response.json()['result'], file, indent=4)
                 return response.json()['result']['OverallHealth']
@@ -526,25 +526,28 @@ class TenNetworkTest(GenericNetworkTest):
         return self.node_health(url, dump_to)
 
     def wait_for_node(self, health_fn, timeout=60):
+        """Wait for a node to be healthy"""
         self.log.info('Waiting for network to be healthy ...')
         start = time.time()
+        count = 0
         while True:
+            count=count+1
             if (time.time() - start) > timeout:
                 self.addOutcome(TIMEDOUT, 'Timed out waiting %d secs for node to be healthy'%timeout, abortOnError=True)
-            if health_fn():
+            if health_fn(dump_to='health.%d.out'%count):
                 self.log.info('Node is healthy after %d secs'%(time.time() - start))
                 break
             else: self.log.info('Reported node health status is false ... waiting')
-            time.sleep(2.0)
+            time.sleep(3.0)
 
-    def wait_for_validator(self):
-        self.wait_for_node(self.validator_health)
+    def wait_for_validator(self, timeout=120):
+        self.wait_for_node(self.validator_health, timeout)
 
-    def wait_for_sequencer(self):
-        self.wait_for_node(self.sequencer_health)
+    def wait_for_sequencer(self, timeout=120):
+        self.wait_for_node(self.sequencer_health, timeout)
 
     def ten_get_xchain_proof(self, type, xchain_message):
-        """Get the obscuro_config. """
+        """Get the xchain proof for a given message. """
         data = {"jsonrpc": "2.0",
                 "method": "ten_getCrossChainProof",
                 "params": [type, xchain_message],
