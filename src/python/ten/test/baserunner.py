@@ -31,7 +31,6 @@ class TenRunnerPlugin():
     def __init__(self):
         """Constructor. """
         self.env = None
-        self.NODE_HOST = None
         self.balances = OrderedDict()
         self.cloud_metadata = is_cloud_vm()
         self.is_cloud_vm = self.cloud_metadata is not None
@@ -54,8 +53,6 @@ class TenRunnerPlugin():
             sys.exit()
 
         self.env = runner.mode
-        self.NODE_HOST = runner.getXArg('NODE_HOST', '')
-        if self.NODE_HOST == '': self.NODE_HOST = None
         runner.output = os.path.join(PROJECT.root, '.runner')
         runner.log.info('Runner is executing against environment %s', self.env)
 
@@ -72,7 +69,7 @@ class TenRunnerPlugin():
             runner.log.info('Running on local (%s)' % self.machine_name)
 
         # every test has its own connection to the dbs - use a remote mysql persistence layer if we are running in
-        # azure, and it is not a local testnet. The exception for this is the nonce db where it is always local.
+        # azure, and it is not a local testnet.
         use_remote = (not self.is_local_ten() and self.is_cloud_vm)
         rates_db = RatesPersistence.init(use_remote, self.user_dir, self.machine_name)
         nonce_db = NoncePersistence.init(use_remote, self.user_dir, self.machine_name)
@@ -208,9 +205,9 @@ class TenRunnerPlugin():
 
         props = Properties()
         arguments = []
-        arguments.extend(('--nodeHost', Properties().node_host(self.env, self.NODE_HOST)))
-        arguments.extend(('--nodePortHTTP', str(props.node_port_http(self.env))))
-        arguments.extend(('--nodePortWS', str(props.node_port_ws(self.env))))
+        arguments.extend(('--nodeHost', Properties().validator_host(self.env)))
+        arguments.extend(('--nodePortHTTP', str(props.validator_port_http(self.env))))
+        arguments.extend(('--nodePortWS', str(props.validator_port_ws(self.env))))
         arguments.extend(('--port', str(port)))
         arguments.extend(('--portWS', str(runner.getNextAvailableTCPPort())))
         arguments.extend(('--logPath', os.path.join(runner.output, 'wallet_logs.txt')))
@@ -241,7 +238,7 @@ class TenRunnerPlugin():
     def fund_eth_from_faucet_server(self, runner):
         """Allocates native ETH to a users account from the faucet server. """
         account = Web3().eth.account.from_key(Properties().fundacntpk())
-        url = '%s/fund/eth' % Properties().faucet_url(self.env)
+        url = '%s/fund/eth' % Properties().faucet_host(self.env)
         runner.log.info('Running request on %s', url)
         runner.log.info('Running for user address %s', account.address)
         headers = {'Content-Type': 'application/json'}
@@ -333,5 +330,5 @@ class TenRunnerPlugin():
 
     def post(self, runner, data):
         self.MSG_ID += 1
-        server = 'http://%s:%s' % (Properties().node_host(self.env, self.NODE_HOST), Properties().node_port_http(self.env))
+        server = 'http://%s:%s' % (Properties().validator_host(self.env), Properties().validator_port_http(self.env))
         return requests.post(server, json=data)

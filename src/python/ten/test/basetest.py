@@ -25,7 +25,6 @@ from ten.test.networks.ten import Ten, TenL1Geth, TenL1Sepolia
 class GenericNetworkTest(BaseTest):
     """The base test used by all tests cases, against any request environment. """
     MSG_ID = 1                      # global used for http message requests numbers
-    NODE_HOST = None                # if not none overrides the node host from the properties file
     PERSIST_PERF = False            # if true persist performance results to the db
 
 
@@ -308,18 +307,6 @@ class TenNetworkTest(GenericNetworkTest):
     layer2 of an Ten Network.
     """
 
-    def wait_for_network(self, timeout=60):
-        self.log.info('Waiting for network to be healthy ...')
-        start = time.time()
-        while True:
-            if (time.time() - start) > timeout:
-                self.addOutcome(TIMEDOUT, 'Timed out waiting %d secs for network to be healthy'%timeout, abortOnError=True)
-            if self.ten_health():
-                self.log.info('Network is healthy after %d secs'%(time.time() - start))
-                break
-            else: self.log.info('Reported health status is false ... waiting')
-            time.sleep(2.0)
-
     def scan_get_latest_transactions(self, num):
         """Return the last x number of L2 transactions. @todo """
         data = {"jsonrpc": "2.0", "method": "scan_getLatestTransactions", "params": [num], "id": self.MSG_ID }
@@ -511,13 +498,13 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def ten_health(self, dump_to=None):
-        """Get the ten health status."""
+    def node_health(self, url, dump_to=None):
+        """Get the validator health status."""
         data = {"jsonrpc": "2.0", "method": "ten_health", "id": self.MSG_ID}
         try:
-            response = self.post(data)
+            response = self.post(data, server=url)
             if 'result' in response.json():
-                if (dump_to is not None) and not response.json()['result']['OverallHealth']:
+                if dump_to is not None:
                     with open(os.path.join(self.output, dump_to), 'w') as file:
                         json.dump(response.json()['result'], file, indent=4)
                 return response.json()['result']['OverallHealth']
@@ -528,8 +515,39 @@ class TenNetworkTest(GenericNetworkTest):
             self.log.warn('Unable to get health status from the network')
         return False
 
+    def validator_health(self, dump_to=None):
+        """Get the validator health status."""
+        url = 'http://%s:%s' % (Properties().validator_host(self.env), Properties().validator_port_http(self.env))
+        return self.node_health(url, dump_to)
+
+    def sequencer_health(self, dump_to=None):
+        """Get the sequencer health status."""
+        url = 'http://%s:%s' % (Properties().sequencer_host(self.env), Properties().sequencer_port_http(self.env))
+        return self.node_health(url, dump_to)
+
+    def wait_for_node(self, health_fn, timeout=60):
+        """Wait for a node to be healthy"""
+        self.log.info('Waiting for network to be healthy ...')
+        start = time.time()
+        count = 0
+        while True:
+            count=count+1
+            if (time.time() - start) > timeout:
+                self.addOutcome(TIMEDOUT, 'Timed out waiting %d secs for node to be healthy'%timeout, abortOnError=True)
+            if health_fn(dump_to='health.%d.out'%count):
+                self.log.info('Node is healthy after %d secs'%(time.time() - start))
+                break
+            else: self.log.info('Reported node health status is false ... waiting')
+            time.sleep(3.0)
+
+    def wait_for_validator(self, timeout=120):
+        self.wait_for_node(self.validator_health, timeout)
+
+    def wait_for_sequencer(self, timeout=120):
+        self.wait_for_node(self.sequencer_health, timeout)
+
     def ten_get_xchain_proof(self, type, xchain_message):
-        """Get the obscuro_config. """
+        """Get the xchain proof for a given message. """
         data = {"jsonrpc": "2.0",
                 "method": "ten_getCrossChainProof",
                 "params": [type, xchain_message],
@@ -545,7 +563,7 @@ class TenNetworkTest(GenericNetworkTest):
         """Post to the node host. """
         self.MSG_ID += 1
         if not server:
-            server = 'http://%s:%s' % (Properties().node_host(self.env, self.NODE_HOST), Properties().node_port_http(self.env))
+            server = 'http://%s:%s' % (Properties().validator_host(self.env), Properties().validator_port_http(self.env))
         return requests.post(server, json=data)
 
     def ratio_failures(self, file, threshold=0.05):

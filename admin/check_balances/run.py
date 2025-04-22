@@ -31,7 +31,7 @@ class PySysTest(TenNetworkTest):
         deployer_balance = web3.from_wei(web3.eth.get_balance(deployer_address), 'ether')
         self.log.info('Deployer account %s balance %.9f ETH', deployer_address, deployer_balance)
 
-        faucet_address = Properties().l2_faucet_address(key=self.env)
+        faucet_address = Properties().faucet_address(key=self.env)
         faucet_balance_wei = self.get_faucet_balance()
         faucet_balance_eth = web3.from_wei(faucet_balance_wei, 'ether')
         self.log.info('Faucet balance %.9f ETH', faucet_balance_eth)
@@ -50,7 +50,7 @@ class PySysTest(TenNetworkTest):
 
     def get_faucet_balance(self):
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
-        url = '%s/balance' % Properties().faucet_url(self.env)
+        url = '%s/balance' % Properties().faucet_host(self.env)
         response = requests.get(url, headers=headers)
         response_data = json.loads(response.text)
         return int(response_data.get('balance'))

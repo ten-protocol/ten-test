@@ -89,10 +89,6 @@ class Properties:
     def persistence_database(self): return self.get('persistence.db', 'database')
     def persistence_password(self): return self.get('persistence.db', 'password')
 
-    # common to all environments
-    def block_time_secs(self, key):
-        return self.get('env.'+key, 'BlockTimeSecs')
-
     # all accounts on the network layer that may hold funds
     def accounts(self):
         return [
@@ -126,18 +122,7 @@ class Properties:
     def account3_3pk(self): return self.get('env.all', 'Account11PK')
     def account4_3pk(self): return self.get('env.all', 'Account12PK')
 
-    # node addresses
-    def sequencer_address(self, key): return self.get('env.'+key, 'SequencerAddress')
-    def validator1_address(self, key): return self.get('env.' + key, 'Validator1Address')
-    def validator2_address(self, key): return self.get('env.' + key, 'Validator2Address')
-
-    # L1 deployment address
-    def l1_deployer_address(self, key): return self.get('env.'+key, 'L1DeployerAddress')
-
-    # L2 faucet address
-    def l2_faucet_address(self, key): return self.get('env.' + key, 'L2FaucetAddress')
-
-    # network connection properties
+    # common to all environments
     def host_http(self, key):
         if os.getenv('PRIMARY_HOST_HTTP'): return os.getenv('PRIMARY_HOST_HTTP')     # override for different gateway
         if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'HostHTTPDockerNetwork') # for docker to docker
@@ -151,73 +136,72 @@ class Properties:
     def port_http(self, key): return int(self.get('env.'+key, 'PortHTTP'))
     def port_ws(self, key): return int(self.get('env.'+key, 'PortWS'))
     def chain_id(self, key): return int(self.get('env.'+key, 'ChainID'))
+    def block_time_secs(self, key): return self.get('env.'+key, 'BlockTimeSecs')
 
     # ten specific properties
-    def node_host(self, key, node_host):
-        if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'NodeHostDockerNetwork')
-        if node_host is not None: return node_host
-        return self.get('env.'+key, 'L2NodeHost')
+    def faucet_host(self, key):
+        if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'FaucetHostHTTPDockerNetwork')
+        return self.get('env.'+key, 'FaucetHostHTTP')
 
-    def l1_abstraction(self, key):
-        return self.get('env.'+key, 'L1Abstraction')
+    def validator_host(self, key):
+        if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'ValidatorHostDockerNetwork')
+        return self.get('env.'+key, 'ValidatorHost')
 
-    def l1_host_http(self, key):
-        return self.get('env.'+key, 'L1NodeHostHTTP')
+    def validator_port_http(self, key): return int(self.get('env.'+key, 'ValidatorPortHTTP'))
 
-    def l1_host_ws(self, key):
-        return self.get('env.'+key, 'L1NodeHostWS')
+    def validator_port_ws(self, key): return int(self.get('env.'+key, 'ValidatorPortWS'))
 
-    def l1_port_http(self, key):
-        return int(self.get('env.'+key, 'L1NodePortHTTP'))
+    def sequencer_host(self, key):
+        if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'SequencerHostDockerNetwork')
+        return self.get('env.'+key, 'SequencerHost')
 
-    def l1_port_ws(self, key):
-        return int(self.get('env.'+key, 'L1NodePortWS'))
+    def sequencer_port_http(self, key): return int(self.get('env.'+key, 'SequencerPortHTTP'))
 
-    def node_port_http(self, key):
-        return int(self.get('env.'+key, 'L2NodePortHTTP'))
+    def sequencer_port_ws(self, key): return int(self.get('env.'+key, 'SequencerPortWS'))
 
-    def node_port_ws(self, key):
-        return int(self.get('env.'+key, 'L2NodePortWS'))
+    def faucet_address(self, key): return self.get('env.' + key, 'FaucetAddress')
 
-    def faucet_url(self, key):
-        if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'FaucetURLDockerNetwork')
-        return self.get('env.'+key, 'FaucetURL')
+    def sequencer_address(self, key): return self.get('env.'+key, 'SequencerAddress')
 
-    def l1_funded_account_pk(self, key):
-        return self.get('env.'+key, 'L1FundedAccountPK')
+    def validator1_address(self, key): return self.get('env.' + key, 'Validator1Address')
 
-    def l1_cross_chain_management_address(self):
-        return self.L1CrossChainManagementAddress
+    def validator2_address(self, key): return self.get('env.' + key, 'Validator2Address')
 
-    def l1_bridge_address(self):
-        return self.L1BridgeAddress
+    def l1_deployer_address(self, key): return self.get('env.'+key, 'L1DeployerAddress')
 
-    def l1_message_bus_address(self):
-        return self.L1MessageBusAddress
+    def l1_abstraction(self, key): return self.get('env.'+key, 'L1Abstraction')
 
-    def l1_cross_chain_messenger_address(self):
-        return self.L1CrossChainMessengerAddress
+    def l1_host_http(self, key): return self.get('env.'+key, 'L1NodeHostHTTP')
 
-    def l2_bridge_address(self):
-        return self.L2BridgeAddress
+    def l1_host_ws(self, key): return self.get('env.'+key, 'L1NodeHostWS')
 
-    def l2_message_bus_address(self):
-        return self.L2MessageBusAddress
+    def l1_port_http(self, key): return int(self.get('env.'+key, 'L1NodePortHTTP'))
 
-    def l2_cross_chain_messenger_address(self):
-        return self.L2CrossChainMessengerAddress
+    def l1_port_ws(self, key): return int(self.get('env.'+key, 'L1NodePortWS'))
 
-    def l2_gas_payment_account_pk(self, key):
-        return self.get('env.'+key, 'L2GasPaymentAccountPK')
+    def l1_funded_account_pk(self, key): return self.get('env.'+key, 'L1FundedAccountPK')
+
+    def l1_cross_chain_management_address(self): return self.L1CrossChainManagementAddress
+
+    def l1_bridge_address(self): return self.L1BridgeAddress
+
+    def l1_message_bus_address(self): return self.L1MessageBusAddress
+
+    def l1_cross_chain_messenger_address(self): return self.L1CrossChainMessengerAddress
+
+    def l2_bridge_address(self): return self.L2BridgeAddress
+
+    def l2_message_bus_address(self): return self.L2MessageBusAddress
+
+    def l2_cross_chain_messenger_address(self): return self.L2CrossChainMessengerAddress
+
+    def l2_gas_payment_account_pk(self, key): return self.get('env.'+key, 'L2GasPaymentAccountPK')
 
     # infura related
-    def infuraProjectID(self):
-        return self.get('env.goerli', 'ProjectID')
+    def infuraProjectID(self): return self.get('env.goerli', 'ProjectID')
 
     # arbitrum related
-    def arbitrumSepoliaAPIKey(self):
-        return self.get('env.arbitrum.sepolia', 'APIKey')
+    def arbitrumSepoliaAPIKey(self): return self.get('env.arbitrum.sepolia', 'APIKey')
 
     # sepolia related
-    def sepoliaAPIKey(self):
-        return self.get('env.sepolia', 'APIKey')
+    def sepoliaAPIKey(self): return self.get('env.sepolia', 'APIKey')

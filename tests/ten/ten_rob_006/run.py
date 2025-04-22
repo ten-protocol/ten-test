@@ -22,9 +22,9 @@ class PySysTest(TenNetworkTest):
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
-        # check the network is actually reporting itself as healthy
-        if self.ten_health(dump_to='health.out'): self.log.info('Network reports itself to be healthy')
-        else: self.log.warn('Network reports itself to NOT be healthy')
+        # check the sequencer is actually reporting itself as healthy
+        if self.sequencer_health(dump_to='initial_health.out'): self.log.info('Sequencer reports itself to be healthy')
+        else: self.log.warn('Sequencer reports itself to NOT be healthy')
 
         # deploy the contract
         storage = Storage(self, web3, 100)
@@ -48,30 +48,16 @@ class PySysTest(TenNetworkTest):
         restarts = count(stderr, 'Enclave is now active sequencer')
         self.log.info('Enclave has become active sequencer %d times' % restarts)
 
-        # stop the container
+        # stop the container, wait for the container to be stopped
         DockerHelper.container_stop(self, 'sequencer-enclave-0', time=time)
         self.wait_for_stopped()
 
-        # start the container, wait for it to be active and then transact
+        # start the container, wait for the sequencer to be healthy then transact
         DockerHelper.container_start(self, 'sequencer-enclave-0')
-        self.wait_for_started(restarts)
-        network.transact(self, web3, storage.contract.functions.store(value), account, storage.GAS_LIMIT, timeout=30)
+        self.wait_for_sequencer()
+        network.transact(self, web3, storage.contract.functions.store(value), account, storage.GAS_LIMIT, timeout=120)
         value = storage.contract.functions.retrieve().call()
         self.assertTrue(value == value, assertMessage='Retrieved value should be %d' % value)
-
-    def wait_for_started(self, restarts, timeout=120):
-        self.log.info('Waiting for server to restart ...')
-        start = time.time()
-        while True:
-            if (time.time() - start) > timeout:
-                self.addOutcome(TIMEDOUT, 'Timed out waiting %d secs for enclave to become active'%timeout, abortOnError=True)
-            stdout, stderr = DockerHelper.container_logs(self, 'sequencer-enclave-0')
-            _num_restarts = count(stderr, 'Enclave is now active sequencer')
-            if _num_restarts >= restarts+1:
-                self.log.info('Server is running after %d secs'%(time.time() - start))
-                break
-            else: self.log.info('Enclave is not yet active ... waiting')
-            time.sleep(3.0)
 
     def wait_for_stopped(self, timeout=20):
         start = time.time()

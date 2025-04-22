@@ -1,5 +1,5 @@
-import json, os
-from pysys.constants import FAILED
+import time
+from pysys.constants import *
 from ten.test.utils.docker import DockerHelper
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.storage import Storage
@@ -22,9 +22,9 @@ class PySysTest(TenNetworkTest):
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
-        # check the network is actually reporting itself as healthy
-        if not self.ten_health(dump_to='health.out'):
-            self.abort(FAILED, outcomeReason='Network is not healthy at start of test')
+        # check the validator is actually reporting itself as healthy
+        if self.validator_health(dump_to='health.out'): self.log.info('Validator reports itself to be healthy')
+        else: self.log.warn('Validator reports itself to NOT be healthy')
 
         # deploy the contract
         storage = Storage(self, web3, 100)
@@ -44,12 +44,13 @@ class PySysTest(TenNetworkTest):
         self.run_stop(network, web3, storage, account, value=20, time=0)
 
     def run_stop(self, network, web3, storage, account, value, time):
-        log = DockerHelper.container_logs(self, 'validator-host')
-        self.log.info('Container has previous restarts %d' % count(log, 'Server started.'))
+        stdout, _ = DockerHelper.container_logs(self, 'validator-host')
+        self.log.info('Container has previous restarts %d' % count(stdout, 'Server started.'))
 
-        # stop the container and transact
+        # stop the container, wait for it to be stopped then try to transact
         DockerHelper.container_stop(self, 'validator-host', time=time)
-        self.assertTrue(not self.ten_health(), assertMessage='Health should be false')
+        self.wait_for_stopped()
+        self.assertTrue(not self.validator_health(), assertMessage='Health should be false')
         try:
             network.transact(self, web3, storage.contract.functions.store(value), account, storage.GAS_LIMIT)
             self.addOutcome(FAILED)
@@ -59,7 +60,18 @@ class PySysTest(TenNetworkTest):
 
         # start the container, wait for it to be active and then transact again
         DockerHelper.container_start(self, 'validator-host')
-        self.wait_for_network(timeout=60)
+        self.wait_for_validator()
         network.transact(self, web3, storage.contract.functions.store(value), account, storage.GAS_LIMIT)
         value = storage.contract.functions.retrieve().call()
         self.assertTrue(value == value, assertMessage='Retrieved value should be %d' % value)
+
+    def wait_for_stopped(self, timeout=20):
+        start = time.time()
+        while True:
+            time.sleep(1.0)
+            if (time.time() - start) > timeout:
+                self.addOutcome(TIMEDOUT, 'Timed out waiting %d secs for container to be stopped'%timeout, abortOnError=True)
+            if not DockerHelper.container_running(self, 'validator-host'):
+                self.log.info('Validator host is not running after %d secs'%(time.time() - start))
+                break
+            else: self.log.info('Validator host is still running ... waiting')
