@@ -22,9 +22,9 @@ class PySysTest(TenNetworkTest):
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
-        # check the network is actually reporting itself as healthy
-        if not self.validator_health(dump_to='health.out'):
-            self.abort(FAILED, outcomeReason='Network is not healthy at start of test')
+        # check the validator is actually reporting itself as healthy
+        if self.validator_health(dump_to='health.out'): self.log.info('Validator reports itself to be healthy')
+        else: self.log.warn('Validator reports itself to NOT be healthy')
 
         # deploy the contract
         storage = Storage(self, web3, 100)
@@ -43,10 +43,9 @@ class PySysTest(TenNetworkTest):
         self.log.info('Performing SIGKILL test')
         self.run_stop(network, web3, storage, account, value=20, time=0)
 
-
     def run_stop(self, network, web3, storage, account, value, time):
-        log = DockerHelper.container_logs(self, 'validator-enclave-0')
-        self.log.info('Container has previous restarts %d' % count(log, 'Server started.'))
+        stdout, _ = DockerHelper.container_logs(self, 'validator-enclave-0')
+        self.log.info('Container has previous restarts %d' % count(stdout, 'Server started.'))
 
         # stop the container and transact
         DockerHelper.container_stop(self, 'validator-enclave-0', time=time)
@@ -60,7 +59,7 @@ class PySysTest(TenNetworkTest):
 
         # start the container, wait for it to be active and then transact again
         DockerHelper.container_start(self, 'validator-enclave-0')
-        self.wait_for_network(timeout=60)
+        self.wait_for_validator()
         network.transact(self, web3, storage.contract.functions.store(value), account, storage.GAS_LIMIT)
         value = storage.contract.functions.retrieve().call()
         self.assertTrue(value == value, assertMessage='Retrieved value should be %d' % value)

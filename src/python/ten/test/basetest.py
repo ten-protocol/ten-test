@@ -307,18 +307,6 @@ class TenNetworkTest(GenericNetworkTest):
     layer2 of an Ten Network.
     """
 
-    def wait_for_network(self, timeout=60):
-        self.log.info('Waiting for network to be healthy ...')
-        start = time.time()
-        while True:
-            if (time.time() - start) > timeout:
-                self.addOutcome(TIMEDOUT, 'Timed out waiting %d secs for network to be healthy'%timeout, abortOnError=True)
-            if self.validator_health():
-                self.log.info('Network is healthy after %d secs'%(time.time() - start))
-                break
-            else: self.log.info('Reported health status is false ... waiting')
-            time.sleep(2.0)
-
     def scan_get_latest_transactions(self, num):
         """Return the last x number of L2 transactions. @todo """
         data = {"jsonrpc": "2.0", "method": "scan_getLatestTransactions", "params": [num], "id": self.MSG_ID }
@@ -529,13 +517,31 @@ class TenNetworkTest(GenericNetworkTest):
 
     def validator_health(self, dump_to=None):
         """Get the validator health status."""
-        url = 'http://%s:%s' % (Properties().validator_host(self.env), Properties().sequencer_port_http(self.env))
-        return self.node_health(url)
+        url = 'http://%s:%s' % (Properties().validator_host(self.env), Properties().validator_port_http(self.env))
+        return self.node_health(url, dump_to)
 
     def sequencer_health(self, dump_to=None):
         """Get the sequencer health status."""
         url = 'http://%s:%s' % (Properties().sequencer_host(self.env), Properties().sequencer_port_http(self.env))
-        return self.node_health(url)
+        return self.node_health(url, dump_to)
+
+    def wait_for_node(self, health_fn, timeout=60):
+        self.log.info('Waiting for network to be healthy ...')
+        start = time.time()
+        while True:
+            if (time.time() - start) > timeout:
+                self.addOutcome(TIMEDOUT, 'Timed out waiting %d secs for node to be healthy'%timeout, abortOnError=True)
+            if health_fn():
+                self.log.info('Node is healthy after %d secs'%(time.time() - start))
+                break
+            else: self.log.info('Reported node health status is false ... waiting')
+            time.sleep(2.0)
+
+    def wait_for_validator(self):
+        self.wait_for_node(self.validator_health)
+
+    def wait_for_sequencer(self):
+        self.wait_for_node(self.sequencer_health)
 
     def ten_get_xchain_proof(self, type, xchain_message):
         """Get the obscuro_config. """
