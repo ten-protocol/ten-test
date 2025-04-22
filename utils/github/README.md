@@ -5,10 +5,10 @@ Run the utility scripts to create the VM and connect;
 
 ```bash
 # create the VM
- ./utils/github/create-runner.sh --name=ten-test-gh-runner-01 
+ ./create-runner.sh --name=ten-test-gh-runner-01 
  
 # connect to the VM
-./utils/github/connect-runner.sh --name=ten-test-gh-runner-01  
+./connect-runner.sh --name=ten-test-gh-runner-01  
 ```
 
 ## Install dependencies
