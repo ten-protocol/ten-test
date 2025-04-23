@@ -32,8 +32,8 @@ class TenRunnerPlugin():
         """Constructor. """
         self.env = None
         self.balances = OrderedDict()
-        self.cloud_metadata = is_cloud_vm()
-        self.is_cloud_vm = self.cloud_metadata is not None
+        self.cloud_info = is_cloud_vm()
+        self.is_cloud_vm = self.cloud_info is not None
         self.user_dir = os.path.join(str(Path.home()), '.tentest')
         if not os.path.exists(self.user_dir): os.makedirs(self.user_dir)
 
@@ -62,8 +62,9 @@ class TenRunnerPlugin():
 
         # get the machine name
         if self.is_cloud_vm:
-            self.machine_name = self.cloud_metadata['compute']['name']
-            runner.log.info('Running on azure (%s, %s)' % (self.machine_name, self.cloud_metadata['compute']['location']))
+            self.machine_name = self.cloud_info.instance_name
+            runner.log.info('Running on %s (%s, %s)' % (self.cloud_info.cloud_name, self.machine_name,
+                                                        self.cloud_info.instance_location))
         else:
             self.machine_name = socket.gethostname()
             runner.log.info('Running on local (%s)' % self.machine_name)
