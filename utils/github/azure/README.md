@@ -1,4 +1,4 @@
-# Setup and manage a remote GitHub runner
+# Setup and manage a remote Azure github runner
 
 ## Create and connect
 Run the utility scripts to create the VM and connect;
