@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 ubuntu:20.04
+FROM --platform=linux/amd64 ubuntu:22.04
 
 RUN apt update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
