@@ -3,9 +3,17 @@
 ## Create and connect
 The VMs should be created manually from the Alibaba console, into the eu-west-1 region, with the instance type 
 as `ecs.g8i.2xlarge` (8CPUs, 32GBs) or `ecs.g8i.xlarge` (4CPUs, 16GBs), where the former is required for running 
-local testnets. Once done connection can be performed using the below where the name of the VM is supplied to the 
-connection script. Setup of the VM is performed as for the azure instances, though the install.sh script needs to be 
-scp'd to the box manually. 
+local testnets. The `tenadmin` user should be created using the below;
+
+```bash
+# create the tenadmin user
+sudo adduser tenadmin
+sudo usermod -aG sudo tenadmin
+```
+
+Once done connection can be performed using the below where the name of the VM is supplied to the connection script. 
+Setup of the VM is performed as for the azure instances, though the install.sh script needs to be scp'd to the box 
+manually. 
 
 ```bash
 # connect to the VM
