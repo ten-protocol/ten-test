@@ -94,7 +94,7 @@ class RunTypePersistence:
         self.dbconnection.connection.close()
 
 
-class OutomeResultsPersistence:
+class OutcomeResultsPersistence:
     """Abstracts the persistence of test outcome results into a local database.
 
     Results are a property of the host and environment. We persist any test runs that are made in the cloud, along
@@ -114,7 +114,7 @@ class OutomeResultsPersistence:
 
     @classmethod
     def init(cls, use_remote, user_dir, host):
-        instance = OutomeResultsPersistence(use_remote, user_dir, host)
+        instance = OutcomeResultsPersistence(use_remote, user_dir, host)
         instance.create()
         return instance
 

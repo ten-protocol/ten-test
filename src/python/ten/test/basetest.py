@@ -49,7 +49,7 @@ class GenericNetworkTest(BaseTest):
         self.pandl_db = PandLPersistence(use_remote, self.user_dir, self.machine_name)
         self.gas_db = GasPricePersistence(use_remote, self.user_dir, self.machine_name)
         self.counts_db = CountsPersistence(use_remote, self.user_dir, self.machine_name)
-        self.results_db = PerformanceResultsPersistence(use_remote, self.user_dir, self.machine_name)
+        self.results_db = PerformanceResultsPersistence(self.is_cloud_vm, self.user_dir, self.machine_name)
         self.txcosts_db = TxCostResultsPersistence(use_remote, self.user_dir, self.machine_name)
         self.addCleanupFunction(self.close_db)
 

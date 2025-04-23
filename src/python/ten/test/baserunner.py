@@ -79,7 +79,7 @@ class TenRunnerPlugin():
         pandl_db = PandLPersistence.init(use_remote, self.user_dir, self.machine_name)
         gas_db = GasPricePersistence.init(use_remote, self.user_dir, self.machine_name)
         counts_db = CountsPersistence.init(use_remote, self.user_dir, self.machine_name)
-        results_db = PerformanceResultsPersistence.init(use_remote, self.user_dir, self.machine_name)
+        results_db = PerformanceResultsPersistence.init(self.is_cloud_vm, self.user_dir, self.machine_name)
         txcosts_db = TxCostResultsPersistence.init(use_remote, self.user_dir, self.machine_name)
 
         eth_price = self.get_eth_price()

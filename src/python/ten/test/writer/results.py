@@ -1,7 +1,7 @@
 import uuid, time
 from pysys.constants import FAILED
 from pysys.writer import BaseResultsWriter
-from ten.test.persistence.results import OutomeResultsPersistence, RunTypePersistence
+from ten.test.persistence.results import OutcomeResultsPersistence, RunTypePersistence
 
 
 class PersistenceTestsWriter(BaseResultsWriter):
@@ -29,7 +29,7 @@ class PersistenceTestsWriter(BaseResultsWriter):
         runner.uuid = self.uuid
 
         # use remote persistence if we are running in azure
-        self.outcomes_db = OutomeResultsPersistence.init(self.is_cloud_vm, self.user_dir, self.machine_name)
+        self.outcomes_db = OutcomeResultsPersistence.init(self.is_cloud_vm, self.user_dir, self.machine_name)
 
     def cleanup(self, **kwargs):
         if self.run_type is not None:
