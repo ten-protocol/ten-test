@@ -27,7 +27,7 @@ class TenL1Sepolia(Sepolia):
         self.WS_HOST = props.l1_host_ws(test.env)
         self.PORT = props.l1_port_http(test.env)
         self.WS_PORT = props.l1_port_ws(test.env)
-        self.CHAIN_ID = props.chain_id(test.env)
+        self.CHAIN_ID = props.l1_chain_id(test.env)
 
     def connection_url(self, web_socket=False):
         return '%s/%s' % (self.HOST if not web_socket else self.WS_HOST, Properties().sepoliaAPIKey())
@@ -63,7 +63,7 @@ class TenL1Geth(Geth):
         self.WS_HOST = props.l1_host_ws(test.env)
         self.PORT = props.l1_port_http(test.env)
         self.WS_PORT = props.l1_port_ws(test.env)
-        self.CHAIN_ID = props.chain_id(test.env)
+        self.CHAIN_ID = props.l1_chain_id(test.env)
 
     def connect(self, test, private_key, web_socket=False, check_funds=True, verbose=True):
         url = self.connection_url(web_socket)

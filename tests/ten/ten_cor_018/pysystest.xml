@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Error: Transact using an invalid chain id</title>
+        <purpose><![CDATA[
+Tries to send a signed transaction to transfer funds, where the signed transaction either has a bogus chain ID, or
+has been signed on a different network.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+            <mode>ten.sim</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

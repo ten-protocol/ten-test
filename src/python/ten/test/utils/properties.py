@@ -179,6 +179,8 @@ class Properties:
 
     def l1_port_ws(self, key): return int(self.get('env.'+key, 'L1NodePortWS'))
 
+    def l1_chain_id(self, key): return int(self.get('env.'+key, 'L1ChainID'))
+
     def l1_funded_account_pk(self, key): return self.get('env.'+key, 'L1FundedAccountPK')
 
     def l1_cross_chain_management_address(self): return self.L1CrossChainManagementAddress
