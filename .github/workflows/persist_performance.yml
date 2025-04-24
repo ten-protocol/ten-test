@@ -1,7 +1,7 @@
 # Builds a local testnet and runs a set of tests
 #
 name: '[execute] Persist performance'
-run-name: Run performance tests (${{ github.event.inputs.environment }})
+run-name: Run performance tests (${{ github.event_name }} ${{ github.event.inputs.environment }} )
 on:
   schedule:
     - cron: '0 4 * * *'

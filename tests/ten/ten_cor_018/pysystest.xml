@@ -4,6 +4,8 @@
     <description>
         <title>Error: Transact using an invalid chain id</title>
         <purpose><![CDATA[
+Tries to send a signed transaction to transfer funds, where the signed transaction either has a bogus chain ID, or
+has been signed on a different network.
 ]]>
         </purpose>
     </description>
