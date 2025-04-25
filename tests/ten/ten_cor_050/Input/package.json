@@ -5,7 +5,7 @@
   "license": "ISC",
   "dependencies": {
     "console-stamp": "3.1.2",
-    "ten-hardhat-plugin": "*",
+    "@tenprotocol/ten-hardhat-plugin": "*",
     "ethers": "^5.7.2",
     "hardhat": "^2.21.0",
     "hardhat-deploy": "^0.11.22",

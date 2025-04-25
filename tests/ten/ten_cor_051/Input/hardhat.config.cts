@@ -1,5 +1,5 @@
 require("@nomicfoundation/hardhat-toolbox");
-require("ten-hardhat-plugin");
+require("@tenprotocol/ten-hardhat-plugin");
 require("hardhat-deploy");
 
 const { PK1, PK2, HOST, PORT } = process.env;
