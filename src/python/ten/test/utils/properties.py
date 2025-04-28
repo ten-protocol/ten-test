@@ -7,14 +7,28 @@ from ten.test.utils.threading import thread_num
 
 class Properties:
     """Used as a holding class for properties."""
-    L1CrossChainManagementAddress = None
-    L1BridgeAddress = None
-    L1MessageBusAddress = None
-    L1CrossChainMessengerAddress = None
-    L2BridgeAddress = None
-    L2MessageBusAddress = None
-    L2CrossChainMessengerAddress = None
+    L1StartHash = None                        # "L1StartHash"
+    L1NetworkConfigAddress = None             # "NetworkConfig"
+    L1EnclaveRegistryAddress = None           # "EnclaveRegistry"
+    L1DataAvailabilityRegistryAddress = None  # "DataAvailabilityRegistry"
+    L1CrossChainManagementAddress = None      # "CrossChain"
+    L1BridgeAddress = None                    # "L1Bridge"
+    L1MessageBusAddress = None                # "L1MessageBus"
+    L1CrossChainMessengerAddress = None       # "L1CrossChainMessenger"
+    L2BridgeAddress = None                    # "L2Bridge"
+    L2MessageBusAddress = None                # "L2MessageBus"
+    L2CrossChainMessengerAddress = None       # "L2CrossChainMessenger"
     L2PublicCallbacks = None
+
+
+ # "NetworkConfig"
+ # "EnclaveRegistry"
+ # "DataAvailabilityRegistry"
+ # "L1StartHash"
+
+
+
+
 
     def __init__(self):
         self.default_config = configparser.ConfigParser()
@@ -64,6 +78,18 @@ class Properties:
 
     def node_path(self):
         return self.get('binaries.%s' % PLATFORM, 'node_path')
+
+    def go_binary(self):
+        path = self.get('binaries.%s' % PLATFORM, 'go')
+        if not os.path.exists(path):
+            raise FileNotFoundException('Go binary not found at default location %s' % path)
+        return path
+
+    def docker_binary(self):
+        path = self.get('binaries.%s' % PLATFORM, 'docker')
+        if not os.path.exists(path):
+            raise FileNotFoundException('Docker binary not found at default location %s' % path)
+        return path
 
     def npm_binary(self):
         path = self.get('binaries.%s' % PLATFORM, 'npm')

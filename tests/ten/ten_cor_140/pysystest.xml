@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Node - start a new node to join the network and transact through it</title>
+        <purpose><![CDATA[
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>infra</group>
+            <group>skip</group>
+        </groups>
+        <modes inherit="true">
+            <mode>obscuro.local</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
