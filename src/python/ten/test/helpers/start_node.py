@@ -33,14 +33,14 @@ class LocalValidatorNode:
         self.enclave_ws_port = 11001
         self.private_key = pk
         self.sequencer_addr = props.sequencer_address(test.env)
-        #self.enclave_registry_addr =
+        self.enclave_registry_addr = props.l1_enclave_registry_address()
         self.cross_chain_addr = props.l1_cross_chain_messenger_address()
-        #self.da_registry_addr =
-        #self.network_config_addr =
-        #self.message_bus_contract_addr =
-        #self.bridge_contract_addr =
+        self.da_registry_addr = props.l1_data_availability_registry_address()
+        self.network_config_addr = props.l1_network_config_address()
+        self.message_bus_contract_addr = props.l1_message_bus_address()
+        self.bridge_contract_addr = props.l1_bridge_address()
         self.l1_start = l1_start
-        #self.pccs_addr =
+        #self.pccs_addr not needed
         self.edgeless_db_image = "ghcr.io/edgelesssys/edgelessdbsgx-4gb:v0.3.2"
         self.is_debug_namespace_enabled = False
         self.log_level = 3
@@ -51,9 +51,9 @@ class LocalValidatorNode:
         self.rollup_interval = 3
         self.l1_chain_id = 1337
         self.host_public_p2p_addr = '%s:%d' % (name, p2p_port)
-        #self.postgres_db_host =
+        #self.postgres_db_host not needed
         self.l1_beacon_url = "eth2network:126000"
-        #self.l1_blob_archive_url =
+        #self.l1_blob_archive_url not needed
         #self.system_contracts_upgrader =
 
     def run(self):

@@ -312,12 +312,17 @@ class TenRunnerPlugin():
         response = self.post(runner, data)
         if 'result' in response.json():
             config = response.json()['result']
-            Properties.L1MessageBusAddress = Web3.to_checksum_address(config["L1MessageBus"])
-            Properties.L2MessageBusAddress = Web3.to_checksum_address(config["L2MessageBus"])
-            Properties.L1BridgeAddress = Web3.to_checksum_address(config["L1Bridge"])
-            Properties.L2BridgeAddress = Web3.to_checksum_address(config["L2Bridge"])
+            print(config)
+            Properties.L1StartHash = config["L1StartHash"]
+            Properties.L1NetworkConfigAddress = Web3.to_checksum_address(config["NetworkConfig"])
+            Properties.L1EnclaveRegistryAddress = Web3.to_checksum_address(config["EnclaveRegistry"])
+            Properties.L1DataAvailabilityRegistryAddress = Web3.to_checksum_address(config["DataAvailabilityRegistry"])
             Properties.L1CrossChainManagementAddress = Web3.to_checksum_address(config["CrossChain"])
+            Properties.L1BridgeAddress = Web3.to_checksum_address(config["L1Bridge"])
+            Properties.L1MessageBusAddress = Web3.to_checksum_address(config["L1MessageBus"])
             Properties.L1CrossChainMessengerAddress = Web3.to_checksum_address(config["L1CrossChainMessenger"])
+            Properties.L2BridgeAddress = Web3.to_checksum_address(config["L2Bridge"])
+            Properties.L2MessageBusAddress = Web3.to_checksum_address(config["L2MessageBus"])
             Properties.L2CrossChainMessengerAddress = Web3.to_checksum_address(config["L2CrossChainMessenger"])
             if "PublicSystemContracts" in config:
                 contracts = config["PublicSystemContracts"]

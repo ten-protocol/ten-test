@@ -18,17 +18,7 @@ class Properties:
     L2BridgeAddress = None                    # "L2Bridge"
     L2MessageBusAddress = None                # "L2MessageBus"
     L2CrossChainMessengerAddress = None       # "L2CrossChainMessenger"
-    L2PublicCallbacks = None
-
-
- # "NetworkConfig"
- # "EnclaveRegistry"
- # "DataAvailabilityRegistry"
- # "L1StartHash"
-
-
-
-
+    L2PublicCallbacks = None                  # "PublicSystemContracts.PublicCallbacks"
 
     def __init__(self):
         self.default_config = configparser.ConfigParser()
@@ -216,6 +206,14 @@ class Properties:
     def l1_message_bus_address(self): return self.L1MessageBusAddress
 
     def l1_cross_chain_messenger_address(self): return self.L1CrossChainMessengerAddress
+
+    def l1_start_hash(self): return self.L1StartHash
+
+    def l1_network_config_address(self): return self.L1NetworkConfigAddress
+
+    def l1_enclave_registry_address(self): return self.L1EnclaveRegistryAddress
+
+    def l1_data_availability_registry_address(self): return self.L1DataAvailabilityRegistryAddress
 
     def l2_bridge_address(self): return self.L2BridgeAddress
 
