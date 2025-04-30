@@ -6,9 +6,9 @@ from ten.test.utils.properties import Properties
 
 class LocalValidatorNode:
     """A wrapper over starting and stopping a Validator node to a local testnet."""
-    
+
     def __init__(self, test, name, pk, http_port, ws_port, p2p_host, p2p_port):
-        """Create an instance of the helper. """
+        """Create an instance."""
         self.test = test
 
         props = Properties()
@@ -95,7 +95,7 @@ class LocalValidatorNode:
 
         stdout = os.path.join(self.test.output, 'start_node.out')
         stderr = os.path.join(self.test.output, 'start_node.err')
-        dir = os.path.join(os.path.dirname(PROJECT.root), 'go-obscuro')
+        dir = os.path.join(os.path.dirname(PROJECT.root), 'go-ten')
 
         hprocess = self.test.startProcess(command=self.binary, displayName='go',
                                           workingDir=dir, environs=os.environ, quiet=True,
