@@ -7,7 +7,7 @@ from ten.test.utils.properties import Properties
 class LocalValidatorNode:
     """A wrapper over starting and stopping a Validator node to a local testnet."""
 
-    def __init__(self, test, name, pk, http_port, ws_port, p2p_host, p2p_port):
+    def __init__(self, test, name, pk, http_port, ws_port, p2p_port):
         """Create an instance."""
         self.test = test
 
@@ -24,7 +24,7 @@ class LocalValidatorNode:
         self.host_http_port = http_port
         self.host_ws_port = ws_port
         self.host_p2p_port = p2p_port
-        self.host_p2p_host = p2p_host
+        self.host_p2p_host = 'http://127.0.0.1'
         self.enclave_http_port = 11000
         self.enclave_ws_port = 11001
         self.private_key = pk
@@ -41,7 +41,7 @@ class LocalValidatorNode:
         self.log_level = 3
         self.is_inbound_p2p_disabled = True
         self.batch_interval = 1
-        self.host_id = Web3().eth.account.privateKeyToAccount(pk).address
+        self.host_id = Web3().eth.account.from_key(pk).address
         self.max_batch_interval = 1
         self.rollup_interval = 3
         self.l1_chain_id = 1337
@@ -67,9 +67,9 @@ class LocalValidatorNode:
         arguments.append('-host_http_port=%d' % self.host_http_port)
         arguments.append('-host_ws_port=%d' % self.host_ws_port)
         arguments.append('-host_p2p_port=%d' % self.host_p2p_port)
-        arguments.append('-host_p2p_host=%d' % self.host_p2p_host)
+        arguments.append('-host_p2p_host=%s' % self.host_p2p_host)
         arguments.append('-enclave_http_port=%d' % self.enclave_http_port)
-        arguments.append('-enclave_ws_port=%s' % self.enclave_ws_port)
+        arguments.append('-enclave_WS_port=%d' % self.enclave_ws_port)
         arguments.append('-private_key=%s' % self.private_key)
         arguments.append('-sequencer_addr=%s' % self.sequencer_addr)
         arguments.append('-enclave_registry_addr=%s' % self.enclave_registry_addr)
@@ -83,10 +83,10 @@ class LocalValidatorNode:
         arguments.append('-is_debug_namespace_enabled=%s' % self.is_debug_namespace_enabled)
         arguments.append('-log_level=%d' % self.log_level)
         arguments.append('-is_inbound_p2p_disabled=%s' % self.is_inbound_p2p_disabled)
-        arguments.append('-batch_interval=%d' % self.batch_interval)
-        arguments.append('-host_id=%d' % self.host_id)
-        arguments.append('-max_batch_interval=%d' % self.max_batch_interval)
-        arguments.append('-rollup_interval=%d' % self.rollup_interval)
+        arguments.append('-batch_interval=%ds' % self.batch_interval)
+        arguments.append('-host_id=%s' % self.host_id)
+        arguments.append('-max_batch_interval=%ds' % self.max_batch_interval)
+        arguments.append('-rollup_interval=%ds' % self.rollup_interval)
         arguments.append('-l1_chain_id=%d' % self.l1_chain_id)
         arguments.append('-host_public_p2p_addr=%s' % self.host_public_p2p_addr)
         arguments.append('-l1_beacon_url=%s' % self.l1_beacon_url)

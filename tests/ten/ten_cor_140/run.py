@@ -17,7 +17,7 @@ class PySysTest(TenNetworkTest):
         http_port = self.getNextAvailableTCPPort()
         ws_port = self.getNextAvailableTCPPort()
         p2p_port = self.getNextAvailableTCPPort()
-        node = LocalValidatorNode(self, 'new_node', node_pk, http_port, ws_port, p2p_port, self.env)
+        node = LocalValidatorNode(self, 'new_node', node_pk, http_port, ws_port, p2p_port)
         node.run()
 
         host_id = DockerHelper.container_id(test=self, name="new_node-host")
