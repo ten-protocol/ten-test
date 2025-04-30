@@ -24,8 +24,4 @@ class PySysTest(TenNetworkTest):
         enclave_id = DockerHelper.container_id(test=self, name="new_node-enclave")
         self.log.info('Validator node started, host_id=%s, enclave_id=%s', host_id, enclave_id)
 
-        # stop the node
-        self.wait(20)
-        DockerHelper.container_stop(test=self, name="new_node-host")
-        DockerHelper.container_stop(test=self, name="new_node-enclave")
 

@@ -14,7 +14,7 @@
             <group>skip</group>
         </groups>
         <modes inherit="true">
-            <mode>obscuro.local</mode>
+            <mode>ten.local</mode>
         </modes>
     </classification>
 
