@@ -5,13 +5,9 @@ from ten.test.utils.properties import Properties
 
 
 class LocalValidatorNode:
-    """A wrapper over starting and stopping an Obscuro node to a local testnet.
-
-    Note that the L1 management and message bus contracts are taken from the properties at the moment, as is the
-    sequencer id. These are liable to change and so this should be updated in the future. The L1 start block hash
-    needs to be extracted from the hardhat deployer container that deployed into the local testnet.
-    """
-    def __init__(self, test, name, pk, http_port, ws_port, p2p_host, p2p_port, l1_start, env):
+    """A wrapper over starting and stopping a Validator node to a local testnet."""
+    
+    def __init__(self, test, name, pk, http_port, ws_port, p2p_host, p2p_port):
         """Create an instance of the helper. """
         self.test = test
 
@@ -39,8 +35,7 @@ class LocalValidatorNode:
         self.network_config_addr = props.l1_network_config_address()
         self.message_bus_contract_addr = props.l1_message_bus_address()
         self.bridge_contract_addr = props.l1_bridge_address()
-        self.l1_start = l1_start
-        #self.pccs_addr not needed
+        self.l1_start = props.l1_start_hash()
         self.edgeless_db_image = "ghcr.io/edgelesssys/edgelessdbsgx-4gb:v0.3.2"
         self.is_debug_namespace_enabled = False
         self.log_level = 3
@@ -51,31 +46,51 @@ class LocalValidatorNode:
         self.rollup_interval = 3
         self.l1_chain_id = 1337
         self.host_public_p2p_addr = '%s:%d' % (name, p2p_port)
-        #self.postgres_db_host not needed
         self.l1_beacon_url = "eth2network:126000"
-        #self.l1_blob_archive_url not needed
-        #self.system_contracts_upgrader =
+        self.system_contracts_upgrader = '0xA58C60cc047592DE97BF1E8d2f225Fc5D959De77'
+        # start up options not needed are;
+        #   self.pccs_addr
+        #   self.postgres_db_host
+        #   self.l1_blob_archive_url
 
     def run(self):
         """Run the node. """
         arguments = ['run', './go/node/cmd']
-        arguments.append('-is_genesis=%s' % str(self.is_genesis))
         arguments.append('-node_name=%s' % self.node_name)
         arguments.append('-node_type=%s' % self.node_type)
-        arguments.append('-is_sgx_enabled=%s' % str(self.is_sgx_enabled))
-        arguments.append('-host_id=%s' % self.host_id)
-        arguments.append('-l1_host=%s' % self.l1_host)
-        arguments.append('-management_contract_addr=%s' % self.management_contract_addr)
-        arguments.append('-message_bus_contract_addr=%s' % self.message_bus_contract_addr)
-        arguments.append('-l1_start=%s' % self.l1_start)
-        arguments.append('-private_key=%s' % self.private_key)
-        arguments.append('-sequencer_id=%s' % self.sequencer_id)
-        arguments.append('-host_http_port=%s' % str(self.http_port))
-        arguments.append('-host_ws_port=%s' % str(self.ws_port))
-        arguments.append('-host_public_p2p_addr=%s' % str(self.host_public_p2p_addr))
-        arguments.append('-host_p2p_port=%s' % str(self.host_p2p_port))
+        arguments.append('-is_genesis=%s' % self.is_genesis)
+        arguments.append('-num_enclaves=%d' % self.num_enclaves)
+        arguments.append('-is_sgx_enabled=%s' % self.is_sgx_enabled)
         arguments.append('-enclave_docker_image=%s' % self.enclave_docker_image)
         arguments.append('-host_docker_image=%s' % self.host_docker_image)
+        arguments.append('-l1_ws_url=%s' % self.l1_ws_url)
+        arguments.append('-host_http_port=%d' % self.host_http_port)
+        arguments.append('-host_ws_port=%d' % self.host_ws_port)
+        arguments.append('-host_p2p_port=%d' % self.host_p2p_port)
+        arguments.append('-host_p2p_host=%d' % self.host_p2p_host)
+        arguments.append('-enclave_http_port=%d' % self.enclave_http_port)
+        arguments.append('-enclave_ws_port=%s' % self.enclave_ws_port)
+        arguments.append('-private_key=%s' % self.private_key)
+        arguments.append('-sequencer_addr=%s' % self.sequencer_addr)
+        arguments.append('-enclave_registry_addr=%s' % self.enclave_registry_addr)
+        arguments.append('-cross_chain_addr=%s' % self.cross_chain_addr)
+        arguments.append('-da_registry_addr=%s' % self.da_registry_addr)
+        arguments.append('-network_config_addr=%s' % self.network_config_addr)
+        arguments.append('-message_bus_contract_addr=%s' % self.message_bus_contract_addr)
+        arguments.append('-bridge_contract_addr=%s' % self.bridge_contract_addr)
+        arguments.append('-l1_start=%s' % self.l1_start)
+        arguments.append('-edgeless_db_image=%s' % self.edgeless_db_image)
+        arguments.append('-is_debug_namespace_enabled=%s' % self.is_debug_namespace_enabled)
+        arguments.append('-log_level=%d' % self.log_level)
+        arguments.append('-is_inbound_p2p_disabled=%s' % self.is_inbound_p2p_disabled)
+        arguments.append('-batch_interval=%d' % self.batch_interval)
+        arguments.append('-host_id=%d' % self.host_id)
+        arguments.append('-max_batch_interval=%d' % self.max_batch_interval)
+        arguments.append('-rollup_interval=%d' % self.rollup_interval)
+        arguments.append('-l1_chain_id=%d' % self.l1_chain_id)
+        arguments.append('-host_public_p2p_addr=%s' % self.host_public_p2p_addr)
+        arguments.append('-l1_beacon_url=%s' % self.l1_beacon_url)
+        arguments.append('-system_contracts_upgrader=%s' % self.system_contracts_upgrader)
         arguments.append('start')
 
         stdout = os.path.join(self.test.output, 'start_node.out')
