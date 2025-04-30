@@ -312,8 +312,7 @@ class TenRunnerPlugin():
         response = self.post(runner, data)
         if 'result' in response.json():
             config = response.json()['result']
-            print(config)
-            Properties.L1StartHash = config["L1StartHash"]
+            Properties.LStartHash = config["L1StartHash"]
             Properties.L1NetworkConfigAddress = Web3.to_checksum_address(config["NetworkConfig"])
             Properties.L1EnclaveRegistryAddress = Web3.to_checksum_address(config["EnclaveRegistry"])
             Properties.L1DataAvailabilityRegistryAddress = Web3.to_checksum_address(config["DataAvailabilityRegistry"])
