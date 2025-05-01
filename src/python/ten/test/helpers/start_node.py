@@ -36,7 +36,7 @@ class LocalValidatorNode:
         self.message_bus_contract_addr = props.l1_message_bus_address()
         self.bridge_contract_addr = props.l1_bridge_address()
         self.l1_start = props.l1_start_hash()
-        self.edgeless_db_image = "ghcr.io/edgelesssys/edgelessdbsgx-4gb:v0.3.2"
+        self.edgeless_db_image = "ghcr.io/edgelesssys/edgelessdb-sgx-1gb:v0.3.2"
         self.is_debug_namespace_enabled = False
         self.log_level = 3
         self.is_inbound_p2p_disabled = True
