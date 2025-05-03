@@ -9,7 +9,7 @@
     </description>
     <classification>
         <groups inherit="true">
-            <group>health</group>
+<!--            <group>health</group>-->
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
