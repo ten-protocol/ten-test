@@ -12,15 +12,15 @@ class PySysTest(TenNetworkTest):
         url = network.connection_url()
         web3 = Web3(Web3.HTTPProvider(url))
 
-        # recorded last then get last two hours of recorded tx counts - note that we expect a regular interval of
+        # record last then get last four hours of recorded tx counts - note that we expect a regular interval of
         # recordings which might not be the case if the job is queued or stopped at any point
         sequencer_address = Properties().sequencer_address(key=self.env)
         sequencer_count = web3.eth.get_transaction_count(sequencer_address)
         self.log.info('Sequencer tx count %d', sequencer_count)
         self.counts_db.insert_count('Sequencer', sequencer_address, self.env, current_time, sequencer_count)
-        entries = self.counts_db.get_last_hour('Sequencer', sequencer_address, self.env, current_time - 7200)
+        entries = self.counts_db.get_since_time('Sequencer', sequencer_address, self.env, current_time - 14400)
 
-        # make sure we have at least 2 entries recorded within the last two hours
+        # make sure we have at least 2 entries recorded within the last four hours
         if len(entries) >= 2:
 
             # make sure of those recorded there is at least a one hour difference between the first and last
@@ -35,5 +35,5 @@ class PySysTest(TenNetworkTest):
                 self.log.warn('Less than 1 hour recorded between retrieved entries ... skipping')
 
         else:
-            self.log.warn('Less than 2 entries recorded over the last 2 hour period ... skipping')
+            self.log.warn('Less than 2 entries recorded over the last 4 hour period ... skipping')
 
