@@ -7,8 +7,8 @@
 import re, argparse
 from subprocess import Popen, PIPE
 
-REGEX1 = "(?P<hash>[0-9A-Za-z]{8}) (?P<title>.*) \(#(?P<number>[0-9]*)\)$"
-REGEX2 = "(?P<hash>[0-9A-Za-z]{8}) Merge pull request #(?P<number>[0-9]*).*$"
+REGEX1 = r"(?P<hash>[0-9A-Za-z]{8}) (?P<title>.*) \(#(?P<number>[0-9]*)\)$"
+REGEX2 = r"(?P<hash>[0-9A-Za-z]{8}) Merge pull request #(?P<number>[0-9]*).*$"
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Extract merged PRs from given tag to current main. ')
