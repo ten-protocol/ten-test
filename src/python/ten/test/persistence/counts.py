@@ -63,7 +63,7 @@ class CountsPersistence:
         self.cursor.execute(self.sqlthr, (name, address, environment))
         return self.cursor.fetchall()
 
-    def get_last_hour(self, name, address, environment, time):
+    def get_since_time(self, name, address, environment, time):
         """Return the transaction count with time for a particular logical account."""
         self.cursor.execute(self.sqlhor, (name, address, environment, time))
         return self.cursor.fetchall()
