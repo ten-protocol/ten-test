@@ -24,7 +24,7 @@ class PySysTest(GenericNetworkTest):
         self.submit(account, target, web3, nonce, estimate_gas)
         self.log.info('Key after submitting with a valid value is: %s' % error.contract.functions.get_key().call())
 
-        # force a require
+        # force a revert - this will still pass as the transaction only registers the call back
         nonce = self.nonce_db.get_next_nonce(self, web3, account.address, self.env)
         target = error.contract.functions.set_key_with_revert("")
         self.submit(account, target, web3, nonce, estimate_gas)
