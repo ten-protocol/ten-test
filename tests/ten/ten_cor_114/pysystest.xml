@@ -5,8 +5,9 @@
         <title>Callbacks: privacy callback where the callback triggers a require</title>
         <purpose><![CDATA[
 Deploys the error contract which implements the two phase commit approach. Transacting with the contract results in a
-callback to a method which has a require that triggers - we expect this to be handled in the same way in which it
-would have had it been done without the call back approach.
+callback to a method which has a require that triggers. The transaction to register the callback will be successful,
+i.e. there is no indication to the user that the callback will fail. It is the developer of the contract's responsibility
+to emit events to indicate if the call was successful under these situations.
 ]]>
         </purpose>
     </description>

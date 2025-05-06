@@ -15,19 +15,26 @@ class PySysTest(GenericNetworkTest):
         error = ErrorTwoPhase(self, web3, Properties().L2PublicCallbacks)
         error.deploy(network, account)
 
+        nonce = self.nonce_db.get_next_nonce(self, web3, account.address, self.env)
+        target = error.contract.functions.set_key_with_require("new")
+        params = {'nonce': nonce, 'gasPrice': web3.eth.gas_price, 'chainId': web3.eth.chain_id, 'value': web3.to_wei(0.01, 'ether') }
+        estimate_gas = target.estimate_gas(params)
+
         # transact successfully
-        nonce = self.nonce_db.get_next_nonce(self, web3, account.address, self.env)
-        self.submit(account, error.contract.functions.set_key_with_require("new"), web3, nonce)
+        self.submit(account, target, web3, nonce, estimate_gas)
+        self.log.info('Key after submitting with a valid value is: %s' % error.contract.functions.get_key().call())
 
-        # force a require
+        # force a require - this will still pass as the transaction only registers the call back
         nonce = self.nonce_db.get_next_nonce(self, web3, account.address, self.env)
-        self.submit(account, error.contract.functions.set_key_with_require(""), web3, nonce)
+        target = error.contract.functions.set_key_with_require("")
+        self.submit(account, target, web3, nonce, estimate_gas)
+        self.log.info('Key after submitting with an invalid value is: %s' % error.contract.functions.get_key().call())
 
-    def submit(self, account, target, web3, nonce, expect_success=True):
+    def submit(self, account, target, web3, nonce, estimate_gas, expect_success=True):
         build_tx = target.build_transaction({
             'nonce': nonce,
             'gasPrice': web3.eth.gas_price,
-            'gas': 10*21000,                    # hard code the gas as an estimate will fail
+            'gas': estimate_gas,
             'chainId': web3.eth.chain_id,
             'value': web3.to_wei(0.01, 'ether') # we need to provide funds for the tx to go through
         })
