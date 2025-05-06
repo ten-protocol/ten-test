@@ -19,6 +19,10 @@ contract ErrorTwoPhase {
         key = _key;
     }
 
+    function get_key() public view returns (string memory) {
+        return key;
+    }
+
     // set_key_with_require
     function set_key_with_require(string memory newKey) public payable {
         bytes memory callbackData = abi.encodeWithSelector(this.handle_set_key_with_require.selector, newKey);
