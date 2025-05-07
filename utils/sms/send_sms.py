@@ -3,7 +3,7 @@ from twilio.rest import Client
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='websocket proxy.')
+    parser = argparse.ArgumentParser(description='send sms')
     parser.add_argument('--account', help='The twilio account SID', required=True)
     parser.add_argument('--token', help='The account authentication token', required=True)
     parser.add_argument('--fr', help='The phone number to send from', required=True)
