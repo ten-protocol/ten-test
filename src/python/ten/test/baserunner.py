@@ -5,14 +5,13 @@ from pathlib import Path
 from eth_account import Account
 from eth_account.messages import encode_typed_data
 from pysys.constants import PROJECT, BACKGROUND
-from pysys.exceptions import AbortExecution
 from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
 from ten.test.persistence.rates import RatesPersistence
 from ten.test.persistence.nonce import NoncePersistence
 from ten.test.persistence.counts import CountsPersistence
 from ten.test.persistence.funds import FundsPersistence, PandLPersistence, GasPricePersistence
-from ten.test.persistence.results import PerformanceResultsPersistence, TxCostResultsPersistence
+from ten.test.persistence.results import PerformanceResultsPersistence, TxCostResultsPersistence, RunTypePersistence
 from ten.test.persistence.contract import ContractPersistence
 from ten.test.utils.properties import Properties
 from ten.test.utils.cloud import is_cloud_vm
@@ -81,6 +80,7 @@ class TenRunnerPlugin():
         counts_db = CountsPersistence.init(use_remote, self.user_dir, self.machine_name)
         results_db = PerformanceResultsPersistence.init(self.is_cloud_vm, self.user_dir, self.machine_name)
         txcosts_db = TxCostResultsPersistence.init(use_remote, self.user_dir, self.machine_name)
+        runtype_db = RunTypePersistence.init(True, self.user_dir, self.machine_name)
 
         eth_price = self.get_eth_price()
         if eth_price is not None:
@@ -178,6 +178,7 @@ class TenRunnerPlugin():
         counts_db.close()
         results_db.close()
         txcosts_db.close()
+        runtype_db.close()
 
     def run_ganache(self, runner):
         """Run ganache for use by the tests. """

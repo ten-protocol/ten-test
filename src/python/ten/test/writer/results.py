@@ -1,5 +1,4 @@
 import uuid, time
-from pysys.constants import FAILED
 from pysys.writer import BaseResultsWriter
 from ten.test.persistence.results import OutcomeResultsPersistence, RunTypePersistence
 

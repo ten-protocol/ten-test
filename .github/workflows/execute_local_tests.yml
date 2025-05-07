@@ -82,7 +82,7 @@ jobs:
       - name: 'Do a persistence reset for nonce and contracts'
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.local persistence_reset
+          /usr/local/bin/pysys.py run -m ten.local reset_persistence
 
       - name: 'Run tests on workflow dispatch'
         if: ${{ github.event_name == 'workflow_dispatch' }}

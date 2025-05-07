@@ -10,7 +10,7 @@ from ten.test.persistence.rates import RatesPersistence
 from ten.test.persistence.nonce import NoncePersistence
 from ten.test.persistence.counts import CountsPersistence
 from ten.test.persistence.funds import FundsPersistence, PandLPersistence, GasPricePersistence
-from ten.test.persistence.results import PerformanceResultsPersistence, TxCostResultsPersistence
+from ten.test.persistence.results import PerformanceResultsPersistence, TxCostResultsPersistence, RunTypePersistence
 from ten.test.persistence.contract import ContractPersistence
 from ten.test.utils.properties import Properties
 from ten.test.networks.default import DefaultPostLondon
@@ -51,6 +51,7 @@ class GenericNetworkTest(BaseTest):
         self.counts_db = CountsPersistence(use_remote, self.user_dir, self.machine_name)
         self.results_db = PerformanceResultsPersistence(self.is_cloud_vm, self.user_dir, self.machine_name)
         self.txcosts_db = TxCostResultsPersistence(use_remote, self.user_dir, self.machine_name)
+        self.runtype_db = RunTypePersistence.init(True, self.user_dir, self.machine_name)
         self.addCleanupFunction(self.close_db)
 
         # every test has a unique connection for the funded account
@@ -95,6 +96,7 @@ class GenericNetworkTest(BaseTest):
         self.counts_db.close()
         self.results_db.close()
         self.txcosts_db.close()
+        self.runtype_db.close()
 
     def drain_ephemeral_pks(self):
         """Drain any ephemeral accounts of their funds. """

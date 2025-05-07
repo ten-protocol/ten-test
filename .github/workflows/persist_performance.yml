@@ -53,7 +53,7 @@ jobs:
         if:  ${{ github.event.inputs.environment == 'ten.local' || github.event_name == 'schedule' }}
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.local persistence_reset
+          /usr/local/bin/pysys.py run -m ten.local reset_persistence
 
       - name: 'Build required artifacts for running tests'
         run: |

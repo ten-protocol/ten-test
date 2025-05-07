@@ -65,6 +65,7 @@ class RunTypePersistence:
                  "time INTEGER, " \
                  "outcome BOOLEAN)"
     SQL_INSERT = "INSERT INTO results_type VALUES (?, ?, ?, ?, ?)"
+    SQL_SELTWO = "SELECT time, outcome from results_type WHERE environment=? and type=? order by time desc limit 2"
 
     @classmethod
     def init(cls, use_remote, user_dir, host):
@@ -77,6 +78,7 @@ class RunTypePersistence:
         self.host = host
         self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
+        self.sqlsel = normalise(self.SQL_SELTWO, self.dbconnection.type)
         self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
@@ -87,6 +89,11 @@ class RunTypePersistence:
         """Insert a new run into the persistence. """
         self.cursor.execute(self.sqlins, (uuid, environment, type, time, outcome))
         self.dbconnection.connection.commit()
+
+    def get_last_two_results(self, environment, type):
+        """Return the last two results for a particular environment and type. """
+        self.cursor.execute(self.sqlsel, (environment, type))
+        return self.cursor.fetchall()
 
     def close(self):
         """Close the connection to the underlying persistence."""
