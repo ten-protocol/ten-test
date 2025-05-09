@@ -12,6 +12,7 @@
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
         </modes>
     </classification>
 
