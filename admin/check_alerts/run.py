@@ -1,4 +1,5 @@
 import requests
+from twilio.rest import Client
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 
@@ -61,11 +62,13 @@ class PySysTest(TenNetworkTest):
         last_status = True if entries[1][1] == 1 else False
         if not this_status and last_status:
             self.log.info('%s status has changed to failing' % name)
-            self.send_alert(name, on_failure_msg)
+            self.send_discord_alert(name, on_failure_msg)
+            self.send_sms_alert('%s checks are failing' % name)
 
         elif not last_status and this_status:
             self.log.info('%s status has changed to passing' % name)
-            self.send_alert(name, on_success_msg)
+            self.send_discord_alert(name, on_success_msg)
+            self.send_sms_alert('%s checks are now passing' % name)
 
         elif last_status and this_status:
             self.log.info('%s in a run of passing checks ... no health change' % name)
@@ -73,7 +76,7 @@ class PySysTest(TenNetworkTest):
         elif not last_status and not this_status:
             self.log.info('%s in a run of failing checks ... no health change' % name)
 
-    def send_alert(self, name, get_msg):
+    def send_discord_alert(self, name, get_msg):
         props = Properties()
         webhook_url = 'https://discord.com/api/webhooks/%s/%s' % (props.monitoring_web_hook_id(self.env),
                                                                   props.monitoring_web_hook_token(self.env))
@@ -82,3 +85,12 @@ class PySysTest(TenNetworkTest):
 
         if response.status_code == 204: self.log.info('Send discord msg successfully')
         else: self.log.warn('Failed to send discord msg')
+
+    def send_sms_alert(self, msg):
+        props = Properties()
+        client = Client(props.monitoring_twilio_account(), props.monitoring_twilio_token())
+        client.messages.create(
+            body = msg,
+            from_ = props.monitoring_twilio_from_number(),
+            to = props.monitoring_twilio_from_number(),
+        )

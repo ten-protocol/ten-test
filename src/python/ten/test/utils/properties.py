@@ -223,6 +223,7 @@ class Properties:
 
     def l2_gas_payment_account_pk(self, key): return self.get('env.'+key, 'L2GasPaymentAccountPK')
 
+    # monitoring properties
     def monitoring_web_hook_id(self, key): return self.get('env.'+key, 'MonitoringWebHookID')
 
     def monitoring_web_hook_token(self, key): return self.get('env.'+key, 'MonitoringWebHookToken')
@@ -230,6 +231,14 @@ class Properties:
     def monitoring_workflow_url(self, key): return self.get('env.'+key, 'MonitoringWorkflowURL')
 
     def monitoring_on_call(self, key): return self.get('env.'+key, 'MonitoringOnCall')
+
+    def monitoring_twilio_account(self): return self.get('sms.twilio', 'account')
+
+    def monitoring_twilio_token(self): return self.get('sms.twilio', 'token')
+
+    def monitoring_twilio_from_number(self): return self.get('sms.twilio', 'from')
+
+    def monitoring_twilio_to_number(self): return self.get('sms.twilio', 'to')
 
     # infura related
     def infuraProjectID(self): return self.get('env.goerli', 'ProjectID')
