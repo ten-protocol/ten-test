@@ -33,6 +33,8 @@ jobs:
         run: |
           cd ${{ github.workspace }}/ten-test
           /usr/local/bin/pysys.py run -r -m ten.sepolia -i health -XITERATIONS_FULL=0 -XRUN_TYPE=health
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ten.sepolia -XRUN_TYPE=health -XRUN_NAME=Primary_gateway check_alerts
 
       - name: 'Run health check tests (dexynth gateway)'
         if: always()
@@ -40,11 +42,8 @@ jobs:
           sleep 5 
           cd ${{ github.workspace }}/ten-test/tests
           PRIMARY_HOST_HTTP=https://rpc.dexynth-gateway.ten.xyz PRIMARY_HOST_WS=wss://rpc.dexynth-gateway.ten.xyz /usr/local/bin/pysys.py run -r -m ten.sepolia -o dexynth -XRUN_TYPE=health-dexynth gen_cor_040 gen_cor_073 gen_cor_106
-
-      - name: 'Check for alerts (primary and dexynth)'
-        run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.sepolia check_alerts
+          /usr/local/bin/pysys.py run -m ten.sepolia -XRUN_TYPE=health-dexynth -XRUN_NAME=Dexynth_gateway check_alerts
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v4

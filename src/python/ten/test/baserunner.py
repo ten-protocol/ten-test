@@ -80,7 +80,7 @@ class TenRunnerPlugin():
         counts_db = CountsPersistence.init(use_remote, self.user_dir, self.machine_name)
         results_db = PerformanceResultsPersistence.init(self.is_cloud_vm, self.user_dir, self.machine_name)
         txcosts_db = TxCostResultsPersistence.init(use_remote, self.user_dir, self.machine_name)
-        runtype_db = RunTypePersistence.init(True, self.user_dir, self.machine_name)
+        runtype_db = RunTypePersistence.init(use_remote, self.user_dir, self.machine_name)
 
         eth_price = self.get_eth_price()
         if eth_price is not None:

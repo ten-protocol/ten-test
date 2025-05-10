@@ -51,7 +51,7 @@ class GenericNetworkTest(BaseTest):
         self.counts_db = CountsPersistence(use_remote, self.user_dir, self.machine_name)
         self.results_db = PerformanceResultsPersistence(self.is_cloud_vm, self.user_dir, self.machine_name)
         self.txcosts_db = TxCostResultsPersistence(use_remote, self.user_dir, self.machine_name)
-        self.runtype_db = RunTypePersistence.init(True, self.user_dir, self.machine_name)
+        self.runtype_db = RunTypePersistence.init(use_remote, self.user_dir, self.machine_name)
         self.addCleanupFunction(self.close_db)
 
         # every test has a unique connection for the funded account
