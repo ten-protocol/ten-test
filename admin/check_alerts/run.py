@@ -100,7 +100,7 @@ class PySysTest(TenNetworkTest):
                                                                   props.monitoring_web_hook_token(self.env))
         response = requests.post(webhook_url, json=get_msg(name,
                                                            props.monitoring_on_call(self.env),
-                                                           props.monitoring_workflow_url(self.env),
+                                                           props.monitoring_health_check_workflow(self.env),
                                                            self.env))
 
         if response.status_code == 204: self.log.info('Sent discord msg')
