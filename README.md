@@ -107,6 +107,7 @@ pip3 install py-solc-x==2.0.2
 pip3 install numpy==1.26.4
 pip3 install mysql-connector-python==9.0.0
 pip3 install rlp==3.0.0
+pip3 install twilio==9.6.0
 
 solc-select install 0.8.15
 solc-select use 0.8.15
@@ -136,11 +137,15 @@ npm install commander@11.1.0 --global
 npm install @openzeppelin/merkle-tree@1.0.6 --global
 
 apt install -y python3-pip
-python3 -m pip install web3==5.31.3
+python3 -m pip install eth-account==0.10.0
+python3 -m pip install web3==6.13.0
 python3 -m pip install pysys==1.6.1
 python3 -m pip install solc-select
 python3 -m pip install py-solc-x
 python3 -m pip install numpy==1.24.4
+python3 -m pip install mysql-connector-python==9.0.0
+python3 -m pip install rlp==3.0.0
+python3 -m pip install twilio==9.6.0
 ```
 
 Once installed it should be possible to run all tests from the pysys.py cli as described in the following sections. Note

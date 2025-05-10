@@ -30,31 +30,31 @@ jobs:
         continue-on-error: true
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.dev persistence_reset
+          /usr/local/bin/pysys.py run -m ten.dev reset_persistence
 
       - name: 'Persistence reset uat'
         continue-on-error: true
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.uat persistence_reset
+          /usr/local/bin/pysys.py run -m ten.uat reset_persistence
 
       - name: 'Persistence reset sepolia'
         continue-on-error: true
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.sepolia persistence_reset
+          /usr/local/bin/pysys.py run -m ten.sepolia reset_persistence
 
       - name: 'Persistence reset arbitrum sepolia'
         continue-on-error: true
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m arbitrum.sepolia persistence_reset
+          /usr/local/bin/pysys.py run -m arbitrum.sepolia reset_persistence
 
       - name: 'Persistence reset optimism sepolia'
         continue-on-error: true
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m optimism.sepolia persistence_reset
+          /usr/local/bin/pysys.py run -m optimism.sepolia reset_persistence
 
       - name: 'Upload output'
         uses: actions/upload-artifact@v4
