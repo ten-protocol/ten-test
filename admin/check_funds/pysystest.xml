@@ -2,23 +2,19 @@
 <pysystest type="auto">
 
     <description>
-        <title>Print out balances on the L1 and L2 standard accounts</title>
+        <title>Check the sequencer, validator and faucet funds on a given testnet</title>
         <purpose><![CDATA[
+Calls to get the funds of the various nodes and faucet, and if they fall below a certain threshold, sends alerts to
+discord and via SMS.
 ]]>
         </purpose>
     </description>
-
     <classification>
         <groups inherit="true">
-            <group></group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
             <mode>ten.uat</mode>
-            <mode>ten.dev</mode>
-            <mode>ten.local</mode>
-            <mode>arbitrum.sepolia</mode>
-            <mode>sepolia</mode>
         </modes>
     </classification>
 

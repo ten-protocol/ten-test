@@ -4,6 +4,10 @@
     <description>
         <title>Persist costs for a range of transactions</title>
         <purpose><![CDATA[
+Performs a series of transactions against a given network and stores the cost of the transaction in the remote
+database. This allows historical transaction costs to be used to ensure the network pricing stays consistent,
+and allows comparison between other networks. No explicit validation is performed in the test, it is mainly used
+to orchestrate the transactions and storage of costs.
 ]]>
         </purpose>
     </description>

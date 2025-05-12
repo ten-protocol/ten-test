@@ -4,7 +4,10 @@
     <description>
         <title>Graph performance summary</title>
         <purpose><![CDATA[
-Produces an overall summary of the performance metrics overtime for a particular environment.
+Produces an overall summary of the performance metrics overtime for a particular environment. A query is made to the
+database of results for a given set of tests, and then the input is used via gnuplot to construct the graphs.
+Predominantly used in a performance run after the performance tests have been performed to create the overall
+graphical summary.
 ]]>
         </purpose>
     </description>
