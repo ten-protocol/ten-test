@@ -32,7 +32,7 @@ jobs:
       - name: 'Run funds check'
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.sepolia check_funds
+          /usr/local/bin/pysys.py run -m ten.sepolia -XRUN_TYPE=funds check_funds
 
       - name: 'Discord notification on failure'
         if: failure()

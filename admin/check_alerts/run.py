@@ -77,7 +77,8 @@ class PySysTest(TenNetworkTest):
                 if not this_status and last_status:
                     self.log.info('Health status has changed to failing')
                     self.send_discord_alert(name, on_failure_msg)
-                    self.send_sms_alert('%s checks are failing' % name)
+                    self.send_sms_alert('%s checks have started failing' % name)
+                    self.send_call_alert('%s checks have started failing' % name)
 
                 elif not last_status and this_status:
                     self.log.info('Health status has changed to passing')
@@ -90,6 +91,7 @@ class PySysTest(TenNetworkTest):
                 elif not last_status and not this_status:
                     self.log.info('In a run of failing checks ... no health change')
                     self.send_discord_alert(name, on_still_failing_msg)
+                    self.send_sms_alert('%s checks are still failing' % name)
 
             else:
                 self.log.warn('Query on latest outcomes does not have enough entries')
@@ -108,10 +110,26 @@ class PySysTest(TenNetworkTest):
 
     def send_sms_alert(self, msg):
         props = Properties()
-        client = Client(props.monitoring_twilio_account(), props.monitoring_twilio_token())
-        client.messages.create(
-            body = msg,
-            from_ = props.monitoring_twilio_from_number(),
-            to = props.monitoring_twilio_to_number(),
-        )
-        self.log.info('Sent SMS msg')
+        try:
+            client = Client(props.monitoring_twilio_account(), props.monitoring_twilio_token())
+            client.messages.create(
+                body=msg,
+                from_=props.monitoring_twilio_from_number(),
+                to=props.monitoring_twilio_to_number(),
+            )
+            self.log.info('Sent SMS msg')
+        except:
+            self.log.warn('Unable to send SMS message')
+
+    def send_call_alert(self, msg):
+        props = Properties()
+        try:
+            client = Client(props.monitoring_twilio_account(), props.monitoring_twilio_token())
+            client.calls.create(
+                twiml='<Response><Say voice="Polly.Amy">%s</Say></Response>' % msg,
+                from_=props.monitoring_twilio_from_number(),
+                to=props.monitoring_twilio_to_number(),
+            )
+            self.log.info('Sent call')
+        except:
+            self.log.warn('Unable to send call')
