@@ -90,6 +90,7 @@ class PySysTest(TenNetworkTest):
         if faucet_balance_eth < self.L2_THRESHOLD:
             msg = 'Faucet account funds of %d are below threshold %d' % (faucet_balance_eth, self.L2_THRESHOLD)
             self.send_sms_alert(msg)
+            self.send_call_alert(msg)
             self.addOutcome(FAILED, outcomeReason=msg)
             self.send_discord_alert('Faucet', faucet_balance_eth, self.L2_THRESHOLD)
 
@@ -124,3 +125,16 @@ class PySysTest(TenNetworkTest):
             self.log.info('Sent SMS message')
         except:
             self.log.warn('Unable to send SMS message')
+
+    def send_call_alert(self, msg):
+        props = Properties()
+        try:
+            client = Client(props.monitoring_twilio_account(), props.monitoring_twilio_token())
+            client.calls.create(
+                twiml='<Response><Say voice="Polly.Amy">%s</Say></Response>' % msg,
+                from_=props.monitoring_twilio_from_number(),
+                to=props.monitoring_twilio_to_number(),
+            )
+            self.log.info('Sent call')
+        except:
+            self.log.warn('Unable to send call')
