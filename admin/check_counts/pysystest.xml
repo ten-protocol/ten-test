@@ -2,8 +2,11 @@
 <pysystest type="auto">
 
     <description>
-        <title>Check the tx count for the sequencer on sepolia-testnet</title>
+        <title>Check the tx count for the sequencer on a given testnet</title>
         <purpose><![CDATA[
+The test looks for the sequencer transaction count increasing over a set period of time, to ensure that it is
+successfully storing rollups to the L1. The test is part of the health suite that performs the e2e tests on a given
+network.
 ]]>
         </purpose>
     </description>

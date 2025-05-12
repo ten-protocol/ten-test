@@ -2,10 +2,11 @@
 <pysystest type="auto">
 
     <description>
-        <title>Check the batch production rate on sepolia-testnet</title>
+        <title>Check the batch production rate on a given testnet</title>
         <purpose><![CDATA[
 Logs out the transaction and batch count every X interval seconds, and after an elapsed duration checks that the
-increase is not greater than a threshold value.
+increase is not greater than a threshold value. The test is part of the health test suite to run the e2e tests against
+the network.
 ]]>
         </purpose>
     </description>
@@ -14,9 +15,8 @@ increase is not greater than a threshold value.
             <group>health</group>
         </groups>
         <modes inherit="true">
-            <mode>ten.local</mode>
-            <mode>ten.uat</mode>
             <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
         </modes>
     </classification>
 
