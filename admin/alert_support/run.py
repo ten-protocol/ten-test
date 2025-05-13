@@ -139,10 +139,10 @@ class PySysTest(TenNetworkTest):
             response = VoiceResponse()
             response.pause(length=1)
             response.say('This is TEN support calling', voice="Polly.Amy")
-            response.pause(length=2)
+            response.pause(length=1)
             response.say(ssml, voice="Polly.Amy")
             response.pause(length=1)
-            response.say('Please check discord alerts for more information', voice="Polly.Amy")
+            response.say('Check discord support channel for more information', voice="Polly.Amy")
 
             client = Client(props.monitoring_twilio_account(), props.monitoring_twilio_token())
             client.calls.create(
