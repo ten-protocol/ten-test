@@ -39,7 +39,7 @@ def discord_still_failing_msg(name, oncall):
 # messages for success
 def discord_success_msg(name, oncall, workflow_url, environment):
     embed = {
-        "title": "🚨 %s checks passing 🚨" % name,
+        "title": ":white_check_mark: %s checks passing :white_check_mark:" % name,
         "description": "CODE GREEN - The %s checks are passing! :smile:" % name,
         "color": 3066993,
         "fields": [
