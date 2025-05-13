@@ -228,10 +228,6 @@ class Properties:
 
     def monitoring_web_hook_token(self, key): return self.get('env.'+key, 'MonitoringWebHookToken')
 
-    def monitoring_health_check_workflow(self, key): return self.get('env.'+key, 'HealthCheckWorkflowURL')
-
-    def monitoring_funds_check_workflow(self, key): return self.get('env.'+key, 'HealthFundsWorkflowURL')
-
     def monitoring_on_call(self, key): return self.get('env.'+key, 'MonitoringOnCall')
 
     def monitoring_twilio_account(self): return self.get('sms.twilio', 'account')

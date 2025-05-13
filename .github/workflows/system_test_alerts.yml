@@ -1,0 +1,34 @@
+# Test the alerting mechanisms based on a run type and name
+#
+name: '[system] Test the alerting mechanisms'
+run-name: Test the alerting mechanisms
+on:
+  workflow_dispatch:
+    inputs:
+      run_type:
+        description: 'The type of the alerting run'
+        required: true
+        default: 'test'
+      run_name:
+        description: 'The name of the alerting run'
+        required: true
+        default: 'Test_health_check'
+
+jobs:
+  run-check:
+    runs-on: [self-hosted, Linux, X64, all-testnets]
+    env:
+      RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+    steps:
+      - name: 'Check out ten-test'
+        uses: actions/checkout@v3
+        with:
+          path: ./ten-test
+
+      - name: 'Alert for primary gateway'
+        if: always()
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ten.sepolia -XRUN_TYPE=${{ github.event.inputs.run_type }} -XRUN_NAME=${{ github.event.inputs.run_name }}h -XRUN_URL=$RUN_URL alert_support
+

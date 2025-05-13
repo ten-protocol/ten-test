@@ -10,6 +10,9 @@ on:
 jobs:
   run-check:
     runs-on: [self-hosted, Linux, X64, all-testnets]
+    env:
+      RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
     steps:
       - name: 'Check out ten-test'
         uses: actions/checkout@v3
@@ -33,6 +36,12 @@ jobs:
         run: |
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -r -m ten.sepolia -XRUN_TYPE=funds check_funds
+
+      - name: 'Alert on funds check'
+        if: always()
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ten.sepolia -XRUN_TYPE=funds -XRUN_NAME=Funds_check -XRUN_URL=$RUN_URL check_alerts
 
       - name: 'Discord notification on failure'
         if: failure()

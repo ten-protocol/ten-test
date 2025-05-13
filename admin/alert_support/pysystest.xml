@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Check if we need to send any alerts based on the last two health checkout outcomes</title>
+        <title>Check if we need to send any alerts based on the last two health checkout outcomes for a run type</title>
         <purpose><![CDATA[
 ]]>
         </purpose>

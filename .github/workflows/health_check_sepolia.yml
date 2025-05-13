@@ -10,6 +10,9 @@ on:
 jobs:
   run-check:
     runs-on: [self-hosted, Linux, X64, all-testnets]
+    env:
+      RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
     steps:
       - name: 'Check out ten-test'
         uses: actions/checkout@v3
@@ -32,13 +35,13 @@ jobs:
       - name: 'Run health check tests (primary gateway)'
         run: |
           cd ${{ github.workspace }}/ten-test
-          /usr/local/bin/pysys.py run -r -m ten.sepolia -i health -XITERATIONS_FULL=0 -XRUN_TYPE=health
+          /usr/local/bin/pysys.py run -r -m ten.sepolia -i health -XITERATIONS_FULL=0 -XRUN_TYPE=health 
 
-      - name: 'Alert health check tests (primary gateway)'
+      - name: 'Alert for primary gateway'
         if: always()
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.sepolia -XRUN_TYPE=health -XRUN_NAME=Primary_gateway check_alerts
+          /usr/local/bin/pysys.py run -m ten.sepolia -XRUN_TYPE=health -XRUN_NAME=Primary_gateway_health -XRUN_URL=$RUN_URL alert_support
 
       - name: 'Run health check tests (dexynth gateway)'
         if: always()
@@ -47,11 +50,11 @@ jobs:
           cd ${{ github.workspace }}/ten-test/tests
           PRIMARY_HOST_HTTP=https://rpc.dexynth-gateway.ten.xyz PRIMARY_HOST_WS=wss://rpc.dexynth-gateway.ten.xyz /usr/local/bin/pysys.py run -r -m ten.sepolia -o dexynth -XRUN_TYPE=health-dexynth gen_cor_040 gen_cor_073 gen_cor_106
 
-      - name: 'Alert health check tests (dexynth gateway)'
+      - name: 'Alert for dexynth gateway'
         if: always()
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.sepolia -XRUN_TYPE=health-dexynth -XRUN_NAME=Dexynth_gateway check_alerts
+          /usr/local/bin/pysys.py run -m ten.sepolia -XRUN_TYPE=health-dexynth -XRUN_NAME=Dexynth_gateway_health -XRUN_URL=$RUN_URL alert_support
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v4
