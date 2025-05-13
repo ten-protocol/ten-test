@@ -41,7 +41,7 @@ jobs:
         if: always()
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.sepolia -XRUN_TYPE=funds -XRUN_NAME=Funds_check -XRUN_URL=$RUN_URL check_alerts
+          /usr/local/bin/pysys.py run -m ten.sepolia -XRUN_TYPE=funds -XRUN_NAME=Funds_check -XRUN_URL=$RUN_URL alert_support
 
       - name: 'Discord notification on failure'
         if: failure()
