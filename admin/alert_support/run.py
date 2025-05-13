@@ -1,14 +1,15 @@
 import requests
 from twilio.rest import Client
+from twilio.twiml.voice_response import VoiceResponse
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 
 
 # messages for failure
-def on_failure_msg(name, oncall, workflow_url, environment):
+def discord_failure_msg(name, oncall, workflow_url, environment):
     embed = {
         "title": "🚨 %s checks failing 🚨" % name,
-        "description": "CODE RED - The e2e health checks are failing! :face_with_monocle:",
+        "description": "CODE RED - The %s checks are failing! :face_with_monocle:" % name,
         "color": 15158332,
         "fields": [
             {"name": "Environment", "value": "%s" % environment, "inline": True},
@@ -27,7 +28,7 @@ def on_failure_msg(name, oncall, workflow_url, environment):
     return data
 
 
-def on_still_failing_msg(name, oncall, workflow_url, environment):
+def discord_still_failing_msg(name, oncall):
     data = {
         "content":  "%s checks are still failing ... please investigate <%s>" % (name, oncall),
         "username": "E2E Health Checks"
@@ -36,10 +37,10 @@ def on_still_failing_msg(name, oncall, workflow_url, environment):
 
 
 # messages for success
-def on_success_msg(name, oncall, workflow_url, environment):
+def discord_success_msg(name, oncall, workflow_url, environment):
     embed = {
         "title": "🚨 %s checks passing 🚨" % name,
-        "description": "CODE GREEN - The e2e health checks are passing! :smile:",
+        "description": "CODE GREEN - The %s checks are passing! :smile:" % name,
         "color": 3066993,
         "fields": [
             {"name": "Environment", "value": "%s" % environment, "inline": True},
@@ -60,12 +61,15 @@ def on_success_msg(name, oncall, workflow_url, environment):
 class PySysTest(TenNetworkTest):
     RUN_TYPE = None
     RUN_NAME = None
+    RUN_URL = None
 
     def execute(self):
         if self.RUN_TYPE is None:
             self.log.warn('No run type given ... aborting')
         elif self.RUN_NAME is None:
             self.log.warn('No run name given ... aborting')
+        elif self.RUN_URL is None:
+            self.log.warn('No run url given ... aborting')
         else:
             entries = self.runtype_db.get_last_two_results(self.env, self.RUN_TYPE)
             name = self.RUN_NAME.replace('_',' ')
@@ -74,24 +78,31 @@ class PySysTest(TenNetworkTest):
                 this_status = True if entries[0][1] == 1 else False
                 last_status = True if entries[1][1] == 1 else False
 
-                if not this_status and last_status:
-                    self.log.info('Health status has changed to failing')
-                    self.send_discord_alert(name, on_failure_msg)
-                    self.send_sms_alert('%s checks have started failing' % name)
-                    self.send_call_alert('%s checks have started failing' % name)
+                # have started failing (passed -> failed)
+                if last_status and not this_status:
+                    msg = '%s checks have started failing, please investigate' % name
+                    self.log.info(msg)
+                    self.send_call_alert(msg)
+                    self.send_sms_alert(msg)
+                    self.send_discord_alert(name, discord_failure_msg)
 
+                # have started failing (failed -> passed)
                 elif not last_status and this_status:
-                    self.log.info('Health status has changed to passing')
-                    self.send_discord_alert(name, on_success_msg)
-                    self.send_sms_alert('%s checks are now passing' % name)
+                    msg = '%s checks are now passing' % name
+                    self.log.info(msg)
+                    self.send_sms_alert(msg)
+                    self.send_discord_alert(name, discord_success_msg)
 
+                # are continuing to pass (passed -> passed)
                 elif last_status and this_status:
-                    self.log.info('In a run of passing checks ... no health change')
+                    self.log.info('In a run of passing checks ... no change')
 
+                # are continuing to fail (failed -> failed)
                 elif not last_status and not this_status:
-                    self.log.info('In a run of failing checks ... no health change')
-                    self.send_discord_alert(name, on_still_failing_msg)
-                    self.send_sms_alert('%s checks are still failing' % name)
+                    msg = '%s checks are still failing' % name
+                    self.log.info(msg)
+                    self.send_sms_alert(msg)
+                    self.send_discord_alert(name, discord_still_failing_msg)
 
             else:
                 self.log.warn('Query on latest outcomes does not have enough entries')
@@ -102,7 +113,7 @@ class PySysTest(TenNetworkTest):
                                                                   props.monitoring_web_hook_token(self.env))
         response = requests.post(webhook_url, json=get_msg(name,
                                                            props.monitoring_on_call(self.env),
-                                                           props.monitoring_health_check_workflow(self.env),
+                                                           self.RUN_URL,
                                                            self.env))
 
         if response.status_code == 204: self.log.info('Sent discord msg')
@@ -124,9 +135,18 @@ class PySysTest(TenNetworkTest):
     def send_call_alert(self, msg):
         props = Properties()
         try:
+            ssml = '<speak><prosody rate="slow">%s</prosody></speak>' % msg
+            response = VoiceResponse()
+            response.pause(length=1)
+            response.say('This is TEN support calling', voice="Polly.Amy")
+            response.pause(length=2)
+            response.say(ssml, voice="Polly.Amy")
+            response.pause(length=1)
+            response.say('Please check discord alerts for more information', voice="Polly.Amy")
+
             client = Client(props.monitoring_twilio_account(), props.monitoring_twilio_token())
             client.calls.create(
-                twiml='<Response><Say voice="Polly.Amy">%s</Say></Response>' % msg,
+                twiml=str(response),
                 from_=props.monitoring_twilio_from_number(),
                 to=props.monitoring_twilio_to_number(),
             )
