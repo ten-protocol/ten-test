@@ -1,7 +1,7 @@
 # Test the alerting mechanisms based on a run type and name
 #
-name: '[system] Test the alerting mechanisms'
-run-name: Test the alerting mechanisms
+name: '[system] Test alerting'
+run-name: Test alerting
 on:
   workflow_dispatch:
     inputs:
