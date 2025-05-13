@@ -12,10 +12,10 @@ on:
       run_name:
         description: 'The name of the alerting run'
         required: true
-        default: 'Test_health_check'
+        default: 'Test_alert'
 
 jobs:
-  run-check:
+  run-test-alerts:
     runs-on: [self-hosted, Linux, X64, all-testnets]
     env:
       RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
@@ -26,7 +26,7 @@ jobs:
         with:
           path: ./ten-test
 
-      - name: 'Alert for primary gateway'
+      - name: 'Run the alert checking'
         if: always()
         run: |
           cd ${{ github.workspace }}/ten-test/admin
