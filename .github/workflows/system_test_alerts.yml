@@ -30,5 +30,5 @@ jobs:
         if: always()
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.sepolia -XRUN_TYPE=${{ github.event.inputs.run_type }} -XRUN_NAME=${{ github.event.inputs.run_name }}h -XRUN_URL=$RUN_URL alert_support
+          /usr/local/bin/pysys.py run -m ten.sepolia -XRUN_TYPE=${{ github.event.inputs.run_type }} -XRUN_NAME=${{ github.event.inputs.run_name }} -XRUN_URL=$RUN_URL alert_support
 
