@@ -30,9 +30,9 @@ def discord_failure_msg(name, oncall, run_url, environment):
     return data
 
 
-def discord_still_failing_msg(content):
+def discord_still_failing_msg(content, oncall):
     data = {
-        "content":  content,
+        "content":  "%s ... please investigate <@%s>" % (content, oncall),
         "username": "E2E Health Checks"
     }
     return data
@@ -109,15 +109,17 @@ class PySysTest(TenNetworkTest):
                 elif not last_status and not this_status:
                     msg = '%s checks are still failing' % name
 
+                    # get the last success to work out how long since the last pass
                     entry = self.runtype_db.get_last_result(self.env, self.RUN_TYPE, outcome=1)
                     if entry is not None:
                         seconds = int(time.time()) - int(entry[0])
                         hour = seconds // 3600
                         min = (seconds % 3600) // 60
-                        msg = '%s checks are still failing after %d hours %d mins' % (name, hour, min)
+                        msg = '%s checks are still failing, last success %d hours %d mins ago' % (name, hour, min)
+
                     self.log.info(msg)
                     self.send_sms_alert(msg, person)
-                    self.send_discord_alert(discord_still_failing_msg(msg))
+                    self.send_discord_alert(discord_still_failing_msg(msg, props.oncall_discord_id(person)))
                     self.addOutcome(FAILED)
 
             else:
