@@ -29,9 +29,9 @@ def discord_failure_msg(name, oncall, workflow_url, environment):
     return data
 
 
-def discord_still_failing_msg(name, oncall):
+def discord_still_failing_msg(name, oncall, workflow_url, environment):
     data = {
-        "content":  "%s checks are still failing ... please investigate <@%s>" % (name, oncall),
+        "content":  "%s checks in %s are still failing ... please investigate <@%s>" % (name, workflow_url, oncall),
         "username": "E2E Health Checks"
     }
     return data
