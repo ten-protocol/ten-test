@@ -1,8 +1,9 @@
-import requests
+import requests, datetime
 from twilio.rest import Client
 from twilio.twiml.voice_response import VoiceResponse
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
+from ten.test.utils.support import SupportHelper
 
 
 # messages for failure
@@ -73,6 +74,7 @@ class PySysTest(TenNetworkTest):
         else:
             entries = self.runtype_db.get_last_two_results(self.env, self.RUN_TYPE)
             name = self.RUN_NAME.replace('_',' ')
+            person = SupportHelper.get_person_on_call()
 
             if len(entries) == 2:
                 this_status = True if entries[0][1] == 1 else False
@@ -83,15 +85,15 @@ class PySysTest(TenNetworkTest):
                     msg = '%s checks have started failing, please investigate' % name
                     self.log.info(msg)
                     self.send_call_alert(msg)
-                    self.send_sms_alert(msg)
-                    self.send_discord_alert(name, discord_failure_msg)
+                    self.send_sms_alert(msg, person)
+                    self.send_discord_alert(name, discord_failure_msg, person)
 
                 # have started failing (failed -> passed)
                 elif not last_status and this_status:
                     msg = '%s checks are now passing' % name
                     self.log.info(msg)
-                    self.send_sms_alert(msg)
-                    self.send_discord_alert(name, discord_success_msg)
+                    self.send_sms_alert(msg, person)
+                    self.send_discord_alert(name, discord_success_msg, person)
 
                 # are continuing to pass (passed -> passed)
                 elif last_status and this_status:
@@ -101,32 +103,31 @@ class PySysTest(TenNetworkTest):
                 elif not last_status and not this_status:
                     msg = '%s checks are still failing' % name
                     self.log.info(msg)
-                    self.send_sms_alert(msg)
-                    self.send_discord_alert(name, discord_still_failing_msg)
+                    self.send_sms_alert(msg, person)
+                    self.send_discord_alert(name, discord_still_failing_msg, person)
 
             else:
                 self.log.warn('Query on latest outcomes does not have enough entries')
 
-    def send_discord_alert(self, name, get_msg):
+    def send_discord_alert(self, name, get_msg, person):
         props = Properties()
-        webhook_url = 'https://discord.com/api/webhooks/%s/%s' % (props.monitoring_web_hook_id(self.env),
-                                                                  props.monitoring_web_hook_token(self.env))
-        response = requests.post(webhook_url, json=get_msg(name,
-                                                           props.monitoring_on_call(self.env),
-                                                           self.RUN_URL,
-                                                           self.env))
+        did = props.oncall_discord_id(person)
+        webhook_url = 'https://discord.com/api/webhooks/%s/%s' % (props.discord_web_hook_id(self.env),
+                                                                  props.discord_web_hook_token(self.env))
+        response = requests.post(webhook_url, json=get_msg(name, did, self.RUN_URL, self.env))
 
         if response.status_code == 204: self.log.info('Sent discord msg')
         else: self.log.warn('Failed to send discord msg')
 
-    def send_sms_alert(self, msg):
+    def send_sms_alert(self, msg, person):
         props = Properties()
+        tel = props.oncall_telephone(person)
         try:
-            client = Client(props.monitoring_twilio_account(), props.monitoring_twilio_token())
+            client = Client(props.twilio_account(), props.twilio_token())
             client.messages.create(
                 body=msg,
-                from_=props.monitoring_twilio_from_number(),
-                to=props.monitoring_twilio_to_number(),
+                from_=props.twilio_from_number(),
+                to=tel,
             )
             self.log.info('Sent SMS msg')
         except:
