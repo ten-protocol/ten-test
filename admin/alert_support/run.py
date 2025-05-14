@@ -1,10 +1,24 @@
-import requests, time
+import requests, time, pytz, datetime
 from twilio.rest import Client
 from twilio.twiml.voice_response import VoiceResponse
 from pysys.constants import FAILED, PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 from ten.test.utils.support import SupportHelper
+
+
+def greet_by_time(timezone_str='Europe/London'):
+    try:
+        utc = datetime.utcnow().replace(tzinfo=pytz.utc)
+        local_tz = pytz.timezone(timezone_str)
+        local_time = utc.astimezone(local_tz)
+        hour = local_time.hour
+        if 5 <= hour < 12: return "Good morning"
+        elif 12 <= hour < 17: return "Good afternoon"
+        elif 17 <= hour < 22: return "Good evening"
+        else: return "Hello"
+    except:
+        return "Hello"
 
 
 # messages for failure
@@ -155,7 +169,7 @@ class PySysTest(TenNetworkTest):
             ssml = '<speak><prosody rate="slow">%s</prosody></speak>' % msg
             response = VoiceResponse()
             response.pause(length=1)
-            response.say('This is TEN support calling', voice="Polly.Amy")
+            response.say('%s %s, this is TEN support calling' % (greet_by_time(), person), voice="Polly.Amy")
             response.pause(length=1)
             response.say(ssml, voice="Polly.Amy")
             response.pause(length=1)
