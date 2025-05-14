@@ -11,7 +11,7 @@ from ten.test.utils.support import SupportHelper
 def discord_failure_msg(name, oncall, run_url, environment):
     embed = {
         "title": "🚨 %s checks failing 🚨" % name,
-        "description": "CODE RED - The %s checks are failing! :face_with_monocle:" % name,
+        "description": "CODE RED - The %s checks have started failing! :face_with_monocle:" % name,
         "color": 15158332,
         "fields": [
             {"name": "Environment", "value": "%s" % environment, "inline": True},
@@ -30,9 +30,9 @@ def discord_failure_msg(name, oncall, run_url, environment):
     return data
 
 
-def discord_still_failing_msg(name, oncall, run_url, environment):
+def discord_still_failing_msg(content):
     data = {
-        "content":  "%s checks are still failing ... please investigate <@%s>" % (name, oncall),
+        "content":  content,
         "username": "E2E Health Checks"
     }
     return data
@@ -42,7 +42,7 @@ def discord_still_failing_msg(name, oncall, run_url, environment):
 def discord_success_msg(name, oncall, run_url, environment):
     embed = {
         "title": ":white_check_mark: %s checks passing :white_check_mark:" % name,
-        "description": "CODE GREEN - The %s checks are passing! :smile:" % name,
+        "description": "CODE GREEN - The %s checks have started passing! :smile:" % name,
         "color": 3066993,
         "fields": [
             {"name": "Environment", "value": "%s" % environment, "inline": True},
@@ -66,6 +66,8 @@ class PySysTest(TenNetworkTest):
     RUN_URL = None
 
     def execute(self):
+        props = Properties()
+
         if self.RUN_TYPE is None:
             self.log.warn('No run type given ... aborting')
         elif self.RUN_NAME is None:
@@ -87,7 +89,7 @@ class PySysTest(TenNetworkTest):
                     self.log.info(msg)
                     self.send_call_alert(msg, person)
                     self.send_sms_alert(msg, person)
-                    self.send_discord_alert(name, discord_failure_msg, person)
+                    self.send_discord_alert(discord_failure_msg(name, props.oncall_discord_id(person), self.RUN_URL, self.env))
                     self.addOutcome(FAILED)
 
                 # have started passing (failed -> passed)
@@ -95,7 +97,7 @@ class PySysTest(TenNetworkTest):
                     msg = '%s checks are now passing' % name
                     self.log.info(msg)
                     self.send_sms_alert(msg, person)
-                    self.send_discord_alert(name, discord_success_msg, person)
+                    self.send_discord_alert(discord_success_msg(name, props.oncall_discord_id(person), self.RUN_URL, self.env))
                     self.addOutcome(PASSED)
 
                 # are continuing to pass (passed -> passed)
@@ -105,30 +107,27 @@ class PySysTest(TenNetworkTest):
 
                 # are continuing to fail (failed -> failed)
                 elif not last_status and not this_status:
-                    entry = self.runtype_db.get_last_result(self.env, self.RUN_TYPE, outcome=0)
-                    self.log.info(entry)
+                    msg = '%s checks are still failing' % name
+
+                    entry = self.runtype_db.get_last_result(self.env, self.RUN_TYPE, outcome=1)
                     if entry is not None:
                         seconds = int(time.time()) - int(entry[0])
-                        hours = seconds // 3600
-                        mins = (seconds % 3600) // 60
-                        msg = '%s checks are still failing after %d hours %d mins' % (name, hours, mins)
-                    else:
-                        msg = '%s checks are still failing' % name
-
+                        hour = seconds // 3600
+                        min = (seconds % 3600) // 60
+                        msg = '%s checks are still failing after %d hours %d mins' % (name, hour, min)
                     self.log.info(msg)
                     self.send_sms_alert(msg, person)
-                    self.send_discord_alert(name, discord_still_failing_msg, person)
+                    self.send_discord_alert(discord_still_failing_msg(msg))
                     self.addOutcome(FAILED)
 
             else:
                 self.log.warn('Query on latest outcomes does not have enough entries')
 
-    def send_discord_alert(self, name, get_msg, person):
+    def send_discord_alert(self, msg):
         props = Properties()
-        did = props.oncall_discord_id(person)
         webhook_url = 'https://discord.com/api/webhooks/%s/%s' % (props.discord_web_hook_id(self.env),
                                                                   props.discord_web_hook_token(self.env))
-        response = requests.post(webhook_url, json=get_msg(name, did, self.RUN_URL, self.env))
+        response = requests.post(webhook_url, json=msg)
 
         if response.status_code == 204: self.log.info('Sent discord msg')
         else: self.log.warn('Failed to send discord msg')
