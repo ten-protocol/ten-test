@@ -53,7 +53,7 @@ def discord_success_msg(name, oncall, run_url, environment):
     }
 
     data = {
-        "content":  "%s checks are passing - system is back to normal" % name,
+        "content":  "%s checks are passing, system is back to normal ... thanks <@%s> :thumbsup:" % (name, oncall),
         "username": "E2E Health Checks",
         "embeds": [embed]
     }
