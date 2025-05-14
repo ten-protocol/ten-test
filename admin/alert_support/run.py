@@ -105,7 +105,8 @@ class PySysTest(TenNetworkTest):
 
                 # are continuing to fail (failed -> failed)
                 elif not last_status and not this_status:
-                    entry = self.runtype_db.get_last_result(self.env, self.RUN_TYPE, True)
+                    entry = self.runtype_db.get_last_result(self.env, self.RUN_TYPE, outcome=0)
+                    self.log.info(entry)
                     if entry is not None:
                         seconds = int(time.time()) - int(entry[0])
                         hours = seconds // 3600
