@@ -1,6 +1,7 @@
-import requests, datetime
+import requests
 from twilio.rest import Client
 from twilio.twiml.voice_response import VoiceResponse
+from pysys.constants import FAILED, PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 from ten.test.utils.support import SupportHelper
@@ -87,17 +88,20 @@ class PySysTest(TenNetworkTest):
                     self.send_call_alert(msg, person)
                     self.send_sms_alert(msg, person)
                     self.send_discord_alert(name, discord_failure_msg, person)
+                    self.addOutcome(FAILED)
 
-                # have started failing (failed -> passed)
+                # have started passing (failed -> passed)
                 elif not last_status and this_status:
                     msg = '%s checks are now passing' % name
                     self.log.info(msg)
                     self.send_sms_alert(msg, person)
                     self.send_discord_alert(name, discord_success_msg, person)
+                    self.addOutcome(PASSED)
 
                 # are continuing to pass (passed -> passed)
                 elif last_status and this_status:
                     self.log.info('In a run of passing checks ... no change')
+                    self.addOutcome(PASSED)
 
                 # are continuing to fail (failed -> failed)
                 elif not last_status and not this_status:
@@ -105,6 +109,7 @@ class PySysTest(TenNetworkTest):
                     self.log.info(msg)
                     self.send_sms_alert(msg, person)
                     self.send_discord_alert(name, discord_still_failing_msg, person)
+                    self.addOutcome(FAILED)
 
             else:
                 self.log.warn('Query on latest outcomes does not have enough entries')
