@@ -74,7 +74,7 @@ class PySysTest(TenNetworkTest):
         else:
             entries = self.runtype_db.get_last_two_results(self.env, self.RUN_TYPE)
             name = self.RUN_NAME.replace('_',' ')
-            person = SupportHelper.get_person_on_call()
+            person = SupportHelper.get_person_on_call(self)
 
             if len(entries) == 2:
                 this_status = True if entries[0][1] == 1 else False

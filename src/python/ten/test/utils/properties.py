@@ -223,6 +223,10 @@ class Properties:
 
     def l2_gas_payment_account_pk(self, key): return self.get('env.'+key, 'L2GasPaymentAccountPK')
 
+    def discord_web_hook_id(self, key): return self.get('env.'+key, 'DiscordWebhookID')
+
+    def discord_web_hook_token(self, key): return self.get('env.'+key, 'DiscordWebhookToken')
+
     # support properties
     def twilio_account(self): return self.get('support.twilio', 'account')
 
@@ -239,11 +243,6 @@ class Properties:
         did = self.get('support.personnel.did', person)
         if did is None: return self.get('support.personnel.did', 'default')
         else: return did
-
-    # monitoring properties
-    def discord_web_hook_id(self, key): return self.get('env.'+key, 'DiscordWebhookID')
-
-    def discord_web_hook_token(self, key): return self.get('env.'+key, 'DiscordWebhookToken')
 
     # infura related
     def infuraProjectID(self): return self.get('env.goerli', 'ProjectID')

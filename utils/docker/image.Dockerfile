@@ -30,6 +30,8 @@ RUN python3 -m pip install py-solc-x
 RUN python3 -m pip install numpy==1.24.4
 RUN python3 -m pip install mysql-connector-python==9.0.0
 RUN python3 -m pip install rlp==3.0.0
+RUN python3 -m pip install twilio==9.6.0
+RUN python3 -m pip install pytz==2025.2
 
 RUN mkdir /home/ten-test
 RUN mkdir /home/go-ten
