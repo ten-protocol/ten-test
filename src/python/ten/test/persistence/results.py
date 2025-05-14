@@ -66,7 +66,7 @@ class RunTypePersistence:
                  "time INTEGER, " \
                  "outcome BOOLEAN)"
     SQL_INSERT = "INSERT INTO results_type VALUES (?, ?, ?, ?, ?)"
-    SQL_SELONE = "SELECT time, outcome from results_type WHERE environment=? and type=? order by time desc limit 1"
+    SQL_SELONE = "SELECT time, outcome from results_type WHERE environment=? and type=? and outcome=? order by time desc limit 1"
     SQL_SELTWO = "SELECT time, outcome from results_type WHERE environment=? and type=? order by time desc limit 2"
 
     @classmethod
@@ -93,13 +93,13 @@ class RunTypePersistence:
         self.cursor.execute(self.sqlins, (uuid, environment, type, time, outcome))
         self.dbconnection.connection.commit()
 
-    def get_last_result(self, environment, type):
-        """Return the last result for a particular environment and type. """
-        self.cursor.execute(self.sqlone, (environment, type))
+    def get_last_result(self, environment, type, outcome):
+        """Return the last result for a particular environment, type and outcome. """
+        self.cursor.execute(self.sqlone, (environment, type, outcome))
         try:
             return self.cursor.fetchone()[0]
         except:
-            return int(time.time()), 1
+            None
 
     def get_last_two_results(self, environment, type):
         """Return the last two results for a particular environment and type. """

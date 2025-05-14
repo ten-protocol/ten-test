@@ -1,4 +1,4 @@
-import requests
+import requests, time
 from twilio.rest import Client
 from twilio.twiml.voice_response import VoiceResponse
 from pysys.constants import FAILED, PASSED
@@ -105,7 +105,15 @@ class PySysTest(TenNetworkTest):
 
                 # are continuing to fail (failed -> failed)
                 elif not last_status and not this_status:
-                    msg = '%s checks are still failing' % name
+                    entry = self.runtype_db.get_last_result(self.env, self.RUN_TYPE, True)
+                    if entry is not None:
+                        seconds = int(time.time()) - int(entry[0])
+                        hours = seconds // 3600
+                        mins = (seconds % 3600) // 60
+                        msg = '%s checks are still failing after %d hours %d mins' % (name, hours, mins)
+                    else:
+                        msg = '%s checks are still failing' % name
+
                     self.log.info(msg)
                     self.send_sms_alert(msg, person)
                     self.send_discord_alert(name, discord_still_failing_msg, person)
