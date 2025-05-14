@@ -14,7 +14,7 @@ def discord_failure_msg(name, oncall, workflow_url, environment):
         "color": 15158332,
         "fields": [
             {"name": "Environment", "value": "%s" % environment, "inline": True},
-            {"name": "On-call support", "value": "<%s>" % oncall, "inline": True},
+            {"name": "On-call support", "value": "<@%s>" % oncall, "inline": True},
             {"name": "Workflow", "value": "[workflow](%s)" % workflow_url, "inline": True},
 
         ],
@@ -22,7 +22,7 @@ def discord_failure_msg(name, oncall, workflow_url, environment):
     }
 
     data = {
-        "content":  "%s checks are failing ... please investigate <%s>" % (name, oncall),
+        "content":  "%s checks are failing ... please investigate <@%s>" % (name, oncall),
         "username": "E2E Health Checks",
         "embeds": [embed]
     }
@@ -31,7 +31,7 @@ def discord_failure_msg(name, oncall, workflow_url, environment):
 
 def discord_still_failing_msg(name, oncall):
     data = {
-        "content":  "%s checks are still failing ... please investigate <%s>" % (name, oncall),
+        "content":  "%s checks are still failing ... please investigate <@%s>" % (name, oncall),
         "username": "E2E Health Checks"
     }
     return data
@@ -45,7 +45,7 @@ def discord_success_msg(name, oncall, workflow_url, environment):
         "color": 3066993,
         "fields": [
             {"name": "Environment", "value": "%s" % environment, "inline": True},
-            {"name": "On-call support", "value": "<%s>" % oncall, "inline": True},
+            {"name": "On-call support", "value": "<@%s>" % oncall, "inline": True},
             {"name": "Workflow", "value": "[workflow](%s)" % workflow_url, "inline": True},
         ],
         "footer": {"text": "E2E Monitoring"},
@@ -133,8 +133,9 @@ class PySysTest(TenNetworkTest):
         except:
             self.log.warn('Unable to send SMS message')
 
-    def send_call_alert(self, msg):
+    def send_call_alert(self, msg, person):
         props = Properties()
+        tel = props.oncall_telephone(person)
         try:
             ssml = '<speak><prosody rate="slow">%s</prosody></speak>' % msg
             response = VoiceResponse()
@@ -145,11 +146,11 @@ class PySysTest(TenNetworkTest):
             response.pause(length=1)
             response.say('Check discord support channel for more information', voice="Polly.Amy")
 
-            client = Client(props.monitoring_twilio_account(), props.monitoring_twilio_token())
+            client = Client(props.twilio_account(), props.twilio_token())
             client.calls.create(
                 twiml=str(response),
-                from_=props.monitoring_twilio_from_number(),
-                to=props.monitoring_twilio_to_number(),
+                from_=props.twilio_from_number(),
+                to=tel,
             )
             self.log.info('Sent call')
         except:
