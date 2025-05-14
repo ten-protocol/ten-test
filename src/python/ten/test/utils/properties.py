@@ -230,13 +230,13 @@ class Properties:
 
     def monitoring_on_call(self, key): return self.get('env.'+key, 'MonitoringOnCall')
 
-    def monitoring_twilio_account(self): return self.get('sms.twilio', 'account')
+    def monitoring_twilio_account(self): return self.get('support.twilio', 'account')
 
-    def monitoring_twilio_token(self): return self.get('sms.twilio', 'token')
+    def monitoring_twilio_token(self): return self.get('support.twilio', 'token')
 
-    def monitoring_twilio_from_number(self): return self.get('sms.twilio', 'from')
+    def monitoring_twilio_from_number(self): return self.get('support.twilio', 'from')
 
-    def monitoring_twilio_to_number(self): return self.get('sms.twilio', 'to')
+    def monitoring_twilio_to_number(self): return self.get('support.twilio', 'to')
 
     # infura related
     def infuraProjectID(self): return self.get('env.goerli', 'ProjectID')
