@@ -8,7 +8,7 @@ from ten.test.utils.support import SupportHelper
 
 
 # messages for failure
-def discord_failure_msg(name, oncall, workflow_url, environment):
+def discord_failure_msg(name, oncall, run_url, environment):
     embed = {
         "title": "🚨 %s checks failing 🚨" % name,
         "description": "CODE RED - The %s checks are failing! :face_with_monocle:" % name,
@@ -16,7 +16,7 @@ def discord_failure_msg(name, oncall, workflow_url, environment):
         "fields": [
             {"name": "Environment", "value": "%s" % environment, "inline": True},
             {"name": "On-call support", "value": "<@%s>" % oncall, "inline": True},
-            {"name": "Workflow", "value": "[workflow](%s)" % workflow_url, "inline": True},
+            {"name": "Workflow run", "value": "[run](%s)" % run_url, "inline": True},
 
         ],
         "footer": {"text": "E2E Monitoring"},
@@ -30,16 +30,16 @@ def discord_failure_msg(name, oncall, workflow_url, environment):
     return data
 
 
-def discord_still_failing_msg(name, oncall, workflow_url, environment):
+def discord_still_failing_msg(name, oncall, run_url, environment):
     data = {
-        "content":  "%s checks in %s are still failing (see [workflow](%s)) ... please investigate <@%s>" % (name, environment, workflow_url, oncall),
+        "content":  "%s checks are still failing, workflow [run](%s), on call <@%s>" % (name, run_url, oncall),
         "username": "E2E Health Checks"
     }
     return data
 
 
 # messages for success
-def discord_success_msg(name, oncall, workflow_url, environment):
+def discord_success_msg(name, oncall, run_url, environment):
     embed = {
         "title": ":white_check_mark: %s checks passing :white_check_mark:" % name,
         "description": "CODE GREEN - The %s checks are passing! :smile:" % name,
@@ -47,7 +47,7 @@ def discord_success_msg(name, oncall, workflow_url, environment):
         "fields": [
             {"name": "Environment", "value": "%s" % environment, "inline": True},
             {"name": "On-call support", "value": "<@%s>" % oncall, "inline": True},
-            {"name": "Workflow", "value": "[workflow](%s)" % workflow_url, "inline": True},
+            {"name": "Workflow run", "value": "[run](%s)" % run_url, "inline": True},
         ],
         "footer": {"text": "E2E Monitoring"},
     }
