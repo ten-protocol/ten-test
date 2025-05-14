@@ -97,7 +97,7 @@ class RunTypePersistence:
         """Return the last result for a particular environment, type and outcome. """
         self.cursor.execute(self.sqlone, (environment, type, outcome))
         try:
-            return self.cursor.fetchone()[0]
+            return self.cursor.fetchone()
         except:
             None
 
