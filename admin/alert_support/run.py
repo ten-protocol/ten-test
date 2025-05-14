@@ -1,4 +1,5 @@
-import requests, time, pytz, datetime
+import requests, time, pytz
+from datetime import datetime
 from twilio.rest import Client
 from twilio.twiml.voice_response import VoiceResponse
 from pysys.constants import FAILED, PASSED
@@ -25,7 +26,7 @@ def greet_by_time(timezone_str='Europe/London'):
 def discord_failure_msg(name, oncall, run_url, environment):
     embed = {
         "title": "🚨 %s checks failing 🚨" % name,
-        "description": "CODE RED - The %s checks have started failing! :face_with_monocle:" % name,
+        "description": "CODE RED - The %s checks have started failing! :poop: " % name,
         "color": 15158332,
         "fields": [
             {"name": "Environment", "value": "%s" % environment, "inline": True},
@@ -56,7 +57,7 @@ def discord_still_failing_msg(content, oncall):
 def discord_success_msg(name, oncall, run_url, environment):
     embed = {
         "title": ":white_check_mark: %s checks passing :white_check_mark:" % name,
-        "description": "CODE GREEN - The %s checks have started passing! :smile:" % name,
+        "description": "CODE GREEN - The %s checks have started passing! :boom: " % name,
         "color": 3066993,
         "fields": [
             {"name": "Environment", "value": "%s" % environment, "inline": True},
@@ -67,7 +68,7 @@ def discord_success_msg(name, oncall, run_url, environment):
     }
 
     data = {
-        "content":  "%s checks are passing, system is back to normal ... thanks <@%s> :thumbsup:" % (name, oncall),
+        "content":  "%s checks are passing ... thanks <@%s>" % (name, oncall),
         "username": "E2E Health Checks",
         "embeds": [embed]
     }
