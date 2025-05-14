@@ -84,7 +84,7 @@ class PySysTest(TenNetworkTest):
                 if last_status and not this_status:
                     msg = '%s checks have started failing, please investigate' % name
                     self.log.info(msg)
-                    self.send_call_alert(msg)
+                    self.send_call_alert(msg, person)
                     self.send_sms_alert(msg, person)
                     self.send_discord_alert(name, discord_failure_msg, person)
 
