@@ -223,20 +223,26 @@ class Properties:
 
     def l2_gas_payment_account_pk(self, key): return self.get('env.'+key, 'L2GasPaymentAccountPK')
 
-    # monitoring properties
-    def monitoring_web_hook_id(self, key): return self.get('env.'+key, 'MonitoringWebHookID')
+    def discord_web_hook_id(self, key): return self.get('env.'+key, 'DiscordWebhookID')
 
-    def monitoring_web_hook_token(self, key): return self.get('env.'+key, 'MonitoringWebHookToken')
+    def discord_web_hook_token(self, key): return self.get('env.'+key, 'DiscordWebhookToken')
 
-    def monitoring_on_call(self, key): return self.get('env.'+key, 'MonitoringOnCall')
+    # support properties
+    def twilio_account(self): return self.get('support.twilio', 'account')
 
-    def monitoring_twilio_account(self): return self.get('sms.twilio', 'account')
+    def twilio_token(self): return self.get('support.twilio', 'token')
 
-    def monitoring_twilio_token(self): return self.get('sms.twilio', 'token')
+    def twilio_from_number(self): return self.get('support.twilio', 'from')
 
-    def monitoring_twilio_from_number(self): return self.get('sms.twilio', 'from')
+    def oncall_telephone(self, person):
+        person = self.get('support.personnel.tel', person)
+        if person is None: return self.get('support.personnel.tel', 'default')
+        else: return person
 
-    def monitoring_twilio_to_number(self): return self.get('sms.twilio', 'to')
+    def oncall_discord_id(self, person):
+        did = self.get('support.personnel.did', person)
+        if did is None: return self.get('support.personnel.did', 'default')
+        else: return did
 
     # infura related
     def infuraProjectID(self): return self.get('env.goerli', 'ProjectID')

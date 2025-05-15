@@ -28,6 +28,7 @@ python3 -m pip install numpy==1.24.4
 python3 -m pip install mysql-connector-python==9.0.0
 python3 -m pip install rlp==3.0.0
 python3 -m pip install twilio==9.6.0
+python3 -m pip install pytz==2025.2
 snap install go --classic
 curl -fsSL https://get.docker.com -o get-docker.sh
 sh ./get-docker.sh

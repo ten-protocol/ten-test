@@ -108,6 +108,7 @@ pip3 install numpy==1.26.4
 pip3 install mysql-connector-python==9.0.0
 pip3 install rlp==3.0.0
 pip3 install twilio==9.6.0
+pip3 install pytz==2025.2
 
 solc-select install 0.8.15
 solc-select use 0.8.15
@@ -146,6 +147,7 @@ python3 -m pip install numpy==1.24.4
 python3 -m pip install mysql-connector-python==9.0.0
 python3 -m pip install rlp==3.0.0
 python3 -m pip install twilio==9.6.0
+python3 -m pip install pytz==2025.2
 ```
 
 Once installed it should be possible to run all tests from the pysys.py cli as described in the following sections. Note

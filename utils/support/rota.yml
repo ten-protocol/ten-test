@@ -1,0 +1,55 @@
+Monday:
+  - start: "00:00"
+    end: "11:59"
+    person: "moray"
+  - start: "12:00"
+    end: "23:59"
+    person: "moray"
+
+Tuesday:
+  - start: "00:00"
+    end: "11:59"
+    person: "moray"
+  - start: "12:00"
+    end: "23:59"
+    person: "moray"
+
+Wednesday:
+  - start: "00:00"
+    end: "11:59"
+    person: "moray"
+  - start: "12:00"
+    end: "23:59"
+    person: "moray"
+
+Thursday:
+  - start: "00:00"
+    end: "11:59"
+    person: "moray"
+  - start: "12:00"
+    end: "23:59"
+    person: "moray"
+
+Friday:
+  - start: "00:00"
+    end: "11:59"
+    person: "moray"
+  - start: "12:00"
+    end: "23:59"
+    person: "moray"
+
+Saturday:
+  - start: "00:00"
+    end: "11:59"
+    person: "moray"
+  - start: "12:00"
+    end: "23:59"
+    person: "moray"
+
+Sunday:
+  - start: "00:00"
+    end: "11:59"
+    person: "moray"
+  - start: "12:00"
+    end: "23:59"
+    person: "moray"
