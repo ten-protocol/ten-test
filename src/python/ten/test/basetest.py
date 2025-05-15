@@ -27,7 +27,6 @@ class GenericNetworkTest(BaseTest):
     MSG_ID = 1                      # global used for http message requests numbers
     PERSIST_PERF = False            # if true persist performance results to the db
 
-
     def __init__(self, descriptor, outsubdir, runner):
         """Call the parent constructor but set the mode to ten if non is set. """
         super().__init__(descriptor, outsubdir, runner)
@@ -55,8 +54,8 @@ class GenericNetworkTest(BaseTest):
         self.addCleanupFunction(self.close_db)
 
         # every test has a unique connection for the funded account
+        self.network_funding = None
         self.connections = {}
-        self.network_funding = self.get_network_connection()
         self.balance = 0
         self.accounts = []
         self.ephemeral_pks = []
@@ -65,12 +64,17 @@ class GenericNetworkTest(BaseTest):
         self.cost = 0
         _, self.eth_price = self.rates_db.get_latest_rate('ETH', 'USD')
 
-        for fn in Properties().accounts():
-            web3, account = self.network_funding.connect(self, fn(), check_funds=False, verbose=False)
-            self.accounts.append((web3, account))
-            self.balance = self.balance + web3.eth.get_balance(account.address)
-        self.addCleanupFunction(self.__test_cost)
-        self.addCleanupFunction(self.drain_ephemeral_pks)
+        if runner.xargs.get('NO_CONNECT', False):
+            runner.log.warn('No connection to the network has been requested for this test run')
+
+        else:
+            self.network_funding = self.get_network_connection()
+            for fn in Properties().accounts():
+                web3, account = self.network_funding.connect(self, fn(), check_funds=False, verbose=False)
+                self.accounts.append((web3, account))
+                self.balance = self.balance + web3.eth.get_balance(account.address)
+            self.addCleanupFunction(self.__test_cost)
+            self.addCleanupFunction(self.drain_ephemeral_pks)
 
     def __test_cost(self):
         balance = 0

@@ -99,7 +99,10 @@ class TenRunnerPlugin():
             raise Exception('Max threads against Sepolia cannot be greater than 1')
 
         try:
-            if self.is_ten():
+            if runner.xargs.get('NO_CONNECT', False):
+                runner.log.warn('No connection to the network has been requested for this test run')
+
+            elif self.is_ten():
                 try:
                     runner.log.info('Getting and setting the Ten contract addresses')
                     self.__set_contract_addresses(runner)
