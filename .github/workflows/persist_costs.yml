@@ -39,21 +39,21 @@ jobs:
           ./get_artifacts.sh  
 
       - name: 'Run on schedule (arbitrum.sepolia)'
-        if: ${{ github.event_name == 'schedule' }}
+        if: github.event_name == 'schedule'
         continue-on-error: true
         run: |
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -r -m arbitrum.sepolia store_costs
 
       - name: 'Run on schedule (optimism.sepolia)'
-        if: ${{ github.event_name == 'schedule' }}
+        if: github.event_name == 'schedule'
         continue-on-error: true
         run: |
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -r -m optimism.sepolia store_costs
 
       - name: 'Run on schedule (ten.sepolia)'
-        if: ${{ github.event_name == 'schedule' }}
+        if: github.event_name == 'schedule'
         continue-on-error: true
         run: |
           cd ${{ github.workspace }}/ten-test/admin
@@ -67,7 +67,7 @@ jobs:
 #          /usr/local/bin/pysys.py run -r -m ten.uat store_costs
 
       - name: 'Run on dispatch'
-        if: ${{ github.event_name == 'workflow_dispatch' }}
+        if: github.event_name == 'workflow_dispatch'
         continue-on-error: true
         run: |
           cd ${{ github.workspace }}/ten-test/admin
