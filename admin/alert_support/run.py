@@ -39,16 +39,16 @@ def discord_failure_msg(name, oncall_id, all_ids, run_url, environment):
 
     data = {
         "content":  "%s checks are failing %s" % (name, (' '.join(['<@%s>' % x for x in all_ids]))),
-        "username": "E2E Health Checks",
+        "username": "E2E %s checks" % name,
         "embeds": [embed]
     }
     return data
 
 
-def discord_still_failing_msg(content, all_ids):
+def discord_still_failing_msg(content, name, all_ids):
     data = {
         "content":  "%s %s" % (content, (' '.join(['<@%s>' % x for x in all_ids]))),
-        "username": "E2E Health Checks"
+        "username": "E2E %s checks" % name
     }
     return data
 
@@ -69,7 +69,7 @@ def discord_success_msg(name, oncall_id, all_ids, run_url, environment):
 
     data = {
         "content":  "%s checks are passing %s" % (name, (' '.join(['<@%s>' % x for x in all_ids]))),
-        "username": "E2E Health Checks",
+        "username": "E2E %s checks" % name,
         "embeds": [embed]
     }
     return data
@@ -133,7 +133,7 @@ class PySysTest(TenNetworkTest):
 
                     self.log.info(msg)
                     self.send_sms_alert(msg, person)
-                    self.send_discord_alert(discord_still_failing_msg(msg, props.all_discord_ids()))
+                    self.send_discord_alert(discord_still_failing_msg(name, msg, props.all_discord_ids()))
 
             else:
                 self.log.warn('Query on latest outcomes does not have enough entries')
