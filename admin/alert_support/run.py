@@ -2,7 +2,7 @@ import requests, time, pytz
 from datetime import datetime
 from twilio.rest import Client
 from twilio.twiml.voice_response import VoiceResponse
-from pysys.constants import FAILED, PASSED
+from pysys.constants import BLOCKED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 from ten.test.utils.support import SupportHelper
@@ -105,7 +105,6 @@ class PySysTest(TenNetworkTest):
                     self.send_call_alert(msg, person)
                     self.send_sms_alert(msg, person)
                     self.send_discord_alert(discord_failure_msg(name, props.oncall_discord_id(person), self.RUN_URL, self.env))
-                    self.addOutcome(FAILED)
 
                 # have started passing (failed -> passed)
                 elif not last_status and this_status:
@@ -113,12 +112,10 @@ class PySysTest(TenNetworkTest):
                     self.log.info(msg)
                     self.send_sms_alert(msg, person)
                     self.send_discord_alert(discord_success_msg(name, props.oncall_discord_id(person), self.RUN_URL, self.env))
-                    self.addOutcome(PASSED)
 
                 # are continuing to pass (passed -> passed)
                 elif last_status and this_status:
                     self.log.info('In a run of passing checks ... no change')
-                    self.addOutcome(PASSED)
 
                 # are continuing to fail (failed -> failed)
                 elif not last_status and not this_status:
@@ -135,7 +132,6 @@ class PySysTest(TenNetworkTest):
                     self.log.info(msg)
                     self.send_sms_alert(msg, person)
                     self.send_discord_alert(discord_still_failing_msg(msg, props.oncall_discord_id(person)))
-                    self.addOutcome(FAILED)
 
             else:
                 self.log.warn('Query on latest outcomes does not have enough entries')
@@ -147,7 +143,9 @@ class PySysTest(TenNetworkTest):
         response = requests.post(webhook_url, json=msg)
 
         if response.status_code == 204: self.log.info('Sent discord msg')
-        else: self.log.warn('Failed to send discord msg')
+        else:
+            self.log.warn('Failed to send discord msg')
+            self.addOutcome(BLOCKED)
 
     def send_sms_alert(self, msg, person):
         props = Properties()
@@ -162,6 +160,7 @@ class PySysTest(TenNetworkTest):
             self.log.info('Sent SMS msg')
         except:
             self.log.warn('Unable to send SMS message')
+            self.addOutcome(BLOCKED)
 
     def send_call_alert(self, msg, person):
         props = Properties()
@@ -185,3 +184,4 @@ class PySysTest(TenNetworkTest):
             self.log.info('Sent call')
         except:
             self.log.warn('Unable to send call')
+            self.addOutcome(BLOCKED)
