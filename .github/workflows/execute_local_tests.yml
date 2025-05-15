@@ -30,14 +30,14 @@ jobs:
           path: ./ten-test
 
       - name: 'Check out go-ten code on schedule trigger'
-        if: ${{ github.event_name == 'schedule' }}
+        if: github.event_name == 'schedule'
         uses: actions/checkout@v3
         with:
           repository: ten-protocol/go-ten
           path: ./go-ten
 
       - name: 'Check out go-ten code on workflow dispatch'
-        if: ${{ github.event_name == 'workflow_dispatch' }}
+        if: github.event_name == 'workflow_dispatch'
         uses: actions/checkout@v3
         with:
           repository: ten-protocol/go-ten
@@ -85,13 +85,13 @@ jobs:
           /usr/local/bin/pysys.py run -m ten.local reset_persistence
 
       - name: 'Run tests on workflow dispatch'
-        if: ${{ github.event_name == 'workflow_dispatch' }}
+        if: github.event_name == 'workflow_dispatch'
         run: |
           cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -r -m ten.local ${{ github.event.inputs.arguments }}
 
       - name: 'Run tests on schedule'
-        if: ${{ github.event_name == 'schedule' }}
+        if: github.event_name == 'schedule'
         run: |
           cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -r -m ten.local -e skip -e performance -e robustness

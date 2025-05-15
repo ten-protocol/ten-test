@@ -41,7 +41,7 @@ jobs:
         if: always()
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.sepolia -XRUN_TYPE=health -XRUN_NAME=Primary_gateway_health -XRUN_URL=$RUN_URL alert_support
+          /usr/local/bin/pysys.py run -m ten.sepolia -XRUN_TYPE=health -XRUN_NAME=Primary_gateway_health -XRUN_URL=$RUN_URL -XNO_CONNECT alert_support
 
       - name: 'Run health check tests (dexynth gateway)'
         if: always()
@@ -54,7 +54,7 @@ jobs:
         if: always()
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.sepolia -XRUN_TYPE=health-dexynth -XRUN_NAME=Dexynth_gateway_health -XRUN_URL=$RUN_URL alert_support
+          /usr/local/bin/pysys.py run -m ten.sepolia -XRUN_TYPE=health-dexynth -XRUN_NAME=Dexynth_gateway_health -XRUN_URL=$RUN_URL -XNO_CONNECT alert_support
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v4
@@ -71,7 +71,7 @@ jobs:
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.TESTNET_HEALTH_WEBHOOK }}
-          title: "Sepolia-testnet health check tests failed"
-          description: "Sepolia-testnet health check"
-          content: "Please investigate <@814873419207409685> <@92361563276591104> <@920586981581393983> <@921049923414261821> <@1034771491436363797> <@639076633994592256> <@1275573709910052947> <@398020680966471680> <@216439743947341824>"
+          title: "The health_check_sepolia.yml workflow has failed"
+          description: "The workflow shows failures and so requires investigation"
+          content: "For information <@814873419207409685> <@92361563276591104> <@920586981581393983> <@921049923414261821> <@1034771491436363797> <@639076633994592256> <@1275573709910052947> <@398020680966471680> <@216439743947341824>"
           avatar_url: ${{ secrets.AVATAR_URL }}

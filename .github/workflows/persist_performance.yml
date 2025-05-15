@@ -34,14 +34,14 @@ jobs:
           path: ./go-ten
 
       - name: 'Docker clean containers and images before the test'
-        if:  ${{ github.event.inputs.environment == 'ten.local' || github.event_name == 'schedule' }}
+        if: github.event.inputs.environment == 'ten.local' || github.event_name == 'schedule'
         run: |
           for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
           docker system prune -af --volumes
           for i in `docker volume ls --filter dangling=true -q`; do docker volume rm $i; done
 
       - name: 'Build docker containers and start testnet'
-        if:  ${{ github.event.inputs.environment == 'ten.local' || github.event_name == 'schedule' }}
+        if:  github.event.inputs.environment == 'ten.local' || github.event_name == 'schedule'
         env:
           DOCKER_API_VERSION: "1.45"
         run: |
@@ -50,7 +50,7 @@ jobs:
           go run ./testnet/launcher/cmd
 
       - name: 'Do a persistence reset'
-        if:  ${{ github.event.inputs.environment == 'ten.local' || github.event_name == 'schedule' }}
+        if: github.event.inputs.environment == 'ten.local' || github.event_name == 'schedule'
         run: |
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.local reset_persistence
@@ -61,23 +61,30 @@ jobs:
           ./get_artifacts.sh  
 
       - name: 'Run performance tests on workflow dispatch'
-        if: ${{ github.event_name == 'workflow_dispatch' }}
+        if: github.event_name == 'workflow_dispatch'
         run: |
           cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -r -m ${{ github.event.inputs.environment }} -XPERSIST_PERF -i performance
 
+      - name: 'Run the performance summary on workflow dispatch'
+        if: always() && github.event_name == 'workflow_dispatch'
+        continue-on-error: true
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} -XNO_CONNECT graph_performance
+
       - name: 'Run performance tests on schedule'
-        if: ${{ github.event_name == 'schedule' }}
+        if: github.event_name == 'schedule'
         run: |
           cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -r -m ten.local -XPERSIST_PERF -i performance
 
-      - name: 'Run the performance summary'
-        if: always()
+      - name: 'Run the performance summary on schedule'
+        if: always() && github.event_name == 'schedule'
         continue-on-error: true
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} graph_performance
+          /usr/local/bin/pysys.py run -m ten.local -XNO_CONNECT graph_performance
 
       - name: 'Collate performance output'
         if: always()
@@ -109,7 +116,7 @@ jobs:
           retention-days: 1
 
       - name: 'Docker clean containers and images after the test'
-        if:  ${{ github.event.inputs.environment == 'ten.local' || github.event_name == 'schedule' }}
+        if: github.event.inputs.environment == 'ten.local' || github.event_name == 'schedule'
         run: |
           for i in `docker ps -a | awk '{ print $1 } ' | grep -v CONTAINER`; do docker stop $i && docker rm $i; done
           docker system prune -af --volumes
