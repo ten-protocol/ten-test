@@ -45,7 +45,7 @@ def discord_failure_msg(name, oncall_id, all_ids, run_url, environment):
     return data
 
 
-def discord_still_failing_msg(content, name, all_ids):
+def discord_still_failing_msg(name, content, all_ids):
     data = {
         "content":  "%s %s" % (content, (' '.join(['<@%s>' % x for x in all_ids]))),
         "username": "E2E %s checks" % name
@@ -160,8 +160,8 @@ class PySysTest(TenNetworkTest):
                 to=tel,
             )
             self.log.info('Sent SMS msg')
-        except:
-            self.log.warn('Unable to send SMS message')
+        except Exception as e:
+            self.log.warn('Unable to send SMS message: %s', e)
             self.addOutcome(BLOCKED)
 
     def send_call_alert(self, msg, person):
@@ -184,6 +184,6 @@ class PySysTest(TenNetworkTest):
                 to=tel,
             )
             self.log.info('Sent call')
-        except:
-            self.log.warn('Unable to send call')
+        except Exception as e:
+            self.log.warn('Unable to send SMS message: %s', e)
             self.addOutcome(BLOCKED)
