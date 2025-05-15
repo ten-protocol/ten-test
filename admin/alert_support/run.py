@@ -38,7 +38,7 @@ def discord_failure_msg(name, oncall, run_url, environment):
     }
 
     data = {
-        "content":  "%s checks are failing ... please investigate <@%s>" % (name, oncall),
+        "content":  "%s checks are failing ..." % name,
         "username": "E2E Health Checks",
         "embeds": [embed]
     }
@@ -47,7 +47,7 @@ def discord_failure_msg(name, oncall, run_url, environment):
 
 def discord_still_failing_msg(content, oncall):
     data = {
-        "content":  "%s ... please investigate <@%s>" % (content, oncall),
+        "content":  "%s ... " % content,
         "username": "E2E Health Checks"
     }
     return data
@@ -68,7 +68,7 @@ def discord_success_msg(name, oncall, run_url, environment):
     }
 
     data = {
-        "content":  "%s checks are passing ... thanks <@%s>" % (name, oncall),
+        "content":  "%s checks are passing ..." % name,
         "username": "E2E Health Checks",
         "embeds": [embed]
     }
