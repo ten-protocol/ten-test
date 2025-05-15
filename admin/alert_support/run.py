@@ -38,7 +38,7 @@ def discord_failure_msg(name, oncall, run_url, environment):
     }
 
     data = {
-        "content":  "%s checks are failing ... " % name,
+        "content":  "%s checks are failing ..." % name,
         "username": "E2E Health Checks",
         "embeds": [embed]
     }
