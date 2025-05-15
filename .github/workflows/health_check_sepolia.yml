@@ -74,4 +74,3 @@ jobs:
           title: "The health_check_sepolia.yml workflow has failed"
           description: "The workflow shows failures and requires investigation"
           content: "For information <@814873419207409685>"
-          avatar_url: ${{ secrets.AVATAR_URL }}

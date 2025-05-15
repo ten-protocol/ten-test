@@ -41,7 +41,7 @@ jobs:
           title: "UAT-testnet funds check failed"
           description: "UAT-testnet funds check run on schedule"
           content: "Please investigate"
-          avatar_url: ${{ secrets.AVATAR_URL }}
+
 
 
 
