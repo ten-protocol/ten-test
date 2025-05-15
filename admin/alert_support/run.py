@@ -2,6 +2,7 @@ import requests, time, pytz
 from datetime import datetime
 from twilio.rest import Client
 from twilio.twiml.voice_response import VoiceResponse
+from pysys.constants import BLOCKED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 from ten.test.utils.support import SupportHelper
@@ -142,7 +143,9 @@ class PySysTest(TenNetworkTest):
         response = requests.post(webhook_url, json=msg)
 
         if response.status_code == 204: self.log.info('Sent discord msg')
-        else: self.log.warn('Failed to send discord msg')
+        else:
+            self.log.warn('Failed to send discord msg')
+            self.addOutcome(BLOCKED)
 
     def send_sms_alert(self, msg, person):
         props = Properties()
@@ -157,6 +160,7 @@ class PySysTest(TenNetworkTest):
             self.log.info('Sent SMS msg')
         except:
             self.log.warn('Unable to send SMS message')
+            self.addOutcome(BLOCKED)
 
     def send_call_alert(self, msg, person):
         props = Properties()
@@ -180,3 +184,4 @@ class PySysTest(TenNetworkTest):
             self.log.info('Sent call')
         except:
             self.log.warn('Unable to send call')
+            self.addOutcome(BLOCKED)
