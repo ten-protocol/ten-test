@@ -41,6 +41,13 @@ class Properties:
         else:
             return None
 
+    def get_keys(self, section):
+        keys1 = []
+        keys2 = []
+        if self.user_config.has_section(section): keys1 = list(self.user_config[section].keys())
+        if self.default_config.has_section(section): keys2 = (self.default_config[section].keys())
+        return list(set(keys1) | set(keys2))
+
     # binaries
     def solc_binary(self):
         path = self.get('binaries.%s' % PLATFORM, 'solc')
@@ -239,10 +246,20 @@ class Properties:
         if person is None: return self.get('support.personnel.tel', 'default')
         else: return person
 
+    def all_telephone_names(self):
+        people = self.get_keys('support.personnel.tel')
+        if 'default' in people: people.remove('default')
+        return people
+
     def oncall_discord_id(self, person):
         did = self.get('support.personnel.did', person)
         if did is None: return self.get('support.personnel.did', 'default')
         else: return did
+
+    def all_discord_names(self):
+        people = self.get_keys('support.personnel.did')
+        if 'default' in people: people.remove('default')
+        return people
 
     # infura related
     def infuraProjectID(self): return self.get('env.goerli', 'ProjectID')
