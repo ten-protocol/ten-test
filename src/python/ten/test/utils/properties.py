@@ -252,7 +252,9 @@ class Properties:
         else: return did
 
     def all_discord_ids(self):
-        return [self.oncall_discord_id(x) for x in self.get_keys('support.personnel.did') if x != 'default']
+        names = self.get_keys('support.personnel.did')
+        names.sort()
+        return [self.oncall_discord_id(x) for x in names if x != 'default']
 
     # infura related
     def infuraProjectID(self): return self.get('env.goerli', 'ProjectID')
