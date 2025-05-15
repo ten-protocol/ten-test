@@ -51,4 +51,3 @@ jobs:
           title: "UAT-testnet health check tests failed"
           description: "UAT-testnet health check"
           content: "Please investigate"
-          avatar_url: ${{ secrets.AVATAR_URL }}
