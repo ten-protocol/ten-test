@@ -49,8 +49,8 @@ jobs:
         with:
           webhook: ${{ secrets.TESTNET_HEALTH_WEBHOOK }}
           title: "The health_check_sepolia_funds.yml workflow has failed"
-          description: "The workflow shows failures and so requires investigation"
-          content: "For information <@814873419207409685> <@92361563276591104> <@920586981581393983> <@921049923414261821> <@1034771491436363797> <@639076633994592256>  <@1275573709910052947> <@398020680966471680> <@216439743947341824>"
+          description: "The workflow shows failures and requires investigation"
+          content: "For information <@814873419207409685>"
           avatar_url: ${{ secrets.AVATAR_URL }}
 
 

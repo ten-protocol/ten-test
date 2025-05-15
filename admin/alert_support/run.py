@@ -23,14 +23,14 @@ def greet_by_time(timezone_str='Europe/London'):
 
 
 # messages for failure
-def discord_failure_msg(name, oncall, run_url, environment):
+def discord_failure_msg(name, oncall_id, all_ids, run_url, environment):
     embed = {
         "title": "🚨 %s checks failing 🚨" % name,
         "description": "CODE RED - The %s checks have started failing! :poop: " % name,
         "color": 15158332,
         "fields": [
             {"name": "Environment", "value": "%s" % environment, "inline": True},
-            {"name": "On-call support", "value": "<@%s>" % oncall, "inline": True},
+            {"name": "On-call support", "value": "<@%s>" % oncall_id, "inline": True},
             {"name": "Workflow run", "value": "[run](%s)" % run_url, "inline": True},
 
         ],
@@ -38,37 +38,37 @@ def discord_failure_msg(name, oncall, run_url, environment):
     }
 
     data = {
-        "content":  "%s checks are failing ..." % name,
+        "content":  "%s checks are failing %s" % (name, (' '.join(['<@%s>' % x for x in all_ids]))),
         "username": "E2E Health Checks",
         "embeds": [embed]
     }
     return data
 
 
-def discord_still_failing_msg(content, oncall):
+def discord_still_failing_msg(content, all_ids):
     data = {
-        "content":  "%s ... " % content,
+        "content":  "%s %s" % (content, (' '.join(['<@%s>' % x for x in all_ids]))),
         "username": "E2E Health Checks"
     }
     return data
 
 
 # messages for success
-def discord_success_msg(name, oncall, run_url, environment):
+def discord_success_msg(name, oncall_id, all_ids, run_url, environment):
     embed = {
         "title": ":white_check_mark: %s checks passing :white_check_mark:" % name,
         "description": "CODE GREEN - The %s checks have started passing! :boom: " % name,
         "color": 3066993,
         "fields": [
             {"name": "Environment", "value": "%s" % environment, "inline": True},
-            {"name": "On-call support", "value": "<@%s>" % oncall, "inline": True},
+            {"name": "On-call support", "value": "<@%s>" % oncall_id, "inline": True},
             {"name": "Workflow run", "value": "[run](%s)" % run_url, "inline": True},
         ],
         "footer": {"text": "E2E Monitoring"},
     }
 
     data = {
-        "content":  "%s checks are passing ..." % name,
+        "content":  "%s checks are passing %s" % (name, (' '.join(['<@%s>' % x for x in all_ids]))),
         "username": "E2E Health Checks",
         "embeds": [embed]
     }
@@ -104,14 +104,16 @@ class PySysTest(TenNetworkTest):
                     self.log.info(msg)
                     self.send_call_alert(msg, person)
                     self.send_sms_alert(msg, person)
-                    self.send_discord_alert(discord_failure_msg(name, props.oncall_discord_id(person), self.RUN_URL, self.env))
+                    self.send_discord_alert(discord_failure_msg(name, props.oncall_discord_id(person),
+                                                                props.all_discord_ids(), self.RUN_URL, self.env))
 
                 # have started passing (failed -> passed)
                 elif not last_status and this_status:
                     msg = '%s checks are now passing' % name
                     self.log.info(msg)
                     self.send_sms_alert(msg, person)
-                    self.send_discord_alert(discord_success_msg(name, props.oncall_discord_id(person), self.RUN_URL, self.env))
+                    self.send_discord_alert(discord_success_msg(name, props.oncall_discord_id(person),
+                                                                props.all_discord_ids(), self.RUN_URL, self.env))
 
                 # are continuing to pass (passed -> passed)
                 elif last_status and this_status:
@@ -131,7 +133,7 @@ class PySysTest(TenNetworkTest):
 
                     self.log.info(msg)
                     self.send_sms_alert(msg, person)
-                    self.send_discord_alert(discord_still_failing_msg(msg, props.oncall_discord_id(person)))
+                    self.send_discord_alert(discord_still_failing_msg(msg, props.all_discord_ids()))
 
             else:
                 self.log.warn('Query on latest outcomes does not have enough entries')
