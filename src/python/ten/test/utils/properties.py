@@ -246,20 +246,13 @@ class Properties:
         if person is None: return self.get('support.personnel.tel', 'default')
         else: return person
 
-    def all_telephone_names(self):
-        people = self.get_keys('support.personnel.tel')
-        if 'default' in people: people.remove('default')
-        return people
-
     def oncall_discord_id(self, person):
         did = self.get('support.personnel.did', person)
         if did is None: return self.get('support.personnel.did', 'default')
         else: return did
 
-    def all_discord_names(self):
-        people = self.get_keys('support.personnel.did')
-        if 'default' in people: people.remove('default')
-        return people
+    def all_discord_ids(self):
+        return [self.oncall_discord_id(x) for x in self.get_keys('support.personnel.did') if x != 'default']
 
     # infura related
     def infuraProjectID(self): return self.get('env.goerli', 'ProjectID')
