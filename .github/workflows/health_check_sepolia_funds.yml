@@ -41,15 +41,15 @@ jobs:
         if: always()
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.sepolia -XRUN_TYPE=funds -XRUN_NAME=Funds_check -XRUN_URL=$RUN_URL alert_support
+          /usr/local/bin/pysys.py run -m ten.sepolia -XRUN_TYPE=funds -XRUN_NAME=Funds_health -XRUN_URL=$RUN_URL alert_support
 
       - name: 'Discord notification on failure'
         if: failure()
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.TESTNET_HEALTH_WEBHOOK }}
-          title: "Sepolia funds check failed"
-          description: "Sepolia funds check run on schedule"
+          title: "Sepolia funds health check failed"
+          description: "Sepolia funds health check run on schedule"
           content: "Please investigate <@814873419207409685> <@92361563276591104> <@920586981581393983> <@921049923414261821> <@1034771491436363797> <@639076633994592256>  <@1275573709910052947> <@398020680966471680> <@216439743947341824>"
           avatar_url: ${{ secrets.AVATAR_URL }}
 
