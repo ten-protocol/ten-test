@@ -52,7 +52,8 @@ class WalletExtension:
         arguments.extend(('--logPath', self.logPath))
         arguments.extend(('--databasePath', self.databasePath))
         arguments.extend(('--rateLimitUserComputeTime', str(rate_limit_user_compute_time)))
-        if self.verbose: arguments.append('--verbose')
+        #disable verbose as the flag was changed from --verbose to --logLevel so broke backwards compatability
+        #if self.verbose: arguments.extend(('--logLevel', 'debug'))
         hprocess = self.test.startProcess(command=self.binary, displayName='wallet_extension',
                                           workingDir=self.test.output, environs=os.environ, quiet=True,
                                           arguments=arguments, stdout=self.stdout, stderr=self.stderr, state=BACKGROUND)
