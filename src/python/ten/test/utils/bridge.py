@@ -75,10 +75,10 @@ class BridgeDetails:
 class L1BridgeDetails(BridgeDetails):
     """Abstraction over the L1 side of the bridge for a particular account. """
 
-    def __init__(self, test, pk, name):
+    def __init__(self, test, pk, name, check_funds=True):
         """Instantiate an instance. """
         network = test.get_l1_network_connection()
-        web3, account = network.connect(test, pk)
+        web3, account = network.connect(test, pk, check_funds=check_funds)
         bridge = TenBridge(test, web3)
         bus = L1MessageBus(test, web3)
         xchain = L1CrossChainMessenger(test, web3)
@@ -195,10 +195,10 @@ class L1BridgeDetails(BridgeDetails):
 class L2BridgeDetails(BridgeDetails):
     """Abstraction of the L2 side of the bridge for a particular address. """
 
-    def __init__(self, test, pk, name):
+    def __init__(self, test, pk, name, check_funds=True):
         """Instantiate an instance. """
         network = test.get_network_connection()
-        web3, account = network.connect(test, pk)
+        web3, account = network.connect(test, pk, check_funds=check_funds)
         bridge = EthereumBridge(test, web3)
         bus = L2MessageBus(test, web3)
         xchain = L2CrossChainMessenger(test, web3)
@@ -285,6 +285,6 @@ class L2BridgeDetails(BridgeDetails):
 
 class BridgeUser:
     """Abstracts the L1 and L2 sides of the bridge for a user. """
-    def __init__(self, test, l1_pk, l2_pk, name):
-        self.l1 = L1BridgeDetails(test, l1_pk, name)
-        self.l2 = L2BridgeDetails(test, l2_pk, name)
+    def __init__(self, test, l1_pk, l2_pk, name, check_funds=True):
+        self.l1 = L1BridgeDetails(test, l1_pk, name, check_funds)
+        self.l2 = L2BridgeDetails(test, l2_pk, name, check_funds)
