@@ -31,6 +31,12 @@ jobs:
         with:
           path: ./ten-test
 
+      - name: 'Check out go-ten code'
+        uses: actions/checkout@v3
+        with:
+          repository: ten-protocol/go-ten
+          path: ./go-ten
+
       - name: 'Build required artifacts for running tests'
         run: |
           cd ${{ github.workspace }}/ten-test
