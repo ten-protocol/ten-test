@@ -31,6 +31,11 @@ jobs:
         with:
           path: ./ten-test
 
+      - name: 'Build required artifacts for running tests'
+        run: |
+          cd ${{ github.workspace }}/ten-test
+          ./get_artifacts.sh
+
       - name: 'Run the bridging'
         if: always()
         run: |
