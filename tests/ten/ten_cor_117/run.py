@@ -20,7 +20,7 @@ class PySysTest(TenNetworkTest):
 
         # transact (the first should be rejected so we just check later ones go through)
         self.transact(calldata, web3, account, limit=int(self.LIMIT), expect_pass=False)
-        self.transact(calldata, web3, account, limit=1000)
+        self.transact(calldata, web3, account, limit=800)
         self.transact(calldata, web3, account, limit=500)
 
     def transact(self, calldata, web3, account, limit, expect_pass=True):
