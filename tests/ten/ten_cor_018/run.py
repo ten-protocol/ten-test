@@ -22,12 +22,14 @@ class PySysTest(TenNetworkTest):
         # transact using the tx signed from the l2 details but with a bogus chain ID
         tx, signed_tx = self.get_signed_transaction(web3_l2, account_l2, account_to.address, 10, 123456)
         self.send_signed_transaction(web3_l2, tx, signed_tx, expect_pass=False)
+        self.waitForGrep(file='wallet_local_logs', expr='invalid sender: invalid chain id for signer', timeout=10)
         self.assertGrep(file='wallet_local_logs',
                         expr='invalid sender: invalid chain id for signer: have %d want %d' % (123456, l2.chain_id()))
 
         # transact using the tx signed from the l1 details and signed on the l1
         tx, signed_tx = self.get_signed_transaction(web3_l1, account_l1, account_to.address, 10, l1.chain_id())
         self.send_signed_transaction(web3_l2, tx, signed_tx, expect_pass=False)
+        self.waitForGrep(file='wallet_local_logs', expr='invalid sender: invalid chain id for signer', timeout=10)
         self.assertGrep(file='wallet_local_logs',
                         expr='invalid sender: invalid chain id for signer: have %d want %d' % (l1.chain_id(), l2.chain_id()))
 
