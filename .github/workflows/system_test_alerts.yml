@@ -12,7 +12,7 @@ on:
       run_name:
         description: 'The name of the alerting run'
         required: true
-        default: 'Test_alert'
+        default: 'Test_alert_systems'
 
 jobs:
   run-test-alerts:
@@ -31,15 +31,6 @@ jobs:
         run: |
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.sepolia -XRUN_TYPE=${{ github.event.inputs.run_type }} -XRUN_NAME=${{ github.event.inputs.run_name }} -XRUN_URL=$RUN_URL -XNO_CONNECT alert_support
-
-      - name: 'Discord notification on success'
-        if: success()
-        uses: sarisia/actions-status-discord@v1
-        with:
-          webhook: ${{ secrets.TESTNET_HEALTH_WEBHOOK }}
-          title: "The system_test_alerts.yml workflow has passed"
-          description: "The workflow passed and no investigation required"
-          content: "For information <@814873419207409685>"
 
       - name: 'Discord notification on failure'
         if: failure()
