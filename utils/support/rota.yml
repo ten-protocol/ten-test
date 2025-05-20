@@ -1,55 +1,34 @@
 Monday:
   - start: "00:00"
-    end: "11:59"
-    person: "moray"
-  - start: "12:00"
     end: "23:59"
-    person: "moray"
+    person: "ziga"
 
 Tuesday:
   - start: "00:00"
-    end: "11:59"
-    person: "moray"
-  - start: "12:00"
     end: "23:59"
-    person: "moray"
+    person: "stefan"
 
 Wednesday:
   - start: "00:00"
-    end: "11:59"
-    person: "moray"
-  - start: "12:00"
     end: "23:59"
-    person: "moray"
+    person: "matt"
 
 Thursday:
   - start: "00:00"
-    end: "11:59"
-    person: "moray"
-  - start: "12:00"
     end: "23:59"
-    person: "moray"
+    person: "tudor"
 
 Friday:
   - start: "00:00"
-    end: "11:59"
-    person: "moray"
-  - start: "12:00"
     end: "23:59"
-    person: "moray"
+    person: "will"
 
 Saturday:
   - start: "00:00"
-    end: "11:59"
-    person: "moray"
-  - start: "12:00"
     end: "23:59"
     person: "moray"
 
 Sunday:
   - start: "00:00"
-    end: "11:59"
-    person: "moray"
-  - start: "12:00"
     end: "23:59"
-    person: "moray"
+    person: "krish"
