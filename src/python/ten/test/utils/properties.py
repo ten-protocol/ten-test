@@ -234,6 +234,10 @@ class Properties:
 
     def discord_web_hook_token(self, key): return self.get('env.'+key, 'DiscordWebhookToken')
 
+    def telegram_channel_id(self, key): return self.get('env.'+key, 'TelegramChannelID')
+
+    def telegram_bot_token(self, key): return self.get('env.'+key, 'TelegramBotToken')
+
     # support properties
     def twilio_account(self): return self.get('support.twilio', 'account')
 

@@ -45,10 +45,38 @@ def discord_failure_msg(name, oncall_id, all_ids, run_url, environment):
     return data
 
 
+def telegram_failure_msg(name, oncall, run_url, environment, channel_id):
+    message = (
+        f"🚨 *{name} checks failing* 🚨\n"
+        f"CODE RED - The *{name}* checks have started failing!\n"
+        f"*Environment:* {environment}\n"
+        f"*On-call support:* {oncall}\n"
+        f"*Workflow run:* [View run]({run_url})\n"
+    )
+
+    data = {
+        "chat_id": channel_id,
+        "text": message,
+        "parse_mode": "Markdown",
+        "disable_web_page_preview": True,
+    }
+    return data
+
+
 def discord_still_failing_msg(name, content, all_ids):
     data = {
         "content":  "%s %s" % (content, (' '.join(['<@%s>' % x for x in all_ids]))),
         "username": "E2E %s checks" % name
+    }
+    return data
+
+
+def telegram_still_failing_msg(content, channel_id):
+    data = {
+        "chat_id": channel_id,
+        "text": content,
+        "parse_mode": "Markdown",
+        "disable_web_page_preview": True,
     }
     return data
 
@@ -75,6 +103,24 @@ def discord_success_msg(name, oncall_id, all_ids, run_url, environment):
     return data
 
 
+def telegram_success_msg(name, oncall, run_url, environment, channel_id):
+    message = (
+        f"✅ *{name} checks passing* ✅\n"
+        f"CODE GREEN - The *{name}* checks have started passing!\n"
+        f"*Environment:* {environment}\n"
+        f"*On-call support:* {oncall}\n"
+        f"*Workflow run:* [View run]({run_url})\n"
+    )
+
+    data = {
+        "chat_id": channel_id,
+        "text": message,
+        "parse_mode": "Markdown",
+        "disable_web_page_preview": True,
+    }
+    return data
+
+
 class PySysTest(TenNetworkTest):
     RUN_TYPE = None
     RUN_NAME = None
@@ -96,12 +142,12 @@ class PySysTest(TenNetworkTest):
 
             # health checks run every 15 min, true is a pass, false is a fail - decision table below;
             #
-            # | t-00  |  t-15 |  t-30 |    Action                 | Call   | SMS    | Discord
+            # | t-00  |  t-15 |  t-30 |    Action                 | Call   | SMS    | Discord / Telegram
             # |-------|-------|-------|------------------------------------------------------------------------
-            # | false | true  |       | started failing           |        |        | discord_failure_msg
-            # | false | false | true  | started and still failing | oncall |        | discord_still_failing_msg
-            # | false | false | false | still failing             |        | oncall | discord_still_failing_msg
-            # | true  | false |       | started passing           |        | oncall | discord_success_msg
+            # | false | true  |       | started failing           |        |        | failure_msg
+            # | false | false | true  | started and still failing | oncall |        | still_failing_msg
+            # | false | false | false | still failing             |        | oncall | still_failing_msg
+            # | true  | false |       | started passing           |        | oncall | success_msg
 
             if len(entries) == 3:
                 t00 = True if entries[0][1] == 1 else False
@@ -114,6 +160,8 @@ class PySysTest(TenNetworkTest):
                     self.log.info(msg)
                     self.send_discord_alert(discord_failure_msg(name, props.oncall_discord_id(person),
                                                                 props.all_discord_ids(), self.RUN_URL, self.env))
+                    self.send_telegram_message(telegram_failure_msg(name, person, self.RUN_URL, self.env,
+                                                                    props.telegram_channel_id(self.env)))
 
                 # started failing and still failing
                 elif not t00 and not t15 and t30:
@@ -126,10 +174,11 @@ class PySysTest(TenNetworkTest):
                         seconds = int(time.time()) - int(entry[0])
                         hour = seconds // 3600
                         min = (seconds % 3600) // 60
-                        msg = '%s checks are still failing, last success %d hours %d mins ago' % (name, hour, min)
+                        msg = '%s checks are still failing, last successful check was %d hours %d mins ago' % (name, hour, min)
 
                     self.log.info(msg)
                     self.send_discord_alert(discord_still_failing_msg(name, msg, props.all_discord_ids()))
+                    self.send_telegram_message(telegram_still_failing_msg(msg, props.telegram_channel_id(self.env)))
 
                 # still on a failing run
                 elif not t00 and not t15 and not t30:
@@ -141,11 +190,12 @@ class PySysTest(TenNetworkTest):
                         seconds = int(time.time()) - int(entry[0])
                         hour = seconds // 3600
                         min = (seconds % 3600) // 60
-                        msg = '%s checks are still failing, last success %d hours %d mins ago' % (name, hour, min)
+                        msg = '%s checks are still failing, last successful check was %d hours %d mins ago' % (name, hour, min)
 
                     self.log.info(msg)
                     self.send_sms_alert(msg, person)
                     self.send_discord_alert(discord_still_failing_msg(name, msg, props.all_discord_ids()))
+                    self.send_telegram_message(telegram_still_failing_msg(msg, props.telegram_channel_id(self.env)))
 
                 # started passing
                 elif t00 and not t15:
@@ -154,6 +204,8 @@ class PySysTest(TenNetworkTest):
                     self.send_sms_alert(msg, person)
                     self.send_discord_alert(discord_success_msg(name, props.oncall_discord_id(person),
                                                                 props.all_discord_ids(), self.RUN_URL, self.env))
+                    self.send_telegram_message(telegram_success_msg(name, person, self.RUN_URL, self.env,
+                                                                    props.telegram_channel_id(self.env)))
 
                 # still on a passing run
                 elif t00 and t15:
@@ -171,6 +223,17 @@ class PySysTest(TenNetworkTest):
         if response.status_code == 204: self.log.info('Sent discord msg')
         else:
             self.log.warn('Failed to send discord msg')
+            self.addOutcome(BLOCKED)
+
+    def send_telegram_message(self, msg):
+        props = Properties()
+        url = 'https://api.telegram.org/bot%s/sendMessage' % props.telegram_bot_token(self.env)
+
+        response = requests.post(url, json=msg)
+
+        if response.status_code == 200: self.log.info('Sent telegram msg')
+        else:
+            self.log.warn('Failed to send telegram msg')
             self.addOutcome(BLOCKED)
 
     def send_sms_alert(self, msg, person):
