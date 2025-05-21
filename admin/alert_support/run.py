@@ -90,11 +90,19 @@ class PySysTest(TenNetworkTest):
         elif self.RUN_URL is None:
             self.log.warn('No run url given ... aborting')
         else:
-            entries = self.runtype_db.get_last_two_results(self.env, self.RUN_TYPE)
+
             name = self.RUN_NAME.replace('_',' ')
             person = SupportHelper.get_person_on_call(self)
+            entries = self.runtype_db.get_last_num_results(self.env, self.RUN_TYPE, 3)
 
-            if len(entries) == 2:
+            # | t      |  t-1   |  t-2    |    Action                 | Call  | SMS   | Discord
+            # |------- |--------|---------|-----------------------------------------------------
+            # | failed | passed |  <any>  | started failing           |       |       |  discord_failure_msg
+            # | failed | failed | passed  | started and still failing |  X    |       |  discord_still_failing_msg
+            # | failed | failed | failed  | still failing             |       |  X    |  discord_still_failing_msg
+            # | passed | failed | <any>   | started passing           |       |  X    |  discord_success_msg
+
+            if len(entries) == 3:
                 this_status = True if entries[0][1] == 1 else False
                 last_status = True if entries[1][1] == 1 else False
 

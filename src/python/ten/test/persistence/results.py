@@ -67,7 +67,7 @@ class RunTypePersistence:
                  "outcome BOOLEAN)"
     SQL_INSERT = "INSERT INTO results_type VALUES (?, ?, ?, ?, ?)"
     SQL_SELONE = "SELECT time, outcome from results_type WHERE environment=? and type=? and outcome=? order by time desc limit 1"
-    SQL_SELTWO = "SELECT time, outcome from results_type WHERE environment=? and type=? order by time desc limit 2"
+    SQL_SELNUM = "SELECT time, outcome from results_type WHERE environment=? and type=? order by time desc limit ?"
 
     @classmethod
     def init(cls, use_remote, user_dir, host):
@@ -81,7 +81,7 @@ class RunTypePersistence:
         self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
         self.sqlone = normalise(self.SQL_SELONE, self.dbconnection.type)
-        self.sqltwo = normalise(self.SQL_SELTWO, self.dbconnection.type)
+        self.sqlnum = normalise(self.SQL_SELNUM, self.dbconnection.type)
         self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
@@ -96,14 +96,12 @@ class RunTypePersistence:
     def get_last_result(self, environment, type, outcome):
         """Return the last result for a particular environment, type and outcome. """
         self.cursor.execute(self.sqlone, (environment, type, outcome))
-        try:
-            return self.cursor.fetchone()
-        except:
-            None
+        try: return self.cursor.fetchone()
+        except: return None
 
-    def get_last_two_results(self, environment, type):
-        """Return the last two results for a particular environment and type. """
-        self.cursor.execute(self.sqltwo, (environment, type))
+    def get_last_num_results(self, environment, type, num):
+        """Return the last x results for a particular environment and type. """
+        self.cursor.execute(self.sqlnum, (environment, type, num))
         return self.cursor.fetchall()
 
     def close(self):
