@@ -242,6 +242,7 @@ class PySysTest(TenNetworkTest):
         else:
             self.log.warn('Failed to send telegram msg')
             self.log.info(response)
+            self.log.info(response.text)
             self.addOutcome(BLOCKED)
 
     def send_sms_alert(self, msg, person):
