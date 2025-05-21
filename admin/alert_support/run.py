@@ -125,9 +125,6 @@ class PySysTest(TenNetworkTest):
     RUN_TYPE = None
     RUN_NAME = None
     RUN_URL = None
-    TWILIO_DISABLED = True
-    DISCORD_DISABLED = True
-    TELEGRAM_DISABLED = False
 
     def execute(self):
         props = Properties()
@@ -177,7 +174,7 @@ class PySysTest(TenNetworkTest):
                         seconds = int(time.time()) - int(entry[0])
                         hour = seconds // 3600
                         min = (seconds % 3600) // 60
-                        msg = '%s checks are still failing, last success %d hours %d mins ago' % (name, hour, min)
+                        msg = '%s checks are still failing, last successful check was %d hours %d mins ago' % (name, hour, min)
 
                     self.log.info(msg)
                     self.send_discord_alert(discord_still_failing_msg(name, msg, props.all_discord_ids()))
@@ -193,7 +190,7 @@ class PySysTest(TenNetworkTest):
                         seconds = int(time.time()) - int(entry[0])
                         hour = seconds // 3600
                         min = (seconds % 3600) // 60
-                        msg = '%s checks are still failing, last success %d hours %d mins ago' % (name, hour, min)
+                        msg = '%s checks are still failing, last successful check was %d hours %d mins ago' % (name, hour, min)
 
                     self.log.info(msg)
                     self.send_sms_alert(msg, person)
@@ -218,8 +215,6 @@ class PySysTest(TenNetworkTest):
                 self.log.warn('Query on latest outcomes does not have enough entries')
 
     def send_discord_alert(self, msg):
-        if self.DISCORD_DISABLED: return
-
         props = Properties()
         webhook_url = 'https://discord.com/api/webhooks/%s/%s' % (props.discord_web_hook_id(self.env),
                                                                   props.discord_web_hook_token(self.env))
@@ -231,8 +226,6 @@ class PySysTest(TenNetworkTest):
             self.addOutcome(BLOCKED)
 
     def send_telegram_message(self, msg):
-        if self.TELEGRAM_DISABLED: return
-
         props = Properties()
         url = 'https://api.telegram.org/bot%s/sendMessage' % props.telegram_bot_token(self.env)
 
@@ -241,13 +234,9 @@ class PySysTest(TenNetworkTest):
         if response.status_code == 200: self.log.info('Sent telegram msg')
         else:
             self.log.warn('Failed to send telegram msg')
-            self.log.info(response)
-            self.log.info(response.text)
             self.addOutcome(BLOCKED)
 
     def send_sms_alert(self, msg, person):
-        if self.TWILIO_DISABLED: return
-
         props = Properties()
         tel = props.oncall_telephone(person)
         try:
@@ -263,8 +252,6 @@ class PySysTest(TenNetworkTest):
             self.addOutcome(BLOCKED)
 
     def send_call_alert(self, msg, person):
-        if self.TWILIO_DISABLED: return
-
         props = Properties()
         tel = props.oncall_telephone(person)
         try:
