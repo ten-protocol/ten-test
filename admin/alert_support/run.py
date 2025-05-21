@@ -90,45 +90,49 @@ class PySysTest(TenNetworkTest):
         elif self.RUN_URL is None:
             self.log.warn('No run url given ... aborting')
         else:
-
             name = self.RUN_NAME.replace('_',' ')
             person = SupportHelper.get_person_on_call(self)
             entries = self.runtype_db.get_last_num_results(self.env, self.RUN_TYPE, 3)
 
-            # | t      |  t-1   |  t-2    |    Action                 | Call  | SMS   | Discord
-            # |------- |--------|---------|-----------------------------------------------------
-            # | failed | passed |  <any>  | started failing           |       |       |  discord_failure_msg
-            # | failed | failed | passed  | started and still failing |  X    |       |  discord_still_failing_msg
-            # | failed | failed | failed  | still failing             |       |  X    |  discord_still_failing_msg
-            # | passed | failed | <any>   | started passing           |       |  X    |  discord_success_msg
+            # health checks run every 15 min, true is a pass, false is a fail - decision table below;
+            #
+            # | t-00  |  t-15 |  t-30 |    Action                 | Call   | SMS    | Discord
+            # |-------|-------|-------|------------------------------------------------------------------------
+            # | false | true  |       | started failing           |        |        | discord_failure_msg
+            # | false | false | true  | started and still failing | oncall |        | discord_still_failing_msg
+            # | false | false | false | still failing             |        | oncall | discord_still_failing_msg
+            # | true  | false |       | started passing           |        | oncall | discord_success_msg
 
             if len(entries) == 3:
-                this_status = True if entries[0][1] == 1 else False
-                last_status = True if entries[1][1] == 1 else False
+                t00 = True if entries[0][1] == 1 else False
+                t15 = True if entries[1][1] == 1 else False
+                t30 = True if entries[2][1] == 1 else False
 
-                # have started failing (passed -> failed)
-                if last_status and not this_status:
+                # started failing
+                if not t00 and t15:
                     msg = '%s checks have started failing, please investigate' % name
                     self.log.info(msg)
-                    self.send_call_alert(msg, person)
-                    self.send_sms_alert(msg, person)
                     self.send_discord_alert(discord_failure_msg(name, props.oncall_discord_id(person),
                                                                 props.all_discord_ids(), self.RUN_URL, self.env))
 
-                # have started passing (failed -> passed)
-                elif not last_status and this_status:
-                    msg = '%s checks are now passing' % name
+                # started failing and still failing
+                elif not t00 and not t15 and t30:
+                    msg = '%s checks have failed twice since the last success, please investigate' % name
+                    self.send_call_alert(msg, person)
+
+                    # get the last success to work out how long since the last pass
+                    entry = self.runtype_db.get_last_result(self.env, self.RUN_TYPE, outcome=1)
+                    if entry is not None:
+                        seconds = int(time.time()) - int(entry[0])
+                        hour = seconds // 3600
+                        min = (seconds % 3600) // 60
+                        msg = '%s checks are still failing, last success %d hours %d mins ago' % (name, hour, min)
+
                     self.log.info(msg)
-                    self.send_sms_alert(msg, person)
-                    self.send_discord_alert(discord_success_msg(name, props.oncall_discord_id(person),
-                                                                props.all_discord_ids(), self.RUN_URL, self.env))
+                    self.send_discord_alert(discord_still_failing_msg(name, msg, props.all_discord_ids()))
 
-                # are continuing to pass (passed -> passed)
-                elif last_status and this_status:
-                    self.log.info('In a run of passing checks ... no change')
-
-                # are continuing to fail (failed -> failed)
-                elif not last_status and not this_status:
+                # still on a failing run
+                elif not t00 and not t15 and not t30:
                     msg = '%s checks are still failing' % name
 
                     # get the last success to work out how long since the last pass
@@ -142,6 +146,18 @@ class PySysTest(TenNetworkTest):
                     self.log.info(msg)
                     self.send_sms_alert(msg, person)
                     self.send_discord_alert(discord_still_failing_msg(name, msg, props.all_discord_ids()))
+
+                # started passing
+                elif t00 and not t15:
+                    msg = '%s checks are now passing' % name
+                    self.log.info(msg)
+                    self.send_sms_alert(msg, person)
+                    self.send_discord_alert(discord_success_msg(name, props.oncall_discord_id(person),
+                                                                props.all_discord_ids(), self.RUN_URL, self.env))
+
+                # still on a passing run
+                elif t00 and t15:
+                    self.log.info('In a run of passing checks ... no change')
 
             else:
                 self.log.warn('Query on latest outcomes does not have enough entries')
