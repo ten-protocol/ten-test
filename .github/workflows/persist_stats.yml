@@ -1,10 +1,10 @@
-# Runs a test to measure and persist transaction costs against a given network
+# Runs a test to obtain and persist given metrics from a TEN network
 #
-name: '[execute] Persist tx costs'
-run-name: Persist tx costs (${{ github.event_name }} ${{ github.event.inputs.environment }} )
+name: '[execute] Persist network stats'
+run-name: Persist network stats (${{ github.event_name }} ${{ github.event.inputs.environment }} )
 on:
   schedule:
-    - cron: '0 */1 * * *'
+    - cron: '05 */1 * * *'
   workflow_dispatch:
     inputs:
       environment:
@@ -15,8 +15,6 @@ on:
         options:
           - ten.uat
           - ten.sepolia
-          - arbitrum.sepolia
-          - optimism.sepolia
 
 jobs:
   test-run:
@@ -38,40 +36,18 @@ jobs:
           cd ${{ github.workspace }}/ten-test
           ./get_artifacts.sh  
 
-      - name: 'Run on schedule (arbitrum.sepolia)'
-        if: github.event_name == 'schedule'
-        continue-on-error: true
-        run: |
-          cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -r -m arbitrum.sepolia store_costs
-
-      - name: 'Run on schedule (optimism.sepolia)'
-        if: github.event_name == 'schedule'
-        continue-on-error: true
-        run: |
-          cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -r -m optimism.sepolia store_costs
-
       - name: 'Run on schedule (ten.sepolia)'
         if: github.event_name == 'schedule'
-        continue-on-error: true
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -r -m ten.sepolia store_costs
-
-#      - name: 'Run on schedule (ten.uat)'
-#        if: ${{ github.event_name == 'schedule' }}
-#        continue-on-error: true
-#        run: |
-#          cd ${{ github.workspace }}/ten-test/admin
-#          /usr/local/bin/pysys.py run -r -m ten.uat store_costs
+          /usr/local/bin/pysys.py run -r -m ten.sepolia store_stats
 
       - name: 'Run on dispatch'
         if: github.event_name == 'workflow_dispatch'
         continue-on-error: true
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -r -m ${{ github.event.inputs.environment }} store_costs
+          /usr/local/bin/pysys.py run -r -m ${{ github.event.inputs.environment }} store_stats
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v4

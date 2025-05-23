@@ -1,4 +1,4 @@
-import requests, json, time
+import requests, json
 from web3 import Web3
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
@@ -9,8 +9,6 @@ class PySysTest(TenNetworkTest):
     L2_THRESHOLD = 25
 
     def execute(self):
-        current_time = int(time.time())
-
         network = self.get_l1_network_connection(self.env)
         url = network.connection_url()
         web3 = Web3(Web3.HTTPProvider(url))
@@ -31,11 +29,9 @@ class PySysTest(TenNetworkTest):
         deployer_balance = web3.from_wei(web3.eth.get_balance(deployer_address), 'ether')
         self.log.info('Deployer account %s balance %.9f ETH', deployer_address, deployer_balance)
 
-        faucet_address = Properties().faucet_address(key=self.env)
         faucet_balance_wei = self.get_faucet_balance()
         faucet_balance_eth = web3.from_wei(faucet_balance_wei, 'ether')
         self.log.info('Faucet balance %.9f ETH', faucet_balance_eth)
-        self.funds_db.insert_funds('Faucet', faucet_address, self.env, current_time, faucet_balance_wei)
 
         self.assertTrue(sequencer_balance >= self.L1_THRESHOLD,
                         assertMessage='L1 Sequencer balance is below threshold %s' % self.L1_THRESHOLD)

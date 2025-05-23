@@ -12,11 +12,12 @@ class StatsPersistence:
     SQL_CREATE = "CREATE TABLE IF NOT EXISTS stats " \
                  "(environment VARCHAR(64), " \
                  "time INTEGER, " \
-                 "key STRING", \
+                 "key STRING, " \
                  "value INTEGER, " \
                  "delta INTEGER, " \
-                 "cumulative INTEGER)"
+                 "running INTEGER)"
     SQL_INSERT = "INSERT INTO stats VALUES (?, ?, ?, ?, ?, ?);"
+    SQL_SELONE = "SELECT value, running from stats WHERE environment=? and key=? order by time desc limit 1"
 
     @classmethod
     def init(cls, use_remote, user_dir, host):
@@ -29,6 +30,7 @@ class StatsPersistence:
         self.host = host
         self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
+        self.sqlone = normalise(self.SQL_SELONE, self.dbconnection.type)
         self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
@@ -40,8 +42,13 @@ class StatsPersistence:
         self.cursor.close()
         self.dbconnection.connection.close()
 
-    def insert(self, environment, time, key, value, delta, cumulative):
+    def insert(self, environment, time, key, value, delta, running):
         """Insert new values for a particular environment."""
-        self.cursor.execute(self.sqlins, (environment, time, key, value, delta, cumulative))
+        self.cursor.execute(self.sqlins, (environment, time, key, value, delta, running))
         self.dbconnection.connection.commit()
 
+    def get_last_entry(self, environment, key):
+        """Return the last entry for a particular environment and key. """
+        self.cursor.execute(self.sqlone, (environment, key))
+        try: return self.cursor.fetchone()
+        except: return None
