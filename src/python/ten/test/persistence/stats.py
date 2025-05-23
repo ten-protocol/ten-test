@@ -12,12 +12,12 @@ class StatsPersistence:
     SQL_CREATE = "CREATE TABLE IF NOT EXISTS stats " \
                  "(environment VARCHAR(64), " \
                  "time INTEGER, " \
-                 "key STRING, " \
+                 "type STRING, " \
                  "value INTEGER, " \
                  "delta INTEGER, " \
                  "running INTEGER)"
     SQL_INSERT = "INSERT INTO stats VALUES (?, ?, ?, ?, ?, ?);"
-    SQL_SELONE = "SELECT value, running from stats WHERE environment=? and key=? order by time desc limit 1"
+    SQL_SELONE = "SELECT value, running from stats WHERE environment=? and type=? order by time desc limit 1"
 
     @classmethod
     def init(cls, use_remote, user_dir, host):
@@ -42,13 +42,13 @@ class StatsPersistence:
         self.cursor.close()
         self.dbconnection.connection.close()
 
-    def insert(self, environment, time, key, value, delta, running):
+    def insert(self, environment, time, type, value, delta, running):
         """Insert new values for a particular environment."""
-        self.cursor.execute(self.sqlins, (environment, time, key, value, delta, running))
+        self.cursor.execute(self.sqlins, (environment, time, type, value, delta, running))
         self.dbconnection.connection.commit()
 
-    def get_last_entry(self, environment, key):
-        """Return the last entry for a particular environment and key. """
-        self.cursor.execute(self.sqlone, (environment, key))
+    def get_last_entry(self, environment, type):
+        """Return the last entry for a particular environment and type. """
+        self.cursor.execute(self.sqlone, (environment, type))
         try: return self.cursor.fetchone()
         except: return None
