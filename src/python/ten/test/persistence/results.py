@@ -4,7 +4,7 @@ from ten.test.persistence import get_connection
 
 
 class TxCostResultsPersistence:
-    """Abstracts the persistence of transaction costs into a local database.
+    """Abstracts the persistence of transaction costs into a local or remote database.
 
     We persist any test runs that are made in the cloud, along with the branch that it was run against. This just
     allows inspection of commonly failing tests.
@@ -55,7 +55,7 @@ class TxCostResultsPersistence:
 
 
 class RunTypePersistence:
-    """Abstracts the persistence of a test run type for a given UUID into a local database.
+    """Abstracts the persistence of a test run type for a given UUID into a local or remote database.
 
     """
 
@@ -111,7 +111,7 @@ class RunTypePersistence:
 
 
 class OutcomeResultsPersistence:
-    """Abstracts the persistence of test outcome results into a local database.
+    """Abstracts the persistence of test outcome results into a local or remote database.
 
     Results are a property of the host and environment. We persist any test runs that are made in the cloud, along
     with the branch that it was run against. This just allows inspection of commonly failing tests.
@@ -157,7 +157,7 @@ class OutcomeResultsPersistence:
 
 
 class PerformanceResultsPersistence:
-    """Abstracts the persistence of performance results into a local database.
+    """Abstracts the persistence of performance results into a local or remote database.
 
     Results are a property of the environment and the host that the test was run in. They are externalised so they can
     be visualised outside the test infrastructure.

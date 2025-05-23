@@ -3,7 +3,7 @@ from ten.test.persistence import get_connection
 
 
 class CountsPersistence:
-    """Abstracts the persistence of transaction counts across accounts into a local database.
+    """Abstracts the persistence of transaction counts across accounts into a local or remote database.
 
     This is only really used to persist the tx count of the L1 sequencer, as it means we can ensure that it is writing
     roll-ups to the L1. Since this is a property of the environment, not the test runner, it should be sharable across

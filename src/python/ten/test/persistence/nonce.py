@@ -3,7 +3,7 @@ from ten.test.persistence import get_connection
 
 
 class NoncePersistence:
-    """Abstracts the persistence of nonces into a local database. """
+    """Abstracts the persistence of nonces into a local or remote database. """
 
     SQL_CREATE = "CREATE TABLE IF NOT EXISTS nonces " \
                  "(account VARCHAR(64), " \
