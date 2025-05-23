@@ -3,7 +3,7 @@ from ten.test.persistence import get_connection
 
 
 class ContractPersistence:
-    """Abstracts the persistence of contract addresses and params into a local database.
+    """Abstracts the persistence of contract addresses and params into a local or remote database.
 
     Since a deployed contract is a property of the environment, not the test runner, it should be sharable across
     different test runners when running in the cloud, so the persistence is externalised into a mysql server under these

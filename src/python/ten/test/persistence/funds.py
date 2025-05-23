@@ -3,7 +3,7 @@ from ten.test.persistence import get_connection
 
 
 class GasPricePersistence:
-    """Abstracts the persistence of gas prices across the l1 and l2 into a local database.
+    """Abstracts the persistence of gas prices across the l1 and l2 into a local or remote database.
 
     Since this is an absolute property, not one of the test runner, it should be sharable across different test runners
     when running in the cloud, so the persistence is externalised into a mysql server under these conditions.
@@ -46,7 +46,7 @@ class GasPricePersistence:
 
 
 class PandLPersistence:
-    """Abstracts the persistence of profit and loss into a local database.
+    """Abstracts the persistence of profit and loss into a local or remote database.
 
     Since this is a property of the environment, not the test runner, it should be sharable across different test
     runners when running in the cloud, so the persistence is externalised into a mysql server under these conditions.
@@ -104,7 +104,7 @@ class PandLPersistence:
 
 
 class FundsPersistence:
-    """Abstracts the persistence of funds across accounts into a local database.
+    """Abstracts the persistence of funds across accounts into a local or remote database.
 
     Since this is a property of the environment, not the test runner, it should be sharable across different test
     runners when running in the cloud, so the persistence is externalised into a mysql server under these conditions.

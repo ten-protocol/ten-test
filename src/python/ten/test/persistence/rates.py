@@ -3,7 +3,7 @@ from ten.test.persistence import get_connection
 
 
 class RatesPersistence:
-    """Abstracts the persistence of rates across cryptos into a local database.
+    """Abstracts the persistence of rates across cryptos into a local or remote database.
 
     Since this is an absolute property, not one of the test runner, it should be sharable across different test runners
     when running in the cloud, so the persistence is externalised into a mysql server under these conditions.
