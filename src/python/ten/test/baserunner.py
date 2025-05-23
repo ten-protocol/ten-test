@@ -82,7 +82,7 @@ class TenRunnerPlugin():
         results_db = PerformanceResultsPersistence.init(self.is_cloud_vm, self.user_dir, self.machine_name)
         txcosts_db = TxCostResultsPersistence.init(use_remote, self.user_dir, self.machine_name)
         runtype_db = RunTypePersistence.init(use_remote, self.user_dir, self.machine_name)
-        stats_db = StatsPersistence.init(use_remote, self.user_dir, self.machine_name)
+        #stats_db = StatsPersistence.init(use_remote, self.user_dir, self.machine_name)
 
         eth_price = self.get_eth_price()
         if eth_price is not None:
@@ -184,7 +184,7 @@ class TenRunnerPlugin():
         results_db.close()
         txcosts_db.close()
         runtype_db.close()
-        stats_db.close()
+        #stats_db.close()
 
     def run_ganache(self, runner):
         """Run ganache for use by the tests. """
