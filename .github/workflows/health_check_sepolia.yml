@@ -48,7 +48,7 @@ jobs:
         run: |
           sleep 5 
           cd ${{ github.workspace }}/ten-test/tests
-          PRIMARY_HOST_HTTP=https://rpc.dexynth-gateway.ten.xyz PRIMARY_HOST_WS=wss://rpc.dexynth-gateway.ten.xyz /usr/local/bin/pysys.py run -r -m ten.sepolia -o dexynth -XRUN_TYPE=health-dexynth gen_cor_040 gen_cor_073 gen_cor_106
+          PRIMARY_HOST_HTTP=https://rpc.dexynth-gateway.ten.xyz PRIMARY_HOST_WS=wss://rpc.dexynth-gateway.ten.xyz /usr/local/bin/pysys.py run -r -m ten.sepolia -o dexynth -XRUN_TYPE=health-dexynth gen_cor_002 gen_cor_040 gen_cor_073 gen_cor_106
 
       - name: 'Alert for dexynth gateway'
         if: always()
