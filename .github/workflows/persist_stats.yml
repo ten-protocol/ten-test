@@ -3,8 +3,8 @@
 name: '[execute] Persist network stats'
 run-name: Persist network stats (${{ github.event_name }} ${{ github.event.inputs.environment }} )
 on:
-  #schedule:
-  #  - cron: '05 */1 * * *'
+  schedule:
+    - cron: '05 */1 * * *'
   workflow_dispatch:
     inputs:
       environment:

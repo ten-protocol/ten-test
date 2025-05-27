@@ -12,7 +12,7 @@ class StatsPersistence:
     SQL_CREATE = "CREATE TABLE IF NOT EXISTS stats " \
                  "(environment VARCHAR(64), " \
                  "time INTEGER, " \
-                 "type STRING, " \
+                 "type VARCHAR(32), " \
                  "value INTEGER, " \
                  "delta INTEGER, " \
                  "running INTEGER)"
