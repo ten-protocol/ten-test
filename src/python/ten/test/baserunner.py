@@ -317,7 +317,6 @@ class TenRunnerPlugin():
         """Get the contract addresses and set into the properties. """
         data = {"jsonrpc": "2.0", "method": "ten_config", "id": self.MSG_ID}
         response = self.post(runner, data)
-        print(json.dumps(response.json(), indent=2))
         if 'result' in response.json():
             config = response.json()['result']
             Properties.LStartHash = config["L1StartHash"]
@@ -334,6 +333,7 @@ class TenRunnerPlugin():
             if "PublicSystemContracts" in config:
                 contracts = config["PublicSystemContracts"]
                 Properties.L2PublicCallbacks = self.__get_contract(contracts, "PublicCallbacks")
+                Properties.L2TenSystemCalls = self.__get_contract(contracts, "TenSystemCalls")
         elif 'error' in response.json():
             runner.log.warn('Error getting contract address from ten_config')
             runner.log.error(response.json()['error']['message'])
