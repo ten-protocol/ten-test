@@ -7,6 +7,15 @@ interface ITenSystemCalls {
 }
 
 contract TenSystemCallsCaller {
+
+    function callRandomNumbers(address callee, uint256 n) external returns (uint256[] memory) {
+        uint256[] memory results = new uint256[](n);
+        for (uint256 i = 0; i < n; i++) {
+            results[i] = ITenSystemCalls(callee).getRandomNumber();
+        }
+        return results;
+    }
+
     function callRandomNumber(address callee) external returns (uint256) {
         return ITenSystemCalls(callee).getRandomNumber();
     }
