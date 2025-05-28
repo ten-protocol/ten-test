@@ -177,7 +177,7 @@ var bus_abi = JSON.parse(fs.readFileSync(options.l2_bus_abi))
 var bridge_contract = new ethers.Contract(options.l2_bridge_address, bridge_abi, wallet)
 var bus_contract = new ethers.Contract(options.l2_bus_address, bus_abi, wallet)
 
-console.log('Starting transaction to send funds to the L1')
+console.log('Starting transaction to withdraw funds to the L1')
 sendTransfer(provider, wallet, options.to, options.amount, bridge_contract, bus_contract).then( (arg1) => {
   var provider = new ethers.providers.JsonRpcProvider(options.l1_network)
   var wallet = new ethers.Wallet(options.pk, provider)
