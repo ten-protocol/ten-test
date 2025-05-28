@@ -317,6 +317,7 @@ class TenRunnerPlugin():
         """Get the contract addresses and set into the properties. """
         data = {"jsonrpc": "2.0", "method": "ten_config", "id": self.MSG_ID}
         response = self.post(runner, data)
+        print(json.dumps(response.json(), indent=2))
         if 'result' in response.json():
             config = response.json()['result']
             Properties.LStartHash = config["L1StartHash"]
