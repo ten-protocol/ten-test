@@ -5,7 +5,7 @@
         <title>System Calls: transact and emit an event with the tx timestamp</title>
         <purpose><![CDATA[
 Compares the sent time with the timestamp returned from the systems call contract and ensure it is less than
-a given value over a set number of transactions. 
+a given value over a set number of transactions.
 ]]>
         </purpose>
     </description>

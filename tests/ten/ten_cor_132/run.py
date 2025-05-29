@@ -13,9 +13,11 @@ class PySysTest(TenNetworkTest):
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
+        # deploy the contract
         caller = TenSystemCallsCaller(self, web3)
         caller.deploy(network, account)
 
+        # send in the transactions
         id = 1
         target = caller.contract.functions.emitRandomNumber(id, props.L2TenSystemCalls)
         receipt1 = network.transact(self, web3, target, account, caller.GAS_LIMIT)

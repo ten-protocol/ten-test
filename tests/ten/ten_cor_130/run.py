@@ -14,9 +14,11 @@ class PySysTest(TenNetworkTest):
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
+        # deploy the contract
         caller = TenSystemCallsCaller(self, web3)
         caller.deploy(network, account)
 
+        # send in the transactions
         results = caller.contract.functions.callRandomNumbers(props.L2TenSystemCalls, 1000).call()
         entropy = self.entropy_bucketed(results)
         self.log.info('Entropy of the returned sequence is %.2f' % entropy)

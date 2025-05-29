@@ -13,9 +13,11 @@ class PySysTest(TenNetworkTest):
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
+        # deploy the contract
         caller = TenSystemCallsCaller(self, web3)
         caller.deploy(network, account)
 
+        # send in the transactions
         self.same_block(web3, caller, props)
         self.across_blocks(web3, caller, props)
 
