@@ -333,6 +333,7 @@ class TenRunnerPlugin():
             if "PublicSystemContracts" in config:
                 contracts = config["PublicSystemContracts"]
                 Properties.L2PublicCallbacks = self.__get_contract(contracts, "PublicCallbacks")
+                Properties.L2TenSystemCalls = self.__get_contract(contracts, "TenSystemCalls")
         elif 'error' in response.json():
             runner.log.warn('Error getting contract address from ten_config')
             runner.log.error(response.json()['error']['message'])
