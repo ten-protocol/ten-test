@@ -7,7 +7,8 @@ interface ITenSystemCalls {
 }
 
 contract TenSystemCallsCaller {
-    event TenSystemCallsCaller(uint256 indexed id, uint256 random_num);
+    event RandomNumber(uint256 indexed id, uint256 random_num);
+    event TxTimestamp(uint256 indexed id, uint256 timestamp);
 
     function callRandomNumbers(address callee, uint256 n) external returns (uint256[] memory) {
         uint256[] memory results = new uint256[](n);
@@ -23,10 +24,11 @@ contract TenSystemCallsCaller {
 
     function emitRandomNumber(uint256 id, address callee) public {
         uint256 random_num = ITenSystemCalls(callee).getRandomNumber();
-        emit TenSystemCallsCaller(id, random_num);
+        emit RandomNumber(id, random_num);
     }
 
-    function callTimestamp(address callee) external view returns (uint256) {
-        return ITenSystemCalls(callee).getTransactionTimestamp();
+    function emitTimestamp(uint256 id, address callee) public {
+        uint256 timestamp =  ITenSystemCalls(callee).getTransactionTimestamp();
+        emit TxTimestamp(id, timestamp);
     }
 }
