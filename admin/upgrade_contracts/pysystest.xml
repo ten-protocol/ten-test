@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Run the l1 contracts upgrade process (requires go-ten cloned)</title>
+        <purpose><![CDATA[
+]]>
+        </purpose>
+    </description>
+    <classification>
+        <groups inherit="true">
+            <group>health</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.local</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
