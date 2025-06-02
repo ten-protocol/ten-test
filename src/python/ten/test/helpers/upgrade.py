@@ -17,6 +17,8 @@ class UpgradeL1ContractsHelper:
 
     def run(self):
         """Run the upgrade. """
+        self.test.log.info('Running the L1 contract upgrade process ...')
+
         arguments = ['run', './testnet/launcher/l1upgrade/cmd',
                      '-network_config_addr=%s' % self.network_config_addr,
                      '-docker_image=%s' % self.docker_image]

@@ -49,6 +49,21 @@ class DockerHelper:
                           ignoreExitStatus=True, quiet=True)
 
     @classmethod
+    def container_rm(cls, test, name):
+        """Remove a docker container by name. """
+        stdout = os.path.join(test.output, 'docker_rm_%s'%name+'.out')
+        stderr = os.path.join(test.output, 'docker_rm_%s'%name+'.err')
+        id = cls.container_id(test, name)
+        if id == '':
+            test.log.info('No container exists')
+            return
+        test.log.info('Removing container %s with id %s' % (name, id))
+
+        arguments = ['container', 'rm', id]
+        test.startProcess(command=Properties().docker_binary(), displayName='docker-start', workingDir=test.output,
+                          arguments=arguments, stdout=stdout, stderr=stderr, state=FOREGROUND,
+                          ignoreExitStatus=True, quiet=True)
+    @classmethod
     def container_logs(cls, test, name):
         """Get the docker logs to stdout and stderr by name. """
         stdout = os.path.join(test.output, 'docker_logs_%s'%name+'.out')

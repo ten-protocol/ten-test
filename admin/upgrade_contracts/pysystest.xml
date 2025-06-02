@@ -5,7 +5,7 @@
         <title>Run the l1 contracts upgrade process</title>
         <purpose><![CDATA[
 Runs the l1 upgrade process in go-ten (which must be cloned in the same parent directory as the ten-test
-clone) to upgrade the contracts, and once completed performs a basic sanity test that the network is still running. 
+clone) to upgrade the contracts, and once completed performs a basic sanity test that the network is still running.
 ]]>
         </purpose>
     </description>
