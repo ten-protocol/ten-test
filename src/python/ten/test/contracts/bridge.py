@@ -123,7 +123,8 @@ class WrappedERC20:
         self.name = name
         self.symbol = symbol
         self.address = address
-        self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'testing', 'WrappedERC20.sol', 'WrappedERC20.json')
+        self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'reference_bridge', 'L2', 'contracts',
+                                     'WrappedERC20.sol', 'WrappedERC20.json')
         with open(self.abi_path, 'r') as fp:
             self.abi = json.load(fp)
         self.contract = self.web3.eth.contract(address=self.address, abi=self.abi)
