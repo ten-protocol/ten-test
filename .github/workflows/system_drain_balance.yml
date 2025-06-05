@@ -1,0 +1,44 @@
+# Send any funds from the L1 deployment account to the gnosis safe wallet
+#
+name: '[system] Drain deployer balance'
+run-name: Send L1 deployer funds to safe wallet (${{ github.event.inputs.environment }})
+on:
+  workflow_dispatch:
+    inputs:
+      floor:
+        description: 'The amount in ETH to leave in the deployer account'
+        required: true
+        default: 10
+      environment:
+        type: choice
+        description: Environment
+        required: true
+        default: ten.sepolia
+        options:
+          - ten.uat
+          - ten.sepolia
+jobs:
+  run-check:
+    runs-on: [self-hosted, Linux, X64, all-testnets]
+    steps:
+      - name: 'Check out ten-test'
+        uses: actions/checkout@v3
+        with:
+          path: ./ten-test
+
+      - name: 'Send funds on uat'
+        if:  ${{ github.event.inputs.environment == 'ten.uat' }}
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} -XSEND_PK=${{ secrets.ACCOUNT_PK_WORKER_UAT}} -XRECV_AD=${{ secrets.ACCOUNT_GNOSIS_TESTNET }} drain_balance 
+
+      - name: 'Send funds on sepolia'
+        if:  ${{ github.event.inputs.environment == 'ten.sepolia' }}
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} -XSEND_PK=${{ secrets.ACCOUNT_PK_WORKER}} -XRECV_AD=${{ secrets.ACCOUNT_GNOSIS_TESTNET }} drain_balance 
+
+ 
+
+
+
