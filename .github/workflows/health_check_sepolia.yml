@@ -70,7 +70,7 @@ jobs:
         if: failure()
         uses: sarisia/actions-status-discord@v1
         with:
-          webhook: ${{ secrets.TESTNET_HEALTH_WEBHOOK }}
+          webhook: ${{ secrets.WORKFLOW_STATUS_WEBHOOK }}
           title: "The health_check_sepolia.yml workflow has failed"
           description: "The workflow shows failures and requires investigation"
           content: "For information <@814873419207409685>"
