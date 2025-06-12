@@ -13,6 +13,7 @@
         <modes inherit="true">
             <mode>ten.sepolia</mode>
             <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
         </modes>
     </classification>
 
