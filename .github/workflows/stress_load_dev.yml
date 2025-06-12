@@ -1,0 +1,47 @@
+# Run a set of load on dev-testnet on a schedule
+#
+name: '[execute] Load test dev'
+run-name: Run dev-testnet load tests
+on:
+  schedule:
+    - cron: '10 */2 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-check:
+    runs-on: [self-hosted, Linux, X64, all-testnets]
+    steps:
+      - name: 'Check out ten-test'
+        uses: actions/checkout@v3
+        with:
+          path: ./ten-test
+
+      - name: 'Check out go-ten code'
+        uses: actions/checkout@v3
+        with:
+          repository: ten-protocol/go-ten
+          path: ./go-ten
+
+      - name: 'Build required artifacts for running tests'
+        run: |
+          cd ${{ github.workspace }}/ten-test
+          ./get_artifacts.sh
+          ls -l ${{ github.workspace }}/ten-test/artifacts   
+
+      - name: 'Run load and perf tests'
+        run: |
+          cd ${{ github.workspace }}/ten-test/tests
+          /usr/local/bin/pysys.py run -r -m ten.dev -i remote_load -c 8 
+
+      - name: 'Upload testcase output'
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-artifact
+          path: |
+            ${{ github.workspace }}/ten-test/**/Output
+            !${{ github.workspace }}/ten-test/**/node_modules
+          retention-days: 1
+
+
+
