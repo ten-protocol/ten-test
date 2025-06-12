@@ -3,8 +3,6 @@
 name: '[execute] Load test dev'
 run-name: Run dev-testnet load tests
 on:
-  schedule:
-    - cron: '10 */2 * * *'
   workflow_dispatch:
 
 jobs:
