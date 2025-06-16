@@ -1,7 +1,7 @@
 import os, random, string
 from pysys.constants import PASSED, FOREGROUND
 from ten.test.basetest import TenNetworkTest
-from ten.test.contracts.emitter import EventEmitter
+from ten.test.contracts.emitter import EventEmitter, TransparentEventEmitter
 
 
 class PySysTest(TenNetworkTest):
@@ -15,6 +15,8 @@ class PySysTest(TenNetworkTest):
 
         emitter = EventEmitter(self, web3, 100)
         emitter.deploy(network, account)
+        transparent_emitter = TransparentEventEmitter(self, web3, 100)
+        transparent_emitter.deploy(network, account)
         debugger_url = network.connection_url()
 
         # estimate how much gas each transactor will need
@@ -29,21 +31,21 @@ class PySysTest(TenNetworkTest):
         gas_limit = max(limits)
         funds_needed = 1.1 * self.NUM_TRANSACTIONS * (gas_price * gas_limit)
 
-        # setup the transactors and run the subscribers
+        # set up the transactors and run the subscribers
         clients = []
         for id in range(0, self.NUM_CLIENTS):
             pk, account, network = self.setup_transactor(funds_needed)
             clients.append((id, pk, account, network))
-            self.run_subscriber(network, emitter, account, id)
+            self.run_subscriber(network, emitter if random.randint(0,1) else transparent_emitter, account, id)
 
         # start the pollers and the debugger
         self.run_debugger(emitter, debugger_url)
-        self.run_poller_simple(network, emitter, id_filter=1)
+        self.run_poller_simple(network, emitter, transparent_emitter, 1)
         self.run_poller_all(network, emitter)
 
         # run the transactors serially in the foreground
         for id, pk, account, network in clients:
-            self.run_transactor(id, emitter, pk, network, gas_limit)
+            self.run_transactor(id, transparent_emitter if id == 1 else emitter, pk, network, gas_limit)
             self.ratio_failures(file=os.path.join(self.output, 'transactor%d.out' % id))
 
         # assuming no other errors raised then we have passed
@@ -93,14 +95,16 @@ class PySysTest(TenNetworkTest):
         self.run_javascript(script, stdout, stderr, args)
         self.waitForGrep(file=stdout, expr='Listening for filtered events...', timeout=10)
 
-    def run_poller_simple(self, network, emitter, id_filter):
+    def run_poller_simple(self, network, contract1, contract2, id_filter):
         stdout = os.path.join(self.output, 'poller_simple.out')
         stderr = os.path.join(self.output, 'poller_simple.err')
         script = os.path.join(self.input, 'poller_simple.js')
         args = []
         args.extend(['--network_ws', network.connection_url(web_socket=True)])
-        args.extend(['--contract_address', '%s' % emitter.address])
-        args.extend(['--contract_abi', '%s' % emitter.abi_path])
+        args.extend(['--contract1_address', '%s' % contract1.address])
+        args.extend(['--contract1_abi', '%s' % contract1.abi_path])
+        args.extend(['--contract2_address', '%s' % contract2.address])
+        args.extend(['--contract2_abi', '%s' % contract2.abi_path])
         args.extend(['--id_filter', '%d' % id_filter])
         self.run_javascript(script, stdout, stderr, args)
 
