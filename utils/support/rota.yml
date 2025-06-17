@@ -6,7 +6,7 @@ Monday:
 Tuesday:
   - start: "00:00"
     end: "23:59"
-    person: "stefan"
+    person: "krish"
 
 Wednesday:
   - start: "00:00"
@@ -16,19 +16,19 @@ Wednesday:
 Thursday:
   - start: "00:00"
     end: "23:59"
-    person: "moray"
+    person: "tudor"
 
 Friday:
   - start: "00:00"
     end: "23:59"
-    person: "will"
+    person: "stefan"
 
 Saturday:
   - start: "00:00"
     end: "23:59"
-    person: "tudor"
+    person: "will"
 
 Sunday:
   - start: "00:00"
     end: "23:59"
-    person: "krish"
+    person: "moray"
