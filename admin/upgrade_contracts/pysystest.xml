@@ -11,7 +11,6 @@ clone) to upgrade the contracts, and once completed performs a basic sanity test
     </description>
     <classification>
         <groups inherit="true">
-            <group>health</group>
         </groups>
         <modes inherit="true">
             <mode>ten.local</mode>
