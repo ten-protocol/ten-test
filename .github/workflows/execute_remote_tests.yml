@@ -25,9 +25,7 @@ on:
         default: main
         options:
           - main
-          - releases/v1.0
-          - releases/v0.28
-          - releases/v0.27
+          - releases/v1.3
 
 jobs:
   test-run:

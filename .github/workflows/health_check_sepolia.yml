@@ -24,7 +24,7 @@ jobs:
         with:
           repository: ten-protocol/go-ten
           path: ./go-ten
-          ref: 'releases/v1.0'
+          ref: 'releases/v1.3'
 
       - name: 'Build required artifacts for running tests'
         run: |
