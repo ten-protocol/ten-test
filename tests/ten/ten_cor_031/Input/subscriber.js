@@ -9,7 +9,11 @@ function log(data) {
 }
 
 function subscribe() {
-  subscription = web3.eth.subscribe('logs', {},
+  topic = web3.utils.sha3('Stored(uint256)')
+  topics = [ topic ]
+  subscription = web3.eth.subscribe('logs', {
+    topics: topics
+    },
     function(error, result) {
       if (error)
         log(`Error returned is ${error}`)
