@@ -38,6 +38,8 @@ class PySysTest(TenNetworkTest):
             self.assertLineCount(file=subscriber.stdout, expr='Stored value', condition='==%d' % self.NUM_TRANSACTIONS)
 
     def hammer(self, network, private_key, num):
+        self.log.info('Starting hammer %d' % num)
+
         # register out-side of the script
         self.distribute_native(Web3().eth.account.from_key(private_key), network.ETH_ALLOC_EPHEMERAL)
         network.connect(self, private_key=private_key, check_funds=False)
@@ -52,6 +54,8 @@ class PySysTest(TenNetworkTest):
         self.waitForGrep(file=stdout, expr='Subscribing for event logs', timeout=10)
 
     def subscriber(self, web3, network, private_key, num):
+        self.log.info('Starting subscriber %d' % num)
+
         subscriber = FilterLogSubscriber(self, network, stdout='subscriber_%d.out'%num, stderr='subscriber_%d.err'%num)
         subscriber.run(
             decode_as_stored_event=True,
