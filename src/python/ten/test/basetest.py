@@ -542,7 +542,7 @@ class TenNetworkTest(GenericNetworkTest):
         while True:
             count=count+1
             if (time.time() - start) > timeout:
-                self.addOutcome(TIMEDOUT, 'Timed out waiting %d secs for node to be healthy'%timeout, abortOnError=False)
+                self.addOutcome(TIMEDOUT, 'Timed out waiting %d secs for node to be healthy'%timeout, abortOnError=True)
             if health_fn(dump_to='health.%d.out'%count):
                 self.log.info('Node is healthy after %d secs'%(time.time() - start))
                 break
