@@ -2,19 +2,15 @@
 <pysystest type="auto">
 
     <description>
-        <title>Stress: stop validator enclave and restart (local only)</title>
+        <title>Stress: stop sequencer enclave and restart (local only)</title>
         <purpose><![CDATA[
-Stops the validator enclave using docker stop, tries to transact, then starts the enclave, waits for the status
-to be healthy and then transacts again. This is performed twice, the first as a soft kill (SIGINT) and the second
-as a hard kill (SIGKILL). 
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>robustness</group>
-            <group>kill</group>
+            <group>restart_node</group>
         </groups>
         <modes inherit="true">
             <mode>ten.local</mode>
