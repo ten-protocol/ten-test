@@ -1,4 +1,4 @@
-import time
+import time, math
 from pysys.constants import *
 from ten.test.utils.docker import DockerHelper
 from ten.test.basetest import TenNetworkTest
@@ -36,25 +36,25 @@ class PySysTest(TenNetworkTest):
         # sigint stop and restart
         self.log.info('')
         self.log.info('Performing SIGINT test')
-        self.run_stop(network, web3, storage, account, value=10, time=10)
+        self.run_stop(network, web3, storage, account, value=10, duration=10, type='sigint')
 
         # sigkill stop and restart
         self.log.info('')
         self.log.info('Performing SIGKILL test')
-        self.run_stop(network, web3, storage, account, value=20, time=0)
+        self.run_stop(network, web3, storage, account, value=20, duration=0, type='sigkill')
 
-    def run_stop(self, network, web3, storage, account, value, time):
-        stdout, stderr = DockerHelper.container_logs(self, 'sequencer-enclave-0')
-        restarts = count(stderr, 'Enclave is now active sequencer')
-        self.log.info('Enclave has become active sequencer %d times' % restarts)
-
+    def run_stop(self, network, web3, storage, account, value, duration, type):
         # stop the container, wait for the container to be stopped
-        DockerHelper.container_stop(self, 'sequencer-enclave-0', time=time)
+        DockerHelper.container_stop(self, 'sequencer-enclave-0', time=duration)
         self.wait_for_stopped()
 
         # start the container, wait for the sequencer to be healthy then transact
-        DockerHelper.container_start(self, 'sequencer-enclave-0')
+        t1 = int(time.time())
+        DockerHelper.container_start(self, 'sequencer-enclave-0', name=type)
         self.wait_for_sequencer()
+        t2 = int(time.time())
+        DockerHelper.container_logs(self, 'sequencer-enclave-0', state=BACKGROUND, name=type, since='%dm' % math.ceil((t2-t1) / 60))
+
         network.transact(self, web3, storage.contract.functions.store(value), account, storage.GAS_LIMIT, timeout=120)
         value = storage.contract.functions.retrieve().call()
         self.assertTrue(value == value, assertMessage='Retrieved value should be %d' % value)

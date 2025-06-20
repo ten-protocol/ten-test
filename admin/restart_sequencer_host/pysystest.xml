@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Stress: stop sequencer enclave and restart (local only)</title>
+        <title>Stress: stop sequencer host and restart (local only)</title>
         <purpose><![CDATA[
 ]]>
         </purpose>
@@ -10,8 +10,7 @@
 
     <classification>
         <groups inherit="true">
-            <group>robustness</group>
-            <group>kill</group>
+            <group>restart_node</group>
         </groups>
         <modes inherit="true">
             <mode>ten.local</mode>

@@ -13,8 +13,7 @@ as a hard kill (SIGKILL).
 
     <classification>
         <groups inherit="true">
-            <group>robustness</group>
-            <group>kill</group>
+            <group>restart_node</group>
         </groups>
         <modes inherit="true">
             <mode>ten.local</mode>

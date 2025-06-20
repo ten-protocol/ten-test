@@ -1,4 +1,4 @@
-import time
+import time, math
 from pysys.constants import *
 from ten.test.utils.docker import DockerHelper
 from ten.test.basetest import TenNetworkTest
@@ -36,25 +36,25 @@ class PySysTest(TenNetworkTest):
         # sigint stop and restart
         self.log.info('')
         self.log.info('Performing SIGINT test')
-        self.run_stop(storage, value=10, time=10)
+        self.run_stop(storage, value=10, duration=10, type='sigint')
 
         # sigkill stop and restart
         self.log.info('')
         self.log.info('Performing SIGKILL test')
-        self.run_stop(storage, value=20, time=0)
+        self.run_stop(storage, value=20, duration=0, type='sigkill')
 
-    def run_stop(self, storage, value, time):
-        stdout, stderr = DockerHelper.container_logs(self, 'sequencer-host')
-        restarts = count(stdout, 'Server started')
-        self.log.info('Container has previous restarts %d' % restarts)
-
+    def run_stop(self, storage, value, duration, type):
         # stop the container, wait for the container to be stopped
-        DockerHelper.container_stop(self, 'sequencer-host', time=time)
+        DockerHelper.container_stop(self, 'sequencer-host', time=duration, name=type)
         self.wait_for_stopped()
 
         # start the container, wait for the sequencer to be healthy then transact
+        t1 = int(time.time())
         DockerHelper.container_start(self, 'sequencer-host')
         self.wait_for_sequencer()
+        t2 = int(time.time())
+        DockerHelper.container_logs(self, 'sequencer-host', state=BACKGROUND, name=type, since='%dm' % math.ceil((t2-t1) / 60))
+
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
         network.transact(self, web3, storage.contract.functions.store(value), account, storage.GAS_LIMIT, timeout=120)
