@@ -21,7 +21,8 @@ class PySysTest(GenericNetworkTest):
         self.assertTrue(expected == actual)
 
         # set the value via a transaction and retrieve the new value
-        network.transact(self, web3, storage.contract.functions.setItem('key', actual+1), account, KeyStorage.GAS_LIMIT)
+        tx_receipt = network.transact(self, web3, storage.contract.functions.setItem('key', actual+1), account, KeyStorage.GAS_LIMIT)
+        if tx_receipt.status == 1: storage.set_persisted_param('key', actual+1)
         self.wait(float(self.block_time) * 2.0)
 
         value_after = storage.contract.functions.getItem('key').call()
