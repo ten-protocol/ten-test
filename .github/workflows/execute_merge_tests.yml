@@ -83,14 +83,14 @@ jobs:
         run: |
           echo "Run docker container log background processes"
           cd ${{ github.workspace }}/go-ten/
-          docker logs `docker ps -aqf "name=hh-l1-deployer"` > hh-l1-deployer.out
-          docker logs `docker ps -aqf "name=hh-l2-deployer"` > hh-l2-deployer.out
+          container_id=$(docker ps -aqf "name=hh-l1-deployer") && [ -n "$container_id" ] && docker logs "$container_id" > hh-l1-deployer.out
           docker logs -f `docker ps -aqf "name=validator-host"` > validator-host.out 2>&1 &
           docker logs -f `docker ps -aqf "name=validator-enclave"` > validator-enclave.out 2>&1 &
           docker logs -f `docker ps -aqf "name=sequencer-host"` > sequencer-host.out 2>&1 &
           docker logs -f `docker ps -aqf "name=sequencer-enclave"` > sequencer-enclave.out 2>&1 &
           docker logs -f `docker ps -aqf "name=eth2network"` > eth2network.out 2>&1 &
           docker logs -f `docker ps -aqf "name=gateway"` > gateway.out 2>&1 &
+          container_id=$(docker ps -aqf "name=hh-l2-deployer") && [ -n "$container_id" ] && docker logs "$container_id" > hh-l2-deployer.out
 
       - name: 'Build required artifacts for running tests'
         run: |
