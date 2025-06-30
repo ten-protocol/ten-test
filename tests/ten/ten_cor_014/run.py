@@ -60,5 +60,5 @@ class PySysTest(TenNetworkTest):
         tx_hashes = [x['blockHash'] for x in txs['Receipts']]
         self.log.info('Returned block and tx hashes are;')
         for tx in txs['Receipts']: self.log.info('  %s %s' % (tx['blockHash'], tx['transactionHash']))
-        
+
         self.assertTrue(len(tx_hashes) == 8, assertMessage='There should be eight txs including synthetic')
