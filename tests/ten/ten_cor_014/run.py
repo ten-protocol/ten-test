@@ -40,16 +40,25 @@ class PySysTest(TenNetworkTest):
         tx_receipt4 = network.tx(self, web3_usr2, tx, account_usr2, verbose=True, txstr='transfer from account_usr2 to account_usr')
 
         # log out the transaction block hashes and tx hashes from requesting the list of personal transactions
+        # excluding the synthetic ones (these are the zen tokens that accrue for each transaction made)
         txs = self.scan_list_personal_transactions(url=network.connection_url(), address = account_usr1.address, offset=0, size=20)
-        tx_hashs = [x['blockHash'] for x in txs['Receipts']]
+        tx_hashes = [x['blockHash'] for x in txs['Receipts']]
         self.log.info('Returned block and tx hashes are;')
         for tx in txs['Receipts']: self.log.info('  %s %s' % (tx['blockHash'], tx['transactionHash']))
 
-        # assert that account_usr1 sees the transactions they did, and also the native transaction that
-        # account_user2 did to send funds to them
-        self.assertTrue(txs != None, abortOnError=True, assertMessage='Returned list is None')
-        self.assertTrue(len(txs) == 5, assertMessage='There should be five txs')
-        self.assertTrue(tx_receipt1.blockHash.hex() in tx_hashs, assertMessage='Transaction tx1 should be returned')
-        self.assertTrue(tx_receipt2.blockHash.hex() in tx_hashs, assertMessage='Transaction tx2 should be returned')
-        self.assertTrue(tx_receipt3.blockHash.hex() in tx_hashs, assertMessage='Transaction tx3 should be returned')
-        self.assertTrue(tx_receipt4.blockHash.hex() in tx_hashs, assertMessage='Transaction tx4 should be returned')
+        self.assertTrue(txs is not None, abortOnError=True, assertMessage='Returned list is not None')
+        self.assertTrue(len(tx_hashes) == 5, assertMessage='There should be five txs')
+        self.assertTrue(tx_receipt1.blockHash.hex() in tx_hashes, assertMessage='Transaction tx1 should be returned')
+        self.assertTrue(tx_receipt2.blockHash.hex() in tx_hashes, assertMessage='Transaction tx2 should be returned')
+        self.assertTrue(tx_receipt3.blockHash.hex() in tx_hashes, assertMessage='Transaction tx3 should be returned')
+        self.assertTrue(tx_receipt4.blockHash.hex() in tx_hashes, assertMessage='Transaction tx4 should be returned')
+
+        # log out the transaction block hashes and tx hashes from requesting the list of personal transactions,
+        # including the synthetic ones (these are the zen tokens that accrue for each transaction made)
+        txs = self.scan_list_personal_transactions(url=network.connection_url(), address = account_usr1.address,
+                                                   offset=0, size=20, show_synthetic=True)
+        tx_hashes = [x['blockHash'] for x in txs['Receipts']]
+        self.log.info('Returned block and tx hashes are;')
+        for tx in txs['Receipts']: self.log.info('  %s %s' % (tx['blockHash'], tx['transactionHash']))
+        
+        self.assertTrue(len(tx_hashes) == 8, assertMessage='There should be eight txs including synthetic')

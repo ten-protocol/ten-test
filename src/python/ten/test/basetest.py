@@ -417,14 +417,16 @@ class TenNetworkTest(GenericNetworkTest):
         json_str = byte_str.decode('utf-8')
         return json.loads(json_str)
 
-    def scan_list_personal_transactions(self, url, address, offset=0, size=10, return_error=False):
+    def scan_list_personal_transactions(self, url, address, offset=0, size=10, return_error=False,
+                                        show_public=False, show_synthetic=False):
         """List personal transactions using.
 
         Note that listing personal transactions goes via a call to getStorageAt, where the first argument is an
         address type that will be interpreted as a request for the personal transactions. This is currently coded
         as value 2 in the network.
         """
-        payload = {"address": address, "pagination": {"offset": offset, "size": size}}
+        payload = {"address": address, "pagination": {"offset": offset, "size": size},
+                   "showAllPublicTxs": show_public, "showSyntheticTxs": show_synthetic}
         data = {"jsonrpc": "2.0", "method": "eth_getStorageAt",
                 "params": ["0x0000000000000000000000000000000000000002", json.dumps(payload), None],
                 "id": self.MSG_ID }
