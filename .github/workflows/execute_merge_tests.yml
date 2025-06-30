@@ -83,6 +83,8 @@ jobs:
         run: |
           echo "Run docker container log background processes"
           cd ${{ github.workspace }}/go-ten/
+          docker logs `docker ps -aqf "name=hh-l1-deployer"` > hh-l1-deployer.out
+          docker logs `docker ps -aqf "name=hh-l2-deployer"` > hh-l2-deployer.out
           docker logs -f `docker ps -aqf "name=validator-host"` > validator-host.out 2>&1 &
           docker logs -f `docker ps -aqf "name=validator-enclave"` > validator-enclave.out 2>&1 &
           docker logs -f `docker ps -aqf "name=sequencer-host"` > sequencer-host.out 2>&1 &
