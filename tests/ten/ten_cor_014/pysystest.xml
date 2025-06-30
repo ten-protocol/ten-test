@@ -8,7 +8,7 @@ An ephemeral client joins the network and performs three transactions against tw
 user. Another client joins the network and send funds to the first. The first client calls to get their personal
 transactions and the test confirms receipt of all the txs they made, and all the txs they received (which would include
 the tx to fund them initially). Note of the two contracts interacted with, neither use the privacy call back, one emits
-a public event, and one emits no events. 
+a public event, and one emits no events.
 ]]>
         </purpose>
     </description>
