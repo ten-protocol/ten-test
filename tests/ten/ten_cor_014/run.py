@@ -48,7 +48,7 @@ class PySysTest(TenNetworkTest):
         # assert that account_usr1 sees the transactions they did, and also the native transaction that
         # account_user2 did to send funds to them
         self.assertTrue(txs != None, abortOnError=True, assertMessage='Returned list is None')
-        self.assertTrue(len(txs) == 4, assertMessage='There should be four txs')
+        self.assertTrue(len(txs) == 6, assertMessage='There should be six txs')
         self.assertTrue(tx_receipt1.blockHash.hex() in tx_hashs, assertMessage='Transaction tx1 should be returned')
         self.assertTrue(tx_receipt2.blockHash.hex() in tx_hashs, assertMessage='Transaction tx2 should be returned')
         self.assertTrue(tx_receipt3.blockHash.hex() in tx_hashs, assertMessage='Transaction tx3 should be returned')
