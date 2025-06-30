@@ -4,8 +4,11 @@
     <description>
         <title>Tenscan RPC: check getting personal transactions</title>
         <purpose><![CDATA[
-An ephemeral client joins the network and performs two transactions against a contract deployed by a different
-user. They then call to get their personal transactions and the test confirms receipt.
+An ephemeral client joins the network and performs three transactions against two contracts deployed by a different
+user. Another client joins the network and send funds to the first. The first client calls to get their personal
+transactions and the test confirms receipt of all the txs they made, and all the txs they received (which would include
+the tx to fund them initially). Note of the two contracts interacted with, neither use the privacy call back, one emits
+a public event, and one emits no events.
 ]]>
         </purpose>
     </description>
