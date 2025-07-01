@@ -20,7 +20,7 @@ function decode_base64(base64String) {
 
 /**  Process a value transfer event extracted from a tx receipt */
 function process_log_message(log_message) {
-  const abiTypes = ['address', 'uint64', 'uint32', 'uint32', 'bytes', 'uint8']
+  const abiTypes = ['address', 'uint64', 'uint64', 'uint32', 'bytes', 'uint8']
   const msg = [
     log_message['args'].sender, log_message['args'].sequence, log_message['args'].nonce,
     log_message['args'].topic, log_message['args'].payload, log_message['args'].consistencyLevel

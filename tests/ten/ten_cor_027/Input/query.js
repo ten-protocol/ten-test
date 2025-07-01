@@ -11,7 +11,7 @@ function log(data) {
 function task() {
   filter = {
     address: options.bridge_address,
-    topics: [ ethers.utils.id('LogMessagePublished(address,uint64,uint32,uint32,bytes,uint8)') ]
+    topics: [ ethers.utils.id('LogMessagePublished(address,uint64,uint64,uint32,bytes,uint8)') ]
   }
   provider.on(filter, (result) => {
     decoded_log = interface.decodeEventLog('LogMessagePublished', result.data, result.topics)
