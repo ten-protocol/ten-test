@@ -32,7 +32,7 @@ class MerkleTreeHelper:
 
     def process_log_msg(self, log_msg):
         """Return the msg and hash of the log message published event, as stored in the cross chain tree. """
-        abi_types = ['address', 'uint64', 'uint32', 'uint32', 'bytes', 'uint8']
+        abi_types = ['address', 'uint64', 'uint64', 'uint32', 'bytes', 'uint8']
         msg = [log_msg['sender'], log_msg['sequence'], log_msg['nonce'],
                log_msg['topic'], log_msg['payload'], log_msg['consistencyLevel']]
         msg_hash = Web3.keccak(encode(abi_types, msg)).hex()
