@@ -12,7 +12,7 @@ help_and_exit() {
 }
 
 ssh_key=~/.ssh/id_rsa.pub
-name=ten-test-gh-runner
+name=ten-test-gh-runner-01
 group=ten-test-repo
 
 for argument in "$@"
