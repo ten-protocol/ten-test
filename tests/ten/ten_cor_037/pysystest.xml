@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Tenscan RPC: call to get public transactions (one event is public, one is private)</title>
+        <title>Tenscan RPC: call to get personal transactions (one event is public, one is private)</title>
         <purpose><![CDATA[
 ]]>
         </purpose>
