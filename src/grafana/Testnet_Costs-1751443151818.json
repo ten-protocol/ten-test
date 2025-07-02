@@ -22,10 +22,6 @@
   "links": [],
   "panels": [
     {
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
       "gridPos": {
         "h": 2,
         "w": 21,
@@ -42,8 +38,7 @@
         "content": "## Transaction Costs On Various Networks ",
         "mode": "markdown"
       },
-      "pluginVersion": "11.5.2",
-      "title": "",
+      "pluginVersion": "10.4.3",
       "transparent": true,
       "type": "text"
     },
@@ -65,7 +60,6 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -181,7 +175,6 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -297,7 +290,6 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -413,7 +405,6 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -529,7 +520,6 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -735,7 +725,6 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -834,8 +823,7 @@
       "type": "timeseries"
     }
   ],
-  "preload": false,
-  "schemaVersion": 40,
+  "schemaVersion": 39,
   "tags": [
     "e2e-tests",
     "health"
@@ -844,6 +832,7 @@
     "list": [
       {
         "current": {
+          "selected": false,
           "text": "ten.sepolia",
           "value": "ten.sepolia"
         },
@@ -852,15 +841,21 @@
           "uid": "feflof5m4nta8d"
         },
         "definition": "SELECT distinct environment from tx_costs;",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
         "name": "environment",
         "options": [],
         "query": "SELECT distinct environment from tx_costs;",
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
         "type": "query"
       },
       {
         "current": {
+          "selected": false,
           "text": "Storage.deploy",
           "value": "Storage.deploy"
         },
@@ -869,11 +864,16 @@
           "uid": "feflof5m4nta8d"
         },
         "definition": "select distinct name from tx_costs; ",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
         "name": "interaction",
         "options": [],
         "query": "select distinct name from tx_costs; ",
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
         "type": "query"
       }
     ]

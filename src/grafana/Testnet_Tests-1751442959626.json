@@ -22,10 +22,6 @@
   "links": [],
   "panels": [
     {
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
       "gridPos": {
         "h": 2,
         "w": 24,
@@ -42,8 +38,7 @@
         "content": "## End To End Test Results Summary ",
         "mode": "markdown"
       },
-      "pluginVersion": "11.5.2",
-      "title": "",
+      "pluginVersion": "10.4.3",
       "transparent": true,
       "type": "text"
     },
@@ -99,7 +94,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "11.5.2",
+      "pluginVersion": "10.4.3",
       "targets": [
         {
           "dataset": "`ten-test`",
@@ -155,7 +150,6 @@
             "axisPlacement": "auto",
             "axisSoftMin": 0,
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -232,7 +226,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT time, result FROM results_performance WHERE host='ten-test-gh-runner-01' AND test='ten_per_001' AND environment='${environment}' ORDER BY time DESC",
+          "rawSql": "SELECT time, result FROM results_performance WHERE host IN ('ten-test-gh-runner-01','ten-test-alibaba-runner-01')  AND test='ten_per_001' AND environment='${environment}' ORDER BY time DESC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -276,7 +270,6 @@
             "axisPlacement": "auto",
             "axisSoftMin": 0,
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -353,7 +346,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT time, result FROM results_performance WHERE host='ten-test-gh-runner-01' AND test='ten_per_002' AND environment='${environment}' ORDER BY time ASC",
+          "rawSql": "SELECT time, result FROM results_performance WHERE host IN ('ten-test-gh-runner-01','ten-test-alibaba-runner-01') AND test='ten_per_002' AND environment='${environment}' ORDER BY time ASC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -397,7 +390,6 @@
             "axisPlacement": "auto",
             "axisSoftMin": 0,
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -474,7 +466,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT time, result FROM results_performance WHERE host='ten-test-gh-runner-01' AND test='ten_per_003' AND environment='${environment}' ORDER BY time ASC",
+          "rawSql": "SELECT time, result FROM results_performance WHERE host IN ('ten-test-gh-runner-01','ten-test-alibaba-runner-01') AND test='ten_per_003' AND environment='${environment}' ORDER BY time ASC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -518,7 +510,6 @@
             "axisPlacement": "auto",
             "axisSoftMin": 0,
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -595,7 +586,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT time, result FROM results_performance WHERE host='ten-test-gh-runner-01' AND test='ten_per_004' AND environment='${environment}' ORDER BY time DESC",
+          "rawSql": "SELECT time, result FROM results_performance WHERE host IN ('ten-test-gh-runner-01','ten-test-alibaba-runner-01') AND test='ten_per_004' AND environment='${environment}' ORDER BY time DESC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -639,7 +630,6 @@
             "axisPlacement": "auto",
             "axisSoftMin": 0,
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -716,7 +706,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT time, result FROM results_performance WHERE host='ten-test-gh-runner-01' AND test='ten_per_005' AND environment='${environment}' ORDER BY time DESC",
+          "rawSql": "SELECT time, result FROM results_performance WHERE host IN ('ten-test-gh-runner-01','ten-test-alibaba-runner-01') AND test='ten_per_005' AND environment='${environment}' ORDER BY time DESC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -760,7 +750,6 @@
             "axisPlacement": "auto",
             "axisSoftMin": 0,
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -837,7 +826,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT time, result FROM results_performance WHERE host='ten-test-gh-runner-01' AND test='ten_per_006' AND environment='${environment}' ORDER BY time DESC",
+          "rawSql": "SELECT time, result FROM results_performance WHERE host IN ('ten-test-gh-runner-01','ten-test-alibaba-runner-01') AND test='ten_per_006' AND environment='${environment}' ORDER BY time DESC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -970,7 +959,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "11.5.2",
+      "pluginVersion": "10.4.3",
       "targets": [
         {
           "dataset": "mysql",
@@ -1025,7 +1014,6 @@
             "axisPlacement": "auto",
             "axisSoftMin": 0,
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -1102,7 +1090,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT time, result FROM results_performance WHERE host='ten-test-gh-runner-01' AND test='ten_per_007' AND environment='${environment}' ORDER BY time DESC",
+          "rawSql": "SELECT time, result FROM results_performance WHERE host IN ('ten-test-gh-runner-01','ten-test-alibaba-runner-01') AND test='ten_per_007' AND environment='${environment}' ORDER BY time DESC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1146,7 +1134,6 @@
             "axisPlacement": "auto",
             "axisSoftMin": 0,
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -1223,7 +1210,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT time, result FROM results_performance WHERE host='ten-test-gh-runner-01' AND test='ten_per_010' AND environment='${environment}' ORDER BY time DESC",
+          "rawSql": "SELECT time, result FROM results_performance WHERE host IN ('ten-test-gh-runner-01','ten-test-alibaba-runner-01') AND test='ten_per_010' AND environment='${environment}' ORDER BY time DESC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1267,7 +1254,6 @@
             "axisPlacement": "auto",
             "axisSoftMin": 0,
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -1344,7 +1330,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT time, result FROM results_performance WHERE host='ten-test-gh-runner-01' AND test='ten_per_011' AND environment='${environment}' ORDER BY time DESC",
+          "rawSql": "SELECT time, result FROM results_performance WHERE host IN ('ten-test-gh-runner-01','ten-test-alibaba-runner-01') AND test='ten_per_011' AND environment='${environment}' ORDER BY time DESC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1388,7 +1374,6 @@
             "axisPlacement": "auto",
             "axisSoftMin": 0,
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -1465,7 +1450,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT time, result FROM results_performance WHERE host='ten-test-gh-runner-01' AND test='ten_per_012' AND environment='${environment}' ORDER BY time DESC",
+          "rawSql": "SELECT time, result FROM results_performance WHERE host IN ('ten-test-gh-runner-01','ten-test-alibaba-runner-01') AND test='ten_per_012' AND environment='${environment}' ORDER BY time DESC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1509,7 +1494,6 @@
             "axisPlacement": "auto",
             "axisSoftMin": 0,
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -1586,7 +1570,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT time, result FROM results_performance WHERE host='ten-test-gh-runner-01' AND test='ten_per_020' AND environment='${environment}' ORDER BY time DESC",
+          "rawSql": "SELECT time, result FROM results_performance WHERE host IN ('ten-test-gh-runner-01','ten-test-alibaba-runner-01') AND test='ten_per_020' AND environment='${environment}' ORDER BY time DESC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1630,7 +1614,6 @@
             "axisPlacement": "auto",
             "axisSoftMin": 0,
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -1707,7 +1690,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT time, result FROM results_performance WHERE host='ten-test-gh-runner-01' AND test='ten_per_021' AND environment='${environment}' ORDER BY time DESC",
+          "rawSql": "SELECT time, result FROM results_performance WHERE host IN ('ten-test-gh-runner-01','ten-test-alibaba-runner-01') AND test='ten_per_021' AND environment='${environment}' ORDER BY time DESC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1732,8 +1715,7 @@
       "type": "timeseries"
     }
   ],
-  "preload": true,
-  "schemaVersion": 40,
+  "schemaVersion": 39,
   "tags": [
     "e2e-tests"
   ],
@@ -1741,8 +1723,9 @@
     "list": [
       {
         "current": {
-          "text": "ten.uat",
-          "value": "ten.uat"
+          "selected": false,
+          "text": "ten.local",
+          "value": "ten.local"
         },
         "datasource": {
           "type": "mysql",
@@ -1750,42 +1733,52 @@
         },
         "definition": "SELECT distinct environment from results_outcome;",
         "description": "",
+        "hide": 0,
+        "includeAll": false,
         "label": "environment",
+        "multi": false,
         "name": "environment",
         "options": [],
         "query": "SELECT distinct environment from results_outcome;",
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
         "sort": 4,
         "type": "query"
       },
       {
         "current": {
-          "text": "ab1f956a54584e9cb37db6f9f6044f08",
-          "value": "ab1f956a54584e9cb37db6f9f6044f08"
+          "selected": true,
+          "text": "f075ffb8fa9b48e2b87682e40de20ab5",
+          "value": "f075ffb8fa9b48e2b87682e40de20ab5"
         },
         "datasource": {
           "type": "mysql",
           "uid": "feflof5m4nta8d"
         },
         "definition": "SELECT distinct(uuid) from (SELECT distinct(uuid), time FROM results_outcome WHERE environment = '${environment}' ORDER BY time DESC) AS subquery;",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
         "name": "run_uuid",
         "options": [],
         "query": "SELECT distinct(uuid) from (SELECT distinct(uuid), time FROM results_outcome WHERE environment = '${environment}' ORDER BY time DESC) AS subquery;",
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
         "type": "query"
       }
     ]
   },
   "time": {
-    "from": "now-90d",
+    "from": "now-6M",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Testnet Tests",
   "uid": "bebd5gi310t1ca",
-  "version": 8,
+  "version": 15,
   "weekStart": ""
 }

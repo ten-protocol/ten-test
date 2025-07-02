@@ -35,10 +35,6 @@
   ],
   "panels": [
     {
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
       "gridPos": {
         "h": 3,
         "w": 21,
@@ -52,11 +48,10 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "## Health Status Timeline for Sepolia and UAT Testnets\nGreen indicates UP, red indicates DOWN. Alerts will be \nshow on the timelines. ",
+        "content": "## Health Status Timeline for Sepolia Testnet\nGreen indicates UP, red indicates DOWN. Alerts will be \nshow on the timelines. ",
         "mode": "markdown"
       },
-      "pluginVersion": "11.5.2",
-      "title": "",
+      "pluginVersion": "10.4.3",
       "transparent": true,
       "type": "text"
     },
@@ -216,137 +211,10 @@
         }
       ],
       "type": "state-timeline"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 14
-      },
-      "id": 19,
-      "panels": [],
-      "title": "UAT Testnet",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "uid": "feflof5m4nta8d"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "continuous-RdYlGr"
-          },
-          "custom": {
-            "fillOpacity": 100,
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineWidth": 1,
-            "spanNulls": false
-          },
-          "fieldMinMax": false,
-          "mappings": [
-            {
-              "options": {
-                "DOWN": {
-                  "color": "red",
-                  "index": 1
-                },
-                "UP": {
-                  "color": "green",
-                  "index": 0
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "bool"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 21,
-        "x": 0,
-        "y": 15
-      },
-      "id": 20,
-      "maxDataPoints": 100,
-      "options": {
-        "alignValue": "center",
-        "legend": {
-          "displayMode": "list",
-          "placement": "right",
-          "showLegend": false
-        },
-        "mergeValues": true,
-        "rowHeight": 0.74,
-        "showValue": "always",
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.5.2",
-      "targets": [
-        {
-          "dataset": "mysql",
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT time, \n       CASE \n           WHEN outcome = TRUE THEN 'UP'\n           ELSE 'DOWN'\n       END AS 'primary'\nFROM results_type\nWHERE type = 'health' \n  AND environment = 'ten.uat'  \n  AND outcome is not NULL \nORDER BY time DESC;",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "UAT Health Status Timeline",
-      "transformations": [
-        {
-          "id": "convertFieldType",
-          "options": {
-            "conversions": [],
-            "fields": {}
-          }
-        }
-      ],
-      "type": "state-timeline"
     }
   ],
-  "preload": false,
   "refresh": "",
-  "schemaVersion": 40,
+  "schemaVersion": 39,
   "tags": [
     "health",
     "e2e-tests"
@@ -362,6 +230,6 @@
   "timezone": "browser",
   "title": "Testnet Health",
   "uid": "eee8cl0gasqo0f",
-  "version": 31,
+  "version": 34,
   "weekStart": ""
 }

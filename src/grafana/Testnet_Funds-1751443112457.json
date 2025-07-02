@@ -22,10 +22,6 @@
   "links": [],
   "panels": [
     {
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
       "gridPos": {
         "h": 2,
         "w": 21,
@@ -42,8 +38,7 @@
         "content": "## Account Funds and Overall Profit And Loss",
         "mode": "markdown"
       },
-      "pluginVersion": "11.5.2",
-      "title": "",
+      "pluginVersion": "10.4.3",
       "transparent": true,
       "type": "text"
     },
@@ -65,7 +60,6 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "hue",
@@ -180,7 +174,6 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "hue",
@@ -295,7 +288,6 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "hue",
@@ -410,7 +402,6 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 3,
             "gradientMode": "none",
@@ -562,8 +553,7 @@
       "type": "timeseries"
     }
   ],
-  "preload": false,
-  "schemaVersion": 40,
+  "schemaVersion": 39,
   "tags": [
     "e2e-tests",
     "health"
@@ -572,6 +562,7 @@
     "list": [
       {
         "current": {
+          "selected": false,
           "text": "ten.sepolia",
           "value": "ten.sepolia"
         },
@@ -580,11 +571,16 @@
           "uid": "feflof5m4nta8d"
         },
         "definition": "select distinct(environment) from funds;",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
         "name": "environment",
         "options": [],
         "query": "select distinct(environment) from funds;",
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
         "type": "query"
       }
     ]
