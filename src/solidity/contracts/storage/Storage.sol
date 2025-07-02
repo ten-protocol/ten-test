@@ -18,6 +18,10 @@ contract Storage {
         emit Stored(number);
     }
 
+    function store_no_emit(uint256 num) public {
+        number = num;
+    }
+
     function retrieve() public view returns (uint256){
         return number;
     }
