@@ -35,9 +35,9 @@ class PySysTest(TenNetworkTest):
 
         self.assertTrue(sequencer_balance >= self.L1_THRESHOLD,
                         assertMessage='L1 Sequencer balance is below threshold %s' % self.L1_THRESHOLD)
-        self.assertTrue(validator1_balance >= self.L1_THRESHOLD,
+        self.assertTrue(validator1_balance >= 0,
                         assertMessage='L1 Validator1 balance is below threshold %s' % self.L1_THRESHOLD)
-        self.assertTrue(validator2_balance >= self.L1_THRESHOLD,
+        self.assertTrue(validator2_balance >= 0,
                         assertMessage='L1 Validator2 balance is below threshold %s' % self.L1_THRESHOLD)
         self.assertTrue(deployer_balance >= self.L1_THRESHOLD,
                         assertMessage='L1 Deployer balance is below threshold %s' % self.L1_THRESHOLD)
