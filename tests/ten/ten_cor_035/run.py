@@ -11,36 +11,33 @@ class PySysTest(TenNetworkTest):
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
-        # player 1 deploys the contract and subscribes for events
+        # player 1 deploys the transparent contract and performs some transactions against it
+        self.log.info('')
+        self.log.info('User deploys transparent contract and submits 5 transactions against it')
         game = TransparentGuessGame(self, web3)
         game.deploy(network, account)
+
+        hashes = []
         for i in range(1,5):
-            self.log.info('Number to guess is %d', i)
-            network.transact(self, web3, game.contract.functions.guess(i), account, game.GAS_LIMIT)
+            tx_receipt = network.transact(self, web3, game.contract.functions.guess(i), account, game.GAS_LIMIT)
+            hashes.append(tx_receipt.transactionHash)
 
-        pk = self.get_ephemeral_pk()
-        web_usr, account_usr = network.connect(self, private_key=pk, check_funds=True)
+        # an ephemeral user connects and requests the public transactions (last 10, 2 pages max 5 in each)
+        self.log.info('')
+        self.log.info('Ephemeral user gets last two pages of personal transactions')
+        web_usr, account_usr = network.connect(self, private_key=self.get_ephemeral_pk(), check_funds=True)
 
-        tx_count = self.scan_get_total_transaction_count()
-        pages = self.split_into_segments(tx_count, 20)
+        # personal transaction count for the ephemeral user
+        personal_txs_count = self.scan_list_personal_transactions(url=network.connection_url(), address=account_usr.address,
+                                                                  show_public=True, offset=0, size=1)['Total']
+        self.log.info('Personal transaction count is %d' % personal_txs_count)
 
-        txs = self.scan_list_personal_transactions(url=network.connection_url(), address=account_usr.address,
-                                                   offset=pages[-1:][0], size=20)
-        tx_hashes = [x['blockHash'] for x in txs['Receipts']]
-        self.log.info('Returned block and tx hashes are;')
-        for tx in txs['Receipts']: self.log.info('  %s %s' % (tx['blockHash'], tx['transactionHash']))
+        # personal transactions for the ephemeral user
+        personal_txs = self.scan_list_personal_transactions(url=network.connection_url(), address=account_usr.address,
+                                                            show_public=True, offset=0, size=personal_txs_count)['Receipts']
+        self.log.info('List of personal transactions (block and tx hash) are;')
+        for tx in personal_txs: self.log.info('  %s %s' % (tx['blockHash'], tx['transactionHash']))
+        personal_txs_hashes = [x['transactionHash'] for x in personal_txs]
 
-
-
-    def split_into_segments(self, number, increment):
-        result = []
-        start = 0
-        while number > 0:
-            if number >= increment:
-                result.append((start, increment))
-                number -= increment
-                start += increment
-            else:
-                result.append((start, number))
-                break
-        return result
+        for h in hashes:
+            self.assertTrue(h in personal_txs_hashes, assertMessage='%s is seen in list' % h)

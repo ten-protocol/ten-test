@@ -57,7 +57,7 @@ class PySysTest(TenNetworkTest):
         # including the synthetic ones (these are the zen tokens that accrue for each transaction made)
         txs = self.scan_list_personal_transactions(url=network.connection_url(), address = account_usr1.address,
                                                    offset=0, size=20, show_synthetic=True)
-        tx_hashes = [x['blockHash'] for x in txs['Receipts']]
+        tx_hashes = [x['transactionHash'] for x in txs['Receipts']]
         self.log.info('Returned block and tx hashes are;')
         for tx in txs['Receipts']: self.log.info('  %s %s' % (tx['blockHash'], tx['transactionHash']))
 
