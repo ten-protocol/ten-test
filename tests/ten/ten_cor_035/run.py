@@ -29,7 +29,7 @@ class PySysTest(TenNetworkTest):
         self.log.info('')
         personal_txs_count = self.scan_list_personal_transactions(url=network.connection_url(), address=account_usr.address,
                                                                   show_public=True, offset=0, size=1)['Total']
-        self.log.info('Personal transaction count (with public)is %d' % personal_txs_count)
+        self.log.info('Personal transaction count (with public) is %d' % personal_txs_count)
 
         personal_txs = self.scan_list_personal_transactions(url=network.connection_url(), address=account_usr.address,
                                                             show_public=True, offset=0, size=personal_txs_count)['Receipts']
