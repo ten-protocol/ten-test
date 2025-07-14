@@ -20,6 +20,7 @@ class Properties:
     L2CrossChainMessengerAddress = None       # "L2CrossChainMessenger"
     L2PublicCallbacks = None                  # "PublicSystemContracts.PublicCallbacks"
     L2TenSystemCalls = None                   # "TenSystemCalls"
+    L2TransactionPostProcessor = None         # "PublicSystemContracts.TransactionsPostProcessor
 
     def __init__(self):
         self.default_config = configparser.ConfigParser()
@@ -230,6 +231,8 @@ class Properties:
     def l2_cross_chain_messenger_address(self): return self.L2CrossChainMessengerAddress
 
     def l2_system_calls(self): return self.L2TenSystemCalls
+
+    def l2_transaction_post_processor(self): return self.L2TransactionPostProcessor
 
     def l2_gas_payment_account_pk(self, key): return self.get('env.'+key, 'L2GasPaymentAccountPK')
 
