@@ -17,5 +17,5 @@ class PySysTest(TenNetworkTest):
         unseen = web3_usr.eth.account.from_key(self.get_ephemeral_pk())
         error = self.scan_list_personal_txs(url=network.connection_url(), address=unseen.address, offset=0, size=5,
                                             return_error=True)
-        self.assertTrue(error['message']=='unable to execute custom query: illegal access',
+        self.assertTrue(error['message'] == 'unable to execute custom query: illegal access',
                         assertMessage='Error should state illegal access')

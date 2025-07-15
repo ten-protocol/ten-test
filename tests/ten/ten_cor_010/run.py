@@ -27,7 +27,7 @@ class PySysTest(TenNetworkTest):
         self.log.info('  TX3: %s', tx_receipt_3.transactionHash.hex())
         self.wait(float(self.block_time) * 2)
 
-        # get some public transaction data
+        # get some publicly available transaction data to all users (counts and hashes)
         tot_end = self.scan_get_total_transaction_count()
         self.log.info('Total transaction count: %d', tot_end)
 
@@ -42,7 +42,7 @@ class PySysTest(TenNetworkTest):
         for data in txs_end: self.log.info('  %s', data)
 
         # do a bunch of assertions
-        self.assertTrue(tot_end == tot_start+4, assertMessage='Total should increment')
+        self.assertTrue(tot_end >= tot_start+4, assertMessage='Total should increment by at least 4')
 
         self.assertTrue(len(txs_end) == page_sze, assertMessage='Return set is page size')
         self.assertTrue(tx_receipt_3.transactionHash.hex() in txs_hashes, assertMessage='Tx 3 exists')

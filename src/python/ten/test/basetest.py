@@ -316,6 +316,39 @@ class TenNetworkTest(GenericNetworkTest):
     layer2 of an Ten Network.
     """
 
+    def scan_get_approx_total_transaction_count(self):
+        """Get the publicly available approximate total transaction count. """
+        data = {"jsonrpc": "2.0", "method": "scan_getTotalTransactionCount", "params": [], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    def scan_get_total_transaction_count(self):
+        """Get the publicly available accurate total transaction count."""
+        data = {"jsonrpc": "2.0", "method": "scan_getTotalTransactionsQuery", "params": [], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    def scan_get_batch_for_transaction(self, tx_hash):
+        """Get the publicly available batch for a given transaction hash. """
+        data = {"jsonrpc": "2.0", "method": "scan_getBatchByTx", "params": [tx_hash], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    def scan_get_public_transaction_data(self, offset, size):
+        """Get a publicly available list of transactions data based on offset and page size. """
+        pagination = {"offset": offset, "size": size}
+        data = {"jsonrpc": "2.0", "method": "scan_getPublicTransactionData", "params": [pagination], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
     def scan_get_latest_transactions(self, num):
         """Return the last x number of L2 transactions. @todo """
         data = {"jsonrpc": "2.0", "method": "scan_getLatestTransactions", "params": [num], "id": self.MSG_ID }
@@ -340,22 +373,7 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def scan_get_batch_for_transaction(self, tx_hash):
-        """Get the rollup for a given L2 transaction. """
-        data = {"jsonrpc": "2.0", "method": "scan_getBatchByTx", "params": [tx_hash], "id": self.MSG_ID }
-        response = self.post(data)
-        if 'result' in response.json(): return response.json()['result']
-        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
-        return None
 
-    def scan_get_public_transaction_data(self, offset, size):
-        """Return the last x number of L2 transactions. """
-        pagination = {"offset": offset, "size": size}
-        data = {"jsonrpc": "2.0", "method": "scan_getPublicTransactionData", "params": [pagination], "id": self.MSG_ID }
-        response = self.post(data)
-        if 'result' in response.json(): return response.json()['result']
-        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
-        return None
 
     def scan_get_latest_rollup_header(self):
         """Get the latest rollup header as part of the scan_ api. @todo """
@@ -365,24 +383,9 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def scan_get_approx_total_transaction_count(self):
-        """Get the approx. total transaction count as part of the scan_ api.
 
-        Note this an approx count which reduces overhead on the node and therefore should be used with caution.
-        If an exact count is used, use the method scan_get_total_transaction_count. """
-        data = {"jsonrpc": "2.0", "method": "scan_getTotalTransactionCount", "params": [], "id": self.MSG_ID }
-        response = self.post(data)
-        if 'result' in response.json(): return response.json()['result']
-        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
-        return None
 
-    def scan_get_total_transaction_count(self):
-        """Get the total transaction count as part of the scan_ api."""
-        data = {"jsonrpc": "2.0", "method": "scan_getTotalTransactionsQuery", "params": [], "id": self.MSG_ID }
-        response = self.post(data)
-        if 'result' in response.json(): return response.json()['result']
-        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
-        return None
+
 
     def scan_get_total_contract_count(self):
         """Get the total contract count as part of the scan_ api."""

@@ -1,4 +1,3 @@
-import math
 from ten.test.basetest import TenNetworkTest
 
 

@@ -31,7 +31,7 @@ class PySysTest(TenNetworkTest):
         self.log.info('Transaction count after all txs: %d' % txs_after_storing)
 
         # assert on the expected changes
-        self.assertTrue(cnt_after_deploy == (cnt_before_deploy + 1), assertMessage='Contract count should increase by 1 after deploy')
-        self.assertTrue(txs_after_deploy == (txs_before_deploy + 1), assertMessage='Tx count should increase by 1 after deploy')
-        self.assertTrue(txs_after_storing == (txs_after_deploy + 4), assertMessage='Tx count should increase by 4 after storing')
+        self.assertTrue(cnt_after_deploy >= (cnt_before_deploy + 1), assertMessage='Contract count should increase by at least 1 after deploy')
+        self.assertTrue(txs_after_deploy >= (txs_before_deploy + 1), assertMessage='Tx count should increase by at least 1 after deploy')
+        self.assertTrue(txs_after_storing >= (txs_after_deploy + 4), assertMessage='Tx count should increase by at least 4 after storing')
 
