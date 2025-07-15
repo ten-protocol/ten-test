@@ -16,7 +16,6 @@ not.
     <classification>
         <groups inherit="true">
             <group>tenscan</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

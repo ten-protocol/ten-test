@@ -417,14 +417,9 @@ class TenNetworkTest(GenericNetworkTest):
         json_str = byte_str.decode('utf-8')
         return json.loads(json_str)
 
-    def scan_list_personal_transactions(self, url, address, offset=0, size=10, return_error=False,
-                                        show_public=False, show_synthetic=False):
-        """List personal transactions using.
-
-        Note that listing personal transactions goes via a call to getStorageAt, where the first argument is an
-        address type that will be interpreted as a request for the personal transactions. This is currently coded
-        as value 2 in the network.
-        """
+    def scan_list_personal_txs(self, url, address, offset=0, size=10, return_error=False,
+                               show_public=False, show_synthetic=False):
+        """List personal transactions."""
         payload = {"address": address, "pagination": {"offset": offset, "size": size},
                    "showAllPublicTxs": show_public, "showSyntheticTxs": show_synthetic}
         data = {"jsonrpc": "2.0", "method": "eth_getStorageAt",
@@ -436,6 +431,34 @@ class TenNetworkTest(GenericNetworkTest):
             if return_error: return response.json()['error']
             else: self.log.error(response.json()['error']['message'])
         return None
+
+    def read_all_personal_txs(self, network, account, show_public, increment = 100):
+        """Return all personal transactions for a user. """
+        number = self.read_size_personal_txs(network, account, show_public)
+        self.log.info('  Total transactions %d' % number)
+        txs = []
+        start = 0
+        while number > 0:
+            if number >= increment:
+                self.log.info('  Reading offset %d size %d' % (start, increment))
+                txs.extend(self.read_page_personal_txs(network, account, show_public, start, increment))
+                number -= increment
+                start += increment
+            else:
+                self.log.info('  Reading offset %d size %d' % (start, number))
+                txs.extend(self.read_page_personal_txs(network, account, show_public, start, number))
+                break
+        return txs
+
+    def read_size_personal_txs(self, network, account, show_public):
+        """Return the personal transactions size for a user. """
+        return self.scan_list_personal_txs(url=network.connection_url(), address=account.address,
+                                           show_public=show_public, offset=0, size=1)['Total']
+
+    def read_page_personal_txs(self, network, account, show_public, offset, size):
+        """Return a page of personal transactions for a user. """
+        return self.scan_list_personal_txs(url=network.connection_url(), address=account.address,
+                                           show_public=show_public, offset=offset, size=size)['Receipts']
 
     def scan_get_transaction(self):
         """Get tx by hash. @todo """
