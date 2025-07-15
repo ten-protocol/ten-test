@@ -26,7 +26,7 @@ class PySysTest(TenNetworkTest):
         # assert we get the expected amount over the last pages
         self.assertTrue(total == expected)
 
-        # assert no overflow in calling for the transactions
+        # assert no overflow in calling for the transactions (we can't call this if others are transacting)
         tx_data = self.scan_get_public_transaction_data(tx_count, page_sze)
         self.log.info('Calling overflow from offset %d', tx_count)
         self.log.info('TX Data overflow: %s', tx_data['TransactionsData'])

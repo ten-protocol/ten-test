@@ -5,7 +5,8 @@
         <title>Tenscan RPC: check transaction and contract counts</title>
         <purpose><![CDATA[
 Checks the calls to get the total number of contracts and transactions via the scan_interface returns the expected
-results before and after deploying a contract and interacting with it.
+results before and after deploying a contract and interacting with it. Note this test shouldn't be run on a network
+where other users are transacting.
 ]]>
         </purpose>
     </description>
@@ -15,7 +16,6 @@ results before and after deploying a contract and interacting with it.
             <group>tenscan</group>
         </groups>
         <modes inherit="true">
-            <mode>ten.sepolia</mode>
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>

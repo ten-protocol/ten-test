@@ -7,6 +7,7 @@
 Calls scan_getTotalTransactionCount before and after performing some transactions, then retries the first page of
 public transaction data via scan_getPublicTransactionData. As the txs are stored in a LIFO calls to get the first page
 should return a set of transactions that contain them. Test also validates on correct descending order in the txs.
+Note this test shouldn't be run on a network where other users are transacting.
 ]]>
         </purpose>
     </description>
@@ -16,7 +17,6 @@ should return a set of transactions that contain them. Test also validates on co
             <group>tenscan</group>
         </groups>
         <modes inherit="true">
-            <mode>ten.sepolia</mode>
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
             <mode>ten.local</mode>

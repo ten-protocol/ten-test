@@ -42,7 +42,7 @@ class PySysTest(TenNetworkTest):
         for data in txs_end: self.log.info('  %s', data)
 
         # do a bunch of assertions
-        self.assertTrue(tot_end >= tot_start+4, assertMessage='Total should increment by at least 4')
+        self.assertTrue(tot_end == tot_start+4, assertMessage='Total should increment by 4')
 
         self.assertTrue(len(txs_end) == page_sze, assertMessage='Return set is page size')
         self.assertTrue(tx_receipt_3.transactionHash.hex() in txs_hashes, assertMessage='Tx 3 exists')
