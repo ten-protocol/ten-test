@@ -316,6 +316,14 @@ class TenNetworkTest(GenericNetworkTest):
     layer2 of an Ten Network.
     """
 
+    def scan_get_total_contract_count(self):
+        """Get the total contract count as part of the scan_ api."""
+        data = {"jsonrpc": "2.0", "method": "scan_getTotalContractCount", "params": [], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
     def scan_get_approx_total_transaction_count(self):
         """Get the publicly available approximate total transaction count. """
         data = {"jsonrpc": "2.0", "method": "scan_getTotalTransactionCount", "params": [], "id": self.MSG_ID }
@@ -332,14 +340,6 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def scan_get_batch_for_transaction(self, tx_hash):
-        """Get the publicly available batch for a given transaction hash. """
-        data = {"jsonrpc": "2.0", "method": "scan_getBatchByTx", "params": [tx_hash], "id": self.MSG_ID }
-        response = self.post(data)
-        if 'result' in response.json(): return response.json()['result']
-        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
-        return None
-
     def scan_get_public_transaction_data(self, offset, size):
         """Get a publicly available list of transactions data based on offset and page size. """
         pagination = {"offset": offset, "size": size}
@@ -349,6 +349,39 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
+    def scan_list_personal_txs(self, url, address, offset=0, size=10, return_error=False,
+                               show_public=False, show_synthetic=False):
+        """Get a list of transactions that are personally visible to a given user. """
+        payload = {"address": address, "pagination": {"offset": offset, "size": size},
+                   "showAllPublicTxs": show_public, "showSyntheticTxs": show_synthetic}
+        data = {"jsonrpc": "2.0", "method": "eth_getStorageAt",
+                "params": ["0x0000000000000000000000000000000000000002", json.dumps(payload), None], "id": self.MSG_ID }
+        response = self.post(data, url)
+        if 'result' in response.json(): return self.json_hex_to_obj(response.json()['result'])
+        elif 'error' in response.json():
+            if return_error: return response.json()['error']
+            else: self.log.error(response.json()['error']['message'])
+        return None
+
+    def scan_get_batch_listing(self, offset=0, size=10):
+        """Get the batch listing as part of the scan_ api."""
+        pagination = {"offset": offset, "size": size}
+        data = {"jsonrpc": "2.0", "method": "scan_getBatchListing", "params": [pagination], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    def scan_get_batch_for_transaction(self, tx_hash):
+        """Get the publicly available batch for a given transaction hash. """
+        data = {"jsonrpc": "2.0", "method": "scan_getBatchByTx", "params": [tx_hash], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    # ten-scan endpoints still to be tested
+    # @todo
     def scan_get_latest_transactions(self, num):
         """Return the last x number of L2 transactions. @todo """
         data = {"jsonrpc": "2.0", "method": "scan_getLatestTransactions", "params": [num], "id": self.MSG_ID }
@@ -373,32 +406,9 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-
-
     def scan_get_latest_rollup_header(self):
         """Get the latest rollup header as part of the scan_ api. @todo """
         data = {"jsonrpc": "2.0", "method": "scan_getLatestRollupHeader", "params": [], "id": self.MSG_ID }
-        response = self.post(data)
-        if 'result' in response.json(): return response.json()['result']
-        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
-        return None
-
-
-
-
-
-    def scan_get_total_contract_count(self):
-        """Get the total contract count as part of the scan_ api."""
-        data = {"jsonrpc": "2.0", "method": "scan_getTotalContractCount", "params": [], "id": self.MSG_ID }
-        response = self.post(data)
-        if 'result' in response.json(): return response.json()['result']
-        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
-        return None
-
-    def scan_get_batch_listing(self, offset=0, size=10):
-        """Get the batch listing as part of the scan_ api."""
-        pagination = {"offset": offset, "size": size}
-        data = {"jsonrpc": "2.0", "method": "scan_getBatchListing", "params": [pagination], "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return response.json()['result']
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
@@ -412,56 +422,6 @@ class TenNetworkTest(GenericNetworkTest):
         if 'result' in response.json(): return response.json()['result']
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
-
-    def json_hex_to_obj(self, hex_str):
-        """Convert a json hex string to an object. """
-        if hex_str.startswith('0x'): hex_str = hex_str[2:]
-        byte_str = bytes.fromhex(hex_str)
-        json_str = byte_str.decode('utf-8')
-        return json.loads(json_str)
-
-    def scan_list_personal_txs(self, url, address, offset=0, size=10, return_error=False,
-                               show_public=False, show_synthetic=False):
-        """List personal transactions."""
-        payload = {"address": address, "pagination": {"offset": offset, "size": size},
-                   "showAllPublicTxs": show_public, "showSyntheticTxs": show_synthetic}
-        data = {"jsonrpc": "2.0", "method": "eth_getStorageAt",
-                "params": ["0x0000000000000000000000000000000000000002", json.dumps(payload), None],
-                "id": self.MSG_ID }
-        response = self.post(data, url)
-        if 'result' in response.json(): return self.json_hex_to_obj(response.json()['result'])
-        elif 'error' in response.json():
-            if return_error: return response.json()['error']
-            else: self.log.error(response.json()['error']['message'])
-        return None
-
-    def read_all_personal_txs(self, network, account, show_public, increment = 100):
-        """Return all personal transactions for a user. """
-        number = self.read_size_personal_txs(network, account, show_public)
-        self.log.info('  Total transactions %d' % number)
-        txs = []
-        start = 0
-        while number > 0:
-            if number >= increment:
-                self.log.info('  Reading offset %d size %d' % (start, increment))
-                txs.extend(self.read_page_personal_txs(network, account, show_public, start, increment))
-                number -= increment
-                start += increment
-            else:
-                self.log.info('  Reading offset %d size %d' % (start, number))
-                txs.extend(self.read_page_personal_txs(network, account, show_public, start, number))
-                break
-        return txs
-
-    def read_size_personal_txs(self, network, account, show_public):
-        """Return the personal transactions size for a user. """
-        return self.scan_list_personal_txs(url=network.connection_url(), address=account.address,
-                                           show_public=show_public, offset=0, size=1)['Total']
-
-    def read_page_personal_txs(self, network, account, show_public, offset, size):
-        """Return a page of personal transactions for a user. """
-        return self.scan_list_personal_txs(url=network.connection_url(), address=account.address,
-                                           show_public=show_public, offset=offset, size=size)['Receipts']
 
     def scan_get_transaction(self):
         """Get tx by hash. @todo """
@@ -494,6 +454,41 @@ class TenNetworkTest(GenericNetworkTest):
     def scan_get_batch_by_height(self):
         """Get batch by height. @todo """
         pass
+
+    def json_hex_to_obj(self, hex_str):
+        """Convert a json hex string to an object. """
+        if hex_str.startswith('0x'): hex_str = hex_str[2:]
+        byte_str = bytes.fromhex(hex_str)
+        json_str = byte_str.decode('utf-8')
+        return json.loads(json_str)
+
+    def read_all_personal_txs(self, network, account, show_public, increment = 100):
+        """Return all personal transactions for a user. """
+        number = self.read_size_personal_txs(network, account, show_public)
+        self.log.info('  Total transactions %d' % number)
+        txs = []
+        start = 0
+        while number > 0:
+            if number >= increment:
+                self.log.info('  Reading offset %d size %d' % (start, increment))
+                txs.extend(self.read_page_personal_txs(network, account, show_public, start, increment))
+                number -= increment
+                start += increment
+            else:
+                self.log.info('  Reading offset %d size %d' % (start, number))
+                txs.extend(self.read_page_personal_txs(network, account, show_public, start, number))
+                break
+        return txs
+
+    def read_size_personal_txs(self, network, account, show_public):
+        """Return the personal transactions size for a user. """
+        return self.scan_list_personal_txs(url=network.connection_url(), address=account.address,
+                                           show_public=show_public, offset=0, size=1)['Total']
+
+    def read_page_personal_txs(self, network, account, show_public, offset, size):
+        """Return a page of personal transactions for a user. """
+        return self.scan_list_personal_txs(url=network.connection_url(), address=account.address,
+                                           show_public=show_public, offset=offset, size=size)['Receipts']
 
     def get_session_key(self, url):
         """Get a session key. """

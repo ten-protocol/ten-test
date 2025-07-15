@@ -10,8 +10,8 @@ class PySysTest(TenNetworkTest):
 
         # list the personal transactions for the user
         txs = self.scan_list_personal_txs(url=network.connection_url(), address=account_usr.address, offset=0, size=5)
-        tx_hashs = [x['blockHash'] for x in txs['Receipts']]
-        self.assertTrue(len(tx_hashs) == 0, assertMessage='Tx hashes returned should have length zero')
+        tx_hashes = [x['blockHash'] for x in txs['Receipts']]
+        self.assertTrue(len(tx_hashes) == 0, assertMessage='Tx hashes returned should have length zero')
 
         # list the personal transactions never seen by the gateway
         unseen = web3_usr.eth.account.from_key(self.get_ephemeral_pk())
