@@ -4,7 +4,7 @@
     <description>
         <title>Zen: check the zen balance increases with each transaction</title>
         <purpose><![CDATA[
-A simple check that the ZEN balance increases by 1 for each transaction made against the storage contract. 
+A simple check that the ZEN balance increases by 1 for each transaction made against the storage contract.
 ]]>
         </purpose>
     </description>
