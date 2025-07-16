@@ -48,8 +48,8 @@ commander
   .option('--network_ws <value>', 'Web socket connection URL to the network')
   .option('--contract_address <value>', 'Contract address')
   .option('--contract_abi <value>', 'Contract ABI file')
-  .option('--id_filter <value>', '')
-  .option('--address_filter <value>', '')
+  .option('--id_filter <value>', 'The id filter')
+  .option('--address_filter <value>', 'The address filter')
   .parse(process.argv)
 
 const options = commander.opts()
