@@ -44,14 +44,14 @@ def run(url, web3, address):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(prog='debug_events')
+    parser = argparse.ArgumentParser(prog='debugger')
     parser.add_argument('-u', '--network_http', help='Connection URL')
     parser.add_argument('-a', '--contract_address', help='Address of the contract')
     args = parser.parse_args()
 
     web3 = Web3(Web3.HTTPProvider(args.network_http))
     logging.info(args.network_http)
-    logging.info('Starting debug_events')
+    logging.info('Starting debugger')
     run(args.network_http, web3, args.contract_address)
 
 

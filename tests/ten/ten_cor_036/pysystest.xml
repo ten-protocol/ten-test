@@ -9,6 +9,9 @@ then queries to get their personal transactions, where they themselves have not 
 cases where they request for just their personal transactions, and their personal and public transactions. It is assumed
 that for the latter they will see the transactions made against the transparent contract, but for the former they will
 not.
+
+Skipped as showing public and synthetic transactions in the call to get personal transactions is not supporte for the
+mainnet phase 1 release.
 ]]>
         </purpose>
     </description>
@@ -16,6 +19,7 @@ not.
     <classification>
         <groups inherit="true">
             <group>tenscan</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

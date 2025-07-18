@@ -2,15 +2,15 @@
 <pysystest type="auto">
 
     <description>
-        <title>Stress: high event rate publishing with multiple filters</title>
+        <title>Stress: high event rate publishing with multiple filters, debuggers and tx listers</title>
         <purpose><![CDATA[
 Uses the EventEmitter contract, and starts multiple clients to poll for a variety of events from the contract (poller_all)
 over recent block ranges, a client to poll just for the SimpleEvent from block zero (poller_simple), subscribers to listen
 to a variety of events (subscriber), and a client to perform debug operations (debug_eventLogRelevancy). Once these are
-set sequential transactors are kicked off to transact against the network meaning events should be received. Note that the
-transactors use different accounts to the one that was used to deploy the contracts, and through a different gateway
-token. Note also that filters on the event subscribers means not all transactions from transactors will have events
-received.
+set sequential transactors are kicked off to transact against the network meaning events should be received. Additionally
+each transactor has a script that requests personal transactions every 2 seconds. Note that the transactors use different
+accounts to the one that was used to deploy the contracts, and through a different gateway token. Note also that filters
+on the event subscribers means not all transactions from transactors will have events received.
 ]]>
         </purpose>
     </description>
