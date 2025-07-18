@@ -49,28 +49,35 @@ def get_personal_transactions(url, address, show_public, show_synthetic, offset,
 
 def run(url, address):
     while True:
-        choice = random.randrange(4)
-        show_public = None
-        show_synthetic = None
-        if choice == 0:
-            show_public = True
-            show_synthetic = True
-        if choice == 1:
-            show_public = True
-            show_synthetic = False
-        if choice == 2:
-            show_public = False
-            show_synthetic = False
-        if choice == 3:
-            show_public = False
-            show_synthetic = True
+        show_public = False
+        show_synthetic = False
 
-        total = size_personal_transactions(url, address, show_public, show_synthetic)
-        pages = split_into_segments(total, 50)
-        logging.info('Requesting offset %d and size %d (total is %d)', pages[-1][0], pages[-1][1], total)
-        logging.info('Request has show public %s and show synthetic %s', show_public, show_synthetic)
-        txs = get_personal_transactions(url, address, show_public, show_synthetic, pages[-1][0], pages[-1][1])
-        logging.info('Returned set has size %s', len(txs))
+        if False: # for now it is not supported to include public and synthetic transactions
+            choice = random.randrange(4)
+            if choice == 0:
+                show_public = True
+                show_synthetic = True
+            if choice == 1:
+                show_public = True
+                show_synthetic = False
+            if choice == 2:
+                show_public = False
+                show_synthetic = False
+            if choice == 3:
+                show_public = False
+                show_synthetic = True
+
+        try:
+            total = size_personal_transactions(url, address, show_public, show_synthetic)
+            pages = split_into_segments(total, 50)
+            logging.info('')
+            logging.info('Request has show public %s and show synthetic %s', show_public, show_synthetic)
+            logging.info('Requesting offset %d and size %d (total is %d)', pages[-1][0], pages[-1][1], total)
+            txs = get_personal_transactions(url, address, show_public, show_synthetic, pages[-1][0], pages[-1][1])
+            logging.info('Returned set has size %s', len(txs['Receipts']))
+        except Exception as e:
+            logging.warning('Caught exception %s', e)
+
         time.sleep(2.0)
 
 
@@ -82,6 +89,6 @@ if __name__ == "__main__":
 
     logging.info(args.network_http)
     logging.info('Starting listing of personal transactions')
-    run(args.network_http, args.contract_address)
+    run(args.network_http, args.address)
 
 

@@ -37,7 +37,7 @@ class PySysTest(TenNetworkTest):
             pk, account, network = self.setup_transactor(funds_needed)
             clients.append((id, pk, account, network))
             self.run_subscriber(network, emitter if random.randint(0,1) else transparent_emitter, account, id)
-            self.run_lister(network.connection_url(), account.address)
+            self.run_lister(id, network.connection_url(), account.address)
 
         # start the pollers and the debugger
         self.run_debugger(emitter, debugger_url)
@@ -83,9 +83,9 @@ class PySysTest(TenNetworkTest):
         args.extend(['--contract_address', '%s' % emitter.address])
         self.run_python(script, stdout, stderr, args)
 
-    def run_lister(self, url, address):
-        stdout = os.path.join(self.output, 'lister.out')
-        stderr = os.path.join(self.output, 'lister.err')
+    def run_lister(self, id, url, address):
+        stdout = os.path.join(self.output, 'lister%s.out' % id)
+        stderr = os.path.join(self.output, 'lister%s.err' % id)
         script = os.path.join(self.input, 'lister.py')
         args = []
         args.extend(['--network_http', url])

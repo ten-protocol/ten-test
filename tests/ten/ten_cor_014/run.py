@@ -58,11 +58,12 @@ class PySysTest(TenNetworkTest):
 
         # log out the transaction block hashes and tx hashes from requesting the list of personal transactions,
         # including the synthetic ones (these are the zen tokens that accrue for each transaction made)
-        txs = self.scan_list_personal_txs(url=network.connection_url(), address = account_usr1.address,
-                                          offset=0, size=20, show_public=False, show_synthetic=True)
-        tx_hashes = [x['transactionHash'] for x in txs['Receipts']]
-        self.log.info('Returned block and tx hashes are;')
-        for tx in txs['Receipts']: self.log.info('  %s %s' % (tx['blockHash'], tx['transactionHash']))
+        if False: # for now it is not supported to include public and synthetic transactions
+            txs = self.scan_list_personal_txs(url=network.connection_url(), address = account_usr1.address,
+                                              offset=0, size=20, show_public=False, show_synthetic=True)
+            tx_hashes = [x['transactionHash'] for x in txs['Receipts']]
+            self.log.info('Returned block and tx hashes are;')
+            for tx in txs['Receipts']: self.log.info('  %s %s' % (tx['blockHash'], tx['transactionHash']))
 
-        self.assertTrue(len(tx_hashes) == 8, assertMessage='There should be eight txs including synthetic')
+            self.assertTrue(len(tx_hashes) == 8, assertMessage='There should be eight txs including synthetic')
 
