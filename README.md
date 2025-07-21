@@ -80,8 +80,8 @@ brew update
 brew upgrade
 
 brew remove node --force
-brew install node@18   
-brew link --overwrite node@18
+brew install node@20   
+brew link --overwrite node@20
 
 brew tap ethereum/ethereum
 brew install ethereum
@@ -126,7 +126,7 @@ apt install -y solc
 apt install -y gnuplot
 apt install -y ethereum
 
-curl -sL https://deb.nodesource.com/setup_18.x | bash -
+curl -sL https://deb.nodesource.com/setup_20.x | bash -
 apt-get install -y nodejs
 npm install console-stamp --global
 npm install ganache --global

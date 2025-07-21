@@ -10,7 +10,7 @@ RUN apt install -y curl
 RUN apt install -y solc
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y gnuplot
 
-RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
 RUN apt-get install -y nodejs
 RUN npm install console-stamp --global
 RUN npm install ganache --global
