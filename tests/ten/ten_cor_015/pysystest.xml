@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Tenscan RPC: eth_getStorageAt for personal transactions on account with no tx history</title>
+        <title>Tenscan RPC: eth_getStorageAt for personal transactions (ccount with no tx history)</title>
         <purpose><![CDATA[
 Simple check to ensure that calling to get the personal transactions on an account with no transaction
 history does not end up in an internal system error being returned. 
