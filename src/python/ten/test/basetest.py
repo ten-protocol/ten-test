@@ -313,31 +313,11 @@ class TenNetworkTest(GenericNetworkTest):
     """The test used by all Ten specific network testcases.
 
     Test class specific for the Ten Network. Provides utilities for funding native ETH and ERC20 tokens in the layer1 and
-    layer2 of an Ten Network.
+    layer2 of a TEN Network.
     """
 
-    # Current list of scan RPC endpoints are
-    #   1. scan_getBatchByTx
-    #   2. scan_getLatestRollupHeader
-    #   3. scan_getTotalTransactionCount
-    #   4. scan_getTotalTransactionsQuery
-    #   5. scan_getTotalContractCount
-    #   6. scan_getPublicTransactionData
-    #   7. scan_getBatchListing
-    #   8. scan_getBlockListing
-    #   9. scan_getBatch
-    #   10. scan_getLatestBatch     <- add from here
-    #   11. scan_getBatchByHeight
-    #   12. scan_getBatchBySeq
-    #   13. scan_getTransaction
-    #   14. scan_getRollupListing
-    #   15. scan_getRollupByHash
-    #   16. scan_getRollupBatches
-    #   17. scan_getRollupBySeqNo
-    #   18. scan_getBatchTransactions
-    #   19. scan_getPersonalTransactions
-
-    # 1. scan_getBatchByTx
+    # RPC endpoints for ten-scan.
+    #
     def scan_get_batch_for_transaction(self, tx_hash):
         """Get the publicly available batch for a given transaction hash. """
         data = {"jsonrpc": "2.0", "method": "scan_getBatchByTx", "params": [tx_hash], "id": self.MSG_ID }
@@ -346,7 +326,6 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    # 2. scan_getLatestRollupHeader
     def scan_get_latest_rollup_header(self):
         """Get the latest rollup header as part of the scan_ api. @todo """
         data = {"jsonrpc": "2.0", "method": "scan_getLatestRollupHeader", "params": [], "id": self.MSG_ID }
@@ -355,7 +334,6 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    # 3. scan_getTotalTransactionCount
     def scan_get_approx_total_transaction_count(self):
         """Get the publicly available approximate total transaction count. """
         data = {"jsonrpc": "2.0", "method": "scan_getTotalTransactionCount", "params": [], "id": self.MSG_ID }
@@ -364,7 +342,6 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    # 4. scan_getTotalTransactionsQuery
     def scan_get_total_transaction_count(self):
         """Get the publicly available accurate total transaction count."""
         data = {"jsonrpc": "2.0", "method": "scan_getTotalTransactionsQuery", "params": [], "id": self.MSG_ID }
@@ -373,7 +350,6 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    # 5. scan_getTotalContractCount
     def scan_get_total_contract_count(self):
         """Get the total contract count as part of the scan_ api."""
         data = {"jsonrpc": "2.0", "method": "scan_getTotalContractCount", "params": [], "id": self.MSG_ID }
@@ -382,7 +358,6 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    # 6. scan_getPublicTransactionData
     def scan_get_public_transaction_data(self, offset, size):
         """Get a publicly available list of transactions data based on offset and page size. """
         pagination = {"offset": offset, "size": size}
@@ -392,7 +367,6 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    # 7. scan_getBatchListing
     def scan_get_batch_listing(self, offset=0, size=10):
         """Get the batch listing as part of the scan_ api."""
         pagination = {"offset": offset, "size": size}
@@ -402,7 +376,7 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    # 8. scan_getBlockListing
+    # @todo
     def scan_get_block_listing(self, offset=0, size=10):
         """Get the block listing as part of the scan_ api. @todo """
         pagination = {"offset": offset, "size": size}
@@ -412,7 +386,7 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    # 9. scan_getBatch
+    # @todo
     def scan_get_batch(self, hash):
         """Get the rollup by its hash. @todo """
         data = {"jsonrpc": "2.0", "method": "scan_getBatch", "params": [hash], "id": self.MSG_ID }
@@ -420,6 +394,107 @@ class TenNetworkTest(GenericNetworkTest):
         if 'result' in response.json(): return response.json()['result']
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
+
+    # @todo
+    def scan_get_latest_batch(self):
+        """Returns the header of the latest rollup at tip."""
+        data = {"jsonrpc": "2.0", "method": "scan_getLatestBatch", "params": [], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    # @todo
+    def scan_get_batch_by_height(self, height):
+        """Returns the batch with the given height. """
+        data = {"jsonrpc": "2.0", "method": "scan_getBatchByHeight", "params": [height], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    # @todo
+    def scan_get_batch_by_seq(self, seq):
+        """Returns the batch with the given sequence number. """
+        data = {"jsonrpc": "2.0", "method": "scan_getBatchBySeq", "params": [seq], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    # @todo
+    def scan_get_transaction(self, hash):
+        """Returns the transaction. """
+        data = {"jsonrpc": "2.0", "method": "scan_getTransaction", "params": [hash], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    # @todo
+    def scan_get_rollup_listing(self, offset=0, size=10):
+        """Returns a list of rollups. """
+        pagination = {"offset": offset, "size": size}
+        data = {"jsonrpc": "2.0", "method": "scan_getRollupListing", "params": [pagination], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    # @todo
+    def scan_get_rollup_by_hash(self, hash):
+        """Returns the public rollup data given its hash. """
+        data = {"jsonrpc": "2.0", "method": "scan_getRollupByHash", "params": [hash], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    # @todo
+    def scan_get_rollup_batches(self, hash, offset=0, size=10):
+        """Returns a list of public batch data within a given rollup hash. """
+        pagination = {"offset": offset, "size": size}
+        data = {"jsonrpc": "2.0", "method": "scan_getRollupBatches", "params": [hash, pagination], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    # @todo
+    def scan_get_rollup_by_seq_no(self, seq):
+        """Returns the batch with the given height. """
+        data = {"jsonrpc": "2.0", "method": "scan_getRollupBySeqNo", "params": [seq], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    # @todo
+    def scan_get_batch_transactions(self, hash, offset=0, size=10):
+        """Returns a list of public transaction data within a given batch hash. """
+        pagination = {"offset": offset, "size": size}
+        data = {"jsonrpc": "2.0", "method": "scan_getBatchTransactions", "params": [hash, pagination], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    # @todo
+    def scan_get_personal_transactions(self, address, offset=0, size=10):
+        """Retrieves the receipts for the specified account. """
+        pagination = {"offset": offset, "size": size}
+        data = {"jsonrpc": "2.0", "method": "scan_getPersonalTransactions", "params": [address, pagination], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    def json_hex_to_obj(self, hex_str):
+        """Convert a json hex string to an object. """
+        if hex_str.startswith('0x'): hex_str = hex_str[2:]
+        byte_str = bytes.fromhex(hex_str)
+        json_str = byte_str.decode('utf-8')
+        return json.loads(json_str)
 
     def scan_list_personal_txs(self, url, address, offset=0, size=10, return_error=False,
                                show_public=False, show_synthetic=False):
@@ -434,13 +509,6 @@ class TenNetworkTest(GenericNetworkTest):
             if return_error: return response.json()['error']
             else: self.log.error(response.json()['error']['message'])
         return None
-
-    def json_hex_to_obj(self, hex_str):
-        """Convert a json hex string to an object. """
-        if hex_str.startswith('0x'): hex_str = hex_str[2:]
-        byte_str = bytes.fromhex(hex_str)
-        json_str = byte_str.decode('utf-8')
-        return json.loads(json_str)
 
     def read_all_personal_txs(self, network, account, show_public, increment = 100):
         """Return all personal transactions for a user. """
@@ -470,6 +538,8 @@ class TenNetworkTest(GenericNetworkTest):
         return self.scan_list_personal_txs(url=network.connection_url(), address=account.address,
                                            show_public=show_public, offset=offset, size=size)['Receipts']
 
+    # RPC endpoints for session key management
+    #
     def get_session_key(self, url):
         """Get a session key. """
         data = {"jsonrpc": "2.0", "method": "sessionkeys_create", "params": [], "id": self.MSG_ID }
@@ -494,6 +564,8 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
+    # RCP endpoints for debugging
+    #
     def get_debug_event_log_relevancy(self, url, address, signature, fromBlock=0, toBlock='latest'):
         """Get the debug_LogVisibility. """
         data = {"jsonrpc": "2.0",
@@ -510,6 +582,8 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
+    # Node health
+    #
     def node_health(self, url, dump_to=None):
         """Get the validator health status."""
         data = {"jsonrpc": "2.0", "method": "ten_health", "id": self.MSG_ID}
@@ -558,6 +632,8 @@ class TenNetworkTest(GenericNetworkTest):
     def wait_for_sequencer(self, timeout=120):
         self.wait_for_node(self.sequencer_health, timeout)
 
+    # Utility methods
+    #
     def ten_get_xchain_proof(self, type, xchain_message):
         """Get the xchain proof for a given message. """
         data = {"jsonrpc": "2.0",
