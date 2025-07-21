@@ -2,11 +2,11 @@
 <pysystest type="auto">
 
     <description>
-        <title>Tenscan RPC: check transaction rollup header is correct</title>
+        <title>Tenscan RPC: scan_getBatchByTx check transaction batch header is correct</title>
         <purpose><![CDATA[
-Performs a transaction, then based on the transaction receipt gets the rollup that contains the transaction hash and
-checks that the details are correct, specifically that the rollup number returned for the transaction hash is the
-same as the rollup number that was given in the transaction receipt, and that the rollup transactions list also contain
+Performs a transaction, then based on the transaction receipt gets the batch that contains the transaction hash and
+checks that the details are correct, specifically that the batch number returned for the transaction hash is the
+same as the batch number that was given in the transaction receipt, and that the batch transactions list also contain
 the transaction of interest.
 ]]>
         </purpose>

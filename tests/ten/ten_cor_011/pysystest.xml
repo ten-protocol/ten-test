@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Tenscan RPC: read last 2 pages and check total and last page amounts</title>
+        <title>Tenscan RPC: scan_getPublicTransactionData read last 2 pages</title>
         <purpose><![CDATA[
 From the total transaction count the test works out the number of calls of a set page size to get all the transactions.
 It read retrieves the last two pages to retrieve the expected data, and tries to overrun the last page to ensure no

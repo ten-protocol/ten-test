@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Tenscan RPC: call to get personal transactions (event is public)</title>
+        <title>Tenscan RPC: eth_getStorageAt for personal transactions (event is public)</title>
         <purpose><![CDATA[
 A non-ephemeral account first performs five transactions against a contract that emits a public event. An ephemeral account
 then queries to get their personal transactions, where they themselves have not submitted any. This is performed for both

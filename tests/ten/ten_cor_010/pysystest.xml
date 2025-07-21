@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Tenscan RPC: get public transaction data after performing some transactions</title>
+        <title>Tenscan RPC: scan_getPublicTransactionData get public transaction data</title>
         <purpose><![CDATA[
 Calls scan_getTotalTransactionCount before and after performing some transactions, then retries the first page of
 public transaction data via scan_getPublicTransactionData. As the txs are stored in a LIFO calls to get the first page
