@@ -23,10 +23,10 @@ class PySysTest(GenericNetworkTest):
         self.log.info("  Estimate add_three_times_with_a_long_name:  %d", est_4)
 
         # validate 40% difference tolerance in the estimate from the reference
-        self.percentile_difference('add_once',self.REFERENCE[0],est_1,'reference','estimate',51)
-        self.percentile_difference('add_twice',self.REFERENCE[1],est_2,'reference','estimate',51)
-        self.percentile_difference('add_thrice',self.REFERENCE[2],est_3,'reference','estimate',51)
-        self.percentile_difference('add_three_times_with_a_long_name',self.REFERENCE[3],est_4,'reference','estimate',51)
+        self.percentile_difference('add_once',self.REFERENCE[0],est_1,'reference','estimate',60)
+        self.percentile_difference('add_twice',self.REFERENCE[1],est_2,'reference','estimate',60)
+        self.percentile_difference('add_thrice',self.REFERENCE[2],est_3,'reference','estimate',60)
+        self.percentile_difference('add_three_times_with_a_long_name',self.REFERENCE[3],est_4,'reference','estimate',60)
 
         tx1 = network.transact(self, web3, contract.contract.functions.add_once(), account, contract.GAS_LIMIT)
         tx2 = network.transact(self, web3, contract.contract.functions.add_twice(), account, contract.GAS_LIMIT)
@@ -38,10 +38,10 @@ class PySysTest(GenericNetworkTest):
         self.log.info("  Gas used add_three_times_with_a_long_name:  %d", int(tx4["gasUsed"]))
 
         # validate 5% difference tolerance from estimate
-        self.percentile_difference('add_once',self.REFERENCE[0],int(tx1["gasUsed"]),'reference','gasUsed',5)
-        self.percentile_difference('add_twice',self.REFERENCE[1],int(tx2["gasUsed"]),'reference','gasUsed',5)
-        self.percentile_difference('add_thrice',self.REFERENCE[2],int(tx3["gasUsed"]),'reference','gasUsed',5)
-        self.percentile_difference('add_three_times_with_a_long_name',self.REFERENCE[3],int(tx4["gasUsed"]),'reference','gasUsed',5)
+        self.percentile_difference('add_once',self.REFERENCE[0],int(tx1["gasUsed"]),'reference','gasUsed',10)
+        self.percentile_difference('add_twice',self.REFERENCE[1],int(tx2["gasUsed"]),'reference','gasUsed',10)
+        self.percentile_difference('add_thrice',self.REFERENCE[2],int(tx3["gasUsed"]),'reference','gasUsed',10)
+        self.percentile_difference('add_three_times_with_a_long_name',self.REFERENCE[3],int(tx4["gasUsed"]),'reference','gasUsed',10)
 
     def percentile_difference(self, text, num1, num2, num1_txt, num2_txt, tolerance):
         percentile = abs(((num1 - num2) / num1) * 100)

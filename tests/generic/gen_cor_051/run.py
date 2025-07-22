@@ -9,7 +9,8 @@ class PySysTest(GenericNetworkTest):
     def execute(self):
         # connect to the network and deploy the contract
         network = self.get_network_connection()
-        web3, account = network.connect_account1(self, web_socket=True)
+        private_key = self.get_ephemeral_pk()
+        web3, account = network.connect(self, private_key=private_key, web_socket=True)
 
         error = Error(self, web3)
         error.deploy(network, account)
