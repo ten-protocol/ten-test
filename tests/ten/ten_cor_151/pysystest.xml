@@ -15,13 +15,12 @@ mainnet phase 1 release.
 ]]>
         </purpose>
     </description>
- 
+
     <skipped reason="Public and synthetic transactions in the call to get personal transactions is not yet supported"/>
 
     <classification>
         <groups inherit="true">
             <group>tenscan</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

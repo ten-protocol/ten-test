@@ -8,10 +8,11 @@
         </purpose>
     </description>
 
+    <skipped reason="Blocked waiting for the cli arguments to start the node to be updated"/>
+
     <classification>
         <groups inherit="true">
             <group>infra</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.local</mode>
