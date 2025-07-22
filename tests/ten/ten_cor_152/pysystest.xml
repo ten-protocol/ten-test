@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Tenscan RPC: scan_getBlockListing</title>
+        <title>Tenscan RPC: scan_getBlockListing get L1 block data</title>
         <purpose><![CDATA[
 Checks for calls against the scan_getBlockListing RPC endpoint.
 
