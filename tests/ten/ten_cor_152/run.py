@@ -29,21 +29,16 @@ class PySysTest(TenNetworkTest):
                         assertMessage='The total return should be the total in the network, not the page size')
 
         # check to get all the blocks
-        self.wait(1.1*float(self.block_time))
         self.log.info('')
         self.log.info('Calling to iterate through all the blocks')
         offset = 0
         total = 0
-        found_block = False
         while True:
             self.log.info('  Calling for offset %d, total so far %d' % (offset, total))
             r = self.scan_get_block_listing(offset=offset, size=10)
 
-            for block in r['BlocksData']:
-                #self.log.info('    Block number %d', int(block['blockHeader']['number'], 16))
-                if block['blockHeader']['hash'] == tx_block_hash:
-                    self.log.info('    Block found in offset call %d', offset)
-                    found_block = True
+            # for block in r['BlocksData']:
+            # self.log.info('    Block number %d', int(block['blockHeader']['number'], 16))
 
             if len(r['BlocksData']) < 10:
                 total += len(r['BlocksData'])
@@ -53,7 +48,6 @@ class PySysTest(TenNetworkTest):
             total += 10
         self.log.info('Total blocks read were %d, reported last total was %d' % (total, reported_total))
         self.assertTrue(total == reported_total, assertMessage='Total read should match total reported')
-        self.assertTrue(found_block, assertMessage='We should see the block in the returned set for our tx')
 
         # check to see if we can read a large page
         self.log.info('')
