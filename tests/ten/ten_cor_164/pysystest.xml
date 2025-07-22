@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Tenscan RPC: scan_getPersonalTransactions</title>
+        <title>Tenscan RPC: scan_getBatchTransactions</title>
         <purpose><![CDATA[
 ]]>
         </purpose>

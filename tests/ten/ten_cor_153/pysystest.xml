@@ -2,8 +2,11 @@
 <pysystest type="auto">
 
     <description>
-        <title>Tenscan RPC: scan_getBatch</title>
+        <title>Tenscan RPC: scan_getBatchListing get L2 block data</title>
         <purpose><![CDATA[
+Checks for calls against the scan_getBatchListing RPC endpoint.
+
+Skipped due to issues of duplicate batch numbers seen when getting all batches. 
 ]]>
         </purpose>
     </description>
@@ -11,6 +14,7 @@
     <classification>
         <groups inherit="true">
             <group>tenscan</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
