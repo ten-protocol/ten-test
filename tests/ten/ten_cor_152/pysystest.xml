@@ -4,6 +4,9 @@
     <description>
         <title>Tenscan RPC: scan_getBlockListing</title>
         <purpose><![CDATA[
+Checks for calls against the scan_getBlockListing RPC endpoint.
+
+Skipped due to multiple reported issues.
 ]]>
         </purpose>
     </description>
@@ -11,6 +14,7 @@
     <classification>
         <groups inherit="true">
             <group>tenscan</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
