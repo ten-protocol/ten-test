@@ -47,16 +47,17 @@ class PySysTest(TenNetworkTest):
                     if block['header']['hash'] == tx_block_hash:
                         self.log.info('    Block found in offset call %d', offset)
                         found_block = True
+
+                if len(r['BatchesData']) < 10:
+                    total += len(r['BatchesData'])
+                    reported_total = r['Total']
+                    break
+
+                offset += 10
+                total += 10
+
             except:
                 break
-
-            if len(r['BatchesData']) < 10:
-                total += len(r['BatchesData'])
-                reported_total = r['Total']
-                break
-            offset += 10
-            total += 10
-
         self.log.info('Total blocks read were %d, reported last total was %d' % (total, reported_total))
         self.assertTrue(total == reported_total, assertMessage='Total read should match total reported')
         self.assertTrue(found_block, assertMessage='We should see the block in the returned set for our tx')

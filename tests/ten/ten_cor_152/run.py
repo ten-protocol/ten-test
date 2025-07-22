@@ -1,3 +1,4 @@
+from collections import Counter
 from pysys.constants import FAILED
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.storage import Storage
@@ -33,27 +34,56 @@ class PySysTest(TenNetworkTest):
         self.log.info('Calling to iterate through all the blocks')
         offset = 0
         total = 0
+        reported_total = 0
+        numbers = []
         while True:
             self.log.info('  Calling for offset %d, total so far %d' % (offset, total))
             r = self.scan_get_block_listing(offset=offset, size=10)
 
-            # for block in r['BlocksData']:
-            # self.log.info('    Block number %d', int(block['blockHeader']['number'], 16))
+            try: # possible there are no more data and last page of 10 completed all
+                for block in r['BlocksData']:
+                    numbers.append(int(block['blockHeader']['number'], 16))
 
-            if len(r['BlocksData']) < 10:
-                total += len(r['BlocksData'])
-                reported_total = r['Total']
+                if len(r['BlocksData']) < 10:
+                    total += len(r['BlocksData'])
+                    reported_total = r['Total']
+                    break
+
+                offset += 10
+                total += 10
+            except:
                 break
-            offset += 10
-            total += 10
+
         self.log.info('Total blocks read were %d, reported last total was %d' % (total, reported_total))
         self.assertTrue(total == reported_total, assertMessage='Total read should match total reported')
+        self.assertTrue(self.differs_by_one(numbers), assertMessage='Batch numbers should differ by 1')
+
+        duplicates = self.get_duplicates(numbers)
+        if len(duplicates) > 0:
+            self.log.info('Duplicates seen %s', duplicates)
+            self.addOutcome(FAILED, 'There should be no duplicate batch numbers in the iterated set')
 
         # check to see if we can read a large page
-        self.log.info('')
-        self.log.info('Doing a call on a large page size')
-        try:
-            self.scan_get_block_listing(offset=5, size=50)
-        except Exception as e:
-            self.log.warn('Exception thrown: %s', e)
-            self.addOutcome(FAILED, outcomeReason='We should not throw an exception on parse error')
+        if reported_total > 50:
+            self.log.info('')
+            try:
+                self.scan_get_block_listing(offset=0, size=50)
+                self.log.info('Doing a call on a large page size passed')
+            except Exception as e:
+                self.log.warn('Doing a call on a large page size failed')
+                self.log.warn('Exception thrown: %s', e)
+                self.addOutcome(FAILED, outcomeReason='We should not throw an exception on parse error')
+
+    def differs_by_one(self, lst):
+        result = True
+        s = lst[0]
+        for i in lst[1:]:
+            if abs(s-i) != 1:
+                self.log.warn('Previous batch number was %d and current is %d' % (s,i))
+                result = False
+            s = i
+        return result
+
+    def get_duplicates(self, lst):
+        counts = Counter(lst)
+        return [num for num, count in counts.items() if count > 1]
