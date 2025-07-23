@@ -11,7 +11,7 @@ class PySysTest(TenNetworkTest):
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
-        # user deploys contract and performs some transactions against it
+        # user deploys contract and performs a transaction against it
         self.log.info('')
         self.log.info('User deploys contract and submits transactions against it')
         storage = Storage(self, web3, 0)

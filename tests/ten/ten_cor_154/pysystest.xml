@@ -4,6 +4,8 @@
     <description>
         <title>Tenscan RPC: scan_getBatch</title>
         <purpose><![CDATA[
+Checks for calls against the scan_getBatch RPC endpoint.
+
 ]]>
         </purpose>
     </description>
