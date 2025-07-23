@@ -1,4 +1,3 @@
-from collections import Counter
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.storage import Storage
 
@@ -10,7 +9,7 @@ class PySysTest(TenNetworkTest):
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
-        # user deploys contract and perform a transactions against it
+        # user deploys contract and performs a transactions against it
         self.log.info('')
         self.log.info('User deploys contract and submits transactions against it')
         storage = Storage(self, web3, 0)

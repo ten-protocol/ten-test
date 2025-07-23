@@ -393,7 +393,6 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    # @todo
     def scan_get_latest_batch(self):
         """Returns the header of the latest rollup at tip."""
         data = {"jsonrpc": "2.0", "method": "scan_getLatestBatch", "params": [], "id": self.MSG_ID }
