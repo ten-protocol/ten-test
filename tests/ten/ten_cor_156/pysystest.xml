@@ -4,6 +4,7 @@
     <description>
         <title>Tenscan RPC: scan_getBatchByHeight</title>
         <purpose><![CDATA[
+Checks for calls against the scan_getBatchByHeight RPC endpoint.
 ]]>
         </purpose>
     </description>

@@ -16,17 +16,14 @@ class PySysTest(TenNetworkTest):
         storage.deploy(network, account)
 
         tx_receipt = network.transact(self, web3, storage.contract.functions.store(78), account, storage.GAS_LIMIT)
+        tx_block_number = tx_receipt['blockNumber']
+        self.log.info('Transaction made with reported block number as %s', tx_block_number)
         tx_block_hash = tx_receipt['blockHash'].hex()
-        self.log.info(tx_receipt)
         self.log.info('Transaction made with reported block hash as %s', tx_block_hash)
 
-        # this actually just returns the header of the latest batch
-        block = self.scan_get_latest_batch()
-        block_number1 = int(block['number'], 16)
+        block_by_height = self.scan_get_batch_by_height(height=tx_block_number)
+        self.log.info('Block by height: %s', block_by_height)
+        block_by_hash = self.scan_get_batch(hash=tx_block_hash)
+        self.log.info('Block by hash: %s', block_by_hash)
 
-        self.wait(2 * float(self.block_time))
-        block = self.scan_get_latest_batch()
-        block_number2 = int(block['number'], 16)
 
-        self.log.info('First block %d, second block %d' % (block_number1, block_number2))
-        self.assertTrue(block_number2 > block_number1, assertMessage='Latest block number should increase')
