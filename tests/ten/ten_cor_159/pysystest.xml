@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Tenscan RPC: scan_getTransaction</title>
+        <title>Tenscan RPC: scan_getRollupListing</title>
         <purpose><![CDATA[
 ]]>
         </purpose>
