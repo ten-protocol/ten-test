@@ -427,7 +427,6 @@ class TenNetworkTest(GenericNetworkTest):
             self.log.error(response.json()['error']['message'])
         return None
 
-    # @todo
     def scan_get_rollup_listing(self, offset=0, size=10):
         """Returns a list of rollups. """
         pagination = {"offset": offset, "size": size}

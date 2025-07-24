@@ -2,8 +2,9 @@
 <pysystest type="auto">
 
     <description>
-        <title>Tenscan RPC: scan_getRollupByHash</title>
+        <title>Tenscan RPC: scan_getRollupByHash get rollup by hash</title>
         <purpose><![CDATA[
+Checks for calls against the scan_getRollupListing RPC endpoint.
 ]]>
         </purpose>
     </description>
