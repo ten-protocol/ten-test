@@ -42,6 +42,8 @@ class PySysTest(TenNetworkTest):
             r = self.scan_get_batch_listing(offset=offset, size=10)
 
             try: # possible there are no more data and last page of 10 completed all
+                reported_total = r['Total']
+
                 for block in r['BatchesData']:
                     numbers.append(int(block['header']['number'], 16))
                     if block['header']['hash'] == tx_block_hash:
@@ -50,7 +52,6 @@ class PySysTest(TenNetworkTest):
 
                 if len(r['BatchesData']) < 10:
                     total += len(r['BatchesData'])
-                    reported_total = r['Total']
                     break
 
                 offset += 10
@@ -58,6 +59,7 @@ class PySysTest(TenNetworkTest):
 
             except:
                 break
+
         self.log.info('Total blocks read were %d, reported last total was %d' % (total, reported_total))
         self.assertTrue(total == reported_total, assertMessage='Total read should match total reported')
         self.assertTrue(found_block, assertMessage='We should see the block in the returned set for our tx')

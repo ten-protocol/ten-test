@@ -41,12 +41,13 @@ class PySysTest(TenNetworkTest):
             r = self.scan_get_rollup_listing(offset=offset, size=10)
 
             try:  # possible there are no more data and last page of 10 completed all
+                reported_total = r['Total']
+
                 for rollup in r['RollupsData']:
                     numbers.append(rollup['ID'])
 
                 if len(r['RollupsData']) < 10:
                     total += len(r['RollupsData'])
-                    reported_total = r['Total']
                     break
 
                 offset += 10
@@ -54,7 +55,6 @@ class PySysTest(TenNetworkTest):
 
             except Exception as e:
                 self.log.warn('Exception raised %s', e)
-                reported_total = r['Total']
                 break
 
         self.log.info('Total rollups read were %d, reported last total was %d' % (total, reported_total))

@@ -41,12 +41,13 @@ class PySysTest(TenNetworkTest):
             r = self.scan_get_block_listing(offset=offset, size=10)
 
             try: # possible there are no more data and last page of 10 completed all
+                reported_total = r['Total']
+
                 for block in r['BlocksData']:
                     numbers.append(int(block['blockHeader']['number'], 16))
 
                 if len(r['BlocksData']) < 10:
                     total += len(r['BlocksData'])
-                    reported_total = r['Total']
                     break
 
                 offset += 10
