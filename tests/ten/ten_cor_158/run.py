@@ -21,7 +21,7 @@ class PySysTest(TenNetworkTest):
         tx_block_number = tx_receipt['blockNumber']
         self.log.info('Transaction made with reported hash as %s', tx_hash)
 
-        # get the transaction by it's hash
+        # get the transaction by its hash and validate
         tx = self.scan_get_transaction(hash=tx_hash)
         self.assertTrue(tx['TransactionHash'] == tx_hash, assertMessage='Transaction hashes should match')
         self.assertTrue(tx['BatchHeight'] == tx_block_number, assertMessage='Batch numbers should match')
