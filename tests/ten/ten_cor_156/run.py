@@ -21,9 +21,11 @@ class PySysTest(TenNetworkTest):
         tx_block_hash = tx_receipt['blockHash'].hex()
         self.log.info('Transaction made with reported block hash as %s', tx_block_hash)
 
-        block_by_height = self.scan_get_batch_by_height(height=tx_block_number)
-        self.log.info('Block by height: %s', block_by_height)
+        # get the block buy hash and sequencer number
         block_by_hash = self.scan_get_batch(hash=tx_block_hash)
-        self.log.info('Block by hash: %s', block_by_hash)
+        block_by_height = self.scan_get_batch_by_height(height=tx_block_number)
+
+        self.assertTrue(block_by_hash['Header']['hash'] == block_by_height['header']['hash'],
+                        assertMessage='Hashes should be the same when get by height')
 
 
