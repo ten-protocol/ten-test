@@ -401,7 +401,6 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    # @todo
     def scan_get_batch_by_height(self, height):
         """Returns the batch with the given height. """
         data = {"jsonrpc": "2.0", "method": "scan_getBatchByHeight", "params": [height], "id": self.MSG_ID }
@@ -410,7 +409,6 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    # @todo
     def scan_get_batch_by_seq(self, seq):
         """Returns the batch with the given sequence number. """
         data = {"jsonrpc": "2.0", "method": "scan_getBatchBySeq", "params": [seq], "id": self.MSG_ID }
@@ -419,13 +417,14 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    # @todo
-    def scan_get_transaction(self, hash):
+    def scan_get_transaction(self, hash, return_error=False):
         """Returns the transaction. """
         data = {"jsonrpc": "2.0", "method": "scan_getTransaction", "params": [hash], "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return response.json()['result']
-        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        elif 'error' in response.json():
+            if return_error: return response.json()['error']['message']
+            self.log.error(response.json()['error']['message'])
         return None
 
     # @todo

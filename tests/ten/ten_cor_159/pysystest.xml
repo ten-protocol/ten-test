@@ -4,6 +4,7 @@
     <description>
         <title>Tenscan RPC: scan_getRollupListing</title>
         <purpose><![CDATA[
+Checks for calls against the scan_getRollupListing RPC endpoint.
 ]]>
         </purpose>
     </description>
