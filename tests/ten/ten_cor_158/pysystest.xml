@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Tenscan RPC: scan_getTransaction</title>
+        <title>Tenscan RPC: scan_getTransaction get L2 transaction data</title>
         <purpose><![CDATA[
 Checks for calls against the scan_getTransaction RPC endpoint.
 ]]>

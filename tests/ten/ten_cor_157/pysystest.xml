@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Tenscan RPC: scan_getBatchBySeq</title>
+        <title>Tenscan RPC: scan_getBatchBySeq get L2 batch data by sequencer number</title>
         <purpose><![CDATA[
 Checks for calls against the scan_getBatchByHeight RPC endpoint.
 ]]>

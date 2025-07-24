@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Tenscan RPC: scan_getBatch</title>
+        <title>Tenscan RPC: scan_getBatch get L2 batch data</title>
         <purpose><![CDATA[
 Checks for calls against the scan_getBatch RPC endpoint.
 
