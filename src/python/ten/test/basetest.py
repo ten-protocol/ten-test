@@ -436,7 +436,6 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    # @todo
     def scan_get_rollup_by_hash(self, hash):
         """Returns the public rollup data given its hash. """
         data = {"jsonrpc": "2.0", "method": "scan_getRollupByHash", "params": [hash], "id": self.MSG_ID }
