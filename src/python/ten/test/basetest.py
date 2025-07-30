@@ -470,7 +470,6 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    # @todo
     def scan_get_personal_transactions(self, address, offset=0, size=10):
         """Retrieves the receipts for the specified account. """
         pagination = {"offset": offset, "size": size}
