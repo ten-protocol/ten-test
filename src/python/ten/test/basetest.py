@@ -461,7 +461,6 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    # @todo
     def scan_get_batch_transactions(self, hash, offset=0, size=10):
         """Returns a list of public transaction data within a given batch hash. """
         pagination = {"offset": offset, "size": size}
