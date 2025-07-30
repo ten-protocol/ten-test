@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Tenscan RPC: scan_getRollupBySeqNo</title>
+        <title>Tenscan RPC: scan_getRollupBySeqNo get all rollup batches by sequence</title>
         <purpose><![CDATA[
 Checks for calls against the scan_getRollupBySeqNo RPC endpoint.
 ]]>
