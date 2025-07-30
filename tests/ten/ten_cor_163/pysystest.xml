@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Tenscan RPC: scan_getBatchTransactions</title>
+        <title>Tenscan RPC: scan_getBatchTransactions get the transactions for a batch</title>
         <purpose><![CDATA[
 Checks for calls against the scan_getBatchTransactions RPC endpoint.
 ]]>
