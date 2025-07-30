@@ -4,6 +4,7 @@
     <description>
         <title>Tenscan RPC: scan_getRollupBySeqNo</title>
         <purpose><![CDATA[
+Checks for calls against the scan_getRollupBySeqNo RPC endpoint.
 ]]>
         </purpose>
     </description>

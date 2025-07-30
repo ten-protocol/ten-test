@@ -444,7 +444,6 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    # @todo
     def scan_get_rollup_batches(self, hash, offset=0, size=10):
         """Returns a list of public batch data within a given rollup hash. """
         pagination = {"offset": offset, "size": size}
@@ -454,9 +453,8 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    # @todo
     def scan_get_rollup_by_seq_no(self, seq):
-        """Returns the batch with the given height. """
+        """Returns the rollup for the batch with the given sequence. """
         data = {"jsonrpc": "2.0", "method": "scan_getRollupBySeqNo", "params": [seq], "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): return response.json()['result']
