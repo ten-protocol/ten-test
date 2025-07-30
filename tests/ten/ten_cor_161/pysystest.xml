@@ -4,6 +4,9 @@
     <description>
         <title>Tenscan RPC: scan_getRollupBatches</title>
         <purpose><![CDATA[
+Checks for calls against the scan_getRollupBatches RPC endpoint.
+
+Skipped due to https://github.com/ten-protocol/ten-internal/issues/5514
 ]]>
         </purpose>
     </description>
@@ -11,6 +14,7 @@
     <classification>
         <groups inherit="true">
             <group>tenscan</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
