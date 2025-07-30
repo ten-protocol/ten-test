@@ -16,19 +16,19 @@ Wednesday:
 Thursday:
   - start: "00:00"
     end: "23:59"
-    person: "moray"
+    person: "stefan"
 
 Friday:
   - start: "00:00"
     end: "23:59"
-    person: "matt"
+    person: "moray"
 
 Saturday:
   - start: "00:00"
     end: "23:59"
-    person: "ziga"
+    person: "matt"
 
 Sunday:
   - start: "00:00"
     end: "23:59"
-    person: "stefan"
+    person: "tudor"
