@@ -2,20 +2,23 @@
 <pysystest type="auto">
 
     <description>
-        <title>Node - start a new node to join the network and transact through it</title>
+        <title>Tenscan RPC: scan_getTransaction get L2 transaction data</title>
         <purpose><![CDATA[
+Checks for calls against the scan_getTransaction RPC endpoint.
 ]]>
         </purpose>
     </description>
 
-    <skipped reason="Blocked waiting for the cli arguments to start the node to be updated"/>
-
     <classification>
         <groups inherit="true">
-            <group>infra</group>
+            <group>tenscan</group>
         </groups>
         <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
             <mode>ten.local</mode>
+            <mode>ten.sim</mode>
         </modes>
     </classification>
 

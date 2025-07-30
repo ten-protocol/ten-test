@@ -11,7 +11,6 @@ A simple check that the ZEN balance increases by 1 for each transaction made aga
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

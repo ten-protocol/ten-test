@@ -2,16 +2,11 @@
 <pysystest type="auto">
 
     <description>
-        <title>Tenscan RPC: call to get personal transactions (event is public)</title>
+        <title>Tenscan RPC: scan_getBlockListing get L1 block data</title>
         <purpose><![CDATA[
-A non-ephemeral account first performs five transactions against a contract that emits a public event. An ephemeral account
-then queries to get their personal transactions, where they themselves have not submitted any. This is performed for both
-cases where they request for just their personal transactions, and their personal and public transactions. It is assumed
-that for the latter they will see the transactions made against the transparent contract, but for the former they will
-not.
+Checks for calls against the scan_getBlockListing RPC endpoint.
 
-Skipped as showing public and synthetic transactions in the call to get personal transactions is not supporte for the
-mainnet phase 1 release.
+Skipped due to multiple reported issues.
 ]]>
         </purpose>
     </description>
