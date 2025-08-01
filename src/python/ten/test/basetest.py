@@ -479,6 +479,14 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
+    def scan_search(self, query):
+        """Queries the host DB with the provided query string. """
+        data = {"jsonrpc": "2.0", "method": "scan_search", "params": [query], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
     def json_hex_to_obj(self, hex_str):
         """Convert a json hex string to an object. """
         if hex_str.startswith('0x'): hex_str = hex_str[2:]

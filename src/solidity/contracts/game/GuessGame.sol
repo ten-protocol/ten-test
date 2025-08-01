@@ -20,7 +20,7 @@ contract GuessGame {
     }
 
     function guess(uint256 _number) public {
-        require(_number > 0 && _number <= MAX_GUESS, 'Secret number should be between 1 and 1000');
+        require(_number > 0 && _number <= MAX_GUESS, 'Secret number should be between 1 and 10');
         totalGuesses += 1;
         attempts[msg.sender] += 1;
 
