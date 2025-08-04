@@ -499,6 +499,17 @@ class TenNetworkTest(GenericNetworkTest):
             if return_error: return response.json()['error']
             else: self.log.error(response.json()['error']['message'])
         return None
+    
+    def scan_search(self, query):
+        """Searches the host db using the provided string query via RPC."""
+        data = {"jsonrpc": "2.0", "method": "scan_search", "params": [query], "id": self.MSG_ID }
+        response = self.post(data)
+        if 'result' in response.json(): 
+            # The RPC returns the raw SearchResponse, so we need to wrap it
+            return {"result": response.json()['result']}
+        elif 'error' in response.json(): 
+            self.log.error(response.json()['error']['message'])
+        return None
 
     def read_all_personal_txs(self, network, account, show_public, increment = 100):
         """Return all personal transactions for a user. """
