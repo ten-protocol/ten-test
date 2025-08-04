@@ -505,7 +505,6 @@ class TenNetworkTest(GenericNetworkTest):
         data = {"jsonrpc": "2.0", "method": "scan_search", "params": [query], "id": self.MSG_ID }
         response = self.post(data)
         if 'result' in response.json(): 
-            # The RPC returns the raw SearchResponse, so we need to wrap it
             return {"result": response.json()['result']}
         elif 'error' in response.json(): 
             self.log.error(response.json()['error']['message'])
