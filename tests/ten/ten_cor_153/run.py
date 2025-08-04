@@ -45,7 +45,7 @@ class PySysTest(TenNetworkTest):
                 reported_total = r['Total']
 
                 for block in r['BatchesData']:
-                    numbers.append(int(block['header']['number'], 16))
+                    numbers.append(int(block['header']['sequencerOrderNo'], 16))
                     if block['header']['hash'] == tx_block_hash:
                         self.log.info('    Block found in offset call %d', offset)
                         found_block = True
