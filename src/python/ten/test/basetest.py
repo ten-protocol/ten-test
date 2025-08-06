@@ -530,27 +530,37 @@ class TenNetworkTest(GenericNetworkTest):
 
     # RPC endpoints for session key management
     #
+    #  CreateSessionKeyCQMethod        = "0x0000000000000000000000000000000000000003"
+    #  ActivateSessionKeyCQMethod      = "0x0000000000000000000000000000000000000004"
+    #  DeactivateSessionKeyCQMethod    = "0x0000000000000000000000000000000000000005"
+    #  DeleteSessionKeyCQMethod        = "0x0000000000000000000000000000000000000006"
+    #  ListSessionKeyCQMethod          = "0x0000000000000000000000000000000000000007"
+
     def get_session_key(self, url):
         """Get a session key. """
-        data = {"jsonrpc": "2.0", "method": "sessionkeys_create", "params": [], "id": self.MSG_ID }
+        data = {"jsonrpc": "2.0", "method": "eth_getStorageAt",
+                "params": ["0x0000000000000000000000000000000000000003", json.dumps({}), None], "id": self.MSG_ID }
         response = self.post(data, url)
-        if 'result' in response.json(): return response.json()['result']
+        if 'result' in response.json():
+            return Web3().to_checksum_address(response.json()['result'])
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
     def activate_session_key(self, url):
         """Activate a session key. """
-        data = {"jsonrpc": "2.0", "method": "sessionkeys_activate", "params": [], "id": self.MSG_ID }
+        data = {"jsonrpc": "2.0", "method": "eth_getStorageAt",
+                "params": ["0x0000000000000000000000000000000000000004", json.dumps({}), None], "id": self.MSG_ID }
         response = self.post(data, url)
-        if 'result' in response.json(): return response.json()['result']
+        if 'result' in response.json(): return bool(response.json()['result'])
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
     def deactivate_session_key(self, url):
         """Deactivate a session key. """
-        data = {"jsonrpc": "2.0", "method": "sessionkeys_deactivate", "params": [], "id": self.MSG_ID }
+        data = {"jsonrpc": "2.0", "method": "eth_getStorageAt",
+                "params": ["0x0000000000000000000000000000000000000005", json.dumps({}), None], "id": self.MSG_ID }
         response = self.post(data, url)
-        if 'result' in response.json(): return response.json()['result']
+        if 'result' in response.json(): return bool(response.json()['result'])
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 

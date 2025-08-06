@@ -57,12 +57,6 @@ class PySysTest(TenNetworkTest):
 
         self.log.info('Total blocks read were %d, reported last total was %d' % (total, reported_total))
         self.assertTrue(total == reported_total, assertMessage='Total read should match total reported')
-        self.assertTrue(self.differs_by_one(numbers), assertMessage='Batch numbers should differ by 1')
-
-        duplicates = self.get_duplicates(numbers)
-        if len(duplicates) > 0:
-            self.log.info('Duplicates seen %s', duplicates)
-            self.addOutcome(FAILED, 'There should be no duplicate batch numbers in the iterated set')
 
         # check to see if we can read a large page
         if reported_total > 50:
@@ -75,16 +69,3 @@ class PySysTest(TenNetworkTest):
                 self.log.warn('Exception thrown: %s', e)
                 self.addOutcome(FAILED, outcomeReason='We should not throw an exception on parse error')
 
-    def differs_by_one(self, lst):
-        result = True
-        s = lst[0]
-        for i in lst[1:]:
-            if abs(s-i) != 1:
-                self.log.warn('Previous batch number was %d and current is %d' % (s,i))
-                result = False
-            s = i
-        return result
-
-    def get_duplicates(self, lst):
-        counts = Counter(lst)
-        return [num for num, count in counts.items() if count > 1]

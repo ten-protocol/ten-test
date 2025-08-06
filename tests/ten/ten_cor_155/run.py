@@ -6,12 +6,12 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         # this actually just returns the header of the latest batch
-        block = self.scan_get_latest_batch()
-        block_number1 = int(block['number'], 16)
+        batch = self.scan_get_latest_batch()
+        batch_number1 = int(batch['number'], 16)
 
         self.wait(2*float(self.block_time))
-        block = self.scan_get_latest_batch()
-        block_number2 = int(block['number'], 16)
+        batch = self.scan_get_latest_batch()
+        batch_number2 = int(batch['number'], 16)
 
-        self.log.info('First block %d, second block %d' % (block_number1, block_number2))
-        self.assertTrue(block_number2 > block_number1, assertMessage='Latest block number should increase')
+        self.log.info('First batch %d, second batch %d' % (batch_number1, batch_number2))
+        self.assertTrue(batch_number2 > batch_number1, assertMessage='Latest batch number should increase')
