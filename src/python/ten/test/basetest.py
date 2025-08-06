@@ -545,6 +545,7 @@ class TenNetworkTest(GenericNetworkTest):
     #  DeactivateSessionKeyCQMethod    = "0x0000000000000000000000000000000000000005"
     #  DeleteSessionKeyCQMethod        = "0x0000000000000000000000000000000000000006"
     #  ListSessionKeyCQMethod          = "0x0000000000000000000000000000000000000007"
+    #  SendUnsignedTxCQMethod          = "0x0000000000000000000000000000000000000008"
 
     def get_session_key(self, url):
         """Get a session key. """
@@ -569,6 +570,15 @@ class TenNetworkTest(GenericNetworkTest):
         """Deactivate a session key. """
         data = {"jsonrpc": "2.0", "method": "eth_getStorageAt",
                 "params": ["0x0000000000000000000000000000000000000005", json.dumps({}), None], "id": self.MSG_ID }
+        response = self.post(data, url)
+        if 'result' in response.json(): return bool(response.json()['result'])
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    def send_unsigned_against_session_key(self, url, params):
+        """Deactivate a session key. """
+        data = {"jsonrpc": "2.0", "method": "eth_getStorageAt",
+                "params": ["0x0000000000000000000000000000000000000008", params, None], "id": self.MSG_ID }
         response = self.post(data, url)
         if 'result' in response.json(): return bool(response.json()['result'])
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])

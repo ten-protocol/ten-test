@@ -36,3 +36,5 @@ class PySysTest(TenNetworkTest):
             self.log.info('Exception args: %s', e.args)
             regex = re.compile('illegal access', re.M)
             self.assertTrue(regex.search(e.args[0]['message']) is not None)
+
+        self.deactivate_session_key(network.connection_url())
