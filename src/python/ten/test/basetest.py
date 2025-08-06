@@ -580,7 +580,7 @@ class TenNetworkTest(GenericNetworkTest):
         data = {"jsonrpc": "2.0", "method": "eth_getStorageAt",
                 "params": ["0x0000000000000000000000000000000000000008", params, None], "id": self.MSG_ID }
         response = self.post(data, url)
-        if 'result' in response.json(): return bool(response.json()['result'])
+        if 'result' in response.json(): return response.json()['result']
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 

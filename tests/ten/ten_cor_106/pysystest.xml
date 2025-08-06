@@ -6,8 +6,6 @@
         <purpose><![CDATA[
 Tests that we can send an unsigned transaction through the normal send_transaction approach, and through use of the
 bespoke eth_getStorageAt approach.
-
-Skipped due to https://github.com/ten-protocol/ten-internal/issues/5526
 ]]>
         </purpose>
     </description>
@@ -15,7 +13,6 @@ Skipped due to https://github.com/ten-protocol/ten-internal/issues/5526
     <classification>
         <groups inherit="true">
             <group>session_keys</group>
-            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

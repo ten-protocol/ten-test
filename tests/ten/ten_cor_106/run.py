@@ -47,10 +47,13 @@ class PySysTest(TenNetworkTest):
         build_tx = target.build_transaction(tx)
         unsigned_tx = serializable_unsigned_transaction_from_dict(build_tx)
         b64_encoded_tx = base64.b64encode(rlp.encode(list(unsigned_tx))).decode()
-        self.send_unsigned_against_session_key(network.connection_url(), b64_encoded_tx)
-
-        self.wait(5.0) # the above should return the tx hash so we can wait on it
+        tx_hash = self.send_unsigned_against_session_key(network.connection_url(), b64_encoded_tx)
+        tx_recp = network.wait_for_transaction(self, web3, nonce, address, tx_hash, persist_nonce=True)
+        if tx_recp.status != 1:
+            network.replay_transaction(web3, tx, tx_recp)
+            self.addOutcome(FAILED, abortOnError=True)
         self.assertTrue(storage.contract.functions.retrieve().call() == 5)
+
 
         # deactivate the key
         self.deactivate_session_key(network.connection_url())
