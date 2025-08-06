@@ -14,7 +14,6 @@ class PySysTest(TenNetworkTest):
 
         # get a session key for this connection and fund it
         sk = self.get_session_key(network.connection_url())
-        self.log.info('Is checksum %s', web3.is_checksum_address(sk))
 
         self.log.info('  Balance of session key: %d' % web3.eth.get_balance(sk))
         self.log.info('  Balance of account1:    %d' % web3.eth.get_balance(account.address))
