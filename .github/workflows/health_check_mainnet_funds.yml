@@ -3,8 +3,8 @@
 name: '[inspect] Check mainnet funds'
 run-name: Check mainnet funds
 on:
-  schedule:
-    - cron: '*/15 * * * *'
+#  schedule:
+#    - cron: '*/15 * * * *'
 
 jobs:
   run-check:
