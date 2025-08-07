@@ -2,10 +2,11 @@
 <pysystest type="auto">
 
     <description>
-        <title>Session keys: delete a session key after transacting</title>
+        <title>Session keys: list session key through create, activate, deactivate and delete</title>
         <purpose><![CDATA[
-Creates and funds a session key, then transacts through it. After this tries to delete it without deactivating,
-delete after deactivating, transact after deleting, and activate after deleting.
+Goes through the state change of interacting with a session key and each time requests to list the key.
+
+Skipped due to https://github.com/ten-protocol/ten-internal/issues/5528
 ]]>
         </purpose>
     </description>
@@ -13,6 +14,7 @@ delete after deactivating, transact after deleting, and activate after deleting.
     <classification>
         <groups inherit="true">
             <group>session_keys</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
