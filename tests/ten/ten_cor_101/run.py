@@ -38,7 +38,7 @@ class PySysTest(TenNetworkTest):
         self.assertTrue(balance_after1 < balance_before)
 
         # deactivate the session key and try to transact again (the network will not know about this nonce as it
-        # wont reach it, so do not persist in this case
+        # wont reach it, so do not persist in this case)
         self.deactivate_session_key(network.connection_url())
         nonce = network.get_next_nonce(self, web3, sk, persist_nonce=False)
         tx = network.build_transaction(self, web3, storage.contract.functions.store(3), nonce, sk, storage.GAS_LIMIT)

@@ -30,10 +30,7 @@ class PySysTest(TenNetworkTest):
         nonce = network.get_next_nonce(self, web3, address, persist_nonce=True)
         tx = network.build_transaction(self, web3, storage.contract.functions.store(2), nonce, address, storage.GAS_LIMIT)
         tx_hash = network.send_unsigned_transaction(self, web3, nonce, address, tx, persist_nonce=True)
-        tx_recp = network.wait_for_transaction(self, web3, nonce, address, tx_hash, persist_nonce=True)
-        if tx_recp.status != 1:
-            network.replay_transaction(web3, tx, tx_recp)
-            self.addOutcome(FAILED, abortOnError=True)
+        _ = network.wait_for_transaction(self, web3, nonce, address, tx_hash, persist_nonce=True)
         self.assertTrue(storage.contract.functions.retrieve().call() == 2)
 
         # transact using session key, unsigned but using getStorageAt - bit involved but create the tx, build it,
@@ -48,12 +45,8 @@ class PySysTest(TenNetworkTest):
         unsigned_tx = serializable_unsigned_transaction_from_dict(build_tx)
         b64_encoded_tx = base64.b64encode(rlp.encode(list(unsigned_tx))).decode()
         tx_hash = self.send_unsigned_against_session_key(network.connection_url(), b64_encoded_tx)
-        tx_recp = network.wait_for_transaction(self, web3, nonce, address, tx_hash, persist_nonce=True)
-        if tx_recp.status != 1:
-            network.replay_transaction(web3, tx, tx_recp)
-            self.addOutcome(FAILED, abortOnError=True)
+        _ = network.wait_for_transaction(self, web3, nonce, address, tx_hash, persist_nonce=True)
         self.assertTrue(storage.contract.functions.retrieve().call() == 5)
-
 
         # deactivate the key
         self.deactivate_session_key(network.connection_url())
