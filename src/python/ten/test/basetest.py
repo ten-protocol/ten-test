@@ -540,11 +540,6 @@ class TenNetworkTest(GenericNetworkTest):
 
     # RPC endpoints for session key management
     #
-    #  CreateSessionKeyCQMethod        = "0x0000000000000000000000000000000000000003"
-    #  ActivateSessionKeyCQMethod      = "0x0000000000000000000000000000000000000004"
-    #  DeactivateSessionKeyCQMethod    = "0x0000000000000000000000000000000000000005"
-    #  DeleteSessionKeyCQMethod        = "0x0000000000000000000000000000000000000006"
-    #  ListSessionKeyCQMethod          = "0x0000000000000000000000000000000000000007"
 
     def get_session_key(self, url):
         """Get a session key. """
@@ -556,13 +551,15 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def activate_session_key(self, url):
+    def activate_session_key(self, url, return_error=False):
         """Activate a session key. """
         data = {"jsonrpc": "2.0", "method": "eth_getStorageAt",
                 "params": ["0x0000000000000000000000000000000000000004", json.dumps({}), None], "id": self.MSG_ID }
         response = self.post(data, url)
         if 'result' in response.json(): return bool(response.json()['result'])
-        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        elif 'error' in response.json():
+            self.log.error(response.json()['error']['message'])
+            if return_error:  return response.json()['error']['message']
         return None
 
     def deactivate_session_key(self, url):
@@ -571,6 +568,37 @@ class TenNetworkTest(GenericNetworkTest):
                 "params": ["0x0000000000000000000000000000000000000005", json.dumps({}), None], "id": self.MSG_ID }
         response = self.post(data, url)
         if 'result' in response.json(): return bool(response.json()['result'])
+        elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
+        return None
+
+    def delete_session_key(self, url, return_error=False):
+        """Deactivate a session key. """
+        data = {"jsonrpc": "2.0", "method": "eth_getStorageAt",
+                "params": ["0x0000000000000000000000000000000000000006", json.dumps({}), None], "id": self.MSG_ID }
+        response = self.post(data, url)
+        if 'result' in response.json(): return bool(response.json()['result'])
+        elif 'error' in response.json():
+            self.log.error(response.json()['error']['message'])
+            if return_error:  return response.json()['error']['message']
+        return None
+
+    def list_session_key(self, url, return_error=False):
+        """Deactivate a session key. """
+        data = {"jsonrpc": "2.0", "method": "eth_getStorageAt",
+                "params": ["0x0000000000000000000000000000000000000007", json.dumps({}), None], "id": self.MSG_ID }
+        response = self.post(data, url)
+        if 'result' in response.json(): return response.json()['result']
+        elif 'error' in response.json():
+            self.log.error(response.json()['error']['message'])
+            if return_error: return response.json()['error']['message']
+        return None
+
+    def send_unsigned_against_session_key(self, url, params):
+        """Deactivate a session key. """
+        data = {"jsonrpc": "2.0", "method": "eth_getStorageAt",
+                "params": ["0x0000000000000000000000000000000000000008", params, None], "id": self.MSG_ID }
+        response = self.post(data, url)
+        if 'result' in response.json(): return response.json()['result']
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
