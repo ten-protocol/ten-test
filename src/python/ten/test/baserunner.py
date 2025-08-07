@@ -42,6 +42,7 @@ class TenRunnerPlugin():
         if runner.mode is None:
             runner.log.warn('A valid mode must be supplied')
             runner.log.info('Supported modes are; ')
+            runner.log.info('   ten.mainnet   Ten mainnet')
             runner.log.info('   ten.sepolia   Ten sepolia testnet')
             runner.log.info('   ten.uat       Ten uat testnet')
             runner.log.info('   ten.dev       Ten dev testnet')
@@ -229,7 +230,7 @@ class TenRunnerPlugin():
 
     def is_ten(self):
         """Return true if we are running against a Ten network. """
-        return self.env in ['ten.sepolia', 'ten.uat', 'ten.dev', 'ten.local', 'ten.sim']
+        return self.env in ['ten.mainnet', 'ten.sepolia', 'ten.uat', 'ten.dev', 'ten.local', 'ten.sim']
 
     def is_local_ten(self):
         """Return true if we are running against a local Ten network. """
