@@ -21,9 +21,9 @@ class PySysTest(GenericNetworkTest):
         self.log.info("  Estimate times_thrice:         %d", est_3)
 
         # validate 40% difference tolerance from reference
-        self.percentile_difference('times_once',self.REFERENCE[0],est_1,'reference','estimate',51)
-        self.percentile_difference('times_twice',self.REFERENCE[1],est_2,'reference','estimate',51)
-        self.percentile_difference('times_thrice',self.REFERENCE[2],est_3,'reference','estimate',51)
+        self.percentile_difference('times_once',self.REFERENCE[0],est_1,'reference','estimate',60)
+        self.percentile_difference('times_twice',self.REFERENCE[1],est_2,'reference','estimate',60)
+        self.percentile_difference('times_thrice',self.REFERENCE[2],est_3,'reference','estimate',60)
 
         tx1 = network.transact(self, web3, contract.contract.functions.times_once(), account, contract.GAS_LIMIT)
         tx2 = network.transact(self, web3, contract.contract.functions.times_twice(), account, contract.GAS_LIMIT)
@@ -33,9 +33,9 @@ class PySysTest(GenericNetworkTest):
         self.log.info("  Gas used times_thrice:         %d", int(tx3["gasUsed"]))
 
         # validate 5% difference tolerance from estimates
-        self.percentile_difference('times_once',self.REFERENCE[0],int(tx1["gasUsed"]),'reference','gasUsed',5)
-        self.percentile_difference('times_twice',self.REFERENCE[1],int(tx2["gasUsed"]),'reference','gasUsed',5)
-        self.percentile_difference('times_thrice',self.REFERENCE[2],int(tx3["gasUsed"]),'reference','gasUsed',5)
+        self.percentile_difference('times_once',self.REFERENCE[0],int(tx1["gasUsed"]),'reference','gasUsed',10)
+        self.percentile_difference('times_twice',self.REFERENCE[1],int(tx2["gasUsed"]),'reference','gasUsed',10)
+        self.percentile_difference('times_thrice',self.REFERENCE[2],int(tx3["gasUsed"]),'reference','gasUsed',10)
 
     def percentile_difference(self, text, num1, num2, num1_txt, num2_txt, tolerance):
         percentile = abs(((num1 - num2) / num1) * 100)

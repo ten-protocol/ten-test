@@ -9,24 +9,27 @@ class PySysTest(GenericNetworkTest):
     def execute(self):
         # connect to the network and deploy the contract
         network = self.get_network_connection()
-        web3, account = network.connect_account1(self, web_socket=True)
+        private_key = self.get_ephemeral_pk()
+        web3, account = network.connect(self, private_key=private_key, web_socket=True)
 
         error = Error(self, web3)
         error.deploy(network, account)
 
         # transact successfully
         nonce = self.nonce_db.get_next_nonce(self, web3, account.address, self.env)
-        self.submit(account, error.contract.functions.set_key_with_require("new"), web3, nonce)
+        estimate = error.contract.functions.set_key_with_require("new").estimate_gas()
+        self.log.info('Estimating gas to be %d', estimate)
+        self.submit(account, error.contract.functions.set_key_with_require("new"), web3, nonce, estimate)
 
         # force a require
         nonce = self.nonce_db.get_next_nonce(self, web3, account.address, self.env)
-        self.submit(account, error.contract.functions.set_key_with_require(""), web3, nonce, expect_success=False)
+        self.submit(account, error.contract.functions.set_key_with_require(""), web3, nonce, estimate, expect_success=False)
 
-    def submit(self, account, target, web3, nonce, expect_success=True):
+    def submit(self, account, target, web3, nonce, estimate, expect_success=True):
         build_tx = target.build_transaction({
             'nonce': nonce,
             'gasPrice': web3.eth.gas_price,
-            'gas': 10*21000,                    # hard code the gas as an estimate will fail
+            'gas': estimate,
             'chainId': web3.eth.chain_id
         })
         signed_tx = account.sign_transaction(build_tx)
