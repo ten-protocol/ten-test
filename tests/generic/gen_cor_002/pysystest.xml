@@ -15,6 +15,7 @@ Checks that calls to get block number increases as blocks are added.
             <group>rpc</group>
         </groups>
         <modes inherit="true">
+            <mode>ten.mainnet</mode>
             <mode>ten.sepolia</mode>
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>

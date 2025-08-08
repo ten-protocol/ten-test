@@ -1,11 +1,10 @@
-# Run a set of sanity tests on sepolia-testnet to ensure it is up and running
+# Run a set of sanity tests on mainnet to ensure it is up and running
 #
-name: '[inspect] Check sepolia health'
-run-name: Check sepolia-testnet health
+name: '[inspect] Check mainnet health'
+run-name: Check mainnet health
 on:
   schedule:
     - cron: '*/15 * * * *'
-  workflow_dispatch:
 
 jobs:
   run-check:
@@ -35,26 +34,13 @@ jobs:
       - name: 'Run health check tests (primary gateway)'
         run: |
           cd ${{ github.workspace }}/ten-test
-          /usr/local/bin/pysys.py run -r -m ten.sepolia -i health -XITERATIONS_FULL=0 -XRUN_TYPE=health 
+          /usr/local/bin/pysys.py run -r -m ten.mainnet -i health -XITERATIONS_FULL=0 -XRUN_TYPE=health 
 
       - name: 'Alert for primary gateway'
         if: always()
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.sepolia -XRUN_TYPE=health -XRUN_NAME=Primary_gateway_health -XRUN_URL=$RUN_URL -XNO_CONNECT alert_support
-
-      - name: 'Run health check tests (dexynth gateway)'
-        if: always()
-        run: |
-          sleep 5 
-          cd ${{ github.workspace }}/ten-test/tests
-          PRIMARY_HOST_HTTP=https://rpc.dexynth-gateway.ten.xyz PRIMARY_HOST_WS=wss://rpc.dexynth-gateway.ten.xyz /usr/local/bin/pysys.py run -r -m ten.sepolia -o dexynth -XRUN_TYPE=health-dexynth gen_cor_002 gen_cor_040 gen_cor_073 gen_cor_106
-
-      - name: 'Alert for dexynth gateway'
-        if: always()
-        run: |
-          cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.sepolia -XRUN_TYPE=health-dexynth -XRUN_NAME=Dexynth_gateway_health -XRUN_URL=$RUN_URL -XNO_CONNECT alert_support
+          /usr/local/bin/pysys.py run -m ten.mainnet -XRUN_TYPE=health -XRUN_NAME=Primary_gateway_health -XRUN_URL=$RUN_URL -XNO_CONNECT alert_support
 
       - name: 'Upload testcase output'
         uses: actions/upload-artifact@v4
@@ -71,6 +57,6 @@ jobs:
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.WORKFLOW_STATUS_WEBHOOK }}
-          title: "The health_check_sepolia.yml workflow has failed"
+          title: "The health_check_mainnet.yml workflow has failed"
           description: "The workflow shows failures and requires investigation"
           content: "For information <@814873419207409685>"

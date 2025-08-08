@@ -18,6 +18,7 @@ distribution.
             <group>health</group>
         </groups>
         <modes inherit="true">
+            <mode>ten.mainnet</mode>
             <mode>ten.sepolia</mode>
             <mode>ten.uat</mode>
             <mode>ten.dev</mode>
