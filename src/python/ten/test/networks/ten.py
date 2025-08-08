@@ -10,14 +10,15 @@ from pysys.utils.logutils import BaseLogFormatter
 from ten.test.networks.default import DefaultPreLondon
 from ten.test.networks.geth import Geth
 from ten.test.networks.sepolia import Sepolia
+from ten.test.networks.ethereum import Ethereum
 from ten.test.utils.properties import Properties
 from ten.test.helpers.wallet_extension import WalletExtension
 
 
-class TenL1Ethereum(Sepolia):
+class TenL1Ethereum(Ethereum):
     """The Ten L1 Ethereum implementation connection. """
-    ETH_LIMIT = 0.02
-    ETH_ALLOC = 0.05
+    ETH_LIMIT = 0.002
+    ETH_ALLOC = 0.005
     ETH_ALLOC_EPHEMERAL = 0.005
 
     def __init__(self, test, name=None, **kwargs):
@@ -40,10 +41,7 @@ class TenL1Ethereum(Sepolia):
         account = web3.eth.account.from_key(private_key)
         balance = web3.from_wei(web3.eth.get_balance(account.address), 'ether')
         if verbose: self.log.info('Account %s connected to %s (%.9f ETH)', account.address, self.__class__.__name__, balance)
-
-        if check_funds and balance < self.ETH_LIMIT:
-            self.log.warn('Automatic funding of accounts not currently supported on the L1 Ethereum node')
-
+        if check_funds: self.log.warn('Automatic funding of accounts not currently supported on the L1 Ethereum node')
         return web3, account
 
 
