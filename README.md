@@ -5,7 +5,7 @@
 </h1>
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-![Python](https://img.shields.io/badge/python-3.9-blue.svg)
+[![Python](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/release/python-390/)
 [![Execute local tests](https://github.com/ten-protocol/ten-test/actions/workflows/execute_local_tests.yml/badge.svg)](https://github.com/ten-protocol/ten-test/actions/workflows/execute_local_tests.yml)
 [![Execute merge tests](https://github.com/ten-protocol/ten-test/actions/workflows/execute_merge_tests.yml/badge.svg)](https://github.com/ten-protocol/ten-test/actions/workflows/execute_merge_tests.yml)
 
