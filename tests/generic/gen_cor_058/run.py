@@ -32,13 +32,11 @@ class PySysTest(TenNetworkTest):
         self.assertTrue(balance2 == 10)
 
     def send(self, network, web3, account, address, amount):
-        gpv = (4*72000*web3.eth.gas_price) + amount
-        self.log.info('Gas * price + value == %0.9f', web3.from_wei(gpv, 'ether'))
         tx = {
             'to': address,
             'value': amount,
-            'gas': 72000,
             'gasPrice': web3.eth.gas_price,
             'chainId': web3.eth.chain_id
         }
+        tx['gas'] = web3.eth.estimate_gas(tx)
         return network.tx(self, web3, tx, account)
