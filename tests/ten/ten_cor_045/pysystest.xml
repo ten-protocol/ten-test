@@ -4,6 +4,7 @@
     <description>
         <title>Gas: gasUsed times gasPrice should equate to balance change</title>
         <purpose><![CDATA[
+Skipped as a consequence of dynamic gas pricing, to be re-enabled at a later stage. 
 ]]>
         </purpose>
     </description>
@@ -11,6 +12,7 @@
     <classification>
         <groups inherit="true">
             <group>gas</group>
+            <group>skip</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
