@@ -21,5 +21,5 @@ class PySysTest(TenNetworkTest):
         self.log.info('Transaction made with reported block hash as %s', tx_block_hash)
 
         block = self.scan_get_batch(hash=tx_block_hash)
-        self.assertTrue(tx_hash in block['TxHashes'], assertMessage='Tx hash should be in the list of block tx hashes')
+        self.assertTrue(tx_hash in block['txHashes'], assertMessage='Tx hash should be in the list of block tx hashes')
 

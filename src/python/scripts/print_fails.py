@@ -1,7 +1,7 @@
 # utility script to print out failing test ids
 import os
 
-fails = "ten_cor_042 ten_cor_043 ten_cor_044"
+fails = ""
 tests = fails.split()
 tests.sort()
 

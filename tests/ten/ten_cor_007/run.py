@@ -15,7 +15,7 @@ class PySysTest(TenNetworkTest):
 
         # get the batch for transaction and from that the l1 proof
         batch = self.scan_get_batch_for_transaction(tx_hash)
-        l1_proof = batch['Header']['l1Proof']
+        l1_proof = batch['header']['l1Proof']
 
         # if we get this far we'll treat it as a pass
         self.addOutcome(PASSED)

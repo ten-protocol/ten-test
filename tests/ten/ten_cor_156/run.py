@@ -28,7 +28,7 @@ class PySysTest(TenNetworkTest):
         self.log.info(batch_by_hash)
         self.log.info(batch_by_height)
 
-        self.assertTrue(batch_by_hash['Header']['hash'] == batch_by_height['header']['hash'],
+        self.assertTrue(batch_by_hash['header']['hash'] == batch_by_height['header']['hash'],
                         assertMessage='Hashes should be the same when get by height')
 
 

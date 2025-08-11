@@ -233,7 +233,8 @@ class GenericNetworkTest(BaseTest):
             tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
             web3.eth.wait_for_transaction_receipt(tx_hash)
         except:
-            pass # fail silently
+            self.log.warn('Exception raised trying to drain the account balance')
+
         self.log.info('Post-drain balance:   %.9f ETH' % web3.from_wei(web3.eth.get_balance(account.address), 'ether'))
 
     def fund_native(self, network, account, amount, pk, persist_nonce=True, gas_limit=None):

@@ -21,7 +21,7 @@ class PySysTest(TenNetworkTest):
 
         # get the block buy hash and sequencer number
         block_by_hash = self.scan_get_batch(hash=tx_block_hash)
-        block_by_seq = self.scan_get_batch_by_seq(seq=int(block_by_hash['Header']['sequencerOrderNo'], 16))
+        block_by_seq = self.scan_get_batch_by_seq(seq=int(block_by_hash['header']['sequencerOrderNo'], 16))
 
-        self.assertTrue(block_by_hash['Header']['hash'] == block_by_seq['header']['hash'],
+        self.assertTrue(block_by_hash['header']['hash'] == block_by_seq['header']['hash'],
                         assertMessage='Hashes should be the same when get by sequence number')

@@ -32,8 +32,8 @@ class PySysTest(TenNetworkTest):
 
         batch = self.scan_get_batch_for_transaction(tx_hash)
         if batch is not None:
-            batch_number = int(batch['Header']['number'], 16)
-            batch_txns = batch['TxHashes']
+            batch_number = int(batch['header']['number'], 16)
+            batch_txns = batch['txHashes']
 
             self.log.info('Batch details;')
             self.log.info('  Batch Num:  %s ', batch_number)

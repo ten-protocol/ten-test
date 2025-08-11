@@ -26,18 +26,18 @@ class PySysTest(TenNetworkTest):
         self.log.info('User gets the latest batch and from that the batch transactions')
         batch_header = self.scan_get_latest_batch()
         batch = self.scan_get_batch(hash=batch_header['hash'])
-        while len(batch['TxHashes']) == 0:
-            self.log.info('Batch %s transactions %s', batch['Header']['hash'], batch['TxHashes'])
+        while len(batch['txHashes']) == 0:
+            self.log.info('Batch %s transactions %s', batch['header']['hash'], batch['txHashes'])
             batch = self.scan_get_batch(hash=batch['Header']['parentHash'])
-        self.log.info('Batch %s has %d transactions', batch['Header']['hash'], len(batch['TxHashes']))
-        total = len(batch['TxHashes'])
+        self.log.info('Batch %s has %d transactions', batch['header']['hash'], len(batch['txHashes']))
+        total = len(batch['txHashes'])
 
         txs = []
         for page in self.split_into_segments(total, 10):
             self.log.info('Getting page with offset and size %d %d', page[0], page[1])
-            txs.extend(self.scan_get_batch_transactions(hash=batch['Header']['hash'], offset=page[0], size=page[1])['TransactionsData'])
+            txs.extend(self.scan_get_batch_transactions(hash=batch['header']['hash'], offset=page[0], size=page[1])['TransactionsData'])
         txs_hashes = [x['TransactionHash'] for x in txs]
-        self.assertTrue(Counter(txs_hashes) == Counter(batch['TxHashes']),
+        self.assertTrue(Counter(txs_hashes) == Counter(batch['txHashes']),
                         assertMessage='The tx hashes in the batch should be the same as the those from the call to get transactions')
 
     def split_into_segments(self, number, increment):
