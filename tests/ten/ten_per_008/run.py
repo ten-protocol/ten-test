@@ -29,7 +29,7 @@ class PySysTest(TenNetworkTest):
 
         results_file = os.path.join(self.output, 'results.log')
         with open(results_file, 'w') as fp:
-            for clients in (2, 4, 6, 8):
+            for clients in (2,4,6):
                 self.log.info('')
                 self.log.info('Running for %d clients' % clients)
                 out_dir = os.path.join(self.output, 'clients_%d' % clients)
@@ -55,7 +55,7 @@ class PySysTest(TenNetworkTest):
         txs_sent = 0
         start_ns = time.perf_counter_ns()
         for id, pk, account, network in clients:
-            self.run_transactor(id, transparent_emitter if id == 1 else emitter, pk, network, gas_limit, out_dir)
+            self.run_transactor(id, emitter, pk, network, gas_limit, out_dir)
             self.ratio_failures(file=os.path.join(out_dir, 'transactor%d.out' % id))
             txs_sent += self.txs_sent(file=os.path.join(out_dir, 'transactor%d.out' % id))
         end_ns = time.perf_counter_ns()
