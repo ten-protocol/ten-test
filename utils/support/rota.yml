@@ -6,12 +6,12 @@ Monday:
 Tuesday:
   - start: "00:00"
     end: "23:59"
-    person: "krish"
+    person: "moray"
 
 Wednesday:
   - start: "00:00"
     end: "23:59"
-    person: "will"
+    person: "matt"
 
 Thursday:
   - start: "00:00"
@@ -26,7 +26,7 @@ Friday:
 Saturday:
   - start: "00:00"
     end: "23:59"
-    person: "matt"
+    person: "ziga"
 
 Sunday:
   - start: "00:00"
