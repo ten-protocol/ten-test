@@ -51,6 +51,7 @@ def run(id, chainId, web3, account, contract, transactions, gas_limit):
     logging.info('Waiting for last transaction %s', receipts[-1][0].hex())
     web3.eth.wait_for_transaction_receipt(receipts[-1][0], timeout=900)
     logging.info('Transactor %s completed', id)
+    logging.info('Number of transactions sent = %d', stats[0])
     logging.shutdown()
 
 if __name__ == "__main__":
