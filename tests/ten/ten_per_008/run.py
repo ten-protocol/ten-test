@@ -1,6 +1,8 @@
 import os, random, string, time
+from datetime import datetime
 from pysys.constants import FOREGROUND
 from ten.test.basetest import TenNetworkTest
+from ten.test.utils.gnuplot import GnuplotHelper
 from ten.test.contracts.emitter import TransparentEventEmitter
 
 
@@ -28,6 +30,7 @@ class PySysTest(TenNetworkTest):
         funds_needed = 1.1 * self.NUM_TRANSACTIONS * (gas_price * gas_limit)
 
         results_file = os.path.join(self.output, 'results.log')
+        throughputs = []
         with open(results_file, 'w') as fp:
             for clients in (2,4,6):
                 self.log.info('')
@@ -40,6 +43,14 @@ class PySysTest(TenNetworkTest):
                 self.log.info('  Num transactions sent: %d', txs_sent)
                 self.log.info('  Bulk rate throughput %.2f (transactions/sec)' % throughput)
                 fp.write('%d %.2f\n' % (clients, throughput))
+                throughputs.append(throughput)
+
+        branch = GnuplotHelper.buildInfo().branch
+        average = float(sum(throughputs)) / float(len(throughputs))
+        date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+        GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
+                            branch, date,
+                            str(self.mode), '%.3f' % average)
 
     def do_run(self, num_clients, funds_needed, emitter, gas_limit, out_dir):
         # set up the transactors and run the subscribers
