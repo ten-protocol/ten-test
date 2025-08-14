@@ -88,7 +88,7 @@ plot "ten_per_007.log" using 1:2 with linespoints lw 1 lc 11 pt 6 ps 0.5 notitle
 f8(x) = m*x + b
 fit f8(x) "ten_per_008.log" using 1:2:3 via m,b
 set offsets graph 0.0, 0.0, 0.01, 0.01
-set ytics offset 0,0
+set ytics offset 3.6, 0
 set title '{/Arial:Bold=10 ten\_per\_008}' offset 0,-2.5
 plot "ten_per_008.log" using 1:2 with linespoints lw 1 lc 11 pt 6 ps 0.5 notitle, \
       f8(x) w l lw 2 lc 7 notitle
