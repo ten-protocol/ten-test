@@ -1,5 +1,4 @@
 import os
-import numpy as np
 from datetime import datetime
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
@@ -8,8 +7,11 @@ from ten.test.utils.gnuplot import GnuplotHelper
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        tests = ['ten_per_001','ten_per_002','ten_per_003','ten_per_004','ten_per_005','ten_per_006','ten_per_007',
-                 'ten_per_010','ten_per_011','ten_per_012','ten_per_020','ten_per_021']
+        tests = ['ten_per_001','ten_per_002','ten_per_003',
+                 'ten_per_004','ten_per_005','ten_per_006',
+                 'ten_per_007','ten_per_008',
+                 'ten_per_010','ten_per_011','ten_per_012',
+                 'ten_per_020','ten_per_021']
 
         for test in tests:
             with open(os.path.join(self.output, '%s.log' % test), 'w') as fp:

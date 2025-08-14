@@ -1,6 +1,6 @@
 import os, random, string, time
 from datetime import datetime
-from pysys.constants import FOREGROUND
+from pysys.constants import FOREGROUND, PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
 from ten.test.contracts.emitter import TransparentEventEmitter
@@ -32,7 +32,7 @@ class PySysTest(TenNetworkTest):
         results_file = os.path.join(self.output, 'results.log')
         throughputs = []
         with open(results_file, 'w') as fp:
-            for clients in (2,4,6):
+            for clients in (2,4,6,8):
                 self.log.info('')
                 self.log.info('Running for %d clients' % clients)
                 out_dir = os.path.join(self.output, 'clients_%d' % clients)
@@ -45,12 +45,21 @@ class PySysTest(TenNetworkTest):
                 fp.write('%d %.2f\n' % (clients, throughput))
                 throughputs.append(throughput)
 
+        # plot the summary graph
         branch = GnuplotHelper.buildInfo().branch
         average = float(sum(throughputs)) / float(len(throughputs))
         date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'),
                             branch, date,
                             str(self.mode), '%.3f' % average)
+
+        # persist the result (average of the last three clients)
+        if self.PERSIST_PERF:
+            self.log.info('Persisting performance result: %.3f' % average)
+            self.results_db.insert_result(self.descriptor.id, self.mode, int(time.time()), '%.2f' % average)
+
+        # passed if no failures (though pdf output should be reviewed manually)
+        self.addOutcome(PASSED)
 
     def do_run(self, num_clients, funds_needed, emitter, gas_limit, out_dir):
         # set up the transactors and run the subscribers
