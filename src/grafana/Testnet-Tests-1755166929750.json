@@ -937,7 +937,7 @@
         ]
       },
       "gridPos": {
-        "h": 23,
+        "h": 32,
         "w": 9,
         "x": 0,
         "y": 15
@@ -1119,6 +1119,126 @@
         "type": "mysql",
         "uid": "feflof5m4nta8d"
       },
+      "description": "TPS: bulk transaction processing with increasing subscribers",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-green",
+            "mode": "fixed"
+          },
+          "custom": {
+            "axisBorderShow": true,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "axisSoftMin": 0,
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 6,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "always",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 14,
+        "y": 20
+      },
+      "id": 16,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "dataset": "mysql",
+          "datasource": {
+            "type": "mysql",
+            "uid": "feflof5m4nta8d"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT time, result FROM results_performance WHERE host IN ('ten-test-gh-runner-01','ten-test-alibaba-runner-01') AND test='ten_per_008' AND environment='${environment}' ORDER BY time DESC",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Performance (ten_per_008) ",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "feflof5m4nta8d"
+      },
       "description": "RPC: rates for handling balance requests, increasing clients",
       "fieldConfig": {
         "defaults": {
@@ -1182,7 +1302,7 @@
       "gridPos": {
         "h": 9,
         "w": 5,
-        "x": 14,
+        "x": 19,
         "y": 20
       },
       "id": 9,
@@ -1302,8 +1422,8 @@
       "gridPos": {
         "h": 9,
         "w": 5,
-        "x": 19,
-        "y": 20
+        "x": 9,
+        "y": 29
       },
       "id": 10,
       "options": {
@@ -1422,7 +1542,7 @@
       "gridPos": {
         "h": 9,
         "w": 5,
-        "x": 9,
+        "x": 14,
         "y": 29
       },
       "id": 11,
@@ -1542,7 +1662,7 @@
       "gridPos": {
         "h": 9,
         "w": 5,
-        "x": 14,
+        "x": 19,
         "y": 29
       },
       "id": 12,
@@ -1662,8 +1782,8 @@
       "gridPos": {
         "h": 9,
         "w": 5,
-        "x": 19,
-        "y": 29
+        "x": 9,
+        "y": 38
       },
       "id": 13,
       "options": {
@@ -1749,8 +1869,8 @@
       {
         "current": {
           "selected": true,
-          "text": "f075ffb8fa9b48e2b87682e40de20ab5",
-          "value": "f075ffb8fa9b48e2b87682e40de20ab5"
+          "text": "5c9fdc6e7f2143bab1280cb1571e4c12",
+          "value": "5c9fdc6e7f2143bab1280cb1571e4c12"
         },
         "datasource": {
           "type": "mysql",
@@ -1779,6 +1899,6 @@
   "timezone": "browser",
   "title": "Testnet Tests",
   "uid": "bebd5gi310t1ca",
-  "version": 15,
+  "version": 16,
   "weekStart": ""
 }
