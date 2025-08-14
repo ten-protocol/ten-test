@@ -20,9 +20,9 @@ class PySysTest(TenNetworkTest):
         self.funds_db.insert_funds('Sequencer', sequencer_address, self.env, current_time, sequencer_balance)
 
         l2_network = self.get_network_connection()
-        web3_payment, account_payment = l2_network.connect(self, Properties().l2_gas_payment_account_pk(self.env), check_funds=False)
-        gas_payment_address = account_payment.address
-        gas_payment_balance = web3_payment.eth.get_balance(gas_payment_address)
+        web3, account = l2_network.connect_account1(self)
+        gas_payment_address = Properties().l2_gas_payment_address(self.env)
+        gas_payment_balance = web3.eth.get_balance(gas_payment_address)
         self.log.info('Gas holding balance %.9f ETH', web3_sequencer.from_wei(gas_payment_balance, 'ether'))
         self.funds_db.insert_funds('GasPayment', gas_payment_address, self.env, current_time, gas_payment_balance)
 

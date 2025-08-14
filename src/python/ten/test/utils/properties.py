@@ -234,7 +234,7 @@ class Properties:
 
     def l2_transaction_post_processor(self): return self.L2TransactionPostProcessor
 
-    def l2_gas_payment_account_pk(self, key): return self.get('env.'+key, 'L2GasPaymentAccountPK')
+    def l2_gas_payment_address(self, key): return self.get('env.'+key, 'L2GasPaymentAddress')
 
     def discord_web_hook_id(self, key): return self.get('env.'+key, 'DiscordWebhookID')
 
