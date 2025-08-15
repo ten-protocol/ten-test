@@ -11,6 +11,7 @@ class PySysTest(TenNetworkTest):
 
         accnt1 = BridgeUser(self, props.account1pk(), props.account1pk(), 'accnt1')
 
+        l1_bridge_before = accnt1.l1.web3.eth.get_balance(props.l1_bridge_address())
         l1_balance_before = accnt1.l1.web3.eth.get_balance(accnt1.l1.account.address)
         l2_balance_before = accnt1.l2.web3.eth.get_balance(accnt1.l2.account.address)
 
@@ -21,6 +22,13 @@ class PySysTest(TenNetworkTest):
 
         l1_balance_after = accnt1.l1.web3.eth.get_balance(accnt1.l1.account.address)
         l2_balance_after = accnt1.l2.web3.eth.get_balance(accnt1.l2.account.address)
+        l1_bridge_after = accnt1.l1.web3.eth.get_balance(props.l1_bridge_address())
+
+        self.log.info('Bridge balances;')
+        self.log.info('   Before: %d', l1_bridge_before)
+        self.log.info('   After:  %d', l1_bridge_after)
+        self.log.info('   Incr:   %d', (l1_bridge_after-l1_bridge_before))
+        self.assertTrue(l1_bridge_after-l1_bridge_before == transfer)
 
         self.log.info('Account balances;')
         self.log.info('   L1 before: %d', l1_balance_before)
