@@ -20,6 +20,8 @@ manually.
 ./connect-runner.sh --name=ten-test-google-runner-01  
 ```
 
+When you login as above, switch user to tenadmin using `sudo su - tenadmin`.
+
 ## Install dependencies
 Once connected to the VM run `sudo ./install.sh` script to install all the required dependencies for running the tests. 
 Once done ensure the correct version of solc is used, and set permissions for docker using the below;

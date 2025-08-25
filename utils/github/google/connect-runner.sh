@@ -2,18 +2,19 @@
 
 help_and_exit() {
     echo ""
-    echo "Usage: $(basename "${0}") ssh_key=<key> --name=<name>"
+    echo "Usage: $(basename "${0}") --ssh_key=<key> --name=<name> --zone=<zone>"
     echo " "
     echo "where: "
-    echo "  ssh_key             *Optional* The name of the SSH private key to use (default ~/.ssh/id_rsa)"
-    echo "  name                *Optional* The name of the VM instance (default ten-test-alibaba-runner-01) "
+    echo "  ssh_key   *Optional* Path to the SSH private key (default: ~/.ssh/id_rsa)"
+    echo "  name      *Optional* Name of the VM instance (default: ten-test-google-runner-01)"
+    echo "  zone      *Optional* GCP zone where the VM resides (default: europe-west1-b)"
     echo ""
     exit 1
 }
 
 ssh_key=~/.ssh/id_rsa
-name=ten-test-alibaba-runner-01
-region=eu-west-1
+name=ten-test-google-runner-01
+zone=europe-west2-a
 
 for argument in "$@"
 do
@@ -21,19 +22,26 @@ do
     value=$(echo $argument | cut -f2 -d=)
 
     case "$key" in
-            --ssh_key)                  ssh_key=${value} ;;
-            --name)                     name=${value} ;;
-            --help)                     help_and_exit ;;
+            --ssh_key) ssh_key=${value} ;;
+            --name)    name=${value} ;;
+            --zone)    zone=${value} ;;
+            --help)    help_and_exit ;;
             *)
     esac
 done
 
 # get the IP
-echo Instance in region $region
-aliyun ecs DescribeInstances --RegionId "${region}" --output cols=InstanceName,PublicIpAddress rows=Instances.Instance[]
+echo "Instance in zone $zone"
+gcloud compute instances list --filter="name=(${name})" --zones "${zone}" --format="table(name, networkInterfaces.accessConfigs.natIP)"
 
-IP=`aliyun ecs DescribeInstances --RegionId "${region}" --output cols=InstanceName,PublicIpAddress rows=Instances.Instance[] | grep ${name} | awk -F'[][]' '{print $3}'`
+IP=$(gcloud compute instances list --filter="name=(${name})" --zones "${zone}" --format="get(networkInterfaces[0].accessConfigs[0].natIP)")
+
+if [[ -z "$IP" ]]; then
+  echo "Could not find instance $name in zone $zone"
+  exit 1
+fi
 
 # connect using given SSH key
-echo Connecting to root@$IP
-ssh -i ${ssh_key} root@$IP
+echo "Connecting to ${name} ..."
+gcloud compute ssh ${name} --zone ${zone}
+
