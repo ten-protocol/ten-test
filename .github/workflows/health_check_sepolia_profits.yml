@@ -32,7 +32,7 @@ jobs:
       - name: 'Run funds check'
         run: |
           cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.sepolia check_profits
+          /usr/local/bin/pysys.py run -m ten.sepolia store_profits
 
       - name: 'Upload performance output'
         uses: actions/upload-artifact@v4

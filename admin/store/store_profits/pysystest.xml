@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Log the net profits on sepolia-testnet</title>
+        <title>Persist the net profits on sepolia-testnet</title>
         <purpose><![CDATA[
 Stores the sequencer and gas payment account funds in the local database, and plots out. Also plots out the delta
 change in time with the account funds, and the overall profit and loss.
