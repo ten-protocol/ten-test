@@ -32,3 +32,6 @@ class FieldEveryoneAllEventsGuessGame(DefaultContract):
     CONTRACT = 'FieldEveryoneAllEventsGuessGame'
 
 
+class ZeroEventSigGuessGame(DefaultContract):
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'game', 'ZeroEventSigGuessGame.sol')
+    CONTRACT = 'ZeroEventSigGuessGame'
