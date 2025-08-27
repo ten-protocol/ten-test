@@ -53,7 +53,7 @@ Go to the [runners](https://github.com/ten-protocol/ten-test/settings/actions/ru
 repo and click on new runner. Follow the commands there to install and run the new runner. 
 
 ## Known issues
-For an unknown reason on Azure Ubuntu VMs the `/var/lib/docker/overlay2` folder can grow even through all containers, 
+For an unknown reason on Ubuntu VMs the `/var/lib/docker/overlay2` folder can grow even though all containers, 
 images, volumes etc have been removed. Should the VM run out of diskspace, perform the following to manually delete;
 
 ```bash

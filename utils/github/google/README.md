@@ -1,14 +1,35 @@
-# Setup and manage a remote Azure github runner
+# Setup and manage a remote Google github runner
 
 ## Create and connect
-Run the utility scripts to create the VM and connect;
+The VMs should be created manually from the Google console, into the europe-west2 region, with the instance type 
+as `e2.standard-8` (8CPUs, 32GBs) or `e2.standard-4` (4CPUs, 16GBs), where the former is required for running 
+local testnets. The `tenadmin` user should be created using the below;
 
 ```bash
-# create the VM
- ./create-runner.sh --name=ten-test-gh-runner-01 
- 
+# create the tenadmin user
+sudo adduser tenadmin
+sudo usermod -aG sudo tenadmin
+sudo visudo
+  # add in tenadmin ALL=(ALL) NOPASSWD:ALL
+```
+
+Once done connection can be performed using the below where the name of the VM is supplied to the connection script. 
+Setup of the VM is performed as for the azure instances, though the install.sh script needs to be scp'd to the box 
+manually. 
+
+```bash
 # connect to the VM
-./connect-runner.sh --name=ten-test-gh-runner-01  
+./connect-runner.sh --name=ten-test-google-runner-01  
+```
+
+When you login as above, switch user to tenadmin using `sudo su - tenadmin`. You can scp the required install script and 
+go version using the below (cloud should be installed and the project set accordingly). Note also you might need to add
+` --break-system-packages` to the python3 pip installation command to allow the modules to be installed to the system 
+interpreter. 
+
+```bash
+gcloud compute scp install.sh ten-test-google-runner-01:~ --zone europe-west2-a
+gcloud compute scp go1.21.13.linux-amd64.tar.gz  ten-test-google-runner-01:~ --zone europe-west2-a
 ```
 
 ## Install dependencies
@@ -38,10 +59,6 @@ sudo rm -rf /usr/local/go
 sudo tar -C /usr/local -xzf go1.21.13.linux-amd64.tar.gz
 sudo ln -s /usr/local/go/bin/go /usr/local/bin/go 
 ```
-
-Note also you may want to resize the VM in the Azure portal for it's intended use, i.e. if running local testnet tests
-on the runner use `Standard D8as v4 (8 vcpus, 32 GiB memory)`, and for running remote tests use
-`Standard D4as v4 (4 vcpus, 16 GiB memory)`. The default is `Standard D4as v4`.
 
 ## Configure the runner
 Go to the [runners](https://github.com/ten-protocol/ten-test/settings/actions/runners) section of the `ten-test`
