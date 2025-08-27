@@ -9,6 +9,8 @@ local testnets. The `tenadmin` user should be created using the below;
 # create the tenadmin user
 sudo adduser tenadmin
 sudo usermod -aG sudo tenadmin
+sudo visudo
+  # add in tenadmin ALL=(ALL) NOPASSWD:ALL
 ```
 
 Once done connection can be performed using the below where the name of the VM is supplied to the connection script. 
@@ -20,7 +22,15 @@ manually.
 ./connect-runner.sh --name=ten-test-google-runner-01  
 ```
 
-When you login as above, switch user to tenadmin using `sudo su - tenadmin`.
+When you login as above, switch user to tenadmin using `sudo su - tenadmin`. You can scp the required install script and 
+go version using the below (cloud should be installed and the project set accordingly). Note also you might need to add
+` --break-system-packages` to the python3 pip installation command to allow the modules to be installed to the system 
+interpreter. 
+
+```bash
+gcloud compute scp install.sh ten-test-google-runner-01:~ --zone europe-west2-a
+gcloud compute scp go1.21.13.linux-amd64.tar.gz  ten-test-google-runner-01:~ --zone europe-west2-a
+```
 
 ## Install dependencies
 Once connected to the VM run `sudo ./install.sh` script to install all the required dependencies for running the tests. 
