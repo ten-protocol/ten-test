@@ -22,27 +22,16 @@ class PySysTest(TenNetworkTest):
         tx['gas'] = web3.eth.estimate_gas(tx)
         network.tx(self, web3, tx, account)
 
-        # activate the session key now that we have funded it
-        self.activate_session_key(network.connection_url())
-        self.log.info('Session key is currently %s', self.list_session_key(network.connection_url()))
-
         # transact using the session key
         network.transact_unsigned(self, web3, storage.contract.functions.store(22), sk, storage.GAS_LIMIT)
         self.assertTrue(storage.contract.functions.retrieve().call() == 22)
 
-        # delete the session key and try to transact again
+        # delete the session key
         self.log.info('')
-        self.log.info('Try to delete an active session key')
-        error = self.delete_session_key(network.connection_url(), return_error=True)
-        self.assertTrue(error == 'session key is active. Please deactivate first', assertMessage='Expect error message')
-
-        # deactivate and delete the session key
-        self.log.info('')
-        self.log.info('Try to delete a deactivated session key')
-        self.deactivate_session_key(network.connection_url())
+        self.log.info('Delete the session key')
         self.delete_session_key(network.connection_url())
 
-        # transact using the old but now deleted session key
+        # transact using the deleted session key
         self.log.info('')
         self.log.info('Try to transact through a deleted session key')
         try:
@@ -53,9 +42,3 @@ class PySysTest(TenNetworkTest):
             self.log.info('Exception args: %s', e.args)
             regex = re.compile('illegal access', re.M)
             self.assertTrue(regex.search(e.args[0]['message']) is not None)
-
-        # try to activate the deleted session key
-        self.log.info('')
-        self.log.info('Try to activate a deleted session key')
-        error = self.activate_session_key(network.connection_url(), return_error=True)
-        self.assertTrue(error == 'please create a session key', assertMessage='Expect error message')

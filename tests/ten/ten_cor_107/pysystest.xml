@@ -4,8 +4,7 @@
     <description>
         <title>Session keys: delete a session key after transacting</title>
         <purpose><![CDATA[
-Creates and funds a session key, then transacts through it. After this tries to delete it without deactivating,
-delete after deactivating, transact after deleting, and activate after deleting.
+Creates and funds a session key, then transacts through it. After this tries to transact after deleting.
 ]]>
         </purpose>
     </description>

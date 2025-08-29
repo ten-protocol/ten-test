@@ -18,7 +18,6 @@ class PySysTest(TenNetworkTest):
         tx = {'to': sk, 'value': web3.to_wei(0.01, 'ether'), 'gasPrice': web3.eth.gas_price, 'chainId': web3.eth.chain_id}
         tx['gas'] = web3.eth.estimate_gas(tx)
         network.tx(self, web3, tx, account)
-        self.activate_session_key(network.connection_url())
 
         # transact using the session key
         network.transact_unsigned(self, web3, storage.contract.functions.store(2), sk, storage.GAS_LIMIT)

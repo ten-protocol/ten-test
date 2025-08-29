@@ -22,7 +22,6 @@ class PySysTest(TenNetworkTest):
         tx = {'to': address, 'value': web3.to_wei(0.01, 'ether'), 'gasPrice': web3.eth.gas_price, 'chainId': web3.eth.chain_id}
         tx['gas'] = web3.eth.estimate_gas(tx)
         network.tx(self, web3, tx, account)
-        self.activate_session_key(network.connection_url())
 
         # transact using the session key, unsigned sent using web3
         self.log.info('')
@@ -47,6 +46,3 @@ class PySysTest(TenNetworkTest):
         tx_hash = self.send_unsigned_against_session_key(network.connection_url(), b64_encoded_tx)
         _ = network.wait_for_transaction(self, web3, nonce, address, tx_hash, persist_nonce=True)
         self.assertTrue(storage.contract.functions.retrieve().call() == 5)
-
-        # deactivate the key
-        self.deactivate_session_key(network.connection_url())

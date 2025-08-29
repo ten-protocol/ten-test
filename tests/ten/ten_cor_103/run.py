@@ -20,7 +20,7 @@ class PySysTest(TenNetworkTest):
             self.log.info('  Guessing number as account1: %d'%i)
             network.transact(self, web3, game.contract.functions.guess(i), account, game.GAS_LIMIT)
 
-        # get a session key for this userid and fund it, activate the key
+        # get a session key for this userid and fund it
         sk = self.get_session_key(network.connection_url())
         tx = {'to': sk, 'value': web3.to_wei(0.01, 'ether'), 'gasPrice': web3.eth.gas_price, 'chainId': web3.eth.chain_id}
         tx['gas'] = web3.eth.estimate_gas(tx)
@@ -29,7 +29,6 @@ class PySysTest(TenNetworkTest):
         subscriber2 = AllEventsLogSubscriber(self, network, game.address, game.abi_path,
                                              stdout='subscriber2.out', stderr='subscriber2.err')
         subscriber2.run()
-        self.activate_session_key(network.connection_url())
 
         # transact as the session key (unsigned transactions)
         for i in range(6, 11):
@@ -37,12 +36,11 @@ class PySysTest(TenNetworkTest):
             network.transact_unsigned(self, web3, game.contract.functions.guess(i), sk, game.GAS_LIMIT)
         self.wait(float(self.block_time) * 1.1)
 
-        # return the funds and deactivate
+        # return the funds
         tx = {'to': account.address, 'gasPrice': web3.eth.gas_price, 'chainId': web3.eth.chain_id}
         tx['gas'] = web3.eth.estimate_gas(tx)
         tx['value'] = web3.eth.get_balance(sk) - (tx['gas'] * web3.eth.gas_price)
         network.tx_unsigned(self, web3, tx, sk)
-        self.deactivate_session_key(network.connection_url())
 
         # assert that we see the event logs
         self.assertLineCount('subscriber1.out', expr='Received event: Guessed', condition='==5')
