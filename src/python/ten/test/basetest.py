@@ -552,10 +552,10 @@ class TenNetworkTest(GenericNetworkTest):
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])
         return None
 
-    def delete_session_key(self, url, return_error=False):
+    def delete_session_key(self, url, address, return_error=False):
         """Deactivate a session key. """
         data = {"jsonrpc": "2.0", "method": "eth_getStorageAt",
-                "params": ["0x0000000000000000000000000000000000000004", json.dumps({}), None], "id": self.MSG_ID }
+                "params": ["0x0000000000000000000000000000000000000004", json.dumps({}), address, None], "id": self.MSG_ID }
         response = self.post(data, url)
         if 'result' in response.json(): return bool(response.json()['result'])
         elif 'error' in response.json():
@@ -563,10 +563,10 @@ class TenNetworkTest(GenericNetworkTest):
             if return_error:  return response.json()['error']['message']
         return None
 
-    def send_unsigned_against_session_key(self, url, params):
+    def send_unsigned_against_session_key(self, url, params, address):
         """Deactivate a session key. """
         data = {"jsonrpc": "2.0", "method": "eth_getStorageAt",
-                "params": ["0x0000000000000000000000000000000000000005", params, None], "id": self.MSG_ID }
+                "params": ["0x0000000000000000000000000000000000000005", params, address, None], "id": self.MSG_ID }
         response = self.post(data, url)
         if 'result' in response.json(): return response.json()['result']
         elif 'error' in response.json(): self.log.error(response.json()['error']['message'])

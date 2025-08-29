@@ -29,7 +29,7 @@ class PySysTest(TenNetworkTest):
         # delete the session key
         self.log.info('')
         self.log.info('Delete the session key')
-        self.delete_session_key(network.connection_url())
+        self.delete_session_key(network.connection_url(), sk)
 
         # transact using the deleted session key
         self.log.info('')
