@@ -6,11 +6,36 @@ CloudInfo = namedtuple("CloudInfo", ["cloud_name", "instance_name", "instance_lo
 
 def is_cloud_vm():
     """Return cloud info, or none if not running on a cloud provider. """
+    cloud_info = is_gcloud_vm()
+    if cloud_info is not None: return cloud_info
     cloud_info = is_alibaba_vm()
     if cloud_info is not None: return cloud_info
     cloud_info = is_azure_vm()
     if cloud_info is not None: return cloud_info
     return None
+
+
+def is_gcloud_vm():
+    metadata_url = "http://169.254.169.254/computeMetadata/v1/"
+    headers = {"Metadata-Flavor": "Google"}
+
+    try:
+        resp = requests.get(metadata_url, headers=headers, timeout=2)
+        if resp.status_code == 200 and resp.headers.get("Metadata-Flavor") == "Google":
+            instance_name = requests.get(
+                metadata_url + "instance/name", headers=headers, timeout=1
+            ).text.strip()
+
+            zone_full = requests.get(
+                metadata_url + "instance/zone", headers=headers, timeout=1
+            ).text.strip()
+            instance_location = zone_full.split("/")[-1]
+
+            return CloudInfo("gcloud", instance_name, instance_location)
+        else:
+            return None
+    except requests.exceptions.RequestException:
+        return None
 
 
 def is_alibaba_vm():
