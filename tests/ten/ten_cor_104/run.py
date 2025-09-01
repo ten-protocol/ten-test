@@ -28,7 +28,7 @@ class PySysTest(TenNetworkTest):
         self.assertTrue(logs[0]['args']['attempts'] == 1, assertMessage='Logs should show the number attempts as 1')
 
         # return the funds
-        tx = {'to': account.address, 'gasPrice': web3.eth.gas_price, 'chainId': web3.eth.chain_id}
+        tx = {'from': sk, 'to': account.address, 'gasPrice': web3.eth.gas_price, 'chainId': web3.eth.chain_id}
         tx['gas'] = web3.eth.estimate_gas(tx)
         tx['value'] = web3.eth.get_balance(sk) - (tx['gas'] * web3.eth.gas_price)
         network.tx_unsigned(self, web3, tx, sk)

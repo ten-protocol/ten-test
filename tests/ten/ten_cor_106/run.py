@@ -36,12 +36,12 @@ class PySysTest(TenNetworkTest):
         self.log.info('')
         self.log.info('Transact using session key, unsigned but using getStorageAt')
         target = storage.contract.functions.store(5)
-        tx = {'nonce': network.get_next_nonce(self, web3, address, True), 'chainId': web3.eth.chain_id,
+        tx = {'nonce': network.get_next_nonce(self, web3, sk, True), 'chainId': web3.eth.chain_id,
               'gasPrice': web3.eth.gas_price}
         tx['gas'] = target.estimate_gas(tx)
         build_tx = target.build_transaction(tx)
         unsigned_tx = serializable_unsigned_transaction_from_dict(build_tx)
         b64_encoded_tx = base64.b64encode(rlp.encode(list(unsigned_tx))).decode()
-        tx_hash = self.send_unsigned_against_session_key(network.connection_url(), b64_encoded_tx, address)
-        _ = network.wait_for_transaction(self, web3, nonce, address, tx_hash, persist_nonce=True)
+        tx_hash = self.send_unsigned_against_session_key(network.connection_url(), sk, b64_encoded_tx)
+        _ = network.wait_for_transaction(self, web3, nonce, sk, tx_hash, persist_nonce=True)
         self.assertTrue(storage.contract.functions.retrieve().call() == 5)
