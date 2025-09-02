@@ -22,20 +22,16 @@ class PySysTest(TenNetworkTest):
         self.log.info('  Balance of session key: %d' % web3.eth.get_balance(sk))
         self.log.info('  Balance of account1:    %d' % web3.eth.get_balance(account.address))
 
-        # activate the session key now that we have funded it
-        self.activate_session_key(network.connection_url())
-
         # transact using the session key and get the logs
         for i in range(1,5): network.transact_unsigned(self, web3, game.contract.functions.guess(i), sk, game.GAS_LIMIT)
         self.wait(float(self.block_time) * 1.1)
         self.get_logs(network, game, block_number)
 
         # return the funds and deactivate
-        tx = {'to': account.address, 'gasPrice': web3.eth.gas_price, 'chainId': web3.eth.chain_id}
+        tx = {'from': sk, 'to': account.address, 'gasPrice': web3.eth.gas_price, 'chainId': web3.eth.chain_id}
         tx['gas'] = web3.eth.estimate_gas(tx)
         tx['value'] = web3.eth.get_balance(sk) - (tx['gas'] * web3.eth.gas_price)
         network.tx_unsigned(self, web3, tx, sk)
-        self.deactivate_session_key(network.connection_url())
 
     def get_logs(self, network, contract, block_numer):
         # run a javascript by account1 to get past events

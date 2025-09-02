@@ -18,19 +18,17 @@ class PySysTest(TenNetworkTest):
         self.log.info('')
         self.log.info('Create and fund a session key for all subsequent transactions')
         sk = self.get_session_key(network.connection_url())
-        address = web3.to_checksum_address(sk)
-        tx = {'to': address, 'value': web3.to_wei(0.01, 'ether'), 'gasPrice': web3.eth.gas_price, 'chainId': web3.eth.chain_id}
+        tx = {'to': sk, 'value': web3.to_wei(0.01, 'ether'), 'gasPrice': web3.eth.gas_price, 'chainId': web3.eth.chain_id}
         tx['gas'] = web3.eth.estimate_gas(tx)
         network.tx(self, web3, tx, account)
-        self.activate_session_key(network.connection_url())
 
         # transact using the session key, unsigned sent using web3
         self.log.info('')
         self.log.info('Transact using the session key, unsigned sent using web3')
-        nonce = network.get_next_nonce(self, web3, address, persist_nonce=True)
-        tx = network.build_transaction(self, web3, storage.contract.functions.store(2), nonce, address, storage.GAS_LIMIT)
-        tx_hash = network.send_unsigned_transaction(self, web3, nonce, address, tx, persist_nonce=True)
-        _ = network.wait_for_transaction(self, web3, nonce, address, tx_hash, persist_nonce=True)
+        nonce = network.get_next_nonce(self, web3, sk, persist_nonce=True)
+        tx = network.build_transaction(self, web3, storage.contract.functions.store(2), nonce, sk, storage.GAS_LIMIT)
+        tx_hash = network.send_unsigned_transaction(self, web3, nonce, sk, tx, persist_nonce=True)
+        _ = network.wait_for_transaction(self, web3, nonce, sk, tx_hash, persist_nonce=True)
         self.assertTrue(storage.contract.functions.retrieve().call() == 2)
 
         # transact using session key, unsigned but using getStorageAt - bit involved but create the tx, build it,
@@ -38,15 +36,12 @@ class PySysTest(TenNetworkTest):
         self.log.info('')
         self.log.info('Transact using session key, unsigned but using getStorageAt')
         target = storage.contract.functions.store(5)
-        tx = {'nonce': network.get_next_nonce(self, web3, address, True), 'chainId': web3.eth.chain_id,
+        tx = {'nonce': network.get_next_nonce(self, web3, sk, True), 'chainId': web3.eth.chain_id,
               'gasPrice': web3.eth.gas_price}
         tx['gas'] = target.estimate_gas(tx)
         build_tx = target.build_transaction(tx)
         unsigned_tx = serializable_unsigned_transaction_from_dict(build_tx)
         b64_encoded_tx = base64.b64encode(rlp.encode(list(unsigned_tx))).decode()
-        tx_hash = self.send_unsigned_against_session_key(network.connection_url(), b64_encoded_tx)
-        _ = network.wait_for_transaction(self, web3, nonce, address, tx_hash, persist_nonce=True)
+        tx_hash = self.send_unsigned_against_session_key(network.connection_url(), sk, b64_encoded_tx)
+        _ = network.wait_for_transaction(self, web3, nonce, sk, tx_hash, persist_nonce=True)
         self.assertTrue(storage.contract.functions.retrieve().call() == 5)
-
-        # deactivate the key
-        self.deactivate_session_key(network.connection_url())

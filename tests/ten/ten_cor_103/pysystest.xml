@@ -6,7 +6,7 @@
         <purpose><![CDATA[
 Transact through a session key and subscribe for event logs through the web3 connection the session key was created
 against. Note that in the test we first transact using the account the network connection was made from to ensure
-that we see those event logs, then we create and activate the session key and transact through that.
+that we see those event logs, then we create the session key and transact through that.
 ]]>
         </purpose>
     </description>
