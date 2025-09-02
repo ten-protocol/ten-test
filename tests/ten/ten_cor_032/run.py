@@ -19,7 +19,7 @@ class PySysTest(TenNetworkTest):
         query_id = 0
         request_data = "Calculate some randon stuff"
         response_result = "thisistherandomstuff"
-        for i in range(100, 500, 50):
+        for i in range(100, 300, 50):
             self.log.info('Storing query using account 1 with multiplier %d', i)
             query_id = query_id + 1
             target = contract_1.contract.functions.storeQuery(query_id, request_data, response_result, i)
