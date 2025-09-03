@@ -109,6 +109,9 @@ class PySysTest(TenNetworkTest):
             _ = accnt1.l1.release_tokens(msg2, proof2, root2)
             l1_balance_before = accnt1.l1.web3.eth.get_balance(accnt1.l1.account.address)
             tx_receipt = accnt1.l1.release_funds(msg3, proof3, root3)
+
+            self.log.info('Wait before requesting balance')
+            self.wait(5.0)
             l1_balance_after = accnt1.l1.web3.eth.get_balance(accnt1.l1.account.address)
             l1_release_cost = int(tx_receipt['cumulativeGasUsed']) * int(tx_receipt['effectiveGasPrice'])
 
