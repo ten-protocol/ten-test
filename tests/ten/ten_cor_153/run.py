@@ -1,4 +1,3 @@
-from collections import Counter
 from pysys.constants import FAILED
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.storage import Storage
