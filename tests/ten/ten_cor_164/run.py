@@ -1,4 +1,3 @@
-from collections import Counter
 from ten.test.basetest import TenNetworkTest
 
 
@@ -10,7 +9,8 @@ class PySysTest(TenNetworkTest):
         batch = self.scan_get_batch(hash=batch_header['hash'])
 
         hashSearch = self.scan_search(batch['header']['hash'])
-         # assert search by hash returns the correct batch 
+
+        # assert search by hash returns the correct batch
         self.assertTrue(hashSearch['result']['Total'] == 1,
                     assertMessage='Search by hash should return exactly 1 result in resultsData')
         self.assertTrue(hashSearch['result']['ResultsData'][0]['type'] == 'batch',
@@ -18,7 +18,7 @@ class PySysTest(TenNetworkTest):
         self.assertTrue(hashSearch['result']['ResultsData'][0]['hash'] == batch['header']['hash'].replace('0x', ''),
                     assertMessage='Search by hash should return the correct batch hash')
     
-         # convert hex height to decimal string for search
+        # convert hex height to decimal string for search
         batch_height_int = int(batch['header']['number'], 16)  # Convert hex to int
         batch_height_string = str(batch_height_int)  # Convert to string
         
