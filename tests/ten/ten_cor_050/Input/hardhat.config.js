@@ -2,7 +2,7 @@ require("@nomicfoundation/hardhat-toolbox");
 require("@tenprotocol/ten-hardhat-plugin")
 require('console-stamp')(console, 'HH:MM:ss')
 
-const { PK, HOST, PORT } = process.env;
+const { PK, CHAINID, HOST, PORT } = process.env;
 
 module.exports = {
   solidity:  "0.8.19",
@@ -10,7 +10,7 @@ module.exports = {
   networks: {
     ten: {
       deploy: [ "scripts/" ],
-      chainId: 443,
+      chainId: Number(CHAINID),
       url: `${HOST}:${PORT}/v1/`,
       useGateway: true,
       accounts: [ `0x${PK}` ]

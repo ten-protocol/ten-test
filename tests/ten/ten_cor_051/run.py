@@ -25,6 +25,7 @@ class PySysTest(TenNetworkTest):
         environ = copy.deepcopy(os.environ)
         environ['PK1'] = private_key_1
         environ['PK2'] = private_key_2
+        environ['CHAINID'] = str(network.chain_id())
         environ['HOST'] = network.HOST
         environ['PORT'] = str(network.PORT)
         self.run_npx(args=['hardhat', 'deploy', '--network', 'ten'],

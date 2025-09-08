@@ -2,7 +2,7 @@ require("@nomicfoundation/hardhat-toolbox");
 require("@tenprotocol/ten-hardhat-plugin");
 require("hardhat-deploy");
 
-const { PK1, PK2, HOST, PORT } = process.env;
+const { PK1, PK2, CHAINID, HOST, PORT } = process.env;
 
 const config: HardhatUserConfig = {
   solidity: "0.8.17",
@@ -18,7 +18,7 @@ const config: HardhatUserConfig = {
   networks: {
     ten: {
       deploy: [ "scripts/" ],
-      chainId: 443,
+      chainId: Number(CHAINID),
       url: `${HOST}:${PORT}/v1/`,
       useGateway: true,
       accounts: [ `0x${PK1}`, `0x${PK2}` ]
