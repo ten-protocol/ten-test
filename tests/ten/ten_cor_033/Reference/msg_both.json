@@ -1,6 +1,6 @@
 {
     "domain": {
-        "chainId": "0x1bb",
+        "chainId": "<chain_id_hex>",
         "name": "Ten",
         "verifyingContract": "0x0000000000000000000000000000000000000000",
         "version": "1.0"

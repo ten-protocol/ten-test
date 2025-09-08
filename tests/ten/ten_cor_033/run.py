@@ -41,6 +41,9 @@ class PySysTest(TenNetworkTest):
             json.dump(message, f, indent=4)
 
         self.log.info('Asserting diff against reference files')
-        self.assertDiff(file1='msg_eip712.json', file2='msg_eip712.json', replace=[('<token>', token)])
-        self.assertDiff(file1='msg_personal.json', file2='msg_personal.json', replace=[('<token>', token)])
-        self.assertDiff(file1='msg_both.json', file2='msg_both.json', replace=[('<token>', token)])
+        replaceList = [('<token>', token)]
+        replaceList.append(('<chain_id_hex>', hex(Properties().chain_id(self.env))))
+        replaceList.append(('<chain_id_int>', str(Properties().chain_id(self.env))))
+        self.assertDiff(file1='msg_eip712.json', file2='msg_eip712.json', replace=replaceList)
+        self.assertDiff(file1='msg_personal.json', file2='msg_personal.json', replace=replaceList)
+        self.assertDiff(file1='msg_both.json', file2='msg_both.json', replace=replaceList)
