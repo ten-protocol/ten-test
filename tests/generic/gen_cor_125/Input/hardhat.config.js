@@ -9,13 +9,13 @@ module.exports = {
   defaultNetwork: "ganache",
   networks: {
     ten: {
-      chainId: ${CHAINID},
+      chainId: Number(CHAINID),
       url: `${HOST}:${PORT}/v1/?token=${TOKEN}`,
       gasPrice: 2000000000,
       accounts: [ `0x${PK}` ]
     },
     ganache: {
-      chainId: ${CHAINID},
+      chainId: Number(CHAINID),
       url: `${HOST}:${PORT}`,
       accounts: [ `0x${PK}` ],
       gasMultiplier: 2

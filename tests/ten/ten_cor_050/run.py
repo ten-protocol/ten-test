@@ -20,7 +20,7 @@ class PySysTest(TenNetworkTest):
         # deploy and get the address from the hardhat output
         environ = copy.deepcopy(os.environ)
         environ['PK'] = private_key
-        environ['CHAINID'] = network.chain_id()
+        environ['CHAINID'] = str(network.chain_id())
         environ['HOST'] = network.HOST
         environ['PORT'] = str(network.PORT)
         self.run_npx(args=['hardhat', 'run', '--network', 'ten', 'scripts/deploy.js'],

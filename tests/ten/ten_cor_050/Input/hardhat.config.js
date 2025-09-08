@@ -10,7 +10,7 @@ module.exports = {
   networks: {
     ten: {
       deploy: [ "scripts/" ],
-      chainId: ${CHAINID},
+      chainId: Number(CHAINID),
       url: `${HOST}:${PORT}/v1/`,
       useGateway: true,
       accounts: [ `0x${PK}` ]
