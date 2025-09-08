@@ -8,15 +8,6 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         current_time = int(time.time())
-        l1_network = self.get_l1_network_connection(self.env)
-        web3, account = l1_network.connect_account1(self)
-
-        # store the bridge balance
-        bridge_address = Properties().l1_bridge_address()
-        bridge_balance_wei = web3.eth.get_balance(bridge_address)
-        faucet_balance_eth = web3.from_wei(bridge_balance_wei, 'ether')
-        self.log.info('Bridge balance %.9f ETH', faucet_balance_eth)
-        self.funds_db.insert_funds('L1Bridge', bridge_address, self.env, current_time, bridge_balance_wei)
 
         # store the faucet balance
         faucet_address = Properties().faucet_address(key=self.env)
