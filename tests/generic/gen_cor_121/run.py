@@ -25,6 +25,7 @@ class PySysTest(GenericNetworkTest):
         # deploy and get the address from the hardhat output
         environ = copy.deepcopy(os.environ)
         environ['PK'] = private_key
+        environ['CHAINID'] = network.chain_id()
         environ['HOST'] = network.HOST
         environ['PORT'] = str(network.PORT)
         environ['TOKEN'] = network.ID if self.is_ten() else ''
