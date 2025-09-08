@@ -14,9 +14,6 @@ Checks for calls against the scan_getRollupListing RPC endpoint.
             <group>tenscan</group>
         </groups>
         <modes inherit="true">
-            <mode>ten.sepolia</mode>
-            <mode>ten.uat</mode>
-            <mode>ten.dev</mode>
             <mode>ten.local</mode>
             <mode>ten.sim</mode>
         </modes>
