@@ -1,7 +1,7 @@
 Monday:
   - start: "00:00"
     end: "23:59"
-    person: "ziga"
+    person: "will"
 
 Tuesday:
   - start: "00:00"
@@ -11,17 +11,17 @@ Tuesday:
 Wednesday:
   - start: "00:00"
     end: "23:59"
-    person: "matt"
+    person: "will"
 
 Thursday:
   - start: "00:00"
     end: "23:59"
-    person: "stefan"
+    person: "ziga"
 
 Friday:
   - start: "00:00"
     end: "23:59"
-    person: "krish"
+    person: "stefan"
 
 Saturday:
   - start: "00:00"
@@ -31,4 +31,4 @@ Saturday:
 Sunday:
   - start: "00:00"
     end: "23:59"
-    person: "will"
+    person: "krish"
