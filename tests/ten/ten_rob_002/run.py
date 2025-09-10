@@ -95,7 +95,6 @@ class PySysTest(TenNetworkTest):
         tx = {'to': sk, 'value': web3.to_wei(0.9*5*network.ETH_ALLOC_EPHEMERAL, 'ether'), 'gasPrice': web3.eth.gas_price, 'chainId': web3.eth.chain_id}
         tx['gas'] = web3.eth.estimate_gas(tx)
         network.tx(self, web3, tx, account)
-        self.activate_session_key(network.connection_url())
 
         stdout = os.path.join(self.output, 'storage_client_sk_%d.out' % num)
         stderr = os.path.join(self.output, 'storage_client_sk_%d.err' % num)
