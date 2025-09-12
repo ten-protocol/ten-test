@@ -33,13 +33,13 @@ class PySysTest(TenNetworkTest):
                 self.log.info('Running for %d clients' % clients)
                 out_dir = os.path.join(self.output, 'clients_%d' % clients)
                 if not os.path.exists(out_dir): os.mkdir(out_dir)
-                start_ns = time.perf_counter_ns()
                 signal = os.path.join(out_dir, '.signal')
 
                 # start transacting to set the storage value
                 hprocess = self.run_storage_client(storage, funds_needed, gas_limit, out_dir)
 
                 # run the clients to call into the contract get retrieve the value
+                start_ns = time.perf_counter_ns()
                 for i in range(0, clients):
                     self.run_client('client_%s' % i, network, self.ITERATIONS, storage, funds_needed, start_ns, out_dir, signal)
 
@@ -61,7 +61,7 @@ class PySysTest(TenNetworkTest):
                 self.log.info('Average latency %.2f (ms)' % avg_latency)
                 self.log.info('Modal latency %.2f (ms)' % mode_latency)
                 self.log.info('99th latency %.2f (ms)' % nnth_percentile)
-                fp.write('%d %.2f %.2f %.2f %.2f\n' % (clients, throughput, avg_latency, mode_latency, nnth_percentile))
+                fp.write('%d %.2f %.2f %.2f %.2f %.2f\n' % (clients, throughput, avg_latency, mode_latency, nnth_percentile, bulk_throughput))
                 results.append(throughput)
 
                 # graph the output for the single run of 4 clients
