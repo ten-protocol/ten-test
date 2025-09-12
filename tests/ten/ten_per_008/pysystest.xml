@@ -11,7 +11,7 @@ mappings and primitives. There is a one-to-one mapping of transactors to subscri
 transaction of a transactor includes an id, which the subscriber filters on. Thus during the serial running, subscribers
 not tied into the currently executing transactor should be filtering out those events. The overall bulk through of any
 run for a given number of subscribers is the total time to send all transactions over the time it took to send those
-transactions. We expect to see constant bulk throughput with varying subscribers. 
+transactions. We expect to see constant bulk throughput with varying subscribers.
 ]]>
         </purpose>
     </description>
