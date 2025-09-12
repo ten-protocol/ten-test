@@ -2,11 +2,17 @@
 <pysystest type="auto">
 
     <description>
-        <title>TPS: funds transfer, configurable number of external concurrent clients</title>
+        <title>TPS: funds transfer, four external concurrent clients (1 sending, 8 receiving accounts each)</title>
         <purpose><![CDATA[
-The test uses N clients to perform the bulk loading of transactions into the network concurrently, as per
-ten_per_002. The test looks to see if the TPS can be increased using multiple clients feeding transactions at the same
-time, and also the trend of the processing i.e. do we see synchronised pauses implying that the network is at issue.
+The test uses four clients to perform the bulk loading of transactions into the network concurrently, as per
+ten_per_002. We can again see if more clients (four vs two) allows us to increase the transaction processing rate.
+Note that the test can be run with a higher number of clients using the -XCLIENTS=<num> CLI argument to the test, so the
+distribution can be explored. Pauses in the times when transactions are mined means that blocks are not created
+continuously e.g. the network takes longer to fill a block than one second. As well as plotting how the transactions are
+included into blocks based on the block time, we plot how the transactions are included into blocks based on the block
+number. This should be continuous and show how the transactions are distributed in terms of numbers into the blocks.
+Plotting the individual binned transactions on a 3-D plot allows us to see that the clients are overlapping in the
+processing of their transactions.
 ]]>
         </purpose>
     </description>

@@ -35,4 +35,4 @@ set style fill solid 0.5
 set title "{/Arial:Bold=13 Throughput}"
 set xlabel "Clients"  font "Courier,12"
 set ylabel "Throughput (requests/sec)" font "Courier,12" offset 1,0
-plot "results.log" using 1:2 with linespoints title "Throughput"
+plot "results.log" using 1:2 with linespoints title "Throughput", "results.log" using 1:6 with linespoints title "Bulk Throughput"

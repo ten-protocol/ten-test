@@ -2,8 +2,13 @@
 <pysystest type="auto">
 
     <description>
-        <title>TPS: rates for balance transfer, increasing clients</title>
+        <title>TPS: rates for funds transfer, using increasing clients within the test run</title>
         <purpose><![CDATA[
+This test continues on from ten_per_004 where a number of concurrent clients are performing funds transfer from one
+sending account to 8 receiving accounts. The difference is we scale up the number of receiving accounts to try and
+see if there is a levelling of the TPS indicating the maximum throughput possible in the network. We also plot out the
+binned throughput for two runs with varying number of concurrent clients to see if the temporal binned throughput starts
+to show time gaps where no blocks are being created.
 ]]>
         </purpose>
     </description>

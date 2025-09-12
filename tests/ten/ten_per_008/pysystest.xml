@@ -4,6 +4,14 @@
     <description>
         <title>TPS: transaction timing with attached subscribers</title>
         <purpose><![CDATA[
+In this test we investigate if the number of attached subscribers to the network slows down the transaction processing
+rate. For a given number of subscribers, a similar number of transactors are started serially sending in 250 transactions
+each against the emitter contract - the transactions include transactions that emit events with arrays, structs,
+mappings and primitives. There is a one-to-one mapping of transactors to subscribers, as each event emitted from the
+transaction of a transactor includes an id, which the subscriber filters on. Thus during the serial running, subscribers
+not tied into the currently executing transactor should be filtering out those events. The overall bulk through of any
+run for a given number of subscribers is the total time to send all transactions over the time it took to send those
+transactions. We expect to see constant bulk throughput with varying subscribers.
 ]]>
         </purpose>
     </description>

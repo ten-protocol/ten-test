@@ -5,8 +5,10 @@
         <title>TPS: funds transfer, two external concurrent clients (20 sending, 8 receiving accounts each)</title>
         <purpose><![CDATA[
 The test uses two clients to perform the bulk loading of transactions into the network concurrently, as per
-ten_per_002. The test uses 20 sending accounts for each client though in this instance, to see what the distribution of
-processing is for each.
+ten_per_002, though in this test we use 20 transfer account to 8 randomly chosen recipient accounts. The test looks to
+see if there is any decrease in TPS if we use a higher number of sending accounts. Once completed the client also
+iterates through all the mined transactions and requests the transaction receipt, logging the time it takes to receive
+after requesting. The data is additionally binned for plotting to see the distribution in wait times.
 ]]>
         </purpose>
     </description>

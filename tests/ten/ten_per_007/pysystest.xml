@@ -2,8 +2,11 @@
 <pysystest type="auto">
 
     <description>
-        <title>TPS: rates for balance transfer, increasing clients, includes xchain messages</title>
+        <title>TPS: rates for funds transfer, increasing clients, includes xchain messages</title>
         <purpose><![CDATA[
+This test continues on from ten_per_006 where a number of concurrent clients are performing funds transfer from one
+sending account to 8 receiving accounts. The difference is 1/16th of the fund transfers are a withdrawal over the
+bridge. Thus we attempt to see if having blocks contain xchain messages slows down the transaction processing rate.
 ]]>
         </purpose>
     </description>

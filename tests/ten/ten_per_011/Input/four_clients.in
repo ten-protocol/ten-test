@@ -28,7 +28,7 @@ plot "clients_4/binned_latency.log" using 1:2 with boxes title "Binned latency"
 #plot 2
 set size 0.5, 0.45
 set origin 0.0, 0.05
-set title "{/Arial:Bold=13 Throughput}"
+set title "{/Arial:Bold=13 Sum Total Requests}"
 set xlabel "Time (s)"  font "Courier,12"
 set ylabel "Total" font "Courier,12" offset 1,0
 plot "clients_4/client_0_throughput.log" using 1:2 with lines title "Client 1", \
