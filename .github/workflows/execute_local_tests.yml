@@ -58,6 +58,7 @@ jobs:
       - name: 'Start up testnet'
         env:
           DOCKER_API_VERSION: "1.45"
+          NETWORK_CHAINID: 5443
         run: |
           cd ${{ github.workspace }}/go-ten/
           go run ./testnet/launcher/cmd
