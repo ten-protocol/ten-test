@@ -4,10 +4,10 @@
     <description>
         <title>TPS: key storage, configurable number of external concurrent clients</title>
         <purpose><![CDATA[
-The test uses N clients to perform the bulk loading of transactions into the network concurrently, where transactions
-are setting a key value pair in the KeyStorage contract. The test looks to see if the TPS can be increased using
-multiple clients feeding transactions at the same time, and also the trend of the processing i.e. do we see synchronised
-pauses implying that the network is at issue.
+The test uses four clients to perform the bulk loading of transactions into the network concurrently, where transactions
+are setting a key value pair in the KeyStorage contract. This the test is similar to ten_per_004 though rather than
+perform funds transfer, the transactions are a contract function call. This allows us to see if the TPS varies
+depending on the transaction type (funds transfer vs contract call).
 ]]>
         </purpose>
     </description>
