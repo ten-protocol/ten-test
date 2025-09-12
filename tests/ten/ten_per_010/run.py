@@ -42,7 +42,7 @@ class PySysTest(TenNetworkTest):
                 self.log.info('Approx. throughput %.2f (requests/sec)' % throughput)
                 self.log.info('Average latency %.2f (ms)' % avg_latency)
                 self.log.info('Modal latency %.2f (ms)' % mode_latency)
-                fp.write('%d %.2f %.2f %.2f\n' % (clients, throughput, avg_latency, mode_latency))
+                fp.write('%d %.2f %.2f %.2f %.2f\n' % (clients, throughput, avg_latency, mode_latency, bulk_throughput))
                 results.append(throughput)
 
                 # graph the output for the single run of 4 clients
