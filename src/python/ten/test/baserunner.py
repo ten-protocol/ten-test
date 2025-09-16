@@ -55,7 +55,7 @@ class TenRunnerPlugin():
 
         self.env = runner.mode
         runner.output = os.path.join(PROJECT.root, '.runner')
-        runner.log.info('Runner is executing against environment %s (chain id %d)', (self.env, Properties().chain_id(self.env)))
+        runner.log.info('Runner is executing against environment %s (chain id %d)' % (self.env, Properties().chain_id(self.env)))
 
         # create dir for any runner output
         if os.path.exists(runner.output): shutil.rmtree(runner.output)
