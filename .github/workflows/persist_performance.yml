@@ -17,6 +17,10 @@ on:
           - ten.dev
           - ten.uat
           - ten.sepolia
+      arguments:
+        description: 'Arguments to the pysys run'
+        required: true
+        default: '-i performance'
 
 jobs:
   test-run:
@@ -64,7 +68,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         run: |
           cd ${{ github.workspace }}/ten-test/tests
-          /usr/local/bin/pysys.py run -r -m ${{ github.event.inputs.environment }} -XPERSIST_PERF -i performance
+          /usr/local/bin/pysys.py run -r -m ${{ github.event.inputs.environment }} -XPERSIST_PERF ${{ github.event.inputs.arguments }}
 
       - name: 'Run the performance summary on workflow dispatch'
         if: always() && github.event_name == 'workflow_dispatch'
