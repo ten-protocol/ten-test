@@ -4,8 +4,8 @@
     <description>
         <title>Persist stats for a range of metrics on a ten network</title>
         <purpose><![CDATA[
-Run to persist into external storage total transaction counts, total deployed contracts, and the faucet funds as a
-function of time.
+Run to persist into external storage L1 bridge balance, faucet balance, total transaction counts, and total number
+of deployed contracts.
 ]]>
         </purpose>
     </description>
