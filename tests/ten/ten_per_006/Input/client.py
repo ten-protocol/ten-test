@@ -55,6 +55,7 @@ def run(name, chainId, web3, account, num_accounts, num_iterations, amount, tran
     logging.info('Waiting for transactions')
 
     for tx_hash in tenths(tx_hashes):
+        logging.info('Waiting for tx receipt for %d', tx_hash[1])
         try:
             web3.eth.wait_for_transaction_receipt(tx_hash[0], timeout=900)
         except Exception as e:
