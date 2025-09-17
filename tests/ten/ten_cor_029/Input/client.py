@@ -71,15 +71,18 @@ if __name__ == "__main__":
     parser.add_argument('--bridge_address', help='Address of the contract')
     parser.add_argument('--bridge_abi', help='Abi of the contract')
     parser.add_argument('--bridge_fees', help='Bridge fees')
-    parser.add_argument('--pk', help='The accounts private key')
+    parser.add_argument('--sender_pk', help='The sender private key')
     parser.add_argument('--receiver', help='The receiver of funds')
     parser.add_argument('--amount', help='The amount to send in wei')
+    parser.add_argument('--signal_file', help='Poll for this file to initiate sending')
     args = parser.parse_args()
 
     web3: Web3 = Web3(Web3.HTTPProvider(args.network_http))
     with open(args.bridge_abi) as f:
         contract = web3.eth.contract(address=args.bridge_address, abi=json.load(f))
-    account = web3.eth.account.from_key(args.pk)
+    account = web3.eth.account.from_key(args.sender_pk)
 
     logging.info('Starting client')
+    while not os.path.exists(args.signal_file): time.sleep(0.1)
+    logging.info('Signal seen ... running client')
     run(web3, account, args.receiver, contract, int(args.amount), int(args.bridge_fees), int(args.chainId))
