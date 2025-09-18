@@ -8,14 +8,12 @@ class PySysTest(TenNetworkTest):
     def execute(self):
         network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary', verbose=False)
         web3, account = network.connect_account1(self)
-        self.value = 100
+        self.value = 10
         self.gas_price = web3.eth.gas_price
         self.bridge = EthereumBridge(self, web3)
         self.bridge_fees = self.bridge.contract.functions.valueTransferFee().call()
-        self.transfer_gas = web3.eth.estimate_gas({'to': account.address, 'value': self.value, 'gasPrice': self.gas_price})
-        target = self.bridge.contract.functions.sendNative(account.address)
-        params = {'value': self.value+self.bridge_fees, 'gasPrice': self.gas_price, 'chainId': web3.eth.chain_id}
-        self.withdraw_gas = target.estimate_gas(params)
+        self.transfer_gas = self.get_transfer_gas(web3, account.address, network.chain_id())
+        self.withdraw_gas = self.get_withdraw_gas(web3, account.address, network.chain_id())
 
         # create and start the clients
         signal_file = os.path.join(self.output, '.signal')
@@ -26,6 +24,15 @@ class PySysTest(TenNetworkTest):
         # wait for the client to complete
         self.waitForGrep(file=stdout_one, expr='Client completed', timeout=45)
         self.waitForGrep(file=stdout_two, expr='Client completed', timeout=45)
+
+    def get_transfer_gas(self, web3, address, chain_id):
+        params = {'to': address, 'value': self.value, 'gasPrice': self.gas_price, 'chainId': chain_id}
+        return web3.eth.estimate_gas(params)
+
+    def get_withdraw_gas(self, web3, address, chain_id):
+        target = self.bridge.contract.functions.sendNative(address)
+        params = {'value': self.value+self.bridge_fees, 'gasPrice': web3.eth.gas_price, 'chainId': chain_id}
+        return target.estimate_gas(params)
 
     def run_client(self, network, receiver, signal_file, name):
         sender_pk = self.get_ephemeral_pk()

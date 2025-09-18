@@ -12,8 +12,9 @@ def create_signed_withdrawal(contract, account, nonce, address, value, chain_id,
         'value': value+fees,
         'gasPrice': int(scale * web3.eth.gas_price),
         'chainId': chain_id,
-        'gas': args.withdraw_gas
+        'gas': int(args.withdraw_gas)
     }
+    logging.info('Gas used in the withdrawal is %d', params['gas'])
     build_tx = target.build_transaction(params)
     return account.sign_transaction(build_tx)
 
@@ -24,14 +25,16 @@ def create_signed_tx(web3, account, nonce, receiver, amount, chain_id, scale):
           'value': amount,
           'gasPrice': int(scale * web3.eth.gas_price),
           'chainId': chain_id,
-          'gas': args.transfer_gas
+          'gas': int(args.transfer_gas)
           }
     return account.sign_transaction(tx)
 
 
 def run(web3, account, receiver, contract, amount, fees, chain_id):
+    accounts = [Web3().eth.account.from_key(x).address for x in [secrets.token_hex() for y in range(0, 8)]]
+
     logging.info('Creating the signed transactions')
-    num_iterations = 128
+    num_iterations = 1024
 
     scale = 1
     withdrawals = 0
@@ -43,7 +46,7 @@ def run(web3, account, receiver, contract, amount, fees, chain_id):
             withdrawals = withdrawals + 1
             signed_tx = create_signed_withdrawal(contract, account, nonce, account.address, amount, chain_id, fees, scale)
         else:
-            signed_tx = create_signed_tx(web3, account, nonce, receiver, amount, chain_id, scale)
+            signed_tx = create_signed_tx(web3, account, nonce, random.choice(accounts), amount, chain_id, scale)
         signed_txs.append((signed_tx, nonce))
         scale = scale + increment
 
