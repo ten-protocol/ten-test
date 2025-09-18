@@ -1,4 +1,3 @@
-import requests, json
 from web3 import Web3
 from ten.test.utils.properties import Properties
 from ten.test.networks.default import DefaultPostLondon
