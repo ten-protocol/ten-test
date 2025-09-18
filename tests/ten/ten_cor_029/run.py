@@ -9,8 +9,13 @@ class PySysTest(TenNetworkTest):
         network = self.get_network_connection(name='local' if self.is_local_ten() else 'primary', verbose=False)
         web3, account = network.connect_account1(self)
         self.value = 100
+        self.gas_price = web3.eth.gas_price
         self.bridge = EthereumBridge(self, web3)
         self.bridge_fees = self.bridge.contract.functions.valueTransferFee().call()
+        self.transfer_gas = web3.eth.estimate_gas({'to': account.address, 'value': self.value, 'gasPrice': self.gas_price})
+        target = self.bridge.contract.functions.sendNative(account.address)
+        params = {'value': self.value+self.bridge_fees, 'gasPrice': self.gas_price, 'chainId': web3.eth.chain_id}
+        self.withdraw_gas = target.estimate_gas(params)
 
         # create and start the clients
         signal_file = os.path.join(self.output, '.signal')
@@ -40,6 +45,8 @@ class PySysTest(TenNetworkTest):
         args.extend(['--receiver', receiver])
         args.extend(['--amount', '%d' % self.value])
         args.extend(['--signal_file', signal_file])
+        args.extend(['--transfer_gas', '%d' % self.transfer_gas])
+        args.extend(['--withdraw_gas', '%d' % self.withdraw_gas])
         self.run_python(script, stdout, stderr, args, workingDir=self.output)
         self.waitForSignal(file=stdout, expr='Starting client')
         return stdout

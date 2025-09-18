@@ -5,41 +5,47 @@ import logging, random, argparse, sys
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', stream=sys.stdout, level=logging.INFO)
 
 
-def create_signed_withdrawal(contract, account, nonce, address, value, chain_id, fees):
+def create_signed_withdrawal(contract, account, nonce, address, value, chain_id, fees, scale):
     target = contract.functions.sendNative(address)
     params = {
         'nonce': nonce,
         'value': value+fees,
-        'gasPrice': web3.eth.gas_price,
-        'chainId': chain_id
+        'gasPrice': int(scale * web3.eth.gas_price),
+        'chainId': chain_id,
+        'gas': args.withdraw_gas
     }
-    params['gas'] = target.estimate_gas(params)
     build_tx = target.build_transaction(params)
     return account.sign_transaction(build_tx)
 
 
-def create_signed_tx(web3, account, nonce, receiver, amount, chain_id):
+def create_signed_tx(web3, account, nonce, receiver, amount, chain_id, scale):
     tx = {'nonce': nonce,
           'to': receiver,
           'value': amount,
-          'gasPrice': web3.eth.gas_price,
-          'chainId': chain_id
+          'gasPrice': int(scale * web3.eth.gas_price),
+          'chainId': chain_id,
+          'gas': args.transfer_gas
           }
-    tx['gas'] = web3.eth.estimate_gas(tx)
     return account.sign_transaction(tx)
 
 
 def run(web3, account, receiver, contract, amount, fees, chain_id):
     logging.info('Creating the signed transactions')
-    nonce = 0
-    signed_txs = []
-    for i in range(0, 32):
-        nonce = i
-        signed_tx = create_signed_tx(web3, account, nonce, receiver, amount, chain_id)
-        signed_txs.append((signed_tx, nonce))
+    num_iterations = 128
 
-    signed_tx = create_signed_withdrawal(contract, account, nonce+1, account.address, amount, chain_id, fees)
-    signed_txs.append((signed_tx, nonce+1))
+    scale = 1
+    withdrawals = 0
+    increment = float(2.0 / num_iterations)
+    signed_txs = []
+    for i in range(0, num_iterations):
+        nonce = i
+        if (i % 16) == 0:
+            withdrawals = withdrawals + 1
+            signed_tx = create_signed_withdrawal(contract, account, nonce, account.address, amount, chain_id, fees, scale)
+        else:
+            signed_tx = create_signed_tx(web3, account, nonce, receiver, amount, chain_id, scale)
+        signed_txs.append((signed_tx, nonce))
+        scale = scale + increment
 
     logging.info('Sending the raw transactions')
     tx_hashes = []
@@ -52,6 +58,7 @@ def run(web3, account, receiver, contract, amount, fees, chain_id):
             logging.warning('Continuing with smaller number of transactions ...')
             break
     logging.info('Number of transactions sent = %d', len(tx_hashes))
+    logging.info('Number of withdrawals were  = %d', withdrawals)
 
     logging.info('Waiting for transactions')
     for tx_hash in tx_hashes:
@@ -75,6 +82,8 @@ if __name__ == "__main__":
     parser.add_argument('--receiver', help='The receiver of funds')
     parser.add_argument('--amount', help='The amount to send in wei')
     parser.add_argument('--signal_file', help='Poll for this file to initiate sending')
+    parser.add_argument('--transfer_gas', help='The gas limit for transfers')
+    parser.add_argument('--withdraw_gas', help='The gas limit for withdrawals')
     args = parser.parse_args()
 
     web3: Web3 = Web3(Web3.HTTPProvider(args.network_http))
