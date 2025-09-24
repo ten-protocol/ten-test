@@ -1,7 +1,7 @@
 # Run a set of sanity tests on mainnet to ensure it is up and running
 #
 name: '[inspect] Check mainnet health'
-run-name: Check mainnet-testnet health
+run-name: Check mainnet health
 on:
   workflow_dispatch:
 
