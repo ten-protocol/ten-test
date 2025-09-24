@@ -289,9 +289,9 @@ class GenericNetworkTest(BaseTest):
         if self.is_ten():
             network = Ten(self, name, **kwargs)
             if self.is_mainnet_ten():
-                network.ETH_LIMIT = 0.00050
-                network.ETH_ALLOC = 0.00250
-                network.ETH_ALLOC_EPHEMERAL = 0.00050
+                network.ETH_LIMIT = 0.000250
+                network.ETH_ALLOC = 0.000500
+                network.ETH_ALLOC_EPHEMERAL = 0.000250
             return network
         elif self.env == 'goerli':
             return Goerli(self, name, **kwargs)
