@@ -1,0 +1,46 @@
+# Run a set of sanity tests on mainnet to ensure it is up and running
+#
+name: '[inspect] Check mainnet health'
+run-name: Check mainnet-testnet health
+on:
+  workflow_dispatch:
+
+jobs:
+  run-check:
+    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-01]
+    env:
+      RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+    steps:
+      - name: 'Check out ten-test'
+        uses: actions/checkout@v3
+        with:
+          path: ./ten-test
+
+      - name: 'Check out go-ten code'
+        uses: actions/checkout@v3
+        with:
+          repository: ten-protocol/go-ten
+          path: ./go-ten
+          ref: 'releases/v1.4'
+
+      - name: 'Build required artifacts for running tests'
+        run: |
+          cd ${{ github.workspace }}/ten-test
+          ./get_artifacts.sh
+          ls -l ${{ github.workspace }}/ten-test/artifacts   
+
+      - name: 'Run health check tests'
+        run: |
+          cd ${{ github.workspace }}/ten-test
+          /usr/local/bin/pysys.py run -r -m ten.mainnet -i health -XITERATIONS_FULL=0 -XRUN_TYPE=health 
+
+      - name: 'Upload testcase output'
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-artifact
+          path: |
+            ${{ github.workspace }}/ten-test/**/Output
+            !${{ github.workspace }}/ten-test/**/node_modules
+          retention-days: 1
