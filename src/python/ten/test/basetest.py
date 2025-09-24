@@ -125,6 +125,10 @@ class GenericNetworkTest(BaseTest):
         """Return true if we are running against a sepolia Ten network. """
         return self.env in ['ten.sepolia']
 
+    def is_mainnet_ten(self):
+        """Return true if we are running against the mainnet Ten network. """
+        return self.env in ['ten.mainnet']
+
     def get_ephemeral_pk(self):
         private_key = secrets.token_hex(32)
         self.ephemeral_pks.append(private_key)
@@ -283,7 +287,12 @@ class GenericNetworkTest(BaseTest):
     def get_network_connection(self, name='primary', **kwargs):
         """Get the network connection."""
         if self.is_ten():
-            return Ten(self, name, **kwargs)
+            network = Ten(self, name, **kwargs)
+            if self.is_mainnet_ten():
+                network.ETH_LIMIT = 0.00050
+                network.ETH_ALLOC = 0.00250
+                network.ETH_ALLOC_EPHEMERAL = 0.00050
+            return network
         elif self.env == 'goerli':
             return Goerli(self, name, **kwargs)
         elif self.env == 'ganache':
