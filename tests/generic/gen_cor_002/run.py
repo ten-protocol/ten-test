@@ -7,7 +7,7 @@ class PySysTest(GenericNetworkTest):
     def execute(self):
         # connect to the network
         network = self.get_network_connection()
-        web3, account = network.connect_account2(self)
+        web3, account = network.connect_account1(self)
 
         # get the gas price for reference
         gas_price = web3.eth.gas_price
