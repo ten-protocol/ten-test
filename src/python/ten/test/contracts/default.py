@@ -48,6 +48,9 @@ class DefaultContract:
         self.abi_path = os.path.join(self.test.output, '%s.abi' % self.CONTRACT)
         with open(self.abi_path, 'w') as f: json.dump(self.abi, f)
 
+        bin_path = os.path.join(self.test.output, '%s.bin' % self.CONTRACT)
+        with open(bin_path, 'w') as f:  f.write(self.bytecode)
+
         self.contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode).constructor(*self.args)
 
     def deploy(self, network, account, persist_nonce=True, timeout=60, store=False):
