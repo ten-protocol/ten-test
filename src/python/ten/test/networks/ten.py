@@ -30,9 +30,6 @@ class TenL1Ethereum(Ethereum):
         self.WS_PORT = props.l1_port_ws(test.env)
         self.CHAIN_ID = props.l1_chain_id(test.env)
 
-    def connection_url(self, web_socket=False):
-        return '%s/%s' % (self.HOST if not web_socket else self.WS_HOST, Properties().sepoliaAPIKey())
-
     def connect(self, test, private_key, web_socket=False, check_funds=True, verbose=True):
         url = self.connection_url(web_socket)
 

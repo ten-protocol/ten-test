@@ -226,6 +226,7 @@ class PySysTest(TenNetworkTest):
             self.addOutcome(BLOCKED)
 
     def send_telegram_message(self, msg):
+        if self.is_mainnet_ten(): return
         props = Properties()
         url = 'https://api.telegram.org/bot%s/sendMessage' % props.telegram_bot_token(self.env)
 
