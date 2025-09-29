@@ -11,6 +11,7 @@
         <groups inherit="true">
         </groups>
         <modes inherit="true">
+            <mode>ten.mainnet</mode>
             <mode>ten.sepolia</mode>
         </modes>
     </classification>
