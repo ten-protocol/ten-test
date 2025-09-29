@@ -37,20 +37,20 @@ jobs:
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -r -m ten.mainnet -XRUN_TYPE=funds check_funds
 
-      - name: 'Alert on funds check'
-        if: always()
-        run: |
-          cd ${{ github.workspace }}/ten-test/admin
-          /usr/local/bin/pysys.py run -m ten.mainnet -XRUN_TYPE=funds -XRUN_NAME=Mainnet_funds_health -XRUN_URL=$RUN_URL -XNO_CONNECT alert_support
+      #- name: 'Alert on funds check'
+      #  if: always()
+      #  run: |
+      #    cd ${{ github.workspace }}/ten-test/admin
+      #    /usr/local/bin/pysys.py run -m ten.mainnet -XRUN_TYPE=funds -XRUN_NAME=Mainnet_funds_health -XRUN_URL=$RUN_URL -XNO_CONNECT alert_support
 
-      - name: 'Discord notification on failure'
-        if: failure()
-        uses: sarisia/actions-status-discord@v1
-        with:
-          webhook: ${{ secrets.WORKFLOW_STATUS_WEBHOOK }}
-          title: "The health_check_mainnet_funds.yml workflow has failed"
-          description: "The workflow shows failures and requires investigation"
-          content: "For information <@814873419207409685>"
+      #- name: 'Discord notification on failure'
+      #  if: failure()
+      #  uses: sarisia/actions-status-discord@v1
+      #  with:
+      #    webhook: ${{ secrets.WORKFLOW_STATUS_WEBHOOK }}
+      #    title: "The health_check_mainnet_funds.yml workflow has failed"
+      #    description: "The workflow shows failures and requires investigation"
+      #    content: "For information <@814873419207409685>"
 
 
 
