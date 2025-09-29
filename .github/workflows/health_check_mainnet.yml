@@ -3,6 +3,8 @@
 name: '[inspect] Check mainnet health'
 run-name: Check mainnet health
 on:
+  schedule:
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -22,7 +24,7 @@ jobs:
         with:
           repository: ten-protocol/go-ten
           path: ./go-ten
-          ref: 'releases/v1.4'
+          ref: 'releases/v1.5'
 
       - name: 'Build required artifacts for running tests'
         run: |
