@@ -10,7 +10,7 @@ class PySysTest(GenericNetworkTest):
         web3, account = network.connect_account1(self)
 
         guesser = Guesser(self, web3)
-        guesser.deploy(network, account)
+        guesser.get_or_deploy(network, account)
 
         # guess the number
         self.log.info('Starting guessing game')

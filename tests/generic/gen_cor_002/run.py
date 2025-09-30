@@ -19,7 +19,7 @@ class PySysTest(GenericNetworkTest):
         self.assertTrue(block_number_initial >= 0)
 
         storage = Storage(self, web3, 100)
-        storage.deploy(network, account)
+        storage.get_or_deploy(network, account)
 
         # wait a couple of block times
         self.wait(5.0*float(self.block_time))
