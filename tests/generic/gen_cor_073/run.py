@@ -12,7 +12,7 @@ class PySysTest(GenericNetworkTest):
 
         # deploy the contract
         storage = Storage(self, web3, 100)
-        storage.get_or_deploy(network, account)
+        storage.deploy(network, account)
 
         # run a background script to filter and collect events
         stdout = os.path.join(self.output, 'poller.out')
