@@ -7,6 +7,11 @@ class Storage(DefaultContract):
     CONTRACT = 'Storage'
 
 
+class StorageForUpgrades(DefaultContract):
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'storage', 'StorageForUpgrades.sol')
+    CONTRACT = 'StorageForUpgrades'
+
+
 class StorageTwoPhaseNoEvents(DefaultContract):
     SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'storage', 'StorageTwoPhaseNoEvents.sol')
     CONTRACT = 'StorageTwoPhaseNoEvents'
@@ -30,6 +35,11 @@ class StorageTwoPhaseWithRefund(DefaultContract):
 class KeyStorage(DefaultContract):
     SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'storage', 'KeyStorage.sol')
     CONTRACT = 'KeyStorage'
+
+
+class KeyStorageForUpgrades(DefaultContract):
+    SOURCE = os.path.join(PROJECT.root, 'src', 'solidity', 'contracts', 'storage', 'KeyStorageForUpgrades.sol')
+    CONTRACT = 'KeyStorageForUpgrades'
 
 
 

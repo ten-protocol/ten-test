@@ -1,5 +1,5 @@
 from ten.test.basetest import GenericNetworkTest
-from ten.test.contracts.storage import Storage
+from ten.test.contracts.storage import StorageForUpgrades
 
 
 class PySysTest(GenericNetworkTest):
@@ -10,7 +10,7 @@ class PySysTest(GenericNetworkTest):
         web3, account = network.connect_account1(self)
 
         # get contract address, or deploy
-        storage = Storage(self, web3, 0)
+        storage = StorageForUpgrades(self, web3, 0)
         storage.get_or_deploy(network, account, persist_nonce=True)
 
         # retrieve the current value
@@ -22,7 +22,7 @@ class PySysTest(GenericNetworkTest):
 
         # set the value via a transaction and retrieve the new value
         self.log.info('Incrementing the current value by 1')
-        tx_receipt = network.transact(self, web3, storage.contract.functions.store(actual+1), account, Storage.GAS_LIMIT)
+        tx_receipt = network.transact(self, web3, storage.contract.functions.store(actual+1), account, StorageForUpgrades.GAS_LIMIT)
         if tx_receipt.status == 1: storage.set_persisted_param('value', actual+1)
         else: self.log.warn('Transaction receipt showed error')
 

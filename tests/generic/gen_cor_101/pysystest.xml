@@ -4,6 +4,8 @@
     <description>
         <title>Persistent: running against a pre-deployed key storage contract</title>
         <purpose><![CDATA[
+Note this test uses the KeyStorageForUpgrades contract which should not be used by any other tests, as only this
+test persists set values to keep in sync with the actual contract state.
 ]]>
         </purpose>
     </description>
