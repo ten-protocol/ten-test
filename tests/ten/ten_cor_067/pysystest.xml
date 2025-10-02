@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Visibility Config: subscribe, ContractCfg.PRIVATE, no topics relevant to anyone</title>
+        <purpose><![CDATA[
+By declaring an event to be private, but not then configuring any relevantTo fields, the visibility config should be
+void and not set (it fails silently to be set). Under these conditions the visibility will be auto, meaning that for
+the Guessed event, topic 1 will be relevant to the sender.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>vis_config</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+            <mode>ten.sim</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
