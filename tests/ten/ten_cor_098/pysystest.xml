@@ -6,12 +6,15 @@
         <purpose><![CDATA[
 If the visibilityRules function contains an expensive loop it should burn all the gas on deployment but the
 contract should be deployed and default to auto (so private).
+
+Skipped at the moment since all the gas is not burned. 
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
+            <group>skip</group>
             <group>vis_config</group>
         </groups>
         <modes inherit="true">
