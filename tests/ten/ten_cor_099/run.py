@@ -1,35 +1,47 @@
-import sys, re
-from pysys.constants import FAILED
-from ten.test.basetest import TenNetworkTest
-from ten.test.contracts.game import MaliciousTransparentConfigGuessGame
+import re, json
+import os, shutil, copy
+from web3 import Web3
+from ten.test.basetest import GenericNetworkTest
 
 
-class PySysTest(TenNetworkTest):
+class PySysTest(GenericNetworkTest):
+
+    def get_network(self):
+        return 'ten' if self.is_ten() else self.mode
 
     def execute(self):
-        # connect players to the network
-        network_1 = self.get_network_connection()
-        web3_1, account_1 = network_1.connect_account1(self)
-        network_2 = self.get_network_connection()
-        web3_2, account_2 = network_2.connect_account2(self)
+        project = os.path.join(self.output, 'project')
+        private_key = self.get_ephemeral_pk()
 
-        # player 1 deploys the contract
-        game_1 = MaliciousTransparentConfigGuessGame(self, web3_1)
-        tx_receipt = game_1.deploy(network_1, account_1, store=True)
-        gas_used = tx_receipt['gasUsed']
-        gas_supplied = network_1.last_tx[0]
-        self.log.info('Gas supplied = %d, gas used = %d', gas_supplied, gas_used)
+        # connect to the network, allocate the normal ephemeral amount
+        network = self.get_network_connection()
+        self.distribute_native(Web3().eth.account.from_key(private_key), network.ETH_ALLOC)
+        web3, account = network.connect(self, private_key=private_key, check_funds=False)
 
-        # player 2 tries to get the secret number, but it should fail
-        game_2 = MaliciousTransparentConfigGuessGame.clone(web3_2, account_2, game_1)
-        try:
-            int.from_bytes(web3_2.eth.get_storage_at(game_2.address, 1), sys.byteorder)
-            self.addOutcome(FAILED, outcomeReason='Contract should default to private')
-        except ValueError as e:
-            self.log.info('Exception type: %s', type(e).__name__)
-            self.log.info('Exception args: %s', e.args)
-            regex = re.compile('eth_getStorageAt is not supported for this contract', re.M)
-            self.assertTrue(regex.search(e.args[0]['message']) is not None)
+        # copy over and initialise the project
+        shutil.copytree(self.input, project)
+        self.run_npm(args=['install', '--yes'], stdout='npm.out', stderr='npm.err', working_dir=project)
 
-        # player 1 should have had all their gas burned
-        self.assertTrue(gas_used == gas_supplied, assertMessage='All the gas should have been used')
+        # deploy and get the address from the hardhat output
+        environ = copy.deepcopy(os.environ)
+        environ['PK'] = private_key
+        environ['CHAINID'] = str(network.chain_id())
+        environ['HOST'] = network.HOST
+        environ['PORT'] = str(network.PORT)
+        environ['TOKEN'] = network.ID if self.is_ten() else ''
+        self.run_npx(args=['hardhat', 'run', '--network', self.get_network(), 'scripts/deploy.js'],
+                     working_dir=project, environ=environ, stdout='npx_deploy.out', stderr='npx_deploy.err')
+
+        address = 'undefined'
+        regex = re.compile('Proxy deployed at (?P<address>.*)$', re.M)
+        with open(os.path.join(self.output, 'npx_deploy.out'), 'r') as fp:
+            for line in fp.readlines():
+                result = regex.search(line)
+                if result is not None: address = result.group('address')
+        self.log.info('Proxy deployed at address %s', address)
+        self.wait(4*float(self.block_time))
+
+        # construct an instance of the contract from the address and abi
+        with open(os.path.join(self.output,'project','artifacts','contracts','DoubleV2.sol', 'DoubleV2.json')) as f:
+            contract = web3.eth.contract(address=address, abi=json.load(f)['abi'])
+
