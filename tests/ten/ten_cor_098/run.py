@@ -2,7 +2,6 @@ import sys, re
 from pysys.constants import FAILED
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.game import MaliciousTransparentConfigGuessGame
-from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
 class PySysTest(TenNetworkTest):
