@@ -2,16 +2,18 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config: deploy contract using a config via a proxy</title>
+        <title>Visibility Config: deploy a contract using a visibility config via a proxy</title>
         <purpose><![CDATA[
+Deploys a contract via the proxy approach which specifies a visibility configuration. Specifically it makes the contract
+transparent, meaning if account 1 transacts, account 2 will see all the events created as part of those transactions.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>vis_config</group>
+            <group>hardhat</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
