@@ -119,6 +119,7 @@ class DefaultPostLondon:
         """
         self.last_tx = (None, None, None, None, None)
         txstr = kwargs['txstr'] if 'txstr' in kwargs else fullname(target)
+        expect_fail = True if 'expect_fail' in kwargs else False
         self.log.info('Account %s performing transaction %s', account.address, txstr, extra=BaseLogFormatter.tag(LOG_WARN, 1))
         nonce = self.get_next_nonce(test, web3, account.address, persist_nonce, verbose)
         tx = self.build_transaction(test, web3, target, nonce, account.address, gas_limit, verbose, **kwargs)
@@ -127,7 +128,7 @@ class DefaultPostLondon:
         tx_recp = self.wait_for_transaction(test, web3, nonce, account.address, tx_hash, persist_nonce, verbose, timeout)
         if tx_recp.status != 1:
             self.replay_transaction(web3, tx, tx_recp)
-            test.addOutcome(FAILED, abortOnError=True)
+            if not expect_fail: test.addOutcome(FAILED, abortOnError=True)
         if 'store' in kwargs: self.last_tx = (self.last_tx[0],) + (tx, tx_sign, tx_hash, tx_recp)
         return tx_recp
 
