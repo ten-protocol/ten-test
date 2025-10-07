@@ -1,0 +1,17 @@
+{
+  "name": "test-project",
+  "version": "1.0.0",
+  "author": "Moray Grieve",
+  "license": "ISC",
+  "dependencies": {
+    "console-stamp": "3.1.2",
+    "@tenprotocol/ten-hardhat-plugin": "*",
+    "ethers": "^5.7.2",
+    "hardhat": "^2.21.0",
+    "hardhat-deploy": "^0.11.22",
+    "hardhat-ignore-warnings": "^0.2.6",
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0"
+  },
+  "keywords": [],
+  "description": ""
+}
