@@ -2,8 +2,10 @@
 pragma solidity ^0.8.0;
 
 import "./ContractTransparencyConfig.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-contract GameV1 is ContractTransparencyConfig {
+contract GameV1 is Initializable, ContractTransparencyConfig {
     address private owner;
     uint256 private secretNumber;
     uint256 public totalGuesses;
@@ -19,13 +21,17 @@ contract GameV1 is ContractTransparencyConfig {
         return VisibilityConfig(ContractCfg.TRANSPARENT, eventLogConfigs);
     }
 
-    constructor() {
+    // use this instead of constructor for upgradeable contracts
+    function initialize() public initializer {
         owner = msg.sender;
         _resetSecretNumber();
     }
 
     function guess(uint256 _number) public {
-        require(_number > 0 && _number <= maxGuess(), 'Secret number should be between 1 and 10');
+        require(
+            _number > 0 && _number <= maxGuess(),
+            string(abi.encodePacked("Secret number should be between 1 and ", Strings.toString(maxGuess())))
+        );
         totalGuesses += 1;
         attempts[msg.sender] += 1;
 
@@ -45,7 +51,7 @@ contract GameV1 is ContractTransparencyConfig {
     }
 
     // virtual getter for max guess range — override in derived contracts
-    function maxGuess() internal view virtual returns (uint256) {
+    function maxGuess() internal pure virtual returns (uint256) {
         return 10;
     }
 }

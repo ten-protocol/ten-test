@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
 interface ContractTransparencyConfig {
     enum Field {
         TOPIC1, TOPIC2, TOPIC3,

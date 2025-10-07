@@ -45,9 +45,9 @@ class PySysTest(TenNetworkTest):
         # connect account 2 and poll to get events
         network_2 = self.get_network_connection()
         network_2.connect_account2(self)
-        self.get_logs(network_2, address, abi_path, block_number)
+        self.assert_logs(network_2, address, abi_path, block_number)
 
-    def get_logs(self, network, address, abi_path, block_numer):
+    def assert_logs(self, network, address, abi_path, block_numer):
         # run a javascript by the dev to get past events
         self.log.info('Get past events for subscriber')
         stdout = os.path.join(self.output, 'poller.out')

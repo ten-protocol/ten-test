@@ -6,6 +6,7 @@
         <purpose><![CDATA[
 Deploys a contract via the proxy approach which specifies a visibility configuration. Specifically it makes the contract
 transparent, meaning if account 1 transacts, account 2 will see all the events created as part of those transactions.
+Note that this explicitly uses the ten hard hat plugin.
 ]]>
         </purpose>
     </description>

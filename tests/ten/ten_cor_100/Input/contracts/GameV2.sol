@@ -7,7 +7,7 @@ import "./GameV1.sol";
 contract GameV2 is GameV1 {
 
     // virtual getter for max guess range — override in derived contracts
-    function maxGuess() internal view virtual returns (uint256) {
+    function maxGuess() internal pure override returns (uint256) {
         return 20;
     }
 }
