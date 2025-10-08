@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config: deploy and upgrade contract using a visibility config via a proxy</title>
+        <title>Visibility Config: deploy and upgrade contract using a visibility config via a proxy (logic only)</title>
         <purpose><![CDATA[
 In this test the game contract is initially deployed with a max guess of 10 permitted, and transparency enabled. The
 contract is upgraded to a max permitted guess of 20, and then a transaction made to guess the number within this new
