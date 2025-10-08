@@ -13,8 +13,8 @@ boundary. Note that this does not use the ten hardhat plugin.
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>vis_config</group>
+            <group>hardhat</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

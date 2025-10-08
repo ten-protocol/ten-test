@@ -57,7 +57,7 @@ class PySysTest(GenericNetworkTest):
         self.assertGrep(file=logout, expr='Guessed event:', contains=False)  # not relevant to this user
         self.assertGrep(file=logout, expr='Attempts event:', contains=False)
 
-        # upgrade the contract
+        # upgrade the contract (which now adds in a visibility config)
         self.log.info('')
         self.log.info('Upgrading to GameV2 via a proxy')
         environ['ADDRESS'] = address
@@ -73,13 +73,9 @@ class PySysTest(GenericNetworkTest):
         # grab the block number transact and see if account 2 can get any logs
         block_number = web3_1.eth.get_block_number()
         network.transact(self, web3_1, contract.functions.guess(15), account_1, 3_000_000)
-        logout=self.get_logs(network_2, address, abi_path, block_number, client='two')
-        exprList = []
-        exprList.append('Guessed event:')
-        exprList.append('guessedNumber = 15')
-        exprList.append('Attempts event:')
-        exprList.append('attempts = 1')
-        self.assertOrderedGrep(file=logout, exprList=exprList)
+        logout = self.get_logs(network_2, address, abi_path, block_number, client='two')
+        self.assertGrep(file=logout, expr='Guessed event:', contains=False)  # not relevant to this user
+        self.assertGrep(file=logout, expr='Attempts event:', contains=False)
 
     def get_logs(self, network, address, abi_path, block_numer, client):
         # run a javascript by the dev to get past events
