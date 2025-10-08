@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Visibility Config: deploy and upgrade contract from no visibility config to transparent</title>
+        <purpose><![CDATA[
+The current behaviour is that visibility configs added after the initial deployment do not take effect, so in this
+instance the upgrade goes ahead but the expected change in visibility is ignored.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>vis_config</group>
+            <group>hardhat</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.sepolia</mode>
+            <mode>ten.uat</mode>
+            <mode>ten.dev</mode>
+            <mode>ten.local</mode>
+            <mode>ten.sim</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

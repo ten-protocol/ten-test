@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Visibility Config: deploy and upgrade contract using a visibility config via a proxy</title>
+        <title>Visibility Config: deploy and upgrade contract using a visibility config via a proxy (logic only)</title>
         <purpose><![CDATA[
 In this test the game contract is initially deployed with a max guess of 10 permitted, and transparency enabled. The
 contract is upgraded to a max permitted guess of 20, and then a transaction made to guess the number within this new
@@ -13,8 +13,8 @@ boundary. Note that this does not use the ten hardhat plugin.
 
     <classification>
         <groups inherit="true">
-            <group>skip</group>
             <group>vis_config</group>
+            <group>hardhat</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
