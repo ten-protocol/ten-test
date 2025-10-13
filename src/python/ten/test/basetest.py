@@ -41,7 +41,7 @@ class GenericNetworkTest(BaseTest):
 
         # every test has its own connection to the dbs - use a remote mysql persistence layer if we are running in
         # azure, and it is not a local testnet. The exception for this is the nonce db where it is always local.
-        use_remote = (not self.is_local_ten() and self.is_cloud_vm)
+        use_remote = self.is_admin() or (not self.is_local_ten() and self.is_cloud_vm)
         self.rates_db = RatesPersistence(use_remote, self.user_dir, self.machine_name)
         self.nonce_db = NoncePersistence(use_remote, self.user_dir, self.machine_name)
         self.contract_db = ContractPersistence(use_remote, self.user_dir, self.machine_name)
@@ -49,7 +49,7 @@ class GenericNetworkTest(BaseTest):
         self.pandl_db = PandLPersistence(use_remote, self.user_dir, self.machine_name)
         self.gas_db = GasPricePersistence(use_remote, self.user_dir, self.machine_name)
         self.counts_db = CountsPersistence(use_remote, self.user_dir, self.machine_name)
-        self.results_db = PerformanceResultsPersistence(self.is_cloud_vm, self.user_dir, self.machine_name)
+        self.results_db = PerformanceResultsPersistence(self.is_admin() or self.is_cloud_vm, self.user_dir, self.machine_name)
         self.txcosts_db = TxCostResultsPersistence(use_remote, self.user_dir, self.machine_name)
         self.runtype_db = RunTypePersistence.init(use_remote, self.user_dir, self.machine_name)
         self.stats_db = StatsPersistence(True, self.user_dir, self.machine_name)
@@ -66,7 +66,10 @@ class GenericNetworkTest(BaseTest):
         self.cost = 0
         _, self.eth_price = self.rates_db.get_latest_rate('ETH', 'USD')
 
-        if runner.xargs.get('NO_CONNECT', False):
+        if self.is_admin():
+            runner.log.warn('Running in an administration mode')
+
+        elif runner.xargs.get('NO_CONNECT', False):
             runner.log.warn('No connection to the network has been requested for this test run')
 
         else:
@@ -112,6 +115,10 @@ class GenericNetworkTest(BaseTest):
             web3, account = self.network_funding.connect(self, private_key=pk, check_funds=False, verbose=False)
             self.drain_native(web3, account, self.network_funding)
         self.log.info('')
+
+    def is_admin(self):
+        """Return true if we are running in an admin mode. """
+        return self.env in ['admin']
 
     def is_ten(self):
         """Return true if we are running against a Ten network. """

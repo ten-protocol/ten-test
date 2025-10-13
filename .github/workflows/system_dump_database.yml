@@ -1,0 +1,32 @@
+# Dump the database tables to file and retain for 3 days
+#
+name: '[system] Dump database contents'
+run-name: Dump database contents to file
+on:
+  schedule:
+    - cron: '0 0 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  run-check:
+    runs-on: [self-hosted, Linux, X64, all-testnets]
+    steps:
+      - name: 'Check out ten-test'
+        uses: actions/checkout@v3
+        with:
+          path: ./ten-test
+
+      - name: 'Dump the database tables'
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin/utils
+          /usr/local/bin/pysys.py run -m admin dump_database
+
+      - name: 'Upload database dump files'
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: database-artifact
+          path: |
+            ${{ github.workspace }}/ten-test/admin/utils/dump_database/Output
+          if-no-files-found: ignore
+          retention-days: 3

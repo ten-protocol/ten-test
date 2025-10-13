@@ -22,6 +22,7 @@ class CountsPersistence:
     SQL_DELETE = "DELETE from counts WHERE environment=?"
     SQL_SELTHR = "SELECT time, count FROM counts WHERE name=? AND address = ? AND environment=? ORDER BY time DESC LIMIT 3"
     SQL_SELHOR = "SELECT time, count FROM counts WHERE name=? AND address = ? AND environment=? and time >= ? ORDER BY time DESC"
+    SQL_SELALL = "SELECT * from counts ORDER BY time ASC"
 
     @classmethod
     def init(cls, use_remote, user_dir, host):
@@ -37,6 +38,7 @@ class CountsPersistence:
         self.sqldel = normalise(self.SQL_DELETE, self.dbconnection.type)
         self.sqlthr = normalise(self.SQL_SELTHR, self.dbconnection.type)
         self.sqlhor = normalise(self.SQL_SELHOR, self.dbconnection.type)
+        self.sqlall = normalise(self.SQL_SELALL, self.dbconnection.type)
         self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
@@ -67,3 +69,10 @@ class CountsPersistence:
         """Return the transaction count with time for a particular logical account."""
         self.cursor.execute(self.sqlhor, (name, address, environment, time))
         return self.cursor.fetchall()
+
+    def dump(self, file='counts.dmp'):
+        self.cursor.execute(self.sqlall, ())
+        with open(file, 'w') as fp:
+            for e in self.cursor.fetchall():
+                fp.write('cursor.execute("INSERT INTO counts VALUES (\'%s\',\'%s\',\'%s\',%s,%s);")\n' % (e[0],e[1],e[2],e[3],e[4]))
+        self.cursor.fetchall()

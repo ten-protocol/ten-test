@@ -51,11 +51,13 @@ class TenRunnerPlugin():
             runner.log.info('   arbitrum      Arbitrum Network')
             runner.log.info('   ganache       Ganache Network started by the framework')
             runner.log.info('   sepolia       Sepolia Network')
+            runner.log.info('   admin         Used for non network administration')
             sys.exit()
 
         self.env = runner.mode
         runner.output = os.path.join(PROJECT.root, '.runner')
-        runner.log.info('Runner is executing against environment %s (chain id %d)' % (self.env, Properties().chain_id(self.env)))
+        if not self.is_admin():
+            runner.log.info('Runner is executing against environment %s (chain id %d)' % (self.env, Properties().chain_id(self.env)))
 
         # create dir for any runner output
         if os.path.exists(runner.output): shutil.rmtree(runner.output)
@@ -72,7 +74,7 @@ class TenRunnerPlugin():
 
         # every test has its own connection to the dbs - use a remote mysql persistence layer if we are running in
         # azure, and it is not a local testnet.
-        use_remote = (not self.is_local_ten() and self.is_cloud_vm)
+        use_remote = self.is_admin() or (not self.is_local_ten() and self.is_cloud_vm)
         rates_db = RatesPersistence.init(use_remote, self.user_dir, self.machine_name)
         nonce_db = NoncePersistence.init(use_remote, self.user_dir, self.machine_name)
         contracts_db = ContractPersistence.init(use_remote, self.user_dir, self.machine_name)
@@ -227,6 +229,10 @@ class TenRunnerPlugin():
                                        quiet=True, arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
         runner.waitForSignal(stdout, expr='TEN gateway started', timeout=30)
         return hprocess, port
+
+    def is_admin(self):
+        """Return true if we are running in an admin mode. """
+        return self.env in ['admin']
 
     def is_ten(self):
         """Return true if we are running against a Ten network. """
