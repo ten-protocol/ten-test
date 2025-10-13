@@ -18,6 +18,7 @@ class RatesPersistence:
     SQL_INSERT = "INSERT INTO rates VALUES (?, ?, ?, ?);"
     SQL_DELETE = "DELETE from rates WHERE crypto=?;"
     SQL_SELECT = "SELECT time, rate FROM rates WHERE crypto=? and currency=? ORDER BY time DESC LIMIT 1;"
+    SQL_SELALL = "SELECT * from rates ORDER BY time ASC"
 
     @classmethod
     def init(cls, use_remote, user_dir, host):
@@ -32,6 +33,7 @@ class RatesPersistence:
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
         self.sqldel = normalise(self.SQL_DELETE, self.dbconnection.type)
         self.sqlsel = normalise(self.SQL_SELECT, self.dbconnection.type)
+        self.sqlall = normalise(self.SQL_SELALL, self.dbconnection.type)
         self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
@@ -70,6 +72,11 @@ class RatesPersistence:
         except:
             return None, None
 
-
+    def dump(self, file='rates.dmp'):
+        self.cursor.execute(self.sqlall, ())
+        with open(file, 'w') as fp:
+            for e in self.cursor.fetchall():
+                fp.write('cursor.execute("INSERT INTO rates VALUES (\'%s\',\'%s\',%s,\'%s\');")\n' % (e[0],e[1],e[2],e[3]))
+        self.cursor.fetchall()
 
 

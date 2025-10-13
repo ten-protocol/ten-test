@@ -16,6 +16,7 @@ class GasPricePersistence:
                  "l2gasprice REAL, " \
                  "l1blobprice REAL)"
     SQL_INSERT = "INSERT INTO gas_prices VALUES (?, ?, ?, ?, ?);"
+    SQL_SELALL = "SELECT * from gas_prices ORDER BY time ASC"
 
     @classmethod
     def init(cls, use_remote, user_dir, host):
@@ -28,6 +29,7 @@ class GasPricePersistence:
         self.host = host
         self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
+        self.sqlall = normalise(self.SQL_SELALL, self.dbconnection.type)
         self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
@@ -43,6 +45,13 @@ class GasPricePersistence:
         """Insert new values for a particular environment."""
         self.cursor.execute(self.sqlins, (environment, time, l1gasprice, l2gasprice, l1blobprice))
         self.dbconnection.connection.commit()
+
+    def dump(self, file='gas_prices.dmp'):
+        self.cursor.execute(self.sqlall, ())
+        with open(file, 'w') as fp:
+            for e in self.cursor.fetchall():
+                fp.write('cursor.execute("INSERT INTO gas_prices VALUES (\'%s\',%s,%s,%s,%s);")\n' % (e[0],e[1],e[2],e[3],e[4]))
+        self.cursor.fetchall()
 
 
 class PandLPersistence:
@@ -62,6 +71,7 @@ class PandLPersistence:
     SQL_INSERT = "INSERT INTO pandl VALUES (?, ?, ?, ?, ?)"
     SQL_DELETE = "DELETE from pandl WHERE environment=?"
     SQL_SELECT = "SELECT time, seq_diff, gas_diff, pandl FROM pandl WHERE environment=? ORDER BY time DESC"
+    SQL_SELALL = "SELECT * from pandl ORDER BY time ASC"
 
     @classmethod
     def init(cls, use_remote, user_dir, host):
@@ -76,6 +86,7 @@ class PandLPersistence:
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
         self.sqldel = normalise(self.SQL_DELETE, self.dbconnection.type)
         self.sqlsel = normalise(self.SQL_SELECT, self.dbconnection.type)
+        self.sqlall = normalise(self.SQL_SELALL, self.dbconnection.type)
         self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
@@ -102,6 +113,13 @@ class PandLPersistence:
         self.cursor.execute(self.sqlsel, (environment))
         return self.cursor.fetchall()
 
+    def dump(self, file='pandl.dmp'):
+        self.cursor.execute(self.sqlall, ())
+        with open(file, 'w') as fp:
+            for e in self.cursor.fetchall():
+                fp.write('cursor.execute("INSERT INTO pandl VALUES (\'%s\',%s,%s,%s,%s);")\n' % (e[0],e[1],e[2],e[3],e[4]))
+        self.cursor.fetchall()
+
 
 class FundsPersistence:
     """Abstracts the persistence of funds across accounts into a local or remote database.
@@ -120,6 +138,7 @@ class FundsPersistence:
     SQL_INSERT = "INSERT INTO funds VALUES (?, ?, ?, ?, ?)"
     SQL_DELETE = "DELETE from funds WHERE environment=?"
     SQL_SELECT = "SELECT time, balance FROM funds WHERE name=? and environment=? ORDER BY time DESC"
+    SQL_SELALL = "SELECT * from funds ORDER BY time ASC"
 
     @classmethod
     def init(cls, use_remote, user_dir, host):
@@ -134,6 +153,7 @@ class FundsPersistence:
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
         self.sqldel = normalise(self.SQL_DELETE, self.dbconnection.type)
         self.sqlsel = normalise(self.SQL_SELECT, self.dbconnection.type)
+        self.sqlall = normalise(self.SQL_SELALL, self.dbconnection.type)
         self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
@@ -160,3 +180,9 @@ class FundsPersistence:
         self.cursor.execute(self.sqlsel, (name, environment))
         return self.cursor.fetchall()
 
+    def dump(self, file='funds.dmp'):
+        self.cursor.execute(self.sqlall, ())
+        with open(file, 'w') as fp:
+            for e in self.cursor.fetchall():
+                fp.write('cursor.execute("INSERT INTO funds VALUES (\'%s\',\'%s\',\'%s\',%s,\'%s\');")\n' % (e[0],e[1],e[2],e[3],e[4]))
+        self.cursor.fetchall()
