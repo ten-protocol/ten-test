@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Dump the database tables</title>
+        <purpose><![CDATA[
+]]>
+        </purpose>
+    </description>
+    <classification>
+        <groups inherit="true">
+            <group>database</group>
+        </groups>
+        <modes inherit="true">
+            <mode>admin</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

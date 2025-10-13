@@ -66,7 +66,10 @@ class GenericNetworkTest(BaseTest):
         self.cost = 0
         _, self.eth_price = self.rates_db.get_latest_rate('ETH', 'USD')
 
-        if runner.xargs.get('NO_CONNECT', False):
+        if self.is_admin():
+            runner.log.warn('Running in an administration mode')
+
+        elif runner.xargs.get('NO_CONNECT', False):
             runner.log.warn('No connection to the network has been requested for this test run')
 
         else:
@@ -112,6 +115,10 @@ class GenericNetworkTest(BaseTest):
             web3, account = self.network_funding.connect(self, private_key=pk, check_funds=False, verbose=False)
             self.drain_native(web3, account, self.network_funding)
         self.log.info('')
+
+    def is_admin(self):
+        """Return true if we are running in an admin mode. """
+        return self.env in ['admin']
 
     def is_ten(self):
         """Return true if we are running against a Ten network. """
