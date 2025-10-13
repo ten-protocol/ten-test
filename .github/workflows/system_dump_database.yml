@@ -27,6 +27,6 @@ jobs:
         with:
           name: database-artifact
           path: |
-            ${{ github.workspace }}/ten-test/admin/utils/dump_database/Output
+            ${{ github.workspace }}/ten-test/admin/utils/database_dump/Output/**/*.sql
           if-no-files-found: ignore
           retention-days: 3
