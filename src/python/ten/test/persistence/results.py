@@ -1,4 +1,3 @@
-import time
 from ten.test.persistence import normalise
 from ten.test.persistence import get_connection
 
@@ -19,6 +18,7 @@ class TxCostResultsPersistence:
                  "gasestimate REAL)"
     SQL_INSERT = "INSERT INTO tx_costs VALUES (?, ?, ?, ?, ?, ?)"
     SQL_SELECT = "SELECT time, gasprice, gasused, gasestimate FROM tx_costs WHERE name=? AND environment=? ORDER BY time ASC"
+    SQL_SELALL = "SELECT * from tx_costs ORDER BY time ASC"
 
     @classmethod
     def init(cls, use_remote, user_dir, host):
@@ -32,26 +32,34 @@ class TxCostResultsPersistence:
         self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
         self.sqlsel = normalise(self.SQL_SELECT, self.dbconnection.type)
+        self.sqlall = normalise(self.SQL_SELALL, self.dbconnection.type)
         self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
         """Create the cursor to the underlying persistence."""
         self.cursor.execute(self.SQL_CREATE)
 
-    def insert(self, name, environment, time, gasprice, gasused, gasestimate):
-        """Insert a new performance result into the persistence. """
-        self.cursor.execute(self.sqlins, (name, environment, time, gasprice, gasused, gasestimate))
-        self.dbconnection.connection.commit()
-
     def close(self):
         """Close the connection to the underlying persistence."""
         self.cursor.close()
         self.dbconnection.connection.close()
 
+    def insert(self, name, environment, time, gasprice, gasused, gasestimate):
+        """Insert a new performance result into the persistence. """
+        self.cursor.execute(self.sqlins, (name, environment, time, gasprice, gasused, gasestimate))
+        self.dbconnection.connection.commit()
+
     def get_results(self, name, environment):
         """Return the performance results for a particular test and environment. """
         self.cursor.execute(self.sqlsel, (self.host, name, environment))
         return self.cursor.fetchall()
+
+    def dump(self, file='tx_costs.dmp'):
+        self.cursor.execute(self.sqlall, ())
+        with open(file, 'w') as fp:
+            for e in self.cursor.fetchall():
+                fp.write('cursor.execute("INSERT INTO tx_costs VALUES (\'%s\',\'%s\,%s,%s,%s,%s);")\n' % (e[0],e[1],e[2],e[3],e[4],e[5]))
+        self.cursor.fetchall()
 
 
 class RunTypePersistence:
@@ -66,8 +74,9 @@ class RunTypePersistence:
                  "time INTEGER, " \
                  "outcome BOOLEAN)"
     SQL_INSERT = "INSERT INTO results_type VALUES (?, ?, ?, ?, ?)"
-    SQL_SELONE = "SELECT time, outcome from results_type WHERE environment=? and type=? and outcome=? order by time desc limit 1"
-    SQL_SELNUM = "SELECT time, outcome from results_type WHERE environment=? and type=? order by time desc limit ?"
+    SQL_SELONE = "SELECT time, outcome from results_type WHERE environment=? and type=? and outcome=? ORDER BY time DESC limit 1"
+    SQL_SELNUM = "SELECT time, outcome from results_type WHERE environment=? and type=? ORDER BY time DESC limit ?"
+    SQL_SELALL = "SELECT * from results_type ORDER BY time ASC"
 
     @classmethod
     def init(cls, use_remote, user_dir, host):
@@ -82,11 +91,17 @@ class RunTypePersistence:
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
         self.sqlone = normalise(self.SQL_SELONE, self.dbconnection.type)
         self.sqlnum = normalise(self.SQL_SELNUM, self.dbconnection.type)
+        self.sqlall = normalise(self.SQL_SELALL, self.dbconnection.type)
         self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
         """Create the cursor to the underlying persistence."""
         self.cursor.execute(self.SQL_CREATE)
+
+    def close(self):
+        """Close the connection to the underlying persistence."""
+        self.cursor.close()
+        self.dbconnection.connection.close()
 
     def insert(self, uuid, environment, type, time, outcome):
         """Insert a new run into the persistence. """
@@ -104,10 +119,12 @@ class RunTypePersistence:
         self.cursor.execute(self.sqlnum, (environment, type, num))
         return self.cursor.fetchall()
 
-    def close(self):
-        """Close the connection to the underlying persistence."""
-        self.cursor.close()
-        self.dbconnection.connection.close()
+    def dump(self, file='results_type.dmp'):
+        self.cursor.execute(self.sqlall, ())
+        with open(file, 'w') as fp:
+            for e in self.cursor.fetchall():
+                fp.write('cursor.execute("INSERT INTO results_type VALUES (\'%s\',\'%s\,\'%s\',%s,%s);")\n' % (e[0],e[1],e[2],e[3],e[4]))
+        self.cursor.fetchall()
 
 
 class OutcomeResultsPersistence:
@@ -127,6 +144,7 @@ class OutcomeResultsPersistence:
                  "cost REAL, " \
                  "outcome VARCHAR(64))"
     SQL_INSERT = "INSERT INTO results_outcome VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+    SQL_SELALL = "SELECT * from results_outcome ORDER BY time ASC"
 
     @classmethod
     def init(cls, use_remote, user_dir, host):
@@ -139,21 +157,29 @@ class OutcomeResultsPersistence:
         self.host = host
         self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
+        self.sqlall = normalise(self.SQL_SELALL, self.dbconnection.type)
         self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
         """Create the cursor to the underlying persistence."""
         self.cursor.execute(self.SQL_CREATE)
 
+    def close(self):
+        """Close the connection to the underlying persistence."""
+        self.cursor.close()
+        self.dbconnection.connection.close()
+
     def insert(self, uuid, test, environment, time, duration, cost, outcome):
         """Insert a new performance result into the persistence. """
         self.cursor.execute(self.sqlins, (uuid, self.host, test, environment, time, duration, cost, outcome))
         self.dbconnection.connection.commit()
 
-    def close(self):
-        """Close the connection to the underlying persistence."""
-        self.cursor.close()
-        self.dbconnection.connection.close()
+    def dump(self, file='results_outcome.dmp'):
+        self.cursor.execute(self.sqlall, ())
+        with open(file, 'w') as fp:
+            for e in self.cursor.fetchall():
+                fp.write('cursor.execute("INSERT INTO results_outcome VALUES (\'%s\',\'%s\',\'%s\',\'%s\',%s,%s,%s,\'%s\');")\n' % (e[0],e[1],e[2],e[3],e[4],e[5],e[6],e[7]))
+        self.cursor.fetchall()
 
 
 class PerformanceResultsPersistence:
@@ -173,6 +199,7 @@ class PerformanceResultsPersistence:
     SQL_INSERT = "INSERT INTO results_performance VALUES (?, ?, ?, ?, ?)"
     SQL_DELETE = "DELETE from results_performance WHERE host=? and environment=?"
     SQL_SELECT = "SELECT time, result FROM results_performance WHERE host=? AND test=? AND environment=? ORDER BY time ASC"
+    SQL_SELALL = "SELECT * from results_performance ORDER BY time ASC"
 
     @classmethod
     def init(cls, use_remote, user_dir, host):
@@ -187,6 +214,7 @@ class PerformanceResultsPersistence:
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
         self.sqldel = normalise(self.SQL_DELETE, self.dbconnection.type)
         self.sqlsel = normalise(self.SQL_SELECT, self.dbconnection.type)
+        self.sqlall = normalise(self.SQL_SELALL, self.dbconnection.type)
         self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
@@ -213,3 +241,9 @@ class PerformanceResultsPersistence:
         self.cursor.execute(self.sqlsel, (self.host, test, environment))
         return self.cursor.fetchall()
 
+    def dump(self, file='results_performance.dmp'):
+        self.cursor.execute(self.sqlall, ())
+        with open(file, 'w') as fp:
+            for e in self.cursor.fetchall():
+                fp.write('cursor.execute("INSERT INTO results_performance VALUES (\'%s\',\'%s\',\'%s\',%s,%s);")\n' % (e[0],e[1],e[2],e[3],e[4]))
+        self.cursor.fetchall()

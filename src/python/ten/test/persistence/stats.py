@@ -1,4 +1,3 @@
-import os
 from ten.test.persistence import normalise
 from ten.test.persistence import get_connection
 
@@ -18,8 +17,8 @@ class StatsPersistence:
                  "delta INTEGER, " \
                  "running INTEGER)"
     SQL_INSERT = "INSERT INTO stats VALUES (?, ?, ?, ?, ?, ?);"
-    SQL_SELONE = "SELECT value, running from stats WHERE environment=? and type=? order by time desc limit 1"
-    SQL_ALL = "SELECT * from stats order by time asc;"
+    SQL_SELONE = "SELECT value, running from stats WHERE environment=? and type=? ORDER BY time DESC limit 1"
+    SQL_SELALL = "SELECT * from stats ORDER BY time ASC"
 
     @classmethod
     def init(cls, use_remote, user_dir, host):
@@ -33,7 +32,7 @@ class StatsPersistence:
         self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
         self.sqlone = normalise(self.SQL_SELONE, self.dbconnection.type)
-        self.sqlall = normalise(self.SQL_ALL, self.dbconnection.type)
+        self.sqlall = normalise(self.SQL_SELALL, self.dbconnection.type)
         self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
@@ -60,5 +59,5 @@ class StatsPersistence:
         self.cursor.execute(self.sqlall, ())
         with open(file, 'w') as fp:
             for e in self.cursor.fetchall():
-                fp.write('cursor.execute("INSERT INTO stats VALUES (\'%s\',%d,\'%s\',%d,%d,%d);)"\n' % (e[0],e[1],e[2],e[3],e[4],e[5]))
+                fp.write('cursor.execute("INSERT INTO stats VALUES (\'%s\',%d,\'%s\',%s,%s,%s);")\n' % (e[0],e[1],e[2],e[3],e[4],e[5]))
         self.cursor.fetchall()
