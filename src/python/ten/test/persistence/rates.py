@@ -72,11 +72,11 @@ class RatesPersistence:
         except:
             return None, None
 
-    def dump(self, file='rates.dmp'):
+    def dump(self, file='rates.sql'):
         self.cursor.execute(self.sqlall, ())
         with open(file, 'w') as fp:
             for e in self.cursor.fetchall():
-                fp.write('cursor.execute("INSERT INTO rates VALUES (\'%s\',\'%s\',%s,\'%s\');")\n' % (e[0],e[1],e[2],e[3]))
+                fp.write('INSERT INTO rates VALUES (\'%s\',\'%s\',%s,\'%s\');\n' % (e[0],e[1],e[2],e[3]))
         self.cursor.fetchall()
 
 
