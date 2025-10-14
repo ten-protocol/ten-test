@@ -55,9 +55,9 @@ class StatsPersistence:
         try: return self.cursor.fetchone()
         except: return None
 
-    def dump(self, file='stats.dmp'):
+    def dump(self, file='stats.sql'):
         self.cursor.execute(self.sqlall, ())
         with open(file, 'w') as fp:
             for e in self.cursor.fetchall():
-                fp.write('cursor.execute("INSERT INTO stats VALUES (\'%s\',%d,\'%s\',%s,%s,%s);")\n' % (e[0],e[1],e[2],e[3],e[4],e[5]))
+                fp.write('INSERT INTO stats VALUES (\'%s\',%d,\'%s\',%s,%s,%s);\n' % (e[0],e[1],e[2],e[3],e[4],e[5]))
         self.cursor.fetchall()

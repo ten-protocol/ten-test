@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Load the database tables</title>
+        <purpose><![CDATA[
+After a dump, copy the sql dump files in the input directory of this test case and run. NOTE only do this manually
+and only against a new database as configured in your user.properties.
+]]>
+        </purpose>
+    </description>
+    <classification>
+        <groups inherit="true">
+            <group>database</group>
+        </groups>
+        <modes inherit="true">
+            <mode>admin</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

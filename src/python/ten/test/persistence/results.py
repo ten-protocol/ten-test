@@ -54,11 +54,11 @@ class TxCostResultsPersistence:
         self.cursor.execute(self.sqlsel, (self.host, name, environment))
         return self.cursor.fetchall()
 
-    def dump(self, file='tx_costs.dmp'):
+    def dump(self, file='tx_costs.sql'):
         self.cursor.execute(self.sqlall, ())
         with open(file, 'w') as fp:
             for e in self.cursor.fetchall():
-                fp.write('cursor.execute("INSERT INTO tx_costs VALUES (\'%s\',\'%s\,%s,%s,%s,%s);")\n' % (e[0],e[1],e[2],e[3],e[4],e[5]))
+                fp.write('INSERT INTO tx_costs VALUES (\'%s\',\'%s\',%s,%s,%s,%s);\n' % (e[0],e[1],e[2],e[3],e[4],e[5]))
         self.cursor.fetchall()
 
 
@@ -119,11 +119,11 @@ class RunTypePersistence:
         self.cursor.execute(self.sqlnum, (environment, type, num))
         return self.cursor.fetchall()
 
-    def dump(self, file='results_type.dmp'):
+    def dump(self, file='results_type.sql'):
         self.cursor.execute(self.sqlall, ())
         with open(file, 'w') as fp:
             for e in self.cursor.fetchall():
-                fp.write('cursor.execute("INSERT INTO results_type VALUES (\'%s\',\'%s\,\'%s\',%s,%s);")\n' % (e[0],e[1],e[2],e[3],e[4]))
+                fp.write('INSERT INTO results_type VALUES (\'%s\',\'%s\',\'%s\',%s,%s);\n' % (e[0],e[1],e[2],e[3],e[4]))
         self.cursor.fetchall()
 
 
@@ -174,11 +174,11 @@ class OutcomeResultsPersistence:
         self.cursor.execute(self.sqlins, (uuid, self.host, test, environment, time, duration, cost, outcome))
         self.dbconnection.connection.commit()
 
-    def dump(self, file='results_outcome.dmp'):
+    def dump(self, file='results_outcome.sql'):
         self.cursor.execute(self.sqlall, ())
         with open(file, 'w') as fp:
             for e in self.cursor.fetchall():
-                fp.write('cursor.execute("INSERT INTO results_outcome VALUES (\'%s\',\'%s\',\'%s\',\'%s\',%s,%s,%s,\'%s\');")\n' % (e[0],e[1],e[2],e[3],e[4],e[5],e[6],e[7]))
+                fp.write('INSERT INTO results_outcome VALUES (\'%s\',\'%s\',\'%s\',\'%s\',%s,%s,%s,\'%s\');\n' % (e[0],e[1],e[2],e[3],e[4],e[5],e[6],e[7]))
         self.cursor.fetchall()
 
 
@@ -241,9 +241,9 @@ class PerformanceResultsPersistence:
         self.cursor.execute(self.sqlsel, (self.host, test, environment))
         return self.cursor.fetchall()
 
-    def dump(self, file='results_performance.dmp'):
+    def dump(self, file='results_performance.sql'):
         self.cursor.execute(self.sqlall, ())
         with open(file, 'w') as fp:
             for e in self.cursor.fetchall():
-                fp.write('cursor.execute("INSERT INTO results_performance VALUES (\'%s\',\'%s\',\'%s\',%s,%s);")\n' % (e[0],e[1],e[2],e[3],e[4]))
+                fp.write('INSERT INTO results_performance VALUES (\'%s\',\'%s\',\'%s\',%s,%s);\n' % (e[0],e[1],e[2],e[3],e[4]))
         self.cursor.fetchall()

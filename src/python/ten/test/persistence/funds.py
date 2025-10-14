@@ -46,11 +46,11 @@ class GasPricePersistence:
         self.cursor.execute(self.sqlins, (environment, time, l1gasprice, l2gasprice, l1blobprice))
         self.dbconnection.connection.commit()
 
-    def dump(self, file='gas_prices.dmp'):
+    def dump(self, file='gas_prices.sql'):
         self.cursor.execute(self.sqlall, ())
         with open(file, 'w') as fp:
             for e in self.cursor.fetchall():
-                fp.write('cursor.execute("INSERT INTO gas_prices VALUES (\'%s\',%s,%s,%s,%s);")\n' % (e[0],e[1],e[2],e[3],e[4]))
+                fp.write('INSERT INTO gas_prices VALUES (\'%s\',%s,%s,%s,%s);\n' % (e[0],e[1],e[2],e[3],e[4]))
         self.cursor.fetchall()
 
 
@@ -113,11 +113,11 @@ class PandLPersistence:
         self.cursor.execute(self.sqlsel, (environment))
         return self.cursor.fetchall()
 
-    def dump(self, file='pandl.dmp'):
+    def dump(self, file='pandl.sql'):
         self.cursor.execute(self.sqlall, ())
         with open(file, 'w') as fp:
             for e in self.cursor.fetchall():
-                fp.write('cursor.execute("INSERT INTO pandl VALUES (\'%s\',%s,%s,%s,%s);")\n' % (e[0],e[1],e[2],e[3],e[4]))
+                fp.write('INSERT INTO pandl VALUES (\'%s\',%s,%s,%s,%s);\n' % (e[0],e[1],e[2],e[3],e[4]))
         self.cursor.fetchall()
 
 
@@ -180,9 +180,9 @@ class FundsPersistence:
         self.cursor.execute(self.sqlsel, (name, environment))
         return self.cursor.fetchall()
 
-    def dump(self, file='funds.dmp'):
+    def dump(self, file='funds.sql'):
         self.cursor.execute(self.sqlall, ())
         with open(file, 'w') as fp:
             for e in self.cursor.fetchall():
-                fp.write('cursor.execute("INSERT INTO funds VALUES (\'%s\',\'%s\',\'%s\',%s,\'%s\');")\n' % (e[0],e[1],e[2],e[3],e[4]))
+                fp.write('INSERT INTO funds VALUES (\'%s\',\'%s\',\'%s\',%s,\'%s\');\n' % (e[0],e[1],e[2],e[3],e[4]))
         self.cursor.fetchall()
