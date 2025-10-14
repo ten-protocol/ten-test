@@ -12,6 +12,7 @@ class PySysTest(TenNetworkTest):
     REMOTE = False
 
     def execute(self):
+        if self.REMOTE: self.log.warn('Running dump against the remote database')
 
         rates_db = RatesPersistence.init(self.REMOTE, self.user_dir, self.machine_name)
         funds_db = FundsPersistence.init(self.REMOTE, self.user_dir, self.machine_name)
@@ -36,6 +37,15 @@ class PySysTest(TenNetworkTest):
         self.load(outcomes_db, 'results_outcome.sql')
 
     def load(self, db, filename):
-        with open(os.path.join(self.input, filename), 'w') as fp:
-            for e in fp.readlines(): db.cursor.execute(e)
+        path = os.path.join(self.input, filename)
+        if os.path.exists(path):
+            self.log.info('Executing commands in input file %s' % filename)
+            with open(path, 'r') as fp:
+                for e in fp.readlines():
+                    line = e.strip()
+                    line = line.replace('None', '\'NULL\'')
+                    self.log.info(line)
+                    db.cursor.execute(line)
+        else:
+            self.log.warn('Input file %s does not exist' % filename)
         db.dbconnection.connection.commit()

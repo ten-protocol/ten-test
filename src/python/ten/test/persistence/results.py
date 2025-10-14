@@ -123,7 +123,7 @@ class RunTypePersistence:
         self.cursor.execute(self.sqlall, ())
         with open(file, 'w') as fp:
             for e in self.cursor.fetchall():
-                fp.write('INSERT INTO results_type VALUES (\'%s\',\'%s\,\'%s\',%s,%s);\n' % (e[0],e[1],e[2],e[3],e[4]))
+                fp.write('INSERT INTO results_type VALUES (\'%s\',\'%s\',\'%s\',%s,%s);\n' % (e[0],e[1],e[2],e[3],e[4]))
         self.cursor.fetchall()
 
 
