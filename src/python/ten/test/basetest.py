@@ -39,6 +39,9 @@ class GenericNetworkTest(BaseTest):
         self.is_cloud_vm = runner.ten_runner.is_cloud_vm
         if hasattr(runner, 'uuid'): self.log.info('Running as job uuid %s', runner.uuid)
 
+        # if in admin mode we skip the setup
+        if self.is_admin(): return
+
         # every test has its own connection to the dbs - use a remote mysql persistence layer if we are running in
         # azure, and it is not a local testnet. The exception for this is the nonce db where it is always local.
         use_remote = self.is_admin() or (not self.is_local_ten() and self.is_cloud_vm)
@@ -51,7 +54,7 @@ class GenericNetworkTest(BaseTest):
         self.counts_db = CountsPersistence(use_remote, self.user_dir, self.machine_name)
         self.results_db = PerformanceResultsPersistence(self.is_admin() or self.is_cloud_vm, self.user_dir, self.machine_name)
         self.txcosts_db = TxCostResultsPersistence(use_remote, self.user_dir, self.machine_name)
-        self.runtype_db = RunTypePersistence.init(use_remote, self.user_dir, self.machine_name)
+        self.runtype_db = RunTypePersistence(use_remote, self.user_dir, self.machine_name)
         self.stats_db = StatsPersistence(True, self.user_dir, self.machine_name)
         self.addCleanupFunction(self.close_db)
 
@@ -66,10 +69,7 @@ class GenericNetworkTest(BaseTest):
         self.cost = 0
         _, self.eth_price = self.rates_db.get_latest_rate('ETH', 'USD')
 
-        if self.is_admin():
-            runner.log.warn('Running in an administration mode')
-
-        elif runner.xargs.get('NO_CONNECT', False):
+        if runner.xargs.get('NO_CONNECT', False):
             runner.log.warn('No connection to the network has been requested for this test run')
 
         else:

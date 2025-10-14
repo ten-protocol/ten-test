@@ -1,32 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <pysystest type="auto">
-  
-  <description> 
-	<title></title>    
-	<purpose><![CDATA[
+
+    <description>
+        <title>Load the database tables</title>
+        <purpose><![CDATA[
+After a dump, copy the sql dump files in the input directory of this test case and run. NOTE only do this manually
+and only against a new database as configured in your user.properties.
 ]]>
-	</purpose>
-  </description>
+        </purpose>
+    </description>
+    <classification>
+        <groups inherit="true">
+            <group>database</group>
+        </groups>
+        <modes inherit="true">
+            <mode>admin</mode>
+        </modes>
+    </classification>
 
-  <!-- uncomment this to skip the test:  
-  <skipped reason=""/> 
-  -->
-  
-  <classification>
-	<groups inherit="true">
-	  <group></group>
-	</groups>
-	<modes inherit="true">
-	</modes>
-  </classification>
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
 
-  <data>
-	<class name="PySysTest" module="run"/>
-  </data>
-  
-  <traceability>
-	<requirements>
-	  <requirement id=""/>     
-	</requirements>
-  </traceability>
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
 </pysystest>

@@ -78,5 +78,3 @@ class RatesPersistence:
             for e in self.cursor.fetchall():
                 fp.write('INSERT INTO rates VALUES (\'%s\',\'%s\',%s,\'%s\');\n' % (e[0],e[1],e[2],e[3]))
         self.cursor.fetchall()
-
-

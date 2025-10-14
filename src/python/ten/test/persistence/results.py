@@ -58,7 +58,7 @@ class TxCostResultsPersistence:
         self.cursor.execute(self.sqlall, ())
         with open(file, 'w') as fp:
             for e in self.cursor.fetchall():
-                fp.write('INSERT INTO tx_costs VALUES (\'%s\',\'%s\,%s,%s,%s,%s);\n' % (e[0],e[1],e[2],e[3],e[4],e[5]))
+                fp.write('INSERT INTO tx_costs VALUES (\'%s\',\'%s\',%s,%s,%s,%s);\n' % (e[0],e[1],e[2],e[3],e[4],e[5]))
         self.cursor.fetchall()
 
 

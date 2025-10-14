@@ -33,6 +33,7 @@ class TenRunnerPlugin():
         self.env = None
         self.balances = OrderedDict()
         self.cloud_info = is_cloud_vm()
+        self.machine_name = None
         self.is_cloud_vm = self.cloud_info is not None
         self.user_dir = os.path.join(str(Path.home()), '.tentest')
         if not os.path.exists(self.user_dir): os.makedirs(self.user_dir)
@@ -56,8 +57,6 @@ class TenRunnerPlugin():
 
         self.env = runner.mode
         runner.output = os.path.join(PROJECT.root, '.runner')
-        if not self.is_admin():
-            runner.log.info('Runner is executing against environment %s (chain id %d)' % (self.env, Properties().chain_id(self.env)))
 
         # create dir for any runner output
         if os.path.exists(runner.output): shutil.rmtree(runner.output)
@@ -72,6 +71,13 @@ class TenRunnerPlugin():
             self.machine_name = socket.gethostname()
             runner.log.info('Running on local (%s)' % self.machine_name)
 
+        # if in admin mode we skip the setup (we don't run any tests against any network)
+        if self.is_admin():
+            runner.log.warn('Runner is in administration mode ... skipping setup')
+            return
+        else:
+            runner.log.info('Runner is executing against environment %s (chain id %d)' % (self.env, Properties().chain_id(self.env)))
+
         # every test has its own connection to the dbs - use a remote mysql persistence layer if we are running in
         # azure, and it is not a local testnet.
         use_remote = self.is_admin() or (not self.is_local_ten() and self.is_cloud_vm)
@@ -82,7 +88,7 @@ class TenRunnerPlugin():
         pandl_db = PandLPersistence.init(use_remote, self.user_dir, self.machine_name)
         gas_db = GasPricePersistence.init(use_remote, self.user_dir, self.machine_name)
         counts_db = CountsPersistence.init(use_remote, self.user_dir, self.machine_name)
-        results_db = PerformanceResultsPersistence.init(self.is_cloud_vm, self.user_dir, self.machine_name)
+        results_db = PerformanceResultsPersistence.init(self.is_admin() or self.is_cloud_vm, self.user_dir, self.machine_name)
         txcosts_db = TxCostResultsPersistence.init(use_remote, self.user_dir, self.machine_name)
         runtype_db = RunTypePersistence.init(use_remote, self.user_dir, self.machine_name)
         stats_db = StatsPersistence.init(True, self.user_dir, self.machine_name)

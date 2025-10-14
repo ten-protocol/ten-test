@@ -19,7 +19,7 @@ jobs:
       - name: 'Dump the database tables'
         run: |
           cd ${{ github.workspace }}/ten-test/admin/utils
-          /usr/local/bin/pysys.py run -m admin database_dump
+          /usr/local/bin/pysys.py run -m admin -XREMOTE database_dump
 
       - name: 'Upload database dump files'
         uses: actions/upload-artifact@v4
