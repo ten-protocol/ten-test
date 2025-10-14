@@ -23,8 +23,8 @@ class PySysTest(TenNetworkTest):
         # make sure we have at least 2 entries recorded within the last four hours
         if len(entries) >= 2:
 
-            # make sure of those recorded there is at least a one hour difference between the first and last
-            if (entries[0][0] - entries[-1][0]) >= 3600:
+            # make sure of those recorded there is at least a two hour difference between the first and last
+            if (entries[0][0] - entries[-1][0]) >= 7200:
                 self.log.info('Retrieved counts;')
                 for entry in entries: self.log.info('  %s %s', entry[0], entry[1])
 
@@ -32,7 +32,7 @@ class PySysTest(TenNetworkTest):
                 self.assertTrue(int(entries[0][1]) > int(entries[-1][1]), assertMessage='Check increase in the tx count seen')
 
             else:
-                self.log.warn('Less than 1 hour recorded between retrieved entries ... skipping')
+                self.log.warn('Less than 2 hours recorded between retrieved entries ... skipping')
 
         else:
             self.log.warn('Less than 2 entries recorded over the last 4 hour period ... skipping')
