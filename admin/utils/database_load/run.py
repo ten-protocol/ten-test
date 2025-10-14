@@ -44,7 +44,6 @@ class PySysTest(TenNetworkTest):
                 for e in fp.readlines():
                     line = e.strip()
                     line = line.replace('None', '\'NULL\'')
-                    self.log.info(line)
                     db.cursor.execute(line)
         else:
             self.log.warn('Input file %s does not exist' % filename)
