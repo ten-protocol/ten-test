@@ -75,6 +75,12 @@ class RatesPersistence:
     def dump(self, file='rates.sql'):
         self.cursor.execute(self.sqlall, ())
         with open(file, 'w') as fp:
-            for e in self.cursor.fetchall():
-                fp.write('INSERT INTO rates VALUES (\'%s\',\'%s\',%s,\'%s\');\n' % (e[0],e[1],e[2],e[3]))
-        self.cursor.fetchall()
+            for e in self.cursor.fetchall(): fp.write(','.join(map(str, e)) + '\n')
+
+    def load(self, file):
+        with open(file, 'r') as fp:
+            for e in fp.readlines():
+                line = e.strip()
+                entries = [x if x != 'None' else None for x in line.split(',')]
+                self.cursor.execute(self.sqlins, entries)
+        self.dbconnection.connection.commit()

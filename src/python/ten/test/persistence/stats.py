@@ -58,6 +58,12 @@ class StatsPersistence:
     def dump(self, file='stats.sql'):
         self.cursor.execute(self.sqlall, ())
         with open(file, 'w') as fp:
-            for e in self.cursor.fetchall():
-                fp.write('INSERT INTO stats VALUES (\'%s\',%d,\'%s\',%s,%s,%s);\n' % (e[0],e[1],e[2],e[3],e[4],e[5]))
-        self.cursor.fetchall()
+            for e in self.cursor.fetchall(): fp.write(','.join(map(str, e)) + '\n')
+
+    def load(self, file):
+        with open(file, 'r') as fp:
+            for e in fp.readlines():
+                line = e.strip()
+                entries = [x if x != 'None' else None for x in line.split(',')]
+                self.cursor.execute(self.sqlins, entries)
+        self.dbconnection.connection.commit()

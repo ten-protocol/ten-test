@@ -39,12 +39,8 @@ class PySysTest(TenNetworkTest):
     def load(self, db, filename):
         path = os.path.join(self.input, filename)
         if os.path.exists(path):
-            self.log.info('Executing commands in input file %s' % filename)
-            with open(path, 'r') as fp:
-                for e in fp.readlines():
-                    line = e.strip()
-                    line = line.replace('None', '\'NULL\'')
-                    db.cursor.execute(line)
+            self.log.info('Loading data from input file %s' % filename)
+            db.load(path)
         else:
             self.log.warn('Input file %s does not exist' % filename)
-        db.dbconnection.connection.commit()
+

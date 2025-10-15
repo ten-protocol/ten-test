@@ -49,9 +49,23 @@ class GasPricePersistence:
     def dump(self, file='gas_prices.sql'):
         self.cursor.execute(self.sqlall, ())
         with open(file, 'w') as fp:
-            for e in self.cursor.fetchall():
-                fp.write('INSERT INTO gas_prices VALUES (\'%s\',%s,%s,%s,%s);\n' % (e[0],e[1],e[2],e[3],e[4]))
-        self.cursor.fetchall()
+            for e in self.cursor.fetchall(): fp.write(','.join(map(str, e)) + '\n')
+
+    def load(self, file):
+        with open(file, 'r') as fp:
+            for e in fp.readlines():
+                line = e.strip()
+                entries = [x if x != 'None' else None for x in line.split(',')]
+                self.cursor.execute(self.sqlins, entries)
+        self.dbconnection.connection.commit()
+
+    def load(self, file):
+        with open(file, 'r') as fp:
+            for e in fp.readlines():
+                line = e.strip()
+                entries = [x if x != 'None' else None for x in line.split(',')]
+                self.cursor.execute(self.sqlins, entries)
+        self.dbconnection.connection.commit()
 
 
 class PandLPersistence:
@@ -116,9 +130,15 @@ class PandLPersistence:
     def dump(self, file='pandl.sql'):
         self.cursor.execute(self.sqlall, ())
         with open(file, 'w') as fp:
-            for e in self.cursor.fetchall():
-                fp.write('INSERT INTO pandl VALUES (\'%s\',%s,%s,%s,%s);\n' % (e[0],e[1],e[2],e[3],e[4]))
-        self.cursor.fetchall()
+            for e in self.cursor.fetchall(): fp.write(','.join(map(str, e)) + '\n')
+
+    def load(self, file):
+        with open(file, 'r') as fp:
+            for e in fp.readlines():
+                line = e.strip()
+                entries = [x if x != 'None' else None for x in line.split(',')]
+                self.cursor.execute(self.sqlins, entries)
+        self.dbconnection.connection.commit()
 
 
 class FundsPersistence:
@@ -183,6 +203,12 @@ class FundsPersistence:
     def dump(self, file='funds.sql'):
         self.cursor.execute(self.sqlall, ())
         with open(file, 'w') as fp:
-            for e in self.cursor.fetchall():
-                fp.write('INSERT INTO funds VALUES (\'%s\',\'%s\',\'%s\',%s,\'%s\');\n' % (e[0],e[1],e[2],e[3],e[4]))
-        self.cursor.fetchall()
+            for e in self.cursor.fetchall(): fp.write(','.join(map(str, e)) + '\n')
+
+    def load(self, file):
+        with open(file, 'r') as fp:
+            for e in fp.readlines():
+                line = e.strip()
+                entries = [x if x != 'None' else None for x in line.split(',')]
+                self.cursor.execute(self.sqlins, entries)
+        self.dbconnection.connection.commit()

@@ -73,6 +73,12 @@ class CountsPersistence:
     def dump(self, file='counts.sql'):
         self.cursor.execute(self.sqlall, ())
         with open(file, 'w') as fp:
-            for e in self.cursor.fetchall():
-                fp.write('INSERT INTO counts VALUES (\'%s\',\'%s\',\'%s\',%s,%s);\n' % (e[0],e[1],e[2],e[3],e[4]))
-        self.cursor.fetchall()
+            for e in self.cursor.fetchall(): fp.write(','.join(map(str, e)) + '\n')
+
+    def load(self, file):
+        with open(file, 'r') as fp:
+            for e in fp.readlines():
+                line = e.strip()
+                entries = [x if x != 'None' else None for x in line.split(',')]
+                self.cursor.execute(self.sqlins, entries)
+        self.dbconnection.connection.commit()

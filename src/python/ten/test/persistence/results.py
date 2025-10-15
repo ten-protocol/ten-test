@@ -57,9 +57,15 @@ class TxCostResultsPersistence:
     def dump(self, file='tx_costs.sql'):
         self.cursor.execute(self.sqlall, ())
         with open(file, 'w') as fp:
-            for e in self.cursor.fetchall():
-                fp.write('INSERT INTO tx_costs VALUES (\'%s\',\'%s\',%s,%s,%s,%s);\n' % (e[0],e[1],e[2],e[3],e[4],e[5]))
-        self.cursor.fetchall()
+            for e in self.cursor.fetchall(): fp.write(','.join(map(str, e)) + '\n')
+
+    def load(self, file):
+        with open(file, 'r') as fp:
+            for e in fp.readlines():
+                line = e.strip()
+                entries = [x if x != 'None' else None for x in line.split(',')]
+                self.cursor.execute(self.sqlins, entries)
+        self.dbconnection.connection.commit()
 
 
 class RunTypePersistence:
@@ -122,9 +128,15 @@ class RunTypePersistence:
     def dump(self, file='results_type.sql'):
         self.cursor.execute(self.sqlall, ())
         with open(file, 'w') as fp:
-            for e in self.cursor.fetchall():
-                fp.write('INSERT INTO results_type VALUES (\'%s\',\'%s\',\'%s\',%s,%s);\n' % (e[0],e[1],e[2],e[3],e[4]))
-        self.cursor.fetchall()
+            for e in self.cursor.fetchall(): fp.write(','.join(map(str, e)) + '\n')
+
+    def load(self, file):
+        with open(file, 'r') as fp:
+            for e in fp.readlines():
+                line = e.strip()
+                entries = [x if x != 'None' else None for x in line.split(',')]
+                self.cursor.execute(self.sqlins, entries)
+        self.dbconnection.connection.commit()
 
 
 class OutcomeResultsPersistence:
@@ -177,9 +189,15 @@ class OutcomeResultsPersistence:
     def dump(self, file='results_outcome.sql'):
         self.cursor.execute(self.sqlall, ())
         with open(file, 'w') as fp:
-            for e in self.cursor.fetchall():
-                fp.write('INSERT INTO results_outcome VALUES (\'%s\',\'%s\',\'%s\',\'%s\',%s,%s,%s,\'%s\');\n' % (e[0],e[1],e[2],e[3],e[4],e[5],e[6],e[7]))
-        self.cursor.fetchall()
+            for e in self.cursor.fetchall(): fp.write(','.join(map(str, e)) + '\n')
+
+    def load(self, file):
+        with open(file, 'r') as fp:
+            for e in fp.readlines():
+                line = e.strip()
+                entries = [x if x != 'None' else None for x in line.split(',')]
+                self.cursor.execute(self.sqlins, entries)
+        self.dbconnection.connection.commit()
 
 
 class PerformanceResultsPersistence:
@@ -244,6 +262,12 @@ class PerformanceResultsPersistence:
     def dump(self, file='results_performance.sql'):
         self.cursor.execute(self.sqlall, ())
         with open(file, 'w') as fp:
-            for e in self.cursor.fetchall():
-                fp.write('INSERT INTO results_performance VALUES (\'%s\',\'%s\',\'%s\',%s,%s);\n' % (e[0],e[1],e[2],e[3],e[4]))
-        self.cursor.fetchall()
+            for e in self.cursor.fetchall(): fp.write(','.join(map(str, e)) + '\n')
+
+    def load(self, file):
+        with open(file, 'r') as fp:
+            for e in fp.readlines():
+                line = e.strip()
+                entries = [x if x != 'None' else None for x in line.split(',')]
+                self.cursor.execute(self.sqlins, entries)
+        self.dbconnection.connection.commit()
