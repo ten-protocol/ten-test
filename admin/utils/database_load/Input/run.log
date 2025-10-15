@@ -1,0 +1,10 @@
+2025-10-15 13:41:47,767 INFO  ==============================================================
+2025-10-15 13:41:47,769 INFO  Id:    database_dump
+2025-10-15 13:41:47,770 INFO  Title: Dump the database tables
+2025-10-15 13:41:47,771 INFO  ==============================================================
+2025-10-15 13:41:47,782 INFO  Running test in thread MainThread
+2025-10-15 13:41:47,782 WARN  Running dump against the remote database
+2025-10-15 13:42:13,871 INFO  
+2025-10-15 13:42:13,872 INFO  Test duration: 26.10 secs
+2025-10-15 13:42:13,872 INFO  Test final outcome:  NOT VERIFIED
+2025-10-15 13:42:13,872 INFO  

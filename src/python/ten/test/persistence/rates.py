@@ -1,8 +1,9 @@
 from ten.test.persistence import normalise
 from ten.test.persistence import get_connection
+from ten.test.persistence import LoadablePersistence
 
 
-class RatesPersistence:
+class RatesPersistence(LoadablePersistence):
     """Abstracts the persistence of rates across cryptos into a local or remote database.
 
     Since this is an absolute property, not one of the test runner, it should be sharable across different test runners
@@ -28,6 +29,7 @@ class RatesPersistence:
 
     def __init__(self, use_remote, user_dir, host):
         """Instantiate an instance."""
+        super().__init__(use_remote,user_dir,host)
         self.host = host
         self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
@@ -71,16 +73,3 @@ class RatesPersistence:
             return int(result[0]), float(result[1])
         except:
             return None, None
-
-    def dump(self, file='rates.sql'):
-        self.cursor.execute(self.sqlall, ())
-        with open(file, 'w') as fp:
-            for e in self.cursor.fetchall(): fp.write(','.join(map(str, e)) + '\n')
-
-    def load(self, file):
-        with open(file, 'r') as fp:
-            for e in fp.readlines():
-                line = e.strip()
-                entries = [x if x != 'None' else None for x in line.split(',')]
-                self.cursor.execute(self.sqlins, entries)
-        self.dbconnection.connection.commit()

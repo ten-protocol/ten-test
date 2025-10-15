@@ -12,7 +12,7 @@ class PySysTest(TenNetworkTest):
     REMOTE = False
 
     def execute(self):
-        if self.REMOTE: self.log.warn('Running dump against the remote database')
+        if self.REMOTE: self.log.warn('Running load data into the remote database')
 
         rates_db = RatesPersistence.init(self.REMOTE, self.user_dir, self.machine_name)
         funds_db = FundsPersistence.init(self.REMOTE, self.user_dir, self.machine_name)

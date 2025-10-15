@@ -1,8 +1,9 @@
 from ten.test.persistence import normalise
 from ten.test.persistence import get_connection
+from ten.test.persistence import LoadablePersistence
 
 
-class TxCostResultsPersistence:
+class TxCostResultsPersistence(LoadablePersistence):
     """Abstracts the persistence of transaction costs into a local or remote database.
 
     We persist any test runs that are made in the cloud, along with the branch that it was run against. This just
@@ -28,6 +29,7 @@ class TxCostResultsPersistence:
 
     def __init__(self, use_remote, user_dir, host):
         """Instantiate an instance."""
+        super().__init__(use_remote,user_dir,host)
         self.host = host
         self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
@@ -54,21 +56,8 @@ class TxCostResultsPersistence:
         self.cursor.execute(self.sqlsel, (self.host, name, environment))
         return self.cursor.fetchall()
 
-    def dump(self, file='tx_costs.sql'):
-        self.cursor.execute(self.sqlall, ())
-        with open(file, 'w') as fp:
-            for e in self.cursor.fetchall(): fp.write(','.join(map(str, e)) + '\n')
 
-    def load(self, file):
-        with open(file, 'r') as fp:
-            for e in fp.readlines():
-                line = e.strip()
-                entries = [x if x != 'None' else None for x in line.split(',')]
-                self.cursor.execute(self.sqlins, entries)
-        self.dbconnection.connection.commit()
-
-
-class RunTypePersistence:
+class RunTypePersistence(LoadablePersistence):
     """Abstracts the persistence of a test run type for a given UUID into a local or remote database.
 
     """
@@ -92,6 +81,7 @@ class RunTypePersistence:
 
     def __init__(self, use_remote, user_dir, host):
         """Instantiate an instance."""
+        super().__init__(use_remote,user_dir,host)
         self.host = host
         self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
@@ -125,21 +115,8 @@ class RunTypePersistence:
         self.cursor.execute(self.sqlnum, (environment, type, num))
         return self.cursor.fetchall()
 
-    def dump(self, file='results_type.sql'):
-        self.cursor.execute(self.sqlall, ())
-        with open(file, 'w') as fp:
-            for e in self.cursor.fetchall(): fp.write(','.join(map(str, e)) + '\n')
 
-    def load(self, file):
-        with open(file, 'r') as fp:
-            for e in fp.readlines():
-                line = e.strip()
-                entries = [x if x != 'None' else None for x in line.split(',')]
-                self.cursor.execute(self.sqlins, entries)
-        self.dbconnection.connection.commit()
-
-
-class OutcomeResultsPersistence:
+class OutcomeResultsPersistence(LoadablePersistence):
     """Abstracts the persistence of test outcome results into a local or remote database.
 
     Results are a property of the host and environment. We persist any test runs that are made in the cloud, along
@@ -166,6 +143,7 @@ class OutcomeResultsPersistence:
 
     def __init__(self, use_remote, user_dir, host):
         """Instantiate an instance."""
+        super().__init__(use_remote,user_dir,host)
         self.host = host
         self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
@@ -186,21 +164,8 @@ class OutcomeResultsPersistence:
         self.cursor.execute(self.sqlins, (uuid, self.host, test, environment, time, duration, cost, outcome))
         self.dbconnection.connection.commit()
 
-    def dump(self, file='results_outcome.sql'):
-        self.cursor.execute(self.sqlall, ())
-        with open(file, 'w') as fp:
-            for e in self.cursor.fetchall(): fp.write(','.join(map(str, e)) + '\n')
 
-    def load(self, file):
-        with open(file, 'r') as fp:
-            for e in fp.readlines():
-                line = e.strip()
-                entries = [x if x != 'None' else None for x in line.split(',')]
-                self.cursor.execute(self.sqlins, entries)
-        self.dbconnection.connection.commit()
-
-
-class PerformanceResultsPersistence:
+class PerformanceResultsPersistence(LoadablePersistence):
     """Abstracts the persistence of performance results into a local or remote database.
 
     Results are a property of the environment and the host that the test was run in. They are externalised so they can
@@ -227,6 +192,7 @@ class PerformanceResultsPersistence:
 
     def __init__(self, use_remote, user_dir, host):
         """Instantiate an instance."""
+        super().__init__(use_remote,user_dir,host)
         self.host = host
         self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
@@ -259,15 +225,3 @@ class PerformanceResultsPersistence:
         self.cursor.execute(self.sqlsel, (self.host, test, environment))
         return self.cursor.fetchall()
 
-    def dump(self, file='results_performance.sql'):
-        self.cursor.execute(self.sqlall, ())
-        with open(file, 'w') as fp:
-            for e in self.cursor.fetchall(): fp.write(','.join(map(str, e)) + '\n')
-
-    def load(self, file):
-        with open(file, 'r') as fp:
-            for e in fp.readlines():
-                line = e.strip()
-                entries = [x if x != 'None' else None for x in line.split(',')]
-                self.cursor.execute(self.sqlins, entries)
-        self.dbconnection.connection.commit()

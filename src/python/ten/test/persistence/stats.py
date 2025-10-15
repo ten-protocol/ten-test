@@ -1,8 +1,9 @@
 from ten.test.persistence import normalise
 from ten.test.persistence import get_connection
+from ten.test.persistence import LoadablePersistence
 
 
-class StatsPersistence:
+class StatsPersistence(LoadablePersistence):
     """Abstracts the persistence of network statistics into a local or remote database.
 
     Since this is an absolute property, not one of the test runner, it should be sharable across different test runners
@@ -28,6 +29,7 @@ class StatsPersistence:
 
     def __init__(self, use_remote, user_dir, host):
         """Instantiate an instance."""
+        super().__init__(use_remote,user_dir,host)
         self.host = host
         self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
@@ -54,16 +56,3 @@ class StatsPersistence:
         self.cursor.execute(self.sqlone, (environment, type))
         try: return self.cursor.fetchone()
         except: return None
-
-    def dump(self, file='stats.sql'):
-        self.cursor.execute(self.sqlall, ())
-        with open(file, 'w') as fp:
-            for e in self.cursor.fetchall(): fp.write(','.join(map(str, e)) + '\n')
-
-    def load(self, file):
-        with open(file, 'r') as fp:
-            for e in fp.readlines():
-                line = e.strip()
-                entries = [x if x != 'None' else None for x in line.split(',')]
-                self.cursor.execute(self.sqlins, entries)
-        self.dbconnection.connection.commit()
