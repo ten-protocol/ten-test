@@ -34,3 +34,6 @@ artifacts/*.log
 **/artifacts
 **/.env
 
+# ignore any db dump files
+
+
