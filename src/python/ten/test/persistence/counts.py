@@ -1,9 +1,9 @@
 from ten.test.persistence import normalise
 from ten.test.persistence import get_connection
-from ten.test.persistence import LoadablePersistence
+from ten.test.persistence import SerialisableDB
 
 
-class CountsPersistence(LoadablePersistence):
+class CountsPersistence(SerialisableDB):
     """Abstracts the persistence of transaction counts across accounts into a local or remote database.
 
     This is only really used to persist the tx count of the L1 sequencer, as it means we can ensure that it is writing

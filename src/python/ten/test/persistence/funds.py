@@ -1,9 +1,9 @@
 from ten.test.persistence import normalise
 from ten.test.persistence import get_connection
-from ten.test.persistence import LoadablePersistence
+from ten.test.persistence import SerialisableDB
 
 
-class GasPricePersistence(LoadablePersistence):
+class GasPricePersistence(SerialisableDB):
     """Abstracts the persistence of gas prices across the l1 and l2 into a local or remote database.
 
     Since this is an absolute property, not one of the test runner, it should be sharable across different test runners
@@ -49,7 +49,7 @@ class GasPricePersistence(LoadablePersistence):
         self.dbconnection.connection.commit()
 
 
-class PandLPersistence(LoadablePersistence):
+class PandLPersistence(SerialisableDB):
     """Abstracts the persistence of profit and loss into a local or remote database.
 
     Since this is a property of the environment, not the test runner, it should be sharable across different test
@@ -110,7 +110,7 @@ class PandLPersistence(LoadablePersistence):
         return self.cursor.fetchall()
 
 
-class FundsPersistence(LoadablePersistence):
+class FundsPersistence(SerialisableDB):
     """Abstracts the persistence of funds across accounts into a local or remote database.
 
     Since this is a property of the environment, not the test runner, it should be sharable across different test

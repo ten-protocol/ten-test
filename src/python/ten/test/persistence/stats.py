@@ -1,9 +1,9 @@
 from ten.test.persistence import normalise
 from ten.test.persistence import get_connection
-from ten.test.persistence import LoadablePersistence
+from ten.test.persistence import SerialisableDB
 
 
-class StatsPersistence(LoadablePersistence):
+class StatsPersistence(SerialisableDB):
     """Abstracts the persistence of network statistics into a local or remote database.
 
     Since this is an absolute property, not one of the test runner, it should be sharable across different test runners

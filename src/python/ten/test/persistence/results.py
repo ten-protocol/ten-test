@@ -1,9 +1,9 @@
 from ten.test.persistence import normalise
 from ten.test.persistence import get_connection
-from ten.test.persistence import LoadablePersistence
+from ten.test.persistence import SerialisableDB
 
 
-class TxCostResultsPersistence(LoadablePersistence):
+class TxCostResultsPersistence(SerialisableDB):
     """Abstracts the persistence of transaction costs into a local or remote database.
 
     We persist any test runs that are made in the cloud, along with the branch that it was run against. This just
@@ -57,7 +57,7 @@ class TxCostResultsPersistence(LoadablePersistence):
         return self.cursor.fetchall()
 
 
-class RunTypePersistence(LoadablePersistence):
+class RunTypePersistence(SerialisableDB):
     """Abstracts the persistence of a test run type for a given UUID into a local or remote database.
 
     """
@@ -116,7 +116,7 @@ class RunTypePersistence(LoadablePersistence):
         return self.cursor.fetchall()
 
 
-class OutcomeResultsPersistence(LoadablePersistence):
+class OutcomeResultsPersistence(SerialisableDB):
     """Abstracts the persistence of test outcome results into a local or remote database.
 
     Results are a property of the host and environment. We persist any test runs that are made in the cloud, along
@@ -165,7 +165,7 @@ class OutcomeResultsPersistence(LoadablePersistence):
         self.dbconnection.connection.commit()
 
 
-class PerformanceResultsPersistence(LoadablePersistence):
+class PerformanceResultsPersistence(SerialisableDB):
     """Abstracts the persistence of performance results into a local or remote database.
 
     Results are a property of the environment and the host that the test was run in. They are externalised so they can

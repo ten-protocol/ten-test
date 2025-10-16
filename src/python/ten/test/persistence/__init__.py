@@ -39,24 +39,24 @@ def get_connection(use_remote, user_dir, db):
         return DBConnection(connection, 'sqlite3')
 
 
-class LoadablePersistence:
+class SerialisableDB:
 
     def __init__(self, use_remote, user_dir, host):
         """Construct an instance. """
         self.host = host
         self.dbconnection = None
         self.cursor = None
-        self.sqlins = None
-        self.sqlall = None
+        self.sqlins = None # required sql insert
+        self.sqlall = None # required sql select
 
-    def dump(self, file):
-        """Dump the contents of the database to csv file. """
+    def serialise(self, file):
+        """Serialise the contents of the database to csv file. """
         self.cursor.execute(self.sqlall, ())
         with open(file, 'w') as fp:
             for e in self.cursor.fetchall(): fp.write(','.join(map(str, e)) + '\n')
 
-    def load(self, file, batch_size=5000):
-        """Load and insert contents into a new database from csv file. """
+    def deserialise(self, file, batch_size=5000):
+        """De-serialise the csv file into a new database. """
         def batch_generator(fp):
             batch = []
             for line in fp:

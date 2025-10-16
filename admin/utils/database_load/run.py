@@ -40,7 +40,7 @@ class PySysTest(TenNetworkTest):
         path = os.path.join(self.input, filename)
         if os.path.exists(path):
             self.log.info('Loading data from input file %s' % filename)
-            db.load(path)
+            db.deserialise(path)
         else:
             self.log.warn('Input file %s does not exist' % filename)
 
