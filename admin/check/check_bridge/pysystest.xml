@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Check L1 to L2 bridge transfers on a given testnet</title>
+        <purpose><![CDATA[
+]]>
+        </purpose>
+    </description>
+    <classification>
+        <groups inherit="true">
+            <group>health</group>
+        </groups>
+        <modes inherit="true">
+            <mode>ten.mainnet</mode>
+            <mode>ten.sepolia</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
