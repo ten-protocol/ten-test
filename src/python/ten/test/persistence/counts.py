@@ -1,8 +1,9 @@
 from ten.test.persistence import normalise
 from ten.test.persistence import get_connection
+from ten.test.persistence import SerialisableDB
 
 
-class CountsPersistence:
+class CountsPersistence(SerialisableDB):
     """Abstracts the persistence of transaction counts across accounts into a local or remote database.
 
     This is only really used to persist the tx count of the L1 sequencer, as it means we can ensure that it is writing
@@ -32,6 +33,7 @@ class CountsPersistence:
 
     def __init__(self, use_remote, user_dir, host):
         """Instantiate an instance."""
+        super().__init__(use_remote,user_dir,host)
         self.host = host
         self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
@@ -69,10 +71,3 @@ class CountsPersistence:
         """Return the transaction count with time for a particular logical account."""
         self.cursor.execute(self.sqlhor, (name, address, environment, time))
         return self.cursor.fetchall()
-
-    def dump(self, file='counts.sql'):
-        self.cursor.execute(self.sqlall, ())
-        with open(file, 'w') as fp:
-            for e in self.cursor.fetchall():
-                fp.write('INSERT INTO counts VALUES (\'%s\',\'%s\',\'%s\',%s,%s);\n' % (e[0],e[1],e[2],e[3],e[4]))
-        self.cursor.fetchall()

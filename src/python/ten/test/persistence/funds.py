@@ -1,8 +1,9 @@
 from ten.test.persistence import normalise
 from ten.test.persistence import get_connection
+from ten.test.persistence import SerialisableDB
 
 
-class GasPricePersistence:
+class GasPricePersistence(SerialisableDB):
     """Abstracts the persistence of gas prices across the l1 and l2 into a local or remote database.
 
     Since this is an absolute property, not one of the test runner, it should be sharable across different test runners
@@ -26,6 +27,7 @@ class GasPricePersistence:
 
     def __init__(self, use_remote, user_dir, host):
         """Instantiate an instance."""
+        super().__init__(use_remote,user_dir,host)
         self.host = host
         self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
@@ -46,15 +48,8 @@ class GasPricePersistence:
         self.cursor.execute(self.sqlins, (environment, time, l1gasprice, l2gasprice, l1blobprice))
         self.dbconnection.connection.commit()
 
-    def dump(self, file='gas_prices.sql'):
-        self.cursor.execute(self.sqlall, ())
-        with open(file, 'w') as fp:
-            for e in self.cursor.fetchall():
-                fp.write('INSERT INTO gas_prices VALUES (\'%s\',%s,%s,%s,%s);\n' % (e[0],e[1],e[2],e[3],e[4]))
-        self.cursor.fetchall()
 
-
-class PandLPersistence:
+class PandLPersistence(SerialisableDB):
     """Abstracts the persistence of profit and loss into a local or remote database.
 
     Since this is a property of the environment, not the test runner, it should be sharable across different test
@@ -81,6 +76,7 @@ class PandLPersistence:
 
     def __init__(self, use_remote, user_dir, host):
         """Instantiate an instance."""
+        super().__init__(use_remote,user_dir,host)
         self.host = host
         self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
@@ -113,15 +109,8 @@ class PandLPersistence:
         self.cursor.execute(self.sqlsel, (environment))
         return self.cursor.fetchall()
 
-    def dump(self, file='pandl.sql'):
-        self.cursor.execute(self.sqlall, ())
-        with open(file, 'w') as fp:
-            for e in self.cursor.fetchall():
-                fp.write('INSERT INTO pandl VALUES (\'%s\',%s,%s,%s,%s);\n' % (e[0],e[1],e[2],e[3],e[4]))
-        self.cursor.fetchall()
 
-
-class FundsPersistence:
+class FundsPersistence(SerialisableDB):
     """Abstracts the persistence of funds across accounts into a local or remote database.
 
     Since this is a property of the environment, not the test runner, it should be sharable across different test
@@ -148,6 +137,7 @@ class FundsPersistence:
 
     def __init__(self, use_remote, user_dir, host):
         """Instantiate an instance."""
+        super().__init__(use_remote,user_dir,host)
         self.host = host
         self.dbconnection = get_connection(use_remote, user_dir, 'ten-test.db')
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
@@ -179,10 +169,3 @@ class FundsPersistence:
         """Return the funds with time for a particular logical account."""
         self.cursor.execute(self.sqlsel, (name, environment))
         return self.cursor.fetchall()
-
-    def dump(self, file='funds.sql'):
-        self.cursor.execute(self.sqlall, ())
-        with open(file, 'w') as fp:
-            for e in self.cursor.fetchall():
-                fp.write('INSERT INTO funds VALUES (\'%s\',\'%s\',\'%s\',%s,\'%s\');\n' % (e[0],e[1],e[2],e[3],e[4]))
-        self.cursor.fetchall()

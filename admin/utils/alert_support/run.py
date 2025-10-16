@@ -273,5 +273,5 @@ class PySysTest(TenNetworkTest):
             )
             self.log.info('Sent call')
         except Exception as e:
-            self.log.warn('Unable to send SMS message: %s', e)
+            self.log.warn('Unable to send telephone message: %s', e)
             self.addOutcome(BLOCKED)

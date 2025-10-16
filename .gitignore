@@ -34,3 +34,5 @@ artifacts/*.log
 **/artifacts
 **/.env
 
+# ignore any db dump files
+admin/utils/database_load/Input/*.csv
