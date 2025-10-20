@@ -33,6 +33,14 @@ class PySysTest(TenNetworkTest):
         self.assertGrep(file='wallet_local_logs',
                         expr='invalid sender: invalid chain id for signer: have %d want %d' % (l1.chain_id(), l2.chain_id()))
 
+        # transact using the tx signed with a zero chain ID
+        tx, signed_tx = self.get_signed_transaction(web3_l1, account_l1, account_to.address, 10, 0)
+        self.send_signed_transaction(web3_l2, tx, signed_tx, expect_pass=False)
+        self.waitForGrep(file='wallet_local_logs', expr='invalid sender: invalid chain id for signer', timeout=10)
+        self.assertGrep(file='wallet_local_logs',
+                        expr='invalid sender: invalid chain id for signer: have %d want %d' % (0, l2.chain_id()))
+
+
     def get_signed_transaction(self, web3, account, address, amount, chain_id):
         self.log.info('Creating signed transaction')
         nonce = web3.eth.get_transaction_count(account.address)
