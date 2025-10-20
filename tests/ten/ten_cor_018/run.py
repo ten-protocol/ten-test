@@ -19,6 +19,10 @@ class PySysTest(TenNetworkTest):
         tx, signed_tx = self.get_signed_transaction(web3_l2, account_l2, account_to.address, 10, l2.chain_id())
         self.send_signed_transaction(web3_l2, tx, signed_tx, expect_pass=True)
 
+        # transact using no chain ID (don't validate but check it doesn't barf the network)
+        tx, signed_tx = self.get_signed_transaction(web3_l1, account_l1, account_to.address, 10)
+        self.send_signed_transaction(web3_l2, tx, signed_tx, expect_pass=False)
+
         # transact using the tx signed from the l2 details but with a bogus chain ID
         tx, signed_tx = self.get_signed_transaction(web3_l2, account_l2, account_to.address, 10, 123456)
         self.send_signed_transaction(web3_l2, tx, signed_tx, expect_pass=False)
@@ -40,12 +44,12 @@ class PySysTest(TenNetworkTest):
         self.assertGrep(file='wallet_local_logs',
                         expr='invalid sender: invalid chain id for signer: have %d want %d' % (0, l2.chain_id()))
 
-
-    def get_signed_transaction(self, web3, account, address, amount, chain_id):
+    def get_signed_transaction(self, web3, account, address, amount, chain_id=None):
         self.log.info('Creating signed transaction')
         nonce = web3.eth.get_transaction_count(account.address)
         tx = {'nonce': nonce, 'from': account.address, 'to': address, 'value': amount,
-              'chainId': chain_id, 'gasPrice': web3.eth.gas_price, 'gas': 42000}
+              'gasPrice': web3.eth.gas_price, 'gas': 42000}
+        if chain_id is not None: tx['chainId'] = chain_id
         return tx, account.sign_transaction(tx)
 
     def send_signed_transaction(self, web3, build_tx, signed_tx, expect_pass=True):
