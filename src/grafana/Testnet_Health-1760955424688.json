@@ -71,7 +71,7 @@
     },
     {
       "datasource": {
-        "uid": "feflof5m4nta8d"
+        "uid": "cf1lwncxhuiv4f"
       },
       "fieldConfig": {
         "defaults": {
@@ -173,7 +173,7 @@
           "dataset": "mysql",
           "datasource": {
             "type": "mysql",
-            "uid": "feflof5m4nta8d"
+            "uid": "cf1lwncxhuiv4f"
           },
           "editorMode": "code",
           "format": "table",

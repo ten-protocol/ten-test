@@ -45,7 +45,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "feflof5m4nta8d"
+        "uid": "cf1lwncxhuiv4f"
       },
       "fieldConfig": {
         "defaults": {
@@ -127,7 +127,7 @@
           "dataset": "mysql",
           "datasource": {
             "type": "mysql",
-            "uid": "feflof5m4nta8d"
+            "uid": "cf1lwncxhuiv4f"
           },
           "editorMode": "code",
           "format": "table",
@@ -159,7 +159,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "feflof5m4nta8d"
+        "uid": "cf1lwncxhuiv4f"
       },
       "fieldConfig": {
         "defaults": {
@@ -241,7 +241,7 @@
           "dataset": "mysql",
           "datasource": {
             "type": "mysql",
-            "uid": "feflof5m4nta8d"
+            "uid": "cf1lwncxhuiv4f"
           },
           "editorMode": "code",
           "format": "table",
@@ -283,7 +283,7 @@
         },
         "datasource": {
           "type": "mysql",
-          "uid": "feflof5m4nta8d"
+          "uid": "cf1lwncxhuiv4f"
         },
         "definition": "select distinct(environment) from stats;",
         "hide": 0,

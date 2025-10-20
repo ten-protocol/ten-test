@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 2,
+  "id": 3,
   "links": [],
   "panels": [
     {
@@ -28,14 +28,14 @@
         "x": 0,
         "y": 0
       },
-      "id": 7,
+      "id": 6,
       "options": {
         "code": {
           "language": "plaintext",
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "## Transaction Costs On Various Networks ",
+        "content": "## Account Funds and Overall Profit And Loss",
         "mode": "markdown"
       },
       "pluginVersion": "10.4.3",
@@ -45,24 +45,24 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "feflof5m4nta8d"
+        "uid": "cf1lwncxhuiv4f"
       },
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "fixedColor": "purple",
+            "mode": "fixed"
           },
           "custom": {
             "axisBorderShow": true,
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisGridShow": true,
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 10,
+            "gradientMode": "hue",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
@@ -70,238 +70,11 @@
             },
             "insertNulls": false,
             "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
+            "lineStyle": {
+              "fill": "solid"
             },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 15,
-        "w": 8,
-        "x": 0,
-        "y": 2
-      },
-      "id": 1,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.5.2",
-      "targets": [
-        {
-          "dataset": "mysql",
-          "datasource": {
-            "type": "mysql",
-            "uid": "feflof5m4nta8d"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\n    time,\n    MAX(CASE WHEN name = 'Storage.deploy' THEN gasused END) AS storage_deploy,\n    MAX(CASE WHEN name = 'KeyStorage.deploy' THEN gasused END) AS keystorage_deploy,\n    MAX(CASE WHEN name = 'Game.deploy' THEN gasused END) AS game_deploy,\n    MAX(CASE WHEN name = 'Calldata.deploy' THEN gasused END) AS calldata_deploy\nFROM tx_costs\nWHERE environment='${environment}'\nGROUP BY time\nORDER BY time;",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Gas Used For Contract Deployment (${environment})",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "mysql",
-        "uid": "feflof5m4nta8d"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": true,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 15,
-        "w": 8,
-        "x": 8,
-        "y": 2
-      },
-      "id": 2,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.5.2",
-      "targets": [
-        {
-          "dataset": "mysql",
-          "datasource": {
-            "type": "mysql",
-            "uid": "feflof5m4nta8d"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\n    time,\n    MAX(CASE WHEN name = 'Storage.store' THEN gasused END) AS storage_store,\n    MAX(CASE WHEN name = 'KeyStorage.storeItem' THEN gasused END) AS keystorage_storeItem,\n    MAX(CASE WHEN name = 'KeyStorage.setItem' THEN gasused END) AS keystorage_setItem,\n    MAX(CASE WHEN name = 'Game.guess' THEN gasused END) AS game_guess,\n    MAX(CASE WHEN name = 'CallData.processLargeData' THEN gasused END) AS calldata_processLargeData,\n    MAX(CASE WHEN name = 'Native.transfer' THEN gasused END) AS native_transfer\nFROM tx_costs\nWHERE environment='${environment}'\nGROUP BY time\nORDER BY time;",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Gas Used For Contract Interaction (${environment})",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "mysql",
-        "uid": "feflof5m4nta8d"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": true,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
+            "lineWidth": 2,
+            "pointSize": 6,
             "scaleDistribution": {
               "type": "linear"
             },
@@ -322,10 +95,6 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
@@ -333,10 +102,406 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 15,
-        "w": 5,
-        "x": 16,
+        "h": 13,
+        "w": 7,
+        "x": 0,
         "y": 2
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "dataset": "mysql",
+          "datasource": {
+            "type": "mysql",
+            "uid": "cf1lwncxhuiv4f"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  time, \n  balance / 1000000000000000000\nFROM\n  funds\nWHERE\n  name = 'Faucet'\n  and environment = '${environment}'\n  AND balance IS NOT NULL\nORDER BY\n  time DESC;\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Faucet Balance (ETH)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "cf1lwncxhuiv4f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-yellow",
+            "mode": "fixed"
+          },
+          "custom": {
+            "axisBorderShow": true,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "hue",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 2,
+            "pointSize": 6,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 7,
+        "x": 7,
+        "y": 2
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "dataset": "mysql",
+          "datasource": {
+            "type": "mysql",
+            "uid": "cf1lwncxhuiv4f"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  time, \n  balance / 1000000000000000000\nFROM\n  funds\nWHERE\n  name = 'Sequencer'\n  and environment = '${environment}'\n  AND balance IS NOT NULL\nORDER BY\n  time DESC;\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Sequencer Balance (ETH)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "cf1lwncxhuiv4f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-blue",
+            "mode": "fixed"
+          },
+          "custom": {
+            "axisBorderShow": true,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "hue",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 2,
+            "pointSize": 6,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 7,
+        "x": 14,
+        "y": 2
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "dataset": "mysql",
+          "datasource": {
+            "type": "mysql",
+            "uid": "cf1lwncxhuiv4f"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  time, \n  balance / 1000000000000000000\nFROM\n  funds\nWHERE\n  name = 'GasPayment'\n  and environment = '${environment}'\n  AND balance IS NOT NULL\nORDER BY\n  time DESC;\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "GasPayment Balance (ETH)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "cf1lwncxhuiv4f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-yellow",
+            "mode": "fixed"
+          },
+          "custom": {
+            "axisBorderShow": true,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 3,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 2,
+            "pointSize": 6,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sequencer"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "gas_payment"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-yellow",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "profit_and_loss"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 4
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 14,
+        "x": 0,
+        "y": 15
       },
       "id": 4,
       "options": {
@@ -358,12 +523,12 @@
           "dataset": "mysql",
           "datasource": {
             "type": "mysql",
-            "uid": "feflof5m4nta8d"
+            "uid": "cf1lwncxhuiv4f"
           },
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select time, (l1gasprice/1e9) AS l1_Gas_price, (l2gasprice/1e9) AS l2_Gas_price from gas_prices where environment='${environment}'; ",
+          "rawSql": "SELECT\n  time, \n  seq_diff as sequencer,\n  gas_diff as gas_payment,\n  pandl as profit_and_loss\nFROM\n  pandl\nWHERE\n  environment = '${environment}'\nORDER BY\n  time DESC;\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -384,30 +549,30 @@
           }
         }
       ],
-      "title": "L1 and L2 Gas Prices GWEI (${environment})",
+      "title": "Profit and Loss (ETH)",
       "type": "timeseries"
     },
     {
       "datasource": {
         "type": "mysql",
-        "uid": "feflof5m4nta8d"
+        "uid": "cf1lwncxhuiv4f"
       },
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "fixedColor": "dark-blue",
+            "mode": "fixed"
           },
           "custom": {
             "axisBorderShow": true,
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisGridShow": true,
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 10,
+            "gradientMode": "hue",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
@@ -415,123 +580,11 @@
             },
             "insertNulls": false,
             "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
+            "lineStyle": {
+              "fill": "solid"
             },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 14,
-        "w": 8,
-        "x": 0,
-        "y": 17
-      },
-      "id": 3,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.5.2",
-      "targets": [
-        {
-          "dataset": "mysql",
-          "datasource": {
-            "type": "mysql",
-            "uid": "feflof5m4nta8d"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "select time, gasestimate AS gas_estimate, gasused AS gas_used from tx_costs where name='${interaction}' and environment='${environment}'; ",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Estimate vs Used for  ${interaction} (${environment})",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "mysql",
-        "uid": "feflof5m4nta8d"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": true,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
+            "lineWidth": 2,
+            "pointSize": 6,
             "scaleDistribution": {
               "type": "linear"
             },
@@ -552,10 +605,6 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
@@ -563,18 +612,18 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 14,
-        "w": 8,
-        "x": 8,
-        "y": 17
+        "h": 13,
+        "w": 7,
+        "x": 14,
+        "y": 15
       },
-      "id": 5,
+      "id": 7,
       "options": {
         "legend": {
           "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": false
         },
         "tooltip": {
           "hideZeros": false,
@@ -588,217 +637,12 @@
           "dataset": "mysql",
           "datasource": {
             "type": "mysql",
-            "uid": "feflof5m4nta8d"
+            "uid": "cf1lwncxhuiv4f"
           },
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT \n    t.time, \n    (t.gasprice * t.gasused * r.rate / 1e18) AS ten_sepolia\nFROM \n    tx_costs t\nJOIN \n    (SELECT rate FROM rates WHERE currency = 'USD' ORDER BY time DESC LIMIT 1) r\nON 1=1 -- cross join\nWHERE \n    t.name = '${interaction}' \n    AND t.environment = 'ten.sepolia';",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "dataset": "mysql",
-          "datasource": {
-            "type": "mysql",
-            "uid": "feflof5m4nta8d"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "hide": false,
-          "rawQuery": true,
-          "rawSql": "SELECT \n    t.time, \n    (t.gasprice * t.gasused * r.rate / 1e18) AS ten_uat\nFROM \n    tx_costs t\nJOIN \n    (SELECT rate FROM rates WHERE currency = 'USD' ORDER BY time DESC LIMIT 1) r\nON 1=1 -- cross join\nWHERE \n    t.name = '${interaction}' \n    AND t.environment = 'ten.uat';",
-          "refId": "B",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "dataset": "mysql",
-          "datasource": {
-            "type": "mysql",
-            "uid": "feflof5m4nta8d"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "hide": false,
-          "rawQuery": true,
-          "rawSql": "SELECT \n    t.time, \n    (t.gasprice * t.gasused * r.rate / 1e18) AS arbitrum_sepolia\nFROM \n    tx_costs t\nJOIN \n    (SELECT rate FROM rates WHERE currency = 'USD' ORDER BY time DESC LIMIT 1) r\nON 1=1 -- cross join\nWHERE \n    t.name = '${interaction}' \n    AND t.environment = 'arbitrum.sepolia';",
-          "refId": "C",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "dataset": "mysql",
-          "datasource": {
-            "type": "mysql",
-            "uid": "feflof5m4nta8d"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "hide": false,
-          "rawQuery": true,
-          "rawSql": "SELECT \n    t.time, \n    (t.gasprice * t.gasused * r.rate / 1e18) AS optimism_sepolia\nFROM \n    tx_costs t\nJOIN \n    (SELECT rate FROM rates WHERE currency = 'USD' ORDER BY time DESC LIMIT 1) r\nON 1=1 -- cross join\nWHERE \n    t.name = '${interaction}' \n    AND t.environment = 'optimism.sepolia';",
-          "refId": "D",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "USD Cost comparison all networks  ${interaction}",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "mysql",
-        "uid": "feflof5m4nta8d"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": true,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 14,
-        "w": 5,
-        "x": 16,
-        "y": 17
-      },
-      "id": 6,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.5.2",
-      "targets": [
-        {
-          "dataset": "mysql",
-          "datasource": {
-            "type": "mysql",
-            "uid": "feflof5m4nta8d"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "select time, (l1blobprice/1e9) AS l1_Blob_price from gas_prices where environment='${environment}'; ",
+          "rawSql": "SELECT\n  time, \n  balance / 1000000000000000000\nFROM\n  funds\nWHERE\n  name = 'L1Bridge'\n  and environment = '${environment}'\n  AND balance IS NOT NULL\nORDER BY\n  time DESC;\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -819,10 +663,11 @@
           }
         }
       ],
-      "title": "L1 Blob Price GWEI (${environment})",
+      "title": "L1Bridge Balance (ETH)",
       "type": "timeseries"
     }
   ],
+  "refresh": "",
   "schemaVersion": 39,
   "tags": [
     "e2e-tests",
@@ -838,38 +683,15 @@
         },
         "datasource": {
           "type": "mysql",
-          "uid": "feflof5m4nta8d"
+          "uid": "cf1lwncxhuiv4f"
         },
-        "definition": "SELECT distinct environment from tx_costs;",
+        "definition": "select distinct(environment) from funds;",
         "hide": 0,
         "includeAll": false,
         "multi": false,
         "name": "environment",
         "options": [],
-        "query": "SELECT distinct environment from tx_costs;",
-        "refresh": 1,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "type": "query"
-      },
-      {
-        "current": {
-          "selected": false,
-          "text": "Storage.deploy",
-          "value": "Storage.deploy"
-        },
-        "datasource": {
-          "type": "mysql",
-          "uid": "feflof5m4nta8d"
-        },
-        "definition": "select distinct name from tx_costs; ",
-        "hide": 0,
-        "includeAll": false,
-        "multi": false,
-        "name": "interaction",
-        "options": [],
-        "query": "select distinct name from tx_costs; ",
+        "query": "select distinct(environment) from funds;",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -879,13 +701,13 @@
     ]
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-6M",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Testnet Costs",
-  "uid": "bec5dsozt1j40b",
-  "version": 8,
+  "title": "Testnet Funds",
+  "uid": "aebn8u5dbwkqoe",
+  "version": 11,
   "weekStart": ""
 }
