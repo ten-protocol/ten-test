@@ -1,7 +1,7 @@
 Monday:
   - start: "00:00"
     end: "23:59"
-    person: "will"
+    person: "tudor"
 
 Tuesday:
   - start: "00:00"
@@ -16,7 +16,7 @@ Wednesday:
 Thursday:
   - start: "00:00"
     end: "23:59"
-    person: "ziga"
+    person: "will"
 
 Friday:
   - start: "00:00"
@@ -26,9 +26,9 @@ Friday:
 Saturday:
   - start: "00:00"
     end: "23:59"
-    person: "moray"
+    person: "ziga"
 
 Sunday:
   - start: "00:00"
     end: "23:59"
-    person: "tudor"
+    person: "will"
