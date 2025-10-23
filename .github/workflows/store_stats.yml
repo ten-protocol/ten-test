@@ -1,6 +1,6 @@
 # Runs a test to obtain and persist given metrics from a TEN network
 #
-name: '[store] Persist network stats'
+name: '[persist] Persist network stats'
 run-name: Persist network stats (${{ github.event_name }} ${{ github.event.inputs.environment }} )
 on:
   schedule:
