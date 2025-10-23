@@ -1,7 +1,7 @@
 # Builds a local testnet and runs a set of merge tests
 #
 name: '[execute] Execute merge tests'
-run-name: Run merge tests for PR ${{ github.event.client_payload.number }} by @${{ github.event.client_payload.owner }}
+run-name: Run merge tests for PR ${{ github.event.client_payload.number }} by @${{ github.event.client_payload.owner }} on ${{ github.event.client_payload.base_branch }}
 on:
   repository_dispatch:
     types: [merged_pull_request]
