@@ -1,6 +1,6 @@
 # Runs a test to measure and persist transaction costs against a given network
 #
-name: '[execute] Persist tx costs'
+name: '[execute] Persist transaction costs'
 run-name: Persist tx costs (${{ github.event_name }} ${{ github.event.inputs.environment }} )
 on:
   schedule:
