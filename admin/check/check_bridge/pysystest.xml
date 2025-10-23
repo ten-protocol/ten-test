@@ -5,13 +5,17 @@
         <title>Check L1 to L2 bridge transfers on a given testnet</title>
         <purpose><![CDATA[
 Performs a nominal L1 to L2 bridge transfer using the L1 funded account on sepolia/ethereum to ensure that bridge
-transfers into TEN are operational. 
+transfers into TEN are operational.
+
+Note that tests in the check category do not store any information into the e2e test database - they either just extract
+data from the database to perform the check, or get snapshots from the network.
 ]]>
         </purpose>
     </description>
     <classification>
         <groups inherit="true">
             <group>health</group>
+            <group>check</group>
         </groups>
         <modes inherit="true">
             <mode>ten.mainnet</mode>

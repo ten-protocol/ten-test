@@ -8,12 +8,16 @@ Performs a series of transactions against a given network and stores the cost of
 database. This allows historical transaction costs to be used to ensure the network pricing stays consistent,
 and allows comparison between other networks. No explicit validation is performed in the test, it is mainly used
 to orchestrate the transactions and storage of costs.
+
+Note that tests in the store category are used to extract information from the network and store in the e2e database.
+They do not perform any specific validation.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
+            <group>store</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>

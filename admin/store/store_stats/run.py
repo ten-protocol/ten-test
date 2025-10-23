@@ -1,5 +1,6 @@
 import requests, json, time
 from web3 import Web3
+from pysys.constants import PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 
@@ -42,6 +43,9 @@ class PySysTest(TenNetworkTest):
         delta = 0 if (current_value-last_value) < 0 else (current_value-last_value)
         self.log.info('Contract count, value=%d, delta=%d, running total=%d' % (current_value, delta, (last_running+delta)))
         self.stats_db.insert(self.env, current_time, 'contracts', current_value, delta, last_running+delta)
+
+        # pass if no errors
+        self.addOutcome(PASSED)
 
     def get_faucet_balance(self):
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}

@@ -2,6 +2,7 @@ import time, os
 from web3 import Web3
 from datetime import datetime
 from collections import OrderedDict
+from pysys.constants import PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 from ten.test.utils.gnuplot import GnuplotHelper
@@ -16,8 +17,11 @@ class PySysTest(TenNetworkTest):
         web3_sequencer = Web3(Web3.HTTPProvider(l1_network.connection_url()))
         sequencer_address = Properties().sequencer_address(key=self.env)
         sequencer_balance = web3_sequencer.eth.get_balance(sequencer_address)
+        sequencer_count = web3_sequencer.eth.get_transaction_count(sequencer_address)
         self.log.info('Sequencer balance %.9f ETH', web3_sequencer.from_wei(sequencer_balance, 'ether'))
         self.funds_db.insert_funds('Sequencer', sequencer_address, self.env, current_time, sequencer_balance)
+        self.log.info('Sequencer tx count %d', sequencer_count)
+        self.counts_db.insert_count('Sequencer', sequencer_address, self.env, current_time, sequencer_count)
 
         l2_network = self.get_network_connection()
         web3, account = l2_network.connect_account1(self)
@@ -35,6 +39,9 @@ class PySysTest(TenNetworkTest):
                 fp.write('%s %s\n' % (entry[0],  entry[1]))
 
         self.graph(current_time)
+
+        # pass if no errors
+        self.addOutcome(PASSED)
 
     def graph(self, current_time):
         dict = OrderedDict()
