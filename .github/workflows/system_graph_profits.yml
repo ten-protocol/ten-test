@@ -1,0 +1,40 @@
+# Graph profit and loss
+#
+name: '[system] Graph profit and loss'
+run-name: Graph profit and loss
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: Environment
+        required: true
+        default: ten.sepolia
+        options:
+          - ten.sepolia
+          - ten.uat
+
+jobs:
+  run-check:
+    runs-on: [self-hosted, Linux, X64, ten-test-google-runner-02]
+    steps:
+      - name: 'Check out ten-test'
+        uses: actions/checkout@v3
+        with:
+          path: ./ten-test
+
+      - name: 'Run the graph profits for selected environment'
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin
+          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} -XNO_CONNECT graph_profits
+
+      - name: 'Upload performance output'
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: profits-artifact
+          path: |
+            ${{ github.workspace }}/ten-test/admin/utils/graph_profits/Output/linux/profits.pdf
+            ${{ github.workspace }}/ten-test/admin/utils/graph_profits/Output/linux/profits.log
+          if-no-files-found: ignore
+          retention-days: 1
