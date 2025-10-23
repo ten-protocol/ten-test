@@ -18,6 +18,7 @@ class PySysTest(TenNetworkTest):
         sequencer_address = Properties().sequencer_address(key=self.env)
         sequencer_balance = web3_l1.eth.get_balance(sequencer_address)
         sequencer_count = web3_l1.eth.get_transaction_count(sequencer_address)
+        self.log.info('Using sequencer address %s' % sequencer_address)
         self.log.info('Sequencer balance %.9f ETH', web3_l1.from_wei(sequencer_balance, 'ether'))
         self.funds_db.insert_funds('Sequencer', sequencer_address, self.env, current_time, sequencer_balance)
         self.log.info('Sequencer tx count %d', sequencer_count)
@@ -27,6 +28,7 @@ class PySysTest(TenNetworkTest):
         bridge_address = Properties().l1_bridge_address()
         bridge_balance_wei = web3_l1.eth.get_balance(bridge_address)
         faucet_balance_eth = web3_l1.from_wei(bridge_balance_wei, 'ether')
+        self.log.info('Using bridge address %s' % bridge_address)
         self.log.info('Bridge balance %.9f ETH', faucet_balance_eth)
         self.funds_db.insert_funds('L1Bridge', bridge_address, self.env, current_time, bridge_balance_wei)
 

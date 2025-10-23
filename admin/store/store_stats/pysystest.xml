@@ -4,8 +4,8 @@
     <description>
         <title>Persist stats for a range of metrics on a ten network</title>
         <purpose><![CDATA[
-Run to persist into external storage L1 bridge balance, faucet balance, total transaction counts, and total number
-of deployed contracts.
+Run to persist into external storage L1 sequencer balance and tx counts, L1 bridge balance, faucet balance,
+total transaction counts, and total number of deployed contracts.
 
 Note that tests in the store category are used to extract information from the network and store in the e2e database.
 They do not perform any specific validation.
