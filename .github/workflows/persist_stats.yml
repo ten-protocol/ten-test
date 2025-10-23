@@ -36,7 +36,7 @@ jobs:
           cd ${{ github.workspace }}/ten-test
           ./get_artifacts.sh  
 
-      - name: 'Run on schedule (ten.sepolia)'
+      - name: 'Run on schedule for sepolia-testnet'
         if: github.event_name == 'schedule'
         run: |
           cd ${{ github.workspace }}/ten-test/admin

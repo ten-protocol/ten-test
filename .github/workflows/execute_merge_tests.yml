@@ -107,7 +107,7 @@ jobs:
           cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -r -m ten.local -e skip -e performance -e robustness
 
-      - name: 'Discord notification'
+      - name: 'Discord notification on success'
         if: success()
         uses: sarisia/actions-status-discord@v1
         with:
@@ -115,7 +115,7 @@ jobs:
           title: "Merge tests for PR ${{ github.event.client_payload.number }} by @${{ github.event.client_payload.owner }} passed"
           description: "Local testnet tests on PR merge"
 
-      - name: 'Discord notification'
+      - name: 'Discord notification on failure'
         if: failure()
         uses: sarisia/actions-status-discord@v1
         with:
