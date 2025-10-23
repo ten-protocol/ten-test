@@ -59,6 +59,7 @@ jobs:
         with:
           repository: ten-protocol/go-ten
           path: ./go-ten
+          ref: ${{ github.event.client_payload.base_branch }}
 
       - name: 'Docker clean containers and images before the test'
         run: |
