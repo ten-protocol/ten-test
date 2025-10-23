@@ -1,7 +1,7 @@
-# Check key balances on sepolia-testnet to determine profits
+# Persist key balances on sepolia-testnet to determine profits
 #
-name: '[inspect] Check sepolia profits'
-run-name: Check sepolia-testnet profits
+name: '[persist] Persist profits'
+run-name: Persist profits
 on:
   schedule:
     - cron: '0 */6 * * *'
@@ -29,7 +29,7 @@ jobs:
           ./get_artifacts.sh
           ls -l ${{ github.workspace }}/ten-test/artifacts   
 
-      - name: 'Run funds check'
+      - name: 'Run store profits for sepolia-testnet'
         run: |
           cd ${{ github.workspace }}/ten-test/admin
           /usr/local/bin/pysys.py run -m ten.sepolia store_profits
