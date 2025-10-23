@@ -7,12 +7,16 @@
 Logs out the transaction and batch count every X interval seconds, and after an elapsed duration checks that the
 increase is not greater than a threshold value. The test is part of the health test suite to run the e2e tests against
 the network.
+
+Note that tests in the check category do not store any information into the e2e test database - they either just extract
+data from the database to perform the check, or get snapshots from the network.
 ]]>
         </purpose>
     </description>
     <classification>
         <groups inherit="true">
             <group>health</group>
+            <group>check</group>
         </groups>
         <modes inherit="true">
             <mode>ten.mainnet</mode>

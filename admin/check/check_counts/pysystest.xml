@@ -7,12 +7,16 @@
 The test looks for the sequencer transaction count increasing over a set period of time, to ensure that it is
 successfully storing rollups to the L1. The test is part of the health suite that performs the e2e tests on a given
 network.
+
+Note that tests in the check category do not store any information into the e2e test database - they either just extract
+data from the database to perform the check, or get snapshots from the network.
 ]]>
         </purpose>
     </description>
     <classification>
         <groups inherit="true">
 <!--            <group>health</group>-->
+            <group>check</group>
         </groups>
         <modes inherit="true">
             <mode>ten.sepolia</mode>
