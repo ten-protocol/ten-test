@@ -29,7 +29,7 @@ def discord_warn_msg(seconds, oncall_id, run_url, environment):
 
     data = {
         "content":  "Warning on the sequencer balance not changing",
-        "username": "E2E sequence balance checks",
+        "username": "E2E sequencer balance checks",
         "embeds": [embed]
     }
     return data
