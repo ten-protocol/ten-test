@@ -26,7 +26,7 @@ def greet_by_time(timezone_str='Europe/London'):
 def discord_failure_msg(name, oncall_id, all_ids, run_url, environment):
     embed = {
         "title": "🚨 %s checks failing 🚨" % name,
-        "description": "CODE RED - The %s checks have started failing! :poop: " % name,
+        "description": "CODE RED - The %s checks have started failing!" % name,
         "color": 15158332,
         "fields": [
             {"name": "Environment", "value": "%s" % environment, "inline": True},
@@ -85,7 +85,7 @@ def telegram_still_failing_msg(content, channel_id):
 def discord_success_msg(name, oncall_id, all_ids, run_url, environment):
     embed = {
         "title": ":white_check_mark: %s checks passing :white_check_mark:" % name,
-        "description": "CODE GREEN - The %s checks have started passing! :boom: " % name,
+        "description": "CODE GREEN - The %s checks have started passing!" % name,
         "color": 3066993,
         "fields": [
             {"name": "Environment", "value": "%s" % environment, "inline": True},

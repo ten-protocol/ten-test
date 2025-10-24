@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Warn if the sequencer balance is not increasing</title>
+        <purpose><![CDATA[
+Query over the e2e test dasbase for the last interval of recorded sequencer balance, and if it has not changed over
+this interval send a discord warning message.
+]]>
+        </purpose>
+    </description>
+    <classification>
+        <groups inherit="true">
+        </groups>
+        <modes inherit="true">
+            <mode>ten.mainnet</mode>
+            <mode>ten.sepolia</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>
