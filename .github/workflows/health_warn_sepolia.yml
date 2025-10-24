@@ -1,6 +1,6 @@
 # Performs warning checks on sepolia-testnet
 #
-name: '[inspect] Warn on sepolia-testnet'
+name: '[inspect] Warn sepolia health'
 run-name: Warning for sepolia-testnet
 on:
   schedule:
