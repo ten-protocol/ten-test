@@ -1,0 +1,57 @@
+# Performs warning checks on sepolia-testnet
+#
+name: '[inspect] Warn on sepolia-testnet'
+run-name: Warning for sepolia-testnet
+on:
+  schedule:
+    - cron: '* */4 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-check:
+    runs-on: [self-hosted, Linux, X64, all-testnets]
+    env:
+      RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+    steps:
+      - name: 'Check out ten-test'
+        uses: actions/checkout@v3
+        with:
+          path: ./ten-test
+
+      - name: 'Check out go-ten code'
+        uses: actions/checkout@v3
+        with:
+          repository: ten-protocol/go-ten
+          path: ./go-ten
+          ref: 'releases/v1.6'
+
+      - name: 'Build required artifacts for running tests'
+        run: |
+          cd ${{ github.workspace }}/ten-test
+          ./get_artifacts.sh
+          ls -l ${{ github.workspace }}/ten-test/artifacts   
+
+      - name: 'Run warning checks'
+        run: |
+          cd ${{ github.workspace }}/ten-test/admin/warn
+          /usr/local/bin/pysys.py run -m ten.sepolia -XNO_CONNECT  
+
+      - name: 'Upload testcase output'
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-artifact
+          path: |
+            ${{ github.workspace }}/ten-test/**/Output
+            !${{ github.workspace }}/ten-test/**/node_modules
+          retention-days: 1
+
+      - name: 'Discord notification on failure'
+        if: failure()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.WORKFLOW_STATUS_WEBHOOK }}
+          title: "The health_warn_sepolia.yml workflow has failed"
+          description: "The workflow shows failures and requires investigation"
+          content: "For information <@814873419207409685>"

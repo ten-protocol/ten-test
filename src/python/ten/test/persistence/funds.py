@@ -127,6 +127,7 @@ class FundsPersistence(SerialisableDB):
     SQL_INSERT = "INSERT INTO funds VALUES (?, ?, ?, ?, ?)"
     SQL_DELETE = "DELETE from funds WHERE environment=?"
     SQL_SELECT = "SELECT time, balance FROM funds WHERE name=? and environment=? ORDER BY time DESC"
+    SQL_SELHOR = "SELECT time, balance FROM funds WHERE name=? AND address=? AND environment=? and time >= ? ORDER BY time DESC"
     SQL_SELALL = "SELECT * from funds ORDER BY time ASC"
 
     @classmethod
@@ -143,6 +144,7 @@ class FundsPersistence(SerialisableDB):
         self.sqlins = normalise(self.SQL_INSERT, self.dbconnection.type)
         self.sqldel = normalise(self.SQL_DELETE, self.dbconnection.type)
         self.sqlsel = normalise(self.SQL_SELECT, self.dbconnection.type)
+        self.sqlhor = normalise(self.SQL_SELHOR, self.dbconnection.type)
         self.sqlall = normalise(self.SQL_SELALL, self.dbconnection.type)
         self.cursor = self.dbconnection.connection.cursor()
 
@@ -168,4 +170,9 @@ class FundsPersistence(SerialisableDB):
     def get_funds(self, name, environment):
         """Return the funds with time for a particular logical account."""
         self.cursor.execute(self.sqlsel, (name, environment))
+        return self.cursor.fetchall()
+
+    def get_since_time(self, name, address, environment, time):
+        """Return the funds with time for a particular logical account."""
+        self.cursor.execute(self.sqlhor, (name, address, environment, time))
         return self.cursor.fetchall()
