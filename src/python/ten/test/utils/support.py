@@ -23,6 +23,6 @@ class SupportHelper:
         for shift in rota.get(day, []):
             if shift["start"] <= time_str <= shift["end"]:
                 person = shift["person"]
-        test.log.info('Person on call for %s at %s is %s' % (day, time_str, person))
+        test.log.info('On call personnel for %s at %s are %s' % (day, time_str, person))
         return person
 
