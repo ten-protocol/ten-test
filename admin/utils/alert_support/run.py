@@ -23,14 +23,17 @@ def greet_by_time(timezone_str='Europe/London'):
 
 
 # messages for failure
-def discord_failure_msg(name, oncall_id, all_ids, run_url, environment):
+def discord_failure_msg(name, oncall_ids, all_ids, run_url, environment):
+    if len(oncall_ids) == 1: support_personnel = "<@%s>" % oncall_ids[0]
+    else: support_personnel = ' '.join(['<@%s>' % x for x in oncall_ids])
+
     embed = {
         "title": "🚨 %s checks failing 🚨" % name,
         "description": "CODE RED - The %s checks have started failing!" % name,
         "color": 15158332,
         "fields": [
             {"name": "Environment", "value": "%s" % environment, "inline": True},
-            {"name": "On-call support", "value": "<@%s>" % oncall_id, "inline": True},
+            {"name": "On-call support", "value": "%s" % support_personnel, "inline": True},
             {"name": "Workflow run", "value": "[run](%s)" % run_url, "inline": True},
 
         ],
@@ -85,14 +88,17 @@ def telegram_still_failing_msg(content, channel_id):
 
 
 # messages for success
-def discord_success_msg(name, oncall_id, all_ids, run_url, environment):
+def discord_success_msg(name, oncall_ids, all_ids, run_url, environment):
+    if len(oncall_ids) == 1: support_personnel = "<@%s>" % oncall_ids[0]
+    else: support_personnel = ' '.join(['<@%s>' % x for x in oncall_ids])
+
     embed = {
         "title": ":white_check_mark: %s checks passing :white_check_mark:" % name,
         "description": "CODE GREEN - The %s checks have started passing!" % name,
         "color": 3066993,
         "fields": [
             {"name": "Environment", "value": "%s" % environment, "inline": True},
-            {"name": "On-call support", "value": "<@%s>" % oncall_id, "inline": True},
+            {"name": "On-call support", "value": "%s" % support_personnel, "inline": True},
             {"name": "Workflow run", "value": "[run](%s)" % run_url, "inline": True},
         ],
         "footer": {"text": "E2E Monitoring"},

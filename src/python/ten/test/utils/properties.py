@@ -262,7 +262,7 @@ class Properties:
         else: return did
 
     def oncall_discord_ids(self, people):
-        return [self.oncall_discord_id(person) for person in people]
+        return [self.oncall_discord_id(x) for x in people]
 
     def all_discord_ids(self):
         names = self.get_keys('support.personnel.did')
