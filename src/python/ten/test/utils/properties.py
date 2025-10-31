@@ -261,6 +261,9 @@ class Properties:
         if did is None: return self.get('support.personnel.did', 'default')
         else: return did
 
+    def oncall_discord_ids(self, people):
+        return [self.oncall_discord_id(person) for person in people]
+
     def all_discord_ids(self):
         names = self.get_keys('support.personnel.did')
         names.sort()
