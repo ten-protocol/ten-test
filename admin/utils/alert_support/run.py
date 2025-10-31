@@ -25,7 +25,7 @@ def greet_by_time(timezone_str='Europe/London'):
 # messages for failure
 def discord_failure_msg(name, people, all_ids, run_url, environment):
     if len(people) == 1: support_personnel = people[0]
-    else: support_personnel = ",".join(people)
+    else: support_personnel = ", ".join(people)
 
     embed = {
         "title": "🚨 %s checks failing 🚨" % name,
@@ -50,7 +50,7 @@ def discord_failure_msg(name, people, all_ids, run_url, environment):
 
 def telegram_failure_msg(name, people, run_url, environment, channel_id):
     if len(people) == 1: support_personnel = people[0]
-    else: support_personnel = ",".join(people)
+    else: support_personnel = ", ".join(people)
 
     message = (
         f"🚨 *{name} checks failing* 🚨\n"
@@ -90,7 +90,7 @@ def telegram_still_failing_msg(content, channel_id):
 # messages for success
 def discord_success_msg(name, people, all_ids, run_url, environment):
     if len(people) == 1: support_personnel = people[0]
-    else: support_personnel = ",".join(people)
+    else: support_personnel = ", ".join(people)
 
     embed = {
         "title": ":white_check_mark: %s checks passing :white_check_mark:" % name,
@@ -114,7 +114,7 @@ def discord_success_msg(name, people, all_ids, run_url, environment):
 
 def telegram_success_msg(name, people, run_url, environment, channel_id):
     if len(people) == 1: support_personnel = people[0]
-    else: support_personnel = ",".join(people)
+    else: support_personnel = ", ".join(people)
 
     message = (
         f"✅ *{name} checks passing* ✅\n"
