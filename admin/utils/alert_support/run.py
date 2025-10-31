@@ -23,14 +23,17 @@ def greet_by_time(timezone_str='Europe/London'):
 
 
 # messages for failure
-def discord_failure_msg(name, oncall_id, all_ids, run_url, environment):
+def discord_failure_msg(name, people, all_ids, run_url, environment):
+    if len(people) == 1: support_personnel = people[0]
+    else: support_personnel = ", ".join(people)
+
     embed = {
         "title": "🚨 %s checks failing 🚨" % name,
         "description": "CODE RED - The %s checks have started failing!" % name,
         "color": 15158332,
         "fields": [
             {"name": "Environment", "value": "%s" % environment, "inline": True},
-            {"name": "On-call support", "value": "<@%s>" % oncall_id, "inline": True},
+            {"name": "On-call support", "value": "%s" % support_personnel, "inline": True},
             {"name": "Workflow run", "value": "[run](%s)" % run_url, "inline": True},
 
         ],
@@ -45,12 +48,15 @@ def discord_failure_msg(name, oncall_id, all_ids, run_url, environment):
     return data
 
 
-def telegram_failure_msg(name, oncall, run_url, environment, channel_id):
+def telegram_failure_msg(name, people, run_url, environment, channel_id):
+    if len(people) == 1: support_personnel = people[0]
+    else: support_personnel = ", ".join(people)
+
     message = (
         f"🚨 *{name} checks failing* 🚨\n"
         f"CODE RED - The *{name}* checks have started failing!\n"
         f"*Environment:* {environment}\n"
-        f"*On-call support:* {oncall}\n"
+        f"*On-call support:* {support_personnel}\n"
         f"*Workflow run:* [View run]({run_url})\n"
     )
 
@@ -82,14 +88,17 @@ def telegram_still_failing_msg(content, channel_id):
 
 
 # messages for success
-def discord_success_msg(name, oncall_id, all_ids, run_url, environment):
+def discord_success_msg(name, people, all_ids, run_url, environment):
+    if len(people) == 1: support_personnel = people[0]
+    else: support_personnel = ", ".join(people)
+
     embed = {
         "title": ":white_check_mark: %s checks passing :white_check_mark:" % name,
         "description": "CODE GREEN - The %s checks have started passing!" % name,
         "color": 3066993,
         "fields": [
             {"name": "Environment", "value": "%s" % environment, "inline": True},
-            {"name": "On-call support", "value": "<@%s>" % oncall_id, "inline": True},
+            {"name": "On-call support", "value": "%s" % support_personnel, "inline": True},
             {"name": "Workflow run", "value": "[run](%s)" % run_url, "inline": True},
         ],
         "footer": {"text": "E2E Monitoring"},
@@ -103,12 +112,15 @@ def discord_success_msg(name, oncall_id, all_ids, run_url, environment):
     return data
 
 
-def telegram_success_msg(name, oncall, run_url, environment, channel_id):
+def telegram_success_msg(name, people, run_url, environment, channel_id):
+    if len(people) == 1: support_personnel = people[0]
+    else: support_personnel = ", ".join(people)
+
     message = (
         f"✅ *{name} checks passing* ✅\n"
         f"CODE GREEN - The *{name}* checks have started passing!\n"
         f"*Environment:* {environment}\n"
-        f"*On-call support:* {oncall}\n"
+        f"*On-call support:* {support_personnel}\n"
         f"*Workflow run:* [View run]({run_url})\n"
     )
 
@@ -137,7 +149,7 @@ class PySysTest(TenNetworkTest):
             self.log.warn('No run url given ... aborting')
         else:
             name = self.RUN_NAME.replace('_',' ')
-            person = SupportHelper.get_person_on_call(self)
+            people = SupportHelper.get_people_on_call(self)
             entries = self.runtype_db.get_last_num_results(self.env, self.RUN_TYPE, 3)
 
             # health checks run every 15 min, true is a pass, false is a fail - decision table below;
@@ -158,15 +170,15 @@ class PySysTest(TenNetworkTest):
                 if not t00 and t15:
                     msg = '%s checks have started failing, please investigate' % name
                     self.log.info(msg)
-                    self.send_discord_alert(discord_failure_msg(name, props.oncall_discord_id(person),
+                    self.send_discord_alert(discord_failure_msg(name, people,
                                                                 props.all_discord_ids(), self.RUN_URL, self.env))
-                    self.send_telegram_message(telegram_failure_msg(name, person, self.RUN_URL, self.env,
+                    self.send_telegram_message(telegram_failure_msg(name, people, self.RUN_URL, self.env,
                                                                     props.telegram_channel_id(self.env)))
 
                 # started failing and still failing
                 elif not t00 and not t15 and t30:
                     msg = '%s checks have failed twice since the last success, please investigate' % name
-                    self.send_call_alert(msg, person)
+                    self.send_call_alert(msg, people)
 
                     # get the last success to work out how long since the last pass
                     entry = self.runtype_db.get_last_result(self.env, self.RUN_TYPE, outcome=1)
@@ -193,7 +205,7 @@ class PySysTest(TenNetworkTest):
                         msg = '%s checks are still failing, last successful check was %d hours %d mins ago' % (name, hour, min)
 
                     self.log.info(msg)
-                    self.send_sms_alert(msg, person)
+                    self.send_sms_alert(msg, people)
                     self.send_discord_alert(discord_still_failing_msg(name, msg, props.all_discord_ids()))
                     self.send_telegram_message(telegram_still_failing_msg(msg, props.telegram_channel_id(self.env)))
 
@@ -201,10 +213,10 @@ class PySysTest(TenNetworkTest):
                 elif t00 and not t15:
                     msg = '%s checks are now passing' % name
                     self.log.info(msg)
-                    self.send_sms_alert(msg, person)
-                    self.send_discord_alert(discord_success_msg(name, props.oncall_discord_id(person),
+                    self.send_sms_alert(msg, people)
+                    self.send_discord_alert(discord_success_msg(name, people,
                                                                 props.all_discord_ids(), self.RUN_URL, self.env))
-                    self.send_telegram_message(telegram_success_msg(name, person, self.RUN_URL, self.env,
+                    self.send_telegram_message(telegram_success_msg(name, people, self.RUN_URL, self.env,
                                                                     props.telegram_channel_id(self.env)))
 
                 # still on a passing run
@@ -237,41 +249,43 @@ class PySysTest(TenNetworkTest):
             self.log.warn('Failed to send telegram msg')
             self.addOutcome(BLOCKED)
 
-    def send_sms_alert(self, msg, person):
+    def send_sms_alert(self, msg, people):
         props = Properties()
-        tel = props.oncall_telephone(person)
-        try:
-            client = Client(props.twilio_account(), props.twilio_token())
-            client.messages.create(
-                body=msg,
-                from_=props.twilio_from_number(),
-                to=tel,
-            )
-            self.log.info('Sent SMS msg')
-        except Exception as e:
-            self.log.warn('Unable to send SMS message: %s', e)
-            self.addOutcome(BLOCKED)
+        for person in people:
+            tel = props.oncall_telephone(person)
+            try:
+                client = Client(props.twilio_account(), props.twilio_token())
+                client.messages.create(
+                    body=msg,
+                    from_=props.twilio_from_number(),
+                    to=tel,
+                )
+                self.log.info('Sent SMS msg to %s' % person)
+            except Exception as e:
+                self.log.warn('Unable to send SMS message to person %s: %s', (person, e))
+                self.addOutcome(BLOCKED)
 
-    def send_call_alert(self, msg, person):
+    def send_call_alert(self, msg, people):
         props = Properties()
-        tel = props.oncall_telephone(person)
-        try:
-            ssml = '<speak><prosody rate="slow">%s</prosody></speak>' % msg
-            response = VoiceResponse()
-            response.pause(length=1)
-            response.say('%s %s, this is TEN support calling' % (greet_by_time(), person), voice="Polly.Amy")
-            response.pause(length=1)
-            response.say(ssml, voice="Polly.Amy")
-            response.pause(length=1)
-            response.say('Check discord support channel for more information', voice="Polly.Amy")
+        for person in people:
+            tel = props.oncall_telephone(person)
+            try:
+                ssml = '<speak><prosody rate="slow">%s</prosody></speak>' % msg
+                response = VoiceResponse()
+                response.pause(length=1)
+                response.say('%s %s, this is TEN support calling' % (greet_by_time(), person), voice="Polly.Amy")
+                response.pause(length=1)
+                response.say(ssml, voice="Polly.Amy")
+                response.pause(length=1)
+                response.say('Check discord support channel for more information', voice="Polly.Amy")
 
-            client = Client(props.twilio_account(), props.twilio_token())
-            client.calls.create(
-                twiml=str(response),
-                from_=props.twilio_from_number(),
-                to=tel,
-            )
-            self.log.info('Sent call')
-        except Exception as e:
-            self.log.warn('Unable to send telephone message: %s', e)
-            self.addOutcome(BLOCKED)
+                client = Client(props.twilio_account(), props.twilio_token())
+                client.calls.create(
+                    twiml=str(response),
+                    from_=props.twilio_from_number(),
+                    to=tel,
+                )
+                self.log.info('Sent call to %s' % person)
+            except Exception as e:
+                self.log.warn('Unable to send telephone message to %s: %s', (person, e))
+                self.addOutcome(BLOCKED)

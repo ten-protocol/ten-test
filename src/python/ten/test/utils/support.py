@@ -12,17 +12,17 @@ class SupportHelper:
             return yaml.safe_load(file)
 
     @classmethod
-    def get_person_on_call(cls, test):
+    def get_people_on_call(cls, test):
         rota = cls.load_rota()
         utc = datetime.utcnow().replace(tzinfo=pytz.utc)
         local_time = utc.astimezone(pytz.timezone("Europe/London"))
         day = local_time.strftime("%A")
         time_str = local_time.strftime("%H:%M")
 
-        person = None
+        people = None
         for shift in rota.get(day, []):
             if shift["start"] <= time_str <= shift["end"]:
-                person = shift["person"]
-        test.log.info('On call personnel for %s at %s are %s' % (day, time_str, person))
-        return person
+                people = [x.strip() for x in shift["people"].split(',') if x.strip() != '']
+        test.log.info('On call personnel for %s at %s are %s' % (day, time_str, people))
+        return people
 

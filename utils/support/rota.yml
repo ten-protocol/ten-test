@@ -1,34 +1,34 @@
 Monday:
   - start: "00:00"
     end: "23:59"
-    person: "tudor"
+    people: "tudor"
 
 Tuesday:
   - start: "00:00"
     end: "23:59"
-    person: "moray"
+    people: "moray"
 
 Wednesday:
   - start: "00:00"
     end: "23:59"
-    person: "ziga"
+    people: "ziga"
 
 Thursday:
   - start: "00:00"
     end: "23:59"
-    person: "will"
+    people: "will"
 
 Friday:
   - start: "00:00"
     end: "23:59"
-    person: "krish"
+    people: "krish,moray"
 
 Saturday:
   - start: "00:00"
     end: "23:59"
-    person: "ziga"
+    people: "ziga"
 
 Sunday:
   - start: "00:00"
     end: "23:59"
-    person: "will"
+    people: "will"
