@@ -23,9 +23,9 @@ def greet_by_time(timezone_str='Europe/London'):
 
 
 # messages for failure
-def discord_failure_msg(name, oncall_ids, all_ids, run_url, environment):
-    if len(oncall_ids) == 1: support_personnel = "<@%s>" % oncall_ids[0]
-    else: support_personnel = ' '.join(['<@%s>' % x for x in oncall_ids])
+def discord_failure_msg(name, people, all_ids, run_url, environment):
+    if len(people) == 1: support_personnel = people[0]
+    else: support_personnel = ",".join(people)
 
     embed = {
         "title": "🚨 %s checks failing 🚨" % name,
@@ -88,9 +88,9 @@ def telegram_still_failing_msg(content, channel_id):
 
 
 # messages for success
-def discord_success_msg(name, oncall_ids, all_ids, run_url, environment):
-    if len(oncall_ids) == 1: support_personnel = "<@%s>" % oncall_ids[0]
-    else: support_personnel = ' '.join(['<@%s>' % x for x in oncall_ids])
+def discord_success_msg(name, people, all_ids, run_url, environment):
+    if len(people) == 1: support_personnel = people[0]
+    else: support_personnel = ",".join(people)
 
     embed = {
         "title": ":white_check_mark: %s checks passing :white_check_mark:" % name,
@@ -170,7 +170,7 @@ class PySysTest(TenNetworkTest):
                 if not t00 and t15:
                     msg = '%s checks have started failing, please investigate' % name
                     self.log.info(msg)
-                    self.send_discord_alert(discord_failure_msg(name, props.oncall_discord_ids(people),
+                    self.send_discord_alert(discord_failure_msg(name, people,
                                                                 props.all_discord_ids(), self.RUN_URL, self.env))
                     self.send_telegram_message(telegram_failure_msg(name, people, self.RUN_URL, self.env,
                                                                     props.telegram_channel_id(self.env)))
@@ -214,7 +214,7 @@ class PySysTest(TenNetworkTest):
                     msg = '%s checks are now passing' % name
                     self.log.info(msg)
                     self.send_sms_alert(msg, people)
-                    self.send_discord_alert(discord_success_msg(name, props.oncall_discord_ids(people),
+                    self.send_discord_alert(discord_success_msg(name, people,
                                                                 props.all_discord_ids(), self.RUN_URL, self.env))
                     self.send_telegram_message(telegram_success_msg(name, people, self.RUN_URL, self.env,
                                                                     props.telegram_channel_id(self.env)))
