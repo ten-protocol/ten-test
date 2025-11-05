@@ -3,7 +3,6 @@ from hexbytes import HexBytes
 from pysys.constants import LOG_WARN
 from pysys.utils.logutils import BaseLogFormatter
 from ten.test.basetest import TenNetworkTest
-from ten.test.utils.properties import Properties
 from ten.test.contracts.create2 import Create2Factory, WrappedNative
 
 
@@ -16,7 +15,7 @@ class PySysTest(TenNetworkTest):
 
         # deploy the create2 factory contract
         factory = Create2Factory(self, web3)
-        factory.get_or_deploy(network, account, persist_nonce=False)
+        factory.get_or_deploy(network, account)
 
         # compile the wrapped native contract and get the predicted address
         wrapped = WrappedNative(self, web3)
@@ -36,7 +35,7 @@ class PySysTest(TenNetworkTest):
 
     def deploy_via_factory(self, network, web3, account, factory, wrapped, salt):
         target = factory.contract.functions.deploy(HexBytes(wrapped.bytecode), int.from_bytes(salt, 'big'))
-        tx_receipt = network.transact(self, web3, target, account, factory.GAS_LIMIT, persist_nonce=False)
+        tx_receipt = network.transact(self, web3, target, account, factory.GAS_LIMIT)
 
         events = factory.contract.events.Deployed().process_receipt(tx_receipt)
         if events:
