@@ -163,6 +163,15 @@ jobs:
             ${{ github.workspace }}/go-ten/*.out
           retention-days: 1
 
+      - name: 'Send discord notification on failure for the nightly scheduled task'
+        if: failure() && github.event_name == 'schedule'
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.WORKFLOW_STATUS_WEBHOOK }}
+          title: "The nightly execute_local_tests.yml workflow has failed"
+          description: "The workflow shows failures and requires investigation"
+          content: "For information <@814873419207409685>"
+
       - name: 'Docker clean containers and images after the test'
         if: always()
         run: |
