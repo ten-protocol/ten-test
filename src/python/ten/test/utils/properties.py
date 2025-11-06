@@ -117,29 +117,29 @@ class Properties:
             self.account1_3pk, self.account2_3pk, self.account3_3pk, self.account4_3pk
         ]
 
-    def fundacntpk(self, key='all'): return self.get('env.'+key, 'FundAcntPK')
-    def account1pk(self, key='all'): return getattr(self, "account1_%dpk" % thread_num())(key)
-    def account2pk(self, key='all'): return getattr(self, "account2_%dpk" % thread_num())(key)
-    def account3pk(self, key='all'): return getattr(self, "account3_%dpk" % thread_num())(key)
-    def account4pk(self, key='all'): return getattr(self, "account4_%dpk" % thread_num())(key)
+    def fundacntpk(self): return self.get('env.all', 'FundAcntPK')
+    def account1pk(self): return getattr(self, "account1_%dpk" % thread_num())()
+    def account2pk(self): return getattr(self, "account2_%dpk" % thread_num())()
+    def account3pk(self): return getattr(self, "account3_%dpk" % thread_num())()
+    def account4pk(self): return getattr(self, "account4_%dpk" % thread_num())()
 
     # accounts 1 to 4 used by thread-1 or the main thread
-    def account1_1pk(self, key='all'): return self.get('env.'+key, 'Account1PK')
-    def account2_1pk(self, key='all'): return self.get('env.'+key, 'Account2PK')
-    def account3_1pk(self, key='all'): return self.get('env.'+key, 'Account3PK')
-    def account4_1pk(self, key='all'): return self.get('env.'+key, 'Account4PK')
+    def account1_1pk(self): return self.get('env.all', 'Account1PK')
+    def account2_1pk(self): return self.get('env.all', 'Account2PK')
+    def account3_1pk(self): return self.get('env.all', 'Account3PK')
+    def account4_1pk(self): return self.get('env.all', 'Account4PK')
 
     # accounts 1 to 4 used by thread-2
-    def account1_2pk(self, key='all'): return self.get('env.'+key, 'Account5PK')
-    def account2_2pk(self, key='all'): return self.get('env.'+key, 'Account6PK')
-    def account3_2pk(self, key='all'): return self.get('env.'+key, 'Account7PK')
-    def account4_2pk(self, key='all'): return self.get('env.'+key, 'Account8PK')
+    def account1_2pk(self): return self.get('env.all', 'Account5PK')
+    def account2_2pk(self): return self.get('env.all', 'Account6PK')
+    def account3_2pk(self): return self.get('env.all', 'Account7PK')
+    def account4_2pk(self): return self.get('env.all', 'Account8PK')
 
     # accounts 1 to 4 used by thread-3
-    def account1_3pk(self, key='all'): return self.get('env.'+key, 'Account9PK')
-    def account2_3pk(self, key='all'): return self.get('env.'+key, 'Account10PK')
-    def account3_3pk(self, key='all'): return self.get('env.'+key, 'Account11PK')
-    def account4_3pk(self, key='all'): return self.get('env.'+key, 'Account12PK')
+    def account1_3pk(self): return self.get('env.all', 'Account9PK')
+    def account2_3pk(self): return self.get('env.all', 'Account10PK')
+    def account3_3pk(self): return self.get('env.all', 'Account11PK')
+    def account4_3pk(self): return self.get('env.all', 'Account12PK')
 
     # common to all environments
     def host_http(self, key):

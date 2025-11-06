@@ -181,22 +181,6 @@ class TenRunnerPlugin():
                 hprocess = self.run_ganache(runner)
                 runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
 
-            elif self.env == 'hardhat':
-                runner.log.info('')
-                runner.log.info('Checking alignment of account nonce persistence;')
-                props = Properties()
-                web3 = Web3(Web3.HTTPProvider('%s:%d' % (props.host_http(self.env), props.port_http(self.env))))
-                for fn in Properties().accounts():
-                    account = web3.eth.account.from_key(fn())
-                    persisted = nonce_db.get_latest_nonce(account.address, self.env)
-                    tx_count = web3.eth.get_transaction_count(account.address)
-                    if (persisted is None) or (persisted != tx_count-1):
-                        runner.log.warn("  Resetting persistence for %s, persisted %s, count %d", fn.__name__,
-                                        str(persisted), tx_count, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
-                        if (persisted is not None) and (persisted > tx_count-1): nonce_db.delete_from(account.address, self.env, tx_count)
-                        nonce_db.insert(account.address, self.env, tx_count-1, 'RESET')
-                runner.log.info('')
-
         except Exception as e:
             runner.log.warn('Error executing runner plugin startup actions %s', e)
             traceback.print_exc()
