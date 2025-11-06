@@ -16,6 +16,7 @@ from ten.test.persistence.contract import ContractPersistence
 from ten.test.utils.properties import Properties
 from ten.test.networks.default import DefaultPostLondon
 from ten.test.networks.ganache import Ganache
+from ten.test.networks.hardhat import Hardhat
 from ten.test.networks.goerli import Goerli
 from ten.test.networks.sepolia import Sepolia
 from ten.test.networks.optimism import OptimismSepolia, OptimismL1Sepolia
@@ -304,6 +305,8 @@ class GenericNetworkTest(BaseTest):
             return Goerli(self, name, **kwargs)
         elif self.env == 'ganache':
             return Ganache(self, name, **kwargs)
+        elif self.env == 'hardhat':
+            return Hardhat(self, name, **kwargs)
         elif self.env == 'arbitrum.sepolia':
             return ArbitrumSepolia(self, name, **kwargs)
         elif self.env == 'optimism.sepolia':

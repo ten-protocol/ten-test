@@ -51,6 +51,7 @@ class TenRunnerPlugin():
             runner.log.info('   ten.sim       Ten sim testnet')
             runner.log.info('   arbitrum      Arbitrum Network')
             runner.log.info('   ganache       Ganache Network started by the framework')
+            runner.log.info('   hardhat       Hardhat Network started outside of the framework')
             runner.log.info('   sepolia       Sepolia Network')
             runner.log.info('   admin         Used for non network administration')
             sys.exit()
@@ -108,6 +109,8 @@ class TenRunnerPlugin():
             raise Exception('Max threads against Ganache cannot be greater than 3')
         elif self.env == 'sepolia' and runner.threads > 1:
             raise Exception('Max threads against Sepolia cannot be greater than 1')
+        elif self.env == 'hardhat' and runner.threads > 1:
+            raise Exception('Max threads against Hardhat cannot be greater than 1')
 
         try:
             if runner.xargs.get('NO_CONNECT', False):
@@ -177,6 +180,22 @@ class TenRunnerPlugin():
                 contracts_db.delete_environment('ganache')
                 hprocess = self.run_ganache(runner)
                 runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
+
+            elif self.env == 'hardhat':
+                runner.log.info('')
+                runner.log.info('Checking alignment of account nonce persistence;')
+                props = Properties()
+                web3 = Web3(Web3.HTTPProvider('%s:%d' % (props.host_http(self.env), props.port_http(self.env))))
+                for fn in Properties().accounts():
+                    account = web3.eth.account.from_key(fn())
+                    persisted = nonce_db.get_latest_nonce(account.address, self.env)
+                    tx_count = web3.eth.get_transaction_count(account.address)
+                    if (persisted is None) or (persisted != tx_count-1):
+                        runner.log.warn("  Resetting persistence for %s, persisted %s, count %d", fn.__name__,
+                                        str(persisted), tx_count, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
+                        if (persisted is not None) and (persisted > tx_count-1): nonce_db.delete_from(account.address, self.env, tx_count)
+                        nonce_db.insert(account.address, self.env, tx_count-1, 'RESET')
+                runner.log.info('')
 
         except Exception as e:
             runner.log.warn('Error executing runner plugin startup actions %s', e)
