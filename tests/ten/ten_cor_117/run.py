@@ -20,8 +20,8 @@ class PySysTest(TenNetworkTest):
 
         # transact (the first should be rejected so we just check later ones go through)
         self.transact(calldata, web3, account, limit=int(self.LIMIT), expect_pass=False)
-        self.transact(calldata, web3, account, limit=800)
         self.transact(calldata, web3, account, limit=500)
+        self.transact(calldata, web3, account, limit=300)
 
     def transact(self, calldata, web3, account, limit, expect_pass=True):
         self.log.info('Transacting with limit set to %d' % limit)
@@ -35,17 +35,17 @@ class PySysTest(TenNetworkTest):
                   'gasPrice': web3.eth.gas_price,
                   'value': web3.to_wei(0.01, 'ether')}
 
-        if int(self.GAS) == 0:
-            self.log.info('Estimating gas ...')
-            params['gas'] = int(target.estimate_gas(params))
-            self.log.info('Estimating gas %d' % target.estimate_gas(params))
-        else:
-            self.log.info('Using set gas limit of %d' % int(self.GAS))
-            params['gas'] = int(self.GAS)
-        build_tx = target.build_transaction(params)
-
         # sign, send and wait
         try:
+            if int(self.GAS) == 0:
+                self.log.info('Estimating gas ...')
+                params['gas'] = int(target.estimate_gas(params))
+                self.log.info('Estimating gas %d' % target.estimate_gas(params))
+            else:
+                self.log.info('Using set gas limit of %d' % int(self.GAS))
+                params['gas'] = int(self.GAS)
+            build_tx = target.build_transaction(params)
+
             signed_tx = account.sign_transaction(build_tx)
             tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
             tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash)

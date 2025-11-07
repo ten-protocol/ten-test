@@ -14,7 +14,6 @@ async function sendTransaction() {
   const transactionParameters = {
     from: sender_address,
     to: options.to,
-    gas: 21000,
     gasPrice: gasPrice,
     value: options.amount,
     nonce: await web3.eth.getTransactionCount(sender_address),

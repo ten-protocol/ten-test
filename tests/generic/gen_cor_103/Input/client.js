@@ -16,7 +16,6 @@ async function sendTransaction() {
   const tx = {
     to: options.to,
     value: parseInt(options.amount),
-    gasLimit: 21000,
     gasPrice: gasPrice,
   }
   log(`Transaction created`)
