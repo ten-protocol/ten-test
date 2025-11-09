@@ -14,7 +14,6 @@ data from the database to perform the check, or get snapshots from the network.
     </description>
     <classification>
         <groups inherit="true">
-            <group>health</group>
             <group>check</group>
         </groups>
         <modes inherit="true">
