@@ -233,7 +233,7 @@ class TenRunnerPlugin():
         arguments.extend(('--logPath', os.path.join(runner.output, 'wallet_logs.txt')))
         arguments.extend(('--databasePath', os.path.join(runner.output, 'wallet_database')))
         arguments.append('--verbose')
-        hprocess = runner.startProcess(command=os.path.join(PROJECT.root, 'artifacts', 'wallet_extension', 'wallet_extension'),
+        hprocess = runner.startProcess(command=os.path.join(PROJECT.root,'artifacts','go-ten','wallet_extension','wallet_extension'),
                                        displayName='wallet_extension', workingDir=runner.output, environs=os.environ,
                                        quiet=True, arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
         runner.waitForSignal(stdout, expr='TEN gateway started', timeout=30)

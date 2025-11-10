@@ -16,7 +16,7 @@ class TransactionPostProcessor:
         self.test = test
         self.web3 = web3
         self.address = Properties().l2_transaction_post_processor()
-        self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'system', 'contracts',
+        self.abi_path = os.path.join(PROJECT.root, 'artifacts','go-ten', 'contracts', 'system', 'contracts',
                                      'TransactionPostProcessor.sol', 'TransactionPostProcessor.json')
         with open(self.abi_path, 'r') as fp:
             self.abi = json.load(fp)
@@ -30,7 +30,7 @@ class ZenTestnet:
         self.test = test
         self.web3 = web3
         self.address = address
-        self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'testing', 'ZenTestnet.sol',
+        self.abi_path = os.path.join(PROJECT.root, 'artifacts','go-ten', 'contracts', 'testing', 'ZenTestnet.sol',
                                      'ZenTestnet.json')
         with open(self.abi_path, 'r') as fp:
             self.abi = json.load(fp)

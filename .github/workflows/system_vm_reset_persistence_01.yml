@@ -20,11 +20,10 @@ jobs:
           repository: ten-protocol/go-ten
           path: ./go-ten
 
-      - name: 'Build artifacts'
+      - name: 'Build required artifacts for running tests'
         run: |
-          cd ${{ github.workspace }}/go-ten/tools/walletextension/main
-          go build -o ${{ github.workspace }}/ten-test/artifacts/wallet_extension/wallet_extension
-          ls -l ${{ github.workspace }}/ten-test/artifacts
+          cd ${{ github.workspace }}/ten-test
+          ./get_artifacts.sh
 
       - name: 'Persistence reset dev'
         continue-on-error: true

@@ -1,56 +1,77 @@
 # script to build artifacts required for running tests 
 
 script_path="$(cd "$(dirname "${0}")" && pwd)"
-src_path="${script_path}/../go-ten"
+go_ten="${script_path}/../go-ten"
+market="${script_path}/../market"
 
-# extract branch and commit hash
-cd $src_path
-HASH=`git rev-parse HEAD`
-BRANCH=`git rev-parse --abbrev-ref HEAD`
-cd $script_path
-
-# purge artifacts
+# purge the artifacts directory
 echo Purging artifacts directory
 if [ -d ${script_path}/artifacts ]; then
   rm -rfv ${script_path}/artifacts
 fi
 mkdir ${script_path}/artifacts
+mkdir ${script_path}/artifacts/go-ten
+mkdir ${script_path}/artifacts/market
 
-# write the build info
-echo Creating build info
-echo "BRANCH: " $BRANCH > ${script_path}/artifacts/build.info
-echo "HASH:   " $HASH  >> ${script_path}/artifacts/build.info
-echo "DATE:   " `date` >> ${script_path}/artifacts/build.info
-echo "" >> ${script_path}/artifacts/build.info
+# -------------------------------------------------
+# Build the go-ten repo artifacts
+# -------------------------------------------------
+echo Creating go-ten build info
+cd $go_ten
+HASH=`git rev-parse HEAD`
+BRANCH=`git rev-parse --abbrev-ref HEAD`
+cd $script_path
+echo "BRANCH: " $BRANCH > ${script_path}/artifacts/go-ten/build.info
+echo "HASH:   " $HASH  >> ${script_path}/artifacts/go-ten/build.info
+echo "DATE:   " `date` >> ${script_path}/artifacts/go-ten/build.info
+echo "" >> ${script_path}/artifacts/go-ten/build.info
 
 # run the wallet extension build
 echo Building the wallet extension
-cd $src_path/tools/walletextension/main
+cd $go_ten/tools/walletextension/main
 
 echo Building wallet extension for target platform
-go build -o ${script_path}/artifacts/wallet_extension/wallet_extension .
+go build -o ${script_path}/artifacts/go-ten/wallet_extension/wallet_extension .
 
 echo Building wallet extension for GOOS=darwin GOARCH=amd64
-env GOOS=darwin GOARCH=amd64 go build -o ${script_path}/artifacts/wallet_extension/wallet_extension_macos_amd64 .
+env GOOS=darwin GOARCH=amd64 go build -o ${script_path}/artifacts/go-ten/wallet_extension/wallet_extension_macos_amd64 .
 
 echo Building wallet extension for GOOS=darwin GOARCH=arm64
-env GOOS=darwin GOARCH=arm64 go build -o ${script_path}/artifacts/wallet_extension/wallet_extension_macos_arm64 .
+env GOOS=darwin GOARCH=arm64 go build -o ${script_path}/artifacts/go-ten/wallet_extension/wallet_extension_macos_arm64 .
 
 echo Building wallet extension for GOOS=windows GOARCH=amd64
-env GOOS=windows GOARCH=amd64 go build -o ${script_path}/artifacts/wallet_extension/wallet_extension_win_amd64.exe .
+env GOOS=windows GOARCH=amd64 go build -o ${script_path}/artifacts/go-ten/wallet_extension/wallet_extension_win_amd64.exe .
 
 echo Building wallet extension for GOOS=linux GOARCH=amd64
-env GOOS=linux GOARCH=amd64 go build -o ${script_path}/artifacts/wallet_extension/wallet_extension_linux_amd64
+env GOOS=linux GOARCH=amd64 go build -o ${script_path}/artifacts/go-ten/wallet_extension/wallet_extension_linux_amd64
 
-# run the abigen to create the contract ABIs
-echo Building the contract ABIs
-cd $src_path/contracts
+# run the abigen in go-ten to create the contract ABIs and copy over
+echo Building the go-ten contract ABIs
+cd $go_ten/contracts
 npm install
 npx hardhat compile
 npx hardhat generate-abi-bindings --output-dir generated
-
 cd $script_path
-cp -r $src_path/contracts/exported/src artifacts/contracts
+cp -r $go_ten/contracts/exported/src artifacts/go-ten/contracts
+rm -rf $go_ten/contracts/exported/
+rm -rf $go_ten/contracts/generated/ConstantSupplyERC20/
 
-rm -rf $src_path/contracts/exported/
-rm -rf $src_path/contracts/generated/ConstantSupplyERC20/
+
+# -------------------------------------------------
+# Build the market repo artifacts
+# -------------------------------------------------
+echo Creating market build info
+cd $market
+HASH=`git rev-parse HEAD`
+BRANCH=`git rev-parse --abbrev-ref HEAD`
+cd $script_path
+echo "BRANCH: " $BRANCH > ${script_path}/artifacts/market/build.info
+echo "HASH:   " $HASH  >> ${script_path}/artifacts/market/build.info
+echo "DATE:   " `date` >> ${script_path}/artifacts/market/build.info
+echo "" >> ${script_path}/artifacts/market/build.info
+
+# copy the market dApp contract abi (assumes the application has been started up externally)
+echo Copying the market dApp contract ABIs if they exist
+if [ -d $market/packages/hardhat/artifacts/contracts ]; then
+  cp -r $market/packages/hardhat/artifacts/contracts artifacts/market/contracts
+fi
