@@ -22,6 +22,7 @@ test repository against an existing installation, then reset the persisted nonce
             <mode>arbitrum.sepolia</mode>
             <mode>optimism.sepolia</mode>
             <mode>sepolia</mode>
+            <mode>hardhat</mode>
         </modes>
     </classification>
 
