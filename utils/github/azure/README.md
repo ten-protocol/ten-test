@@ -5,10 +5,10 @@ Run the utility scripts to create the VM and connect;
 
 ```bash
 # create the VM
- ./create-runner.sh --name=ten-test-gh-runner-01 
+ ./create-runner.sh --name=ten-test-azure-runner-01 
  
 # connect to the VM
-./connect-runner.sh --name=ten-test-gh-runner-01  
+./connect-runner.sh --name=ten-test-azure-runner-01  
 ```
 
 ## Install dependencies

@@ -5,13 +5,13 @@ help_and_exit() {
     echo "Usage: $(basename "${0}") --name=<name>"
     echo " "
     echo "where: "
-    echo "  name                *Optional* The name of the VM instance (default ten-test-gh-runner) "
+    echo "  name                *Optional* The name of the VM instance (default ten-test-azure-runner) "
     echo ""
     exit 1
 }
 
 ssh_key=~/.ssh/id_rsa
-name=ten-test-gh-runner-01
+name=ten-test-azure-runner-01
 group=ten-test-repo
 
 for argument in "$@"
