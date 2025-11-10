@@ -24,7 +24,7 @@ on:
 
 jobs:
   test-run:
-    runs-on: [self-hosted, Linux, X64, ten-test-azure-runner-01]
+    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-01]
     steps:
       - name: 'Check out ten-test'
         uses: actions/checkout@v3

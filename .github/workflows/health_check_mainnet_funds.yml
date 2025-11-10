@@ -9,7 +9,7 @@ on:
 
 jobs:
   run-check:
-    runs-on: [self-hosted, Linux, X64, ten-test-azure-runner-01]
+    runs-on: [self-hosted, Linux, X64, ten-test-gh-runner-01]
     env:
       RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
