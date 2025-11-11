@@ -1,13 +1,13 @@
-# Reset the nonce persistence on sepolia-testnet
+# Reset the nonce persistence on ten-test-google-runner-01
 #
-name: '[system] Reset db gh-runner-01'
-run-name: Reset persistence on gh-runner-01
+name: '[system] Reset db google-runner-01'
+run-name: Reset persistence on ten-test-google-runner-01
 on:
   workflow_dispatch:
 
 jobs:
   reset-persistence:
-    runs-on: [self-hosted, Linux, X64, ten-google-runner-01]
+    runs-on: [self-hosted, Linux, X64, ten-test-google-runner-01]
     steps:
       - name: 'Check out ten-test'
         uses: actions/checkout@v3
