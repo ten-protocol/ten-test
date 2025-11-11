@@ -19,7 +19,7 @@ contract ReceiveEther {
     */
 
     receive() external payable {
-     //   emit Received("receive", msg.value);
+        emit Received("receive", msg.value);
     }
 
     fallback() external payable {
