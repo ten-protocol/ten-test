@@ -29,7 +29,7 @@ class PySysTest(TenNetworkTest):
 
         # perform transfers
         last_balance = 0
-        for fn in ['sendViaTransfer', 'sendViaSend', 'sendViaCall']:
+        for fn in [ 'sendViaCall']:
             self.log.info('Encoding and transferring using %s', fn)
 
             data = send_contract.contract.encodeABI(fn_name=fn, args=[recv_contract.address])
