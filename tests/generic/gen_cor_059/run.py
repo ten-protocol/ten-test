@@ -34,7 +34,7 @@ class PySysTest(TenNetworkTest):
 
             data = send_contract.contract.encodeABI(fn_name=fn, args=[recv_contract.address])
             self.send(network, web3, send_contract, account, data, 100)
-
+            self.wait(5.0)
             balance = web3.eth.get_balance(recv_contract.address)
             self.log.info('Last balance: %s', last_balance)
             self.log.info('New balance : %s', balance)

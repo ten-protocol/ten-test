@@ -26,7 +26,7 @@ export SOLC_VERSION=0.8.18
 # set permissions for docker
 sudo groupadd docker
 sudo usermod -aG docker tenadmin
-newgrp docker
+    newgrp docker
 ```
 
 Note that we need to use go 1.21.13, and more recent VMs may come with a later version. To install 1.21.13 see the 
