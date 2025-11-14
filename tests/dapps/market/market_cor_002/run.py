@@ -1,38 +1,10 @@
-from time import time
-from decimal import Decimal
 from pysys.constants import FAILED
-from ten.test.basetest import GenericNetworkTest
 from ten.test.utils.properties import Properties
 from ten.test.contracts.market import MarketPlace
+from ten.test.dapps.market.markettest import MarketDappTest, Round
 
-def to_ray(amount):
-    return int(Decimal(amount) * 10 ** 27)
 
-class Round:
-    def __init__( self, deadline, quoteLastUpdate, priceMicro, coStakeRatio, tenCap, maxUSDC, fundedUSDC,
-                  collectedUSDC, claimedUSDC, sellersFrozen, sellerScale, buyerCoverage, totalBuyerTEN,
-                  releasedActiveTEN, buyerVault, proceedsVault, minCollectedUSDC, canceled, canceledAt):
-        self.deadline = deadline
-        self.quoteLastUpdate = quoteLastUpdate
-        self.priceMicro = priceMicro
-        self.coStakeRatio = coStakeRatio
-        self.tenCap = tenCap
-        self.maxUSDC = maxUSDC
-        self.fundedUSDC = fundedUSDC
-        self.collectedUSDC = collectedUSDC
-        self.claimedUSDC = claimedUSDC
-        self.sellersFrozen = sellersFrozen
-        self.sellerScale = sellerScale
-        self.buyerCoverage = buyerCoverage
-        self.totalBuyerTEN = totalBuyerTEN
-        self.releasedActiveTEN = releasedActiveTEN
-        self.buyerVault = buyerVault
-        self.proceedsVault = proceedsVault
-        self.minCollectedUSDC = minCollectedUSDC
-        self.canceled = canceled
-        self.canceledAt = canceledAt
-
-class PySysTest(GenericNetworkTest):
+class PySysTest(MarketDappTest):
 
     def execute(self):
         props = Properties()
@@ -56,11 +28,11 @@ class PySysTest(GenericNetworkTest):
         self.log.info('Latest round id is %d' % round_id_before)
 
         # create a new round
-        deadline=int(time()) + 60,
-        price=web3.to_wei(1, 'ether'),
-        beta=to_ray(0.25),
-        tenCap = web3.to_wei(1000, 'ether'),
-        maxUSDC = 0,
+        deadline = int(web3.eth.get_block("latest").timestamp) + 60
+        price = web3.to_wei(1, 'ether')
+        beta = self.to_ray(0.25)
+        tenCap = web3.to_wei(1000, 'ether')
+        maxUSDC = 0
         minUSDC = 500 * web3.to_wei(1, 'ether')
         self.create_round(market, network, web3, account, deadline, price, beta, tenCap, maxUSDC, minUSDC)
 
@@ -74,8 +46,22 @@ class PySysTest(GenericNetworkTest):
         self.assertTrue(is_active == True, assertMessage='Round should be active')
 
         get_round = market.contract.functions.getRound(round_id_after).call()
-        round= Round(*get_round)
-        self.assertTrue(round.deadline == deadline, assertMessage='Round deadline should be active')
+        round = Round(*get_round)
+        self.assertTrue(round.deadline == deadline, assertMessage='Round deadline should match')
+        self.assertTrue(round.priceMicro == price, assertMessage='Round priceMicro should match')
+        self.assertTrue(round.coStakeRatio == beta, assertMessage='Round coStakeRatio should match')
+        self.assertTrue(round.tenCap == tenCap, assertMessage='Round tenCap should match')
+        self.assertTrue(round.minCollectedUSDC == minUSDC, assertMessage='Round minCollectedUSDC should match')
+
+        # increase time so the round becomes inactive
+        self.log.info('Block time is %d ' % web3.eth.get_block("latest").timestamp)
+        web3.provider.make_request("evm_increaseTime",[60])
+        web3.provider.make_request("evm_mine", [])
+        self.log.info('Block time is %d ' % web3.eth.get_block("latest").timestamp)
+
+        is_active = market.contract.functions.isActive(round_id_after).call()
+        self.log.info('Latest round %d is_active = %s' % (round_id_after, is_active))
+        self.assertTrue(is_active == False, assertMessage='Round should be inactive')
 
 
     def create_round(self, market, network, web3, account, deadline, price, beta, tenCap, maxUSDC, minUSDC):

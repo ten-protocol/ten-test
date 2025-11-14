@@ -2,8 +2,11 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC API: check market place contract is functioning</title>
+        <title>RPC API: check market place contract is functioning, and create a round</title>
         <purpose><![CDATA[
+Checks there is code at the market place contract address, creates a round, checks the latest round id increases by
+one, checks the round details are correct, waits for the deadline to be exceeded, and then checks the round is now
+inactive.
 ]]>
         </purpose>
     </description>

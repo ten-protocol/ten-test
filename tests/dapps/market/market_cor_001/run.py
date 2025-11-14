@@ -1,9 +1,8 @@
-from ten.test.basetest import GenericNetworkTest
 from ten.test.utils.properties import Properties
 from ten.test.contracts.market import TestUSDC, TestTEN
+from ten.test.dapps.market.markettest import MarketDappTest
 
-
-class PySysTest(GenericNetworkTest):
+class PySysTest(MarketDappTest):
 
     def execute(self):
         props = Properties()
