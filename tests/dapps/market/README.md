@@ -7,9 +7,9 @@ cloned into the same parent directory as `ten-test` so they are sibling director
 three separate terminals use;
 
 ```bash
-yarn chain     # terminal 1
-yarn deploy    # terminal 2
-yarn start     # terminal 3
+yarn chain                     # terminal 1
+yarn deploy --network local    # terminal 2
+yarn start                     # terminal 2
 ```
 
 The first command starts up a hardhat network. The second builds and deploys the application. The third starts the 
