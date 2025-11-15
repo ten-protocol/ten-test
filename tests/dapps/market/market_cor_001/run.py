@@ -5,22 +5,16 @@ from ten.test.dapps.market.markettest import MarketDappTest
 class PySysTest(MarketDappTest):
 
     def execute(self):
-        props = Properties()
-
-        # connect to the network
-        network = self.get_network_connection()
-        web3, account = network.connect(self, private_key=props.market_deployer_pk())
-
         # get the chain id
-        chain_id = web3.eth.chain_id
+        chain_id = self.web3_deployer.eth.chain_id
         self.log.info('Returned chain id is %d', chain_id)
-        self.assertTrue(chain_id == network.chain_id())
+        self.assertTrue(chain_id == self.network.chain_id())
 
         # check the erc20 contracts
         self.log.info('Test the TEN token exists and can be minted ...')
-        self.check_token(web3, network, account, TestTEN(self, web3))
+        self.check_token(self.web3_deployer, self.network, self.account_deploy, TestTEN(self, self.web3_deployer))
         self.log.info('Test the USDC token exists and can be minted ...')
-        self.check_token(web3, network, account, TestUSDC(self, web3))
+        self.check_token(self.web3_deployer, self.network, self.account_deploy, TestUSDC(self, self.web3_deployer))
 
     def check_token(self, web3, network, account, token):
         self.log.info('Checking there is contract code at %s' % token.address)

@@ -7,17 +7,11 @@ from ten.test.dapps.market.markettest import MarketDappTest, Round
 class PySysTest(MarketDappTest):
 
     def execute(self):
-        props = Properties()
-
-        # connect to the network
-        network = self.get_network_connection()
-        web3, account = network.connect(self, private_key=props.market_deployer_pk())
-
         # get the market place contract and check there is code
-        market = MarketPlace(self, web3)
+        market = MarketPlace(self, self.web3_deployer)
 
         self.log.info('Checking there is contract code at marketplace address %s' % market.address)
-        code = web3.eth.get_code(market.address)
+        code = self.web3_deployer.eth.get_code(market.address)
         self.log.info("Contract bytecode length: %d", len(code))
         if code == b'' or code == '0x' or len(code) == 0:
             self.log.info("No contract code at that address — address wrong or contract not deployed.")
@@ -28,25 +22,32 @@ class PySysTest(MarketDappTest):
         self.log.info('Latest round id is %d' % round_id_before)
 
         # create a new round
-        deadline = int(web3.eth.get_block("latest").timestamp) + 60
-        price = web3.to_wei(1, 'ether')
+        node_time = market.contract.functions.latestBlockTime().call()
+        client_time = self.get_block_time()
+        self.log.info(node_time)
+        self.log.info(client_time)
+
+        deadline = self.get_block_time() + 60
+        price = self.web3_deployer.to_wei(1, 'ether')
         beta = self.to_ray(0.25)
-        tenCap = web3.to_wei(1000, 'ether')
+        tenCap = self.web3_deployer.to_wei(1000, 'ether')
         maxUSDC = 0
-        minUSDC = 500 * web3.to_wei(1, 'ether')
-        self.create_round(market, network, web3, account, deadline, price, beta, tenCap, maxUSDC, minUSDC)
+        minUSDC = 500 * self.web3_deployer.to_wei(1, 'ether')
+        tx_receipt, id = self.create_round(market, self.network, self.web3_deployer, self.account_deploy,
+                                           deadline, price, beta, tenCap, maxUSDC, minUSDC)
+        self.log.info('Transaction receipt shows round id is %d' % id)
 
         # get the latest round id
         round_id_after = market.contract.functions.latestRoundId().call()
-        self.log.info('Latest round id is %d' % round_id_after)
+        self.log.info('Call to latestRoundId shows round id is %d' % round_id_after)
         self.assertTrue(round_id_after == round_id_before + 1, assertMessage='Round id should increase by one')
+        self.assertTrue(round_id_after == id, assertMessage='Transaction receipt and call to latest should match')
 
         is_active = market.contract.functions.isActive(round_id_after).call()
         self.log.info('Latest round %d is_active = %s' % (round_id_after, is_active))
         self.assertTrue(is_active == True, assertMessage='Round should be active')
 
-        get_round = market.contract.functions.getRound(round_id_after).call()
-        round = Round(*get_round)
+        round = Round(*market.contract.functions.getRound(round_id_after).call())
         self.assertTrue(round.deadline == deadline, assertMessage='Round deadline should match')
         self.assertTrue(round.priceMicro == price, assertMessage='Round priceMicro should match')
         self.assertTrue(round.coStakeRatio == beta, assertMessage='Round coStakeRatio should match')
@@ -54,17 +55,10 @@ class PySysTest(MarketDappTest):
         self.assertTrue(round.minCollectedUSDC == minUSDC, assertMessage='Round minCollectedUSDC should match')
 
         # increase time so the round becomes inactive
-        self.log.info('Block time is %d ' % web3.eth.get_block("latest").timestamp)
-        web3.provider.make_request("evm_increaseTime",[60])
-        web3.provider.make_request("evm_mine", [])
-        self.log.info('Block time is %d ' % web3.eth.get_block("latest").timestamp)
+        self.log.info('Current block time is %d ' % self.get_block_time())
+        self.increase_evm_time(60)
+        self.log.info('Current block time is %d ' % self.get_block_time())
 
         is_active = market.contract.functions.isActive(round_id_after).call()
         self.log.info('Latest round %d is_active = %s' % (round_id_after, is_active))
         self.assertTrue(is_active == False, assertMessage='Round should be inactive')
-
-
-    def create_round(self, market, network, web3, account, deadline, price, beta, tenCap, maxUSDC, minUSDC):
-        target = market.contract.functions.createRound(deadline, price, beta, tenCap, maxUSDC, minUSDC)
-        tx_receipt = network.transact(self, web3, target, account, market.GAS_LIMIT, persist_nonce=False)
-        return tx_receipt
