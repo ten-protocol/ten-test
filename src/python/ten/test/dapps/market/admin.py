@@ -1,22 +1,14 @@
 from decimal import Decimal
 from ten.test.dapps.market.round import Round
 from ten.test.utils.properties import Properties
-from ten.test.contracts.market import MarketPlace
-from ten.test.contracts.market import TestUSDC, TestTEN
+from ten.test.dapps.market.player import MarketDappPlayer
 
 
-class MarketDappAdmin():
+class MarketDappAdmin(MarketDappPlayer):
+    """The player with an operational role on the market contracts."""
 
     def __init__(self, test):
-        self.test = test
-        self.log = test.log
-        self.network = test.get_network_connection()
-        self.web3, self.account = self.network.connect(self, private_key=Properties().fundacntpk())
-        self.address = self.account.address
-        self.market = MarketPlace(self, self.web3)
-        self.ten = TestTEN(self, self.web3)
-        self.usdc = TestUSDC(self, self.web3)
-        self.align_time()
+        super().__init__(test, Properties().fundacntpk())
 
     def create_round(self, deadline, price, beta, ten_cap, max_usdc, min_usdc):
         """Create a new round."""

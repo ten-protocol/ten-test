@@ -1,0 +1,53 @@
+from ten.test.contracts.market import MarketPlace
+from ten.test.contracts.market import TestUSDC, TestTEN
+
+
+class MarketDappPlayer():
+    """The base player who participates in the market as a buyer, seller or admin."""
+
+    def __init__(self, test, pk):
+        self.test = test
+        self.log = test.log
+        self.network = test.get_network_connection()
+        self.web3, self.account = self.network.connect(test, pk)
+        self.address = self.account.address
+        self.market = MarketPlace(self, self.web3)
+        self.ten = TestTEN(self, self.web3)
+        self.usdc = TestUSDC(self, self.web3)
+        self.mint_if_needed(self.ten)
+        self.mint_if_needed(self.usdc)
+
+    def mint_if_needed(self, token, threshold=1000):
+        """Mint token if below a given threshold. """
+        balance = token.contract.functions.balanceOf(self.address).call()
+        ceiling = self.web3.to_wei(threshold, 'ether')
+        if balance < ceiling:
+            amount = ceiling-balance
+            self.log.info('Topping up account %s with %d for token %s' % (self.address, amount, token.address))
+            self.network.transact(self.test, self.web3,
+                                  token.contract.functions.mint(self.address, amount),
+                                  self.account, token.GAS_LIMIT, persist_nonce=False)
+
+    def ten_balance(self):
+        """Return token balance for ten."""
+        return self.ten.contract.functions.balanceOf(self.address).call()
+
+    def usdc_balance(self):
+        """Return token balance for usdc."""
+        return self.usdc.contract.functions.balanceOf(self.address).call()
+
+    def approve_ten_token(self, amount):
+        """Call to approve the market contract to spend a given amount of ten."""
+        self.log.info('Approving market to spend TEN token: ')
+        self.log.info('  amount:  %d' % amount)
+        self.network.transact(self.test, self.web3,
+                              self.ten.contract.functions.approve(self.market.address, amount),
+                              self.account, self.ten.GAS_LIMIT, persist_nonce=False)
+
+    def approve_usdc_token(self, amount):
+        """Call to approve the market contract to spend a given amount of usdc."""
+        self.log.info('Approving market to spend USDC token: ')
+        self.log.info('  amount:  %d' % amount)
+        self.network.transact(self.test, self.web3,
+                              self.usdc.contract.functions.approve(self.market.address, amount),
+                              self.account, self.usdc.GAS_LIMIT, persist_nonce=False)
