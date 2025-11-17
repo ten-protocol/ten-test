@@ -36,10 +36,12 @@ class PySysTest(TenNetworkTest):
         self.assertTrue(round_id_after == round_id_before + 1, assertMessage='Round id should increase by one')
         self.assertTrue(round_id_after == id, assertMessage='Transaction receipt and call to latest should match')
 
+        # check the round is active
         is_active = admin.is_active(round_id_after)
         self.log.info('Latest round %d is_active = %s' % (round_id_after, is_active))
         self.assertTrue(is_active == True, assertMessage='Round should be active')
 
+        # check the round details
         round = admin.get_round(round_id_after)
         self.assertTrue(round.deadline == deadline, assertMessage='Round deadline should match')
         self.assertTrue(round.priceMicro == price, assertMessage='Round priceMicro should match')
@@ -47,7 +49,7 @@ class PySysTest(TenNetworkTest):
         self.assertTrue(round.tenCap == ten_cap, assertMessage='Round tenCap should match')
         self.assertTrue(round.minCollectedUSDC == min_usdc, assertMessage='Round minCollectedUSDC should match')
 
-        # increase time so the round becomes inactive
+        # increase evm time so the round becomes inactive
         self.log.info('Current block time is %d ' % admin.get_block_time())
         admin.increase_evm_time(60)
         self.log.info('Current block time is %d ' % admin.get_block_time())

@@ -23,7 +23,7 @@ class MarketDappPlayer():
         ceiling = self.web3.to_wei(threshold, 'ether')
         if balance < ceiling:
             amount = ceiling-balance
-            self.log.info('Topping up account %s with %d for token %s' % (self.address, amount, token.address))
+            self.log.info('Topping up account with %d for token %s' % (amount, token.address))
             self.network.transact(self.test, self.web3,
                                   token.contract.functions.mint(self.address, amount),
                                   self.account, token.GAS_LIMIT, persist_nonce=False)
@@ -35,6 +35,13 @@ class MarketDappPlayer():
     def usdc_balance(self):
         """Return token balance for usdc."""
         return self.usdc.contract.functions.balanceOf(self.address).call()
+
+    def get_token_balances(self):
+        ten_balance = self.ten_balance()
+        usdc_balance = self.usdc_balance()
+        self.log.info('  TEN balance  = %d ', ten_balance)
+        self.log.info('  USDC balance = %d ', usdc_balance)
+        return ten_balance, usdc_balance
 
     def approve_ten_token(self, amount):
         """Call to approve the market contract to spend a given amount of ten."""

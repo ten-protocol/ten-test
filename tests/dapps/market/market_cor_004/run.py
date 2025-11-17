@@ -21,10 +21,8 @@ class PySysTest(TenNetworkTest):
         buyer.approve_stakes(round_id, buy_amount)
         buyer.buy_protected_tokens(round_id, buy_amount)
 
-        # close the round with it never trading out
+        # close the round and try and buy some more after the round has expired
         admin.increase_evm_time(duration=60)
-
-        # try and buy some more after the round has expired
         buyer.approve_stakes(round_id, buy_amount)
         try:
             buyer.buy_protected_tokens(round_id, buy_amount, expect_fail=True)

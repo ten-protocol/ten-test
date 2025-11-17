@@ -17,37 +17,20 @@ class PySysTest(TenNetworkTest):
         _, round_id = admin.create_default_round(duration=60)
         self.log.info('Round created with id = %d' % round_id)
 
-        # log out the initial token balances
-        ten_balance_before = buyer.ten_balance()
-        usdc_balance_before = buyer.usdc_balance()
-        self.log.info('  TEN balance before = %d ', ten_balance_before)
-        self.log.info('  USDC balance before = %d ', usdc_balance_before)
-
-        # buyer 1 is going to go for 100 tokens
+        # approve and then buy the protected tokens
+        ten_balance_before, usdc_balance_before = buyer.get_token_balances()
         cost_stake, cost_usdc = buyer.approve_stakes(round_id, buy_amount)
-
-        # account 1 buys into the market
         _, position_id = buyer.buy_protected_tokens(round_id, buy_amount)
-        ten_balance_after = buyer.ten_balance()
-        usdc_balance_after = buyer.usdc_balance()
-        self.log.info('  TEN balance after  = %d ', ten_balance_after)
-        self.log.info('  USDC balance after  = %d ', usdc_balance_after)
+        ten_balance_after, usdc_balance_after = buyer.get_token_balances()
 
         # check the buyers balances are reduced as expected
         self.assertTrue(ten_balance_before-ten_balance_after == cost_stake, assertMessage='TEN should decrease as expected')
         self.assertTrue(usdc_balance_before-usdc_balance_after == cost_usdc, assertMessage='USDC should decrease as expected')
 
-        # close the round with it never trading out
+        # close the round with it never trading out and forfeit the tokens
         admin.increase_evm_time(duration=60)
-        is_active = admin.market.contract.functions.isActive(round_id).call()
-        self.log.info('Latest round %d is_active = %s' % (round_id, is_active))
-
-        # forfeit the tokens
         buyer.forfeit_protected_tokens(round_id, position_id, buy_amount)
-        ten_balance_forfeit = buyer.ten_balance()
-        usdc_balance_forfeit = buyer.usdc_balance()
-        self.log.info('  TEN balance on forfeit  = %d ', ten_balance_forfeit)
-        self.log.info('  USDC balance on forfeit  = %d ', usdc_balance_forfeit)
+        ten_balance_forfeit, usdc_balance_forfeit = buyer.get_token_balances()
 
         # check the buyers balances are return to the original amounts
         self.assertTrue(ten_balance_before == ten_balance_forfeit, assertMessage='TEN should be back to original')
