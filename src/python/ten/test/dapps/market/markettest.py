@@ -1,6 +1,8 @@
 from decimal import Decimal
 from ten.test.utils.properties import Properties
 from ten.test.basetest import TenNetworkTest
+from web3._utils.events import EventLogErrorFlags
+
 
 class Round:
     def __init__( self, deadline, quoteLastUpdate, priceMicro, coStakeRatio, tenCap, maxUSDC, fundedUSDC,
@@ -26,13 +28,14 @@ class Round:
         self.canceled = canceled
         self.canceledAt = canceledAt
 
+
 class MarketDappTest(TenNetworkTest):
 
     def __init__(self, descriptor, outsubdir, runner):
         """Call the parent constructor but set the mode to ten if non is set. """
         super().__init__(descriptor, outsubdir, runner)
         self.network = self.get_network_connection()
-        self.web3_deployer, self.account_deploy = self.network.connect(self, private_key=Properties().market_deployer_pk())
+        self.web3_deployer, self.account_deploy = self.network.connect(self, private_key=Properties().fundacntpk())
         self.align_time()
 
     def align_time(self):
@@ -72,6 +75,26 @@ class MarketDappTest(TenNetworkTest):
         id = tx_log['args']['id']
         return (tx_receipt, id)
 
+    def buy_protected_tokens(self, market, web3, account, amount, round_id):
+        """Buy protected tokens."""
+        self.log.info('Buying protected tokens: ')
+        self.log.info('  round id: %d' % round_id)
+        self.log.info('  amount:   %d' % amount)
+        target = market.contract.functions.buyProtectedTokens(round_id, amount)
+        tx_receipt = self.network.transact(self, web3, target, account, market.GAS_LIMIT, persist_nonce=False)
+        tx_log = market.contract.events.ProtectedTokensBought().process_receipt(tx_receipt, EventLogErrorFlags.Discard)[0]
+        position_id = tx_log['args']['positionId']
+        return (tx_receipt, position_id)
+
+    def forfeit_protected_tokens(self, market, web3, account, round_id, position_id, amount):
+        """Forfeit protected tokens."""
+        self.log.info('Forfeiting protected tokens: ')
+        self.log.info('  round id: %d' % round_id)
+        self.log.info('  posn id:  %d' % position_id)
+        self.log.info('  amount:   %d' % amount)
+        target = market.contract.functions.forfeitProtectedTokens(round_id, position_id, amount)
+        return self.network.transact(self, web3, target, account, market.GAS_LIMIT, persist_nonce=False)
+
     def create_default_round(self, market, network, web3, account, duration=60):
         """Creates a default round with price 1.1 USD, co-stake 25%, capped at 1000 with min of 500."""
         deadline = int(web3.eth.get_block("latest").timestamp) + duration
@@ -80,3 +103,13 @@ class MarketDappTest(TenNetworkTest):
         tenCap = web3.to_wei(1000, 'ether')
         minUSDC = 500 * web3.to_wei(1, 'ether')
         return self.create_round(market, network, web3, account, deadline, price, beta, tenCap, 0, minUSDC)
+
+    def mint_if_needed(self, web3, account, token, threshold=1000):
+        """Mint some tokens if below a given threshold. """
+        balance = token.contract.functions.balanceOf(account.address).call()
+        ceiling = web3.to_wei(threshold, 'ether')
+        if balance < ceiling:
+            amount = ceiling-balance
+            self.log.info('Topping up account %s with %d for token %s' % (account.address, amount, token.address))
+            self.network.transact(self, web3, token.contract.functions.mint(account.address, amount), account, token.GAS_LIMIT, persist_nonce=False)
+

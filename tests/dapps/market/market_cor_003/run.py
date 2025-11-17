@@ -58,7 +58,7 @@ class PySysTest(MarketDappTest):
         self.log.info('  TEN balance on forfeit  = %d ', ten_balance_forfeit)
         self.log.info('  USDC balance on forfeit  = %d ', usdc_balance_forfeit)
 
-        # check the buyers balances are returned to the original values
+        # check the buyers balances are return to the original amounts
         self.assertTrue(ten_balance_before == ten_balance_forfeit, assertMessage='TEN should be back to original')
         self.assertTrue(usdc_balance_before == usdc_balance_forfeit, assertMessage='USDC should be back to original')
 

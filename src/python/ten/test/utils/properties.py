@@ -278,5 +278,3 @@ class Properties:
     def market_ten_address(self): return self.get('dapps.market.hardhat', 'TestTEN')
 
     def market_place_address(self): return self.get('dapps.market.hardhat', 'Marketplace')
-
-    def market_deployer_pk(self): return self.get('dapps.market.hardhat', 'DeployerPK')
