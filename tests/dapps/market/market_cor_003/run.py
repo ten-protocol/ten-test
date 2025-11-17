@@ -7,30 +7,58 @@ class PySysTest(MarketDappTest):
 
     def execute(self):
         # connect account 1 to the network
-        web3, account = self.network.connect_account1(self)
+        web3_b1, account_b1 = self.network.connect_account1(self)
 
-        # get a reference to the contracts, and mint tokens for account 1
-        market = MarketPlace(self, web3)
+        # get a reference to the contracts
+        market = MarketPlace(self, web3_b1)
         ten = TestTEN(self, self.web3_deployer)
         usdc = TestUSDC(self, self.web3_deployer)
 
-        self.network.transact(self, web3, ten.contract.functions.mint(account.address, 100), account, ten.GAS_LIMIT, persist_nonce=False)
-        self.network.transact(self, web3, usdc.contract.functions.mint(account.address, 100), account, usdc.GAS_LIMIT, persist_nonce=False)
-        self.network.transact(self, usdc.contract.functions.approve(account.address, 100))
-        ten_balance_before = ten.contract.functions.balanceOf(account.address).call()
-        usdc_balance_before = usdc.contract.functions.balanceOf(account.address).call()
+        # create a default round (price 1.1 USD, co-stake 25%, capped at 1000 with min of 500)
+        tx_receipt, id = self.create_default_round(market, self.network, self.web3_deployer, self.account_deploy, duration=60)
+        self.log.info('Round created with id = %d' % id)
+
+        # buyer 1 is going to go for 100 tokens
+        self.mint_if_needed(web3_b1, account_b1, ten)
+        self.mint_if_needed(web3_b1, account_b1, usdc)
+        ten_balance_before = ten.contract.functions.balanceOf(account_b1.address).call()
+        usdc_balance_before = usdc.contract.functions.balanceOf(account_b1.address).call()
         self.log.info('  TEN balance before = %d ', ten_balance_before)
         self.log.info('  USDC balance before = %d ', usdc_balance_before)
 
-        # create the default round
-        tx_receipt, id = self.create_default_round(market, self.network, self.web3_deployer, self.account_deploy, duration=60)
+        buyer1_amount = web3_b1.to_wei(100, 'ether')
+        cost_stake = market.contract.functions.quoteCostakeFor(id, buyer1_amount).call()
+        cost_usdc = market.contract.functions.quoteUsdcFor(id, buyer1_amount).call()
+        self.network.transact(self, web3_b1, ten.contract.functions.approve(market.address, cost_stake), account_b1, usdc.GAS_LIMIT, persist_nonce=False)
+        self.network.transact(self, web3_b1, usdc.contract.functions.approve(market.address, cost_usdc), account_b1, usdc.GAS_LIMIT, persist_nonce=False)
+        self.log.info('  TEN costake = %d ', cost_stake)
+        self.log.info('  USDC cost   = %d ', cost_usdc)
 
         # account 1 buys into the market
-        self.network.transact(self, web3, market.contract.functions.buyProtectedTokens(id, 10), account, usdc.GAS_LIMIT, persist_nonce=False)
-        ten_balance_after = ten.contract.functions.balanceOf(account.address).call()
-        usdc_balance_after = usdc.contract.functions.balanceOf(account.address).call()
+        tx_receipt, position_id = self.buy_protected_tokens(market, web3_b1, account_b1, buyer1_amount, id)
+        self.log.info('Position created with id = %d' % position_id)
+        ten_balance_after = ten.contract.functions.balanceOf(account_b1.address).call()
+        usdc_balance_after = usdc.contract.functions.balanceOf(account_b1.address).call()
         self.log.info('  TEN balance after  = %d ', ten_balance_after)
         self.log.info('  USDC balance after  = %d ', usdc_balance_after)
 
+        # check the buyers balances are reduced as expected
+        self.assertTrue(ten_balance_before-ten_balance_after == cost_stake, assertMessage='TEN should decrease as expected')
+        self.assertTrue(usdc_balance_before-usdc_balance_after == cost_usdc, assertMessage='USDC should decrease as expected')
+
+        # close the round with it never trading out
         self.increase_evm_time(duration=60)
+        is_active = market.contract.functions.isActive(id).call()
+        self.log.info('Latest round %d is_active = %s' % (id, is_active))
+
+        # forfeit the tokens
+        self.forfeit_protected_tokens(market, web3_b1, account_b1, id, position_id, buyer1_amount)
+        ten_balance_forfeit = ten.contract.functions.balanceOf(account_b1.address).call()
+        usdc_balance_forfeit = usdc.contract.functions.balanceOf(account_b1.address).call()
+        self.log.info('  TEN balance on forfeit  = %d ', ten_balance_forfeit)
+        self.log.info('  USDC balance on forfeit  = %d ', usdc_balance_forfeit)
+
+        # check the buyers balances are returned to the original values
+        self.assertTrue(ten_balance_before == ten_balance_forfeit, assertMessage='TEN should be back to original')
+        self.assertTrue(usdc_balance_before == usdc_balance_forfeit, assertMessage='USDC should be back to original')
 

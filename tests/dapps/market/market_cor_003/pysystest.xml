@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC API: buyers flow</title>
+        <title>RPC API: single buyer forfeits after the round closes</title>
         <purpose><![CDATA[
 ]]>
         </purpose>
