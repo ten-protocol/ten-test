@@ -1,0 +1,19 @@
+# Perform clean up on ten-test-azure-runner-01
+#
+name: '[system] Clean azure-runner-01'
+run-name: Cleaning ten-test-azure-runner-01 (${{ github.event_name }})
+on:
+  schedule:
+    - cron: '0 */2 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-check:
+    runs-on: [self-hosted, Linux, X64, ten-test-azure-runner-01]
+    steps:
+      - name: 'Clean the docker folder'
+        run: |
+          sudo systemctl stop docker
+          sudo rm -rf /var/lib/docker/
+          sudo systemctl start docker
+
