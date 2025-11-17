@@ -1,7 +1,7 @@
-# Perform clean up or health checks on the VM runner 01
+# Perform clean up on ten-test-google-runner-01
 #
-name: '[system] Clean gh-runner-01'
-run-name: Cleaning runner 01 (${{ github.event_name }})
+name: '[system] Clean google-runner-01'
+run-name: Cleaning ten-test-google-runner-01 (${{ github.event_name }})
 on:
   schedule:
     - cron: '0 */2 * * *'
