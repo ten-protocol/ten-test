@@ -35,6 +35,22 @@ class MarketDappAdmin(MarketDappPlayer):
         min_usdc = 500 * self.web3.to_wei(1, 'ether')
         return self.create_round(deadline, price, beta, ten_cap, 0, min_usdc)
 
+    def freeze_sellers(self, round_id):
+        self.log.info('Freezing sellers for round: ')
+        self.log.info('  round id: %d' % round_id)
+        tx_receipt = self.network.transact(self.test, self.web3,
+                                           self.market.contract.functions.freezeSellers(round_id),
+                                           self.account, self.market.GAS_LIMIT, persist_nonce=False)
+        return tx_receipt
+
+    def cancel_if_under_min(self, round_id):
+        self.log.info('Cancelling for round: ')
+        self.log.info('  round id: %d' % round_id)
+        tx_receipt = self.network.transact(self.test, self.web3,
+                                           self.market.contract.functions.cancelIfUnderMin(round_id),
+                                           self.account, self.market.GAS_LIMIT, persist_nonce=False)
+        return tx_receipt
+
     def latest_round_id(self):
         """Return the latest round id."""
         return self.market.contract.functions.latestRoundId().call()

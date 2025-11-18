@@ -23,13 +23,19 @@ class PySysTest(TenNetworkTest):
         seller.deposit_ten_tokens(round_id, sell_amount)
         ten_balance_after, usdc_balance_after = seller.get_token_balances()
         nft_balance_after = seller.seller_nft_balance(round_id)
-        self.log.info('  NFT blance before  = %d ', nft_balance_before)
-        self.log.info('  NFT blance after = %d ', nft_balance_after)
 
         # check the sellers balances are reduced as expected
         self.assertTrue(ten_balance_before-ten_balance_after == sell_amount, assertMessage='TEN should decrease as expected')
         self.assertTrue(usdc_balance_before-usdc_balance_after == 0, assertMessage='USDC should stay the same')
         self.assertTrue(nft_balance_after-nft_balance_before == sell_amount, assertMessage='NFT balance should increase as expected')
 
-        # close the round
+        # cancel the round, freeze the sellers and try to withdraw the unused ten back
         admin.increase_evm_time(duration=60)
+        admin.cancel_if_under_min(round_id)
+        admin.freeze_sellers(round_id)
+        admin.get_round(round_id).to_log(self)
+
+        usdc_claimable = seller.claimable_seller_usdc(round_id)
+        ten_claimable = seller.unused_ten_claimable(round_id)
+        self.assertTrue(usdc_claimable == 0, assertMessage='Zero usdc claimable as there were no buyers')
+        self.assertTrue(ten_claimable == sell_amount, assertMessage='Full amount of ten should be claimable')
