@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC API: single seller</title>
+        <title>RPC API: single seller withdraws cancelled round with no buyers</title>
         <purpose><![CDATA[
 ]]>
         </purpose>

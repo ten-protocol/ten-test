@@ -39,3 +39,7 @@ class PySysTest(TenNetworkTest):
         ten_claimable = seller.unused_ten_claimable(round_id)
         self.assertTrue(usdc_claimable == 0, assertMessage='Zero usdc claimable as there were no buyers')
         self.assertTrue(ten_claimable == sell_amount, assertMessage='Full amount of ten should be claimable')
+
+        seller.withdraw_unused_ten(round_id, ten_claimable)
+        ten_balance_end, usdc_balance_end = seller.get_token_balances()
+        self.assertTrue(ten_balance_before == ten_balance_end, assertMessage='TEN balance should return to original')
