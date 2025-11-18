@@ -56,12 +56,13 @@ class MarketDappPlayer():
         """Return token balance for usdc."""
         return self.usdc.contract.functions.balanceOf(self.address).call()
 
-    def get_token_balances(self):
+    def get_token_balances(self, log=False):
         ten_balance = self.ten_balance()
         usdc_balance = self.usdc_balance()
-        self.log.info('%s retrieving token balances' % type(self).__name__)
-        self.log.info('  ten balance  = %d ', self.web3.from_wei(ten_balance, 'ether'))
-        self.log.info('  usdc balance = %d ', self.web3.from_wei(usdc_balance, 'ether'))
+        if log:
+            self.log.info('%s retrieving token balances' % type(self).__name__)
+            self.log.info('  ten balance  = %d ', self.web3.from_wei(ten_balance, 'ether'))
+            self.log.info('  usdc balance = %d ', self.web3.from_wei(usdc_balance, 'ether'))
         return ten_balance, usdc_balance
 
     def approve_ten_token(self, amount):

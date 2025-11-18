@@ -41,8 +41,8 @@ class PySysTest(TenNetworkTest):
         buyer_ten_end, buyer_usd_end = buyer.get_token_balances()
 
         # check the ten and usdc balance change as expected
-        self.assertTrue(seller_ten_end == seller_ten_start - sell_amount)
-        self.assertTrue(seller_usd_end == seller_usdc_start + cost_usdc)
-        self.assertTrue(buyer_ten_end == buyer_ten_start + buy_amount)
-        self.assertTrue(buyer_usd_end == buyer_usdc_start - cost_usdc)
+        self.assertTrue(seller_ten_end == seller_ten_start - sell_amount, assertMessage='Seller ten decreases')
+        self.assertTrue(seller_usd_end == seller_usdc_start + cost_usdc, assertMessage='Seller usdc increases')
+        self.assertTrue(buyer_ten_end == buyer_ten_start + buy_amount, assertMessage='Buyer ten increases')
+        self.assertTrue(buyer_usd_end == buyer_usdc_start - cost_usdc, assertMessage='Buyer ten decreases')
 
