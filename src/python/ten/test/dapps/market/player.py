@@ -14,11 +14,31 @@ class MarketDappPlayer():
         self.market = MarketPlace(self, self.web3)
         self.ten = TestTEN(self, self.web3)
         self.usdc = TestUSDC(self, self.web3)
-        self.mint_if_needed(self.ten)
-        self.mint_if_needed(self.usdc)
+        self.mint_token(self.ten)
+        self.mint_token(self.usdc)
 
-    def mint_if_needed(self, token, threshold=1000):
-        """Mint token if below a given threshold. """
+    def get_ten_token(self):
+        """Return the ten token address."""
+        return self.market.contract.functions.getTenToken().call()
+
+    def get_seller_nft(self):
+        """Return the seller NFT address."""
+        return self.market.contract.functions.getSellerNFT().call()
+
+    def get_position_contract(self):
+        """Return the position contract address."""
+        return self.market.contract.functions.getPositionContract().call()
+
+    def get_usdc_vault(self):
+        """Return the address of the usdc vault."""
+        return self.market.contract.functions.getUsdcVault().call()
+
+    def get_proceeds_vault(self):
+        """Return the address of the proceeds vault."""
+        return self.market.contract.functions.getProceedsVault().call()
+
+    def mint_token(self, token, threshold=1000):
+        """Mint a token if below a given threshold. """
         balance = token.contract.functions.balanceOf(self.address).call()
         ceiling = self.web3.to_wei(threshold, 'ether')
         if balance < ceiling:

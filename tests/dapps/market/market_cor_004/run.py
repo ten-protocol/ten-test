@@ -11,7 +11,7 @@ class PySysTest(TenNetworkTest):
     def execute(self):
         # the actors in the test
         admin = MarketDappAdmin(self)
-        buyer = MarketDappBuyer(self, pk=Properties().account1_1pk())
+        buyer = MarketDappBuyer(self, pk=Properties().account1pk())
         buy_amount = Web3().to_wei(100, 'ether')
 
         # create a default round (price 1.1 USD, co-stake 25%, capped at 1000 with min of 500)
