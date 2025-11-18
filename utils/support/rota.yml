@@ -21,14 +21,14 @@ Thursday:
 Friday:
   - start: "00:00"
     end: "23:59"
-    people: "krish"
+    people: "matt"
 
 Saturday:
   - start: "00:00"
     end: "23:59"
-    people: "moray"
+    people: "will"
 
 Sunday:
   - start: "00:00"
     end: "23:59"
-    people: "matt"
+    people: "krish"
