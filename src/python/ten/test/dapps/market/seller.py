@@ -31,7 +31,7 @@ class MarketDappSeller(MarketDappPlayer):
 
     def deposit_ten_tokens(self, round_id, amount):
         """Deposit ten tokens in a given round. """
-        self.log.info('Seller depositing tokens: ')
+        self.log.info('%s depositing tokens: ' % type(self).__name__)
         self.log.info('  round id: %d' % round_id)
         self.log.info('  amount:   %d' % self.web3.from_wei(amount, 'ether'))
         tx_receipt = self.network.transact(self.test, self.web3,
@@ -39,9 +39,18 @@ class MarketDappSeller(MarketDappPlayer):
                                            self.account, self.market.GAS_LIMIT, persist_nonce=False)
         return tx_receipt
 
+    def claim_seller_usdc(self, round_id):
+        """Claim the usdc for this round. """
+        self.log.info('%s claiming usdc: ' % type(self).__name__)
+        self.log.info('  round id: %d' % round_id)
+        tx_receipt = self.network.transact(self.test, self.web3,
+                                           self.market.contract.functions.claimSellerUSDC(round_id),
+                                           self.account, self.market.GAS_LIMIT, persist_nonce=False)
+        return tx_receipt
+
     def withdraw_unused_ten(self, round_id, amount):
-        """Withdraw under ten tokens. """
-        self.log.info('Seller withdrawing unused tokens: ')
+        """Withdraw unused ten tokens. """
+        self.log.info('%s withdrawing unused tokens: ' % type(self).__name__)
         self.log.info('  round id: %d' % round_id)
         self.log.info('  amount:   %d' % self.web3.from_wei(amount, 'ether'))
         tx_receipt = self.network.transact(self.test, self.web3,
