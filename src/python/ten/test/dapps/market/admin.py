@@ -12,13 +12,13 @@ class MarketDappAdmin(MarketDappPlayer):
 
     def create_round(self, deadline, price, beta, ten_cap, max_usdc, min_usdc):
         """Create a new round."""
-        self.log.info('Making new round: ')
+        self.log.info('%s making new round: ' % type(self).__name__)
         self.log.info('  deadline: %d' % deadline)
         self.log.info('  price:    %d' % price)
         self.log.info('  beta:     %d' % beta)
-        self.log.info('  tenCap:   %d' % ten_cap)
-        self.log.info('  maxUSDC:  %d' % max_usdc)
-        self.log.info('  minUSDC:  %d' % min_usdc)
+        self.log.info('  tenCap:   %d' % self.web3.from_wei(ten_cap, 'ether'))
+        self.log.info('  maxUSDC:  %d' % self.web3.from_wei(max_usdc, 'ether'))
+        self.log.info('  minUSDC:  %d' % self.web3.from_wei(min_usdc, 'ether'))
         tx_receipt = self.network.transact(self.test, self.web3,
                                            self.market.contract.functions.createRound(deadline, price, beta, ten_cap, max_usdc, min_usdc),
                                            self.account, self.market.GAS_LIMIT, persist_nonce=False)
@@ -36,7 +36,7 @@ class MarketDappAdmin(MarketDappPlayer):
         return self.create_round(deadline, price, beta, ten_cap, 0, min_usdc)
 
     def freeze_sellers(self, round_id):
-        self.log.info('Freezing sellers for round: ')
+        self.log.info('%s freezing sellers for round: ' % type(self).__name__)
         self.log.info('  round id: %d' % round_id)
         tx_receipt = self.network.transact(self.test, self.web3,
                                            self.market.contract.functions.freezeSellers(round_id),
@@ -44,7 +44,7 @@ class MarketDappAdmin(MarketDappPlayer):
         return tx_receipt
 
     def cancel_if_under_min(self, round_id):
-        self.log.info('Cancelling for round: ')
+        self.log.info('%s cancelling round: ' % type(self).__name__)
         self.log.info('  round id: %d' % round_id)
         tx_receipt = self.network.transact(self.test, self.web3,
                                            self.market.contract.functions.cancelIfUnderMin(round_id),

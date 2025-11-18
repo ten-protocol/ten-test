@@ -14,8 +14,8 @@ class MarketDappPlayer():
         self.market = MarketPlace(self, self.web3)
         self.ten = TestTEN(self, self.web3)
         self.usdc = TestUSDC(self, self.web3)
-        self.mint_token(self.ten)
-        self.mint_token(self.usdc)
+        self.mint_token(self.ten, 'ten')
+        self.mint_token(self.usdc, 'usdc')
 
     def get_ten_token(self):
         """Return the ten token address."""
@@ -33,13 +33,17 @@ class MarketDappPlayer():
         """Return the address of the proceeds vault."""
         return self.market.contract.functions.getProceedsVault().call()
 
-    def mint_token(self, token, threshold=1000):
+    def mint_token(self, token, name, threshold=1000):
         """Mint a token if below a given threshold. """
         balance = token.contract.functions.balanceOf(self.address).call()
         ceiling = self.web3.to_wei(threshold, 'ether')
         if balance < ceiling:
             amount = ceiling-balance
-            self.log.info('Topping up account with %d for token %s' % (amount, token.address))
+            self.log.info('%s topping up %s token balance' % (type(self).__name__, name))
+            self.log.info('  balance = %d ', self.web3.from_wei(balance, 'ether'))
+            self.log.info('  ceiling = %d ', self.web3.from_wei(ceiling, 'ether'))
+            self.log.info('  amount = %d ', self.web3.from_wei(amount, 'ether'))
+            self.log.info('  token = %s ', token.address)
             self.network.transact(self.test, self.web3,
                                   token.contract.functions.mint(self.address, amount),
                                   self.account, token.GAS_LIMIT, persist_nonce=False)
@@ -55,22 +59,23 @@ class MarketDappPlayer():
     def get_token_balances(self):
         ten_balance = self.ten_balance()
         usdc_balance = self.usdc_balance()
-        self.log.info('  TEN balance  = %d ', ten_balance)
-        self.log.info('  USDC balance = %d ', usdc_balance)
+        self.log.info('%s retrieving token balances' % type(self).__name__)
+        self.log.info('  ten balance  = %d ', self.web3.from_wei(ten_balance, 'ether'))
+        self.log.info('  usdc balance = %d ', self.web3.from_wei(usdc_balance, 'ether'))
         return ten_balance, usdc_balance
 
     def approve_ten_token(self, amount):
         """Call to approve the market contract to spend a given amount of ten."""
-        self.log.info('Approving market to spend TEN token: ')
-        self.log.info('  amount:  %d' % amount)
+        self.log.info('%s approving market to spend TEN token: ' % type(self).__name__)
+        self.log.info('  amount:  %d' % self.web3.from_wei(amount, 'ether'))
         self.network.transact(self.test, self.web3,
                               self.ten.contract.functions.approve(self.market.address, amount),
                               self.account, self.ten.GAS_LIMIT, persist_nonce=False)
 
     def approve_usdc_token(self, amount):
         """Call to approve the market contract to spend a given amount of usdc."""
-        self.log.info('Approving market to spend USDC token: ')
-        self.log.info('  amount:  %d' % amount)
+        self.log.info('%s approving market to spend USDC token: ' % type(self).__name__)
+        self.log.info('  amount:  %d' % self.web3.from_wei(amount, 'ether'))
         self.network.transact(self.test, self.web3,
                               self.usdc.contract.functions.approve(self.market.address, amount),
                               self.account, self.usdc.GAS_LIMIT, persist_nonce=False)
