@@ -16,22 +16,20 @@ class PySysTest(TenNetworkTest):
         # create a default round (price 1.1 USD, co-stake 25%, capped at 1000 with min of 500)
         _, round_id = admin.create_default_round(duration=60)
 
-        # log out some of the getters details
-        self.log.info('get_ten_token:         %s' % seller.get_ten_token())
-        self.log.info('get_seller_nft:        %s' % seller.get_seller_nft())
-        self.log.info('get_usdc_vault:        %s' % seller.get_usdc_vault())
-        self.log.info('get_proceeds_vault:    %s ' % seller.get_proceeds_vault())
-        self.log.info('get_position_contract: %s' % seller.get_position_contract())
-
         # deposit the sellers ten tokens, getting the balances before and after
+        nft_balance_before = seller.seller_nft_balance(round_id)
         ten_balance_before, usdc_balance_before = seller.get_token_balances()
         seller.approve_deposit(sell_amount)
         seller.deposit_ten_tokens(round_id, sell_amount)
         ten_balance_after, usdc_balance_after = seller.get_token_balances()
+        nft_balance_after = seller.seller_nft_balance(round_id)
+        self.log.info('  NFT blance before  = %d ', nft_balance_before)
+        self.log.info('  NFT blance after = %d ', nft_balance_after)
 
         # check the sellers balances are reduced as expected
         self.assertTrue(ten_balance_before-ten_balance_after == sell_amount, assertMessage='TEN should decrease as expected')
         self.assertTrue(usdc_balance_before-usdc_balance_after == 0, assertMessage='USDC should stay the same')
+        self.assertTrue(nft_balance_after-nft_balance_before == sell_amount, assertMessage='NFT balance should increase as expected')
 
         # close the round
         admin.increase_evm_time(duration=60)

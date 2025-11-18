@@ -21,10 +21,6 @@ class MarketDappPlayer():
         """Return the ten token address."""
         return self.market.contract.functions.getTenToken().call()
 
-    def get_seller_nft(self):
-        """Return the seller NFT address."""
-        return self.market.contract.functions.getSellerNFT().call()
-
     def get_position_contract(self):
         """Return the position contract address."""
         return self.market.contract.functions.getPositionContract().call()

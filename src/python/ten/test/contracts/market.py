@@ -49,3 +49,17 @@ class MarketPlace:
         with open(self.abi_path) as fp:
             self.abi = json.load(fp)["abi"]
         self.contract = self.web3.eth.contract(address=self.address, abi=self.abi)
+
+
+class SellerNFT:
+    GAS_LIMIT = 3_000_000
+
+    def __init__(self, test, web3, address):
+        self.test = test
+        self.web3 = web3
+        self.address = address
+        self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'market', 'contracts', 'marketplace', 'SellerReceipt.sol',
+                                     'SellerReceipt.json')
+        with open(self.abi_path) as fp:
+            self.abi = json.load(fp)["abi"]
+        self.contract = self.web3.eth.contract(address=self.address, abi=self.abi)
