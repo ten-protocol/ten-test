@@ -23,6 +23,7 @@ class Round:
         self.canceledAt = canceledAt
         
     def to_log(self, test):
+        test.log.info('Round details: ')
         test.log.info(' deadline = %s' % self.deadline)
         test.log.info(' quoteLastUpdate = %s' % self.quoteLastUpdate)
         test.log.info(' priceMicro = %s' % self.priceMicro)

@@ -26,6 +26,10 @@ class MarketDappSeller(MarketDappPlayer):
         """Return how much a seller can claim in ten from their deposited amount. """
         return self.market.contract.functions.unusedTenClaimable(round_id, self.address).call()
 
+    def get_scale_wad(self, round_id):
+        """Return seller scale factor in wad. """
+        return self.market.contract.functions.getScaleWad(round_id).call()
+
     def approve_deposit(self, amount):
         """Approve the market contract to transfer seller tokens."""
         self.approve_ten_token(amount)

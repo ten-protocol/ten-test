@@ -44,5 +44,18 @@ class PySysTest(TenNetworkTest):
         for p in players: p.store_balances('end')
         for p in players: p.log_stored_balances(delta=('end', 'start'))
 
-        seller1_end_usdc = (seller1.sell_amount/120)*cost_usdc
-        seller2_end_usdc = (seller2.sell_amount/120)*cost_usdc
+        round = admin.get_round(round_id)
+        round.to_log(self)
+        ratio = (round.totalBuyerTEN / round.tenCap)
+        seller1_ten_expected = ratio * (seller1.sell_amount * seller1.get_scale_wad(round_id)) / 1e18
+        seller2_ten_expected = ratio * (seller2.sell_amount * seller1.get_scale_wad(round_id)) / 1e18
+        seller1_ten_actual = seller1.balances['start'][0]-seller1.balances['end'][0]
+        seller2_ten_actual = seller2.balances['start'][0]-seller2.balances['end'][0]
+
+        self.log.info('Seller expected and actual changes: ')
+        self.log.info('  seller1_ten_expected = %.3f' % seller1.web3.from_wei(seller1_ten_expected, 'ether'))
+        self.log.info('  seller2_ten_expected = %.3f' % seller2.web3.from_wei(seller2_ten_expected, 'ether'))
+        self.log.info('  seller1_ten_actual = %.3f' % seller1.web3.from_wei(seller1_ten_actual, 'ether'))
+        self.log.info('  seller2_ten_actual = %.3f' % seller2.web3.from_wei(seller2_ten_actual, 'ether'))
+        self.assertTrue(seller1_ten_expected+seller2_ten_expected == round.totalBuyerTEN)
+        self.assertTrue(seller1_ten_actual+seller2_ten_actual == round.totalBuyerTEN)
