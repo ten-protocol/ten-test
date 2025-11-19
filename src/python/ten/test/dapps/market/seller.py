@@ -5,8 +5,9 @@ from ten.test.contracts.market import SellerNFT
 class MarketDappSeller(MarketDappPlayer):
     """The player who participates in the market as a seller."""
 
-    def __init__(self, test, pk):
-        super().__init__(test, pk)
+    def __init__(self, test, pk, id, amount=None):
+        super().__init__(test, pk, id)
+        self.sell_amount = self.web3.to_wei(amount, 'ether')
         self.sellerNFT = SellerNFT(self, self.web3, self.get_seller_nft())
 
     def get_seller_nft(self):
@@ -21,7 +22,7 @@ class MarketDappSeller(MarketDappPlayer):
         """Return how much a seller can claim in usdc from their deposited amount. """
         return self.market.contract.functions.claimableSellerUSDC(round_id, self.address).call()
 
-    def unused_ten_claimable(self, round_id):
+    def claimable_seller_ten(self, round_id):
         """Return how much a seller can claim in ten from their deposited amount. """
         return self.market.contract.functions.unusedTenClaimable(round_id, self.address).call()
 
@@ -31,9 +32,9 @@ class MarketDappSeller(MarketDappPlayer):
 
     def deposit_ten_tokens(self, round_id, amount):
         """Deposit ten tokens in a given round. """
-        self.log.info('%s depositing tokens: ' % type(self).__name__)
+        self.log.info('%s %d depositing tokens: ' % (type(self).__name__, self.id))
         self.log.info('  round id: %d' % round_id)
-        self.log.info('  amount:   %d' % self.web3.from_wei(amount, 'ether'))
+        self.log.info('  amount:   %.3f' % self.web3.from_wei(amount, 'ether'))
         tx_receipt = self.network.transact(self.test, self.web3,
                                            self.market.contract.functions.depositSellerTen(round_id, amount),
                                            self.account, self.market.GAS_LIMIT, persist_nonce=False)
@@ -41,19 +42,19 @@ class MarketDappSeller(MarketDappPlayer):
 
     def claim_seller_usdc(self, round_id):
         """Claim the usdc for this round. """
-        self.log.info('%s claiming usdc: ' % type(self).__name__)
+        self.log.info('%s %d claiming usdc: ' % (type(self).__name__, self.id))
         self.log.info('  round id: %d' % round_id)
         tx_receipt = self.network.transact(self.test, self.web3,
                                            self.market.contract.functions.claimSellerUSDC(round_id),
                                            self.account, self.market.GAS_LIMIT, persist_nonce=False)
         return tx_receipt
 
-    def withdraw_unused_ten(self, round_id, amount):
+    def withdraw_unused_ten(self, round_id, amount, expect_fail=False):
         """Withdraw unused ten tokens. """
-        self.log.info('%s withdrawing unused tokens: ' % type(self).__name__)
+        self.log.info('%s %d withdrawing unused tokens: ' % (type(self).__name__, self.id))
         self.log.info('  round id: %d' % round_id)
-        self.log.info('  amount:   %d' % self.web3.from_wei(amount, 'ether'))
+        self.log.info('  amount:   %.3f' % self.web3.from_wei(amount, 'ether'))
         tx_receipt = self.network.transact(self.test, self.web3,
                                            self.market.contract.functions.withdrawSellerUnusedTen(round_id, amount),
-                                           self.account, self.market.GAS_LIMIT, persist_nonce=False)
+                                           self.account, self.market.GAS_LIMIT, persist_nonce=False, expect_fail=expect_fail)
         return tx_receipt

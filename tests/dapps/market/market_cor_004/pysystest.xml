@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC API: single buyer tries to buy more after the round closes</title>
+        <title>Single buyer tries to buy more after the round closes</title>
         <purpose><![CDATA[
 ]]>
         </purpose>

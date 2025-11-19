@@ -1,4 +1,3 @@
-from web3 import Web3
 from pysys.constants import FAILED, PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
@@ -11,21 +10,20 @@ class PySysTest(TenNetworkTest):
     def execute(self):
         # the actors in the test
         admin = MarketDappAdmin(self)
-        buyer = MarketDappBuyer(self, pk=Properties().account1pk())
-        buy_amount = Web3().to_wei(100, 'ether')
+        buyer = MarketDappBuyer(self, pk=Properties().account1pk(), id=1, amount=100)
 
         # create a default round (price 1.1 USD, co-stake 25%, capped at 1000 with min of 500)
         _, round_id = admin.create_default_round(duration=60)
 
         # buyer 1 is going to go for 100 tokens
-        buyer.approve_stakes(round_id, buy_amount)
-        buyer.buy_protected_tokens(round_id, buy_amount)
+        buyer.approve_stakes(round_id, buyer.buy_amount)
+        buyer.buy_protected_tokens(round_id, buyer.buy_amount)
 
         # close the round and try and buy some more after the round has expired
         admin.increase_evm_time(duration=60)
-        buyer.approve_stakes(round_id, buy_amount)
+        buyer.approve_stakes(round_id, buyer.buy_amount)
         try:
-            buyer.buy_protected_tokens(round_id, buy_amount, expect_fail=True)
+            buyer.buy_protected_tokens(round_id, buyer.buy_amount, expect_fail=True)
             self.addOutcome(FAILED, outcomeReason='Attempt to buy succeeded when it should fail')
         except Exception as e:
             self.log.warn('Exception raised when trying to buy more tokens')

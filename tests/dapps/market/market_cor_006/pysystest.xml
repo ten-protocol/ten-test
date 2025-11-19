@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC API: single seller, single buyer, round completes</title>
+        <title>Single seller, single buyer, round completes</title>
         <purpose><![CDATA[
 ]]>
         </purpose>

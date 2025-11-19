@@ -10,24 +10,23 @@ class PySysTest(TenNetworkTest):
     def execute(self):
         # the actors in the test
         admin = MarketDappAdmin(self)
-        seller = MarketDappSeller(self, pk=Properties().account2pk())
-        sell_amount = Web3().to_wei(500, 'ether')
+        seller = MarketDappSeller(self, pk=Properties().account2pk(), id=1, amount=500)
 
         # create a default round (price 1.1 USD, co-stake 25%, capped at 1000 with min of 500)
         _, round_id = admin.create_default_round(duration=60)
 
         # deposit the sellers ten tokens, getting the balances before and after
         nft_balance_before = seller.seller_nft_balance(round_id)
-        ten_balance_before, usdc_balance_before = seller.get_token_balances()
-        seller.approve_deposit(sell_amount)
-        seller.deposit_ten_tokens(round_id, sell_amount)
-        ten_balance_after, usdc_balance_after = seller.get_token_balances()
+        ten_balance_before, usdc_balance_before = seller.token_balances()
+        seller.approve_deposit(seller.sell_amount)
+        seller.deposit_ten_tokens(round_id, seller.sell_amount)
         nft_balance_after = seller.seller_nft_balance(round_id)
+        ten_balance_after, usdc_balance_after = seller.token_balances()
 
         # check the sellers balances are reduced as expected
-        self.assertTrue(ten_balance_before-ten_balance_after == sell_amount, assertMessage='TEN should decrease as expected')
+        self.assertTrue(nft_balance_after-nft_balance_before == seller.sell_amount, assertMessage='NFT balance should increase as expected')
+        self.assertTrue(ten_balance_before-ten_balance_after == seller.sell_amount, assertMessage='TEN should decrease as expected')
         self.assertTrue(usdc_balance_before-usdc_balance_after == 0, assertMessage='USDC should stay the same')
-        self.assertTrue(nft_balance_after-nft_balance_before == sell_amount, assertMessage='NFT balance should increase as expected')
 
         # cancel the round, freeze the sellers and try to withdraw the unused ten back
         admin.increase_evm_time(duration=60)
@@ -36,10 +35,10 @@ class PySysTest(TenNetworkTest):
         admin.get_round(round_id).to_log(self)
 
         usdc_claimable = seller.claimable_seller_usdc(round_id)
-        ten_claimable = seller.unused_ten_claimable(round_id)
+        ten_claimable = seller.claimable_seller_ten(round_id)
         self.assertTrue(usdc_claimable == 0, assertMessage='Zero usdc claimable as there were no buyers')
-        self.assertTrue(ten_claimable == sell_amount, assertMessage='Full amount of ten should be claimable')
+        self.assertTrue(ten_claimable == seller.sell_amount, assertMessage='Full amount of ten should be claimable')
 
         seller.withdraw_unused_ten(round_id, ten_claimable)
-        ten_balance_end, usdc_balance_end = seller.get_token_balances()
+        ten_balance_end, usdc_balance_end = seller.token_balances()
         self.assertTrue(ten_balance_before == ten_balance_end, assertMessage='TEN balance should return to original')

@@ -8,11 +8,11 @@ class MarketDappAdmin(MarketDappPlayer):
     """The player with an operational role on the market contracts."""
 
     def __init__(self, test):
-        super().__init__(test, Properties().fundacntpk())
+        super().__init__(test, Properties().fundacntpk(), id=0)
 
     def create_round(self, deadline, price, beta, ten_cap, max_usdc, min_usdc):
         """Create a new round."""
-        self.log.info('%s making new round: ' % type(self).__name__)
+        self.log.info('%s %s making new round: ' % (type(self).__name__, self.id))
         self.log.info('  deadline: %d' % deadline)
         self.log.info('  price:    %d' % price)
         self.log.info('  beta:     %d' % beta)
@@ -36,7 +36,7 @@ class MarketDappAdmin(MarketDappPlayer):
         return self.create_round(deadline, price, beta, ten_cap, 0, min_usdc)
 
     def freeze_sellers(self, round_id):
-        self.log.info('%s freezing sellers for round: ' % type(self).__name__)
+        self.log.info('%s %d freezing sellers for round: ' % (type(self).__name__, self.id))
         self.log.info('  round id: %d' % round_id)
         tx_receipt = self.network.transact(self.test, self.web3,
                                            self.market.contract.functions.freezeSellers(round_id),
@@ -44,7 +44,7 @@ class MarketDappAdmin(MarketDappPlayer):
         return tx_receipt
 
     def cancel_if_under_min(self, round_id):
-        self.log.info('%s cancelling round: ' % type(self).__name__)
+        self.log.info('%s %s cancelling round: ' % (type(self).__name__, self.id))
         self.log.info('  round id: %d' % round_id)
         tx_receipt = self.network.transact(self.test, self.web3,
                                            self.market.contract.functions.cancelIfUnderMin(round_id),

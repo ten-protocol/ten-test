@@ -192,7 +192,7 @@ class DefaultPostLondon:
             self.log.error('Error sending raw transaction %s', e)
             if persist_nonce: test.nonce_db.update(address, test.env, nonce, 'FAILED')
             if not expect_fail: test.addOutcome(BLOCKED, abortOnError=True)
-        if verbose: self.log.info('Transaction sent with hash %s', tx_hash.hex())
+        if verbose: self.log.info('Transaction sent with hash %s', None if tx_hash is None else tx_hash.hex())
         return tx_hash
 
     def wait_for_transaction(self, test, web3, nonce, address, tx_hash, persist_nonce, verbose=True, timeout=30):

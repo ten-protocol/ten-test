@@ -5,9 +5,11 @@ from ten.test.contracts.market import TestUSDC, TestTEN
 class MarketDappPlayer():
     """The base player who participates in the market as a buyer, seller or admin."""
 
-    def __init__(self, test, pk):
+    def __init__(self, test, pk, id):
+        self.id = id
         self.test = test
         self.log = test.log
+        self.balances = {}
         self.network = test.get_network_connection()
         self.web3, self.account = self.network.connect(test, pk)
         self.address = self.account.address
@@ -39,7 +41,7 @@ class MarketDappPlayer():
         ceiling = self.web3.to_wei(threshold, 'ether')
         if balance < ceiling:
             amount = ceiling-balance
-            self.log.info('%s topping up %s token balance' % (type(self).__name__, name))
+            self.log.info('%s %d topping up %s token balance' % (type(self).__name__, self.id, name))
             self.log.info('  balance = %d ', self.web3.from_wei(balance, 'ether'))
             self.log.info('  ceiling = %d ', self.web3.from_wei(ceiling, 'ether'))
             self.log.info('  amount = %d ', self.web3.from_wei(amount, 'ether'))
@@ -56,27 +58,39 @@ class MarketDappPlayer():
         """Return token balance for usdc."""
         return self.usdc.contract.functions.balanceOf(self.address).call()
 
-    def get_token_balances(self, log=False):
-        ten_balance = self.ten_balance()
-        usdc_balance = self.usdc_balance()
-        if log:
-            self.log.info('%s retrieving token balances' % type(self).__name__)
-            self.log.info('  ten balance  = %d ', self.web3.from_wei(ten_balance, 'ether'))
-            self.log.info('  usdc balance = %d ', self.web3.from_wei(usdc_balance, 'ether'))
-        return ten_balance, usdc_balance
+    def token_balances(self, log=False):
+        return self.ten_balance(), self.usdc_balance()
+
+    def store_balances(self, key, log=False):
+        self.balances[key] = self.token_balances(log)
+        return self.balances[key]
+
+    def log_stored_balances(self, delta=None):
+        self.log.info('%s %d token balances: ' % (type(self).__name__, self.id))
+        for k in self.balances:
+            ten = self.web3.from_wei(self.balances[k][0], 'ether')
+            usdc = self.web3.from_wei(self.balances[k][1], 'ether')
+            self.log.info('  %s: %.3f, %.3f' % (k, ten, usdc))
+        if delta is not None:
+            dten = self.balances[delta[0]][0] - self.balances[delta[1]][0]
+            dusdc = self.balances[delta[0]][1] - self.balances[delta[1]][1]
+            self.log.info('  delta: %s%.3f, %s%.3f' % ('-' if dten<0 else '',  self.web3.from_wei(abs(dten), 'ether'),
+                                                   '-' if dusdc<0 else '',  self.web3.from_wei(abs(dusdc), 'ether')))
+            return dten, dusdc
+        else: return None, None
 
     def approve_ten_token(self, amount):
         """Call to approve the market contract to spend a given amount of ten."""
-        self.log.info('%s approving market to spend TEN token: ' % type(self).__name__)
-        self.log.info('  amount:  %d' % self.web3.from_wei(amount, 'ether'))
+        self.log.info('%s %s approving market to spend TEN token: ' % (type(self).__name__, self.id))
+        self.log.info('  amount:  %.3f' % self.web3.from_wei(amount, 'ether'))
         self.network.transact(self.test, self.web3,
                               self.ten.contract.functions.approve(self.market.address, amount),
                               self.account, self.ten.GAS_LIMIT, persist_nonce=False)
 
     def approve_usdc_token(self, amount):
         """Call to approve the market contract to spend a given amount of usdc."""
-        self.log.info('%s approving market to spend USDC token: ' % type(self).__name__)
-        self.log.info('  amount:  %d' % self.web3.from_wei(amount, 'ether'))
+        self.log.info('%s %s approving market to spend USDC token: ' % (type(self).__name__, self.id))
+        self.log.info('  amount:  %.3f' % self.web3.from_wei(amount, 'ether'))
         self.network.transact(self.test, self.web3,
                               self.usdc.contract.functions.approve(self.market.address, amount),
                               self.account, self.usdc.GAS_LIMIT, persist_nonce=False)

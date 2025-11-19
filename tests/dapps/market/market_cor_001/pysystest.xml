@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>RPC API: check chain_id and ERC20 contracts are deployed and functioning</title>
+        <title>Check chain_id and ERC20 contracts are deployed and functioning</title>
         <purpose><![CDATA[
 ]]>
         </purpose>
