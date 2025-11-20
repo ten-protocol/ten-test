@@ -59,6 +59,6 @@ class PySysTest(TenNetworkTest):
             self.log.info('  actual = %.3f' % b.web3.from_wei(ten_actual, 'ether'))
             self.log.info('  actual = %d WEI' % ten_actual)
             buyer_ten_actual += ten_actual
-        self.log.info('Buyers sold actual = %d' % buyer_ten_actual)
+        self.log.info('Buyers bought actual = %d' % buyer_ten_actual)
         self.assertTrue((distribute - buyer_ten_actual) < 10, assertMessage='Buyers actual should be the total bought within tolerance')
 
