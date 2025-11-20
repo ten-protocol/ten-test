@@ -27,7 +27,7 @@ class PySysTest(TenNetworkTest):
         # round deadline exceeds, sellers are frozen, buyers redeem tokens, sellers claim their usdc
         admin.increase_evm_time(duration=60)
         admin.freeze_sellers(round_id)
-        buyer.redeem_all_stakes(round_id)
+        buyer.redeem_and_forfeit(round_id)
         seller.claim_and_withdraw(round_id)
 
         # the final balances

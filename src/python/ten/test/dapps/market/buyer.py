@@ -81,18 +81,13 @@ class MarketDappBuyer(MarketDappPlayer):
                                      self.market.contract.functions.forfeitProtectedTokens(round_id, position_id, amount),
                                      self.account, self.market.GAS_LIMIT, persist_nonce=False)
 
-    def redeem_all_stakes(self, round_id):
+    def redeem_and_forfeit(self, round_id):
         """Redeem all stakes for a given round. """
         for position_id, position in self.positions.items():
             if position.round_id == round_id:
                 redeemable = self.get_redeemable_for_stake(position_id)
                 self.redeem_stake(round_id, position_id, redeemable)
-
-    def forfeit_all_stakes(self, round_id):
-        """Forfeit all stakes for a given round. """
-        for position_id, position in self.positions.items():
-            if position.round_id == round_id:
-                self.forfeit_stake(round_id, position_id, position.amount)
+                self.forfeit_stake(round_id, position_id, (position.amount - redeemable))
 
     def get_redeemable_for_stake(self, position_id):
         """Get the amount of redeemable tokens for a stake."""

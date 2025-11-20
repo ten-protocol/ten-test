@@ -29,7 +29,7 @@ class PySysTest(TenNetworkTest):
         # round deadline exceeds and sellers are frozen
         admin.increase_evm_time(duration=60)
         admin.freeze_sellers(round_id)
-        buyer1.redeem_all_stakes(round_id)
+        buyer1.redeem_and_forfeit(round_id)
         for s in [seller1, seller2]: s.claim_and_withdraw(round_id)
 
         # the final balances
@@ -38,7 +38,8 @@ class PySysTest(TenNetworkTest):
 
         # check the seller amounts
         round = admin.get_round(round_id)
-        ratio = (round.totalBuyerTEN / round.tenCap)
+        distribute = round.totalBuyerTEN if round.totalBuyerTEN < round.tenCap else round.tenCap
+        ratio = (distribute / round.tenCap)
         sum_ten_expect = 0
         sum_ten_actual = 0
         for s in [seller1, seller2]:
@@ -51,11 +52,11 @@ class PySysTest(TenNetworkTest):
             sum_ten_expect += ten_expected
             sum_ten_actual += ten_actual
         self.log.info('Sold actual = %d' % sum_ten_actual)
-        self.log.info('Bought actual = %d' % round.totalBuyerTEN)
-        self.assertTrue(sum_ten_expect == round.totalBuyerTEN, assertMessage='Expected should be the total bought')
+        self.log.info('Bought actual = %d' % distribute)
+        self.assertTrue(sum_ten_expect == distribute, assertMessage='Expected should be the total bought')
 
         # rounding means sellers may give a few more of their TEN over in total
-        self.assertTrue((sum_ten_actual - round.totalBuyerTEN) < 10, assertMessage='Actual should be the total bought within tolerance')
+        self.assertTrue((sum_ten_actual - distribute) < 10, assertMessage='Actual should be the total bought within tolerance')
 
 
 
