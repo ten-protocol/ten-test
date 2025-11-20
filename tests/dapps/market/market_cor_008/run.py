@@ -27,8 +27,6 @@ class PySysTest(TenNetworkTest):
         seller2.approve_and_deposit(round_id, seller2.web3.to_wei(500, 'ether'))
         buyer1.approve_and_stake(round_id, buyer1.web3.to_wei(350, 'ether'))
         buyer2.approve_and_stake(round_id, buyer2.web3.to_wei(900, 'ether'))
-        buyer1.store_balances('after_stake')
-        buyer2.store_balances('after_stake')
 
         # round deadline exceeds and sellers are frozen
         admin.increase_evm_time(duration=60)
