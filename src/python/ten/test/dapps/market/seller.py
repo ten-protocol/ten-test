@@ -30,6 +30,11 @@ class MarketDappSeller(MarketDappPlayer):
         """Return seller scale factor in wad. """
         return self.market.contract.functions.getScaleWad(round_id).call()
 
+    def approve_and_deposit(self, round_id, amount):
+        """Approve and deposit the tokens. """
+        self.approve_deposit(amount)
+        return self.deposit_ten_tokens(round_id, amount)
+
     def approve_deposit(self, amount):
         """Approve the market contract to transfer seller tokens."""
         self.approve_ten_token(amount)

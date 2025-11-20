@@ -1,6 +1,8 @@
+from collections import namedtuple, OrderedDict
 from web3._utils.events import EventLogErrorFlags
 from ten.test.dapps.market.player import MarketDappPlayer
 
+Position = namedtuple('Position', 'position_id amount cost_stake cost_usdc')
 
 class MarketDappBuyer(MarketDappPlayer):
     """The player who participates in the market as a buyer."""
@@ -8,6 +10,13 @@ class MarketDappBuyer(MarketDappPlayer):
     def __init__(self, test, pk, id, amount=None):
         super().__init__(test, pk, id)
         self.buy_amount = self.web3.to_wei(amount, 'ether')
+        self.positions = OrderedDict()
+
+    def approve_and_buy(self, round_id, amount, expect_fail=False):
+        cost_stake, cost_usdc = self.approve_stakes(round_id, amount)
+        tx_receipt, position_id = self.buy_protected_tokens(round_id, amount, expect_fail)
+        self.positions[position_id] = Position(position_id, amount, cost_stake, cost_usdc)
+        return position_id
 
     def approve_stakes(self, round_id, amount):
         """Approve stakes to buy a given amount of ten."""

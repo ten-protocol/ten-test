@@ -22,11 +22,8 @@ class PySysTest(TenNetworkTest):
         _, round_id = admin.create_default_round(duration=60)
 
         # buyers and sellers both commit the min for the round to go ahead
-        for s in [seller1, seller2]:
-            s.approve_deposit(s.sell_amount)
-            s.deposit_ten_tokens(round_id, s.sell_amount)
-        _, cost_usdc = buyer1.approve_stakes(round_id, buyer1.buy_amount)
-        _, position_id = buyer1.buy_protected_tokens(round_id, buyer1.buy_amount)
+        for s in [seller1, seller2]: s.approve_and_deposit(round_id, s.sell_amount)
+        position_id = buyer1.approve_and_buy(round_id, buyer1.buy_amount)
 
         # round deadline exceeds and sellers are frozen
         admin.increase_evm_time(duration=60)
