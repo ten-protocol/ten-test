@@ -52,7 +52,7 @@ class PySysTest(TenNetworkTest):
             sum_ten_actual += ten_actual
         self.log.info('Sold actual = %d' % sum_ten_actual)
         self.log.info('Bought actual = %d' % round.totalBuyerTEN)
-        self.assertTrue(sum_ten_expect == round.totalBuyerTEN, assertMessage='Excepted should be the total bought')
+        self.assertTrue(sum_ten_expect == round.totalBuyerTEN, assertMessage='Expected should be the total bought')
 
         # rounding means sellers may give a few more of their TEN over in total
         self.assertTrue((sum_ten_actual - round.totalBuyerTEN) < 10, assertMessage='Actual should be the total bought within tolerance')
