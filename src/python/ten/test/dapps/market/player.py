@@ -66,7 +66,7 @@ class MarketDappPlayer():
         return self.balances[key]
 
     def log_stored_balances(self, delta=None):
-        self.log.info('%s %d token balances: ' % (type(self).__name__, self.id))
+        self.log.info('%s %d token balances (ten,usdc): ' % (type(self).__name__, self.id))
         for k in self.balances:
             ten = self.web3.from_wei(self.balances[k][0], 'ether')
             usdc = self.web3.from_wei(self.balances[k][1], 'ether')

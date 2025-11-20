@@ -1,4 +1,3 @@
-from web3 import Web3
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 from ten.test.dapps.market.seller import MarketDappSeller
@@ -44,18 +43,18 @@ class PySysTest(TenNetworkTest):
         for p in players: p.store_balances('end')
         for p in players: p.log_stored_balances(delta=('end', 'start'))
 
+        # check the seller amounts
         round = admin.get_round(round_id)
-        round.to_log(self)
         ratio = (round.totalBuyerTEN / round.tenCap)
-        seller1_ten_expected = ratio * (seller1.sell_amount * seller1.get_scale_wad(round_id)) / 1e18
-        seller2_ten_expected = ratio * (seller2.sell_amount * seller1.get_scale_wad(round_id)) / 1e18
-        seller1_ten_actual = seller1.balances['start'][0]-seller1.balances['end'][0]
-        seller2_ten_actual = seller2.balances['start'][0]-seller2.balances['end'][0]
-
-        self.log.info('Seller expected and actual changes: ')
-        self.log.info('  seller1_ten_expected = %.3f' % seller1.web3.from_wei(seller1_ten_expected, 'ether'))
-        self.log.info('  seller2_ten_expected = %.3f' % seller2.web3.from_wei(seller2_ten_expected, 'ether'))
-        self.log.info('  seller1_ten_actual = %.3f' % seller1.web3.from_wei(seller1_ten_actual, 'ether'))
-        self.log.info('  seller2_ten_actual = %.3f' % seller2.web3.from_wei(seller2_ten_actual, 'ether'))
-        self.assertTrue(seller1_ten_expected+seller2_ten_expected == round.totalBuyerTEN)
-        self.assertTrue(seller1_ten_actual+seller2_ten_actual == round.totalBuyerTEN)
+        sum_ten_expect = 0
+        sum_ten_actual = 0
+        for s in [seller1, seller2]:
+            ten_expected = ratio * (s.sell_amount * round.sellerScale) / 1e18
+            ten_actual = s.balances['start'][0]-s.balances['end'][0]
+            self.log.info('%s %d ten deltas:' % (type(s).__name__, s.id))
+            self.log.info('  expected = %.3f' % seller1.web3.from_wei(ten_expected, 'ether'))
+            self.log.info('  actual = %.3f' % seller1.web3.from_wei(ten_actual, 'ether'))
+            sum_ten_expect += ten_expected
+            sum_ten_actual += ten_actual
+        self.assertTrue(sum_ten_expect == round.totalBuyerTEN, assertMessage='Excepted should be the total bought')
+        self.assertTrue(sum_ten_actual == round.totalBuyerTEN, assertMessage='Actual should be the total bought')
