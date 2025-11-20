@@ -36,7 +36,7 @@ class PySysTest(TenNetworkTest):
 
         # check the ten and usdc balance change as expected
         total_amount, total_cost_stake, total_cost_usdc = buyer.get_total_staked(round_id)
-        self.assertTrue(seller.balances['end'].ten == seller.balances['start'].ten - seller.nft_balance(round_id), assertMessage='Seller ten decreases')
+        self.assertTrue(seller.balances['end'].ten == seller.balances['start'].ten - total_amount, assertMessage='Seller ten decreases')
         self.assertTrue(seller.balances['end'].usdc == seller.balances['start'].usdc + total_cost_usdc, assertMessage='Seller usdc increases')
         self.assertTrue(buyer.balances['end'].ten == buyer.balances['start'].ten + total_amount, assertMessage='Buyer ten increases')
         self.assertTrue(buyer.balances['end'].usdc == buyer.balances['start'].usdc - total_cost_usdc, assertMessage='Buyer ten decreases')
