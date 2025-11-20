@@ -5,7 +5,12 @@ from ten.test.dapps.market.player import MarketDappPlayer
 
 
 class MarketDappAdmin(MarketDappPlayer):
-    """The player with an operational role on the market contracts."""
+    """The player who participates in the market as a seller.
+
+    The admin has the operational role to be able to create rounds, cancel rounds and to freeze sellers so that
+    the buyers and sellers can claim and sell their tokens. The admin is also used for aligning and increasing times
+    in a dev local test network.
+    """
 
     def __init__(self, test):
         super().__init__(test, Properties().fundacntpk(), id=0)
@@ -23,10 +28,10 @@ class MarketDappAdmin(MarketDappPlayer):
                                            self.market.contract.functions.createRound(deadline, price, beta, ten_cap, max_usdc, min_usdc),
                                            self.account, self.market.GAS_LIMIT, persist_nonce=False)
         tx_log = self.market.contract.events.RoundCreated().process_receipt(tx_receipt)[0]
-        id = tx_log['args']['id']
-        return tx_receipt, id
+        round_id = tx_log['args']['id']
+        return tx_receipt, round_id
 
-    def create_default_round(self,duration=60):
+    def create_default_round(self, duration=60):
         """Create a round with price 1.1 USD, co-stake 25%, capped at 1000 with min of 500."""
         deadline = int(self.web3.eth.get_block("latest").timestamp) + duration
         price = self.web3.to_wei(1.1, 'ether')

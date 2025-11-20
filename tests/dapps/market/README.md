@@ -22,4 +22,5 @@ yarn start                     # terminal 2
 
 The first command starts up a hardhat network. The second builds and deploys the application. The third starts the 
 demo user interface which allows basic interactions into the PUMP contracts. To run the tests you must build the 
-artifacts using the `get_artifacts.sh` script located in the root of the `ten-test` project. 
+artifacts using the `get_artifacts.sh` script located in the root of the `ten-test` project. The `ten-test` repo 
+should be set up as described in the top level README.md of the project. 

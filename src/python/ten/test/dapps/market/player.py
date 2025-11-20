@@ -1,9 +1,12 @@
+from collections import namedtuple
 from ten.test.contracts.market import MarketPlace
 from ten.test.contracts.market import TestUSDC, TestTEN
 
+Balance = namedtuple('Balance', 'ten usdc')
+
 
 class MarketDappPlayer():
-    """The base player who participates in the market as a buyer, seller or admin."""
+    """The base player who participates in the market as a buyer, seller or admin. """
 
     def __init__(self, test, pk, id):
         self.id = id
@@ -18,10 +21,6 @@ class MarketDappPlayer():
         self.usdc = TestUSDC(self, self.web3)
         self.mint_token(self.ten, 'ten')
         self.mint_token(self.usdc, 'usdc')
-
-    def get_ten_token(self):
-        """Return the ten token address."""
-        return self.market.contract.functions.getTenToken().call()
 
     def get_position_contract(self):
         """Return the position contract address."""
@@ -58,25 +57,28 @@ class MarketDappPlayer():
         """Return token balance for usdc."""
         return self.usdc.contract.functions.balanceOf(self.address).call()
 
-    def token_balances(self, log=False):
-        return self.ten_balance(), self.usdc_balance()
+    def token_balances(self):
+        """Return the ten and usdc token balances. """
+        return Balance(self.ten_balance(), self.usdc_balance())
 
-    def store_balances(self, key, log=False):
-        self.balances[key] = self.token_balances(log)
+    def store_balances(self, key):
+        """Get, store and return the ten and usdc token balances. """
+        self.balances[key] = self.token_balances()
         return self.balances[key]
 
     def log_stored_balances(self, delta=None):
+        """Log the ten and usdc token balances, and the delta between two stored points, returning the delta. """
         self.log.info('%s %d token balances (ten,usdc): ' % (type(self).__name__, self.id))
         for k in self.balances:
-            ten = self.web3.from_wei(self.balances[k][0], 'ether')
-            usdc = self.web3.from_wei(self.balances[k][1], 'ether')
+            ten = self.web3.from_wei(self.balances[k].ten, 'ether')
+            usdc = self.web3.from_wei(self.balances[k].usdc, 'ether')
             self.log.info('  %s: %.3f, %.3f' % (k, ten, usdc))
         if delta is not None:
-            dten = self.balances[delta[0]][0] - self.balances[delta[1]][0]
-            dusdc = self.balances[delta[0]][1] - self.balances[delta[1]][1]
+            dten = self.balances[delta[0]].ten - self.balances[delta[1]].ten
+            dusdc = self.balances[delta[0]].usdc - self.balances[delta[1]].usdc
             self.log.info('  delta: %s%.3f, %s%.3f' % ('-' if dten<0 else '',  self.web3.from_wei(abs(dten), 'ether'),
                                                    '-' if dusdc<0 else '',  self.web3.from_wei(abs(dusdc), 'ether')))
-            return dten, dusdc
+            return Balance(dten, dusdc)
         else: return None, None
 
     def approve_ten_token(self, amount):
