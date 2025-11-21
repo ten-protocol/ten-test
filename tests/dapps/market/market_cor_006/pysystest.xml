@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Single seller, single buyer, round completes</title>
+        <title>Single seller, single buyer, under subscribed on both, round completes as above min cap</title>
         <purpose><![CDATA[
 ]]>
         </purpose>

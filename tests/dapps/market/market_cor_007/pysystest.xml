@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>Two sellers, single buyer, round completes under max cap</title>
+        <title>Two sellers, single buyer, over subscribed on sellers, round completes under max cap</title>
         <purpose><![CDATA[
 ]]>
         </purpose>
