@@ -22,7 +22,7 @@ class PySysTest(TenNetworkTest):
         # create a default round (price 1.1 USD, co-stake 25%, capped at 1000 with min of 500)
         _, round_id = admin.create_default_round(duration=60)
 
-        # buyers and sellers places their deposits and stakes
+        # buyers and sellers place their deposits and stakes
         seller1.approve_and_deposit(round_id, seller1.web3.to_wei(700, 'ether'))
         seller2.approve_and_deposit(round_id, seller2.web3.to_wei(500, 'ether'))
         buyer1.approve_and_stake(round_id, buyer1.web3.to_wei(350, 'ether'))
