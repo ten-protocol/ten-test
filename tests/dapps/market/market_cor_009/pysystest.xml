@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>One sellers, three buyers, each buyer redeems separately</title>
+        <title>One seller, three buyers, each buyer redeems separately</title>
         <purpose><![CDATA[
 One seller, three buyers. Each time a buyer redeems their tokens the seller claims and withdraws what is available
 to them after the redeem fro that buyer took place.
