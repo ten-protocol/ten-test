@@ -17,7 +17,7 @@ class PySysTest(TenNetworkTest):
         # the initial balances
         for p in players: p.store_balances('start')
 
-        # create a default round (price 1.1 USD, co-stake 25%, capped at 1000 with min of 500)
+        # create a default round (price 1.1 USD, co-stake 25%, capped at 1000 with min of 550)
         _, round_id = admin.create_default_round(duration=60)
 
         # buyers and sellers place their deposits and stakes

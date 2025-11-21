@@ -11,7 +11,7 @@ class PySysTest(TenNetworkTest):
         admin = MarketDappAdmin(self)
         seller = MarketDappSeller(self, pk=Properties().account2pk(), id=1)
 
-        # create a default round (price 1.1 USD, co-stake 25%, capped at 1000 with min of 500)
+        # create a default round (price 1.1 USD, co-stake 25%, capped at 1000 with min of 550)
         _, round_id = admin.create_default_round(duration=60)
 
         # deposit the sellers ten tokens, getting the balances before and after

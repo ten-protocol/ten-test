@@ -5,7 +5,7 @@
         <title>One seller, three buyers, two buyers forfeit before round closes, other buyer meets min cap</title>
         <purpose><![CDATA[
 Two of the buyers forfeit their stakes after the round closes. Settlement of the round therefore should be a direct
-transfer from the seller to the buyer of the buyer amount. 
+transfer from the seller to the buyer of the buyer amount.
 ]]>
         </purpose>
     </description>
