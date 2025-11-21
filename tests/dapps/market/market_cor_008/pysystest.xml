@@ -4,6 +4,8 @@
     <description>
         <title>Two sellers, two buyers, round completes fully capped</title>
         <purpose><![CDATA[
+Two buyers, two sellers, each over-subscribed. Check that the correct scaled amounts are bought and sold for all
+players.
 ]]>
         </purpose>
     </description>
