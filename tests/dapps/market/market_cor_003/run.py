@@ -13,11 +13,10 @@ class PySysTest(TenNetworkTest):
 
         # create a default round (price 1.1 USD, co-stake 25%, capped at 1000 with min of 500)
         _, round_id = admin.create_default_round(duration=60)
-        self.log.info('Round created with id = %d' % round_id)
 
         # approve and then buy the protected tokens
         ten_balance_before, usdc_balance_before = buyer.token_balances()
-        buyer.approve_and_stake(round_id, buyer.web3.to_wei(100, 'ether'))
+        position_id = buyer.approve_and_stake(round_id, buyer.web3.to_wei(100, 'ether'))
         ten_balance_after, usdc_balance_after = buyer.token_balances()
         total_amount, total_cost_stake, total_cost_usdc = buyer.get_total_staked(round_id)
 
@@ -27,7 +26,7 @@ class PySysTest(TenNetworkTest):
 
         # close the round with it never trading out and forfeit the tokens
         admin.increase_evm_time(duration=60)
-        buyer.forfeit_all_stakes(round_id)
+        buyer.forfeit_stake(round_id, position_id, buyer.positions[position_id].amount)
         ten_balance_forfeit, usdc_balance_forfeit = buyer.token_balances()
 
         # check the buyers balances are return to the original amounts

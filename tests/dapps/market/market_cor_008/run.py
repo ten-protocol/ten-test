@@ -41,6 +41,7 @@ class PySysTest(TenNetworkTest):
         # check the seller amounts
         round = admin.get_round(round_id)
         pool_size = round.totalBuyerTEN if round.totalBuyerTEN < round.tenCap else round.tenCap
+        self.log.info('Pool size = %d' % pool_size)
 
         sellers_total_delta = 0
         for s in [seller1, seller2]:
