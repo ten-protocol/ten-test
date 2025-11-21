@@ -87,7 +87,8 @@ class MarketDappBuyer(MarketDappPlayer):
             if position.round_id == round_id:
                 redeemable = self.get_redeemable_for_stake(position_id)
                 self.redeem_stake(round_id, position_id, redeemable)
-                self.forfeit_stake(round_id, position_id, (position.amount - redeemable))
+                if (position.amount - redeemable) > 0:
+                    self.forfeit_stake(round_id, position_id, (position.amount - redeemable))
 
     def get_redeemable_for_stake(self, position_id):
         """Get the amount of redeemable tokens for a stake."""
