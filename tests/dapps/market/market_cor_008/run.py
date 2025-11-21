@@ -40,25 +40,25 @@ class PySysTest(TenNetworkTest):
 
         # check the seller amounts
         round = admin.get_round(round_id)
-        distribute = round.totalBuyerTEN if round.totalBuyerTEN < round.tenCap else round.tenCap
+        pool_size = round.totalBuyerTEN if round.totalBuyerTEN < round.tenCap else round.tenCap
 
-        seller_ten_actual = 0
+        sellers_total_delta = 0
         for s in [seller1, seller2]:
-            ten_actual = s.balances['start'].ten-s.balances['end'].ten
+            seller_delta = s.balances['start'].ten - s.balances['end'].ten
             self.log.info('%s %d ten deltas:' % (type(s).__name__, s.id))
-            self.log.info('  actual = %.3f' % s.web3.from_wei(ten_actual, 'ether'))
-            self.log.info('  actual = %d WEI' % ten_actual)
-            seller_ten_actual += ten_actual
-        self.log.info('Sellers sold actual = %d' % seller_ten_actual)
-        self.assertTrue((seller_ten_actual - distribute) < 10, assertMessage='Sellers actual should be the total bought within tolerance')
+            self.log.info('  actual = %.3f' % s.web3.from_wei(seller_delta, 'ether'))
+            self.log.info('  actual = %d WEI' % seller_delta)
+            sellers_total_delta += seller_delta
+        self.log.info('Sellers total ten delta = %d' % sellers_total_delta)
+        self.assertTrue((sellers_total_delta - pool_size) < 10, assertMessage='Sellers total delta ten should be the pool size within tolerance')
 
-        buyer_ten_actual = 0
+        buyers_total_delta = 0
         for b in [buyer1, buyer2]:
-            ten_actual = b.balances['end'].ten-b.balances['start'].ten
+            buyer_delta = b.balances['end'].ten - b.balances['start'].ten
             self.log.info('%s %d ten deltas:' % (type(b).__name__, b.id))
-            self.log.info('  actual = %.3f' % b.web3.from_wei(ten_actual, 'ether'))
-            self.log.info('  actual = %d WEI' % ten_actual)
-            buyer_ten_actual += ten_actual
-        self.log.info('Buyers bought actual = %d' % buyer_ten_actual)
-        self.assertTrue((distribute - buyer_ten_actual) < 10, assertMessage='Buyers actual should be the total bought within tolerance')
+            self.log.info('  actual = %.3f' % b.web3.from_wei(buyer_delta, 'ether'))
+            self.log.info('  actual = %d WEI' % buyer_delta)
+            buyers_total_delta += buyer_delta
+        self.log.info('Buyers bought actual = %d' % buyers_total_delta)
+        self.assertTrue((pool_size - buyers_total_delta) < 10, assertMessage='Buyers total delta ten should be the pool size within tolerance')
 
