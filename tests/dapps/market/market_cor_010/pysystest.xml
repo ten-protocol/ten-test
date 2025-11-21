@@ -2,7 +2,7 @@
 <pysystest type="auto">
 
     <description>
-        <title>One seller, one buyers, buyer redeems in increments and seller claims on each</title>
+        <title>One seller, one buyer, buyer redeems in increments and seller claims on each</title>
         <purpose><![CDATA[
 One seller, one buyer. Each time the buyer redeems a portion of their tokens the seller claims and withdraws what is
 available to them.
