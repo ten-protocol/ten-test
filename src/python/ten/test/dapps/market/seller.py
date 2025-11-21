@@ -53,9 +53,7 @@ class MarketDappSeller(MarketDappPlayer):
     def claim_and_withdraw(self, round_id):
         """Claim and withdraw the usdc amount and unused ten tokens."""
         self.claim_usdc(round_id)
-        claimable_ten = self.claimable_ten(round_id)
-        self.log.info('%s %d claimable ten: %d' % (type(self).__name__, self.id, claimable_ten))
-        if claimable_ten > 0: self.withdraw_unused_ten(round_id, claimable_ten)
+        self.withdraw_unused_ten(round_id, self.claimable_ten(round_id))
 
     def claim_usdc(self, round_id):
         """Claim the usdc for this round. """
@@ -67,11 +65,13 @@ class MarketDappSeller(MarketDappPlayer):
         return tx_receipt
 
     def withdraw_unused_ten(self, round_id, amount, expect_fail=False):
-        """Withdraw unused ten tokens. """
+        """Withdraw and amount of unused ten tokens for this round. """
         self.log.info('%s %d withdrawing unused tokens: ' % (type(self).__name__, self.id))
         self.log.info('  round id: %d' % round_id)
         self.log.info('  amount:   %.3f' % self.web3.from_wei(amount, 'ether'))
-        tx_receipt = self.network.transact(self.test, self.web3,
+        self.log.info('  amount:   %d WEI' % amount)
+        if amount > 0:
+            tx_receipt = self.network.transact(self.test, self.web3,
                                            self.market.contract.functions.withdrawSellerUnusedTen(round_id, amount),
                                            self.account, self.market.GAS_LIMIT, persist_nonce=False, expect_fail=expect_fail)
-        return tx_receipt
+            return tx_receipt
