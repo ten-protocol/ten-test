@@ -32,12 +32,12 @@ class MarketDappAdmin(MarketDappPlayer):
         return tx_receipt, round_id
 
     def create_default_round(self, duration=60):
-        """Create a round with price 1.1 USD, co-stake 25%, capped at 1000 with min of 500."""
+        """Create a round with price 1.1 USD, co-stake 25%, capped at 1000 with min of 550 USDC."""
         deadline = int(self.web3.eth.get_block("latest").timestamp) + duration
         price = self.web3.to_wei(1.1, 'ether')
         beta = self.to_ray(0.25)
         ten_cap = self.web3.to_wei(1000, 'ether')
-        min_usdc = 500 * self.web3.to_wei(1, 'ether')
+        min_usdc = self.web3.to_wei(550, 'ether')
         return self.create_round(deadline, price, beta, ten_cap, 0, min_usdc)
 
     def freeze_sellers(self, round_id):
