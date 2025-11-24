@@ -45,9 +45,9 @@ class PySysTest(TenNetworkTest):
         # a visible event)
         txs = self.scan_list_personal_txs(url=network.connection_url(), address = account_usr1.address,
                                           offset=0, size=20, show_public=False, show_synthetic=False)
-        tx_hashes = [x['blockHash'] for x in txs['Receipts']]
+        tx_hashes = [x['receipt']['blockHash'] for x in txs['Receipts']]
         self.log.info('Returned block and tx hashes are;')
-        for tx in txs['Receipts']: self.log.info('  %s %s' % (tx['blockHash'], tx['transactionHash']))
+        for tx in txs['Receipts']: self.log.info('  %s %s' % (tx['receipt']['blockHash'], tx['receipt']['transactionHash']))
 
         self.assertTrue(txs is not None, abortOnError=True, assertMessage='Returned list is not None')
         self.assertTrue(len(tx_hashes) == 5, assertMessage='There should be five txs')
