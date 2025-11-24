@@ -5,7 +5,7 @@ from ten.test.dapps.market.player import MarketDappPlayer
 
 
 class MarketDappAdmin(MarketDappPlayer):
-    """The player who participates in the market as a seller.
+    """The player who participates in the market as an administrator.
 
     The admin has the operational role to be able to create rounds, cancel rounds and to freeze sellers so that
     the buyers and sellers can claim and sell their tokens. The admin is also used for aligning and increasing times
