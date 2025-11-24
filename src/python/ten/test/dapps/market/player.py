@@ -8,7 +8,7 @@ Balance = namedtuple('Balance', 'ten usdc')
 class MarketDappPlayer():
     """The base player who participates in the market as a buyer, seller or admin. """
 
-    def __init__(self, test, pk, id):
+    def __init__(self, test, pk, id, tokens=1000):
         self.id = id
         self.test = test
         self.log = test.log
@@ -19,8 +19,8 @@ class MarketDappPlayer():
         self.market = MarketPlace(self, self.web3)
         self.ten = TestTEN(self, self.web3)
         self.usdc = TestUSDC(self, self.web3)
-        self.mint_token(self.ten, 'ten')
-        self.mint_token(self.usdc, 'usdc')
+        self.mint_token(self.ten, 'ten', tokens)
+        self.mint_token(self.usdc, 'usdc', tokens)
 
     def get_position_contract(self):
         """Return the position contract address."""

@@ -13,8 +13,8 @@ class MarketDappBuyer(MarketDappPlayer):
     of their stake for TEN at the USDC cost. This may be less than the amount requested depending on the number
     of buyers in the round (if it is over-subscribed)."""
 
-    def __init__(self, test, pk, id):
-        super().__init__(test, pk, id)
+    def __init__(self, test, pk, id, tokens=1000):
+        super().__init__(test, pk, id, tokens)
         self.positions = OrderedDict()
 
     def get_total_staked(self, round_id):
