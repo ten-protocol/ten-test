@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>One seller, one buyer, buyer redeems in increments and seller claims on each</title>
+        <purpose><![CDATA[
+One seller, one buyer. Each time the buyer redeems a portion of their tokens the seller claims and withdraws what is
+available to them.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>market</group>
+        </groups>
+        <modes inherit="true">
+            <mode>hardhat</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

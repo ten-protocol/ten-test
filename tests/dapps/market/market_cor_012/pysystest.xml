@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>One seller, three buyers, two buyers forfeit before round closes, other buyer does not meet min cap</title>
+        <purpose><![CDATA[
+After a round is frozen, buyers can pull out by forfeiting their stake, and even if that means the total left in the
+round it less than the original min cap in USDC, the round will still complete and tokens be exchanged.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>market</group>
+        </groups>
+        <modes inherit="true">
+            <mode>hardhat</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

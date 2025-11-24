@@ -16,6 +16,7 @@ from ten.test.persistence.contract import ContractPersistence
 from ten.test.utils.properties import Properties
 from ten.test.networks.default import DefaultPostLondon
 from ten.test.networks.ganache import Ganache
+from ten.test.networks.hardhat import Hardhat
 from ten.test.networks.goerli import Goerli
 from ten.test.networks.sepolia import Sepolia
 from ten.test.networks.optimism import OptimismSepolia, OptimismL1Sepolia
@@ -195,7 +196,7 @@ class GenericNetworkTest(BaseTest):
                           arguments=arguments, environs=environ, stdout=stdout, stderr=stderr,
                           timeout=timeout)
 
-    def distribute_native(self, account, amount, verbose=True):
+    def distribute_native(self, account, amount, verbose=True, persist_nonce=False):
         """A native transfer of funds from the funded account to another.
 
         Note that these methods are called from connect to perform a transfer. The account performing the transfer
@@ -210,7 +211,7 @@ class GenericNetworkTest(BaseTest):
         if verbose: self.log.info('Gas supplied for distribute native is %d', tx['gas'])
 
         if verbose: self.log.info('Sending %.9f ETH to account %s', amount, account.address)
-        self.network_funding.tx(self, web3_pk, tx, account_pk, verbose=verbose, txstr='value transfer')
+        self.network_funding.tx(self, web3_pk, tx, account_pk, verbose=verbose, txstr='value transfer', persist_nonce=persist_nonce)
         balance_after = web3_pk.eth.get_balance(account_pk.address)
         cost = balance_before - web3_pk.to_wei(amount, 'ether') - balance_after
         if cost < 21000*web3_pk.eth.gas_price: cost = 21000*web3_pk.eth.gas_price
@@ -304,6 +305,8 @@ class GenericNetworkTest(BaseTest):
             return Goerli(self, name, **kwargs)
         elif self.env == 'ganache':
             return Ganache(self, name, **kwargs)
+        elif self.env == 'hardhat':
+            return Hardhat(self, name, **kwargs)
         elif self.env == 'arbitrum.sepolia':
             return ArbitrumSepolia(self, name, **kwargs)
         elif self.env == 'optimism.sepolia':

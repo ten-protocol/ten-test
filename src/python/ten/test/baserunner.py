@@ -51,6 +51,7 @@ class TenRunnerPlugin():
             runner.log.info('   ten.sim       Ten sim testnet')
             runner.log.info('   arbitrum      Arbitrum Network')
             runner.log.info('   ganache       Ganache Network started by the framework')
+            runner.log.info('   hardhat       Hardhat Network started outside of the framework')
             runner.log.info('   sepolia       Sepolia Network')
             runner.log.info('   admin         Used for non network administration')
             sys.exit()
@@ -108,6 +109,8 @@ class TenRunnerPlugin():
             raise Exception('Max threads against Ganache cannot be greater than 3')
         elif self.env == 'sepolia' and runner.threads > 1:
             raise Exception('Max threads against Sepolia cannot be greater than 1')
+        elif self.env == 'hardhat' and runner.threads > 1:
+            raise Exception('Max threads against Hardhat cannot be greater than 1')
 
         try:
             if runner.xargs.get('NO_CONNECT', False):
@@ -230,7 +233,7 @@ class TenRunnerPlugin():
         arguments.extend(('--logPath', os.path.join(runner.output, 'wallet_logs.txt')))
         arguments.extend(('--databasePath', os.path.join(runner.output, 'wallet_database')))
         arguments.append('--verbose')
-        hprocess = runner.startProcess(command=os.path.join(PROJECT.root, 'artifacts', 'wallet_extension', 'wallet_extension'),
+        hprocess = runner.startProcess(command=os.path.join(PROJECT.root,'artifacts','go-ten','wallet_extension','wallet_extension'),
                                        displayName='wallet_extension', workingDir=runner.output, environs=os.environ,
                                        quiet=True, arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
         runner.waitForSignal(stdout, expr='TEN gateway started', timeout=30)

@@ -22,7 +22,7 @@ class GnuplotHelper:
     @classmethod
     def buildInfo(cls):
         """Return build info from a build log if it exists."""
-        ifile = os.path.join(PROJECT.root,'artifacts','build.info')
+        ifile = os.path.join(PROJECT.root,'artifacts','go-ten','build.info')
         branch, hash, date = '', '', ''
         if os.path.exists(ifile):
             with open(ifile, 'r') as fp:

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Two sellers, two buyers, over-subscribed on both, round completes fully capped</title>
+        <purpose><![CDATA[
+Two buyers, two sellers, each over-subscribed. Check that the correct scaled amounts are bought and sold for all
+players.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>market</group>
+        </groups>
+        <modes inherit="true">
+            <mode>hardhat</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

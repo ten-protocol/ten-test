@@ -23,10 +23,7 @@ reports
 !.default.properties
 
 # ignore any artifacts used
-artifacts/wallet_extension
-artifacts/contracts
-artifacts/build.info
-artifacts/*.log
+artifacts/**
 
 # ignore any hardhat files
 **/node_modules

@@ -10,7 +10,7 @@ class CrossChainManagement:
         self.test = test
         self.web3 = web3
         self.address = Properties().l1_cross_chain_management_address()
-        self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'l1_management', 'contracts', 'CrossChain.sol',
+        self.abi_path = os.path.join(PROJECT.root, 'artifacts','go-ten', 'contracts', 'l1_management', 'contracts', 'CrossChain.sol',
                                      'CrossChain.json')
         with open(self.abi_path, 'r') as fp:
             self.abi = json.load(fp)
@@ -24,7 +24,7 @@ class L1MessageBus:
         self.test = test
         self.web3 = web3
         self.address = Properties().l1_message_bus_address()
-        self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'cross_chain_messaging', 'common',
+        self.abi_path = os.path.join(PROJECT.root, 'artifacts','go-ten', 'contracts', 'cross_chain_messaging', 'common',
                                      'MessageBus.sol', 'MessageBus.json')
         with open(self.abi_path, 'r') as fp:
             self.abi = json.load(fp)
@@ -38,7 +38,7 @@ class L2MessageBus:
         self.test = test
         self.web3 = web3
         self.address = Properties().l2_message_bus_address()
-        self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'cross_chain_messaging', 'common',
+        self.abi_path = os.path.join(PROJECT.root, 'artifacts','go-ten', 'contracts', 'cross_chain_messaging', 'common',
                                      'MessageBus.sol', 'MessageBus.json')
         with open(self.abi_path, 'r') as fp:
             self.abi = json.load(fp)
@@ -52,7 +52,7 @@ class L1CrossChainMessenger:
         self.test = test
         self.web3 = web3
         self.address = Properties().l1_cross_chain_messenger_address()
-        self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'cross_chain_messaging', 'common',
+        self.abi_path = os.path.join(PROJECT.root, 'artifacts','go-ten', 'contracts', 'cross_chain_messaging', 'common',
                                      'CrossChainMessenger.sol', 'CrossChainMessenger.json')
         with open(self.abi_path, 'r') as fp:
             self.abi = json.load(fp)
@@ -66,7 +66,7 @@ class L2CrossChainMessenger:
         self.test = test
         self.web3 = web3
         self.address = Properties().l2_cross_chain_messenger_address()
-        self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'cross_chain_messaging', 'common',
+        self.abi_path = os.path.join(PROJECT.root, 'artifacts','go-ten', 'contracts', 'cross_chain_messaging', 'common',
                                      'CrossChainMessenger.sol', 'CrossChainMessenger.json')
         with open(self.abi_path, 'r') as fp:
             self.abi = json.load(fp)
@@ -80,7 +80,7 @@ class TenBridge:
         self.test = test
         self.web3 = web3
         self.address = Properties().l1_bridge_address()
-        self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'reference_bridge', 'L1', 'contracts',
+        self.abi_path = os.path.join(PROJECT.root, 'artifacts','go-ten', 'contracts', 'reference_bridge', 'L1', 'contracts',
                                      'TenBridge.sol', 'TenBridge.json')
         with open(self.abi_path, 'r') as fp:
             self.abi = json.load(fp)
@@ -94,7 +94,7 @@ class EthereumBridge:
         self.test = test
         self.web3 = web3
         self.address = Properties().l2_bridge_address()
-        self.abi_path =os.path.join(PROJECT.root, 'artifacts', 'contracts', 'reference_bridge', 'L2', 'contracts',
+        self.abi_path =os.path.join(PROJECT.root, 'artifacts','go-ten', 'contracts', 'reference_bridge', 'L2', 'contracts',
                                     'EthereumBridge.sol', 'EthereumBridge.json')
         with open(self.abi_path, 'r') as fp:
             self.abi = json.load(fp)
@@ -108,7 +108,7 @@ class TenERC20:
         self.test = test
         self.web3 = web3
         self.address = Properties().l2_bridge_address()
-        self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'testing', 'TenERC20.sol', 'TenERC20.json')
+        self.abi_path = os.path.join(PROJECT.root, 'artifacts','go-ten', 'contracts', 'testing', 'TenERC20.sol', 'TenERC20.json')
         with open(self.abi_path, 'r') as fp:
             self.abi = json.load(fp)
         self.contract = self.web3.eth.contract(address=self.address, abi=self.abi)
@@ -123,7 +123,7 @@ class WrappedERC20:
         self.name = name
         self.symbol = symbol
         self.address = address
-        self.abi_path = os.path.join(PROJECT.root, 'artifacts', 'contracts', 'reference_bridge', 'L2', 'contracts',
+        self.abi_path = os.path.join(PROJECT.root, 'artifacts','go-ten', 'contracts', 'reference_bridge', 'L2', 'contracts',
                                      'WrappedERC20.sol', 'WrappedERC20.json')
         with open(self.abi_path, 'r') as fp:
             self.abi = json.load(fp)

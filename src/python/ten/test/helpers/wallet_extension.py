@@ -33,7 +33,7 @@ class WalletExtension:
         self.databasePath = os.path.join(test.output, 'wallet_%s_database' % name)
         self.stdout = os.path.join(test.output, 'wallet_%s.out' % name)
         self.stderr = os.path.join(test.output, 'wallet_%s.err' % name)
-        self.binary = os.path.join(PROJECT.root, 'artifacts', 'wallet_extension', 'wallet_extension')
+        self.binary = os.path.join(PROJECT.root,'artifacts','go-ten','wallet_extension','wallet_extension')
 
         if os.path.exists(self.databasePath):
             test.log.info('Removing wallet extension persistence file')

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Check market place contract is functioning, and create a round</title>
+        <purpose><![CDATA[
+Checks there is code at the market place contract address, creates a round, checks the latest round id increases by
+one, checks the round details are correct, waits for the deadline to be exceeded, and then checks the round is now
+inactive.
+]]>
+        </purpose>
+    </description>
+
+    <classification>
+        <groups inherit="true">
+            <group>market</group>
+        </groups>
+        <modes inherit="true">
+            <mode>hardhat</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

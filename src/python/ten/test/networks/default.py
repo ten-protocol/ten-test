@@ -119,12 +119,12 @@ class DefaultPostLondon:
         """
         self.last_tx = (None, None, None, None, None)
         txstr = kwargs['txstr'] if 'txstr' in kwargs else fullname(target)
-        expect_fail = True if 'expect_fail' in kwargs else False
+        expect_fail = bool(kwargs['expect_fail']) if 'expect_fail' in kwargs else False
         self.log.info('Account %s performing transaction %s', account.address, txstr, extra=BaseLogFormatter.tag(LOG_WARN, 1))
         nonce = self.get_next_nonce(test, web3, account.address, persist_nonce, verbose)
         tx = self.build_transaction(test, web3, target, nonce, account.address, gas_limit, verbose, **kwargs)
         tx_sign = self.sign_transaction(test, tx, nonce, account, persist_nonce)
-        tx_hash = self.send_transaction(test, web3, nonce, account.address, tx_sign, persist_nonce, verbose)
+        tx_hash = self.send_transaction(test, web3, nonce, account.address, tx_sign, persist_nonce, verbose, expect_fail)
         tx_recp = self.wait_for_transaction(test, web3, nonce, account.address, tx_hash, persist_nonce, verbose, timeout)
         if tx_recp.status != 1:
             self.replay_transaction(web3, tx, tx_recp)
@@ -182,7 +182,7 @@ class DefaultPostLondon:
         if persist_nonce: test.nonce_db.update(account.address, test.env, nonce, 'SIGNED')
         return signed_tx
 
-    def send_transaction(self, test, web3, nonce, address, signed_tx, persist_nonce, verbose=True):
+    def send_transaction(self, test, web3, nonce, address, signed_tx, persist_nonce, verbose=True, expect_fail=False):
         """Send the signed transaction to the network."""
         tx_hash = None
         try:
@@ -191,8 +191,8 @@ class DefaultPostLondon:
         except Exception as e:
             self.log.error('Error sending raw transaction %s', e)
             if persist_nonce: test.nonce_db.update(address, test.env, nonce, 'FAILED')
-            test.addOutcome(BLOCKED, abortOnError=True)
-        if verbose: self.log.info('Transaction sent with hash %s', tx_hash.hex())
+            if not expect_fail: test.addOutcome(BLOCKED, abortOnError=True)
+        if verbose: self.log.info('Transaction sent with hash %s', None if tx_hash is None else tx_hash.hex())
         return tx_hash
 
     def wait_for_transaction(self, test, web3, nonce, address, tx_hash, persist_nonce, verbose=True, timeout=30):
