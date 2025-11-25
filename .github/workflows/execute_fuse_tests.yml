@@ -1,6 +1,6 @@
 # Runs the FUSE dapp in hardhat and executes the e2e tests
 #
-name: '[execute] Execute the FUSE tests'
+name: '[execute] Execute fuse tests'
 run-name: Run the FUSE tests (${{ github.event_name }})
 on:
   workflow_dispatch:
