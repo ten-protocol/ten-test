@@ -34,6 +34,7 @@ jobs:
           USE_AAVE_VAULT: "false"
         run: |
           cd ${{ github.workspace }}/market
+          yarn install
           nohup yarn chain > chain.log 2>&1 &
           yarn deploy --network localhost
 

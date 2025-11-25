@@ -19,6 +19,7 @@ npm install -g ganache
 npm install -g ganache-cli
 apt install -y vim
 apt install -y python3-pip
+npm install -g yarn
 python3 -m pip install eth-account==0.10.0
 python3 -m pip install web3==6.13.0
 python3 -m pip install pysys==1.6.1
