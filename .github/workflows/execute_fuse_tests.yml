@@ -23,12 +23,11 @@ jobs:
         with:
           path: ./ten-test
 
-      - name: 'Check out the market repo'
-        uses: actions/checkout@v3
-        with:
-          repository: ten-protocol/market
-          path: ./market
-          ref: ${{ github.event.inputs.target_branch }}
+      - name: Check out the market repo
+        run: |
+          git clone git@github-market:ten-protocol/market.git ${{ github.workspace }}/market
+          cd ${{ github.workspace }}/market
+          git checkout ${{ github.event.inputs.target_branch }}
 
       - name: 'Start up hardhat and deploy the FUSE dapp'
         env:
