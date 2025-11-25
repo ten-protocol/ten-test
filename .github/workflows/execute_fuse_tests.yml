@@ -36,6 +36,7 @@ jobs:
           cd ${{ github.workspace }}/market
           yarn install
           nohup yarn chain > chain.log 2>&1 &
+          sleep 10
           yarn deploy --network localhost
 
       - name: 'Build required artifacts for running tests'
