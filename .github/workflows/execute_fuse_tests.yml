@@ -12,7 +12,7 @@ on:
 
 jobs:
   test-run:
-    runs-on: [self-hosted, Linux, X64, local-testnets]
+    runs-on: [self-hosted, Linux, X64, ten-test-azure-runner-01]
     steps:
       - name: 'Remove the market repo'
         run:
