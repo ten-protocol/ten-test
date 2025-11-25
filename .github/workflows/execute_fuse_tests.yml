@@ -1,0 +1,65 @@
+# Runs the FUSE dapp in hardhat and executes the e2e tests
+#
+name: '[execute] Execute the FUSE tests'
+run-name: Run the FUSE tests (${{ github.event_name }})
+on:
+  workflow_dispatch:
+    inputs:
+      target_branch:
+        description: 'Branch of the market repo to run against'
+        required: true
+        default: main
+
+jobs:
+  test-run:
+    runs-on: [self-hosted, Linux, X64, local-testnets]
+    steps:
+      - name: 'Remove the market repo'
+        run:
+          rm -rf ${{ github.workspace }}/market
+
+      - name: 'Check out the ten-test repo'
+        uses: actions/checkout@v3
+        with:
+          path: ./ten-test
+
+      - name: 'Check out the market repo'
+        uses: actions/checkout@v3
+        with:
+          repository: ten-protocol/market
+          path: ./market
+          ref: ${{ github.event.inputs.target_branch }}
+
+      - name: 'Start up hardhat and deploy the FUSE dapp'
+        env:
+          USE_AAVE_VAULT: "false"
+        run: |
+          cd ${{ github.workspace }}/market
+          nohup yarn chain > chain.log 2>&1 &
+          yarn deploy --network localhost
+
+      - name: 'Build required artifacts for running tests'
+        run: |
+          cd ${{ github.workspace }}/ten-test
+          ./get_artifacts.sh
+
+      - name: 'Run tests'
+        run: |
+          cd ${{ github.workspace }}/ten-test/tests/dapps/market
+          /usr/local/bin/pysys.py run -m hardhat 
+
+      - name: 'Upload testcase output'
+        uses: actions/upload-artifact@v4
+        if: failure()
+        continue-on-error: true
+        with:
+          name: test-artifact
+          path: |
+            ${{ github.workspace }}/ten-test/**/Output
+          retention-days: 1
+
+      - name: 'Stop the hardhat chain'
+        if: always()
+        run: |
+          kill -9 $(ps aux | grep "yarn chain" | grep -v grep | awk '{print $2}')
+

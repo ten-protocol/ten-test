@@ -273,8 +273,8 @@ class Properties:
     def sepoliaAPIKey(self): return self.get('env.sepolia', 'APIKey')
 
     # market dApp related
-    def market_usdc_address(self): return self.get('dapps.market.hardhat', 'TestUSDC')
+    def market_usdc_address(self, key): return self.get('env.' + key, 'FUSE.TestUSDC')
 
-    def market_ten_address(self): return self.get('dapps.market.hardhat', 'TestTEN')
+    def market_ten_address(self, key): return self.get('env.' + key, 'FUSE.TestTEN')
 
-    def market_place_address(self): return self.get('dapps.market.hardhat', 'Marketplace')
+    def market_place_address(self, key): return self.get('env.' + key, 'FUSE.Marketplace')
