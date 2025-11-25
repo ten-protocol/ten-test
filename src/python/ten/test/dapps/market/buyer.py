@@ -27,8 +27,8 @@ class MarketDappBuyer(MarketDappPlayer):
     def get_stake_amounts(self, round_id, amount):
         """Get approve amounts for tokens in a stake."""
         self.log.info('%s %d calculating the stakes: ' % (type(self).__name__, self.id))
-        self.log.info('  round id:   %d' % round_id)
-        self.log.info('  amount:     %.3f' % self.web3.from_wei(amount, 'ether'))
+        self.log.info('  round id:     %d' % round_id)
+        self.log.info('  amount:       %.3f' % self.web3.from_wei(amount, 'ether'))
         cost_stake = self.market.contract.functions.quoteCostakeFor(round_id, amount).call()
         cost_usdc = self.market.contract.functions.quoteUsdcFor(round_id, amount).call()
         self.log.info('  cost_stake:   %.3f' % cost_stake)
