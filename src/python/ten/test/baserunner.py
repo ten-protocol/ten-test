@@ -181,6 +181,11 @@ class TenRunnerPlugin():
                 hprocess = self.run_ganache(runner)
                 runner.addCleanupFunction(lambda: self.__stop_process(hprocess))
 
+            elif self.env == 'hardhat':
+                nonce_db.delete_environment('hardhat')
+                contracts_db.delete_environment('hardhat')
+                Properties.fundacntpk = lambda self: self.l1_funded_account_pk('hardhat')
+
         except Exception as e:
             runner.log.warn('Error executing runner plugin startup actions %s', e)
             traceback.print_exc()
