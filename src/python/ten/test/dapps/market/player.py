@@ -16,9 +16,9 @@ class MarketDappPlayer():
         self.network = test.get_network_connection()
         self.web3, self.account = self.network.connect(test, pk)
         self.address = self.account.address
-        self.market = MarketPlace(self, self.web3)
-        self.ten = TestTEN(self, self.web3)
-        self.usdc = TestUSDC(self, self.web3)
+        self.market = MarketPlace(test, self.web3)
+        self.ten = TestTEN(test, self.web3)
+        self.usdc = TestUSDC(test, self.web3)
         self.mint_token(self.ten, 'ten', tokens)
         self.mint_token(self.usdc, 'usdc', tokens)
 
