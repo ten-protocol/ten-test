@@ -66,7 +66,9 @@ class MarketDappAdmin(MarketDappPlayer):
 
     def get_round(self, round_id):
         """Get the round details."""
-        return Round(*self.market.contract.functions.getRound(round_id).call())
+        round = self.market.contract.functions.getRound(round_id).call()
+        self.log.info(round)
+        return Round(*round)
 
     def align_time(self):
         """Ensure client and node times are aligned."""
