@@ -1,7 +1,8 @@
 class Round:
     def __init__( self, deadline, quoteLastUpdate, priceMicro, coStakeRatio, tenCap, maxUSDC, fundedUSDC,
                   collectedUSDC, claimedUSDC, sellersFrozen, sellerScale, buyerCoverage, totalBuyerTEN,
-                  releasedActiveTEN, buyerVault, proceedsVault, minCollectedUSDC, canceled, canceledAt):
+                  releasedActiveTEN, buyerVault, proceedsVault, minCollectedUSDC, canceled, canceledAt,
+                  claimedUnusedTEN):
         self.deadline = deadline
         self.quoteLastUpdate = quoteLastUpdate
         self.priceMicro = priceMicro
@@ -21,6 +22,7 @@ class Round:
         self.minCollectedUSDC = minCollectedUSDC
         self.canceled = canceled
         self.canceledAt = canceledAt
+        self.claimedUnusedTEN = claimedUnusedTEN
         
     def to_log(self, test):
         test.log.info('Round details: ')
@@ -43,4 +45,6 @@ class Round:
         test.log.info(' minCollectedUSDC = %s' % self.minCollectedUSDC)
         test.log.info(' canceled = %s' % self.canceled)
         test.log.info(' canceledAt = %s' % self.canceledAt)
+        test.log.info(' claimedUnusedTEN = %s' % self.claimedUnusedTEN)
+        
         
