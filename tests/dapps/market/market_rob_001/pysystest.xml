@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pysystest type="auto">
+
+    <description>
+        <title>Run a series of sequential rounds, fully completed each time</title>
+        <purpose><![CDATA[
+]]>
+        </purpose>
+    </description>
+
+    <skipped reason="Still in development"/>
+
+    <classification>
+        <groups inherit="true">
+            <group>market</group>
+        </groups>
+        <modes inherit="true">
+            <mode>hardhat</mode>
+        </modes>
+    </classification>
+
+    <data>
+        <class name="PySysTest" module="run"/>
+    </data>
+
+    <traceability>
+        <requirements>
+            <requirement id=""/>
+        </requirements>
+    </traceability>
+</pysystest>

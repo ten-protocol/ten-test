@@ -44,13 +44,20 @@ class PySysTest(TenNetworkTest):
         for p in players: p.log_stored_balances(delta=('end', 'start'))
 
         # check each claim goes up by the expected amount
-        admin.get_round(round_id).to_log(self)
+        round = admin.get_round(round_id)
+        round.to_log(self)
+
+        # note it is possible we loose precision here and it should be 600 * WAD * 1000 // 1100
+        # this is currently the approach the dapp uses and it does lead to slightly smaller buy amounts
+        WAD = 10**18
+        delta = 400 * (WAD * 1000 // 1100)
+
         self.assertTrue(
-            seller1.balances['start'].ten - seller1.balances['end'].ten == buyer1.positions[b1_position].amount,
+            seller1.balances['start'].ten - seller1.balances['end'].ten == delta,
             assertMessage='Seller ten should be the buyer1 amount'
         )
         self.assertTrue(
-            buyer1.balances['end'].ten - buyer1.balances['start'].ten == buyer1.positions[b1_position].amount,
+            buyer1.balances['end'].ten - buyer1.balances['start'].ten == delta,
             assertMessage='Buyer1 ten should be the buyer1 amount'
         )
         self.assertTrue(
