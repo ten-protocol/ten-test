@@ -46,5 +46,5 @@ class Round:
         test.log.info(' canceled = %s' % self.canceled)
         test.log.info(' canceledAt = %s' % self.canceledAt)
         test.log.info(' claimedUnusedTEN = %s' % self.claimedUnusedTEN)
-        
+
         
