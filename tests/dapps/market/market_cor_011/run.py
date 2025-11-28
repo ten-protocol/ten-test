@@ -27,6 +27,7 @@ class PySysTest(TenNetworkTest):
         b1_position = buyer1.approve_and_stake(round_id, buyer1.web3.to_wei(600, 'ether'))
         b2_position = buyer2.approve_and_stake(round_id, buyer2.web3.to_wei(200, 'ether'))
         b3_position = buyer3.approve_and_stake(round_id, buyer3.web3.to_wei(300, 'ether'))
+        for p in players: p.store_balances('middle')
 
         # round deadline exceeds and sellers are frozen
         admin.increase_evm_time(duration=60)
@@ -45,9 +46,11 @@ class PySysTest(TenNetworkTest):
         # check each claim goes up by the expected amount
         round = admin.get_round(round_id)
         round.to_log(self)
-        delta = admin.web3.to_wei(600*(1000/1100), 'ether')
-        self.log.info(delta)
-        self.log.info(seller1.balances['start'].ten - seller1.balances['end'].ten)
+
+        # note it is possible we loose precision here and it should be 600 * WAD * 1000 // 1100
+        # this is currently the approach the dapp uses and it does lead to slightly smaller buy amounts
+        WAD = 10**18
+        delta = 600 * (WAD * 1000 // 1100)
         self.assertTrue(
             seller1.balances['start'].ten - seller1.balances['end'].ten == delta,
             assertMessage='Seller ten should be the buyer1 allocation'
