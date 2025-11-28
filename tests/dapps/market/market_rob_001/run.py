@@ -22,7 +22,7 @@ class PySysTest(TenNetworkTest):
         beta = admin.web3.to_wei(random.randint(10,100)/100, 'ether') * 10 ** 9
         ten_cap = admin.web3.to_wei(cap, 'ether')
         min_usdc = admin.web3.to_wei(min_cap, 'ether')
-        _, round_id = admin.create_round(deadline, price, beta, ten_cap, 0, min_usdc)
+        _, round_id = admin.create_round(deadline, price, beta, ten_cap, min_usdc)
 
         sellers = []
         seller_amount = 0

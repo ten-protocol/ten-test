@@ -43,12 +43,17 @@ class PySysTest(TenNetworkTest):
         for p in players: p.log_stored_balances(delta=('end', 'start'))
 
         # check each claim goes up by the expected amount
+        round = admin.get_round(round_id)
+        round.to_log(self)
+        delta = admin.web3.to_wei(600*(1000/1100), 'ether')
+        self.log.info(delta)
+        self.log.info(seller1.balances['start'].ten - seller1.balances['end'].ten)
         self.assertTrue(
-            seller1.balances['start'].ten - seller1.balances['end'].ten == buyer1.positions[b1_position].amount,
-            assertMessage='Seller ten should be the buyer1 amount'
+            seller1.balances['start'].ten - seller1.balances['end'].ten == delta,
+            assertMessage='Seller ten should be the buyer1 allocation'
         )
         self.assertTrue(
-            buyer1.balances['end'].ten - buyer1.balances['start'].ten == buyer1.positions[b1_position].amount,
+            buyer1.balances['end'].ten - buyer1.balances['start'].ten == delta,
             assertMessage='Buyer1 ten should be the buyer1 amount'
         )
         self.assertTrue(
