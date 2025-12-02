@@ -3,7 +3,8 @@ from web3._utils.events import EventLogErrorFlags
 from ten.test.dapps.market.player import MarketDappPlayer
 
 Position = namedtuple('Position', 'position_id round_id amount cost_stake cost_usdc')
-PositionRedeemable = namedtuple('PositionRedeemable', 'position_id round_id forfeit redeemable')
+Redeemed = namedtuple('Redeemed', 'position_id round_id redeemed')
+Forfeit = namedtuple('Forfeit', 'position_id round_id forfeit')
 
 
 class MarketDappBuyer(MarketDappPlayer):
@@ -17,7 +18,8 @@ class MarketDappBuyer(MarketDappPlayer):
     def __init__(self, test, pk, id, tokens=1000):
         super().__init__(test, pk, id, tokens)
         self.positions = OrderedDict()
-        self.position_redeemable = OrderedDict()
+        self.redeemed = OrderedDict()
+        self.forfeit = OrderedDict()
 
     def get_total_staked(self, round_id):
         """Return total stakes amounts across all positions for a given round. """
@@ -70,9 +72,14 @@ class MarketDappBuyer(MarketDappPlayer):
         self.log.info('  posn id:  %d' % position_id)
         self.log.info('  amount:   %.3f' % self.web3.from_wei(amount, 'ether'))
         self.log.info('  amount:   %d WEI' % amount)
-        return self.network.transact(self.test, self.web3,
-                                     self.market.contract.functions.redeemProtectedTokens(round_id, position_id, amount),
-                                     self.account, self.market.GAS_LIMIT, persist_nonce=False)
+        redeemed = Redeemed(position_id, round_id, amount)
+        tx_recp = self.network.transact(self.test, self.web3,
+                                        self.market.contract.functions.redeemProtectedTokens(round_id, position_id, amount),
+                                        self.account, self.market.GAS_LIMIT, persist_nonce=False)
+        if tx_recp.status == 1:
+            if position_id in self.redeemed.keys(): self.redeemed[position_id].append(redeemed)
+            else: self.redeemed[position_id] = [redeemed]
+        return tx_recp
 
     def forfeit_stake(self, round_id, position_id, amount):
         """Forfeit an amount of the stake."""
@@ -81,16 +88,20 @@ class MarketDappBuyer(MarketDappPlayer):
         self.log.info('  posn id:  %d' % position_id)
         self.log.info('  amount:   %.3f' % self.web3.from_wei(amount, 'ether'))
         self.log.info('  amount:   %d WEI' % amount)
-        return self.network.transact(self.test, self.web3,
-                                     self.market.contract.functions.forfeitProtectedTokens(round_id, position_id, amount),
-                                     self.account, self.market.GAS_LIMIT, persist_nonce=False)
+        forfeit = Forfeit(position_id, round_id, amount)
+        tx_recp = self.network.transact(self.test, self.web3,
+                                        self.market.contract.functions.forfeitProtectedTokens(round_id, position_id, amount),
+                                        self.account, self.market.GAS_LIMIT, persist_nonce=False)
+        if tx_recp.status == 1:
+            if position_id in self.forfeit.keys(): self.forfeit[position_id].append(forfeit)
+            else: self.forfeit[position_id] = [forfeit]
+        return tx_recp
 
     def redeem_and_forfeit(self, round_id):
         """Redeem all stakes for a given round. """
         for position_id, position in self.positions.items():
             if position.round_id == round_id:
                 redeemable = self.get_redeemable_for_stake(position_id)
-                self.position_redeemable[position_id] = PositionRedeemable(position_id, round_id, (position.amount - redeemable), redeemable)
                 self.redeem_stake(round_id, position_id, redeemable)
                 if (position.amount - redeemable) > 0:
                     self.forfeit_stake(round_id, position_id, (position.amount - redeemable))
@@ -103,6 +114,7 @@ class MarketDappBuyer(MarketDappPlayer):
         return amount
 
     def to_log(self):
+        """Log out a summary of the buyer details. """
         self.log.info('%s %d buyer details: ' % (type(self).__name__, self.id))
         for position_id, position in self.positions.items():
             self.log.info('  round id:     %d' % position.round_id)
@@ -110,7 +122,13 @@ class MarketDappBuyer(MarketDappPlayer):
             self.log.info('  amount:       %.3f' % self.web3.from_wei(position.amount, 'ether'))
             self.log.info('  cost_stake:   %.3f' % self.web3.from_wei(position.cost_stake, 'ether'))
             self.log.info('  cost_usdc:    %.3f' % self.web3.from_wei(position.cost_usdc, 'ether'))
-            if position_id in self.position_redeemable.keys():
-                self.log.info('  forfeit:      %.3f' % self.web3.from_wei(self.position_redeemable[position_id].forfeit, 'ether'))
-                self.log.info('  redeemable:   %.3f' % self.web3.from_wei(self.position_redeemable[position_id].redeemable, 'ether'))
+            self.log.info('  forfeit:      %.3f' % self.web3.from_wei(self.total_forfeit(position.round_id), 'ether'))
+            self.log.info('  redeemed:     %.3f' % self.web3.from_wei(self.total_redeemed(position.round_id), 'ether'))
 
+    def total_redeemed(self, round_id):
+        """Returned the total redeemed for this round. """
+        return sum([t.redeemed for k, v in self.redeemed.items() for t in v if t.round_id == round_id])
+
+    def total_forfeit(self, round_id):
+        """Returned the total forfeit for this round. """
+        return sum([t.forfeit for k, v in self.forfeit.items() for t in v if t.round_id == round_id])

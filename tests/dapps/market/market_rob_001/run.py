@@ -48,19 +48,31 @@ class PySysTest(TenNetworkTest):
         admin.increase_evm_time(duration=self.MAX_DURATION)
         admin.freeze_sellers(round_id)
         for b in buyers: b.redeem_and_forfeit(round_id)
-        for b in buyers: b.to_log()
         for s in sellers: s.claim_and_withdraw(round_id)
+
+        self.log.info('')
+        self.log.info('Buyer and seller details ...')
+        for b in buyers: b.to_log()
         for s in sellers: s.to_log(round_id)
+        self.log.info('')
 
         sellers_nft_balance = sum([s.nft_balance(round_id) for s in sellers])
         sellers_ten_withdrawn = sum([s.get_unused_ten_withdrawn(round_id) for s in sellers])
-        sellers_ten_delta = sellers_nft_balance - sellers_ten_withdrawn
+        sellers_sold = sellers_nft_balance - sellers_ten_withdrawn
+        buyers_redeemed = sum([b.total_redeemed(round_id) for b in buyers])
+        buyers_forfeit = sum([b.total_forfeit(round_id) for b in buyers])
+        self.log.info('cap:                   %s' % cap)
+        self.log.info('min cap:               %s' % min_cap)
+        self.log.info('buyers_amount:         %s' % admin.web3.to_wei(buyer_amount, 'ether'))
+        self.log.info('sellers:               %s' % admin.web3.to_wei(seller_amount, 'ether'))
         self.log.info('sellers_nft_balance:   %s' % sellers_nft_balance)   # how much they were willing to sell
         self.log.info('sellers_ten_withdrawn: %s' % sellers_ten_withdrawn) # how much they claimed back
-        self.log.info('sellers_ten_delta:     %s' % sellers_ten_delta)     # how much they actually sold
-        self.log.info('buyers_amount:         %s' % admin.web3.to_wei(buyer_amount, 'ether'))
+        self.log.info('sellers_sold:          %s' % sellers_sold)          # how much they actually sold
+        self.log.info('buyers_redeemed:       %s' % buyers_redeemed)
+        self.log.info('buyers_forfeit:        %s' % buyers_forfeit)
+
         self.assertTrue(sum([s.nft_balance(round_id) for s in sellers]) == admin.web3.to_wei(seller_amount, 'ether'),
                         assertMessage='Seller amount should be sum of the ntf balances')
-        self.assertTrue(admin.web3.to_wei(min_cap, 'ether') - admin.web3.to_wei(buyer_amount, 'ether') < 4000,
-                        assertMessage='Seller amount sold should be the cap or slightly less')
+        self.assertTrue(abs(sellers_sold - buyers_redeemed) < 20,
+                        assertMessage='Seller amount sold should be equal to the buyer redeemed')
 
