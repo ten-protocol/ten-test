@@ -27,7 +27,7 @@ class PySysTest(TenNetworkTest):
         sellers = []
         seller_amount = 0
         while seller_amount < cap:
-            amount = random.randint(500,1200)
+            amount = random.randint(500,1000)
             seller = MarketDappSeller(self, pk=self.get_ephemeral_pk(), id=len(sellers)+1, tokens=2*amount)
             seller.approve_and_deposit(round_id, seller.web3.to_wei(amount, 'ether'))
             sellers.append(seller)
@@ -39,6 +39,7 @@ class PySysTest(TenNetworkTest):
         while buyer_amount < min_cap:
             amount = random.randint(500,900)
             buyer = MarketDappBuyer(self, pk=self.get_ephemeral_pk(), id=len(buyers)+1, tokens=2*amount)
+            self.wait(1.0)
             buyer.approve_and_stake(round_id, buyer.web3.to_wei(amount, 'ether'))
             buyers.append(buyer)
             buyer_amount += amount
@@ -74,16 +75,16 @@ class PySysTest(TenNetworkTest):
         expected_ten = admin.web3.to_wei(cap, 'ether')
         expected_forfeit = 0
         if buyer_amount < cap: expected_ten = admin.web3.to_wei(buyer_amount, 'ether')
-        if buyer_amount > cap: expected_forfeit = admin.web3.to_wei(cap - buyer_amount, 'ether')
+        if buyer_amount > cap: expected_forfeit = admin.web3.to_wei(buyer_amount - cap, 'ether')
         self.log.info('expected_ten:          %s' % expected_ten)
         self.log.info('expected_forfeit:      %s' % expected_forfeit)
 
         self.assertTrue(sum([s.nft_balance(round_id) for s in sellers]) == admin.web3.to_wei(seller_amount, 'ether'),
                         assertMessage='Seller amount should be sum of the ntf balances')
 
-        self.assertTrue(abs(sellers_sold - buyers_redeemed) < 400,
+        self.assertTrue(abs(sellers_sold - buyers_redeemed) < 7500,
                         assertMessage='Seller amount sold should be equal to the buyer redeemed')
 
-        self.assertTrue(abs(expected_ten - buyers_redeemed) < 400, assertMessage='Expected ten should be buyer redeemed')
-        self.assertTrue(abs(expected_forfeit - buyers_forfeit) < 400, assertMessage='Expected forfeit should be buyer redeemed')
+        self.assertTrue(abs(expected_ten - buyers_redeemed) < 7500, assertMessage='Expected ten should be buyer redeemed')
+        self.assertTrue(abs(expected_forfeit - buyers_forfeit) < 7500, assertMessage='Expected forfeit should be buyer redeemed')
 

@@ -35,8 +35,8 @@ class MarketDappBuyer(MarketDappPlayer):
         self.log.info('  amount:       %.3f' % self.web3.from_wei(amount, 'ether'))
         cost_stake = self.market.contract.functions.quoteCostakeFor(round_id, amount).call()
         cost_usdc = self.market.contract.functions.quoteUsdcFor(round_id, amount).call()
-        self.log.info('  cost_stake:   %.3f' % cost_stake)
-        self.log.info('  cost_usdc:    %.3f' % cost_usdc)
+        self.log.info('  cost_stake:   %d' % cost_stake)
+        self.log.info('  cost_usdc:    %d' % cost_usdc)
         return cost_stake, cost_usdc
 
     def approve_and_stake(self, round_id, amount, expect_fail=False):
