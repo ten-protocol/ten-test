@@ -37,15 +37,30 @@ class PySysTest(TenNetworkTest):
         buyers = []
         buyer_amount = 0
         while buyer_amount < min_cap:
-            amount = random.randint(500,1200)
+            amount = random.randint(500,900)
             buyer = MarketDappBuyer(self, pk=self.get_ephemeral_pk(), id=len(buyers)+1, tokens=2*amount)
             buyer.approve_and_stake(round_id, buyer.web3.to_wei(amount, 'ether'))
             buyers.append(buyer)
             buyer_amount += amount
-        self.log.info('Total buyers stakes is %d for min cap %d' % (seller_amount, min_cap))
+        self.log.info('Total buyers stakes is %d for min cap %d' % (buyer_amount, min_cap))
 
         # round deadline exceeds and sellers are frozen
         admin.increase_evm_time(duration=self.MAX_DURATION)
+        admin.freeze_sellers(round_id)
         for b in buyers: b.redeem_and_forfeit(round_id)
+        for b in buyers: b.to_log()
         for s in sellers: s.claim_and_withdraw(round_id)
+        for s in sellers: s.to_log(round_id)
+
+        sellers_nft_balance = sum([s.nft_balance(round_id) for s in sellers])
+        sellers_ten_withdrawn = sum([s.get_unused_ten_withdrawn(round_id) for s in sellers])
+        sellers_ten_delta = sellers_nft_balance - sellers_ten_withdrawn
+        self.log.info('sellers_nft_balance:   %s' % sellers_nft_balance)   # how much they were willing to sell
+        self.log.info('sellers_ten_withdrawn: %s' % sellers_ten_withdrawn) # how much they claimed back
+        self.log.info('sellers_ten_delta:     %s' % sellers_ten_delta)     # how much they actually sold
+        self.log.info('buyers_amount:         %s' % admin.web3.to_wei(buyer_amount, 'ether'))
+        self.assertTrue(sum([s.nft_balance(round_id) for s in sellers]) == admin.web3.to_wei(seller_amount, 'ether'),
+                        assertMessage='Seller amount should be sum of the ntf balances')
+        self.assertTrue(admin.web3.to_wei(min_cap, 'ether') - admin.web3.to_wei(buyer_amount, 'ether') < 4000,
+                        assertMessage='Seller amount sold should be the cap or slightly less')
 
