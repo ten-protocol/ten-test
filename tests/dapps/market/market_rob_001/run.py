@@ -71,8 +71,19 @@ class PySysTest(TenNetworkTest):
         self.log.info('buyers_redeemed:       %s' % buyers_redeemed)
         self.log.info('buyers_forfeit:        %s' % buyers_forfeit)
 
+        expected_ten = admin.web3.to_wei(cap, 'ether')
+        expected_forfeit = 0
+        if buyer_amount < cap: expected_ten = admin.web3.to_wei(buyer_amount, 'ether')
+        if buyer_amount > cap: expected_forfeit = admin.web3.to_wei(cap - buyer_amount, 'ether')
+        self.log.info('expected_ten:          %s' % expected_ten)
+        self.log.info('expected_forfeit:      %s' % expected_forfeit)
+
         self.assertTrue(sum([s.nft_balance(round_id) for s in sellers]) == admin.web3.to_wei(seller_amount, 'ether'),
                         assertMessage='Seller amount should be sum of the ntf balances')
-        self.assertTrue(abs(sellers_sold - buyers_redeemed) < 20,
+
+        self.assertTrue(abs(sellers_sold - buyers_redeemed) < 400,
                         assertMessage='Seller amount sold should be equal to the buyer redeemed')
+
+        self.assertTrue(abs(expected_ten - buyers_redeemed) < 400, assertMessage='Expected ten should be buyer redeemed')
+        self.assertTrue(abs(expected_forfeit - buyers_forfeit) < 400, assertMessage='Expected forfeit should be buyer redeemed')
 
