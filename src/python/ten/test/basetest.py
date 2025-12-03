@@ -58,7 +58,6 @@ class GenericNetworkTest(BaseTest):
         self.runtype_db = RunTypePersistence(use_remote, self.user_dir, self.machine_name)
         self.stats_db = StatsPersistence(True, self.user_dir, self.machine_name)
         self.addCleanupFunction(self.close_db)
-        self.log.info('addCleanupFunction')
 
         # every test has a unique connection for the funded account
         self.network_funding = None
@@ -70,22 +69,18 @@ class GenericNetworkTest(BaseTest):
         self.average_transfer_cost = 21000000000000
         self.cost = 0
         _, self.eth_price = self.rates_db.get_latest_rate('ETH', 'USD')
-        self.log.info('eth_price')
 
         if runner.xargs.get('NO_CONNECT', False):
             runner.log.warn('No connection to the network has been requested for this test run')
 
         else:
-            self.log.info('pre network_funding connect')
             self.network_funding = self.get_network_connection()
-            self.log.info('post network_funding connect')
             for fn in Properties().accounts():
                 web3, account = self.network_funding.connect(self, fn(), check_funds=False, verbose=False)
                 self.accounts.append((web3, account))
                 self.balance = self.balance + web3.eth.get_balance(account.address)
             self.addCleanupFunction(self.__test_cost)
             self.addCleanupFunction(self.drain_ephemeral_pks)
-        self.log.info('end balances')
 
     def __test_cost(self):
         balance = 0
