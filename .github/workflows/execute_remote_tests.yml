@@ -29,7 +29,7 @@ on:
 
 jobs:
   test-run:
-    runs-on: [self-hosted, Linux, X64, all-testnets]
+    runs-on: [self-hosted, Linux, X64, ten-test-azure-runner-01]
     steps:
       - name: Set the default version
         env:
