@@ -4,8 +4,7 @@ from collections import OrderedDict
 from pysys.constants import PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
-from ten.test.persistence.funds import FundsPersistence
-
+from ten.test.persistence.funds import FundsPersistence, PandLPersistence
 
 class PySysTest(TenNetworkTest):
 
@@ -14,6 +13,7 @@ class PySysTest(TenNetworkTest):
 
         # databases to use
         self.funds_db = FundsPersistence(self.use_remote(), self.user_dir, self.machine_name)
+        self.pandl_db = PandLPersistence(self.use_remote(), self.user_dir, self.machine_name)
         self.addCleanupFunction(self.close_db_connections)
 
         with open(os.path.join(self.output, 'sequencer_funds.log'), 'w') as fp:
@@ -74,3 +74,4 @@ class PySysTest(TenNetworkTest):
 
     def close_db_connections(self):
         self.funds_db.close()
+        self.pandl_db.close()
