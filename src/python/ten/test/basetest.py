@@ -11,7 +11,7 @@ from ten.test.persistence.nonce import NoncePersistence
 from ten.test.persistence.counts import CountsPersistence
 from ten.test.persistence.stats import StatsPersistence
 from ten.test.persistence.funds import FundsPersistence, PandLPersistence, GasPricePersistence
-from ten.test.persistence.results import PerformanceResultsPersistence, TxCostResultsPersistence, RunTypePersistence
+from ten.test.persistence.results import PerformanceResultsPersistence, RunTypePersistence
 from ten.test.persistence.contract import ContractPersistence
 from ten.test.utils.properties import Properties
 from ten.test.networks.default import DefaultPostLondon
@@ -49,14 +49,15 @@ class GenericNetworkTest(BaseTest):
         self.rates_db = RatesPersistence(use_remote, self.user_dir, self.machine_name)
         self.nonce_db = NoncePersistence(use_remote, self.user_dir, self.machine_name)
         self.contract_db = ContractPersistence(use_remote, self.user_dir, self.machine_name)
+        self.results_db = PerformanceResultsPersistence(self.is_admin() or self.is_cloud_vm, self.user_dir, self.machine_name)
+        self.runtype_db = RunTypePersistence(use_remote, self.user_dir, self.machine_name)
+
         self.funds_db = FundsPersistence(use_remote, self.user_dir, self.machine_name)
         self.pandl_db = PandLPersistence(use_remote, self.user_dir, self.machine_name)
         self.gas_db = GasPricePersistence(use_remote, self.user_dir, self.machine_name)
         self.counts_db = CountsPersistence(use_remote, self.user_dir, self.machine_name)
-        self.results_db = PerformanceResultsPersistence(self.is_admin() or self.is_cloud_vm, self.user_dir, self.machine_name)
-        self.txcosts_db = TxCostResultsPersistence(use_remote, self.user_dir, self.machine_name)
-        self.runtype_db = RunTypePersistence(use_remote, self.user_dir, self.machine_name)
         self.stats_db = StatsPersistence(True, self.user_dir, self.machine_name)
+
         self.addCleanupFunction(self.close_db)
 
         # every test has a unique connection for the funded account
@@ -105,7 +106,6 @@ class GenericNetworkTest(BaseTest):
         self.gas_db.close()
         self.counts_db.close()
         self.results_db.close()
-        self.txcosts_db.close()
         self.runtype_db.close()
         self.stats_db.close()
 
@@ -116,6 +116,10 @@ class GenericNetworkTest(BaseTest):
             web3, account = self.network_funding.connect(self, private_key=pk, check_funds=False, verbose=False)
             self.drain_native(web3, account, self.network_funding)
         self.log.info('')
+
+    def use_remote(self):
+        """Return tru if we should use a remote rather than a local persistence. """
+        return self.is_admin() or (not self.is_local_ten() and self.is_cloud_vm)
 
     def is_admin(self):
         """Return true if we are running in an admin mode. """
