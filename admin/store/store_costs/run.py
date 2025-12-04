@@ -15,7 +15,7 @@ class PySysTest(TenNetworkTest):
 
         # databases to use
         self.txcosts_db = TxCostResultsPersistence(self.use_remote(), self.user_dir, self.machine_name)
-        self.addCleanupFunction(self.close_db)
+        self.addCleanupFunction(self.close_db_connections)
 
         # connect to the L1 network and get the l1 gas and blob price
         self.log.info('Getting and persisting the L1 and L2 gas and blob prices')
@@ -93,5 +93,5 @@ class PySysTest(TenNetworkTest):
         self.log.info('Balance difference: %d' % (balance_before - balance_after))
         self.txcosts_db.insert(name, self.env, run_time, gas_price, gas_used, estimate)
 
-    def close_db(self):
+    def close_db_connections(self):
         self.txcosts_db.close()

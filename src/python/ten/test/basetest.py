@@ -10,7 +10,7 @@ from ten.test.persistence.rates import RatesPersistence
 from ten.test.persistence.nonce import NoncePersistence
 from ten.test.persistence.counts import CountsPersistence
 from ten.test.persistence.stats import StatsPersistence
-from ten.test.persistence.funds import FundsPersistence, PandLPersistence, GasPricePersistence
+from ten.test.persistence.funds import PandLPersistence, GasPricePersistence
 from ten.test.persistence.results import PerformanceResultsPersistence, RunTypePersistence
 from ten.test.persistence.contract import ContractPersistence
 from ten.test.utils.properties import Properties
@@ -52,13 +52,12 @@ class GenericNetworkTest(BaseTest):
         self.results_db = PerformanceResultsPersistence(self.is_admin() or self.is_cloud_vm, self.user_dir, self.machine_name)
         self.runtype_db = RunTypePersistence(use_remote, self.user_dir, self.machine_name)
 
-        self.funds_db = FundsPersistence(use_remote, self.user_dir, self.machine_name)
         self.pandl_db = PandLPersistence(use_remote, self.user_dir, self.machine_name)
         self.gas_db = GasPricePersistence(use_remote, self.user_dir, self.machine_name)
         self.counts_db = CountsPersistence(use_remote, self.user_dir, self.machine_name)
         self.stats_db = StatsPersistence(True, self.user_dir, self.machine_name)
 
-        self.addCleanupFunction(self.close_db)
+        self.addCleanupFunction(self.__close_db)
 
         # every test has a unique connection for the funded account
         self.network_funding = None
@@ -96,12 +95,11 @@ class GenericNetworkTest(BaseTest):
             change = float(Web3().from_wei(delta, 'ether'))
             self.log.info("  %s: %s%.3f USD", 'Test cost', sign, self.eth_price*change, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
 
-    def close_db(self):
+    def __close_db(self):
         """Close the connection to the databases on completion. """
         self.rates_db.close()
         self.nonce_db.close()
         self.contract_db.close()
-        self.funds_db.close()
         self.pandl_db.close()
         self.gas_db.close()
         self.counts_db.close()

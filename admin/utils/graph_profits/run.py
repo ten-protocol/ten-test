@@ -4,12 +4,17 @@ from collections import OrderedDict
 from pysys.constants import PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.gnuplot import GnuplotHelper
+from ten.test.persistence.funds import FundsPersistence
 
 
 class PySysTest(TenNetworkTest):
 
     def execute(self):
         current_time = int(time.time())
+
+        # databases to use
+        self.funds_db = FundsPersistence(self.use_remote(), self.user_dir, self.machine_name)
+        self.addCleanupFunction(self.close_db_connections)
 
         with open(os.path.join(self.output, 'sequencer_funds.log'), 'w') as fp:
             for entry in reversed(self.funds_db.get_funds(name='Sequencer', environment=self.env)):
@@ -66,3 +71,6 @@ class PySysTest(TenNetworkTest):
         branch = GnuplotHelper.buildInfo().branch
         date = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
         GnuplotHelper.graph(self, os.path.join(self.input, 'gnuplot.in'), branch, date, str(self.mode))
+
+    def close_db_connections(self):
+        self.funds_db.close()
