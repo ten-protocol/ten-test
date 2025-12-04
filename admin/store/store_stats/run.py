@@ -4,6 +4,7 @@ from pysys.constants import PASSED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 from ten.test.persistence.funds import FundsPersistence
+from ten.test.persistence.counts import CountsPersistence
 
 
 class PySysTest(TenNetworkTest):
@@ -17,6 +18,7 @@ class PySysTest(TenNetworkTest):
 
         # databases to use
         self.funds_db = FundsPersistence(self.use_remote(), self.user_dir, self.machine_name)
+        self.counts_db = CountsPersistence(self.use_remote(), self.user_dir, self.machine_name)
         self.addCleanupFunction(self.close_db_connections)
 
         # store the sequencer balance and tx count (on the L1)
@@ -80,3 +82,5 @@ class PySysTest(TenNetworkTest):
 
     def close_db_connections(self):
         self.funds_db.close()
+        self.counts_db.close()
+        

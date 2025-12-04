@@ -1,12 +1,17 @@
 import time
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
+from ten.test.persistence.counts import CountsPersistence
 
 
 class PySysTest(TenNetworkTest):
 
     def execute(self):
         current_time = int(time.time())
+
+        # databases to use
+        self.counts_db = CountsPersistence(self.use_remote(), self.user_dir, self.machine_name)
+        self.addCleanupFunction(self.close_db_connections)
 
         # get last four hours of recorded tx counts - note that we expect a regular interval of
         # recordings which might not be the case if the job is queued or stopped at any point
@@ -30,3 +35,5 @@ class PySysTest(TenNetworkTest):
         else:
             self.log.warn('Less than 2 entries recorded over the last 4 hour period ... skipping')
 
+    def close_db_connections(self):
+        self.counts_db.close()
