@@ -6,6 +6,7 @@ from pysys.constants import BLOCKED
 from ten.test.basetest import TenNetworkTest
 from ten.test.utils.properties import Properties
 from ten.test.utils.support import SupportHelper
+from ten.test.persistence.results import RunTypePersistence
 
 
 def greet_by_time(timezone_str='Europe/London'):
@@ -140,6 +141,10 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         props = Properties()
+
+        # databases to use
+        self.runtype_db = RunTypePersistence(self.use_remote(), self.user_dir, self.machine_name)
+        self.addCleanupFunction(self.close_db_connections)
 
         if self.RUN_TYPE is None:
             self.log.warn('No run type given ... aborting')
@@ -289,3 +294,6 @@ class PySysTest(TenNetworkTest):
             except Exception as e:
                 self.log.warn('Unable to send telephone message to %s: %s', (person, e))
                 self.addOutcome(BLOCKED)
+
+    def close_db_connections(self):
+        self.runtype_db.close()

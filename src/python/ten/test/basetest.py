@@ -6,12 +6,8 @@ from pysys.basetest import BaseTest
 from pysys.constants import PROJECT, BACKGROUND, FAILED, TIMEDOUT
 from pysys.constants import LOG_TRACEBACK
 from pysys.utils.logutils import BaseLogFormatter
-from ten.test.persistence.rates import RatesPersistence
 from ten.test.persistence.nonce import NoncePersistence
-from ten.test.persistence.counts import CountsPersistence
-from ten.test.persistence.stats import StatsPersistence
-from ten.test.persistence.funds import FundsPersistence, PandLPersistence, GasPricePersistence
-from ten.test.persistence.results import PerformanceResultsPersistence, TxCostResultsPersistence, RunTypePersistence
+from ten.test.persistence.results import PerformanceResultsPersistence
 from ten.test.persistence.contract import ContractPersistence
 from ten.test.utils.properties import Properties
 from ten.test.networks.default import DefaultPostLondon
@@ -46,18 +42,10 @@ class GenericNetworkTest(BaseTest):
         # every test has its own connection to the dbs - use a remote mysql persistence layer if we are running in
         # azure, and it is not a local testnet. The exception for this is the nonce db where it is always local.
         use_remote = self.is_admin() or (not self.is_local_ten() and self.is_cloud_vm)
-        self.rates_db = RatesPersistence(use_remote, self.user_dir, self.machine_name)
         self.nonce_db = NoncePersistence(use_remote, self.user_dir, self.machine_name)
         self.contract_db = ContractPersistence(use_remote, self.user_dir, self.machine_name)
-        self.funds_db = FundsPersistence(use_remote, self.user_dir, self.machine_name)
-        self.pandl_db = PandLPersistence(use_remote, self.user_dir, self.machine_name)
-        self.gas_db = GasPricePersistence(use_remote, self.user_dir, self.machine_name)
-        self.counts_db = CountsPersistence(use_remote, self.user_dir, self.machine_name)
         self.results_db = PerformanceResultsPersistence(self.is_admin() or self.is_cloud_vm, self.user_dir, self.machine_name)
-        self.txcosts_db = TxCostResultsPersistence(use_remote, self.user_dir, self.machine_name)
-        self.runtype_db = RunTypePersistence(use_remote, self.user_dir, self.machine_name)
-        self.stats_db = StatsPersistence(True, self.user_dir, self.machine_name)
-        self.addCleanupFunction(self.close_db)
+        self.addCleanupFunction(self.__close_db)
 
         # every test has a unique connection for the funded account
         self.network_funding = None
@@ -68,7 +56,7 @@ class GenericNetworkTest(BaseTest):
         self.transfer_costs = []
         self.average_transfer_cost = 21000000000000
         self.cost = 0
-        _, self.eth_price = self.rates_db.get_latest_rate('ETH', 'USD')
+        self.eth_price = runner.ten_runner.eth_price
 
         if runner.xargs.get('NO_CONNECT', False):
             runner.log.warn('No connection to the network has been requested for this test run')
@@ -95,19 +83,11 @@ class GenericNetworkTest(BaseTest):
             change = float(Web3().from_wei(delta, 'ether'))
             self.log.info("  %s: %s%.3f USD", 'Test cost', sign, self.eth_price*change, extra=BaseLogFormatter.tag(LOG_TRACEBACK, 0))
 
-    def close_db(self):
+    def __close_db(self):
         """Close the connection to the databases on completion. """
-        self.rates_db.close()
         self.nonce_db.close()
         self.contract_db.close()
-        self.funds_db.close()
-        self.pandl_db.close()
-        self.gas_db.close()
-        self.counts_db.close()
         self.results_db.close()
-        self.txcosts_db.close()
-        self.runtype_db.close()
-        self.stats_db.close()
 
     def drain_ephemeral_pks(self):
         """Drain any ephemeral accounts of their funds. """
@@ -116,6 +96,10 @@ class GenericNetworkTest(BaseTest):
             web3, account = self.network_funding.connect(self, private_key=pk, check_funds=False, verbose=False)
             self.drain_native(web3, account, self.network_funding)
         self.log.info('')
+
+    def use_remote(self):
+        """Return tru if we should use a remote rather than a local persistence. """
+        return self.is_admin() or (not self.is_local_ten() and self.is_cloud_vm)
 
     def is_admin(self):
         """Return true if we are running in an admin mode. """

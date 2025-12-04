@@ -4,6 +4,8 @@ from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.storage import Storage, KeyStorage
 from ten.test.contracts.game import Game
 from ten.test.contracts.calldata import CallData
+from ten.test.persistence.results import TxCostResultsPersistence
+from ten.test.persistence.funds import GasPricePersistence
 
 
 class PySysTest(TenNetworkTest):
@@ -11,6 +13,11 @@ class PySysTest(TenNetworkTest):
     def execute(self):
         l1blobprice = 0
         _time = int(time.time())
+
+        # databases to use
+        self.txcosts_db = TxCostResultsPersistence(self.use_remote(), self.user_dir, self.machine_name)
+        self.gas_db = GasPricePersistence(self.use_remote(), self.user_dir, self.machine_name)
+        self.addCleanupFunction(self.close_db_connections)
 
         # connect to the L1 network and get the l1 gas and blob price
         self.log.info('Getting and persisting the L1 and L2 gas and blob prices')
@@ -87,3 +94,7 @@ class PySysTest(TenNetworkTest):
         self.log.info('Computed cost:      %d' % (gas_used*gas_price))
         self.log.info('Balance difference: %d' % (balance_before - balance_after))
         self.txcosts_db.insert(name, self.env, run_time, gas_price, gas_used, estimate)
+
+    def close_db_connections(self):
+        self.txcosts_db.close()
+        self.gas_db.close()
