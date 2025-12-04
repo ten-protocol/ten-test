@@ -100,6 +100,7 @@ class TenRunnerPlugin():
             rates_db.insert_rates('ETH', 'USD', int(time.time()), eth_price)
         else:
             _, eth_price = rates_db.get_latest_rate('ETH', 'USD')
+        self.eth_price = eth_price
 
         if self.is_ten() and runner.threads > 3:
             raise Exception('Max threads against Ten cannot be greater than 3')
