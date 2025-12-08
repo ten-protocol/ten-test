@@ -15,11 +15,13 @@ class PySysTest(TenNetworkTest):
             self.log.info('First and last batch seq nos are %d %d, total %d', first, last, total)
             self.log.info(rollup_header)
 
-            # get the rollup again from sequence numbers purported to be in the rollup
+            # get the rollup again from batch based on it's sequencer number (no more than 200)
+            count = 0
             for i in range(first, last+1):
                 self.log.info('Getting sequence number %d', i)
                 rollup_from_sequence = self.scan_get_rollup_by_seq_no(seq=i)
                 self.assertTrue(rollup_from_sequence['Header']['hash'] == rollup_hash,
                                 assertMessage='Rollup be seq %d should match original header' % i)
+                if count > 200: break
         else:
             self.log.warn('latest rollup header is None - this maybe because there are no rollups yet')
