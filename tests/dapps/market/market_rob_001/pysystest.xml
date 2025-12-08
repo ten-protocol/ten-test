@@ -8,8 +8,6 @@
         </purpose>
     </description>
 
-    <skipped reason="Still in development"/>
-
     <classification>
         <groups inherit="true">
             <group>market</group>

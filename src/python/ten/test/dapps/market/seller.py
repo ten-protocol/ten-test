@@ -19,6 +19,14 @@ class MarketDappSeller(MarketDappPlayer):
         """Return the seller NFT address."""
         return self.market.contract.functions.getSellerNFT().call()
 
+    def get_usdc_claimed(self, round_id):
+        """Return the seller usdc claimed for this round."""
+        return self.sellerNFT.contract.functions.usdcClaimed(round_id, self.address).call()
+
+    def get_unused_ten_withdrawn(self, round_id):
+        """Return the seller unused ten withdrawn for this round."""
+        return self.sellerNFT.contract.functions.unusedTenWithdrawn(round_id, self.address).call()
+
     def nft_balance(self, round_id):
         """Return the seller deposited balance for a given round. """
         return self.sellerNFT.contract.functions.balanceOf(self.address, round_id).call()
@@ -75,3 +83,10 @@ class MarketDappSeller(MarketDappPlayer):
                                            self.market.contract.functions.withdrawSellerUnusedTen(round_id, amount),
                                            self.account, self.market.GAS_LIMIT, persist_nonce=False, expect_fail=expect_fail)
             return tx_receipt
+
+    def to_log(self, round_id):
+        self.log.info('%s %d seller details: ' % (type(self).__name__, self.id))
+        self.log.info('  round id:              %d' % round_id)
+        self.log.info('  nft_balance:           %.3f' % self.web3.from_wei(self.nft_balance(round_id),'ether'))
+        self.log.info('  usdc_claimed:          %.3f' % self.web3.from_wei(self.get_usdc_claimed(round_id),'ether'))
+        self.log.info('  unused_ten_withdrawn:  %.3f' % self.web3.from_wei(self.get_unused_ten_withdrawn(round_id),'ether'))
