@@ -28,7 +28,6 @@ The top level structure of the project is as below;
 ├── .default.properties  # Default properties file detailing connection and keys required for running 
 ├── pysysproject.xml     # The pysys project file detailing configuration options
 ├── get_artifacts.sh     # Build script to build artifacts from go-ten required for running Ten protocol tests
-├── admin                # Used for administering the Ten testnet 
 ├── artifacts            # Directory to store artifacts for running Ten tests
 ├── src                  # The source root for all test code
 │    ├── grafana         # Export of the grafana dashboards
@@ -36,12 +35,16 @@ The top level structure of the project is as below;
 │    ├── python          # The python source root for pysys extensions
 │    └── solidity        # A library of smart contracts 
 ├── tests                # The test root for all tests 
-│    ├── generic         # Network agnostic tests 
-│    └── ten             # Ten specific tests 
+│    ├── admin           # Used for administering the Ten testnet 
+│    ├── dapps           # Used for any dapps managed by TEN 
+│    └── network         # Used for testing the TEN network
+│         ├── generic    # Network agnostic tests 
+│         └── ten        # TEN specific tests 
 └── utils                # The project utils root for utilities used by the tests
      ├── docker          # Docker build and run files
      ├── github          # Azure VM github self hosted running build files
-     └── release         # Utilitiy scripts for making a new release of go-ten
+     ├── release         # Utilitiy scripts for making a new release of go-ten
+     └── support         # Contains the support rota
 ```
 
 The [.default.properties](./.default.properties) file contains properties for running the tests that are common to any 
@@ -179,12 +182,12 @@ APIKey = <api key>
 
 Print and run tests
 --------------------
-Each test is a separate directory within `ten-test/tests` where the directory name denotes the testcase id. Each 
+Each test is a separate directory within `ten-test/tests/network` where the directory name denotes the testcase id. Each 
 test will contain a `run.py` file (the execution and validation steps) and a `pysystest.xml` file (metadata about the 
 test such as its title, purpose, supported modes it can be run in). Note that the tests can be run against a variety 
 of networks using the `-m mode` option. The E2E tests have specifically been designed such that any generic tests 
 can be run against Ten, Ganache, Arbitrum or Sepolia. To print out information on the tests, or to run them 
-against a particular network, change directory to `ten-test/tests` and run as below;
+against a particular network, change directory to `ten-test/tests/network` and run as below;
 
 ```bash
 # print out test titles

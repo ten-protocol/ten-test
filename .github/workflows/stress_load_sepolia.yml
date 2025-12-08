@@ -30,7 +30,7 @@ jobs:
 
       - name: 'Run load and perf tests'
         run: |
-          cd ${{ github.workspace }}/ten-test/tests
+          cd ${{ github.workspace }}/ten-test/tests/network
           /usr/local/bin/pysys.py run -r -m ten.sepolia -i remote_load -c 4 -XNUM_CLIENTS=5 
 
       - name: 'Upload testcase output'

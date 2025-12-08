@@ -28,25 +28,25 @@ jobs:
       - name: 'Persistence reset uat'
         continue-on-error: true
         run: |
-          cd ${{ github.workspace }}/ten-test/admin
+          cd ${{ github.workspace }}/ten-test/tests/admin
           /usr/local/bin/pysys.py run -m ten.uat reset_persistence
 
       - name: 'Persistence reset sepolia'
         continue-on-error: true
         run: |
-          cd ${{ github.workspace }}/ten-test/admin
+          cd ${{ github.workspace }}/ten-test/tests/admin
           /usr/local/bin/pysys.py run -m ten.sepolia reset_persistence
 
       - name: 'Persistence reset arbitrum sepolia'
         continue-on-error: true
         run: |
-          cd ${{ github.workspace }}/ten-test/admin
+          cd ${{ github.workspace }}/ten-test/tests/admin
           /usr/local/bin/pysys.py run -m arbitrum.sepolia reset_persistence
 
       - name: 'Persistence reset optimism sepolia'
         continue-on-error: true
         run: |
-          cd ${{ github.workspace }}/ten-test/admin
+          cd ${{ github.workspace }}/ten-test/tests/admin
           /usr/local/bin/pysys.py run -m optimism.sepolia reset_persistence
 
       - name: 'Upload output'

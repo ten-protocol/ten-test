@@ -34,13 +34,13 @@ jobs:
 
       - name: 'Run health check tests'
         run: |
-          cd ${{ github.workspace }}/ten-test
+          cd ${{ github.workspace }}/ten-test/tests
           /usr/local/bin/pysys.py run -r -m ten.mainnet -i health -XITERATIONS_FULL=0 -XRUN_TYPE=health 
 
       - name: 'Alert for health check'
         if: always()
         run: |
-          cd ${{ github.workspace }}/ten-test/admin
+          cd ${{ github.workspace }}/ten-test/tests/admin
           /usr/local/bin/pysys.py run -m ten.mainnet -XRUN_TYPE=health -XRUN_NAME=Mainnet_health -XRUN_URL=$RUN_URL -XNO_CONNECT alert_support
 
       - name: 'Upload testcase output'

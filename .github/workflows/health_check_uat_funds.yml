@@ -30,7 +30,7 @@ jobs:
 
       - name: 'Run funds check'
         run: |
-          cd ${{ github.workspace }}/ten-test/admin
+          cd ${{ github.workspace }}/ten-test/tests/admin
           /usr/local/bin/pysys.py run -m ten.uat check_funds
 
       - name: 'Discord notification on failure'

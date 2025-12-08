@@ -39,14 +39,14 @@ jobs:
       - name: 'Run on schedule for sepolia-testnet'
         if: github.event_name == 'schedule'
         run: |
-          cd ${{ github.workspace }}/ten-test/admin
+          cd ${{ github.workspace }}/ten-test/tests/admin
           /usr/local/bin/pysys.py run -r -m ten.sepolia store_stats
 
       - name: 'Run on dispatch'
         if: github.event_name == 'workflow_dispatch'
         continue-on-error: true
         run: |
-          cd ${{ github.workspace }}/ten-test/admin
+          cd ${{ github.workspace }}/ten-test/tests/admin
           /usr/local/bin/pysys.py run -r -m ${{ github.event.inputs.environment }} store_stats
 
       - name: 'Upload testcase output'
