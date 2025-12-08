@@ -56,7 +56,7 @@ jobs:
       - name: 'Do a persistence reset'
         if: github.event.inputs.environment == 'ten.local' || github.event_name == 'schedule'
         run: |
-          cd ${{ github.workspace }}/ten-test/admin
+          cd ${{ github.workspace }}/ten-test/tests/admin
           /usr/local/bin/pysys.py run -m ten.local reset_persistence
 
       - name: 'Build required artifacts for running tests'
@@ -74,20 +74,20 @@ jobs:
         if: always() && github.event_name == 'workflow_dispatch'
         continue-on-error: true
         run: |
-          cd ${{ github.workspace }}/ten-test/admin
+          cd ${{ github.workspace }}/ten-test/tests/admin
           /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} -XNO_CONNECT graph_performance
 
       - name: 'Run performance tests on schedule'
         if: github.event_name == 'schedule'
         run: |
-          cd ${{ github.workspace }}/ten-test/tests
+          cd ${{ github.workspace }}/ten-test/tests/network
           /usr/local/bin/pysys.py run -r -m ten.local -XPERSIST_PERF -i performance
 
       - name: 'Run the performance summary on schedule'
         if: always() && github.event_name == 'schedule'
         continue-on-error: true
         run: |
-          cd ${{ github.workspace }}/ten-test/admin
+          cd ${{ github.workspace }}/ten-test/tests/admin
           /usr/local/bin/pysys.py run -m ten.local -XNO_CONNECT graph_performance
 
       - name: 'Collate performance output'

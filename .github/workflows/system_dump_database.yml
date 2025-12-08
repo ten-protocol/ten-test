@@ -18,7 +18,7 @@ jobs:
 
       - name: 'Dump the database tables'
         run: |
-          cd ${{ github.workspace }}/ten-test/admin/utils
+          cd ${{ github.workspace }}/ten-test/tests/admin/utils
           /usr/local/bin/pysys.py run -m admin -XREMOTE database_dump
 
       - name: 'Upload database dump files'

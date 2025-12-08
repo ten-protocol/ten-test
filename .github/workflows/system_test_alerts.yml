@@ -29,7 +29,7 @@ jobs:
       - name: 'Run the alert checking'
         if: always()
         run: |
-          cd ${{ github.workspace }}/ten-test/admin
+          cd ${{ github.workspace }}/ten-test/tests/admin
           /usr/local/bin/pysys.py run -m ten.sepolia -XRUN_TYPE=${{ github.event.inputs.run_type }} -XRUN_NAME=${{ github.event.inputs.run_name }} -XRUN_URL=$RUN_URL -XNO_CONNECT alert_support
 
       - name: 'Discord notification on failure'

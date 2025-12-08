@@ -56,7 +56,7 @@ jobs:
 
       - name: 'Run tests'
         run: |
-          cd ${{ github.workspace }}/ten-test/tests
+          cd ${{ github.workspace }}/ten-test/tests/network
           /usr/local/bin/pysys.py run -r -m ${{ github.event.inputs.environment }} ${{ github.event.inputs.arguments }}
 
       - name: 'Collate pdf output'

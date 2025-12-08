@@ -25,7 +25,7 @@ jobs:
 
       - name: 'Run the graph profits for selected environment'
         run: |
-          cd ${{ github.workspace }}/ten-test/admin
+          cd ${{ github.workspace }}/ten-test/tests/admin
           /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} -XNO_CONNECT graph_profits
 
       - name: 'Upload performance output'

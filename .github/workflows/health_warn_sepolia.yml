@@ -34,7 +34,7 @@ jobs:
 
       - name: 'Run warning checks'
         run: |
-          cd ${{ github.workspace }}/ten-test/admin/warn
+          cd ${{ github.workspace }}/ten-test/tests/admin/warn
           /usr/local/bin/pysys.py run -m ten.sepolia -XNO_CONNECT -XRUN_URL=$RUN_URL
 
       - name: 'Upload testcase output'
