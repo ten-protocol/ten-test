@@ -15,7 +15,7 @@ class MarketDappAdmin(MarketDappPlayer):
     def __init__(self, test):
         super().__init__(test, Properties().fundacntpk(), id=0)
 
-    def create_round(self, deadline, price, beta, ten_cap, min_usdc):
+    def create_round(self, deadline, price, beta, ten_cap, min_usdc, tax_perc):
         """Create a new round."""
         self.log.info('%s %s making new round: ' % (type(self).__name__, self.id))
         self.log.info('  deadline: %d' % deadline)
@@ -23,8 +23,9 @@ class MarketDappAdmin(MarketDappPlayer):
         self.log.info('  beta:     %d' % beta)
         self.log.info('  tenCap:   %d' % self.web3.from_wei(ten_cap, 'ether'))
         self.log.info('  minUSDC:  %d' % self.web3.from_wei(min_usdc, 'ether'))
+        self.log.info('  tax:      %d' % tax_perc)
         tx_receipt = self.network.transact(self.test, self.web3,
-                                           self.market.contract.functions.createRound(deadline, price, beta, ten_cap, min_usdc),
+                                           self.market.contract.functions.createRound(deadline, price, beta, ten_cap, min_usdc, tax_perc),
                                            self.account, self.market.GAS_LIMIT, persist_nonce=False)
         tx_log = self.market.contract.events.RoundCreated().process_receipt(tx_receipt)[0]
         round_id = tx_log['args']['id']
@@ -34,10 +35,11 @@ class MarketDappAdmin(MarketDappPlayer):
         """Create a round with price 1.1 USD, co-stake 25%, capped at 1000 with min of 550 USDC."""
         deadline = int(self.web3.eth.get_block("latest").timestamp) + duration
         price = self.web3.to_wei(1.1, 'ether')
-        beta = self.to_ray(0.25)
-        ten_cap = self.web3.to_wei(1000, 'ether')
-        min_usdc = self.web3.to_wei(550, 'ether')
-        return self.create_round(deadline, price, beta, ten_cap, min_usdc)
+        beta = self.to_ray(0.25)                       # 25 percent
+        ten_cap = self.web3.to_wei(1000, 'ether')      # 1000 tokens
+        min_usdc = self.web3.to_wei(550, 'ether')      # 500 tokens at 1.1 USD per token
+        tax_perc = 200                                 # 2 percent
+        return self.create_round(deadline, price, beta, ten_cap, min_usdc, tax_perc)
 
     def freeze_sellers(self, round_id):
         self.log.info('%s %d freezing sellers for round: ' % (type(self).__name__, self.id))

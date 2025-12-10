@@ -1,8 +1,8 @@
 class Round:
     def __init__( self, deadline, quoteLastUpdate, priceMicro, coStakeRatio, tenCap, maxUSDC, fundedUSDC,
-                  collectedUSDC, claimedUSDC, sellersFrozen, sellerScale, buyerCoverage, totalBuyerTEN,
-                  releasedActiveTEN, buyerVault, proceedsVault, minCollectedUSDC, canceled, canceledAt,
-                  claimedUnusedTEN):
+                  collectedUSDC, claimedUSDC, taxBps, taxUSDCAccrued, sellersFrozen, sellerScale, buyerCoverage,
+                  totalBuyerTEN, releasedActiveTEN, buyerVault, proceedsVault, minCollectedUSDC, canceled, canceledAt,
+                  claimedUnusedTEN, totalRedeemedTEN):
         self.deadline = deadline
         self.quoteLastUpdate = quoteLastUpdate
         self.priceMicro = priceMicro
@@ -12,6 +12,8 @@ class Round:
         self.fundedUSDC = fundedUSDC
         self.collectedUSDC = collectedUSDC
         self.claimedUSDC = claimedUSDC
+        self.taxBps = taxBps
+        self.taxUSDCAccrued = taxUSDCAccrued
         self.sellersFrozen = sellersFrozen
         self.sellerScale = sellerScale
         self.buyerCoverage = buyerCoverage
@@ -23,6 +25,7 @@ class Round:
         self.canceled = canceled
         self.canceledAt = canceledAt
         self.claimedUnusedTEN = claimedUnusedTEN
+        self.totalRedeemedTEN = totalRedeemedTEN
         
     def to_log(self, test):
         test.log.info('Round details: ')
@@ -35,6 +38,8 @@ class Round:
         test.log.info(' fundedUSDC = %s' % self.fundedUSDC)
         test.log.info(' collectedUSDC = %s' % self.collectedUSDC)
         test.log.info(' claimedUSDC = %s' % self.claimedUSDC)
+        test.log.info(' taxBps = %s' % self.taxBps)
+        test.log.info(' taxUSDCAccrued = %s' % self.taxUSDCAccrued)
         test.log.info(' sellersFrozen = %s' % self.sellersFrozen)
         test.log.info(' sellerScale = %s' % self.sellerScale)
         test.log.info(' buyerCoverage = %s' % self.buyerCoverage)
@@ -46,5 +51,4 @@ class Round:
         test.log.info(' canceled = %s' % self.canceled)
         test.log.info(' canceledAt = %s' % self.canceledAt)
         test.log.info(' claimedUnusedTEN = %s' % self.claimedUnusedTEN)
-
-        
+        test.log.info(' totalRedeemedTEN = %s' % self.totalRedeemedTEN)
