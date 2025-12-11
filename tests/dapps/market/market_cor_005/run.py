@@ -29,7 +29,6 @@ class PySysTest(TenNetworkTest):
         # cancel the round, freeze the sellers and try to withdraw the unused ten back
         admin.increase_evm_time(duration=60)
         admin.cancel_if_under_min(round_id)
-        admin.freeze_sellers(round_id)
         admin.get_round(round_id).to_log(self)
 
         usdc_claimable = seller.claimable_usdc(round_id)
@@ -40,3 +39,4 @@ class PySysTest(TenNetworkTest):
         seller.withdraw_unused_ten(round_id, ten_claimable)
         ten_balance_end, usdc_balance_end = seller.token_balances()
         self.assertTrue(ten_balance_before == ten_balance_end, assertMessage='TEN balance should return to original')
+        self.assertTrue(usdc_balance_before == usdc_balance_end, assertMessage='USDC balance should return to original')

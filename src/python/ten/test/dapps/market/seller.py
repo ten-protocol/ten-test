@@ -12,7 +12,7 @@ class MarketDappSeller(MarketDappPlayer):
     """
 
     def __init__(self, test, pk, id, tokens=1000):
-        super().__init__(test, pk, id, tokens)
+        super().__init__(test, pk, id, tokens, locked=True)
         self.sellerNFT = SellerNFT(self, self.web3, self.get_nft())
 
     def get_nft(self):
