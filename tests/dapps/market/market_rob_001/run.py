@@ -16,19 +16,20 @@ class PySysTest(TenNetworkTest):
     def run_round(self, admin):
         cap = random.randint(1000,4000)
         min_cap = random.randint(1000,cap)
-        duration = random.randint(20, self.MAX_DURATION)
+        duration = random.randint(60, self.MAX_DURATION)
         deadline = int(admin.web3.eth.get_block("latest").timestamp) + duration
         price = admin.web3.to_wei(random.randint(100,190)/100, 'ether')
         beta = admin.web3.to_wei(random.randint(10,100)/100, 'ether') * 10 ** 9
         ten_cap = admin.web3.to_wei(cap, 'ether')
         min_usdc = admin.web3.to_wei(min_cap, 'ether')
-        _, round_id = admin.create_round(deadline, price, beta, ten_cap, min_usdc)
+        tax_percent = 200
+        _, round_id = admin.create_round(deadline, price, beta, ten_cap, min_usdc, tax_percent)
 
         sellers = []
         seller_amount = 0
         while seller_amount < cap:
             amount = random.randint(500,1000)
-            seller = MarketDappSeller(self, id=len(sellers)+1, tokens=2*amount)
+            seller = MarketDappSeller(self, id=len(sellers)+1, ten=2*amount, usdc=2*amount)
             seller.approve_and_deposit(round_id, seller.web3.to_wei(amount, 'ether'))
             sellers.append(seller)
             seller_amount += amount
@@ -38,7 +39,7 @@ class PySysTest(TenNetworkTest):
         buyer_amount = 0
         while buyer_amount < min_cap:
             amount = random.randint(500,900)
-            buyer = MarketDappBuyer(self, id=len(buyers)+1, tokens=2*amount)
+            buyer = MarketDappBuyer(self, id=len(buyers)+1, ten=2*amount, usdc=2*amount)
             self.wait(1.0)
             buyer.approve_and_stake(round_id, buyer.web3.to_wei(amount, 'ether'))
             buyers.append(buyer)

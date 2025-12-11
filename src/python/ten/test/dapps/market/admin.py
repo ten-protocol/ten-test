@@ -13,7 +13,7 @@ class MarketDappAdmin(MarketDappPlayer):
     """
 
     def __init__(self, test):
-        super().__init__(test, Properties().fundacntpk(), id=0)
+        super().__init__(test, Properties().fundacntpk(), id=0, ten=0, usdc=0)
         self.log.info('Admin block time is %s' % self.web3.eth.get_block("latest").timestamp)
 
     def create_round(self, deadline, price, beta, ten_cap, min_usdc, tax_perc):
