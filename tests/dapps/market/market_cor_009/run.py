@@ -10,10 +10,10 @@ class PySysTest(TenNetworkTest):
     def execute(self):
         # the actors in the test
         admin = MarketDappAdmin(self)
-        seller1 = MarketDappSeller(self, pk=Properties().account1pk(), id=1)
-        buyer1 = MarketDappBuyer(self, pk=Properties().account2pk(), id=1)
-        buyer2 = MarketDappBuyer(self, pk=Properties().account3pk(), id=2)
-        buyer3 = MarketDappBuyer(self, pk=Properties().account4pk(), id=2)
+        seller1 = MarketDappSeller(self, id=1)
+        buyer1 = MarketDappBuyer(self, id=1)
+        buyer2 = MarketDappBuyer(self, id=2)
+        buyer3 = MarketDappBuyer(self, id=2)
         players = [seller1, buyer1, buyer2, buyer3]
 
         # the initial balances
@@ -53,14 +53,14 @@ class PySysTest(TenNetworkTest):
 
         # check each claim goes up by the expected amount
         self.assertTrue(
-            seller1.balances['b1_redeem'].usdc - seller1.balances['start'].usdc == buyer1.positions[b1_position].cost_usdc,
+            seller1.balances['b1_redeem'].usdc - seller1.balances['start'].usdc == 0.98*buyer1.positions[b1_position].cost_usdc,
             assertMessage='Seller usdc should go up by the buyer1 usdc stake'
         )
         self.assertTrue(
-            seller1.balances['b2_redeem'].usdc - seller1.balances['b1_redeem'].usdc == buyer2.positions[b2_position].cost_usdc,
+            seller1.balances['b2_redeem'].usdc - seller1.balances['b1_redeem'].usdc == 0.98*buyer2.positions[b2_position].cost_usdc,
             assertMessage='Seller usdc should go up by the buyer2 usdc stake'
         )
         self.assertTrue(
-            seller1.balances['b3_redeem'].usdc - seller1.balances['b2_redeem'].usdc == buyer3.positions[b3_position].cost_usdc,
+            seller1.balances['b3_redeem'].usdc - seller1.balances['b2_redeem'].usdc == 0.98*buyer3.positions[b3_position].cost_usdc,
             assertMessage='Seller usdc should go up by the buyer3 usdc stake'
         )

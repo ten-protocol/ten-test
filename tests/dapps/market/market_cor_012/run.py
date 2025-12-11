@@ -10,10 +10,10 @@ class PySysTest(TenNetworkTest):
     def execute(self):
         # the actors in the test
         admin = MarketDappAdmin(self)
-        seller1 = MarketDappSeller(self, pk=Properties().account1pk(), id=1)
-        buyer1 = MarketDappBuyer(self, pk=Properties().account2pk(), id=1)
-        buyer2 = MarketDappBuyer(self, pk=Properties().account3pk(), id=2)
-        buyer3 = MarketDappBuyer(self, pk=Properties().account4pk(), id=3)
+        seller1 = MarketDappSeller(self, id=1)
+        buyer1 = MarketDappBuyer(self, id=1)
+        buyer2 = MarketDappBuyer(self, id=2)
+        buyer3 = MarketDappBuyer(self, id=3)
         players = [seller1, buyer1, buyer2, buyer3]
 
         # the initial balances

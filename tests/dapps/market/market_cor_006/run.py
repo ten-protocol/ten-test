@@ -10,14 +10,14 @@ class PySysTest(TenNetworkTest):
     def execute(self):
         # the actors in the test
         admin = MarketDappAdmin(self)
-        seller = MarketDappSeller(self, pk=Properties().account2pk(), id=1)
-        buyer = MarketDappBuyer(self, pk=Properties().account1pk(), id=1)
+        seller = MarketDappSeller(self, id=1)
+        buyer = MarketDappBuyer(self, id=1)
         players = [seller, buyer]
 
         # the initial balances
         for p in players: p.store_balances('start')
 
-        # create a default round (price 1.1 USD, co-stake 25%, capped at 1000 with min of 550)
+        # create a default round (price 1.1 USD, co-stake 25%, capped at 1000 with min of 550, 2% tax)
         _, round_id = admin.create_default_round(duration=60)
 
         # buyers and sellers both commit the min for the round to go ahead
@@ -34,10 +34,10 @@ class PySysTest(TenNetworkTest):
         for p in players: p.store_balances('end')
         for p in players: p.log_stored_balances(delta=('end', 'start'))
 
-        # check the ten and usdc balance change as expected
+        # check the ten and usdc balance change as expected (seller pays the 2% tax)
         total_amount, total_cost_stake, total_cost_usdc = buyer.get_total_staked(round_id)
         self.assertTrue(seller.balances['end'].ten == seller.balances['start'].ten - total_amount, assertMessage='Seller ten decreases')
-        self.assertTrue(seller.balances['end'].usdc == seller.balances['start'].usdc + total_cost_usdc, assertMessage='Seller usdc increases')
+        self.assertTrue(seller.balances['end'].usdc == seller.balances['start'].usdc + (0.98*total_cost_usdc), assertMessage='Seller usdc increases')
         self.assertTrue(buyer.balances['end'].ten == buyer.balances['start'].ten + total_amount, assertMessage='Buyer ten increases')
         self.assertTrue(buyer.balances['end'].usdc == buyer.balances['start'].usdc - total_cost_usdc, assertMessage='Buyer ten decreases')
 

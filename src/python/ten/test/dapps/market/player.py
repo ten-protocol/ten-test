@@ -8,7 +8,7 @@ Balance = namedtuple('Balance', 'ten usdc')
 class MarketDappPlayer():
     """The base player who participates in the market as a buyer, seller or admin. """
 
-    def __init__(self, test, pk, id, tokens=1000):
+    def __init__(self, test, pk, id, ten=1000, usdc=1000, locked=False):
         self.id = id
         self.test = test
         self.log = test.log
@@ -19,8 +19,8 @@ class MarketDappPlayer():
         self.market = MarketPlace(test, self.web3)
         self.ten = TestTEN(test, self.web3)
         self.usdc = TestUSDC(test, self.web3)
-        self.mint_token(self.ten, 'ten', tokens)
-        self.mint_token(self.usdc, 'usdc', tokens)
+        if ten > 0: self.mint_token(self.ten, 'ten', ten, locked=locked)
+        if usdc > 0: self.mint_token(self.usdc, 'usdc', usdc)
 
     def get_position_contract(self):
         """Return the position contract address."""
@@ -34,20 +34,24 @@ class MarketDappPlayer():
         """Return the address of the proceeds vault."""
         return self.market.contract.functions.getProceedsVault().call()
 
-    def mint_token(self, token, name, threshold=1000):
+    def mint_token(self, token, name, amount, locked=False):
         """Mint a token if below a given threshold. """
+        amount = self.web3.to_wei(amount, 'ether')
         balance = token.contract.functions.balanceOf(self.address).call()
-        ceiling = self.web3.to_wei(threshold, 'ether')
-        if balance < ceiling:
-            amount = ceiling-balance
-            self.log.info('%s %d topping up %s token balance' % (type(self).__name__, self.id, name))
-            self.log.info('  balance = %d ', self.web3.from_wei(balance, 'ether'))
-            self.log.info('  ceiling = %d ', self.web3.from_wei(ceiling, 'ether'))
-            self.log.info('  amount = %d ', self.web3.from_wei(amount, 'ether'))
-            self.log.info('  token = %s ', token.address)
-            self.network.transact(self.test, self.web3,
-                                  token.contract.functions.mint(self.address, amount),
+        self.log.info('%s %d topping up %s token balance' % (type(self).__name__, self.id, name))
+        self.log.info('  balance = %d ', self.web3.from_wei(balance, 'ether'))
+        self.log.info('  amount = %d ', self.web3.from_wei(amount, 'ether'))
+        self.log.info('  token = %s ', token.address)
+        self.log.info('  locked = %s ', locked)
+        self.network.transact(self.test, self.web3, token.contract.functions.mint(self.address, amount),
                                   self.account, token.GAS_LIMIT, persist_nonce=False)
+        if locked:
+            self.network.transact(self.test, self.web3, token.contract.functions.setLock(self.address, True),
+                                      self.account, token.GAS_LIMIT, persist_nonce=False)
+
+        balance = token.contract.functions.balanceOf(self.address).call()
+        self.log.info('%s %d topped up %s token balance' % (type(self).__name__, self.id, name))
+        self.log.info('  new balance = %d ', self.web3.from_wei(balance, 'ether'))
 
     def ten_balance(self):
         """Return token balance for ten."""
