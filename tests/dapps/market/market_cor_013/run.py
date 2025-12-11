@@ -10,8 +10,8 @@ class PySysTest(TenNetworkTest):
     def execute(self):
         # the actors in the test
         admin = MarketDappAdmin(self)
-        seller1 = MarketDappSeller(self, pk=Properties().account1pk(), id=1, tokens=2500)
-        buyer1 = MarketDappBuyer(self, pk=Properties().account2pk(), id=1, tokens=2500)
+        seller1 = MarketDappSeller(self, id=1, tokens=2500)
+        buyer1 = MarketDappBuyer(self, id=1, tokens=2500)
 
         # create a default round (price 1.1 USD, co-stake 25%, capped at 1000 with min of 550)
         _, round1 = admin.create_default_round(duration=60)

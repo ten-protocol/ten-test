@@ -15,8 +15,8 @@ class MarketDappBuyer(MarketDappPlayer):
     of their stake for TEN at the USDC cost. This may be less than the amount requested depending on the number
     of buyers in the round (if it is over-subscribed)."""
 
-    def __init__(self, test, pk, id, tokens=1000):
-        super().__init__(test, pk, id, tokens)
+    def __init__(self, test, id, tokens=1000):
+        super().__init__(test, test.get_ephemeral_pk(), id, tokens)
         self.positions = OrderedDict()
         self.redeemed = OrderedDict()
         self.forfeit = OrderedDict()

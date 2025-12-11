@@ -14,6 +14,7 @@ class MarketDappAdmin(MarketDappPlayer):
 
     def __init__(self, test):
         super().__init__(test, Properties().fundacntpk(), id=0)
+        self.log.info('Admin block time is %s' % self.web3.eth.get_block("latest").timestamp)
 
     def create_round(self, deadline, price, beta, ten_cap, min_usdc, tax_perc):
         """Create a new round."""
@@ -32,7 +33,7 @@ class MarketDappAdmin(MarketDappPlayer):
         return tx_receipt, round_id
 
     def create_default_round(self, duration=60):
-        """Create a round with price 1.1 USD, co-stake 25%, capped at 1000 with min of 550 USDC."""
+        """Create a round with price 1.1 USD, co-stake 25%, capped at 1000 with min of 550 USDC, 2% tax."""
         deadline = int(self.web3.eth.get_block("latest").timestamp) + duration
         price = self.web3.to_wei(1.1, 'ether')
         beta = self.to_ray(0.25)                       # 25 percent
