@@ -186,6 +186,8 @@ class Properties:
 
     def validator2_address(self, key): return self.get('env.' + key, 'Validator2Address')
 
+    def weth_contract_address(self, key): return self.get('env.' + key, 'WethContractAddress')
+
     def l1_deployer_address(self, key): return self.get('env.'+key, 'L1DeployerAddress')
 
     def l1_abstraction(self, key): return self.get('env.'+key, 'L1Abstraction')
