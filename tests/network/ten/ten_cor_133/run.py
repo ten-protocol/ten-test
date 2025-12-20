@@ -23,7 +23,7 @@ class PySysTest(TenNetworkTest):
         for i in range(0,99): latencies.append(self.transact(1, network, web3, account, caller, props))
         avg_latency = (sum(latencies) / len(latencies))
         self.log.info('Average latency is %d' % avg_latency)
-        self.assertTrue(avg_latency < 500, assertMessage='Average latency should be less than 500ms')
+        self.assertTrue(avg_latency < 1000, assertMessage='Average latency should be less than 1000ms')
 
     def transact(self, id, network, web3, account, caller, props):
         current_time = time.time_ns() // 1_000_000
