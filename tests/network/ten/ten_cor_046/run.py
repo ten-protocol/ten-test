@@ -15,7 +15,7 @@ class PySysTest(TenNetworkTest):
 
         # deploy the create2 factory contract
         factory = Create2Factory(self, web3)
-        factory.get_or_deploy(network, account)
+        factory.deploy(network, account)
 
         # compile the wrapped native contract and get the predicted address
         wrapped = WrappedNative(self, web3)
