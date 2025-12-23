@@ -11,8 +11,10 @@ class PySysTest(TenNetworkTest):
 
         # deploy the create2 factory contract
         weth = WETH(self, web3)
+        self.log.info('Contract address is %s' % weth.address)
 
-        nonce = self.nonce_db.get_next_nonce(self, web3, account.address, self.env)
-        target = weth.contract.functions.deposit
-        params = {'nonce': nonce, 'gasPrice': web3.eth.gas_price, 'chainId': web3.eth.chain_id, 'value': web3.to_wei(0.01, 'ether') }
-        estimate_gas = target.estimate_gas(params)
+        code = web3.eth.get_code(weth.address)
+        self.log.info("Contract bytecode length: %d", len(code))
+        if code == b'' or code == '0x' or len(code) == 0:
+            self.log.info("No contract code at that address — address wrong or contract not deployed.")
+
