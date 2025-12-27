@@ -285,11 +285,11 @@ class PySysTest(TenNetworkTest):
                 response.say('Check discord support channel for more information', voice="Polly.Amy")
 
                 client = Client(props.twilio_account(), props.twilio_token())
-                client.calls.create(
-                    twiml=str(response),
-                    from_=props.twilio_from_number(),
-                    to=tel,
-                )
+                # client.calls.create(
+                #     twiml=str(response),
+                #     from_=props.twilio_from_number(),
+                #     to=tel,
+                # )
                 self.log.info('Sent call to %s' % person)
             except Exception as e:
                 self.log.warn('Unable to send telephone message to %s: %s', (person, e))
