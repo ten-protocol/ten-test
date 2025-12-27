@@ -1,34 +1,34 @@
 Monday:
   - start: "00:00"
     end: "23:59"
-    people: "tudor"
+    people: "moray,ziga,tudor,will,matt,krish,stefan"
 
 Tuesday:
   - start: "00:00"
     end: "23:59"
-    people: "moray"
+    people: "moray,ziga,tudor,will,matt,krish,stefan"
 
 Wednesday:
   - start: "00:00"
     end: "23:59"
-    people: "will"
+    people: "moray,ziga,tudor,will,matt,krish,stefan"
 
 Thursday:
   - start: "00:00"
     end: "23:59"
-    people: "stefan"
+    people: "moray,ziga,tudor,will,matt,krish,stefan"
 
 Friday:
   - start: "00:00"
     end: "23:59"
-    people: "ziga"
+    people: "moray,ziga,tudor,will,matt,krish,stefan"
 
 Saturday:
   - start: "00:00"
     end: "23:59"
-    people: "ziga,moray"
+    people: "moray,ziga,tudor,will,matt,krish,stefan"
 
 Sunday:
   - start: "00:00"
     end: "23:59"
-    people: "matt"
+    people: "moray,ziga,tudor,will,matt,krish,stefan"
