@@ -175,6 +175,7 @@ class PySysTest(TenNetworkTest):
                 if not t00 and t15:
                     msg = '%s checks have started failing, please investigate' % name
                     self.log.info(msg)
+                    self.send_sms_alert(msg, people)
                     self.send_discord_alert(discord_failure_msg(name, people,
                                                                 props.all_discord_ids(), self.RUN_URL, self.env))
                     self.send_telegram_message(telegram_failure_msg(name, people, self.RUN_URL, self.env,
