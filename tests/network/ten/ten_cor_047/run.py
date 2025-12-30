@@ -9,7 +9,7 @@ class PySysTest(TenNetworkTest):
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
 
-        # deploy the create2 factory contract
+        # create an instance of the weth contract wrapper and check it is deployed
         weth = WETH(self, web3)
         self.log.info('Contract address is %s' % weth.address)
 
@@ -18,3 +18,24 @@ class PySysTest(TenNetworkTest):
         if code == b'' or code == '0x' or len(code) == 0:
             self.log.info("No contract code at that address — address wrong or contract not deployed.")
 
+        initial_supply = weth.contract.functions.totalSupply().call()
+        initial_balance = weth.contract.functions.balanceOf(account.address).call()
+        self.log.info('Initial supply is %d' % initial_supply)
+        self.log.info('Initial balance is %d' % initial_balance)
+
+        # deposit eth
+        network.transact(self, web3, weth.contract.functions.deposit(), account, weth.GAS_LIMIT, value=100)
+        deposit_balance = weth.contract.functions.balanceOf(account.address).call()
+        self.log.info('After deposit balance is %d' % deposit_balance)
+        self.assertTrue(deposit_balance-initial_balance == 100, assertMessage='Balance should increase by 100')
+
+        # withdraw eth
+        network.transact(self, web3, weth.contract.functions.withdraw(10), account, weth.GAS_LIMIT)
+        withdraw_balance = weth.contract.functions.balanceOf(account.address).call()
+        self.log.info('After withdrawal balance is %d' % withdraw_balance)
+        self.assertTrue(withdraw_balance-deposit_balance == -10, assertMessage='Balance should decrease by 10')
+
+        # total supply
+        final_supply = weth.contract.functions.totalSupply().call()
+        self.log.info('Final supply is %d' % final_supply)
+        self.assertTrue(final_supply-initial_supply == 90, assertMessage='Total supply should increase by 90')
