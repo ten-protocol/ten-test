@@ -36,7 +36,7 @@ class PySysTest(TenNetworkTest):
         self.assertTrue(deployer_balance >= self.L1_THRESHOLD,
                         assertMessage='L1 Deployer balance is below threshold %s' % self.L1_THRESHOLD)
 
-        if not self.is_mainnet_ten():
+        if self.is_sepolia_ten():
             faucet_balance_wei = self.get_faucet_balance()
             faucet_balance_eth = web3.from_wei(faucet_balance_wei, 'ether')
             self.log.info('Faucet balance %.9f ETH', faucet_balance_eth)
