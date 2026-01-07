@@ -14,18 +14,30 @@ class PySysTest(TenNetworkTest):
 
         # the symbol and amount we are going to bridge
         sym = 'WETH'
-        amount = 5
+        amount = 10_000
 
-        # deposit some ETH into the contract
+        # check the weth balance and deposit some more if required
         self.log.info('')
-        self.log.info('Deposit wrapped ETH')
-        funded.l1.deposit_weth(100)
-        accnt1.l1.deposit_weth(100)
+        self.log.info('Deposit wrapped ETH (units are in wei)')
+        balance = accnt1.l1.balance_for_token(sym)
+        self.log.info('Account1 ERC20 balance before = %d ', balance)
+        if balance < 1_000_000:
+            accnt1.l1.deposit_weth(1_000_000)
+            self.log.info('Account1 ERC20 balance after  = %d ', accnt1.l1.balance_for_token(sym))
+        else:
+            self.log.info('Sufficient balance exists in weth on this account')
 
-        # account1 approves the bridge to transfer
+        # check how much the bridge is approved to spend for the account and approve
+        # more if required
         self.log.info('')
-        self.log.info('Approve tokens')
-        accnt1.l1.approve_token(sym, accnt1.l1.bridge.address, 100)
+        self.log.info('Approve token')
+        allowance = accnt1.l1.allowance_for_token(sym, accnt1.l1.bridge.address)
+        self.log.info('Account1 ERC20 bridge allowance before = %d ', allowance)
+        if allowance < 100_000:
+            accnt1.l1.approve_token(sym, accnt1.l1.bridge.address, 100_000)
+            self.log.info('Account1 ERC20 bridge allowance after  = %d ', accnt1.l1.allowance_for_token(sym, accnt1.l1.bridge.address))
+        else:
+            self.log.info('Sufficient allowance exists in weth on this account')
 
         # send some tokens across the bridge
         self.log.info('')

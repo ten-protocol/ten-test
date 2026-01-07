@@ -131,6 +131,11 @@ class L1BridgeDetails(BridgeDetails):
         token = self.tokens[symbol]
         return token.contract.functions.balanceOf(self.account.address).call()
 
+    def allowance_for_token(self, symbol, spender):
+        """Get the allowance for a token for a given spender. """
+        token = self.tokens[symbol]
+        return token.contract.functions.allowance(self.account.address, spender).call()
+
     def white_list_token(self, symbol, timeout=60):
         """Whitelist the ERC20 token for this token to be available on the L2 side of the bridge.
 
