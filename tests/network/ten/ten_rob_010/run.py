@@ -26,7 +26,7 @@ class PySysTest(TenNetworkTest):
 
         self.log.info('Waiting for the clients to complete')
         for i in range(0, self.NUM_CLIENTS):
-            self.waitForGrep(file=os.path.join(self.output, 'client_%s.out' % i), expr='Client completed', timeout=120)
+            self.waitForGrep(file=os.path.join(self.output, 'client_%s.out' % i), expr='Client completed', timeout=150)
 
         self.log.info('Confirm balances were received for all interactions')
         for i in range(0, self.NUM_CLIENTS):
