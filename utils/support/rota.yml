@@ -21,7 +21,7 @@ Thursday:
 Friday:
   - start: "00:00"
     end: "23:59"
-    people: "moray"
+    people: "will"
 
 Saturday:
   - start: "00:00"
@@ -31,4 +31,4 @@ Saturday:
 Sunday:
   - start: "00:00"
     end: "23:59"
-    people: "will"
+    people: "ziga"
