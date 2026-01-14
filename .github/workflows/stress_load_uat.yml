@@ -9,7 +9,7 @@ on:
 
 jobs:
   run-check:
-    runs-on: [self-hosted, Linux, X64, load-runner]
+    runs-on: [self-hosted, Linux, X64, ten-test-azure-runner-01]
     steps:
       - name: 'Check out ten-test'
         uses: actions/checkout@v3
