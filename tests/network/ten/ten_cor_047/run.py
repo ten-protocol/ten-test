@@ -5,10 +5,18 @@ from ten.test.contracts.weth import WETH
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        # connect to network
+        # run on the l1
+        if self.is_local_ten():
+            network = self.get_l1_network_connection()
+            web3, account = network.connect_account1(self)
+            self.run_for_network(network, web3, account, persist_nonce=False)
+
+        # run on the l2
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
+        self.run_for_network(network, web3, account, persist_nonce=True)
 
+    def run_for_network(self, network, web3, account, persist_nonce):
         # create an instance of the weth contract wrapper and check it is deployed
         weth = WETH(self, web3)
         self.log.info('Contract address is %s' % weth.address)
@@ -24,13 +32,13 @@ class PySysTest(TenNetworkTest):
         self.log.info('Initial balance is %d' % initial_balance)
 
         # deposit eth
-        network.transact(self, web3, weth.contract.functions.deposit(), account, weth.GAS_LIMIT, value=100)
+        network.transact(self, web3, weth.contract.functions.deposit(), account, weth.GAS_LIMIT, persist_nonce=persist_nonce, value=100)
         deposit_balance = weth.contract.functions.balanceOf(account.address).call()
         self.log.info('After deposit balance is %d' % deposit_balance)
         self.assertTrue(deposit_balance-initial_balance == 100, assertMessage='Balance should increase by 100')
 
         # withdraw eth
-        network.transact(self, web3, weth.contract.functions.withdraw(10), account, weth.GAS_LIMIT)
+        network.transact(self, web3, weth.contract.functions.withdraw(10), account, weth.GAS_LIMIT, persist_nonce=persist_nonce)
         withdraw_balance = weth.contract.functions.balanceOf(account.address).call()
         self.log.info('After withdrawal balance is %d' % withdraw_balance)
         self.assertTrue(withdraw_balance-deposit_balance == -10, assertMessage='Balance should decrease by 10')
