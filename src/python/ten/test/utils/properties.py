@@ -192,9 +192,13 @@ class Properties:
 
     def l1_abstraction(self, key): return self.get('env.'+key, 'L1Abstraction')
 
-    def l1_host_http(self, key): return self.get('env.'+key, 'L1NodeHostHTTP')
+    def l1_host_http(self, key):
+        if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'L1NodeHostHTTPDockerNetwork')
+        return self.get('env.'+key, 'L1NodeHostHTTP')
 
-    def l1_host_ws(self, key): return self.get('env.'+key, 'L1NodeHostWS')
+    def l1_host_ws(self, key):
+        if os.getenv('DOCKER_TEST_ENV'): return self.get('env.'+key, 'L1NodeHostWSDockerNetwork')
+        return self.get('env.'+key, 'L1NodeHostWS')
 
     def l1_port_http(self, key): return int(self.get('env.'+key, 'L1NodePortHTTP'))
 
