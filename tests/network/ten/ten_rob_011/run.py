@@ -1,7 +1,6 @@
 import random, time
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.storage import Storage
-from ten.test.helpers.wallet_extension import WalletExtension
 from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
