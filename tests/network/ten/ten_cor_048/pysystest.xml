@@ -2,14 +2,17 @@
 <pysystest type="auto">
 
     <description>
-        <title>Weth: bridge some weth from the L1 to the L2</title>
+        <title>WETH: bridge some WETH from the L1 to the L2 and back again</title>
         <purpose><![CDATA[
+Bridges some WETH from the L1 to the L2, and then bridges back a smaller amount. Checks the balances are changed
+as expected.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
+            <group>weth</group>
             <group>bridge</group>
             <group>skip</group>
         </groups>

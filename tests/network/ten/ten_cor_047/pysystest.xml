@@ -2,14 +2,16 @@
 <pysystest type="auto">
 
     <description>
-        <title>Weth: check contracts are available</title>
+        <title>WETH: check contracts are available</title>
         <purpose><![CDATA[
+Checks that the WETH contracts are deployed and available to interact with on both the L1 and the L2.
 ]]>
         </purpose>
     </description>
 
     <classification>
         <groups inherit="true">
+            <group>weth</group>
             <group>bridge</group>
             <group>skip</group>
         </groups>
