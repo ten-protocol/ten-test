@@ -126,6 +126,10 @@ class L1BridgeDetails(BridgeDetails):
                                            timeout=timeout)
         return tx_receipt
 
+    def balance_for_account(self):
+        """Get the eth balance. """
+        return self.web3.eth.get_balance(self.account.address)
+
     def balance_for_token(self, symbol):
         """Get the balance for a token. """
         token = self.tokens[symbol]
@@ -152,7 +156,7 @@ class L1BridgeDetails(BridgeDetails):
         logs = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Discard)
         return tx_receipt, self.get_cross_chain_message(logs[0])
 
-    def send_erc20(self, symbol, address, amount, timeout=60):
+    def send_erc20(self, symbol, address, amount, timeout=60, xchain_pos=0):
         """Send tokens across the bridge.
 
         The ERC20 contract must have been whitelisted for this operation to be successful.
@@ -164,7 +168,7 @@ class L1BridgeDetails(BridgeDetails):
                                            self.account, gas_limit=self.bridge.GAS_LIMIT, persist_nonce=False,
                                            timeout=timeout)
         logs = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Discard)
-        return tx_receipt, self.get_cross_chain_message(logs[0])
+        return tx_receipt, self.get_cross_chain_message(logs[xchain_pos])
 
     def send_native(self, address, amount, timeout=60):
         """Send native currency across the bridge."""
@@ -232,10 +236,19 @@ class L2BridgeDetails(BridgeDetails):
                                             stdout='l2_sub_%s.out' % self.name, stderr='l2_sub_%s.err' % self.name)
         subscriber.run()
 
+    def balance_for_account(self):
+        """Get the eth balance. """
+        return self.web3.eth.get_balance(self.account.address)
+
     def balance_for_token(self, symbol):
         """Get the balance for a token. """
         token = self.tokens[symbol]
         return token.contract.functions.balanceOf(self.account.address).call({"from":self.account.address})
+
+    def allowance_for_token(self, symbol, spender):
+        """Get the allowance for a token for a given spender. """
+        token = self.tokens[symbol]
+        return token.contract.functions.allowance(self.account.address, spender).call()
 
     def send_erc20_fees(self):
         return self.bridge.contract.functions.erc20Fee().call()
@@ -261,7 +274,8 @@ class L2BridgeDetails(BridgeDetails):
 
         return tx_receipt
 
-    def send_erc20(self, symbol, address, amount, timeout=60, dump_file=None):
+    def send_erc20(self, symbol, address, amount, timeout=60, dump_file=None,
+                   xchain_pos=0, fee_multiplier=1):
         """Send tokens across the bridge.
 
         The ERC20 contract must have been whitelisted for this operation to be successful.
@@ -270,11 +284,11 @@ class L2BridgeDetails(BridgeDetails):
         tx_receipt = self.network.transact(self.test, self.web3,
                                            self.bridge.contract.functions.sendERC20(token.address, amount, address),
                                            self.account, gas_limit=self.bridge.GAS_LIMIT,
-                                           timeout=timeout, value=int(self.send_erc20_fees()))
+                                           timeout=timeout, value=int(fee_multiplier*self.send_erc20_fees()))
         if dump_file: self.network.dump(tx_receipt, dump_file)
 
         logs = self.bus.contract.events.LogMessagePublished().process_receipt(tx_receipt, EventLogErrorFlags.Discard)
-        return tx_receipt, self.get_cross_chain_message(logs[0])
+        return tx_receipt, self.get_cross_chain_message(logs[xchain_pos])
 
     def send_native(self, address, amount, timeout=60, dump_file=None):
         """Send native currency across the bridge."""

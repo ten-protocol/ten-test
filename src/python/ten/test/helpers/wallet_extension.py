@@ -39,7 +39,8 @@ class WalletExtension:
             test.log.info('Removing wallet extension persistence file')
             os.remove(self.databasePath)
 
-    def run(self, rate_limit_user_compute_time=0):
+    def run(self, rate_limit_user_compute_time=0, httpRateLimitGlobalRate=0,
+            httpRateLimitPerIPRate=0):
         """Run an instance of the wallet extension."""
         self.test.log.info('Starting %s wallet extension on port=%d, ws_port=%d, verbose=%s',
                            self.name, self.port, self.ws_port, self.verbose)
@@ -53,6 +54,8 @@ class WalletExtension:
         arguments.extend(('--logPath', self.logPath))
         arguments.extend(('--databasePath', self.databasePath))
         arguments.extend(('--rateLimitUserComputeTime', str(rate_limit_user_compute_time)))
+        arguments.extend(('--httpRateLimitGlobalRate', str(httpRateLimitGlobalRate)))
+        arguments.extend(('--httpRateLimitPerIPRate', str(httpRateLimitPerIPRate)))
         arguments.extend(('--tenChainID', str(self.chain_id)))
         #disable verbose as the flag was changed from --verbose to --logLevel so broke backwards compatability
         #if self.verbose: arguments.extend(('--logLevel', 'debug'))
