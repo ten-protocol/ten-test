@@ -186,7 +186,9 @@ class Properties:
 
     def validator2_address(self, key): return self.get('env.' + key, 'Validator2Address')
 
-    def weth_contract_address(self, key): return self.get('env.' + key, 'WethContractAddress')
+    def l2_weth_contract_address(self, key): return self.get('env.' + key, 'L2WethContractAddress')
+
+    def l1_weth_contract_address(self, key): return self.get('env.' + key, 'L1WethContractAddress')
 
     def l1_deployer_address(self, key): return self.get('env.'+key, 'L1DeployerAddress')
 

@@ -1,5 +1,6 @@
 import time, os, rlp
 from web3._utils.events import EventLogErrorFlags
+from ten.test.utils.properties import Properties
 from ten.test.contracts.erc20 import ERC20Token
 from ten.test.contracts.weth import WETH
 from ten.test.contracts.bridge import WrappedERC20
@@ -85,7 +86,7 @@ class L1BridgeDetails(BridgeDetails):
         xchain = L1CrossChainMessenger(test, web3)
         self.management = CrossChainManagement(test, web3)
         super().__init__(test, web3, account, network, bridge, bus, xchain, name)
-        self.tokens = {'WETH': WETH(self.test, self.web3)}
+        self.tokens = {'WETH': WETH(self.test, self.web3, web3.to_checksum_address(Properties().l1_weth_contract_address(test.env)))}
 
     def add_token_contract(self, address, name, symbol):
         """Store a reference to the ERC20 token, keyed on its symbol. """
@@ -223,7 +224,7 @@ class L2BridgeDetails(BridgeDetails):
         bus = L2MessageBus(test, web3)
         xchain = L2CrossChainMessenger(test, web3)
         super().__init__(test, web3, account, network, bridge, bus, xchain, name)
-        self.tokens = {'WETH': WETH(self.test, self.web3)}
+        self.tokens = {'WETH': WETH(self.test, self.web3, web3.to_checksum_address(Properties().l2_weth_contract_address(test.env)))}
 
     def set_token_contract(self, address, name, symbol):
         """Store a reference to the ERC20 token, keyed on its symbol. """
