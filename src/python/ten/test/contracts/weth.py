@@ -15,5 +15,3 @@ class WETH:
         with open(self.abi_path, 'r') as fp:
             self.abi = json.load(fp)
         self.contract = self.web3.eth.contract(address=self.address, abi=self.abi)
-
-#web3.to_checksum_address(Properties().l1_weth_contract_address(test.env))

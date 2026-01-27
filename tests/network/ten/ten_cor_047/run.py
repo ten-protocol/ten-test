@@ -1,5 +1,6 @@
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.weth import WETH
+from ten.test.utils.properties import Properties
 
 
 class PySysTest(TenNetworkTest):
@@ -9,16 +10,18 @@ class PySysTest(TenNetworkTest):
         if self.is_local_ten():
             network = self.get_l1_network_connection()
             web3, account = network.connect_account1(self)
-            self.run_for_network(network, web3, account, persist_nonce=False)
+            address = web3.to_checksum_address(Properties().l1_weth_contract_address(self.env))
+            self.run_for_network(network, web3, account, address, persist_nonce=False)
 
         # run on the l2
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
-        self.run_for_network(network, web3, account, persist_nonce=True)
+        address = web3.to_checksum_address(Properties().l2_weth_contract_address(self.env))
+        self.run_for_network(network, web3, account, address, persist_nonce=True)
 
-    def run_for_network(self, network, web3, account, persist_nonce):
+    def run_for_network(self, network, web3, account, address, persist_nonce):
         # create an instance of the weth contract wrapper and check it is deployed
-        weth = WETH(self, web3)
+        weth = WETH(self, web3, address)
         self.log.info('Contract address is %s' % weth.address)
 
         code = web3.eth.get_code(weth.address)
