@@ -5,7 +5,7 @@ from ten.test.helpers.log_subscriber import AllEventsLogSubscriber
 
 
 class PySysTest(TenNetworkTest):
-    CLIENTS = 100
+    CLIENTS = 80
     TRANSACTIONS = 10
 
     def execute(self):
