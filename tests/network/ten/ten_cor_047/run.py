@@ -8,7 +8,7 @@ class PySysTest(TenNetworkTest):
     def execute(self):
         # run on the l1
         self.log.info('')
-        self.lo.info('Running for the L1')
+        self.log.info('Running for the L1')
         network = self.get_l1_network_connection()
         web3, account = network.connect_account1(self)
         address = web3.to_checksum_address(Properties().l1_weth_contract_address(self.env))
@@ -16,7 +16,7 @@ class PySysTest(TenNetworkTest):
 
         # run on the l2
         self.log.info('')
-        self.lo.info('Running for the L2')
+        self.log.info('Running for the L2')
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
         address = web3.to_checksum_address(Properties().l2_weth_contract_address(self.env))
