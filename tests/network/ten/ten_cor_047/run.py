@@ -7,11 +7,10 @@ class PySysTest(TenNetworkTest):
 
     def execute(self):
         # run on the l1
-        if self.is_local_ten():
-            network = self.get_l1_network_connection()
-            web3, account = network.connect_account1(self)
-            address = web3.to_checksum_address(Properties().l1_weth_contract_address(self.env))
-            self.run_for_network(network, web3, account, address, persist_nonce=False)
+        network = self.get_l1_network_connection()
+        web3, account = network.connect_account1(self)
+        address = web3.to_checksum_address(Properties().l1_weth_contract_address(self.env))
+        self.run_for_network(network, web3, account, address, persist_nonce=False)
 
         # run on the l2
         network = self.get_network_connection()
