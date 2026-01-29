@@ -1,24 +1,30 @@
 from ten.test.basetest import TenNetworkTest
 from ten.test.contracts.weth import WETH
+from ten.test.utils.properties import Properties
 
 
 class PySysTest(TenNetworkTest):
 
     def execute(self):
         # run on the l1
-        if self.is_local_ten():
-            network = self.get_l1_network_connection()
-            web3, account = network.connect_account1(self)
-            self.run_for_network(network, web3, account, persist_nonce=False)
+        self.log.info('')
+        self.log.info('Running for the L1')
+        network = self.get_l1_network_connection()
+        web3, account = network.connect_account1(self)
+        address = web3.to_checksum_address(Properties().l1_weth_contract_address(self.env))
+        self.run_for_network(network, web3, account, address, persist_nonce=False)
 
         # run on the l2
+        self.log.info('')
+        self.log.info('Running for the L2')
         network = self.get_network_connection()
         web3, account = network.connect_account1(self)
-        self.run_for_network(network, web3, account, persist_nonce=True)
+        address = web3.to_checksum_address(Properties().l2_weth_contract_address(self.env))
+        self.run_for_network(network, web3, account, address, persist_nonce=True)
 
-    def run_for_network(self, network, web3, account, persist_nonce):
+    def run_for_network(self, network, web3, account, address, persist_nonce):
         # create an instance of the weth contract wrapper and check it is deployed
-        weth = WETH(self, web3)
+        weth = WETH(self, web3, address)
         self.log.info('Contract address is %s' % weth.address)
 
         code = web3.eth.get_code(weth.address)
@@ -33,12 +39,14 @@ class PySysTest(TenNetworkTest):
 
         # deposit eth
         network.transact(self, web3, weth.contract.functions.deposit(), account, weth.GAS_LIMIT, persist_nonce=persist_nonce, value=100)
+        self.wait(2.0)
         deposit_balance = weth.contract.functions.balanceOf(account.address).call()
         self.log.info('After deposit balance is %d' % deposit_balance)
         self.assertTrue(deposit_balance-initial_balance == 100, assertMessage='Balance should increase by 100')
 
         # withdraw eth
         network.transact(self, web3, weth.contract.functions.withdraw(10), account, weth.GAS_LIMIT, persist_nonce=persist_nonce)
+        self.wait(2.0)
         withdraw_balance = weth.contract.functions.balanceOf(account.address).call()
         self.log.info('After withdrawal balance is %d' % withdraw_balance)
         self.assertTrue(withdraw_balance-deposit_balance == -10, assertMessage='Balance should decrease by 10')
