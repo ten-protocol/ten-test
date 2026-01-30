@@ -96,22 +96,24 @@ class PySysTest(TenNetworkTest):
         self.assertTrue(block.crossChainTreeHash == mh_root, assertMessage='Calculated merkle root should be same as the block header')
 
         # if a local testnet wait for the xchain message on the L1 and release the funds
-        if self.is_local_ten():
-            self.log.info('Getting root and proof for first transaction')
-            root, proof = accnt1.l2.wait_for_proof('m', msg_hash, self.proof_timeout)
-            self.log.info('  Returned root:         %s', root)
-            self.log.info('  Returned proof:        %s', [p.hex() for p in proof])
+        if self.is_local_ten(): timeout = self.proof_timeout
+        else: timeout = 60*60*2
 
-            # release the tokens from the L1 and check the balances
-            self.log.info('Relay the message on the L1 to release them')
-            _ = accnt1.l1.release_tokens(msg, proof, root)
+        self.log.info('Getting root and proof for first transaction')
+        root, proof = accnt1.l2.wait_for_proof('m', msg_hash, timeout)
+        self.log.info('  Returned root:         %s', root)
+        self.log.info('  Returned proof:        %s', [p.hex() for p in proof])
 
-            # print out the balances and perform test validation
-            self.log.info('')
-            self.log.info('Balances after L2 to L1')
-            balance_l1_second = accnt1.l1.balance_for_token(self.sym)
-            balance_l2_second = accnt1.l2.balance_for_token(self.sym)
-            self.log.info('  Account1 WETH balance L1 = %d ', balance_l1_second)
-            self.log.info('  Account1 WETH balance L2 = %d ', balance_l2_second)
-            self.assertTrue(balance_l1_second == balance_l1_before - self.amount_over + self.amount_back)
-            self.assertTrue(balance_l2_second == balance_l2_before + self.amount_over - self.amount_back)
+        # release the tokens from the L1 and check the balances
+        self.log.info('Relay the message on the L1 to release them')
+        _ = accnt1.l1.release_tokens(msg, proof, root, timeout=timeout)
+
+        # print out the balances and perform test validation
+        self.log.info('')
+        self.log.info('Balances after L2 to L1')
+        balance_l1_second = accnt1.l1.balance_for_token(self.sym)
+        balance_l2_second = accnt1.l2.balance_for_token(self.sym)
+        self.log.info('  Account1 WETH balance L1 = %d ', balance_l1_second)
+        self.log.info('  Account1 WETH balance L2 = %d ', balance_l2_second)
+        self.assertTrue(balance_l1_second == balance_l1_before - self.amount_over + self.amount_back)
+        self.assertTrue(balance_l2_second == balance_l2_before + self.amount_over - self.amount_back)
