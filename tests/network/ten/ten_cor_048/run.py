@@ -107,6 +107,7 @@ class PySysTest(TenNetworkTest):
         # release the tokens from the L1 and check the balances
         self.log.info('Relay the message on the L1 to release them')
         _ = accnt1.l1.release_tokens(msg, proof, root, timeout=timeout)
+        self.wait(30.0)
 
         # print out the balances and perform test validation
         self.log.info('')
