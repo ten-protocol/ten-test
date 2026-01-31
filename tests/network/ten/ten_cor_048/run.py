@@ -97,7 +97,7 @@ class PySysTest(TenNetworkTest):
 
         # if a local testnet wait for the xchain message on the L1 and release the funds
         if self.is_local_ten(): timeout = self.proof_timeout
-        else: timeout = 60*60*7 # need to wait the rollup period 
+        else: timeout = 60*60*7 # need to wait the rollup period
 
         self.log.info('Getting root and proof for first transaction')
         root, proof = accnt1.l2.wait_for_proof('m', msg_hash, timeout)
