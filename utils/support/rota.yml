@@ -6,7 +6,7 @@ Monday:
 Tuesday:
   - start: "00:00"
     end: "23:59"
-    people: "stefan"
+    people: "will"
 
 Wednesday:
   - start: "00:00"
@@ -21,7 +21,7 @@ Thursday:
 Friday:
   - start: "00:00"
     end: "23:59"
-    people: "matt"
+    people: "tudor"
 
 Saturday:
   - start: "00:00"
@@ -31,4 +31,4 @@ Saturday:
 Sunday:
   - start: "00:00"
     end: "23:59"
-    people: "tudor"
+    people: "ziga"
