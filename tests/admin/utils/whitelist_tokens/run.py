@@ -11,8 +11,8 @@ class PySysTest(TenNetworkTest):
         funded = BridgeUser(self, props.l1_funded_account_pk(self.env), props.account2pk(), 'funded')
         accnt1 = BridgeUser(self, props.account1pk(), props.account1pk(), 'accnt1')
 
-        self.whitelist(funded, accnt1, 'USDC', '')
-        self.whitelist(funded, accnt1, 'USDT', '')
+        self.whitelist(funded, accnt1, 'USDC', props.l1_usdc_contract_address(self.env))
+        self.whitelist(funded, accnt1, 'USDT', props.l1_usdt_contract_address(self.env))
 
     def whitelist(self, funded, accnt1, name, address):
         self.log.info('Whitelist and relaying %s token' %name)
