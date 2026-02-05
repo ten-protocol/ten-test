@@ -37,7 +37,7 @@ jobs:
 
       - name: 'Run whitelist'
         run: |
-          cd ${{ github.workspace }}/ten-test/tests/network
+          cd ${{ github.workspace }}/ten-test/tests/admin
           /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} whitelist_tokens
 
 
