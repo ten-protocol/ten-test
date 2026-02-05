@@ -1,7 +1,7 @@
 # Whitelist the USDC and USDT tokens
 #
 name: '[execute] Execute whitelist tokens'
-run-name: Run remote tests (${{ github.event_name }} ${{ github.event.inputs.environment }} )
+run-name: Run whitelisting of tokens ( ${{ github.event.inputs.environment }} )
 on:
   workflow_dispatch:
     inputs:
