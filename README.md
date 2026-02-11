@@ -263,8 +263,6 @@ pysys.py run -m ten.sepolia -v DEBUG gen_cor_003
 ```
 
 
-
-
 Current network tests
 ---------------------
 The current set of network relates tests, both generic and TEN specific are as below (expand or collapse);
@@ -480,3 +478,37 @@ ten_rob_011  | Gateway: create large number of connections (shared and unique)
 ```
 
 </details>
+
+E2E Health Checks
+-----------------
+
+Support Notification
+--------------------
+
+Grafana Dashboards
+------------------
+[Grafana dashboards](https://monitoring.ten.xyz/dashboards/f/ceflu5c119szka/) are available for the e2e tests and support
+monitoring of live networks. In all cases the E2E tests persist details to external database which is then made available 
+to Grafana for visualisation purposes. The current dashboards include;
+
+###Testnet Costs
+Monitors the costs to deploy a defined set of contracts, and to interact with those contracts. This is available for 
+UAT, Testnet and ultimately Mainnet. Also compares the cost of a reference contract and interaction with it across 
+those environments, against Arbitrum and Optimism. 
+
+###Testnet Funds
+Monitors the Faucet, Sequencer, Gas Payment balance, L1 Bridge balance, and the profit and loss for the network, for 
+UAT, Testnet and ultimately Mainnet. Profit and Loss is calculated as the difference between the drop in the sequencer
+balance, and the increase in the gas payment account balance. 
+
+###Testnet Health
+Displays the uptime of Testnet, and ultimately Mainnet. Allows an easy visualisation of downtimes, where this is determined
+by a failure in one of the E2E health checks. 
+
+###Testnet Stats
+Monitors the number of transactions and number of contracts in Testnet and ultimately Mainnet. 
+
+###Testnet Tests
+Each run of the E2E tests is assigned a globally unique identifier. The dashboard shows the individual testcase results
+for a given UUID, along with a summary of the failure rate of testcases, and a graphical display of the performance 
+metrics across the different performance tests. This is done for the local testnet, UAT, Testnet and ultimately Mainnet. 
