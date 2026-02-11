@@ -266,6 +266,8 @@ pysys.py run -m ten.sepolia -v DEBUG gen_cor_003
 Current network tests
 ---------------------
 
+
+``` 
 gen_cor_001                | RPC API: check chain_id 
 gen_cor_002                | RPC API: check get_block_number 
 gen_cor_003                | RPC API: check get_balance 
@@ -471,5 +473,5 @@ ten_rob_002                | Stress: multiple clients performing pure function c
 ten_rob_003                | Stress: high event rate publishing with multiple filters, debuggers and tx listers
 ten_rob_010                | Gateway: multiple concurrent join and registers
 ten_rob_011                | Gateway: create large number of connections (shared and unique)
-
+```
 
