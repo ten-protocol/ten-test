@@ -479,11 +479,6 @@ ten_rob_011  | Gateway: create large number of connections (shared and unique)
 
 </details>
 
-E2E Health Checks
------------------
-
-Support Notification
---------------------
 
 Grafana Dashboards
 ------------------
