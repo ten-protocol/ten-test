@@ -268,9 +268,9 @@ Current network tests
 <details>
 <summary>Current network tests(generic and TEN specific)</summary>
 
-gen_cor_001                | RPC API: check chain_id
-gen_cor_002                | RPC API: check get_block_number
-gen_cor_003                | RPC API: check get_balance
+gen_cor_001                | RPC API: check chain_id 
+gen_cor_002                | RPC API: check get_block_number 
+gen_cor_003                | RPC API: check get_balance 
 gen_cor_004                | RPC API: check get_block_by_number
 gen_cor_005                | RPC API: check get_block_by_hash
 gen_cor_006                | RPC API: check gas_price
