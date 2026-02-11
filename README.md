@@ -263,11 +263,13 @@ pysys.py run -m ten.sepolia -v DEBUG gen_cor_003
 ```
 
 
+
+
 Current network tests
 ---------------------
 
 <details>
-``` 
+```text
 gen_cor_001  | RPC API: check chain_id 
 gen_cor_002  | RPC API: check get_block_number 
 gen_cor_003  | RPC API: check get_balance 
