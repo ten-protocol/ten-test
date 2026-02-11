@@ -267,8 +267,9 @@ pysys.py run -m ten.sepolia -v DEBUG gen_cor_003
 
 Current network tests
 ---------------------
+The current set of network relates tests, both generic and TEN specific are as below (expand or collapse);
 
-<details>
+<details open>
 
 ```text
 gen_cor_001  | RPC API: check chain_id 
