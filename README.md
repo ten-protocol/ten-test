@@ -269,6 +269,7 @@ Current network tests
 ---------------------
 
 <details>
+
 ```text
 gen_cor_001  | RPC API: check chain_id 
 gen_cor_002  | RPC API: check get_block_number 
@@ -476,4 +477,5 @@ ten_rob_003  | Stress: high event rate publishing with multiple filters, debugge
 ten_rob_010  | Gateway: multiple concurrent join and registers
 ten_rob_011  | Gateway: create large number of connections (shared and unique)
 ```
+
 </details>
