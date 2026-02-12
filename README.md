@@ -479,6 +479,29 @@ ten_rob_011  | Gateway: create large number of connections (shared and unique)
 
 </details>
 
+Health Monitoring
+-----------------
+The E2E tests perform deep operations on the network as part of their testing, i.e. contract deployment, contract 
+function calling etc. As such they can be used to perform health checks on a running network in addition to any more 
+shallow checks, e.g. like asking a node on its status. A subset of tests are run against deployed networks every 
+set period of time (e.g. 30 mins) and used to alert the Engineering team should the network become dysfunctional, or 
+should funds on certain accounts drop below a threshold. 
+
+For Testnet, the checks are run from Github action workflows as below;
+
+* [funds check](https://github.com/ten-protocol/ten-test/actions/workflows/health_check_sepolia_funds.yml) Checks the 
+L1 sequencer, Validator 1, Validator 2 and Deployer balances, and the balance on the Faucet of the L2 via the following
+test;
+  * `check_funds  | Check the sequencer, validator and faucet funds on a given testnet`
+* [health check](https://github.com/ten-protocol/ten-test/actions/workflows/health_check_sepolia.yml) Checks contract 
+deployment and interaction via the following tests
+  * `check_batch_rate  | Check the batch production rate on a given testnet`
+  * `gen_cor_002       | RPC API: check get_block_number`
+  * `gen_cor_040       | Guesser: no state changing, deploy contract and guess the value`
+  * `gen_cor_073       | Events: web3js client contract.getPastEvents, fromBlock toBlock`
+  * `gen_cor_102       | Transact: ethers client send a single transaction to a contract function`
+  * `ten_per_020       | Latency: storage, tx receipt time`
+
 
 Grafana Dashboards
 ------------------
