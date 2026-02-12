@@ -479,6 +479,15 @@ ten_rob_011  | Gateway: create large number of connections (shared and unique)
 
 </details>
 
+Performance
+-----------
+Performance tests are run via the [Execute performance tests](https://github.com/ten-protocol/ten-test/actions/workflows/execute_performance_tests.yml)
+Github action workflow. These run the performance tests on a reference Azure VM and store performance metrics into the 
+E2E remote database for display in the Grafana dashboards. They also attach a full pdf output of the performance, which 
+is then also attached to the releases page for a given release e.g. see [here](https://github.com/ten-protocol/go-ten/releases/download/v1.8.10/performance_results_v1.8.10.pdf)
+for the v1.8.10 release. 
+
+
 Health Monitoring
 -----------------
 The E2E tests perform deep operations on the network as part of their testing, i.e. contract deployment, contract 
