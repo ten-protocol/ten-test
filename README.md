@@ -502,6 +502,10 @@ deployment and interaction via the following tests;
   * `gen_cor_102       | Transact: ethers client send a single transaction to a contract function`
   * `ten_per_020       | Latency: storage, tx receipt time`
 
+Failure of either checks results in notification on discord and telegram. Additional to group notifications a support
+[rota](https://github.com/ten-protocol/ten-test/blob/main/utils/support/rota.yml) is configured on a week-by-week 
+basis, so that a designated resource is notified initially by automated voice call, and then subsequently by SMS
+for each failed check thereafter. SMS and voice notifications are via [Twilio](https://console.twilio.com/).
 
 Grafana Dashboards
 ------------------
