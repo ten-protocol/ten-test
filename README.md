@@ -492,7 +492,7 @@ For Testnet, the checks are run from Github action workflows as below;
 * [Funds check](https://github.com/ten-protocol/ten-test/actions/workflows/health_check_sepolia_funds.yml): Checks the 
 L1 sequencer, Validator 1, Validator 2 and Deployer balances, and the balance on the Faucet of the L2 via the following
 test;
-  * `check_funds  | Check the sequencer, validator and faucet funds on a given testnet`
+  * `check_funds       | Check the sequencer, validator and faucet funds on a given testnet`
 * [Health check](https://github.com/ten-protocol/ten-test/actions/workflows/health_check_sepolia.yml): Checks contract 
 deployment and interaction via the following tests;
   * `check_batch_rate  | Check the batch production rate on a given testnet`
