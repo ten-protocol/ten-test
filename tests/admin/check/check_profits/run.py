@@ -35,6 +35,7 @@ class PySysTest(TenNetworkTest):
         last_value = 0
         running_total = 0
         with open(os.path.join(self.output, 'sequencer_funds.log'), 'r') as fp:
+            self.log.info('Reading sequencer funds log')
             for line in fp.readlines():
                 time = int(line.split()[0])
                 value = int(line.split()[1])
@@ -46,6 +47,7 @@ class PySysTest(TenNetworkTest):
         last_value = 0
         running_total = 0
         with open(os.path.join(self.output, 'gas_payment.log'), 'r') as fp:
+            self.log.info('Reading gas payments log')
             for line in fp.readlines():
                 time = int(line.split()[0])
                 value = int(line.split()[1])
@@ -59,8 +61,10 @@ class PySysTest(TenNetworkTest):
         sequencer_start = dict[times[0]][0]
         gas_payment_start = dict[times[0]][1]
         with open(os.path.join(self.output, 'profits.log'), 'w') as fp:
+            self.log.info('Opening profits log')
             fp.write('%d %d %d %d\n' % (times[0], 0, 0, 0))
             for t in times[1:]:
+                self.log.info('Processing time %d' % t)
                 sequencer_diff = dict[t][0] - sequencer_start
                 gas_payment_diff = dict[t][1] - gas_payment_start
                 pandl = gas_payment_diff + sequencer_diff
