@@ -64,7 +64,7 @@ class PySysTest(TenNetworkTest):
                 gas_payment_diff = dict[t][1] - gas_payment_start
                 pandl = gas_payment_diff + sequencer_diff
                 fp.write('%d %d %d %d\n' % (t, sequencer_diff, gas_payment_diff, pandl))
-                if t >= last_time:
+                if t > last_time:
                     self.log.info('Last time = %d, entry time = %d, saving to the pandl db' % (last_time, t))
                     self.pandl_db.insert_pandl(self.env, t, sequencer_diff/1e18, gas_payment_diff/1e18, pandl/1e18)
 
