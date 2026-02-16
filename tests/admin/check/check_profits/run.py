@@ -67,6 +67,8 @@ class PySysTest(TenNetworkTest):
                 fp.write('%d %d %d %d\n' % (t, sequencer_diff, gas_payment_diff, pandl))
                 if t == current_time:
                     try:
+                        self.log.info(t)
+                        self.log.info(pandl/1e18)
                         self.pandl_db.insert_pandl(self.env, t, sequencer_diff/1e18, gas_payment_diff/1e18, pandl/1e18)
                     except:
                         pass
