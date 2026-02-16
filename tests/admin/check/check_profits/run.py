@@ -69,12 +69,8 @@ class PySysTest(TenNetworkTest):
                 gas_payment_diff = dict[t][1] - gas_payment_start
                 pandl = gas_payment_diff + sequencer_diff
                 fp.write('%d %d %d %d\n' % (t, sequencer_diff, gas_payment_diff, pandl))
-                try:
-                    self.log.info(t)
-                    self.log.info(pandl/1e18)
-                    self.pandl_db.insert_pandl(self.env, t, sequencer_diff/1e18, gas_payment_diff/1e18, pandl/1e18)
-                except:
-                    pass
+                self.pandl_db.insert_pandl(self.env, t, sequencer_diff/1e18, gas_payment_diff/1e18, pandl/1e18)
+
 
         branch = GnuplotHelper.buildInfo().branch
         date = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
