@@ -108,12 +108,12 @@ class PandLPersistence(SerialisableDB):
 
     def get_pandl(self, environment):
         """Return the pandl with time for a particular environment."""
-        self.cursor.execute(self.sqlsel, (environment))
+        self.cursor.execute(self.sqlsel, (environment, ))
         return self.cursor.fetchall()
 
     def get_latest_timestamp(self, environment):
-        """Get the latest nonce for a given account and environment. """
-        self.cursor.execute(self.latest, (environment))
+        """Get the latest timestamp for a given environment. """
+        self.cursor.execute(self.latest, (environment, ))
         try:
             result = self.cursor.fetchone()[0]
             return int(result)
