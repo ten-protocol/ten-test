@@ -64,7 +64,6 @@ class PySysTest(TenNetworkTest):
             self.log.info('Opening profits log')
             fp.write('%d %d %d %d\n' % (times[0], 0, 0, 0))
             for t in times[1:]:
-                self.log.info('Processing time %d' % t)
                 sequencer_diff = dict[t][0] - sequencer_start
                 gas_payment_diff = dict[t][1] - gas_payment_start
                 pandl = gas_payment_diff + sequencer_diff
