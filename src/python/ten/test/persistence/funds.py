@@ -67,6 +67,7 @@ class PandLPersistence(SerialisableDB):
     SQL_DELETE = "DELETE from pandl WHERE environment=?"
     SQL_SELECT = "SELECT time, seq_diff, gas_diff, pandl FROM pandl WHERE environment=? ORDER BY time DESC"
     SQL_SELALL = "SELECT * from pandl ORDER BY time ASC"
+    SQL_LATEST = "SELECT time FROM pandl WHERE environment=? ORDER BY time DESC LIMIT 1"
 
     @classmethod
     def init(cls, use_remote, user_dir, host):
@@ -83,6 +84,7 @@ class PandLPersistence(SerialisableDB):
         self.sqldel = normalise(self.SQL_DELETE, self.dbconnection.type)
         self.sqlsel = normalise(self.SQL_SELECT, self.dbconnection.type)
         self.sqlall = normalise(self.SQL_SELALL, self.dbconnection.type)
+        self.latest = normalise(self.SQL_LATEST, self.dbconnection.type)
         self.cursor = self.dbconnection.connection.cursor()
 
     def create(self):
@@ -108,6 +110,15 @@ class PandLPersistence(SerialisableDB):
         """Return the pandl with time for a particular environment."""
         self.cursor.execute(self.sqlsel, (environment))
         return self.cursor.fetchall()
+
+    def get_latest_timestamp(self, environment):
+        """Get the latest nonce for a given account and environment. """
+        self.cursor.execute(self.latest, (environment))
+        try:
+            result = self.cursor.fetchone()[0]
+            return int(result)
+        except:
+            return None
 
 
 class FundsPersistence(SerialisableDB):

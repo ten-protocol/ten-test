@@ -4,7 +4,7 @@ name: '[inspect] Check sepolia profits'
 run-name: Check sepolia-testnet profits
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 jobs:

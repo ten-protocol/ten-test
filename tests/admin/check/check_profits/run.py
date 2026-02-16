@@ -9,8 +9,6 @@ from ten.test.persistence.funds import FundsPersistence, PandLPersistence
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        current_time = int(time.time())
-
         # databases to use
         self.funds_db = FundsPersistence(self.use_remote(), self.user_dir, self.machine_name)
         self.pandl_db = PandLPersistence(self.use_remote(), self.user_dir, self.machine_name)
@@ -24,12 +22,13 @@ class PySysTest(TenNetworkTest):
             for entry in reversed(self.funds_db.get_funds(name='GasPayment', environment=self.env)):
                 fp.write('%s %s\n' % (entry[0],  entry[1]))
 
-        self.graph(current_time)
+        last_time = self.pandl_db.get_latest_timestamp(environment=self.env)
+        self.graph(last_time)
 
         # pass if no errors
         self.addOutcome(PASSED)
 
-    def graph(self, current_time):
+    def graph(self, last_time):
         dict = OrderedDict()
 
         last_value = 0
@@ -65,7 +64,8 @@ class PySysTest(TenNetworkTest):
                 gas_payment_diff = dict[t][1] - gas_payment_start
                 pandl = gas_payment_diff + sequencer_diff
                 fp.write('%d %d %d %d\n' % (t, sequencer_diff, gas_payment_diff, pandl))
-                if t == current_time:
+                if t >= last_time:
+                    self.log.info('Last time = %d, entry time = %d, saving to the pandl db' % (last_time, t))
                     self.pandl_db.insert_pandl(self.env, t, sequencer_diff/1e18, gas_payment_diff/1e18, pandl/1e18)
 
         branch = GnuplotHelper.buildInfo().branch
