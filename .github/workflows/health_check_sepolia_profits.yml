@@ -1,32 +1,38 @@
-# Graph profit and loss
-#
-name: '[system] Graph profit and loss'
-run-name: Graph profit and loss
+## Check profits on sepolia-testnet
+##
+name: '[inspect] Check sepolia profits'
+run-name: Check sepolia-testnet profits
 on:
+  schedule:
+    - cron: '*/15 * * * *'
   workflow_dispatch:
-    inputs:
-      environment:
-        type: choice
-        description: Environment
-        required: true
-        default: ten.sepolia
-        options:
-          - ten.sepolia
-          - ten.uat
 
 jobs:
   run-check:
-    runs-on: [self-hosted, Linux, X64, ten-test-google-runner-02]
+    runs-on: [self-hosted, Linux, X64, all-testnets]
     steps:
       - name: 'Check out ten-test'
         uses: actions/checkout@v3
         with:
           path: ./ten-test
 
+      - name: 'Check out go-ten code'
+        uses: actions/checkout@v3
+        with:
+          repository: ten-protocol/go-ten
+          path: ./go-ten
+          ref: 'releases/v1.6'
+
+      - name: 'Build required artifacts for running tests'
+        run: |
+          cd ${{ github.workspace }}/ten-test
+          ./get_artifacts.sh
+          ls -l ${{ github.workspace }}/ten-test/artifacts  
+
       - name: 'Run the graph profits for selected environment'
         run: |
           cd ${{ github.workspace }}/ten-test/tests/admin
-          /usr/local/bin/pysys.py run -m ${{ github.event.inputs.environment }} -XNO_CONNECT graph_profits
+          /usr/local/bin/pysys.py run -m ten.sepolia check_profits
 
       - name: 'Upload performance output'
         uses: actions/upload-artifact@v4
