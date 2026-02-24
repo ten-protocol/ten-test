@@ -19,7 +19,7 @@ class SupportHelper:
         day = local_time.strftime("%A")
         time_str = local_time.strftime("%H:%M")
 
-        people = None
+        people = []
         for shift in rota.get(day, []):
             if shift["start"] <= time_str <= shift["end"]:
                 people = [x.strip() for x in shift["people"].split(',') if x.strip() != '']

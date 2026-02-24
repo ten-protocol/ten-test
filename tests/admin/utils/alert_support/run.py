@@ -25,7 +25,8 @@ def greet_by_time(timezone_str='Europe/London'):
 
 # messages for failure
 def discord_failure_msg(name, people, all_ids, run_url, environment):
-    if len(people) == 1: support_personnel = people[0]
+    if len(people) == 0: support_personnel = ""
+    elif len(people) == 1: support_personnel = people[0]
     else: support_personnel = ", ".join(people)
 
     embed = {
@@ -50,7 +51,8 @@ def discord_failure_msg(name, people, all_ids, run_url, environment):
 
 
 def telegram_failure_msg(name, people, run_url, environment, channel_id):
-    if len(people) == 1: support_personnel = people[0]
+    if len(people) == 0: support_personnel = ""
+    elif len(people) == 1: support_personnel = people[0]
     else: support_personnel = ", ".join(people)
 
     message = (
@@ -90,7 +92,8 @@ def telegram_still_failing_msg(content, channel_id):
 
 # messages for success
 def discord_success_msg(name, people, all_ids, run_url, environment):
-    if len(people) == 1: support_personnel = people[0]
+    if len(people) == 0: support_personnel = ""
+    elif len(people) == 1: support_personnel = people[0]
     else: support_personnel = ", ".join(people)
 
     embed = {
@@ -114,7 +117,8 @@ def discord_success_msg(name, people, all_ids, run_url, environment):
 
 
 def telegram_success_msg(name, people, run_url, environment, channel_id):
-    if len(people) == 1: support_personnel = people[0]
+    if len(people) == 0: support_personnel = ""
+    elif len(people) == 1: support_personnel = people[0]
     else: support_personnel = ", ".join(people)
 
     message = (
@@ -286,11 +290,11 @@ class PySysTest(TenNetworkTest):
                 response.say('Check discord support channel for more information', voice="Polly.Amy")
 
                 client = Client(props.twilio_account(), props.twilio_token())
-                # client.calls.create(
-                #     twiml=str(response),
-                #     from_=props.twilio_from_number(),
-                #     to=tel,
-                # )
+                client.calls.create(
+                     twiml=str(response),
+                     from_=props.twilio_from_number(),
+                     to=tel,
+                )
                 self.log.info('Sent call to %s' % person)
             except Exception as e:
                 self.log.warn('Unable to send telephone message to %s: %s', (person, e))

@@ -1,34 +1,25 @@
 Monday:
-  - start: "00:00"
-    end: "23:59"
+  - start: "08:30"
+    end: "16:59"
     people: "ziga"
 
 Tuesday:
-  - start: "00:00"
-    end: "23:59"
+  - start: "08:30"
+    end: "16:59"
     people: "krish"
 
 Wednesday:
-  - start: "00:00"
-    end: "23:59"
+  - start: "08:30"
+    end: "16:59"
     people: "tudor"
 
 Thursday:
-  - start: "00:00"
-    end: "23:59"
+  - start: "08:30"
+    end: "16:59"
     people: "moray"
 
 Friday:
-  - start: "00:00"
-    end: "23:59"
+  - start: "08:30"
+    end: "16:59"
     people: "will"
 
-Saturday:
-  - start: "00:00"
-    end: "23:59"
-    people: "moray"
-
-Sunday:
-  - start: "00:00"
-    end: "23:59"
-    people: "ziga"
