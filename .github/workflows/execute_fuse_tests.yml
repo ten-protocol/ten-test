@@ -32,6 +32,7 @@ jobs:
       - name: 'Start up hardhat and deploy the FUSE dapp'
         env:
           USE_AAVE_VAULT: "false"
+          HARDHAT_FORK_ENABLED: "false"
         run: |
           cd ${{ github.workspace }}/market
           yarn install
