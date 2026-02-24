@@ -23,7 +23,7 @@ jobs:
         with:
           path: ./ten-test
 
-      - name: Check out the market repo
+      - name: 'Check out the market repo'
         run: |
           git clone git@github-market:ten-protocol/market.git ${{ github.workspace }}/market
           cd ${{ github.workspace }}/market
@@ -36,7 +36,7 @@ jobs:
           cd ${{ github.workspace }}/market
           yarn install
           nohup yarn chain > chain.log 2>&1 &
-          sleep 10
+          sleep 30
           yarn deploy --network localhost
 
       - name: 'Build required artifacts for running tests'
@@ -54,9 +54,10 @@ jobs:
         if: failure()
         continue-on-error: true
         with:
-          name: test-artifact
+          name: fuse-artifact
           path: |
             ${{ github.workspace }}/ten-test/**/Output
+            ${{ github.workspace }}/market/chain.log
           retention-days: 1
 
       - name: 'Stop the hardhat chain'
