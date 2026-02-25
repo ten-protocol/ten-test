@@ -27,7 +27,8 @@ class PySysTest(TenNetworkTest):
         ten_cap = admin.web3.to_wei(1000, 'ether')
         min_usdc = 500 * admin.web3.to_wei(1, 'ether')
         tax_perc = 200
-        tx_receipt, id = admin.create_round(deadline, price, beta, ten_cap, min_usdc, tax_perc)
+        cooldown = 10
+        tx_receipt, id = admin.create_round(deadline, price, beta, ten_cap, min_usdc, tax_perc, cooldown)
         self.log.info('Transaction receipt shows round id is %d' % id)
 
         # get the latest round id

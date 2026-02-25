@@ -16,7 +16,7 @@ class MarketDappAdmin(MarketDappPlayer):
         super().__init__(test, Properties().fundacntpk(), id=0, ten=0, usdc=0)
         self.log.info('Admin block time is %s' % self.web3.eth.get_block("latest").timestamp)
 
-    def create_round(self, deadline, price, beta, ten_cap, min_usdc, tax_perc):
+    def create_round(self, deadline, price, beta, ten_cap, min_usdc, tax_perc, cooldown):
         """Create a new round."""
         self.log.info('%s %s making new round: ' % (type(self).__name__, self.id))
         self.log.info('  deadline: %d' % deadline)
@@ -25,8 +25,10 @@ class MarketDappAdmin(MarketDappPlayer):
         self.log.info('  tenCap:   %d' % self.web3.from_wei(ten_cap, 'ether'))
         self.log.info('  minUSDC:  %d' % self.web3.from_wei(min_usdc, 'ether'))
         self.log.info('  tax:      %d' % tax_perc)
+        self.log.info('  cooldown: %d' % cooldown)
+
         tx_receipt = self.network.transact(self.test, self.web3,
-                                           self.market.contract.functions.createRound(deadline, price, beta, ten_cap, min_usdc, tax_perc),
+                                           self.market.contract.functions.createRound(deadline, price, beta, ten_cap, min_usdc, tax_perc, cooldown),
                                            self.account, self.market.GAS_LIMIT, persist_nonce=False)
         tx_log = self.market.contract.events.RoundCreated().process_receipt(tx_receipt)[0]
         round_id = tx_log['args']['id']
@@ -40,7 +42,8 @@ class MarketDappAdmin(MarketDappPlayer):
         ten_cap = self.web3.to_wei(1000, 'ether')      # 1000 tokens
         min_usdc = self.web3.to_wei(550, 'ether')      # 500 tokens at 1.1 USD per token
         tax_perc = 200                                 # 2 percent
-        return self.create_round(deadline, price, beta, ten_cap, min_usdc, tax_perc)
+        cooldown = 1                                   # forfeit cooldown
+        return self.create_round(deadline, price, beta, ten_cap, min_usdc, tax_perc, cooldown)
 
     def freeze_sellers(self, round_id):
         self.log.info('%s %d freezing sellers for round: ' % (type(self).__name__, self.id))

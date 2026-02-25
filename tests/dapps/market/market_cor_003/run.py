@@ -26,8 +26,15 @@ class PySysTest(TenNetworkTest):
 
         # close the round with it never trading out and forfeit the tokens
         admin.increase_evm_time(duration=60)
+        admin.increase_evm_time(duration=10)
         buyer.forfeit_stake(round_id, position_id, buyer.positions[position_id].amount)
         ten_balance_forfeit, usdc_balance_forfeit = buyer.token_balances()
+
+        self.log.info('TEN and USDC balances;')
+        self.log.info('  TEN  balance before: %d' % ten_balance_before)
+        self.log.info('  TEN  balance after:  %d' % ten_balance_forfeit)
+        self.log.info('  USDC balance before: %d' % usdc_balance_before)
+        self.log.info('  USDC balance after:  %d' % usdc_balance_forfeit)
 
         # check the buyers balances are return to the original amounts
         self.assertTrue(ten_balance_before == ten_balance_forfeit, assertMessage='TEN should be back to original')
