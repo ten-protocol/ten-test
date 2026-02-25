@@ -81,9 +81,21 @@ class MarketDappBuyer(MarketDappPlayer):
             else: self.redeemed[position_id] = [redeemed]
         return tx_recp
 
-    def forfeit_stake(self, round_id, position_id, amount):
-        """Forfeit an amount of the stake."""
-        self.log.info('%s %d forfeiting protected tokens: ' % (type(self).__name__, self.id))
+    def schedule_forfeit_stake(self, round_id, position_id, amount):
+        """Schedule the forfeit of an amount of the stake."""
+        self.log.info('%s %d scheduling forfeiting protected tokens: ' % (type(self).__name__, self.id))
+        self.log.info('  round id: %d' % round_id)
+        self.log.info('  posn id:  %d' % position_id)
+        self.log.info('  amount:   %.3f' % self.web3.from_wei(amount, 'ether'))
+        self.log.info('  amount:   %d WEI' % amount)
+        tx_recp = self.network.transact(self.test, self.web3,
+                                        self.market.contract.functions.forfeitProtectedTokens(round_id, position_id, amount),
+                                        self.account, self.market.GAS_LIMIT, persist_nonce=False)
+        return tx_recp
+
+    def execute_forfeit_stake(self, round_id, position_id, amount):
+        """Execute the forfeit of an amount of the stake."""
+        self.log.info('%s %d executing forfeiting protected tokens: ' % (type(self).__name__, self.id))
         self.log.info('  round id: %d' % round_id)
         self.log.info('  posn id:  %d' % position_id)
         self.log.info('  amount:   %.3f' % self.web3.from_wei(amount, 'ether'))
@@ -101,10 +113,11 @@ class MarketDappBuyer(MarketDappPlayer):
         """Redeem all stakes for a given round. """
         for position_id, position in self.positions.items():
             if position.round_id == round_id:
-                redeemable = self.get_redeemable_for_stake(position_id)
-                self.redeem_stake(round_id, position_id, redeemable)
+                redeemable = self.get_redeemable_for_stake(position_id)  # buy the amount they can buy
+                self.redeem_stake(round_id, position_id, redeemable)     # redeem means to perform the buy
                 if (position.amount - redeemable) > 0:
-                    self.forfeit_stake(round_id, position_id, (position.amount - redeemable))
+                    self.schedule_forfeit_stake(round_id, position_id, (position.amount - redeemable))
+                    self.execute_forfeit_stake(round_id, position_id, (position.amount - redeemable))
 
     def get_redeemable_for_stake(self, position_id):
         """Get the amount of redeemable tokens for a stake."""

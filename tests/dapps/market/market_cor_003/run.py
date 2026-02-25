@@ -25,9 +25,9 @@ class PySysTest(TenNetworkTest):
         self.assertTrue(usdc_balance_before-usdc_balance_after == total_cost_usdc, assertMessage='USDC should decrease as expected')
 
         # close the round with it never trading out and forfeit the tokens
-        admin.increase_evm_time(duration=60)
-        admin.increase_evm_time(duration=10)
-        buyer.forfeit_stake(round_id, position_id, buyer.positions[position_id].amount)
+        admin.increase_evm_time(duration=70)
+        buyer.schedule_forfeit_stake(round_id, position_id, buyer.positions[position_id].amount)
+        buyer.execute_forfeit_stake(round_id, position_id, buyer.positions[position_id].amount)
         ten_balance_forfeit, usdc_balance_forfeit = buyer.token_balances()
 
         self.log.info('TEN and USDC balances;')
