@@ -8,7 +8,7 @@ on:
       target_branch:
         description: 'Branch of the market repo to run against'
         required: true
-        default: main
+        default: develop
 
 jobs:
   test-run:

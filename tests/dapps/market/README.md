@@ -12,8 +12,8 @@ export USE_AAVE_VAULT = false
 In the `market` directory, to then start up the application, in two separate terminals use;
 
 ```bash
-yarn chain                     # terminal 1
-yarn deploy --network local    # terminal 2
+yarn chain                         # terminal 1
+yarn deploy --network localhost    # terminal 2
 ```
 
 The first command starts up a hardhat network. The second builds and deploys the application. To run the tests you must 

@@ -1,5 +1,4 @@
 from ten.test.basetest import TenNetworkTest
-from ten.test.utils.properties import Properties
 from ten.test.dapps.market.seller import MarketDappSeller
 from ten.test.dapps.market.buyer import MarketDappBuyer
 from ten.test.dapps.market.admin import MarketDappAdmin
@@ -50,8 +49,9 @@ class PySysTest(TenNetworkTest):
             self.log.info('  actual = %.3f' % s.web3.from_wei(seller_delta, 'ether'))
             self.log.info('  actual = %d WEI' % seller_delta)
             sellers_total_delta += seller_delta
+        self.log.info('Pool size = %d' % pool_size)
         self.log.info('Sellers total ten delta = %d' % sellers_total_delta)
-        self.assertTrue((sellers_total_delta - pool_size) < 10, assertMessage='Sellers total delta ten should be the pool size within tolerance')
+        self.assertTrue(abs(sellers_total_delta - pool_size) < 10, assertMessage='Sellers total delta ten should be the pool size within tolerance')
 
         buyers_total_delta = 0
         for b in [buyer1, buyer2]:
@@ -60,6 +60,7 @@ class PySysTest(TenNetworkTest):
             self.log.info('  actual = %.3f' % b.web3.from_wei(buyer_delta, 'ether'))
             self.log.info('  actual = %d WEI' % buyer_delta)
             buyers_total_delta += buyer_delta
+        self.log.info('Pool size = %d' % pool_size)
         self.log.info('Buyers bought actual = %d' % buyers_total_delta)
-        self.assertTrue((pool_size - buyers_total_delta) < 10, assertMessage='Buyers total delta ten should be the pool size within tolerance')
+        self.assertTrue(abs(pool_size - buyers_total_delta) < 10, assertMessage='Buyers total delta ten should be the pool size within tolerance')
 

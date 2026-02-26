@@ -31,7 +31,7 @@ class PySysTest(TenNetworkTest):
         beta = admin.to_ray(0.25)
         ten_cap = admin.web3.to_wei(1000, 'ether')
         min_usdc = admin.web3.to_wei(550, 'ether')
-        _, round2 = admin.create_round(deadline, price, beta, ten_cap, min_usdc, 200)
+        _, round2 = admin.create_round(deadline, price, beta, ten_cap, min_usdc, 200, 0)
 
         for p in [seller1, buyer1]: p.store_balances('second_start')
         seller1.approve_and_deposit(round2, seller1.web3.to_wei(1000, 'ether'))

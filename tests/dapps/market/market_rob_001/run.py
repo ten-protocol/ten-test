@@ -23,7 +23,8 @@ class PySysTest(TenNetworkTest):
         ten_cap = admin.web3.to_wei(cap, 'ether')
         min_usdc = admin.web3.to_wei(min_cap, 'ether')
         tax_percent = 200
-        _, round_id = admin.create_round(deadline, price, beta, ten_cap, min_usdc, tax_percent)
+        cooldown = 0
+        _, round_id = admin.create_round(deadline, price, beta, ten_cap, min_usdc, tax_percent, cooldown)
 
         sellers = []
         seller_amount = 0
