@@ -42,7 +42,7 @@ class MarketDappAdmin(MarketDappPlayer):
         ten_cap = self.web3.to_wei(1000, 'ether')      # 1000 tokens
         min_usdc = self.web3.to_wei(550, 'ether')      # 500 tokens at 1.1 USD per token
         tax_perc = 200                                 # 2 percent
-        cooldown = 1                                   # forfeit cooldown
+        cooldown = 0                                   # forfeit cooldown
         return self.create_round(deadline, price, beta, ten_cap, min_usdc, tax_perc, cooldown)
 
     def freeze_sellers(self, round_id):

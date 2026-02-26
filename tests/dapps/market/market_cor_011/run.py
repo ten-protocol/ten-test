@@ -47,10 +47,8 @@ class PySysTest(TenNetworkTest):
         round = admin.get_round(round_id)
         round.to_log(self)
 
-        # note it is possible we loose precision here and it should be 600 * WAD * 1000 // 1100
-        # this is currently the approach the dapp uses and it does lead to slightly smaller buy amounts
         WAD = 10**18
-        delta = 600 * (WAD * 1000 // 1100)
+        delta = 600 * WAD
         self.assertTrue(
             seller1.balances['start'].ten - seller1.balances['end'].ten == delta,
             assertMessage='Seller ten should be the buyer1 allocation'
