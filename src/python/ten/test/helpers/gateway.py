@@ -3,15 +3,15 @@ from pysys.constants import PROJECT, BACKGROUND
 from ten.test.utils.properties import Properties
 
 
-class WalletExtension:
-    """A wrapper over the Ten wallet extension."""
+class Gateway:
+    """A wrapper over the Ten gateway."""
 
     @classmethod
     def start(cls, parent, port=None, ws_port=None, name=None, verbose=True):
-        """Class method to create and run the wallet extension."""
-        extension = WalletExtension(parent, port, ws_port, name, verbose)
-        extension.run()
-        return extension
+        """Class method to create and run the gateway."""
+        gateway = Gateway(parent, port, ws_port, name, verbose)
+        gateway.run()
+        return gateway
 
     def __init__(self, test, port=None, ws_port=None, name=None, verbose=True,
                  node_host=None, node_port_http=None, node_port_ws=None):
@@ -29,20 +29,20 @@ class WalletExtension:
         if name is None: name = str(port)
         self.name = name
         self.chain_id = props.chain_id(test.env)
-        self.logPath = os.path.join(test.output, 'wallet_%s_logs' % name)
-        self.databasePath = os.path.join(test.output, 'wallet_%s_database' % name)
-        self.stdout = os.path.join(test.output, 'wallet_%s.out' % name)
-        self.stderr = os.path.join(test.output, 'wallet_%s.err' % name)
-        self.binary = os.path.join(PROJECT.root,'artifacts','go-ten','wallet_extension','wallet_extension')
+        self.logPath = os.path.join(test.output, 'gateway_%s_logs' % name)
+        self.databasePath = os.path.join(test.output, 'gateway_%s_database' % name)
+        self.stdout = os.path.join(test.output, 'gateway_%s.out' % name)
+        self.stderr = os.path.join(test.output, 'gateway_%s.err' % name)
+        self.binary = os.path.join(PROJECT.root,'artifacts','go-ten','gateway','gateway')
 
         if os.path.exists(self.databasePath):
-            test.log.info('Removing wallet extension persistence file')
+            test.log.info('Removing gateway persistence file')
             os.remove(self.databasePath)
 
     def run(self, rate_limit_user_compute_time=0, httpRateLimitGlobalRate=0,
             httpRateLimitPerIPRate=0):
-        """Run an instance of the wallet extension."""
-        self.test.log.info('Starting %s wallet extension on port=%d, ws_port=%d, verbose=%s',
+        """Run an instance of the gateway."""
+        self.test.log.info('Starting %s gateway on port=%d, ws_port=%d, verbose=%s',
                            self.name, self.port, self.ws_port, self.verbose)
 
         arguments = []
@@ -59,7 +59,7 @@ class WalletExtension:
         arguments.extend(('--tenChainID', str(self.chain_id)))
         #disable verbose as the flag was changed from --verbose to --logLevel so broke backwards compatability
         #if self.verbose: arguments.extend(('--logLevel', 'debug'))
-        hprocess = self.test.startProcess(command=self.binary, displayName='wallet_extension',
+        hprocess = self.test.startProcess(command=self.binary, displayName='gateway',
                                           workingDir=self.test.output, environs=os.environ, quiet=True,
                                           arguments=arguments, stdout=self.stdout, stderr=self.stderr, state=BACKGROUND)
         self.test.waitForSignal(self.stdout, expr='TEN gateway started', timeout=30)

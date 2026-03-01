@@ -1,17 +1,17 @@
 import requests
 from pysys.constants import FAILED, PASSED
 from ten.test.basetest import TenNetworkTest
-from ten.test.helpers.wallet_extension import WalletExtension
+from ten.test.helpers.gateway import Gateway
 
 
 class PySysTest(TenNetworkTest):
 
     def execute(self):
-        wallet = WalletExtension(self, name='local')
-        wallet.run(httpRateLimitPerIPRate=10)
-        for i in range(0,25): self.join(port=wallet.port, expect_fail=(i>=15))
+        gateway = Gateway(self, name='local')
+        gateway.run(httpRateLimitPerIPRate=10)
+        for i in range(0,25): self.join(port=gateway.port, expect_fail=(i>=15))
         self.wait(2.0)
-        for i in range(0,25): self.join(port=wallet.port, expect_fail=(i>=15))
+        for i in range(0,25): self.join(port=gateway.port, expect_fail=(i>=15))
 
     def join(self, port, host='http://127.0.0.1', expect_fail=False):
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}

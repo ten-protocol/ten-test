@@ -22,8 +22,8 @@ jobs:
 
       - name: 'Build artifacts'
         run: |
-          cd ${{ github.workspace }}/go-ten/tools/walletextension/main
-          go build -o ${{ github.workspace }}/ten-test/artifacts/wallet_extension/wallet_extension
+          cd ${{ github.workspace }}/go-ten/tools/gateway/main
+          go build -o ${{ github.workspace }}/ten-test/artifacts/gateway/gateway
           ls -l ${{ github.workspace }}/ten-test/artifacts
 
       - name: 'Persistence reset uat'

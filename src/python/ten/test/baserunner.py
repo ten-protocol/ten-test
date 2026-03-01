@@ -222,12 +222,12 @@ class TenRunnerPlugin():
         runner.waitForSignal(stdout, expr='Listening on 127.0.0.1:%d' % port, timeout=30)
         return hprocess
 
-    def run_wallet(self, runner):
-        """Run a single wallet extension for use by the tests. """
-        runner.log.info('Starting wallet extension to run tests')
+    def run_gateway(self, runner):
+        """Run a single gateway for use by the tests. """
+        runner.log.info('Starting gateway to run tests')
         port = runner.getNextAvailableTCPPort()
-        stdout = os.path.join(runner.output, 'wallet.out')
-        stderr = os.path.join(runner.output, 'wallet.err')
+        stdout = os.path.join(runner.output, 'gateway.out')
+        stderr = os.path.join(runner.output, 'gateway.err')
 
         props = Properties()
         arguments = []
@@ -236,11 +236,11 @@ class TenRunnerPlugin():
         arguments.extend(('--nodePortWS', str(props.validator_port_ws(self.env))))
         arguments.extend(('--port', str(port)))
         arguments.extend(('--portWS', str(runner.getNextAvailableTCPPort())))
-        arguments.extend(('--logPath', os.path.join(runner.output, 'wallet_logs.txt')))
-        arguments.extend(('--databasePath', os.path.join(runner.output, 'wallet_database')))
+        arguments.extend(('--logPath', os.path.join(runner.output, 'gateway_logs.txt')))
+        arguments.extend(('--databasePath', os.path.join(runner.output, 'gateway_database')))
         arguments.append('--verbose')
-        hprocess = runner.startProcess(command=os.path.join(PROJECT.root,'artifacts','go-ten','wallet_extension','wallet_extension'),
-                                       displayName='wallet_extension', workingDir=runner.output, environs=os.environ,
+        hprocess = runner.startProcess(command=os.path.join(PROJECT.root,'artifacts','go-ten','gateway','gateway'),
+                                       displayName='gateway', workingDir=runner.output, environs=os.environ,
                                        quiet=True, arguments=arguments, stdout=stdout, stderr=stderr, state=BACKGROUND)
         runner.waitForSignal(stdout, expr='TEN gateway started', timeout=30)
         return hprocess, port
