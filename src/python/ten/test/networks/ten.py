@@ -12,7 +12,7 @@ from ten.test.networks.geth import Geth
 from ten.test.networks.sepolia import Sepolia
 from ten.test.networks.ethereum import Ethereum
 from ten.test.utils.properties import Properties
-from ten.test.helpers.wallet_extension import WalletExtension
+from ten.test.helpers.gateway import Gateway
 
 
 class TenL1Ethereum(Ethereum):
@@ -147,11 +147,11 @@ class Ten(DefaultPreLondon):
                 self.WS_PORT = props.port_ws(test.env)
                 self.log.info('Using primary gateway on host=%s, port=%d', self.HOST, self.PORT)
             else:
-                wallet = WalletExtension.start(test, name=name, **kwargs)
+                gateway = Gateway.start(test, name=name, **kwargs)
                 self.HOST = 'http://127.0.0.1'
                 self.WS_HOST = 'ws://127.0.0.1'
-                self.PORT = wallet.port
-                self.WS_PORT = wallet.ws_port
+                self.PORT = gateway.port
+                self.WS_PORT = gateway.ws_port
                 self.log.info('Using local gateway %s on host=%s, port=%d', name, self.HOST, self.PORT)
 
             test.connections[name] = (self.HOST, self.WS_HOST, self.PORT, self.WS_PORT)

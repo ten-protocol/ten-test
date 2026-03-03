@@ -1,4 +1,4 @@
-# HTTP proxy to log traffic between web3 and the wallet extension. Note this is still in development.
+# HTTP proxy to log traffic between web3 and the gateway. Note this is still in development.
 #
 import argparse, sys, socket
 from _thread import *

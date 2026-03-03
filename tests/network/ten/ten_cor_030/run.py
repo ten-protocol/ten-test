@@ -8,7 +8,7 @@ class PySysTest(TenNetworkTest):
     def execute(self):
         # create two connections through the primary gateway
         self.log.info('')
-        self.log.info('Create two user_id connections through a single wallet extension')
+        self.log.info('Create two user_id connections through a single gateway')
         network_connection_1 = self.get_network_connection()
         network_connection_2 = self.get_network_connection()
 

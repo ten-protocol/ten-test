@@ -1,4 +1,4 @@
-# Websocket proxy to log traffic between web3 and the wallet extension. Note this doesn't work with the token
+# Websocket proxy to log traffic between web3 and the gateway. Note this doesn't work with the token
 # as a parameter (i.e. need to use https://testnet.ten.xyz/v1/<token> and not with ?token=<token>)
 #
 import argparse, asyncio, websockets, sys

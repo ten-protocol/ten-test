@@ -27,24 +27,24 @@ if [ -d $go_ten ]; then
   echo "DATE:   " `date` >> ${script_path}/artifacts/go-ten/build.info
   echo "" >> ${script_path}/artifacts/go-ten/build.info
 
-  # run the wallet extension build
-  echo Building the wallet extension
-  cd $go_ten/tools/walletextension/main
+  # run the gateway build
+  echo Building the gateway
+  cd $go_ten/tools/gateway/main
 
-  echo Building wallet extension for target platform
-  go build -o ${script_path}/artifacts/go-ten/wallet_extension/wallet_extension .
+  echo Building gateway for target platform
+  go build -o ${script_path}/artifacts/go-ten/gateway/gateway .
 
-  echo Building wallet extension for GOOS=darwin GOARCH=amd64
-  env GOOS=darwin GOARCH=amd64 go build -o ${script_path}/artifacts/go-ten/wallet_extension/wallet_extension_macos_amd64 .
+  echo Building gateway for GOOS=darwin GOARCH=amd64
+  env GOOS=darwin GOARCH=amd64 go build -o ${script_path}/artifacts/go-ten/gateway/gateway_macos_amd64 .
 
-  echo Building wallet extension for GOOS=darwin GOARCH=arm64
-  env GOOS=darwin GOARCH=arm64 go build -o ${script_path}/artifacts/go-ten/wallet_extension/wallet_extension_macos_arm64 .
+  echo Building gateway for GOOS=darwin GOARCH=arm64
+  env GOOS=darwin GOARCH=arm64 go build -o ${script_path}/artifacts/go-ten/gateway/gateway_macos_arm64 .
 
-  echo Building wallet extension for GOOS=windows GOARCH=amd64
-  env GOOS=windows GOARCH=amd64 go build -o ${script_path}/artifacts/go-ten/wallet_extension/wallet_extension_win_amd64.exe .
+  echo Building gateway for GOOS=windows GOARCH=amd64
+  env GOOS=windows GOARCH=amd64 go build -o ${script_path}/artifacts/go-ten/gateway/gateway_win_amd64.exe .
 
-  echo Building wallet extension for GOOS=linux GOARCH=amd64
-  env GOOS=linux GOARCH=amd64 go build -o ${script_path}/artifacts/go-ten/wallet_extension/wallet_extension_linux_amd64
+  echo Building gateway for GOOS=linux GOARCH=amd64
+  env GOOS=linux GOARCH=amd64 go build -o ${script_path}/artifacts/go-ten/gateway/gateway_linux_amd64
 
   # run the abigen in go-ten to create the contract ABIs and copy over
   echo Building the go-ten contract ABIs
